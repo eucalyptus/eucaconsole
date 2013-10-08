@@ -9,9 +9,13 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
+    'boto == 2.13.3',
     'pyramid',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
+    'pyramid_deform',
+    'pyramid_layout',
+    'pyramid_webassets',
     'waitress',
 ]
 
@@ -26,9 +30,9 @@ setup(
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
     ],
-    author='',
+    author='Eucalyptus Systems',
     author_email='',
-    url='',
+    url='http://www.eucalyptus.com',
     keywords='web pyramid pylons',
     packages=find_packages(),
     include_package_data=True,

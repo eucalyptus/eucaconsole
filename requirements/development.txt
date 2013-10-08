@@ -1,4 +1,0 @@
--r base.txt
-ipdb==0.8
-pyramid_debugtoolbar==1.0.8
-selenium==2.35.0
