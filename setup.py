@@ -11,6 +11,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'boto == 2.13.3',
     'pyramid',
+    'pyramid_celery',
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_deform',
