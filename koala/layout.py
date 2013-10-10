@@ -15,4 +15,4 @@ class MasterLayout(object):
         self.home_url = request.application_url
 
     def is_user_admin(self):
-        return has_permission(self.request, 'manage')
+        return has_permission('manage', self.context, self.request)
