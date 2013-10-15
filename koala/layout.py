@@ -7,7 +7,7 @@ from pyramid.security import has_permission
 
 
 class MasterLayout(object):
-    page_title = "Eucalyptus Management Console"
+    site_title = "Eucalyptus Management Console"
 
     def __init__(self, context, request):
         self.context = context

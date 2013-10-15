@@ -2,58 +2,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
 <head>
     <title>Eucalyptus Management Console</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <link rel="shortcut icon" href="${request.static_url('koala:static/img/favicon.ico')}"/>
-    <link rel="stylesheet" href="${request.static_url('koala:static/css/foundation.min.css')}" type="text/css"
-          media="screen" charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="shortcut icon" href="${request.static_url('koala:static/img/favicon.ico')}" />
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 
 <body>
-<!-- Nav Bar -->
-<div class="row">
-    <div class="large-12 columns">
-        <h2>${layout.page_title}</h2>
-        <hr/>
-    </div>
-</div>
-<!-- End Nav -->
 
-<!-- Main Page Content and Sidebar -->
-<div class="row">
-    <!-- Sidebar -->
-    <aside class="large-3 columns">
-        <ul class="side-nav">
-            <li><a href="${request.route_url('instances')}">Instances</a></li>
-        </ul>
-    </aside>
-    <!-- /end Sidebar -->
+<div id="topbar">
+    <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
+</div>
+
+<div class="row" id="navbar">
+
+</div>
 
     <!-- Main Content -->
     <div id="main-content" role="content" metal:define-slot="main_content">
 
     </div>
     <!-- End Main Content -->
-</div>
-<!-- End Main Content and Sidebar -->
 
 <!-- Footer -->
 <footer class="row">
-    <div class="large-12 columns">
-        <hr/>
-        <div class="row">
-            <div class="large-6 columns">
-                <p>&copy; Copyright Eucalyptus Systems.</p>
-            </div>
-            <div class="large-6 columns">
-                <ul class="inline-list right">
-                    <li><a href="#">Link 1</a></li>
-                    <li><a href="#">Link 2</a></li>
-                    <li><a href="#">Link 3</a></li>
-                    <li><a href="#">Link 4</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <div class="copyright">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</div>
 </footer>
 
 </body>

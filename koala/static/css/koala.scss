@@ -1,0 +1,24 @@
+/* Sass Imports */
+@import "normalize";
+@import "foundation";
+
+/* Eucalyptus Management Console main styles */
+
+/* --------------------------------------------------
+   Table of Contents
+-----------------------------------------------------
+:: Header
+*/
+
+/* -----------------------------------------
+   Header
+----------------------------------------- */
+html {
+    border-top: 10px solid #00415e;
+}
+
+body {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
