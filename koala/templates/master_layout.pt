@@ -9,19 +9,23 @@
 
 <body>
 
-<div id="topbar">
-    <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-</div>
-
-<div class="row" id="navbar">
-
-</div>
-
-    <!-- Main Content -->
-    <div id="main-content" role="content" metal:define-slot="main_content">
-
+<header id="logobar">
+    <div class="row">
+        <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     </div>
-    <!-- End Main Content -->
+</header>
+
+<nav class="top-bar" id="navbar">
+    <div class="row">
+        <p>Foobar</p>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="row" id="main-content" role="content" metal:define-slot="main_content">
+
+</div>
+<!-- End Main Content -->
 
 <!-- Footer -->
 <footer class="row">

@@ -5075,10 +5075,11 @@ a.th {
 /* --------------------------------------------------
    Table of Contents
 -----------------------------------------------------
+:: Master Layout
 :: Header
 */
 /* -----------------------------------------
-   Header
+   Master Layout
 ----------------------------------------- */
 html {
   border-top: 10px solid #00415e; }
@@ -5086,3 +5087,20 @@ html {
 body {
   max-width: 1280px;
   margin: 0 auto; }
+
+.row {
+  max-width: 1280px;
+  /* TODO: Convert to variable */ }
+
+/* -----------------------------------------
+   Header
+----------------------------------------- */
+#logobar {
+  height: 44px;
+  padding: 10px 0 10px 10px; }
+
+#logobar #logo {
+  display: inline-block;
+  width: 199px;
+  height: 22px;
+  background: url(../img/eucalogo-199x22.png) no-repeat; }
