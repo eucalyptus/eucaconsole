@@ -23,4 +23,5 @@ jyenv/
 pypyenv/
 env*/
 venv/
+.DS_Store
 
