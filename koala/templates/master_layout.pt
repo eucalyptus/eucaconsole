@@ -17,7 +17,29 @@
 
 <nav class="top-bar" id="navbar">
     <div class="row">
-        <p>Foobar</p>
+        <ul class="resources-nav">
+            <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="#">Dashboard</a></li>
+            <li><a id="resource-menu-image" class="lnk-image" href="#">Images</a></li>
+            <li><a id="resource-menu-instance" class="lnk-instance" href="#">Instances</a>
+                <ul>
+                    <li><a id="resource-menuitem-instance" href="#">Instances</a></li>
+                    <li><a id="resource-menuitem-scaling" href="#">Auto Scaling Groups</a></li>
+                </ul>
+            </li>
+            <li><a id="resource-menu-storage" class="lnk-storage" href="#">Storage</a>
+                <ul>
+                    <li><a id="resource-menuitem-volume" href="#">Volumes</a></li>
+                    <li><a id="resource-menuitem-snapshot" href="#">Snapshots</a></li>
+                </ul>
+            </li>
+            <li><a id="resource-menu-netsec" class="lnk-netsec" href="#">Network &amp; Security</a>
+                <ul>
+                    <li><a id="resource-menuitem-sgroup" href="#">Security Groups</a></li>
+                    <li><a id="resource-menuitem-keypair" href="#">Key Pairs</a></li>
+                    <li><a id="resource-menuitem-eip" href="#">IP Addresses</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </nav>
 
