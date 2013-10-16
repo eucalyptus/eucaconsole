@@ -6,8 +6,8 @@
     <link rel="shortcut icon" href="${request.static_url('koala:static/img/favicon.ico')}" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}" type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" tal:omit-tag="true" />
-    <script src="${request.static_url('koala:static/js/lib/modernizer/custom.modernizr.js')}"></script>
-    <script src="${request.static_url('koala:static/js/lib/angular/angular-1.0.8.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/modernizer/custom.modernizr.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.0.8.min.js')}"></script>
     <meta metal:define-slot="head_js" tal:omit-tag="true" />
 </head>
 
@@ -58,7 +58,7 @@
     <div class="copyright">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</div>
 </footer>
 
-<script src="${request.static_url('koala:static/js/lib/jquery/jquery-2.0.3.min.js')}"></script>
+<script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
 <div metal:define-slot="head_js" tal:omit-tag="true"></div>
 </body>
 </html>
