@@ -48,17 +48,16 @@
   "foundation/components/tooltips",
   "foundation/components/dropdown";
 
+/* =========================================================== */
 /* Eucalyptus Management Console main styles */
 
 /* --------------------------------------------------
    Table of Contents
 -----------------------------------------------------
-:: Variables
 :: Fonts
 :: Master Layout
 :: Header
 */
-
 
 
 /* -----------------------------------------
@@ -95,13 +94,24 @@ html {
     border-top: 10px solid #00415e;
 }
 
+html, body {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
+#main-content {
+    min-height: 12rem;
+}
 
 /* -----------------------------------------
    Header
 ----------------------------------------- */
 #logobar {
     height: 44px;
-    padding: 10px 0 10px 10px;
+    padding: 10px 0 10px 15px;
     background-color: #fff;
 }
 
@@ -109,4 +119,22 @@ html {
     display: inline-block;
     width: 199px; height: 22px;
     background: url(../img/eucalogo-199x22.png) no-repeat;
+}
+
+/* -----------------------------------------
+   Footer
+----------------------------------------- */
+footer {
+    width: 100%;
+    height: 80px;
+    padding: 15px;
+    background-color: rgb(51, 51, 51);
+    color: rgb(121, 121, 121);
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+}
+
+.copyright {
+    font-size: 0.8em;
 }

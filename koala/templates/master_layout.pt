@@ -13,10 +13,8 @@
 
 <body>
 
-<nav class="top-bar" id="logobar">
-    <ul class="title-area">
-        <li class="name"><a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a></li>
-    </ul>
+<nav id="logobar">
+    <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
 </nav>
 
 <nav class="top-bar">
@@ -61,8 +59,8 @@
 <!-- End Main Content -->
 
 <!-- Footer -->
-<footer class="row">
-    <div class="copyright">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</div>
+<footer>
+    <h6 class="copyright subheader">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</h6>
 </footer>
 
 <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
