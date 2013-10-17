@@ -4,9 +4,6 @@
 @import "includes/normalize";
 
 
-// Import EUCA SCSS variables
-@import "includes/eucavariables";
-
 // This includes all of the foundation global elements that are needed to work with any of the other files.
 @import "foundation/variables";
 
@@ -55,6 +52,7 @@
    Table of Contents
 -----------------------------------------------------
 :: Fonts
+:: Variables
 :: Master Layout
 :: Header
 */
@@ -88,10 +86,17 @@
 
 
 /* -----------------------------------------
+   Variables
+----------------------------------------- */
+$euca-footer-height: 80px;
+
+
+/* -----------------------------------------
    Master Layout
 ----------------------------------------- */
 html {
     border-top: 10px solid #00415e;
+    padding-bottom: $euca-footer-height;
 }
 
 html, body {
@@ -126,7 +131,7 @@ body {
 ----------------------------------------- */
 footer {
     width: 100%;
-    height: 80px;
+    height: $euca-footer-height;
     padding: 15px;
     background-color: rgb(51, 51, 51);
     color: rgb(121, 121, 121);

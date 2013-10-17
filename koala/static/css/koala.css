@@ -342,9 +342,6 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-/* -----------------------------------------
-   Variables
------------------------------------------ */
 meta.foundation-mq-small {
   font-family: "only screen and (min-width: 768px)";
   width: 768px; }
@@ -4575,6 +4572,7 @@ a.th {
    Table of Contents
 -----------------------------------------------------
 :: Fonts
+:: Variables
 :: Master Layout
 :: Header
 */
@@ -4597,10 +4595,14 @@ a.th {
   font-style: normal; }
 
 /* -----------------------------------------
+   Variables
+----------------------------------------- */
+/* -----------------------------------------
    Master Layout
 ----------------------------------------- */
 html {
-  border-top: 10px solid #00415e; }
+  border-top: 10px solid #00415e;
+  padding-bottom: 80px; }
 
 html, body {
   height: 100%; }
