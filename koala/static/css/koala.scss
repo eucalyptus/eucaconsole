@@ -95,15 +95,6 @@ html {
     border-top: 10px solid #00415e;
 }
 
-body {
-    margin: 0 auto;
-}
-
-.row {
-    max-width: $euca_max_page_width;
-    margin: 0 auto;
-}
-
 
 /* -----------------------------------------
    Header
@@ -111,6 +102,7 @@ body {
 #logobar {
     height: 44px;
     padding: 10px 0 10px 10px;
+    background-color: #fff;
 }
 
 #logobar #logo {
