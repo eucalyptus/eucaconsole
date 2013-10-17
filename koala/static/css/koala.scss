@@ -1,11 +1,11 @@
 /* Sass Imports */
 
 // Normalize/reset CSS styles
-@import "normalize";
+@import "includes/normalize";
 
 
 // Import EUCA SCSS variables
-@import "eucavariables";
+@import "includes/eucavariables";
 
 // This includes all of the foundation global elements that are needed to work with any of the other files.
 @import "foundation/variables";
