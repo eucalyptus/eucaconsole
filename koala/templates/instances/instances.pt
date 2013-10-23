@@ -1,7 +1,26 @@
 <metal:block use-macro="main_template">
+<div metal:fill-slot="main_content">
 
-    <div metal:fill-slot="main_content">
-        This is the main content area for instances
+    <div class="row">
+        <div class="large-3 columns" id="instances-filter">
+            <div>&nbsp;</div>
+            <h6>Filters</h6>
+            <div>&nbsp;</div>
+            <form class="custom" id="instances-filter-form">
+                <div>Match <input type="radio"> all <input type="radio"> any</div>
+                <input type="text" placeholder="status" />
+                <input type="text" placeholder="root device" />
+                <input type="text" placeholder="instance type" />
+                <input type="text" placeholder="security group" />
+                <input type="text" placeholder="availability zone" />
+                <input type="text" placeholder="tags (key or value)" />
+            </form>
+        </div>
+
+        <div class="large-9 columns" id="instances">
+
+        </div>
     </div>
 
+</div>
 </metal:block>
