@@ -54,6 +54,9 @@
 :: Variables
 :: Master Layout
 :: Header
+:: Footer
+:: Debug
+
 */
 
 
@@ -106,6 +109,7 @@ html, body {
 body {
     background-color: #fff;
     min-height: 100%;
+    font-family: PlayRegular, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #main-content {
@@ -122,11 +126,34 @@ body {
     color: #333;
 }
 
+#logobar a {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+#logobar a:focus {
+    box-shadow: 0;
+}
+
 #logobar #logo {
     display: inline-block;
     width: 199px; height: 22px;
     background: url(../img/eucalogo-199x22.png) no-repeat;
 }
+
+#logobar section {
+    display: inline-block;
+    float: right;
+}
+
+#logobar section .button {
+    top: 0;
+    border: 0;
+    background-color: transparent;
+    font-weight: normal;
+}
+
+
 
 /* -----------------------------------------
    Footer
@@ -145,3 +172,11 @@ footer {
 .copyright {
     font-size: 0.8em;
 }
+
+
+/* -----------------------------------------
+   Debug
+----------------------------------------- */
+#pDebugToolbarHandle { top: 100px !important; }
+
+

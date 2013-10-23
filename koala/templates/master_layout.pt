@@ -6,6 +6,7 @@
 <head>
     <title>Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_url('koala:static/img/favicon.ico')}" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}" type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" tal:omit-tag="True" />
@@ -18,8 +19,13 @@
 
 <nav id="logobar" class="top-bar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-    <section class="right-align">
-
+    <section class="user-dropdown">
+        <a href="#" data-dropdown="user-dropdown"
+           class="small secondary button dropdown">admin@ui-test-acct-01</a>
+        <ul id="user-dropdown" class="f-dropdown">
+            <li><a href="#">Change password</a></li>
+            <li><a href="#">Logout</a></li>
+        </ul>
     </section>
 </nav>
 
