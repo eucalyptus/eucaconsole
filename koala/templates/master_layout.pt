@@ -1,5 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 <head>
     <title>Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -13,11 +16,18 @@
 
 <body>
 
-<nav id="logobar">
+<nav id="logobar" class="top-bar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
+    <section class="right-align">
+
+    </section>
 </nav>
 
 <nav class="top-bar">
+    <ul class="title-area">
+        <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+    </ul>
+
     <section class="top-bar-section">
         <ul class="resources-nav left-align">
             <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="#">Dashboard</a></li>

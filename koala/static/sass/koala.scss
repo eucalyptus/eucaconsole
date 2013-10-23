@@ -94,6 +94,7 @@ $euca-footer-height: 80px;
    Master Layout
 ----------------------------------------- */
 html {
+    background-color: #444;
     border-top: 10px solid #00415e;
     padding-bottom: $euca-footer-height;
 }
@@ -103,11 +104,12 @@ html, body {
 }
 
 body {
+    background-color: #fff;
     min-height: 100%;
 }
 
 #main-content {
-    min-height: 12rem;
+    min-height: 10rem;
 }
 
 /* -----------------------------------------
@@ -115,8 +117,9 @@ body {
 ----------------------------------------- */
 #logobar {
     height: 44px;
-    padding: 10px 0 10px 15px;
+    padding: 5px 0 10px 15px;
     background-color: #fff;
+    color: #333;
 }
 
 #logobar #logo {
@@ -135,7 +138,7 @@ footer {
     background-color: rgb(51, 51, 51);
     color: rgb(121, 121, 121);
     position: absolute;
-    bottom: 0;
+    bottom: -$euca-footer-height;
     left: 0; right: 0;
 }
 

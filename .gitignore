@@ -24,5 +24,6 @@ pypyenv/
 env*/
 venv/
 .DS_Store
+.sass-cache
 *.scssc
 

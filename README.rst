@@ -39,6 +39,10 @@ Running the management console
 ==============================
 
 `pserve development.ini` runs the console in development mode, `pserve production.ini` in production mode.
+
 `launcher.sh` is provided as an alias for `pserve production.ini`
+
+To have Pyramid automatically detect modifications, use `pserve development.ini --reload`
+
 
 
