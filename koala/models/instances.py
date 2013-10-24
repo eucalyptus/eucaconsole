@@ -46,12 +46,12 @@ class Instance(object):
 
         for idx in xrange(count):
             instance_name = 'Instance_{0:0d}'.format(idx + 1)
-            instance_id = 'i{}'.format(randint(11111111, 99999999))
+            instance_id = 'i-{}'.format(randint(11111111, 99999999))
             created_date = datetime.today() - relativedelta(days=randint(1, 30))
             instances.append(dict(
                 instance_name=instance_name,
                 instance_id=instance_id,
-                created_date=created_date,
+                created_date=created_date.strftime('%M/%d/%Y %H:%M:%I %p'),
                 security_group='default',
                 instance_type=choice(AWS_INSTANCE_TYPES),
                 availability_zone=availability_zone,

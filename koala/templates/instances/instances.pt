@@ -29,7 +29,20 @@
             <div class="instance-box" tal:repeat="instance instances">
                 <div class="name">
                     <strong>${instance.instance_name}</strong>
-                    <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                    <span class="tiny secondary button dropdown right"
+                          data-dropdown="instance-dropdown_${repeat.instance.index}"><i class="fi-widget"></i></span>
+                    <ul id="instance-dropdown_${repeat.instance.index}" class="f-dropdown">
+                        <li><a href="#">This is a link</a></li>
+                        <li><a href="#">This is another</a></li>
+                        <li><a href="#">Yet another</a></li>
+                    </ul>
+                </div>
+                <div class="properties">
+                    <div>${instance.instance_id}</div>
+                    <div>${instance.availability_zone}</div>
+                    <div>${instance.instance_type}</div>
+                    <div>${instance.security_group}</div>
+                    <div>${instance.created_date}</div>
                 </div>
                 <div class="status ${instance.status.lower()}">${instance.status}</div>
             </div>

@@ -12,10 +12,10 @@
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}"
           type="text/css" media="screen" charset="utf-8" />
-    <meta metal:define-slot="head_css" tal:omit-tag="True" />
+    <meta metal:define-slot="head_css" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.0.8.min.js')}"></script>
-    <meta metal:define-slot="head_js" tal:omit-tag="True" />
+    <meta metal:define-slot="head_js" />
 </head>
 
 <body>
@@ -72,8 +72,8 @@
 </nav>
 
 <!-- Main Content -->
-<section class="main" id="main-content" role="content" metal:define-slot="main_content">
-
+<section class="main" id="main-content" role="content">
+    <div metal:define-slot="main_content"></div>
 </section>
 <!-- End Main Content -->
 
@@ -89,6 +89,6 @@
         $(document).foundation();
     });
 </script>
-<div metal:define-slot="tail_js" tal:omit-tag="True"></div>
+<div metal:define-slot="tail_js"></div>
 </body>
 </html>

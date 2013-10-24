@@ -1333,7 +1333,7 @@ a.th { display: inline-block; max-width: 100%; }
 ----------------------------------------- */
 html { background-color: #444; border-top: 10px solid #00415e; }
 
-body { background-color: #fff; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+body { color: #333; background-color: #fff; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
