@@ -3,6 +3,15 @@
 $instance-box-row-height: 24px;
 $instance-box-border-color: #999;
 
+// Status colors
+$instance-status-color-running: green;
+$instance-status-color-pending: lightgreen;
+$instance-status-color-stopped: red;
+$instance-status-color-stopping: lightpink;
+$instance-status-color-terminated: gray;
+$instance-status-color-terminating: lightgrey;
+
+
 .instance-box {
     position: relative;
     display: inline-block;
@@ -64,11 +73,11 @@ $instance-box-border-color: #999;
     color: white;
 }
 
-.instance-box .status.running { background-color: green; }
-.instance-box .status.pending { background-color: lightgreen; }
-.instance-box .status.stopped { background-color: red; }
-.instance-box .status.stopping { background-color: lightpink; }
-.instance-box .status.terminated { background-color: gray; }
-.instance-box .status.terminating { background-color: lightgray; }
+.instance-box .status.running { background-color: $instance-status-color-running; }
+.instance-box .status.pending { background-color: $instance-status-color-pending; }
+.instance-box .status.stopped { background-color: $instance-status-color-stopped; }
+.instance-box .status.stopping { background-color: $instance-status-color-stopping; }
+.instance-box .status.terminated { background-color: $instance-status-color-terminated; }
+.instance-box .status.terminating { background-color: $instance-status-color-terminating; }
 
 

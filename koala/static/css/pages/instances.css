@@ -27,4 +27,4 @@
 
 .instance-box .status.terminated { background-color: gray; }
 
-.instance-box .status.terminating { background-color: lightgray; }
+.instance-box .status.terminating { background-color: lightgrey; }
