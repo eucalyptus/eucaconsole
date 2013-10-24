@@ -8,7 +8,10 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_url('koala:static/img/favicon.ico')}" />
-    <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="${request.static_url('koala:static/fonts/foundation/foundation-icons.css')}"
+          type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}"
+          type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" tal:omit-tag="True" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.0.8.min.js')}"></script>

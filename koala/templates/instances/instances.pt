@@ -2,12 +2,16 @@
 <div metal:fill-slot="main_content">
 
     <div class="row">
+        <h3>Instances</h3>
         <div class="large-3 columns" id="instances-filter">
             <div>&nbsp;</div>
             <h6>Filters</h6>
             <div>&nbsp;</div>
             <form class="custom" id="instances-filter-form">
-                <div>Match <input type="radio"> all <input type="radio"> any</div>
+                <div>
+                    Match <input type="radio" name="anyall" value="all" checked="checked"> all
+                    <input type="radio" name="anyall" value="any"> any
+                </div>
                 <input type="text" placeholder="status" />
                 <input type="text" placeholder="root device" />
                 <input type="text" placeholder="instance type" />
