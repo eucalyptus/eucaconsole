@@ -1,0 +1,24 @@
+/* @fileOverview Instances landing page CSS */
+.instance-box { position: relative; display: inline-block; width: 200px; height: 200px; border: 3px solid #999999; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
+
+.instance-box .name { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; }
+
+.instance-box .name strong { font-weight: normal; }
+
+.instance-box .name .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+
+.instance-box .name .button.dropdown::before { border: none; }
+
+.instance-box .status { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
+
+.instance-box .status.running { background-color: green; }
+
+.instance-box .status.pending { background-color: lightgreen; }
+
+.instance-box .status.stopped { background-color: red; }
+
+.instance-box .status.stopping { background-color: lightpink; }
+
+.instance-box .status.terminated { background-color: gray; }
+
+.instance-box .status.terminating { background-color: lightgray; }

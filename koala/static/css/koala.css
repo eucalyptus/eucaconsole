@@ -1331,13 +1331,9 @@ a.th { display: inline-block; max-width: 100%; }
 ----------------------------------------- */
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
-html { background-color: #444; border-top: 10px solid #00415e; padding-bottom: 80px; }
-
-html, body { height: 100%; }
+html { background-color: #444; border-top: 10px solid #00415e; }
 
 body { background-color: #fff; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
-
-#main-content { min-height: 10rem; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
@@ -1355,7 +1351,7 @@ body { background-color: #fff; min-height: 100%; font-family: "Helvetica Neue", 
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
-footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; position: absolute; bottom: -80px; left: 0; right: 0; }
+footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; margin-top: 1rem; }
 
 .copyright { font-size: 0.8em; }
 

@@ -1,8 +1,11 @@
 <metal:block use-macro="main_template">
-<div metal:fill-slot="main_content">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instances.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
     <div class="row">
-        <h3>Instances</h3>
         <div class="large-3 columns" id="instances-filter">
             <div>&nbsp;</div>
             <h6>Filters</h6>
@@ -22,7 +25,14 @@
         </div>
 
         <div class="large-9 columns" id="instances">
-
+            <h3>Instances</h3>
+            <div class="instance-box" tal:repeat="instance instances">
+                <div class="name">
+                    <strong>${instance.instance_name}</strong>
+                    <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                </div>
+                <div class="status ${instance.status.lower()}">${instance.status}</div>
+            </div>
         </div>
     </div>
 

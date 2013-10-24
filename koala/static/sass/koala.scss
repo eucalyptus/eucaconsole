@@ -77,11 +77,6 @@ $euca-footer-height: 80px;
 html {
     background-color: #444;
     border-top: 10px solid #00415e;
-    padding-bottom: $euca-footer-height;
-}
-
-html, body {
-    height: 100%;
 }
 
 body {
@@ -90,9 +85,6 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-#main-content {
-    min-height: 10rem;
-}
 
 /* -----------------------------------------
    Header
@@ -141,9 +133,7 @@ footer {
     height: $euca-footer-height;
     padding: 15px;
     background-color: rgb(51, 51, 51);
-    position: absolute;
-    bottom: -$euca-footer-height;
-    left: 0; right: 0;
+    margin-top: 1rem;
 }
 
 .copyright {
