@@ -34,6 +34,7 @@
 
 <nav class="top-bar">
     <ul class="title-area">
+        <li class="name"></li>
         <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
     </ul>
 
