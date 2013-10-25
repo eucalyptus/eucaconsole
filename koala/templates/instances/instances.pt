@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row">
+    <div class="row" ng-app="InstancesLandingPage">
         <div class="large-3 columns" id="instances-filter">
             <div>&nbsp;</div>
             <h6>Filters</h6>
@@ -24,30 +24,37 @@
             </form>
         </div>
 
-        <div class="large-9 columns" id="instances">
+        <div class="large-9 columns" id="instances" ng-controller="InstancesCtrl" ng-init="getInstances()">
             <h3>Instances</h3>
-            <div class="tile instance" tal:repeat="instance instances">
+            <div ng-show="instancesLoading">Loading...</div>
+            <div class="tile instance" ng-repeat="instance in instances" ng-cloak="true">
                 <div class="header">
-                    <strong>${instance.instance_name}</strong>
+                    <strong>{{ instance.instance_name }}</strong>
                     <span class="tiny secondary button dropdown right"
-                          data-dropdown="instance-dropdown_${repeat.instance.index}"><i class="fi-widget"></i></span>
-                    <ul id="instance-dropdown_${repeat.instance.index}" class="f-dropdown">
+                          data-dropdown="instance-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
+                    <ul id="instance-dropdown_{{ $index }}" class="f-dropdown">
                         <li><a href="#">This is a link</a></li>
                         <li><a href="#">This is another</a></li>
                         <li><a href="#">Yet another</a></li>
                     </ul>
                 </div>
                 <div class="content">
-                    <div>${instance.instance_id}</div>
-                    <div>${instance.availability_zone}</div>
-                    <div>${instance.instance_type}</div>
-                    <div>${instance.security_group}</div>
-                    <div>${instance.created_date}</div>
+                    <div>{{ instance.instance_id }}</div>
+                    <div>{{ instance.availability_zone }}</div>
+                    <div>{{ instance.instance_type }}</div>
+                    <div>{{ instance.security_group }}</div>
+                    <div>{{ instance.created_date }}</div>
                 </div>
-                <div class="footer status ${instance.status.lower()}">${instance.status}</div>
+                <div class="footer status {{ instance.status | lowercase }}">{{ instance.status }}</div>
             </div>
         </div>
     </div>
 
 </div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/instances.js')}"></script>
+</div>
+
 </metal:block>
+
