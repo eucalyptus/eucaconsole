@@ -1,7 +1,6 @@
 /* @fileOverview Instances landing page CSS */
+@import "../includes/landingpage";
 
-$instance-box-row-height: 24px;
-$instance-box-border-color: #999;
 
 // Status colors
 $instance-status-color-running: green;
@@ -12,72 +11,11 @@ $instance-status-color-terminated: gray;
 $instance-status-color-terminating: lightgrey;
 
 
-.instance-box {
-    position: relative;
-    display: inline-block;
-    width: 200px; height: 200px;
-    border: 2px solid $instance-box-border-color;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    padding-bottom: $instance-box-row-height;
-}
-
-.instance-box .name {
-    position: relative;
-    padding: 4px 30px 4px 4px;
-    border-bottom: 1px solid $instance-box-border-color;
-    height: $instance-box-row-height;
-}
-
-.instance-box .name strong {
-    font-weight: normal;
-}
-
-.instance-box .name .button.dropdown {
-    position: absolute;
-    width: 30px; height: $instance-box-row-height;
-    top: 0; right: 0;
-    font-size: 1rem;
-    padding: 0 0 0 0;
-    border: 1px solid $instance-box-border-color;
-    border-top: none;
-    border-right: none;
-}
-
-.instance-box .name .button.dropdown i {
-    position: relative;
-    top: 2px;
-}
-
-
-.instance-box .name .button.dropdown::before {
-    border: none;
-}
-
-.instance-box .f-dropdown {
-    width: 120px;
-}
-
-.instance-box .properties {
-    padding: 8px;
-    font-size: 0.9em;
-    line-height: 1.3rem;
-}
-
-.instance-box .status {
-    position: absolute;
-    bottom: 0;
-    left: 0; right: 0;
-    height: $instance-box-row-height;
-    padding: 4px;
-    color: white;
-}
-
-.instance-box .status.running { background-color: $instance-status-color-running; }
-.instance-box .status.pending { background-color: $instance-status-color-pending; }
-.instance-box .status.stopped { background-color: $instance-status-color-stopped; }
-.instance-box .status.stopping { background-color: $instance-status-color-stopping; }
-.instance-box .status.terminated { background-color: $instance-status-color-terminated; }
-.instance-box .status.terminating { background-color: $instance-status-color-terminating; }
+.tile.instance .status.running { background-color: $instance-status-color-running; }
+.tile.instance .status.pending { background-color: $instance-status-color-pending; }
+.tile.instance .status.stopped { background-color: $instance-status-color-stopped; }
+.tile.instance .status.stopping { background-color: $instance-status-color-stopping; }
+.tile.instance .status.terminated { background-color: $instance-status-color-terminated; }
+.tile.instance .status.terminating { background-color: $instance-status-color-terminating; }
 
 

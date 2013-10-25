@@ -1,0 +1,65 @@
+/* @section Landing pages styles */
+
+$instance-box-row-height: 24px;
+$instance-box-border-color: #999;
+
+.tile {
+    position: relative;
+    display: inline-block;
+    width: 200px; height: 200px;
+    border: 2px solid $instance-box-border-color;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding-bottom: $instance-box-row-height;
+}
+
+.tile .header {
+    position: relative;
+    padding: 4px 30px 4px 4px;
+    border-bottom: 1px solid $instance-box-border-color;
+    height: $instance-box-row-height;
+}
+
+.tile .header strong {
+    font-weight: normal;
+}
+
+.tile .header .button.dropdown {
+    position: absolute;
+    width: 30px; height: $instance-box-row-height;
+    top: 0; right: 0;
+    font-size: 1rem;
+    padding: 0 0 0 0;
+    border: 1px solid $instance-box-border-color;
+    border-top: none;
+    border-right: none;
+}
+
+.tile .header .button.dropdown i {
+    position: relative;
+    top: 2px;
+}
+
+
+.tile .header .button.dropdown::before {
+    border: none;
+}
+
+.tile .header .f-dropdown {
+    width: 120px;
+}
+
+.tile .content {
+    padding: 8px;
+    font-size: 0.9em;
+    line-height: 1.3rem;
+}
+
+.tile .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: $instance-box-row-height;
+    padding: 4px;
+    color: white;
+}
