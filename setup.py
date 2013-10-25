@@ -9,15 +9,16 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
-    'boto == 2.13.3',
-    'pyramid',
-    'pyramid_celery',
-    'pyramid_chameleon',
+    'boto == 2.15',
+    'chameleon == 2.13-1',
+    'deform == 2.0a2',
+    'pyramid == 1.5a2',
+    'pyramid_chameleon == 0.1',
     'pyramid_debugtoolbar',
-    'pyramid_deform',
-    'pyramid_layout',
-    'pyramid_webassets',
-    'waitress',
+    'pyramid_deform == 0.2',
+    'pyramid_layout == 0.8',
+    'simplejson == 3.3.1',
+    'waitress == 0.8.7',
 ]
 
 setup(
