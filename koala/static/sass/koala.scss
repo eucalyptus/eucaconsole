@@ -6,6 +6,8 @@
 // This includes all of the foundation global elements that are needed to work with any of the other files.
 @import "foundation/variables";
 
+@import "includes/eucavariables";
+
 // Foundation Components
 @import
   "foundation/components/global",
@@ -50,8 +52,6 @@
 /* --------------------------------------------------
    Table of Contents
 -----------------------------------------------------
-:: Fonts
-:: Variables
 :: Master Layout
 :: Header
 :: Footer
@@ -61,22 +61,11 @@
 
 
 /* -----------------------------------------
-   Fonts
------------------------------------------ */
-
-
-/* -----------------------------------------
-   Variables
------------------------------------------ */
-$euca-footer-height: 80px;
-
-
-/* -----------------------------------------
    Master Layout
 ----------------------------------------- */
 html {
     background-color: #444;
-    border-top: 10px solid #00415e;
+    border-top: 10px solid $euca-dark-blue;
 }
 
 body {

@@ -1,23 +1,28 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
 /* @section Landing pages styles */
 
-$instance-box-row-height: 24px;
-$instance-box-border-color: #999;
+$tile-row-height: 24px;
+$tile-border-color: $euca-dark-blue;
 
 .tile {
     position: relative;
     display: inline-block;
     width: 200px; height: 200px;
-    border: 2px solid $instance-box-border-color;
+    border: 3px solid $tile-border-color;
     margin-right: 10px;
     margin-bottom: 10px;
-    padding-bottom: $instance-box-row-height;
+    padding-bottom: $tile-row-height;
 }
 
 .tile .header {
     position: relative;
     padding: 4px 30px 4px 4px;
-    border-bottom: 1px solid $instance-box-border-color;
-    height: $instance-box-row-height;
+    border-bottom: 1px solid $tile-border-color;
+    height: $tile-row-height;
+    color: #fff;
+    background-color: $euca-dark-blue;
 }
 
 .tile .header strong {
@@ -26,11 +31,11 @@ $instance-box-border-color: #999;
 
 .tile .header .button.dropdown {
     position: absolute;
-    width: 30px; height: $instance-box-row-height;
+    width: 30px; height: $tile-row-height;
     top: 0; right: 0;
     font-size: 1rem;
     padding: 0 0 0 0;
-    border: 1px solid $instance-box-border-color;
+    border: 1px solid $tile-border-color;
     border-top: none;
     border-right: none;
 }
@@ -59,7 +64,7 @@ $instance-box-border-color: #999;
     position: absolute;
     bottom: 0;
     left: 0; right: 0;
-    height: $instance-box-row-height;
+    height: $tile-row-height;
     padding: 4px;
     color: white;
 }
