@@ -8,7 +8,7 @@ $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
 
 .tile {
-    font-size: 0.8125rem;
+    font-size: $euca-font-size;
     position: relative;
     display: inline-block;
     width: 200px; height: 200px;
@@ -46,7 +46,6 @@ $tile-bg-color: $euca-extralightgrey;
     position: relative;
     top: 2px;
 }
-
 
 .tile .header .button.dropdown::before {
     border: none;
