@@ -18,6 +18,6 @@
 # CA 93117, USA or visit http://www.eucalyptus.com/licenses/ if you need
 # additional information or have any questions.
 
-export INI_FILE=production.ini
+export INI_FILE=console.ini
 
 pserve $INI_FILE

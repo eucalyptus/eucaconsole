@@ -9,10 +9,12 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
+    'beaker == 1.6.4',
     'boto == 2.15',
     'chameleon == 2.13-1',
     'deform == 2.0a2',
     'pyramid == 1.5a2',
+    'pyramid_beaker == 0.8',
     'pyramid_chameleon == 0.1',
     'pyramid_debugtoolbar',
     'pyramid_deform == 0.2',
@@ -23,7 +25,7 @@ requires = [
 
 setup(
     name='koala',
-    version='4.0.0',
+    version='4.0.0-prealpha',
     description='Koala, the Eucalyptus Management Console',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
