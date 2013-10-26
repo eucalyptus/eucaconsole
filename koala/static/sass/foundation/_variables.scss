@@ -1,3 +1,5 @@
+@import '../includes/eucavariables';
+
 //
 // Foundation Variables
 //
@@ -1255,7 +1257,7 @@ $default-float: left;
 
 // Background color for the top bar
 
-$topbar-bg-color: #00415e;
+$topbar-bg-color: $euca-green;
 $topbar-bg: $topbar-bg-color;
 
 // Height and margin
@@ -1274,9 +1276,9 @@ $topbar-bg: $topbar-bg-color;
 
 // Style the top bar dropdown elements
 
-$topbar-dropdown-bg: $topbar-bg-color;
+$topbar-dropdown-bg: $euca-green;
 // $topbar-dropdown-link-color: #fff;
-// // $topbar-dropdown-link-bg: lighten($topbar-bg-color, 5%);
+$topbar-dropdown-link-bg: $euca-green;
 // $topbar-dropdown-toggle-size: 5px;
 // $topbar-dropdown-toggle-color: #fff;
 // $topbar-dropdown-toggle-alpha: 0.5;
@@ -1289,7 +1291,7 @@ $topbar-dropdown-bg: $topbar-bg-color;
 // $topbar-link-weight: bold;
 // $topbar-link-font-size: em-calc(13);
 // $topbar-link-hover-lightness: -30%; // Darken by 30%
-// $topbar-link-bg-hover: darken($topbar-bg-color, 3%);
+$topbar-link-bg-hover: $euca-darkgreen;
 // $topbar-link-bg-active: darken($topbar-bg-color, 3%);
 
 // $topbar-dropdown-label-color: #555;

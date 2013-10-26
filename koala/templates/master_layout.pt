@@ -73,7 +73,7 @@
 </nav>
 
 <!-- Main Content -->
-<section class="main" id="main-content" role="content">
+<section class="main" id="maincontent" role="content">
     <div metal:define-slot="main_content"></div>
 </section>
 <!-- End Main Content -->

@@ -1,12 +1,12 @@
 /* @fileOverview Instances landing page CSS */
 /* @section Landing pages styles */
-.tile { position: relative; display: inline-block; width: 200px; height: 200px; border: 3px solid #00415e; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 200px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
 
-.tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #00415e; height: 24px; color: #fff; background-color: #00415e; }
+.tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 
 .tile .header strong { font-weight: normal; }
 
-.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #00415e; border-top: none; border-right: none; }
+.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
 
 .tile .header .button.dropdown i { position: relative; top: 2px; }
 

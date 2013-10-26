@@ -4,13 +4,15 @@
 /* @section Landing pages styles */
 
 $tile-row-height: 24px;
-$tile-border-color: $euca-dark-blue;
+$tile-border-color: $euca-grey;
+$tile-bg-color: $euca-extralightgrey;
 
 .tile {
+    font-size: 0.8125rem;
     position: relative;
     display: inline-block;
     width: 200px; height: 200px;
-    border: 3px solid $tile-border-color;
+    background-color: $tile-bg-color;
     margin-right: 10px;
     margin-bottom: 10px;
     padding-bottom: $tile-row-height;
@@ -21,8 +23,8 @@ $tile-border-color: $euca-dark-blue;
     padding: 4px 30px 4px 4px;
     border-bottom: 1px solid $tile-border-color;
     height: $tile-row-height;
-    color: #fff;
-    background-color: $euca-dark-blue;
+    color: white;
+    background-color: $euca-darkgrey;
 }
 
 .tile .header strong {
