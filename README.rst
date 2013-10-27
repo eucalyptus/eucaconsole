@@ -37,12 +37,41 @@ To set up Compass as the file watcher...
 
 Running the management console
 ==============================
+To run the server, you will need to specify the path to the config file (console.ini).
+Copy the default ini file to the application root.  At the repo root...
 
-`pserve development.ini` runs the console in development mode, `pserve production.ini` in production mode.
+    cp conf/console.default.ini ./console.ini
 
-`launcher.sh` is provided as an alias for `pserve production.ini`
+Then run the server with
 
-To have Pyramid automatically detect modifications, use `pserve development.ini --reload`
+    ./launcher.sh
 
 
+`launcher.sh` is provided as an alias for `pserve console.ini`
+
+
+Running the server in development/debug mode
+--------------------------------------------
+To have Pyramid automatically detect modifications to templates,
+
+1. Change the reload_templates setting to true in console.ini: `pyramid.reload_templates = true`
+2. Run the server with the --reload flag: `pserve console.ini --reload`
+
+The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
+
+    [app:main]
+    # ...
+    pyramid.includes =
+        pyramid_beaker
+        pyramid_chameleon
+        pyramid_debugtoolbar
+        pyramid_layout
+
+You may also find it useful to set the logging level to DEBUG in the console.ini config file...
+
+    [logger_koala]
+    level = DEBUG
+
+The management console assumes an SSL setup. To disable SSL for development purposes, set `session.secure = false`
+in the config file (console.ini)
 
