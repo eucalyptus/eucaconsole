@@ -22,7 +22,7 @@ Pyramid Setup
 Run `python setup.py develop` to set up the development environment.
 This only needs to be run once or when the "requires" package versions in setup.py are modified.
 
-Note: It is strongly recommended the environment be set up in a virtualenv.
+Note: It is strongly recommended to set up the development environment in a virtualenv.
 
 Sass/Compass Setup
 ^^^^^^^^^^^^^^^^^^
@@ -52,7 +52,7 @@ Then run the server with
 
 Running the server in development/debug mode
 --------------------------------------------
-To have Pyramid automatically detect modifications to templates,
+To have Pyramid automatically detect modifications to views and templates,
 
 1. Change the reload_templates setting to true in console.ini: `pyramid.reload_templates = true`
 2. Run the server with the --reload flag: `pserve console.ini --reload`
@@ -74,4 +74,23 @@ You may also find it useful to set the logging level to DEBUG in the console.ini
 
 The management console assumes an SSL setup. To disable SSL for development purposes, set `session.secure = false`
 in the config file (console.ini)
+
+
+Technology Stack
+================
+
+Primary Components
+------------------
+* Pyramid
+* Boto
+* Zurb Foundation
+* AngularJS
+
+Secondary Components
+--------------------
+* Chameleon (server-side templates)
+* pyramid_layout (layout/themes for Pyramid)
+* Deform/Colander (server-side forms and validation)
+* Beaker and pyramid_beaker (server-side cache/sessions)
+* Waitress (WSGI server)
 
