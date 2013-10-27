@@ -53,6 +53,7 @@
 :: Master Layout
 :: Header
 :: Main Content
+:: Forms
 :: Footer
 :: Debug
 
@@ -128,6 +129,30 @@ nav.top-bar .dropdown li a {
     padding-top: 1rem;
 }
 
+
+/* -----------------------------------------
+   Forms
+----------------------------------------- */
+.panel {
+    position: relative;
+    border-width: 0;
+}
+
+.panel .header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: $euca-panel-header-height;
+    padding: 8px;
+    border-top: 4px solid $euca-darkblue;
+    color: $euca-darkblue;
+    background-color: $euca-extralightblue;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.panel.has-header {
+    padding-top: $euca-panel-header-height;
+}
 
 
 /* -----------------------------------------

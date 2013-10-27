@@ -52,10 +52,12 @@ Then run the server with
 
 Running the server in development/debug mode
 --------------------------------------------
-To have Pyramid automatically detect modifications to views and templates,
+To have Pyramid automatically detect modifications to templates and views,
 
 1. Change the reload_templates setting to true in console.ini: `pyramid.reload_templates = true`
 2. Run the server with the --reload flag: `pserve console.ini --reload`
+
+The `--reload` flag instructs Pyramid to automatically watch for changes in the view callables.
 
 The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
 

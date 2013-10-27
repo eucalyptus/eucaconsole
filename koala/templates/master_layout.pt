@@ -40,12 +40,12 @@
 
     <section class="top-bar-section">
         <ul class="resources-nav left-align">
-            <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="#">Dashboard</a></li>
+            <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_url('dashboard')}">Dashboard</a></li>
             <li><a id="resource-menu-image" class="lnk-image" href="#">Images</a></li>
             <li class="has-dropdown">
                 <a id="resource-menu-instance" class="lnk-instance" href="${request.route_url('instances')}">Instances</a>
                 <ul class="dropdown">
-                    <li><a id="resource-menuitem-instance" href="#">Instances</a></li>
+                    <li><a id="resource-menuitem-instance" href="${request.route_url('instances')}">Instances</a></li>
                     <li class="divider"></li>
                     <li><a id="resource-menuitem-scaling" href="#">Auto Scaling Groups</a></li>
                 </ul>
@@ -85,6 +85,10 @@
 
 <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
+<script type="text/javascript">
+    // Initialize all Zurb Foundation components
+    $(document).foundation();
+</script>
 <script>
     // Common app-wide URLs to expose in page-level JS
     // TODO: Move to a macro or an include file
@@ -92,11 +96,7 @@
         'getInstancesJson': '${request.route_url('instances_json')}'
     }
 </script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $(document).foundation();
-    });
-</script>
 <div metal:define-slot="tail_js"></div>
+
 </body>
 </html>
