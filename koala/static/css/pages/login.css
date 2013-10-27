@@ -1,0 +1,23 @@
+/* @fileOverview Login page CSS */
+#maincontent { background: #eaedee url(../../img/main-bgfill.png) repeat left top; }
+
+#login-panel { background-color: white; border-radius: 8px; }
+
+#login-panel { position: relative; padding-top: 80px; box-shadow: 0 3px 6px #999999; }
+
+#login-panel .header { position: absolute; top: 20px; left: -8px; right: -8px; height: 36px; border-radius: 4px; box-shadow: 0 1px 6px rgba(0, 65, 94, 0.7); padding: 8px 0 0 20px; color: #00415e; background-color: #ecf4f7; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+
+#login-panel label { font-weight: bold; white-space: nowrap; vertical-align: middle; position: relative; top: 8px; left: 16px; }
+
+#login-panel input { background-color: #eeeeee; }
+
+#login-panel h6 { font-family: 'Trebuchet MS', Arial, sans-serif; text-transform: uppercase; }
+
+/* --- Media queries
+--------------------
+*/
+/* Medium/large screen */
+@media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; } }
+/* Small screen */
+@media screen and (max-width: 768px) { #login-panel { border-radius: 0; box-shadow: none; padding-top: 46px; border-color: #444444; }
+  #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

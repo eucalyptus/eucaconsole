@@ -113,8 +113,16 @@ body {
     font-weight: normal;
 }
 
+#logobar #user-dropdown {
+    z-index: 999999;
+}
+
 nav.top-bar {
     box-shadow: 0 2px 2px 0 $euca-grey;
+}
+
+nav.top-bar a {
+    text-transform: uppercase;
 }
 
 nav.top-bar .dropdown li a {
@@ -126,33 +134,17 @@ nav.top-bar .dropdown li a {
    Main Content
 ----------------------------------------- */
 #maincontent {
-    padding-top: 1rem;
+    padding: 1rem;
+}
+
+@media screen and (min-width: $topbar-breakpoint) {
+    #maincontent { min-height: 480px; }
 }
 
 
 /* -----------------------------------------
    Forms
 ----------------------------------------- */
-.panel {
-    position: relative;
-    border-width: 0;
-}
-
-.panel .header {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: $euca-panel-header-height;
-    padding: 8px;
-    border-top: 4px solid $euca-darkblue;
-    color: $euca-darkblue;
-    background-color: $euca-extralightblue;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.panel.has-header {
-    padding-top: $euca-panel-header-height;
-}
 
 
 /* -----------------------------------------
@@ -163,7 +155,6 @@ footer {
     height: $euca-footer-height;
     padding: 15px;
     background-color: rgb(51, 51, 51);
-    margin-top: 1rem;
 }
 
 .copyright {

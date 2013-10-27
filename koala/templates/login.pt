@@ -1,29 +1,55 @@
 <metal:block use-macro="main_template">
 
+<div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/login.css')}" />
+</div>
+
 <div metal:fill-slot="main_content">
 
-    <div class="row">
-        <div>&nbsp;</div>
-        <div class="panel has-header">
+    <div class="row" id="login-panel-wrapper">
+        <div class="panel has-header" id="login-panel">
             <div class="header">Log in to your console</div>
             <div class="row">
-                <div class="large-6 columns">
+                <div class="large-5 columns">
+                    <h6>Log in to Eucalyptus</h6>
                     <form class="custom">
                         <div class="row">
-                            <div class="small-8">
-                                <div class="row">
-                                    <div class="small-3 columns">
-                                        <label for="right-label" class="right">Account name</label>
-                                    </div>
-                                    <div class="small-9 columns">
-                                        <input type="text" id="right-label" placeholder="user@sample-account">
-                                    </div>
-                                </div>
+                            <div class="small-4 columns">
+                                <label for="right-label" class="right">Account name</label>
+                            </div>
+                            <div class="small-8 columns">
+                                <input type="text" id="right-label" name="account_name" placeholder="user@sample-account">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">
+                                <label for="right-label" class="right">Username</label>
+                            </div>
+                            <div class="small-8 columns">
+                                <input type="text" id="right-label" name="username">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">
+                                <label for="right-label" class="right">Password</label>
+                            </div>
+                            <div class="small-8 columns">
+                                <input type="password" id="right-label" name="password">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">
+                            </div>
+                            <div class="small-8 columns">
+                                <button type="submit" class="button">Log in to Eucalyptus</button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="large-6 columns">
+                <div class="large-2 columns">
+                    <div class="or">or</div>
+                </div>
+                <div class="large-5 columns">
                 </div>
             </div>
         </div>
