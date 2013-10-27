@@ -11,13 +11,14 @@
 
 #login-panel input { background-color: #eeeeee; }
 
-#login-panel h6 { font-family: 'Trebuchet MS', Arial, sans-serif; text-transform: uppercase; }
+#login-panel h6 { font-family: "Trebuchet MS", "Droid Sans", "OpenSans", "Helvetica Nueue", Helvetica, sans-serif; text-transform: uppercase; margin: 1.5rem 0; }
 
 /* --- Media queries
 --------------------
 */
 /* Medium/large screen */
-@media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; } }
+@media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
+  #login-panel h6 { padding-left: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 768px) { #login-panel { border-radius: 0; box-shadow: none; padding-top: 46px; border-color: #444444; }
   #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

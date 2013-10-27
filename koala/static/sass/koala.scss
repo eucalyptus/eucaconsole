@@ -138,6 +138,7 @@ nav.top-bar .dropdown li a {
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
+    #login-panel { margin-bottom: 5rem; }
     #maincontent { min-height: 480px; }
 }
 

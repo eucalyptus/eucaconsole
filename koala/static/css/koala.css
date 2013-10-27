@@ -1357,7 +1357,8 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 ----------------------------------------- */
 #maincontent { padding: 1rem; }
 
-@media screen and (min-width: 768px) { #maincontent { min-height: 480px; } }
+@media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
+  #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 /* ----------------------------------------- Footer

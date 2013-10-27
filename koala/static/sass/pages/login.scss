@@ -48,8 +48,9 @@ $euca-login-panel-header-height: 36px;
 }
 
 #login-panel h6 {
-    font-family: 'Trebuchet MS', Arial, sans-serif;
+    font-family: $euca-header-font;
     text-transform: uppercase;
+    margin: 1.5rem 0;
 }
 
 
@@ -59,9 +60,8 @@ $euca-login-panel-header-height: 36px;
 
 /* Medium/large screen */
 @media screen and (min-width: $topbar-breakpoint) {
-    #login-panel-wrapper {
-        margin-top: 4rem;
-    }
+    #login-panel-wrapper { margin-top: 4rem; }
+    #login-panel h6 { padding-left: 1rem; }
 }
 
 /* Small screen */
