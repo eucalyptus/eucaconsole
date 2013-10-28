@@ -13,6 +13,8 @@
 
 #login-panel h6 { font-family: "Trebuchet MS", "Droid Sans", "OpenSans", "Helvetica Nueue", Helvetica, sans-serif; text-transform: uppercase; margin: 1.5rem 0; }
 
+#login-panel.hide-aws { max-width: 480px; margin: 0 auto; }
+
 button#aws-login-button.button { background-color: #ff9900; border-color: #e37800; }
 
 /* --- Media queries

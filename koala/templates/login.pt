@@ -7,10 +7,10 @@
 <div metal:fill-slot="main_content">
 
     <div class="row" id="login-panel-wrapper">
-        <div class="panel has-header" id="login-panel">
+        <div class="panel has-header ${'hide-aws' if not aws_enabled else ''}" id="login-panel">
             <div class="header">Log in to your console</div>
             <div class="row">
-                <div class="large-5 columns">
+                <div class="${'large-5' if aws_enabled else 'large-12'} columns">
                     <h6>Log in to Eucalyptus</h6>
                     <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}">
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
@@ -35,10 +35,10 @@
                         </div>
                     </form>
                 </div>
-                <div class="large-1 columns">
+                <div class="large-1 columns" tal:condition="aws_enabled">
                     <div class="or"></div>
                 </div>
-                <div class="large-6 columns">
+                <div class="large-6 columns" tal:condition="aws_enabled">
                     <h6>Log in to AWS</h6>
                     <form class="custom" id="aws-login-form" method="post" action="${request.route_url('login')}">
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">

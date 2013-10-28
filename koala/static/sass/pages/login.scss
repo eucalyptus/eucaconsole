@@ -53,6 +53,12 @@ $euca-login-panel-header-height: 36px;
     margin: 1.5rem 0;
 }
 
+#login-panel.hide-aws {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+
 button#aws-login-button.button {
     background-color: $aws-orange;
     border-color: #e37800;

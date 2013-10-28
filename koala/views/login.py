@@ -3,6 +3,7 @@ Pyramid views for Login/Logout
 
 """
 from pyramid.httpexceptions import HTTPFound
+from pyramid.settings import asbool
 from pyramid.view import view_config
 
 from ..forms.login import EucaLoginForm, AWSLoginForm
@@ -15,12 +16,14 @@ class LoginView(object):
         self.request = request
         self.euca_login_form = EucaLoginForm(self.request)
         self.aws_login_form = AWSLoginForm(self.request)
+        self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
 
     @view_config(route_name='login', request_method='GET', renderer=template)
     def login_page(self):
         return dict(
             euca_login_form=self.euca_login_form,
             aws_login_form=self.aws_login_form,
+            aws_enabled=self.aws_enabled,
         )
 
     @view_config(route_name='login', request_method='POST', renderer=template)
