@@ -8,10 +8,10 @@ The Eucalyptus Management Console is a web-based interface to a local Eucalyptus
 AWS Services supported
 ======================
 
-* Auto Scaling
 * EC2
-* Elastic Load Balancing (ELB)
+* Auto Scaling
 * CloudWatch
+* IAM
 
 
 Development environment setup
@@ -46,10 +46,13 @@ Copy the default ini file to the application root.  At the repo root...
 
     cp conf/console.default.ini ./console.ini
 
-Then run the server with
+The default settings assume an SSL environment.  To disable SSL, set session.secure to false in console.ini
+
+    session.secure = false
+
+Run the server with
 
     ./launcher.sh
-
 
 `launcher.sh` is provided as an alias for `pserve console.ini`
 

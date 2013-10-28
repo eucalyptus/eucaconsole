@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="large-5 columns">
                     <h6>Log in to Eucalyptus</h6>
-                    <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}" data-abide="abide">
+                    <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}">
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                             <div class="small-4 columns">
                                 <label for="right-label" class="right">${field.label.text}</label>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="large-6 columns">
                     <h6>Log in to AWS</h6>
-                    <form class="custom" id="aws-login-form" method="post" action="${request.route_url('login')}" data-abide="abide">
+                    <form class="custom" id="aws-login-form" method="post" action="${request.route_url('login')}">
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                             <div class="small-4 columns">
                                 <label for="right-label" class="right">${field.label.text}</label>
