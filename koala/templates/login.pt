@@ -13,11 +13,11 @@
                 <div class="large-5 columns">
                     <h6>Log in to Eucalyptus</h6>
                     <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}" data-abide="abide">
-                        <div class="row field-wrapper" tal:repeat="field form">
+                        <div class="row controls-wrapper controls_${field.name}" tal:repeat="field form">
                             <div class="small-4 columns">
                                 <label for="right-label" class="right">${field.label.text}</label>
                             </div>
-                            <div class="small-8 columns">
+                            <div class="small-8 columns field">
                                 ${structure:field}
                                 <div tal:condition="field.errors" class="server-validation">
                                     <span class="error" tal:repeat="error field.errors">
