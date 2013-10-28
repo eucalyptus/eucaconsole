@@ -92,7 +92,7 @@ Secondary Components
 --------------------
 * Chameleon (server-side templates)
 * pyramid_layout (layout/themes for Pyramid)
-* Deform/Colander (server-side forms and validation)
+* WTForms (server-side forms and validation)
 * Beaker and pyramid_beaker (server-side cache/sessions)
 * Waitress (WSGI server)
 

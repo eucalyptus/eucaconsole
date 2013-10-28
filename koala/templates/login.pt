@@ -12,29 +12,18 @@
             <div class="row">
                 <div class="large-5 columns">
                     <h6>Log in to Eucalyptus</h6>
-                    <form class="custom">
-                        <div class="row">
+                    <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}" data-abide="abide">
+                        <div class="row field-wrapper" tal:repeat="field form">
                             <div class="small-4 columns">
-                                <label for="right-label" class="right">Account name</label>
+                                <label for="right-label" class="right">${field.label.text}</label>
                             </div>
                             <div class="small-8 columns">
-                                <input type="text" id="right-label" name="account_name" placeholder="user@sample-account">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns">
-                                <label for="right-label" class="right">Username</label>
-                            </div>
-                            <div class="small-8 columns">
-                                <input type="text" id="right-label" name="username">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns">
-                                <label for="right-label" class="right">Password</label>
-                            </div>
-                            <div class="small-8 columns">
-                                <input type="password" id="right-label" name="password">
+                                ${structure:field}
+                                <div tal:condition="field.errors" class="server-validation">
+                                    <span class="error" tal:repeat="error field.errors">
+                                        ${error}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div class="row">

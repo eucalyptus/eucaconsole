@@ -146,6 +146,17 @@ nav.top-bar .dropdown li a {
 /* -----------------------------------------
    Forms
 ----------------------------------------- */
+form .row input {
+    margin: 0 0 0 0;
+}
+
+form .row.field-wrapper {
+    margin-bottom: 1rem;
+}
+
+form .server-validation span.error {
+    display: block !important;
+}
 
 
 /* -----------------------------------------

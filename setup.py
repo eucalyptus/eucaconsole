@@ -12,16 +12,15 @@ requires = [
     'beaker == 1.6.4',
     'boto == 2.15',
     'chameleon == 2.13-1',
-    'deform == 2.0a2',
     'pycrypto == 2.6.1',
     'pyramid == 1.5a2',
     'pyramid_beaker == 0.8',
     'pyramid_chameleon == 0.1',
     'pyramid_debugtoolbar',
-    'pyramid_deform == 0.2',
     'pyramid_layout == 0.8',
     'simplejson == 3.3.1',
     'waitress == 0.8.7',
+    'WTForms == 1.0.5',
 ]
 
 setup(

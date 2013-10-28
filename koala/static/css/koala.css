@@ -1361,6 +1361,12 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Forms
 ----------------------------------------- */
+form .row input { margin: 0 0 0 0; }
+
+form .row.field-wrapper { margin-bottom: 1rem; }
+
+form .server-validation span.error { display: block !important; }
+
 /* ----------------------------------------- Footer
 ----------------------------------------- */
 footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
