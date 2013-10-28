@@ -71,8 +71,9 @@ The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the a
 
 You may also find it useful to set the logging level to DEBUG in the console.ini config file...
 
-    [logger_koala]
-    level = DEBUG
+    [logger_root]
+    # ...
+    handlers = logfile, screen_debug
 
 The management console assumes an SSL setup. To disable SSL for development purposes, set `session.secure = false`
 in the config file (console.ini)
