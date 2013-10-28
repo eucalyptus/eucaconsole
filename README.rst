@@ -34,6 +34,10 @@ To set up Compass as the file watcher...
     cd koala/static
     compass watch .
 
+Once you have installed compass, there's a handy shortcut to enable the watcher.  From the repo root...
+
+    make watch
+
 
 Running the management console
 ==============================

@@ -53,6 +53,11 @@ $euca-login-panel-header-height: 36px;
     margin: 1.5rem 0;
 }
 
+button#aws-login-button.button {
+    background-color: $aws-orange;
+    border-color: #e37800;
+}
+
 
 /* --- Media queries
 --------------------
@@ -70,7 +75,6 @@ $euca-login-panel-header-height: 36px;
         border-radius: 0;
         box-shadow: none;
         padding-top: $euca-login-panel-header-height + 10px;
-        border-color: $euca-darkgrey;
     }
     #login-panel .header {
         border-radius: 0;
