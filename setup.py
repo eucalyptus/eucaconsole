@@ -9,9 +9,11 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
+    'Babel == 1.3',
     'beaker == 1.6.4',
     'boto == 2.15',
     'chameleon == 2.13-1',
+    'lingua == 1.5',
     'pycrypto == 2.6.1',
     'pyramid == 1.5a2',
     'pyramid_beaker == 0.8',
@@ -22,6 +24,11 @@ requires = [
     'waitress == 0.8.7',
     'WTForms == 1.0.5',
 ]
+
+message_extractors = {'.': [
+    ('**.py', 'lingua_python', None),
+    ('**.pt', 'lingua_xml', None),
+]}
 
 setup(
     name='koala',
@@ -43,6 +50,7 @@ setup(
     zip_safe=False,
     install_requires=requires,
     tests_require=requires,
+    message_extractors=message_extractors,
     test_suite="koala",
     entry_points="""\
     [paste.app_factory]
