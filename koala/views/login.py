@@ -63,6 +63,7 @@ class LoginView(object):
         return dict(
             euca_login_form=euca_login_form,
             aws_login_form=aws_login_form,
+            aws_enabled=self.aws_enabled,
         )
 
 
