@@ -8,9 +8,8 @@
     <div class="row" id="dashboard">
         <div class="large-3 columns">
             <div class="panel" id="instances">
-                <h5 class="subheader">Instances</h5>
-                <div class="tile" id="running-instances">
-                    <h6 class="subheader">Running</h6>
+                <div class="tile" id="running">
+                    <h5 class="subheader">Running instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}">
                             <i class="fi-cloud icon"><em>5</em></i>
@@ -20,14 +19,22 @@
                         <a class="button" href="#">Launch Instance</a>
                     </div>
                 </div>
-                <div class="tile" id="stopped-instances">
-                    <h6 class="subheader">Stopped</h6>
-                    <div class="content"></div>
+                <div class="tile" id="stopped">
+                    <h5 class="subheader">Stopped</h5>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-cloud icon"><em>3</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
-                <div class="tile" id="scalinggroup-instances">
-                    <h6 class="subheader">In scaling groups</h6>
-                    <div class="content"></div>
+                <div class="tile" id="in-scaling-group">
+                    <h5 class="subheader">In scaling groups</h5>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-cloud icon"><em>4</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
             </div>
@@ -36,12 +43,20 @@
             <div class="panel row" id="volumes-snapshots">
                 <div class="tile small-6 columns" id="volumes">
                     <h5 class="subheader">Volumes</h5>
-                    <div class="content"></div>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-list icon"><em>4</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
                 <div class="tile small-6 columns" id="snapshots">
                     <h5 class="subheader">Snapshots</h5>
-                    <div class="content"></div>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-list icon"><em>9</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
             </div>
@@ -68,21 +83,33 @@
             <div class="panel row">
                 <div class="tile small-6 columns" id="security-groups">
                     <h5 class="subheader">Security groups</h5>
-                    <div class="content"></div>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-lock icon"><em>2</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
                 <div class="tile small-6 columns" id="key-pairs">
                     <h5 class="subheader">Key pairs</h5>
-                    <div class="content"></div>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-key icon"><em>12</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
             </div>
         </div>
         <div class="large-3 columns">
-            <div class="panel" id="elastic-ips-panel">
-                <h5 class="subheader">Elastic IPs</h5>
-                <div class="tile" id="elastic-ips">
-                    <div class="content"></div>
+            <div class="panel" id="elastic-ips">
+                <div class="tile">
+                    <h5 class="subheader">Elastic IPs</h5>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-thumbnails icon"><em>12</em></i>
+                        </a>
+                    </div>
                     <div class="footer"></div>
                 </div>
             </div>

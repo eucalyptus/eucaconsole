@@ -2,11 +2,15 @@
 @import "../foundation/variables";
 @import "../includes/eucavariables";
 
-$dashboard-panel-bottom-margin: 14px;
+$dashboard-panel-bottom-margin: 1.25rem;
 $dashboard-panel-tile-height: 200px;
 $dashboard-panel-padding: 4px;
-$notifications-log-height: 446px;
+$notifications-log-height: 436px;
 
+#maincontent {
+    background: #eaedee url(../../img/main-bgfill.png) repeat left top;
+    padding-top: 1.5rem;
+}
 
 .large-3.columns .tile {
     margin-bottom: 10px;
@@ -19,7 +23,7 @@ $notifications-log-height: 446px;
 .panel {
     position: relative;
     padding: $dashboard-panel-padding;
-    border: 4px solid $euca-extralightgrey;
+    border: none;
     background-color: white;
     font-size: 0.825rem;
 }
@@ -30,27 +34,31 @@ $notifications-log-height: 446px;
     padding-bottom: 30px;
 }
 
-.panel .tile .icon {
-    position: absolute;
-    top: 20%; left: 30%;
-    color: lighten($euca-lightgreen, 20%);
-    font-size: 5rem !important;
-}
 
 .panel .tile .icon {
-    position: relative;
+    position: absolute;
+    top: 20%; left: 20%;
+    display: inline-block;
+    width: 120px; height: 120px;
+    border-radius: 100px;
+    text-align: center;
+    background: lighten($euca-extralightgrey, 2%);
+    color: lighten($euca-lightgreen, 20%);
+    font-size: 5rem;
 }
 
 .panel .tile .icon em {
+    font-size: 4rem;
     position: absolute;
-    left: 20%;
+    bottom: 15%; left: 0; right: 0;
+    text-align: center;
     color: $euca-darkgreen;
 }
 
 .panel .tile .footer {
     position: absolute;
     height: 30px;
-    left: 0; right: 0; bottom: 20px;
+    left: 0; right: 0; bottom: 0;
 }
 
 .panel .tile .footer .button {
@@ -58,18 +66,35 @@ $notifications-log-height: 446px;
     border: none;
 }
 
+#instances #running.tile .icon {
+    top: 15%;
+}
+
+#instances #running.tile .icon em {
+    font-size: 5rem;
+}
+
+#instances #stopped.tile .icon {
+    color: lightpink;
+}
+
+#instances #stopped.tile .icon em {
+    color: indianred;
+}
 
 #instances.panel .tile {
     border-bottom: 2px solid $euca-lightgrey;
+    margin-bottom: 28px;
 }
 
 #instances.panel .tile:last-child {
     border-bottom: none;
+    margin-bottom: 0;
 }
 
-#elastic-ips-panel {
+#elastic-ips.panel {
     margin-bottom: $dashboard-panel-bottom-margin;
-    max-height: 216px;
+    max-height: 208px;
 }
 
 #elastic-ips-panel .tile {
@@ -81,15 +106,6 @@ $notifications-log-height: 446px;
     overflow: scroll-y;
 }
 
-#groups.tile .icon em {
-    font-size: 4rem;
-    top: 40%; left: 25%;
-}
-
-#users.tile .icon em {
-    font-size: 3rem;
-    top: 50%; left: 5%;
-}
 
 
 
