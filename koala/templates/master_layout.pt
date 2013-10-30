@@ -19,7 +19,6 @@
 </head>
 
 <body>
-
 <nav id="logobar" class="top-bar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section class="user-dropdown">
@@ -32,7 +31,7 @@
     </section>
 </nav>
 
-<nav class="top-bar">
+<nav class="top-bar" tal:condition="request.session.get('auth.userid')">
     <ul class="title-area">
         <li class="name"></li>
         <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>

@@ -7,7 +7,7 @@
 
 .panel { position: relative; padding: 4px; border: none; background-color: white; font-size: 0.825rem; }
 
-.panel .tile { position: relative; height: 200px; padding-bottom: 30px; }
+.panel .tile { position: relative; height: 200px; }
 
 .panel .tile .icon { position: absolute; top: 20%; left: 20%; display: inline-block; width: 120px; height: 120px; border-radius: 100px; text-align: center; background: #f3f3f3; color: #bcdd8f; font-size: 5rem; }
 
