@@ -3,6 +3,8 @@
 
 .large-3.columns .tile { margin-bottom: 10px; }
 
+.large-3.columns .subheader { padding-left: 10px; }
+
 .large-6.columns .row { margin-bottom: 1.25rem; }
 
 .panel { position: relative; padding: 4px; border: none; background-color: white; font-size: 0.825rem; }
@@ -36,4 +38,7 @@
 #notifications-log { height: 436px; overflow: scroll-y; }
 
 /* Small screen */
-@media screen and (max-width: 768px) { .large-3.columns { padding-left: 4px; padding-right: 4px; } }
+@media screen and (max-width: 768px) { .large-3.columns { padding-left: 4px; padding-right: 4px; }
+  .large-3.columns .tile { display: inline-block; min-width: 32%; }
+  .large-3.columns #instances .tile { border-bottom: none; } }
+@media screen and (max-width: 480px) { .large-3.columns .tile { display: block; } }

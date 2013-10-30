@@ -16,6 +16,10 @@ $notifications-log-height: 436px;
     margin-bottom: 10px;
 }
 
+.large-3.columns .subheader {
+    padding-left: 10px;
+}
+
 .large-6.columns .row {
     margin-bottom: $dashboard-panel-bottom-margin;
 }
@@ -117,5 +121,18 @@ $notifications-log-height: 436px;
     .large-3.columns {
         padding-left: $dashboard-panel-padding;
         padding-right: $dashboard-panel-padding;
+    }
+    .large-3.columns .tile {
+        display: inline-block;
+        min-width: 32%;
+    }
+    .large-3.columns #instances .tile {
+        border-bottom: none;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .large-3.columns .tile {
+        display: block;
     }
 }
