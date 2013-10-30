@@ -20,6 +20,7 @@ Route = namedtuple('Route', ['name', 'pattern'])
 urls = [
     Route(name='dashboard', pattern='/'),
     Route(name='login', pattern='/login'),
+    Route(name='logout', pattern='/logout'),
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
 ]

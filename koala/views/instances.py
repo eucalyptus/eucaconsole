@@ -12,7 +12,7 @@ class InstancesView(object):
         self.request = request
         self.instances = Instance.fakeall()
 
-    @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
+    @view_config(route_name='instances', renderer='../templates/instances/instances.pt', permission='view')
     def instances_landing(self):
         return dict(instances=self.instances)
 

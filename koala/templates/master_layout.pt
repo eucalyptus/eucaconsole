@@ -27,7 +27,7 @@
            class="small secondary button dropdown">admin@ui-test-acct-01</a>
         <ul id="user-dropdown" class="f-dropdown">
             <li><a href="#">Change password</a></li>
-            <li><a href="#">Logout</a></li>
+            <li><a href="${request.route_url('logout')}">Logout</a></li>
         </ul>
     </section>
 </nav>
