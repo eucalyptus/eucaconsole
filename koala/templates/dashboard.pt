@@ -1,3 +1,96 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/dashboard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="dashboard">
+        <div class="large-3 columns">
+            <div class="panel" id="instances">
+                <h5 class="subheader">Instances</h5>
+                <div class="tile" id="running-instances">
+                    <h6 class="subheader">Running</h6>
+                    <div class="content">
+                        <a href="${request.route_url('instances')}">
+                            <i class="fi-cloud icon"><em>5</em></i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a class="button" href="#">Launch Instance</a>
+                    </div>
+                </div>
+                <div class="tile" id="stopped-instances">
+                    <h6 class="subheader">Stopped</h6>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+                <div class="tile" id="scalinggroup-instances">
+                    <h6 class="subheader">In scaling groups</h6>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="large-6 columns">
+            <div class="panel row" id="volumes-snapshots">
+                <div class="tile small-6 columns" id="volumes">
+                    <h5 class="subheader">Volumes</h5>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+                <div class="tile small-6 columns" id="snapshots">
+                    <h5 class="subheader">Snapshots</h5>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+            <div class="panel row" id="users-groups">
+                <div class="tile small-6 columns" id="groups">
+                    <h5 class="subheader">Groups</h5>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-torsos-all icon"><em>3</em></i>
+                        </a>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+                <div class="tile small-6 columns" id="users">
+                    <h5 class="subheader">Users</h5>
+                    <div class="content">
+                        <a href="#">
+                            <i class="fi-torso icon"><em>24</em></i>
+                        </a>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+            <div class="panel row">
+                <div class="tile small-6 columns" id="security-groups">
+                    <h5 class="subheader">Security groups</h5>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+                <div class="tile small-6 columns" id="key-pairs">
+                    <h5 class="subheader">Key pairs</h5>
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="large-3 columns">
+            <div class="panel" id="elastic-ips-panel">
+                <h5 class="subheader">Elastic IPs</h5>
+                <div class="tile" id="elastic-ips">
+                    <div class="content"></div>
+                    <div class="footer"></div>
+                </div>
+            </div>
+            <div class="panel" id="notifications-log">
+                <h5 class="subheader">Log</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
 </metal:block>

@@ -46,6 +46,7 @@ class LoginView(object):
         if login_type == 'Eucalyptus':
             euca_login_form = EucaLoginForm(self.request, formdata=self.request.POST)
             if euca_login_form.validate():
+                session['aws_login'] = False
                 return dict()
         elif login_type == 'AWS':
             aws_login_form = AWSLoginForm(self.request, formdata=self.request.POST)

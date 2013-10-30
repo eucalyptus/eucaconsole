@@ -17,9 +17,6 @@
 
 button#aws-login-button.button { background-color: #ff9900; border-color: #e37800; }
 
-/* --- Media queries
---------------------
-*/
 /* Medium/large screen */
 @media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }

@@ -1,0 +1,35 @@
+/* @fileOverview Dashboard CSS */
+.large-3.columns .tile { margin-bottom: 10px; }
+
+.large-6.columns .row { margin-bottom: 14px; }
+
+.panel { position: relative; padding: 4px; border: 4px solid #eeeeee; background-color: white; font-size: 0.825rem; }
+
+.panel .tile { position: relative; height: 200px; padding-bottom: 30px; }
+
+.panel .tile .icon { position: absolute; top: 20%; left: 30%; color: #bcdd8f; font-size: 5rem !important; }
+
+.panel .tile .icon { position: relative; }
+
+.panel .tile .icon em { position: absolute; left: 20%; color: #468400; }
+
+.panel .tile .footer { position: absolute; height: 30px; left: 0; right: 0; bottom: 20px; }
+
+.panel .tile .footer .button { display: block; border: none; }
+
+#instances.panel .tile { border-bottom: 2px solid #cccccc; }
+
+#instances.panel .tile:last-child { border-bottom: none; }
+
+#elastic-ips-panel { margin-bottom: 14px; max-height: 216px; }
+
+#elastic-ips-panel .tile { height: 180px; }
+
+#notifications-log { height: 446px; overflow: scroll-y; }
+
+#groups.tile .icon em { font-size: 4rem; top: 40%; left: 25%; }
+
+#users.tile .icon em { font-size: 3rem; top: 50%; left: 5%; }
+
+/* Small screen */
+@media screen and (max-width: 768px) { .large-3.columns { padding-left: 4px; padding-right: 4px; } }

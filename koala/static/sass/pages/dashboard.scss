@@ -1,0 +1,106 @@
+/* @fileOverview Dashboard CSS */
+@import "../foundation/variables";
+@import "../includes/eucavariables";
+
+$dashboard-panel-bottom-margin: 14px;
+$dashboard-panel-tile-height: 200px;
+$dashboard-panel-padding: 4px;
+$notifications-log-height: 446px;
+
+
+.large-3.columns .tile {
+    margin-bottom: 10px;
+}
+
+.large-6.columns .row {
+    margin-bottom: $dashboard-panel-bottom-margin;
+}
+
+.panel {
+    position: relative;
+    padding: $dashboard-panel-padding;
+    border: 4px solid $euca-extralightgrey;
+    background-color: white;
+    font-size: 0.825rem;
+}
+
+.panel .tile {
+    position: relative;
+    height: $dashboard-panel-tile-height;
+    padding-bottom: 30px;
+}
+
+.panel .tile .icon {
+    position: absolute;
+    top: 20%; left: 30%;
+    color: lighten($euca-lightgreen, 20%);
+    font-size: 5rem !important;
+}
+
+.panel .tile .icon {
+    position: relative;
+}
+
+.panel .tile .icon em {
+    position: absolute;
+    left: 20%;
+    color: $euca-darkgreen;
+}
+
+.panel .tile .footer {
+    position: absolute;
+    height: 30px;
+    left: 0; right: 0; bottom: 20px;
+}
+
+.panel .tile .footer .button {
+    display: block;
+    border: none;
+}
+
+
+#instances.panel .tile {
+    border-bottom: 2px solid $euca-lightgrey;
+}
+
+#instances.panel .tile:last-child {
+    border-bottom: none;
+}
+
+#elastic-ips-panel {
+    margin-bottom: $dashboard-panel-bottom-margin;
+    max-height: 216px;
+}
+
+#elastic-ips-panel .tile {
+    height: $dashboard-panel-tile-height - 20px;
+}
+
+#notifications-log {
+    height: $notifications-log-height;
+    overflow: scroll-y;
+}
+
+#groups.tile .icon em {
+    font-size: 4rem;
+    top: 40%; left: 25%;
+}
+
+#users.tile .icon em {
+    font-size: 3rem;
+    top: 50%; left: 5%;
+}
+
+
+
+// --- Media queries
+// --------------------
+//
+
+/* Small screen */
+@media screen and (max-width: $topbar-breakpoint) {
+    .large-3.columns {
+        padding-left: $dashboard-panel-padding;
+        padding-right: $dashboard-panel-padding;
+    }
+}
