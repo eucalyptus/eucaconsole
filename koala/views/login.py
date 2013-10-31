@@ -24,6 +24,11 @@ class LoginView(object):
         self.euca_login_form = EucaLoginForm(self.request)
         self.aws_login_form = AWSLoginForm(self.request)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
+        referrer = self.request.url
+        login_url = self.request.route_url('login')
+        if referrer == login_url:
+            referrer = '/'  # never use the login form itself as came_from
+        self.came_from = self.request.params.get('came_from', referrer)
 
     @view_config(route_name='login', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
     @forbidden_view_config(request_method='GET', renderer=template)
@@ -32,6 +37,7 @@ class LoginView(object):
             euca_login_form=self.euca_login_form,
             aws_login_form=self.aws_login_form,
             aws_enabled=self.aws_enabled,
+            came_from=self.came_from,
         )
 
     @view_config(route_name='login', request_method='POST', renderer=template, permission=NO_PERMISSION_REQUIRED)
@@ -58,12 +64,12 @@ class LoginView(object):
                 session['aws_secret_key'] = aws_secret_key
                 # TODO: Authenticate credentials with AWS
                 headers = remember(self.request, aws_access_key)
-                url = self.request.route_url('dashboard')
-                return HTTPFound(location=url, headers=headers)
+                return HTTPFound(location=self.came_from, headers=headers)
         return dict(
             euca_login_form=euca_login_form,
             aws_login_form=aws_login_form,
             aws_enabled=self.aws_enabled,
+            came_from=self.came_from,
         )
 
 

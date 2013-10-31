@@ -37,6 +37,9 @@ $notifications-log-height: 436px;
     height: $dashboard-panel-tile-height;
 }
 
+.panel .tile a:hover .icon {
+    background-color: lighten($euca-lightgreen, 35%);
+}
 
 .panel .tile .icon {
     position: absolute;

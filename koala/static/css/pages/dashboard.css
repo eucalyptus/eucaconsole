@@ -11,6 +11,8 @@
 
 .panel .tile { position: relative; height: 200px; }
 
+.panel .tile a:hover .icon { background-color: #dfefc9; }
+
 .panel .tile .icon { position: absolute; top: 20%; left: 20%; display: inline-block; width: 120px; height: 120px; border-radius: 100px; text-align: center; background: #f3f3f3; color: #bcdd8f; font-size: 5rem; }
 
 .panel .tile .icon em { font-size: 4rem; position: absolute; bottom: 15%; left: 0; right: 0; text-align: center; color: #468400; }
