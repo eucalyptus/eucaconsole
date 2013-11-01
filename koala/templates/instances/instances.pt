@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" ng-app="InstancesLandingPage">
-        <div class="large-3 columns" id="instances-filter">
+        <h3 class="pageheader">Instances</h3>
+        <div class="large-2 columns" id="instances-filter">
             <div>&nbsp;</div>
             <h6>Filters</h6>
             <div>&nbsp;</div>
@@ -24,8 +25,33 @@
             </form>
         </div>
 
-        <div class="large-9 columns" id="instances" ng-controller="InstancesCtrl" ng-init="getInstances()">
-            <h3>Instances</h3>
+        <div class="large-10 columns" id="instances" ng-controller="InstancesCtrl" ng-init="getInstances()">
+            <div class="row sort-search">
+                <div class="small-5 columns">
+                    Sort by
+                    <a href="#" data-dropdown="sorting-dropdown">Launch time (most recent first)</a>
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
+                        <li><a href="#">This is a link</a></li>
+                        <li><a href="#">This is another</a></li>
+                        <li><a href="#">Yet another</a></li>
+                    </ul>
+                </div>
+                <div class="small-4 columns" class="search-filter">
+                    <form class="custom" ng-submit="searchFilterInstances()">
+                        <div class="row collapse">
+                            <div class="small-10 columns">
+                                <input type="search" ng-model="searchFilter" id="search-filter" placeholder="filter..." />
+                            </div>
+                            <div class="small-2 columns">
+                                <button class="button secondary postfix">Go</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="small-3 columns right" ng-show="!instancesLoading" ng-cloak="cloak">
+                    {{ instances.length }} instances found
+                </div>
+            </div>
             <div ng-show="instancesLoading">Loading...</div>
             <div class="tile instance" ng-repeat="instance in instances" ng-cloak="true">
                 <div class="header">

@@ -19,3 +19,8 @@ $instance-status-color-terminating: lightgrey;
 .tile.instance .status.terminating { background-color: $instance-status-color-terminating; }
 
 
+#maincontent .large-10.columns {
+    padding-left: 0;
+    padding-right: 0;
+}
+

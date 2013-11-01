@@ -3,6 +3,8 @@
 
 /* @section Landing pages styles */
 
+$tile-width: 198px;
+$tile-height: 200px;
 $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
@@ -11,7 +13,7 @@ $tile-bg-color: $euca-extralightgrey;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
-    width: 200px; height: 200px;
+    width: $tile-width; height: $tile-height;
     background-color: $tile-bg-color;
     margin-right: 10px;
     margin-bottom: 10px;
@@ -68,4 +70,8 @@ $tile-bg-color: $euca-extralightgrey;
     height: $tile-row-height;
     padding: 4px;
     color: white;
+}
+
+.sort-search form {
+    margin-bottom: 0;
 }

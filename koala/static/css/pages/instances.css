@@ -1,6 +1,6 @@
 /* @fileOverview Instances landing page CSS */
 /* @section Landing pages styles */
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 200px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 198px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
 
 .tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 
@@ -18,6 +18,8 @@
 
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
 
+.sort-search form { margin-bottom: 0; }
+
 .tile.instance .status.running { background-color: green; }
 
 .tile.instance .status.pending { background-color: lightgreen; }
@@ -29,3 +31,5 @@
 .tile.instance .status.terminated { background-color: gray; }
 
 .tile.instance .status.terminating { background-color: lightgrey; }
+
+#maincontent .large-10.columns { padding-left: 0; padding-right: 0; }
