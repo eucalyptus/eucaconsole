@@ -8,7 +8,7 @@ angular.module('InstancesLandingPage', [])
     .controller('InstancesCtrl', function ($scope, $http) {
         $scope.instances = [];
         $scope.unfilteredInstances = [];
-        $scope.sortBy = '-created_date';
+        $scope.sortBy = '-launch_time';
         $scope.getInstances = function() {
             var url = window.URLS.getInstancesJson;
             $scope.instancesLoading = true;
@@ -25,7 +25,7 @@ angular.module('InstancesLandingPage', [])
             var filterText = $scope.searchFilter;
             var filterProps = [
                 "status", "instance_name", "instance_type", "availability_zone",
-                "security_group", "instance_id", "created_date"
+                "security_group", "instance_id", "launch_time"
             ];
             // Leverage Array.prototype.filter (ECMAScript 5)
             var filteredInstances = $scope.instances.filter(function(item) {

@@ -12,17 +12,17 @@
         </div>
 
         <div class="large-10 columns datagrid" id="instances" ng-controller="InstancesCtrl" ng-init="getInstances()">
-            <div class="row sort-search">
+            <div class="row sort-search" ng-cloak="cloak">
                 <div class="small-5 columns">
                     Sort by
                     <a href="#" data-dropdown="sorting-dropdown">
-                        <span ng-show="sortBy == '-created_date'">Launch time <span class="hide-for-small">(most recent first)</span></span>
+                        <span ng-show="sortBy == '-launch_time'">Launch time <span class="hide-for-small">(most recent first)</span></span>
                         <span ng-show="sortBy == 'instance_name'">Instance name</span>
                     </a>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
                         <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
-                        <li ng-show="sortBy != '-created_date'">
-                            <a ng-click="sortBy = '-created_date'">Launch time <span class="hide-for-small">(most recent first)</span></a>
+                        <li ng-show="sortBy != '-launch_time'">
+                            <a ng-click="sortBy = '-launch_time'">Launch time <span class="hide-for-small">(most recent first)</span></a>
                         </li>
                     </ul>
                 </div>
@@ -59,7 +59,7 @@
                     <div>{{ instance.availability_zone }}</div>
                     <div>{{ instance.instance_type }}</div>
                     <div>{{ instance.security_group }}</div>
-                    <div>{{ instance.created_date | date:'yyyy/MM/dd HH:mm a' }}</div>
+                    <div>{{ instance.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
                 </div>
                 <div class="footer status {{ instance.status | lowercase }}">{{ instance.status }}</div>
             </div>
