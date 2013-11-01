@@ -29,11 +29,13 @@
             <div class="row sort-search">
                 <div class="small-5 columns">
                     Sort by
-                    <a href="#" data-dropdown="sorting-dropdown">Launch time (most recent first)</a>
+                    <a href="#" data-dropdown="sorting-dropdown">
+                        <span ng-show="sortBy == '-created_date'">Launch time (most recent first)</span>
+                        <span ng-show="sortBy == 'instance_name'">Instance name</span>
+                    </a>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
-                        <li><a href="#">This is a link</a></li>
-                        <li><a href="#">This is another</a></li>
-                        <li><a href="#">Yet another</a></li>
+                        <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
+                        <li ng-show="sortBy != '-created_date'"><a ng-click="sortBy = '-created_date'">Launch time (most recent first)</a></li>
                     </ul>
                 </div>
                 <div class="small-4 columns" class="search-filter">
@@ -53,7 +55,7 @@
                 </div>
             </div>
             <div ng-show="instancesLoading">Loading...</div>
-            <div class="tile instance" ng-repeat="instance in instances" ng-cloak="true">
+            <div class="tile instance" ng-repeat="instance in instances | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
                     <strong>{{ instance.instance_name }}</strong>
                     <span class="tiny secondary button dropdown right"

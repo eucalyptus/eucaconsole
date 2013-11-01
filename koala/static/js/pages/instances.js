@@ -8,6 +8,7 @@ angular.module('InstancesLandingPage', [])
     .controller('InstancesCtrl', function ($scope, $http) {
         $scope.instances = [];
         $scope.unfilteredInstances = [];
+        $scope.sortBy = '-created_date';
         $scope.getInstances = function() {
             var url = window.URLS.getInstancesJson;
             $scope.instancesLoading = true;
