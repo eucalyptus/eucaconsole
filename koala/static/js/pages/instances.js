@@ -5,9 +5,6 @@
  */
 
 angular.module('InstancesLandingPage', [])
-    .config(function ($httpProvider) {
-        $httpProvider.defaults.headers.common['X-CSRFToken'] = $.cookie('csrftoken');
-    })
     .controller('InstancesCtrl', function ($scope, $http) {
         $scope.instances = [];
         $scope.unfilteredInstances = [];

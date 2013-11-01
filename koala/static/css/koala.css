@@ -1375,6 +1375,10 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 
 .copyright { font-size: 0.8em; }
 
+/* ----------------------------------------- Foundation fixes
+----------------------------------------- */
+.f-dropdown { left: -99999px; }
+
 /* ----------------------------------------- Debug
 ----------------------------------------- */
 #pDebugToolbarHandle { top: 100px !important; }
