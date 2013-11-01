@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal">
@@ -12,19 +11,25 @@
 
 <p>Documentation:
     <a href="http://docs.pylonsproject.org/projects/pyramid_tutorials/en/latest/humans/creatingux/step10/index.html">
-        Re-usable Template Macros
+        Reusable Template Macros
     </a>
 </p>
 
 <!-- Filter form for landing pages ---------
-     Expects the view to pass a 'filter_props' list of strings. -->
+     Expects the view to pass a 'filter_props' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form define-macro="properties_filter_form">
+    <h6>Filters</h6>
     <form class="custom" id="properties-filter-form">
         <div class="match-condition">
             Match <input type="radio" name="anyall" value="all" checked="checked" /> all
             <input type="radio" name="anyall" value="any" /> any
         </div>
-        <input type="text" tal:repeat="prop filter_props" placeholder="${prop.name}" />
+        <div tal:repeat="prop filter_props">
+            <input type="text" tal:condition="not prop.choices" placeholder="${prop.name}" />
+            <select tal:condition="prop.choices" placeholder="${prop.name}">
+                <option tal:repeat="choice prop.choices" name="${prop.key}" value="choice">${choice}</option>
+            </select>
+        </div>
     </form>
 </metal:properties_filter_form>
 </body>

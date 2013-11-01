@@ -1,6 +1,9 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
+// This includes all of the foundation global elements that are needed to work with any of the other files.
+@import "../foundation/variables";
+
 /* @section Landing pages styles */
 
 // Sass variables
@@ -89,4 +92,17 @@ $tile-bg-color: $euca-extralightgrey;
 
 .match-condition {
     font-size: $euca-font-size;
+    margin-bottom: 4px;
 }
+
+/* -----------------------------------------
+   Media Queries
+----------------------------------------- */
+
+/* Small screen */
+@media screen and (max-width: $topbar-breakpoint) {
+    .columns.datagrid {
+        padding-left: 1rem;
+    }
+}
+

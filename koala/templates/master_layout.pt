@@ -79,7 +79,9 @@
 
 <!-- Footer -->
 <footer>
-    <h6 class="copyright subheader">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</h6>
+    <div class="row">
+       <h6 class="copyright subheader">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</h6>
+    </div>
 </footer>
 
 <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>

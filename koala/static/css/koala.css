@@ -1315,16 +1315,6 @@ a.th { display: inline-block; max-width: 100%; }
 
 /* =========================================================== */
 /* Eucalyptus Management Console main styles */
-/* -------------------------------------------------- Table of Contents
------------------------------------------------------
-:: Master Layout
-:: Header
-:: Main Content
-:: Forms
-:: Footer
-:: Debug
-
-*/
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
 html { background-color: #444; border-top: 10px solid #00415e; }
@@ -1355,10 +1345,16 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
-#maincontent { padding: 1rem; }
+#maincontent { position: relative; background: #eaedee url(../img/main-bgfill.png) repeat left top; }
+
+#contentwrap { position: relative; background-color: white; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
+/* ----------------------------------------- Headers
+----------------------------------------- */
+#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; }
+
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form .row input { margin: 0 0 0 0; }
@@ -1379,6 +1375,11 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 ----------------------------------------- */
 .f-dropdown { left: -99999px; }
 
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+/* Small screen */
+@media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
+  #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
-#pDebugToolbarHandle { top: 100px !important; }
+#pDebugToolbarHandle { top: 120px !important; }

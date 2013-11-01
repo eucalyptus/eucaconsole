@@ -15,8 +15,10 @@ class InstancesView(object):
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt', permission='view')
     def instances_landing(self):
+        # We could build the status choices list from Invoice.STATUS_CHOICES, but let's restrict based on the instances
+        status_choices = set(instance.get('status') for instance in self.instances)
         filter_props = [
-            LandingPageFilter(key='status', name='status'),
+            LandingPageFilter(key='status', name='status', choices=status_choices),
             LandingPageFilter(key='root_device', name='Root device'),
             LandingPageFilter(key='instance_type', name='Instance type'),
             LandingPageFilter(key='security_group', name='Security group'),

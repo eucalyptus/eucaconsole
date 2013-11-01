@@ -7,6 +7,8 @@ from ..constants.instances import AWS_INSTANCE_TYPES
 
 class Instance(object):
     """Eucalyptus or AWS Instance"""
+    STATUS_CHOICES = ('Running', 'Stopped', 'Stopping', 'Pending', 'Terminating', 'Terminated')
+
     def __init__(self, **kwargs):
         for key in kwargs:
             setattr(self, key, kwargs.get('key'))
@@ -28,8 +30,8 @@ class Instance(object):
         # TODO: Implement
         raise NotImplementedError()
 
-    @staticmethod
-    def fakeall(availability_zone=None):
+    @classmethod
+    def fakeall(cls, availability_zone=None):
         """Fake fetching a bunch of instances from an availability zone, for prototyping purposes.
         FIXME: Remove me after we're done prototyping
         """
@@ -40,7 +42,6 @@ class Instance(object):
 
         instances = []
         count = 500
-        status_choices = ('Running', 'Stopped', 'Stopping', 'Pending', 'Terminating', 'Terminated')
 
         if availability_zone is None:
             availability_zone = 'PART01'
@@ -56,6 +57,6 @@ class Instance(object):
                 security_group='default',
                 instance_type=choice(AWS_INSTANCE_TYPES),
                 availability_zone=availability_zone,
-                status=choice(status_choices),
+                status=choice(cls.STATUS_CHOICES),
             ))
         return instances

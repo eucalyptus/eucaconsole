@@ -5,12 +5,9 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" ng-app="InstancesLandingPage">
-        <h3 class="pageheader">Instances</h3>
+    <div class="row" id="contentwrap" ng-app="InstancesLandingPage">
+        <h3 class="header" id="pagetitle">Instances</h3>
         <div class="large-2 columns" id="instances-filter">
-            <div>&nbsp;</div>
-            <h6>Filters</h6>
-            <div>&nbsp;</div>
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
 
@@ -19,12 +16,14 @@
                 <div class="small-5 columns">
                     Sort by
                     <a href="#" data-dropdown="sorting-dropdown">
-                        <span ng-show="sortBy == '-created_date'">Launch time (most recent first)</span>
+                        <span ng-show="sortBy == '-created_date'">Launch time <span class="hide-for-small">(most recent first)</span></span>
                         <span ng-show="sortBy == 'instance_name'">Instance name</span>
                     </a>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
                         <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
-                        <li ng-show="sortBy != '-created_date'"><a ng-click="sortBy = '-created_date'">Launch time (most recent first)</a></li>
+                        <li ng-show="sortBy != '-created_date'">
+                            <a ng-click="sortBy = '-created_date'">Launch time <span class="hide-for-small">(most recent first)</span></a>
+                        </li>
                     </ul>
                 </div>
                 <div class="small-4 columns" class="search-filter">
@@ -40,7 +39,7 @@
                     </form>
                 </div>
                 <div class="small-3 columns right" ng-show="!instancesLoading" ng-cloak="cloak">
-                    {{ instances.length }} instances found
+                    {{ instances.length }} <span class="hide-for-small">instances</span> found
                 </div>
             </div>
             <div ng-show="instancesLoading">Loading...</div>

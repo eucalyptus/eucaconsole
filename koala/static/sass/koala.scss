@@ -47,18 +47,6 @@
 /* =========================================================== */
 /* Eucalyptus Management Console main styles */
 
-/* --------------------------------------------------
-   Table of Contents
------------------------------------------------------
-:: Master Layout
-:: Header
-:: Main Content
-:: Forms
-:: Footer
-:: Debug
-
-*/
-
 
 /* -----------------------------------------
    Master Layout
@@ -134,12 +122,33 @@ nav.top-bar .dropdown li a {
    Main Content
 ----------------------------------------- */
 #maincontent {
-    padding: 1rem;
+    position: relative;
+    background: #eaedee url(../img/main-bgfill.png) repeat left top;
+}
+
+#contentwrap {
+    position: relative;
+    background-color: white;
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
     #login-panel { margin-bottom: 5rem; }
     #maincontent { min-height: 480px; }
+}
+
+
+/* -----------------------------------------
+   Headers
+----------------------------------------- */
+#pagetitle.header {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    padding-left: 14px;
+    padding-top: 6px;
+    color: $euca-darkgrey;
+    background-color: $euca-extralightblue;
+    letter-spacing: 1px;
+    font-weight: normal;
 }
 
 
@@ -187,8 +196,24 @@ footer {
 
 
 /* -----------------------------------------
+   Media Queries
+----------------------------------------- */
+
+/* Small screen */
+@media screen and (max-width: $topbar-breakpoint) {
+    .columns.datagrid {
+        padding-left: 1rem;
+    }
+    #pagetitle.header {
+        margin-bottom: 0.5rem;
+        padding-bottom: 6px;
+    }
+}
+
+
+/* -----------------------------------------
    Debug
 ----------------------------------------- */
-#pDebugToolbarHandle { top: 100px !important; }
+#pDebugToolbarHandle { top: 120px !important; }
 
 

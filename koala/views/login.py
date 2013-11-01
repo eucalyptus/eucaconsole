@@ -44,22 +44,22 @@ class LoginView(object):
     def handle_login(self):
         """Handle login form post"""
 
-        login_type = self.request.POST.get('login_type')
+        login_type = self.request.params.get('login_type')
         euca_login_form = self.euca_login_form
         aws_login_form = self.aws_login_form
         session = self.request.session
 
         if login_type == 'Eucalyptus':
-            euca_login_form = EucaLoginForm(self.request, formdata=self.request.POST)
+            euca_login_form = EucaLoginForm(self.request, formdata=self.request.params)
             if euca_login_form.validate():
                 session['aws_login'] = False
                 return dict()
         elif login_type == 'AWS':
-            aws_login_form = AWSLoginForm(self.request, formdata=self.request.POST)
+            aws_login_form = AWSLoginForm(self.request, formdata=self.request.params)
             if aws_login_form.validate():
                 session['aws_login'] = True
-                aws_access_key = self.request.POST.get('access_key')
-                aws_secret_key = self.request.POST.get('secret_key')
+                aws_access_key = self.request.params.get('access_key')
+                aws_secret_key = self.request.params.get('secret_key')
                 session['aws_access_key'] = aws_access_key
                 session['aws_secret_key'] = aws_secret_key
                 # TODO: Authenticate credentials with AWS
