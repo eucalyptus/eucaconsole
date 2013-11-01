@@ -20,9 +20,11 @@
 
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
 
-.sort-search { font-size: 0.8125rem; }
+.sort-search { font-size: 0.9rem; }
 
 .sort-search form { margin-bottom: 0; }
+
+.match-condition { font-size: 0.8125rem; }
 
 .tile.instance .status.running { background-color: green; }
 

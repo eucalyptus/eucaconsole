@@ -11,18 +11,7 @@
             <div>&nbsp;</div>
             <h6>Filters</h6>
             <div>&nbsp;</div>
-            <form class="custom" id="instances-filter-form">
-                <div>
-                    Match <input type="radio" name="anyall" value="all" checked="checked" /> all
-                    <input type="radio" name="anyall" value="any" /> any
-                </div>
-                <input type="text" placeholder="status" />
-                <input type="text" placeholder="root device" />
-                <input type="text" placeholder="instance type" />
-                <input type="text" placeholder="security group" />
-                <input type="text" placeholder="availability zone" />
-                <input type="text" placeholder="tags (key or value)" />
-            </form>
+            <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
 
         <div class="large-10 columns datagrid" id="instances" ng-controller="InstancesCtrl" ng-init="getInstances()">

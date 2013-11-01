@@ -16,3 +16,10 @@ class SiteRootFactory(object):
     def __init__(self, request):
         pass
 
+
+class LandingPageFilter(object):
+    def __init__(self, key=None, name=None, choices=None):
+        self.key = key
+        self.name = name
+        self.choices = choices or []
+

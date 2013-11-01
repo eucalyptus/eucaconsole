@@ -80,9 +80,13 @@ $tile-bg-color: $euca-extralightgrey;
 }
 
 .sort-search {
-    font-size: $euca-font-size;
+    font-size: 0.9rem;
 }
 
 .sort-search form {
     margin-bottom: 0;
+}
+
+.match-condition {
+    font-size: $euca-font-size;
 }

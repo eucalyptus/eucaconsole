@@ -36,16 +36,17 @@ class Instance(object):
         from datetime import datetime
         from dateutil.relativedelta import relativedelta
         from random import choice, randint
+        from string import letters
 
         instances = []
-        count = 200
+        count = 500
         status_choices = ('Running', 'Stopped', 'Stopping', 'Pending', 'Terminating', 'Terminated')
 
         if availability_zone is None:
             availability_zone = 'PART01'
 
         for idx in xrange(count):
-            instance_name = 'Instance_{0:0d}'.format(idx + 1)
+            instance_name = 'Instance_{0}'.format(''.join(choice(letters).lower() for i in range(6)))
             instance_id = 'i-{}'.format(randint(11111111, 99999999))
             created_date = datetime.today() - relativedelta(days=randint(1, 30))
             instances.append(dict(
