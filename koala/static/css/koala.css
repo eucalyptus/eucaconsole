@@ -1343,6 +1343,8 @@ nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
+#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; }
+
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
 #maincontent { position: relative; background: #eaedee url(../img/main-bgfill.png) repeat left top; }
@@ -1351,10 +1353,6 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
-/* ----------------------------------------- Headers
------------------------------------------ */
-#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; }
-
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form .row input { margin: 0 0 0 0; }
@@ -1380,6 +1378,7 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; } }
+@media screen and (min-width: 768px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
 #pDebugToolbarHandle { top: 120px !important; }

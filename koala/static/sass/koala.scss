@@ -117,6 +117,17 @@ nav.top-bar .dropdown li a {
     line-height: 1.5rem;
 }
 
+#pagetitle.header {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    padding-left: 14px;
+    padding-top: 6px;
+    color: $euca-darkgrey;
+    background-color: $euca-extralightblue;
+    letter-spacing: 1px;
+    font-weight: normal;
+}
+
 
 /* -----------------------------------------
    Main Content
@@ -134,21 +145,6 @@ nav.top-bar .dropdown li a {
 @media screen and (min-width: $topbar-breakpoint) {
     #login-panel { margin-bottom: 5rem; }
     #maincontent { min-height: 480px; }
-}
-
-
-/* -----------------------------------------
-   Headers
------------------------------------------ */
-#pagetitle.header {
-    margin-top: 0;
-    margin-bottom: 2rem;
-    padding-left: 14px;
-    padding-top: 6px;
-    color: $euca-darkgrey;
-    background-color: $euca-extralightblue;
-    letter-spacing: 1px;
-    font-weight: normal;
 }
 
 
@@ -190,6 +186,7 @@ footer {
 /* -----------------------------------------
    Foundation fixes
 ----------------------------------------- */
+// Prevent dropdown menus from displaying when viewport height approaches 10k px.
 .f-dropdown {
     left: -99999px;
 }
@@ -210,6 +207,13 @@ footer {
     }
 }
 
+
+@media screen and (min-width: $topbar-breakpoint) {
+    // Ensure span.hide-for-small are display: inline (Foundation sets them as display: inherit
+    span.hide-for-small {
+        display: inline !important;
+    }
+}
 
 /* -----------------------------------------
    Debug
