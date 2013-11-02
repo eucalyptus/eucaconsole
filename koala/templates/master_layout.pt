@@ -21,12 +21,23 @@
 <body>
 <nav id="logobar" class="top-bar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-    <section class="user-dropdown">
-        <a href="#" data-dropdown="user-dropdown"
-           class="small secondary button dropdown">admin@ui-test-acct-01</a>
+    <section>
+        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
+            <span class="hide-for-xsmall">admin@ui-test-acct-01</span>
+            <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
+        </a>
         <ul id="user-dropdown" class="f-dropdown">
             <li><a href="#">Change password</a></li>
             <li><a href="${request.route_url('logout')}">Logout</a></li>
+        </ul>
+    </section>
+    <section>
+        <a href="#" data-dropdown="region-dropdown" class="small secondary button dropdown">
+            <span class="hide-for-xsmall">us-west-2 (Oregon)</span>
+            <span class="show-for-xsmall"><i class="fi-cloud icon"></i></span>
+        </a>
+        <ul id="region-dropdown" class="f-dropdown">
+            <li><a href="#">us-west-1 (Northern Cal)</a></li>
         </ul>
     </section>
 </nav>

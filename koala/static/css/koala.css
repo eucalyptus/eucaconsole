@@ -1319,7 +1319,7 @@ a.th { display: inline-block; max-width: 100%; }
 ----------------------------------------- */
 html { background-color: #444; border-top: 10px solid #00415e; }
 
-body { color: #333; background-color: #fff; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+body { position: relative; color: #333; background: #eaedee url(../img/main-bgfill.png) repeat left top; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
@@ -1327,17 +1327,13 @@ body { color: #333; background-color: #fff; min-height: 100%; font-family: "Helv
 
 #logobar a { font-size: 0.9rem; color: #333; }
 
-#logobar a:focus { box-shadow: 0; }
-
 #logobar #logo { display: inline-block; width: 199px; height: 22px; background: url(../img/eucalogo-199x22.png) no-repeat; }
 
-#logobar section { display: inline-block; float: right; }
+#logobar section { line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 
 #logobar section .button { top: 0; border: 0; background-color: transparent; font-weight: normal; }
 
-#logobar #user-dropdown { z-index: 999999; }
-
-nav.top-bar { box-shadow: 0 2px 2px 0 #999999; }
+#logobar section .icon { font-size: 1.5rem; }
 
 nav.top-bar a { text-transform: uppercase; }
 
@@ -1347,7 +1343,7 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
-#maincontent { position: relative; background: #eaedee url(../img/main-bgfill.png) repeat left top; }
+#maincontent { position: relative; }
 
 #contentwrap { position: relative; background-color: white; }
 
@@ -1373,8 +1369,16 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 ----------------------------------------- */
 .f-dropdown { left: -99999px; }
 
+.show-for-xsmall { display: none !important; }
+
+.hide-for-xsmall { display: inline !important; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
+/* Extra small screen (< 481px) */
+@media screen and (max-width: 480px) { .show-for-xsmall { display: inline-block !important; }
+  .hide-for-xsmall { display: none !important; }
+  #logobar section .button { margin-top: -6px; } }
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; } }

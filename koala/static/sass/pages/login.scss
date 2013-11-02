@@ -5,11 +5,6 @@
 $euca-login-panel-header-height: 36px;
 
 
-#maincontent {
-    background: #eaedee url(../../img/main-bgfill.png) repeat left top;
-}
-
-
 #login-panel {
     background-color: white;
     border-radius: 8px;
@@ -57,7 +52,6 @@ $euca-login-panel-header-height: 36px;
     max-width: 480px;
     margin: 0 auto;
 }
-
 
 button#aws-login-button.button {
     background-color: $aws-orange;

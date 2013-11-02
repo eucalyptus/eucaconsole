@@ -57,8 +57,9 @@ html {
 }
 
 body {
+    position: relative;
     color: #333;
-    background-color: #fff;
+    background: #eaedee url(../img/main-bgfill.png) repeat left top;
     min-height: 100%;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -67,6 +68,8 @@ body {
 /* -----------------------------------------
    Header
 ----------------------------------------- */
+
+// Logo bar (top-most bar)
 #logobar {
     height: 44px;
     padding: 5px 0 10px 15px;
@@ -79,10 +82,6 @@ body {
     color: #333;
 }
 
-#logobar a:focus {
-    box-shadow: 0;
-}
-
 #logobar #logo {
     display: inline-block;
     width: 199px; height: 22px;
@@ -90,8 +89,10 @@ body {
 }
 
 #logobar section {
+    line-height: 1rem;
     display: inline-block;
     float: right;
+    margin-top: 4px;
 }
 
 #logobar section .button {
@@ -101,14 +102,12 @@ body {
     font-weight: normal;
 }
 
-#logobar #user-dropdown {
-    z-index: 999999;
+#logobar section .icon {
+    font-size: 1.5rem;
 }
 
-nav.top-bar {
-    box-shadow: 0 2px 2px 0 $euca-grey;
-}
 
+// Nav bar styles
 nav.top-bar a {
     text-transform: uppercase;
 }
@@ -117,6 +116,7 @@ nav.top-bar .dropdown li a {
     line-height: 1.5rem;
 }
 
+// Page title
 #pagetitle.header {
     margin-top: 0;
     margin-bottom: 2rem;
@@ -134,7 +134,6 @@ nav.top-bar .dropdown li a {
 ----------------------------------------- */
 #maincontent {
     position: relative;
-    background: #eaedee url(../img/main-bgfill.png) repeat left top;
 }
 
 #contentwrap {
@@ -191,12 +190,34 @@ footer {
     left: -99999px;
 }
 
+// Add a show-for-xsmall class to display items only when max-width is 480px
+.show-for-xsmall {
+    display: none !important;
+}
+.hide-for-xsmall {
+    display: inline !important;
+}
+
 
 /* -----------------------------------------
    Media Queries
 ----------------------------------------- */
 
+/* Extra small screen (< 481px) */
+@media screen and (max-width: $euca-extrasmall-breakpoint) {
+    .show-for-xsmall {
+        display: inline-block !important;
+    }
+    .hide-for-xsmall {
+        display: none !important;
+    }
+    #logobar section .button {
+        margin-top: -6px;
+    }
+}
+
 /* Small screen */
+// TODO: logobar dropdown menus are displaying behind the nav bar on small screens
 @media screen and (max-width: $topbar-breakpoint) {
     .columns.datagrid {
         padding-left: 1rem;

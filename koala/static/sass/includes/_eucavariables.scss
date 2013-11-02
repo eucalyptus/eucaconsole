@@ -1,5 +1,8 @@
 // Eucalyptus Sass variables
 
+// Layout
+$euca-extrasmall-breakpoint: 480px;
+
 // Colors
 $euca-darkblue: #00415e;
 $euca-extralightblue: #ecf4f7;
@@ -24,3 +27,7 @@ $euca-link-color: $euca-green;
 
 // Dimensions
 $euca-footer-height: 80px;
+
+// Misc decorations
+$euca-box-shadow: 0 2px 2px 0 $euca-grey;
+

@@ -1,5 +1,5 @@
 /* @fileOverview Dashboard CSS */
-#maincontent { background: #eaedee url(../../img/main-bgfill.png) repeat left top; padding-top: 1.5rem; }
+#maincontent { padding-top: 1.5rem; }
 
 .large-3.columns .tile { margin-bottom: 10px; }
 
