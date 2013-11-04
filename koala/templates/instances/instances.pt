@@ -24,9 +24,15 @@
                     </li>
                 </ul>
             </div>
+            <div metal:fill-slot="tile_content">
+                <div>{{ item.instance_id }}</div>
+                <div>{{ item.availability_zone }}</div>
+                <div>{{ item.instance_type }}</div>
+                <div>{{ item.security_group }}</div>
+                <div>{{ item.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
+            </div>
         </div>
     </div>
-
 </div>
 
 <div metal:fill-slot="tail_js">

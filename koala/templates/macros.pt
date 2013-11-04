@@ -74,11 +74,7 @@
                 </ul>
             </div>
             <div class="content">
-                <div>{{ item.instance_id }}</div>
-                <div>{{ item.availability_zone }}</div>
-                <div>{{ item.instance_type }}</div>
-                <div>{{ item.security_group }}</div>
-                <div>{{ item.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
+                <div metal:define-slot="tile_content"></div>
             </div>
             <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
         </div>
