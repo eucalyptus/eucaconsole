@@ -4,39 +4,36 @@
  *
  */
 
-angular.module('InstancesLandingPage', [])
-    .controller('InstancesCtrl', function ($scope, $http) {
-        $scope.instances = [];
-        $scope.unfilteredInstances = [];
+angular.module('LandingPage', [])
+    .controller('ItemsCtrl', function ($scope, $http) {
+        $scope.items = [];
+        $scope.unfilteredItems = [];
         $scope.sortBy = '-launch_time';
-        $scope.getInstances = function() {
-            var url = window.URLS.getInstancesJson;
-            $scope.instancesLoading = true;
-            $http.get(url).success(function(oData) {
+        $scope.getItems = function(jsonItemsEndpoint) {
+            $scope.itemsLoading = true;
+            $http.get(jsonItemsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
-                $scope.instancesLoading = false;
-                $scope.instances = results;
-                $scope.unfilteredInstances = results;
+                $scope.itemsLoading = false;
+                $scope.items = results;
+                $scope.unfilteredItems = results;
             });
         };
-        $scope.searchFilterInstances = function() {
-            // Filter instances client side based on search criteria.
-            $scope.instances = $scope.unfilteredInstances;  // reset prior to applying filter
-            var filterText = $scope.searchFilter;
-            var filterProps = [
-                "status", "instance_name", "instance_type", "availability_zone",
-                "security_group", "instance_id", "launch_time"
-            ];
+        /*  Filter items client side based on search criteria.
+         *  @param {array} filterProps Array of properties to filter items on
+         */
+        $scope.searchFilterItems = function(filterProps) {
+            $scope.items = $scope.unfilteredItems;  // reset prior to applying filter
+            var filterText = $scope.searchFilter || '';
             // Leverage Array.prototype.filter (ECMAScript 5)
-            var filteredInstances = $scope.instances.filter(function(item) {
+            var filteredItems = $scope.items.filter(function(item) {
                 for (var i=0; i < filterProps.length; i++) {
-                    var itemProp = item[filterProps[i]];
-                    if (itemProp.indexOf(filterText) !== -1) {
+                    var itemProp = item.hasOwnProperty(filterProps[i]) && item[filterProps[i]];
+                    if (itemProp && itemProp.indexOf(filterText) !== -1) {
                         return item;
                     }
                 }
             });
-            $scope.instances = filterText ? filteredInstances : $scope.unfilteredInstances;
+            $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
     })
 ;

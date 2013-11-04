@@ -41,7 +41,7 @@ class Instance(object):
         from string import letters
 
         instances = []
-        count = 500
+        count = 100
 
         if availability_zone is None:
             availability_zone = 'PART01'

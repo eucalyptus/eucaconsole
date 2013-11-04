@@ -16,7 +16,7 @@
 </p>
 
 <!-- Filter form for landing pages ---------
-     Expects the view to pass a 'filter_props' list of models.LandingPageFilter() objects. -->
+     Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form define-macro="properties_filter_form">
     <h6>Filters</h6>
     <form class="custom" id="properties-filter-form">
@@ -24,10 +24,10 @@
             Match <input type="radio" name="anyall" value="all" checked="checked" /> all
             <input type="radio" name="anyall" value="any" /> any
         </div>
-        <div tal:repeat="prop filter_props">
-            <input type="text" tal:condition="not prop.choices" placeholder="${prop.name}" />
-            <select tal:condition="prop.choices" placeholder="${prop.name}">
-                <option tal:repeat="choice prop.choices" name="${prop.key}" value="choice">${choice}</option>
+        <div tal:repeat="field filter_fields">
+            <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
+            <select tal:condition="field.choices" placeholder="${field.name}">
+                <option tal:repeat="choice field.choices" name="${field.key}" value="choice">${choice}</option>
             </select>
         </div>
     </form>
