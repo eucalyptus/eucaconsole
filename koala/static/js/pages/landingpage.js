@@ -1,6 +1,6 @@
 /**
  * @fileOverview Common JS for Landing pages
- * @requires AngularJS
+ * @requires AngularJS and Purl jQuery URL parser
  *
  */
 
@@ -9,6 +9,19 @@ angular.module('LandingPage', [])
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '-launch_time';
+        $scope.urlParams = $.url().param();
+        $scope.applyAnyGetRequestFilters = function() {
+            $scope.items = $scope.items.filter(function(item) {
+                for (var key in $scope.urlParams) {
+                    if ($scope.urlParams.hasOwnProperty(key) && $.url().param(key)) {
+                        console.log(key + ': ' + $.url().param(key));
+                        if (item[key] === $.url().param(key)) {
+                            return item
+                        }
+                    }
+                }
+            });
+        };
         $scope.getItems = function(jsonItemsEndpoint) {
             $scope.itemsLoading = true;
             $http.get(jsonItemsEndpoint).success(function(oData) {
@@ -16,6 +29,11 @@ angular.module('LandingPage', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
+                if ($.url().param('filter')) {
+                    if ($.url().param('anyall') === 'any') {
+                        $scope.applyAnyGetRequestFilters();
+                    }
+                }
             });
         };
         /*  Filter items client side based on search criteria.
