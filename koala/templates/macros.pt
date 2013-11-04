@@ -15,9 +15,9 @@
     </a>
 </p>
 
-<!-- Filter form for landing pages ---------
+<!-- Filter form for landing pages =====
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
-<div metal:define-macro="properties_filter_form">
+<metal:properties_filter_form metal:define-macro="properties_filter_form">
     <h6>Filters</h6>
     <form class="custom" id="properties-filter-form">
         <div class="match-condition">
@@ -31,19 +31,19 @@
             </select>
         </div>
     </form>
-</div>
+</metal:properties_filter_form>
 
 
-<!-- Landing page datagrid macro ---------
+<!-- Landing page datagrid macro =====
      TODO: Incorporate table view; only the grid view is implemented for now -->
-<div metal:define-macro="landing_page_datagrid">
+<metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-10 columns datagrid" id="landing-page-items"
          ng-controller="ItemsCtrl" ng-init="getItems('${json_items_endpoint}')">
         <div class="row sort-search" ng-cloak="cloak">
             <div class="small-5 columns">
-                <div metal:define-slot="sorting_controls"><!-- Sorting controls placeholder --></div>
+                <div metal:define-slot="sorting_controls"></div>
             </div>
-            <div class="small-4 columns" class="search-filter">
+            <div class="small-4 columns search-filter">
                 <form class="custom" ng-submit="searchFilterItems(${filter_keys})" metal:define-slot="search_controls">
                     <div class="row collapse">
                         <div class="small-10 columns">
@@ -66,9 +66,11 @@
                 <span class="tiny secondary button dropdown right"
                       data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                    <li><a href="#">This is a link</a></li>
-                    <li><a href="#">This is another</a></li>
-                    <li><a href="#">Yet another</a></li>
+                    <metal:block metal:define-slot="dropdown-items">
+                        <li><a href="#">This is a link</a></li>
+                        <li><a href="#">This is another</a></li>
+                        <li><a href="#">Yet another</a></li>
+                    </metal:block>
                 </ul>
             </div>
             <div class="content">
@@ -81,7 +83,7 @@
             <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
         </div>
     </div>
-</div>
+</metal:datagrid_macro>
 
 </body>
 </html>
