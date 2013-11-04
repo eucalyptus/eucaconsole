@@ -17,7 +17,7 @@
 
 <!-- Filter form for landing pages ---------
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
-<metal:properties_filter_form define-macro="properties_filter_form">
+<div metal:define-macro="properties_filter_form">
     <h6>Filters</h6>
     <form class="custom" id="properties-filter-form">
         <div class="match-condition">
@@ -31,6 +31,57 @@
             </select>
         </div>
     </form>
-</metal:properties_filter_form>
+</div>
+
+
+<!-- Landing page datagrid macro ---------
+     TODO: Incorporate table view; only the grid view is implemented for now -->
+<div metal:define-macro="landing_page_datagrid">
+    <div class="large-10 columns datagrid" id="landing-page-items"
+         ng-controller="ItemsCtrl" ng-init="getItems('${json_items_endpoint}')">
+        <div class="row sort-search" ng-cloak="cloak">
+            <div class="small-5 columns">
+                <div metal:define-slot="sorting_controls"><!-- Sorting controls placeholder --></div>
+            </div>
+            <div class="small-4 columns" class="search-filter">
+                <form class="custom" ng-submit="searchFilterItems(${filter_keys})" metal:define-slot="search_controls">
+                    <div class="row collapse">
+                        <div class="small-10 columns">
+                            <input type="search" ng-model="searchFilter" id="search-filter" placeholder="filter..." />
+                        </div>
+                        <div class="small-2 columns">
+                            <button class="button secondary postfix">Go</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="small-3 columns right" ng-show="!itemsLoading" ng-cloak="cloak" metal:define-slot="results_count">
+                {{ items.length }} <span class="hide-for-small">items</span> found
+            </div>
+        </div>
+        <div ng-show="itemsLoading">Loading...</div>
+        <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
+            <div class="header">
+                <strong>{{ item.instance_name }}</strong>
+                <span class="tiny secondary button dropdown right"
+                      data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li><a href="#">This is a link</a></li>
+                    <li><a href="#">This is another</a></li>
+                    <li><a href="#">Yet another</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <div>{{ item.instance_id }}</div>
+                <div>{{ item.availability_zone }}</div>
+                <div>{{ item.instance_type }}</div>
+                <div>{{ item.security_group }}</div>
+                <div>{{ item.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
+            </div>
+            <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

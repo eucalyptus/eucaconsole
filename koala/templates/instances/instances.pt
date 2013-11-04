@@ -10,59 +10,19 @@
         <div class="large-2 columns" id="instances-filter">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
-
-        <div class="large-10 columns datagrid" id="landing-page-items"
-             ng-controller="ItemsCtrl" ng-init="getItems('${json_items_endpoint}')">
-            <div class="row sort-search" ng-cloak="cloak">
-                <div class="small-5 columns">
-                    Sort by
-                    <a href="#" data-dropdown="sorting-dropdown">
-                        <span ng-show="sortBy == '-launch_time'">Launch time <span class="hide-for-small">(most recent first)</span></span>
-                        <span ng-show="sortBy == 'instance_name'">Instance name</span>
-                    </a>
-                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
-                        <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
-                        <li ng-show="sortBy != '-launch_time'">
-                            <a ng-click="sortBy = '-launch_time'">Launch time <span class="hide-for-small">(most recent first)</span></a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="small-4 columns" class="search-filter">
-                    <form class="custom" ng-submit="searchFilterItems(${filter_keys})">
-                        <div class="row collapse">
-                            <div class="small-10 columns">
-                                <input type="search" ng-model="searchFilter" id="search-filter" placeholder="filter..." />
-                            </div>
-                            <div class="small-2 columns">
-                                <button class="button secondary postfix">Go</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="small-3 columns right" ng-show="!itemsLoading" ng-cloak="cloak">
-                    {{ items.length }} <span class="hide-for-small">items</span> found
-                </div>
-            </div>
-            <div ng-show="itemsLoading">Loading...</div>
-            <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
-                <div class="header">
-                    <strong>{{ item.instance_name }}</strong>
-                    <span class="tiny secondary button dropdown right"
-                          data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <li><a href="#">This is a link</a></li>
-                        <li><a href="#">This is another</a></li>
-                        <li><a href="#">Yet another</a></li>
-                    </ul>
-                </div>
-                <div class="content">
-                    <div>{{ item.instance_id }}</div>
-                    <div>{{ item.availability_zone }}</div>
-                    <div>{{ item.instance_type }}</div>
-                    <div>{{ item.security_group }}</div>
-                    <div>{{ item.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
-                </div>
-                <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="sorting_controls">
+                Sort by
+                <a href="#" data-dropdown="sorting-dropdown">
+                    <span ng-show="sortBy == '-launch_time'">Launch time (most recent first)</span>
+                    <span ng-show="sortBy == 'instance_name'">Instance name</span>
+                </a>
+                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content>
+                    <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
+                    <li ng-show="sortBy != '-launch_time'">
+                        <a ng-click="sortBy = '-launch_time'">Launch time (most recent first)</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -70,7 +30,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/pages/instances.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
 </div>
 
 </metal:block>

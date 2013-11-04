@@ -1,5 +1,5 @@
 /**
- * @fileOverview Instances landing page
+ * @fileOverview Common JS for Landing pages
  * @requires AngularJS
  *
  */
