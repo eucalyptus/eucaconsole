@@ -26,18 +26,20 @@
 
 .match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
 
+#properties-filter-form { font-size: 0.9rem; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; } }
-.tile.instance .status.running { background-color: green; }
+.tile .status.running { background-color: #76b800; }
 
-.tile.instance .status.pending { background-color: lightgreen; }
+.tile .status.pending { background-color: #bcdd8f; }
 
-.tile.instance .status.stopped { background-color: red; }
+.tile .status.stopped { background-color: #990000; }
 
-.tile.instance .status.stopping { background-color: lightpink; }
+.tile .status.stopping { background-color: #ff9999; }
 
-.tile.instance .status.terminated { background-color: gray; }
+.tile .status.terminated { background-color: #999999; }
 
-.tile.instance .status.terminating { background-color: lightgrey; }
+.tile .status.terminating { background-color: lightgrey; }

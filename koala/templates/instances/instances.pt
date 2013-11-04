@@ -26,6 +26,7 @@
             </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.instance_id }}</div>
+                <div>{{ item.root_device }}</div>
                 <div>{{ item.availability_zone }}</div>
                 <div>{{ item.instance_type }}</div>
                 <div>{{ item.security_group }}</div>

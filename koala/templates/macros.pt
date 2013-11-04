@@ -19,16 +19,22 @@
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form metal:define-macro="properties_filter_form">
     <h6>Filters</h6>
-    <form class="custom" id="properties-filter-form">
+    <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
         <div class="match-condition">
             Match <input type="radio" name="anyall" value="all" checked="checked" /> all
             <input type="radio" name="anyall" value="any" /> any
         </div>
         <div tal:repeat="field filter_fields">
             <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-            <select tal:condition="field.choices" placeholder="${field.name}">
-                <option tal:repeat="choice field.choices" name="${field.key}" value="choice">${choice}</option>
+            <select tal:define="num_choices len(field.choices)" tal:condition="field.choices" placeholder="${field.name}"
+                    tal:attributes="disabled num_choices == 1" name="${field.key}">
+                <option value="">${field.name}...</option>
+                <option tal:repeat="choice field.choices" value="${choice}"
+                        tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
             </select>
+        </div>
+        <div>
+            <button type="submit" class="secondary small button">Apply</button>
         </div>
     </form>
 </metal:properties_filter_form>

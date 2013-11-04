@@ -14,6 +14,7 @@
           type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.0.8.min.js')}"></script>
     <meta metal:define-slot="head_js" />
 </head>
@@ -27,6 +28,7 @@
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown">
+            <li><a href="https://engage.eucalyptus.com/?r=euca-" target="_blank">Help</a></li>
             <li><a href="#">Change password</a></li>
             <li><a href="${request.route_url('logout')}">Logout</a></li>
         </ul>
@@ -95,7 +97,6 @@
     </div>
 </footer>
 
-<script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
