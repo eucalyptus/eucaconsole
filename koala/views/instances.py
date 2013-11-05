@@ -12,16 +12,16 @@ from ..views import LandingPageView
 class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
-        self.instances = Instance.fakeall()
+        self.items = Instance.fakeall()
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt', permission='view')
     def instances_landing(self):
         json_items_endpoint = self.request.route_url('instances_json')
-        status_choices = sorted(set(instance.get('status') for instance in self.instances))
-        root_device_choices = sorted(set(instance.get('root_device') for instance in self.instances))
-        instance_type_choices = sorted(set(instance.get('instance_type') for instance in self.instances))
-        security_group_choices = sorted(set(instance.get('security_group') for instance in self.instances))
-        avail_zone_choices = sorted(set(instance.get('availability_zone') for instance in self.instances))
+        status_choices = sorted(set(instance.get('status') for instance in self.items))
+        root_device_choices = sorted(set(instance.get('root_device') for instance in self.items))
+        instance_type_choices = sorted(set(instance.get('instance_type') for instance in self.items))
+        security_group_choices = sorted(set(instance.get('security_group') for instance in self.items))
+        avail_zone_choices = sorted(set(instance.get('availability_zone') for instance in self.items))
         self.filter_fields = [
             LandingPageFilter(key='status', name='Status', choices=status_choices),
             LandingPageFilter(key='root_device', name='Root device', choices=root_device_choices),
@@ -42,7 +42,6 @@ class InstancesView(LandingPageView):
 
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
-        """JSON of instances"""
-        return dict(results=self.instances)
+        return dict(results=self.items)
 
 
