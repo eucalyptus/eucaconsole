@@ -18,37 +18,39 @@
 <!-- Filter form for landing pages =====
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form metal:define-macro="properties_filter_form">
-    <h6>Filters</h6>
-    <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
-        <input type="hidden" name="display" value="${display_type}" />
-        <div class="match-condition">
-            Match
-            <input type="radio" name="anyall" value="any" checked="checked"
-                   tal:attributes="checked request.params.get('anyall') == 'any'" /> any
-            <input type="radio" name="anyall" value="all" disabled="disabled"
-                   tal:attributes="checked request.params.get('anyall') == 'all'" /> all
-        </div>
-        <div tal:repeat="field filter_fields">
-            <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-            <select tal:define="num_choices len(field.choices)" tal:condition="field.choices" placeholder="${field.name}"
-                    tal:attributes="disabled num_choices == 1" name="${field.key}">
-                <option value="">${field.name}...</option>
-                <option tal:repeat="choice field.choices" value="${choice}"
-                        tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
-            </select>
-        </div>
-        <div>
-            <button type="submit" class="secondary small button" name="filter" value="apply">Apply</button>
-            &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
-        </div>
-    </form>
+    <div id="filters" tal:condition="filter_fields">
+        <h6>Filters</h6>
+        <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
+            <input type="hidden" name="display" value="${display_type}" />
+            <div class="match-condition">
+                Match
+                <input type="radio" name="anyall" value="any" checked="checked"
+                       tal:attributes="checked request.params.get('anyall') == 'any'" /> any
+                <input type="radio" name="anyall" value="all" disabled="disabled"
+                       tal:attributes="checked request.params.get('anyall') == 'all'" /> all
+            </div>
+            <div tal:repeat="field filter_fields">
+                <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
+                <select tal:define="num_choices len(field.choices)" tal:condition="field.choices" placeholder="${field.name}"
+                        tal:attributes="disabled num_choices == 1" name="${field.key}">
+                    <option value="">${field.name}...</option>
+                    <option tal:repeat="choice field.choices" value="${choice}"
+                            tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="secondary small button" name="filter" value="apply">Apply</button>
+                &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+            </div>
+        </form>
+    </div>
 </metal:properties_filter_form>
 
 
 <!-- Landing page datagrid macro =====
      TODO: Incorporate table view; only the grid view is implemented for now -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
-    <div class="large-10 columns datagrid" id="landing-page-items"
+    <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items"
          ng-controller="ItemsCtrl" ng-init="getItems('${json_items_endpoint}')">
         <div class="row display-switcher">
             <div class="small-6 columns">
@@ -85,7 +87,7 @@
         <div class="gridwrapper" tal:condition="display_type == 'gridview'">
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
-                    <strong>{{ item.instance_name }}</strong>
+                    <strong>{{ item.name }}</strong>
                     <span class="tiny secondary button dropdown right"
                           data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
                     <ul id="item-dropdown_{{ $index }}" class="f-dropdown">

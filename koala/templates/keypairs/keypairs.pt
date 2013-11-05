@@ -1,0 +1,54 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/keypairs.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LandingPage">
+        <h3 class="header" id="pagetitle">
+            Key Pairs
+        </h3>
+        <div class="large-2 columns" id="instances-filter">
+            <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button small">Create new key pair</a>
+            </div>
+            <div metal:fill-slot="sorting_controls">
+                Sort by
+                <a href="#" data-dropdown="sorting-dropdown">
+                    <span ng-show="sortBy == '-launch_time'">Launch time (most recent first)</span>
+                    <span ng-show="sortBy == 'instance_name'">Instance name</span>
+                </a>
+                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
+                    <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
+                    <li ng-show="sortBy != '-launch_time'">
+                        <a ng-click="sortBy = '-launch_time'">Launch time (most recent first)</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_content">
+                <div>{{ item.name }}</div>
+                <div>{{ item.fingerprint }}</div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th>Name</th>
+                <th>Fingerprint</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td>{{ item.name }}</td>
+                <td>{{ item.fingerprint }}</td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+</div>
+
+</metal:block>
+

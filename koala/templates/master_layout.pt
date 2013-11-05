@@ -75,7 +75,7 @@
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-sgroup" href="#">Security Groups</a></li>
                     <li class="divider"></li>
-                    <li><a id="resource-menuitem-keypair" href="#">Key Pairs</a></li>
+                    <li><a id="resource-menuitem-keypair" href="${request.route_url('keypairs')}">Key Pairs</a></li>
                     <li class="divider"></li>
                     <li><a id="resource-menuitem-eip" href="#">IP Addresses</a></li>
                 </ul>

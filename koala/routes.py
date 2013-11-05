@@ -23,4 +23,6 @@ urls = [
     Route(name='logout', pattern='/logout'),
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='keypairs', pattern='/keypairs'),
+    Route(name='keypairs_json', pattern='/keypairs/json'),
 ]

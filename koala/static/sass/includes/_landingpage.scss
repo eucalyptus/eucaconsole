@@ -21,6 +21,10 @@ $gridwrapper-table-width: 98%;
     padding-bottom: 2rem;
 }
 
+.large-12.columns.datagrid {
+    padding-left: 1rem;
+}
+
 .tile {
     font-size: $euca-font-size;
     position: relative;
@@ -30,6 +34,7 @@ $gridwrapper-table-width: 98%;
     margin-right: 10px;
     margin-bottom: 10px;
     padding-bottom: $tile-row-height;
+    word-wrap: break-word;
 }
 
 .tile .header {
