@@ -114,9 +114,22 @@ $gridwrapper-table-width: 98%;
 }
 
 .gridwrapper .table {
+    border: none;
     width: $gridwrapper-table-width;
+    thead tr {
+        border-top: 2px solid $euca-darkgrey;
+        border-bottom: 2px solid $euca-darkgrey;
+        th {
+            line-height: 1.8rem;
+            text-transform: uppercase;
+        }
+    }
     tr {
         width: $gridwrapper-table-width;
+        border-bottom: 1px solid #ddd;
+        td {
+            line-height: 1.8rem;
+        }
     }
 }
 

@@ -34,8 +34,11 @@
 
 .displayicons i { padding: 8px 12px; }
 
-.gridwrapper .table { width: 98%; }
-.gridwrapper .table tr { width: 98%; }
+.gridwrapper .table { border: none; width: 98%; }
+.gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
+.gridwrapper .table thead tr th { line-height: 1.8rem; text-transform: uppercase; }
+.gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
+.gridwrapper .table tr td { line-height: 1.8rem; }
 
 #properties-filter-form { font-size: 0.9rem; }
 
