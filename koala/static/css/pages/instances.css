@@ -2,7 +2,9 @@
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 0; padding-bottom: 2rem; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 198px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; }
+.large-12.columns.datagrid { padding-left: 1rem; }
+
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 198px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 
 .tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 

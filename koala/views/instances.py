@@ -22,6 +22,7 @@ class InstancesView(LandingPageView):
         instance_type_choices = sorted(set(instance.get('instance_type') for instance in self.items))
         security_group_choices = sorted(set(instance.get('security_group') for instance in self.items))
         avail_zone_choices = sorted(set(instance.get('availability_zone') for instance in self.items))
+        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
             LandingPageFilter(key='status', name='Status', choices=status_choices),
             LandingPageFilter(key='root_device', name='Root device', choices=root_device_choices),
@@ -30,7 +31,8 @@ class InstancesView(LandingPageView):
             LandingPageFilter(key='availability_zone', name='Availability zone', choices=avail_zone_choices),
             LandingPageFilter(key='tags', name='Tags'),
         ]
-        more_filter_keys = ['instance_id']
+        more_filter_keys = ['id', 'name']
+        # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
 
         return dict(

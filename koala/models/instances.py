@@ -69,8 +69,8 @@ class Instance(BotoInstance):
             launch_time = datetime.today() - relativedelta(days=randint(1, 30))
             root_device = 'volume-{0}'.format(randint(1, 10))
             instances.append(dict(
-                instance_id=instance_id,
-                instance_name=instance_name,
+                id=instance_id,
+                name=instance_name,
                 root_device=root_device,
                 launch_time=launch_time.isoformat(),
                 security_group='default',

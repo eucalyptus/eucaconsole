@@ -30,7 +30,7 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.instance_id }}</div>
+                <div>{{ item.id }}</div>
                 <div>{{ item.root_device }}</div>
                 <div>{{ item.availability_zone }}</div>
                 <div>{{ item.instance_type }}</div>
@@ -46,7 +46,7 @@
                 <th>Launch Time</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td>{{ item.instance_id }}</td>
+                <td>{{ item.id }}</td>
                 <td>{{ item.root_device }}</td>
                 <td>{{ item.availability_zone }}</td>
                 <td>{{ item.instance_type }}</td>
