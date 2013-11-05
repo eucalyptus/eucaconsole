@@ -12,6 +12,7 @@ $tile-height: 200px;
 $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
+$gridwrapper-table-width: 98%;
 
 
 .columns.datagrid {
@@ -94,6 +95,29 @@ $tile-bg-color: $euca-extralightgrey;
 .match-condition {
     font-size: $euca-font-size;
     margin-bottom: 4px;
+}
+
+.displayicons {
+    font-size: 2rem;
+}
+
+.displayicons a {
+    float: right;
+}
+
+.displayicons .selected {
+    background-color: $euca-extralightgrey;
+}
+
+.displayicons i {
+    padding: 8px 12px;
+}
+
+.gridwrapper .table {
+    width: $gridwrapper-table-width;
+    tr {
+        width: $gridwrapper-table-width;
+    }
 }
 
 #properties-filter-form {

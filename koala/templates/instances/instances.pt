@@ -6,11 +6,16 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">Instances</h3>
+        <h3 class="header" id="pagetitle">
+            Instances
+        </h3>
         <div class="large-2 columns" id="instances-filter">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button small">Launch New Instance</a>
+            </div>
             <div metal:fill-slot="sorting_controls">
                 Sort by
                 <a href="#" data-dropdown="sorting-dropdown">
@@ -30,8 +35,24 @@
                 <div>{{ item.availability_zone }}</div>
                 <div>{{ item.instance_type }}</div>
                 <div>{{ item.security_group }}</div>
-                <div>{{ item.launch_time | date:'yyyy/MM/dd HH:mm a' }}</div>
+                <div>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th>Instance ID</th>
+                <th>Root Device</th>
+                <th>Availability Zone</th>
+                <th>Instance Type</th>
+                <th>Security Group</th>
+                <th>Launch Time</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td>{{ item.instance_id }}</td>
+                <td>{{ item.root_device }}</td>
+                <td>{{ item.availability_zone }}</td>
+                <td>{{ item.instance_type }}</td>
+                <td>{{ item.security_group }}</td>
+                <td>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</td>
+            </metal:block>
         </div>
     </div>
 </div>
