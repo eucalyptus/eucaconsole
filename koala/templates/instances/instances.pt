@@ -38,7 +38,7 @@
                 <div>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>Instance ID</th>
+                <th>ID</th>
                 <th>Root Device</th>
                 <th>Availability Zone</th>
                 <th>Instance Type</th>

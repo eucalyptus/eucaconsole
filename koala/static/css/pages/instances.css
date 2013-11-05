@@ -28,11 +28,14 @@
 
 .displayicons { font-size: 2rem; }
 
-.displayicons a { float: right; }
+.displayicons a { float: right; border-bottom: none; color: black; }
+
+.displayicons a:hover { border-bottom: none; color: #76b800; }
 
 .displayicons .selected { background-color: #eeeeee; }
+.displayicons .selected :hover { color: black; cursor: default; }
 
-.displayicons i { padding: 8px 12px; }
+.displayicons i { display: inline-block; padding: 4px 12px; }
 
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }

@@ -973,8 +973,8 @@ label.error { color: #c60f13; }
 .top-bar .toggle-topbar.menu-icon a span { position: absolute; right: 0; display: block; width: 16px; height: 0; -webkit-box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; }
 .top-bar.expanded { height: auto; background: transparent; }
 .top-bar.expanded .title-area { background: #76b800; }
-.top-bar.expanded .toggle-topbar a { color: #888888; }
-.top-bar.expanded .toggle-topbar a span { -webkit-box-shadow: 0 10px 0 1px #888888, 0 16px 0 1px #888888, 0 22px 0 1px #888888; box-shadow: 0 10px 0 1px #888888, 0 16px 0 1px #888888, 0 22px 0 1px #888888; }
+.top-bar.expanded .toggle-topbar a { color: white; }
+.top-bar.expanded .toggle-topbar a span { -webkit-box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; }
 
 .top-bar-section { left: 0; position: relative; width: auto; -webkit-transition: left 300ms ease-out; -moz-transition: left 300ms ease-out; transition: left 300ms ease-out; }
 .top-bar-section ul { width: 100%; height: auto; display: block; background: #76b800; font-size: 16px; margin: 0; }

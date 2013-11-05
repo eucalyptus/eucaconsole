@@ -103,14 +103,25 @@ $gridwrapper-table-width: 98%;
 
 .displayicons a {
     float: right;
+    border-bottom: none;
+    color: black;
+}
+.displayicons a:hover {
+    border-bottom: none;
+    color: $euca-green;
 }
 
 .displayicons .selected {
     background-color: $euca-extralightgrey;
+    :hover {
+        color: black;
+        cursor: default;
+    }
 }
 
 .displayicons i {
-    padding: 8px 12px;
+    display: inline-block;
+    padding: 4px 12px;
 }
 
 .gridwrapper .table {
