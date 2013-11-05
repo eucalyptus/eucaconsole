@@ -2,7 +2,7 @@
 URL dispatch routes
 
 The route names and patterns are listed here.
-The routes are wired up to view callables via the view_config decorator, which attaches a view to the route name.
+The routes are wired up to view callables via the view_config decorator, which attaches a view to the route_name.
 
 For example, the 'instances' route name is connected to the Instances landing page as follows...
 
@@ -21,8 +21,11 @@ urls = [
     Route(name='dashboard', pattern='/'),
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    # Instances
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instance_view', pattern='/instances/{id}'),
+    # Key pairs
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
 ]

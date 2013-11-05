@@ -38,7 +38,7 @@
                 <th>Fingerprint</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td>{{ item.name }}</td>
+                <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
                 <td>{{ item.fingerprint }}</td>
             </metal:block>
         </div>

@@ -97,6 +97,11 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 0;
 }
 
+.sort-search .go {
+    position: relative;
+    left: -2px;
+}
+
 .match-condition {
     font-size: $euca-font-size;
     margin-bottom: 4px;
@@ -161,6 +166,9 @@ $gridwrapper-table-width: 98%;
 @media screen and (max-width: $topbar-breakpoint) {
     .columns.datagrid {
         padding-left: 1rem;
+    }
+    .sort-search .go {
+        min-width: 32px;
     }
 }
 

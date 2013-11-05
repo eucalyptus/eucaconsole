@@ -1,0 +1,8 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="main_content">
+
+    <h2>The instance id is ${instance_id}</h2>
+
+</div>
+</metal:block>

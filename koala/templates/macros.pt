@@ -74,7 +74,7 @@
                             <input type="search" ng-model="searchFilter" id="search-filter" placeholder="filter..." />
                         </div>
                         <div class="small-2 columns">
-                            <button class="button secondary postfix">Go</button>
+                            <button class="button secondary postfix go">Go</button>
                         </div>
                     </div>
                 </form>
@@ -87,7 +87,7 @@
         <div class="gridwrapper" tal:condition="display_type == 'gridview'">
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
-                    <strong>{{ item.name }}</strong>
+                    <strong><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></strong>
                     <span class="tiny secondary button dropdown right"
                           data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
                     <ul id="item-dropdown_{{ $index }}" class="f-dropdown">

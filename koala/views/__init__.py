@@ -11,3 +11,4 @@ class LandingPageView(object):
         self.filter_fields = []
         self.filter_keys = []
         self.items = []
+        self.prefix = '/'
