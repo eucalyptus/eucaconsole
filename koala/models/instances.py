@@ -2,16 +2,33 @@
 Eucalyptus and AWS Instance models and constants
 
 """
+from boto.ec2.instance import Instance as BotoInstance
+from boto.ec2.instance import InstanceState as BotoInstanceState
+
 from ..constants.instances import AWS_INSTANCE_TYPES
 
 
-class Instance(object):
-    """Eucalyptus or AWS Instance"""
-    STATUS_CHOICES = ('Running', 'Stopped', 'Stopping', 'Pending', 'Terminating', 'Terminated')
+class InstanceState(BotoInstanceState):
+    PENDING = 0
+    RUNNING = 16
+    SHUTTING_DOWN = 32  # Terminating
+    TERMINATED = 48
+    STOPPING = 64
+    STOPPED = 80
 
-    def __init__(self, **kwargs):
-        for key in kwargs:
-            setattr(self, key, kwargs.get('key'))
+    STATE_CHOICES = (
+        (PENDING, 'Pending'),
+        (RUNNING, 'Running'),
+        (SHUTTING_DOWN, 'Terminating'),
+        (TERMINATED, 'Terminated'),
+        (STOPPING, 'Stopping'),
+        (STOPPED, 'Stopped'),
+    )
+
+
+class Instance(BotoInstance):
+    """Eucalyptus or AWS Instance"""
+    INSTANCE_STATE_CHOICES = [val for key, val in InstanceState.STATE_CHOICES]
 
     def get(self, instance_id):
         """Get an instance given an ID"""
@@ -30,10 +47,10 @@ class Instance(object):
         # TODO: Implement
         raise NotImplementedError()
 
+    # TODO: Remove after we're done prototyping
     @classmethod
     def fakeall(cls, availability_zone=None):
         """Fake fetching a bunch of instances from an availability zone, for prototyping purposes.
-        FIXME: Remove me after we're done prototyping
         """
         from datetime import datetime
         from dateutil.relativedelta import relativedelta
@@ -59,6 +76,6 @@ class Instance(object):
                 security_group='default',
                 instance_type=choice(AWS_INSTANCE_TYPES),
                 availability_zone=availability_zone,
-                status=choice(cls.STATUS_CHOICES),
+                status=choice(cls.INSTANCE_STATE_CHOICES),
             ))
         return instances
