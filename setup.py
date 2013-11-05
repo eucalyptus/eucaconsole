@@ -14,11 +14,12 @@ requires = [
     'boto == 2.15',
     'chameleon == 2.13-1',
     'lingua == 1.5',
+    'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
     'pycrypto == 2.6.1',
     'pyramid == 1.5a2',
     'pyramid_beaker == 0.8',
     'pyramid_chameleon == 0.1',
-    'pyramid_debugtoolbar',
+    'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
     'pyramid_layout == 0.8',
     'simplejson == 3.3.1',
     'waitress == 0.8.7',
