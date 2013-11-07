@@ -23,11 +23,13 @@
         <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
             <input type="hidden" name="display" value="${display_type}" />
             <div class="match-condition">
-                Match
+                Match any of...
+                <!--
                 <input type="radio" name="anyall" value="any" checked="checked"
                        tal:attributes="checked request.params.get('anyall') == 'any'" /> any
                 <input type="radio" name="anyall" value="all" disabled="disabled"
                        tal:attributes="checked request.params.get('anyall') == 'all'" /> all
+                       -->
             </div>
             <div tal:repeat="field filter_fields">
                 <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
@@ -47,8 +49,7 @@
 </metal:properties_filter_form>
 
 
-<!-- Landing page datagrid macro =====
-     TODO: Incorporate table view; only the grid view is implemented for now -->
+<!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items"
          ng-controller="ItemsCtrl" ng-init="setInitialSort('${initial_sort_key}'); getItems('${json_items_endpoint}')">
@@ -84,6 +85,7 @@
             </div>
         </div>
         <div ng-show="itemsLoading">Loading...</div>
+        <!-- Begin grid view -->
         <div class="gridwrapper" tal:condition="display_type == 'gridview'">
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
@@ -108,13 +110,10 @@
                 <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
             </div>
         </div>
+        <!-- Begin table view -->
         <div class="gridwrapper" tal:condition="display_type == 'tableview'">
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                <thead>
-                    <tr>
-                        <metal:block metal:define-slot="tableview_headers"></metal:block>
-                    </tr>
-                </thead>
+                <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
                 <tbody>
                     <tr ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                         <metal:block metal:define-slot="tableview_columns"></metal:block>
