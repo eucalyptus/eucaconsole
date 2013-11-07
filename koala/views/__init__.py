@@ -10,5 +10,6 @@ class LandingPageView(object):
         self.display_type = self.request.params.get('display', 'gridview')
         self.filter_fields = []
         self.filter_keys = []
+        self.initial_sort_key = ''
         self.items = []
         self.prefix = '/'

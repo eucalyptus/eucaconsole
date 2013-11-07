@@ -19,13 +19,13 @@
             <div metal:fill-slot="sorting_controls">
                 Sort by
                 <a href="#" data-dropdown="sorting-dropdown">
-                    <span ng-show="sortBy == '-launch_time'">Launch time (most recent first)</span>
-                    <span ng-show="sortBy == 'instance_name'">Instance name</span>
+                    <span ng-show="sortBy == 'name'">Name</span>
+                    <span ng-show="sortBy == 'fingerprint'">Fingerprint</span>
                 </a>
                 <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
-                    <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
-                    <li ng-show="sortBy != '-launch_time'">
-                        <a ng-click="sortBy = '-launch_time'">Launch time (most recent first)</a>
+                    <li ng-show="sortBy != 'name'"><a ng-click="sortBy = 'name'">Name</a></li>
+                    <li ng-show="sortBy != 'fingerprint'">
+                        <a ng-click="sortBy = 'fingerprint'">Fingerprint</a>
                     </li>
                 </ul>
             </div>

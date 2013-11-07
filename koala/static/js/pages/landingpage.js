@@ -8,8 +8,11 @@ angular.module('LandingPage', [])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
         $scope.unfilteredItems = [];
-        $scope.sortBy = '-launch_time';
+        $scope.sortBy = '';
         $scope.urlParams = $.url().param();
+        $scope.setInitialSort = function(sortKey) {
+            $scope.sortBy = sortKey;
+        };
         $scope.applyAnyGetRequestFilters = function() {
             $scope.items = $scope.items.filter(function(item) {
                 for (var key in $scope.urlParams) {

@@ -13,6 +13,7 @@ class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
         self.items = Instance.fakeall()
+        self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -41,6 +42,7 @@ class InstancesView(LandingPageView):
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
         )
 

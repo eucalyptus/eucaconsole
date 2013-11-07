@@ -12,6 +12,7 @@ class KeyPairsView(LandingPageView):
     def __init__(self, request):
         super(KeyPairsView, self).__init__(request)
         self.items = KeyPair.fakeall()
+        self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
@@ -25,6 +26,7 @@ class KeyPairsView(LandingPageView):
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
         )
 
