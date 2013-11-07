@@ -9,7 +9,7 @@
         <h3 class="header" id="pagetitle">
             Key Pairs
         </h3>
-        <div class="large-2 columns" id="instances-filter">
+        <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
