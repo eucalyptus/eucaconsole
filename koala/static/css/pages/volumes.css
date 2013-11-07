@@ -56,3 +56,14 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
+.tile .status.attached { background-color: darkorange; }
+
+.tile .status.attaching { background-color: #ffc966; }
+
+.tile .status.detached { background-color: #5bbce4; }
+
+.tile .status.detaching { background-color: #b3e0f2; }
+
+.tile .status.created { background-color: #76b800; }
+
+.tile .status.creating { background-color: #bcdd8f; }
