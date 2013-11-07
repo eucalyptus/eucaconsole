@@ -73,7 +73,7 @@
             <li class="has-dropdown">
                 <a id="resource-menu-netsec" class="lnk-netsec" href="#">Network &amp; Security</a>
                 <ul class="dropdown">
-                    <li><a id="resource-menuitem-sgroup" href="#">Security Groups</a></li>
+                    <li><a id="resource-menuitem-sgroup" href="${request.route_url('securitygroups')}">Security Groups</a></li>
                     <li class="divider"></li>
                     <li><a id="resource-menuitem-keypair" href="${request.route_url('keypairs')}">Key Pairs</a></li>
                     <li class="divider"></li>

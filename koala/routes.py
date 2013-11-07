@@ -25,6 +25,9 @@ urls = [
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
     Route(name='instance_view', pattern='/instances/{id}'),
+    # Security Groups
+    Route(name='securitygroups', pattern='/securitygroups'),
+    Route(name='securitygroups_json', pattern='/securitygroups/json'),
     # Key pairs
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
