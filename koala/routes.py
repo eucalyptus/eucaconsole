@@ -25,6 +25,9 @@ urls = [
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
     Route(name='instance_view', pattern='/instances/{id}'),
+    # Volumes
+    Route(name='volumes', pattern='/volumes'),
+    Route(name='volumes_json', pattern='/volumes/json'),
     # Security Groups
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),

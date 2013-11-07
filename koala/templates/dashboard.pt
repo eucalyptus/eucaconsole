@@ -44,7 +44,7 @@
                 <div class="tile small-6 columns" id="volumes">
                     <h5 class="subheader">Volumes</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('volumes')}">
                             <i class="fi-list icon"><em>4</em></i>
                         </a>
                     </div>
