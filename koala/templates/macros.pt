@@ -87,7 +87,11 @@
         <div class="gridwrapper" tal:condition="display_type == 'gridview'">
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
-                    <strong><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></strong>
+                    <strong>
+                        <a ng-href="${prefix}/{{ item.id || item.name }}">
+                            <metal:block metal:define-slot="tile_header"> {{ item.name }}</metal:block>
+                        </a>
+                    </strong>
                     <span class="tiny secondary button dropdown right"
                           data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
                     <ul id="item-dropdown_{{ $index }}" class="f-dropdown">

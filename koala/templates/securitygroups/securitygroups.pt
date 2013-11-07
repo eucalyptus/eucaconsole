@@ -35,11 +35,13 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Name</th>
-                <th>description</th>
+                <th>Description</th>
+                <th>Tags</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
+                <td><span ng-repeat="tag in item.tags">{{ tag.key }}: {{ tag.value }}<span ng-show="!$last">;</span> </span></td>
             </metal:block>
         </div>
     </div>

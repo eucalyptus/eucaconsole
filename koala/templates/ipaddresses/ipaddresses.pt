@@ -27,8 +27,10 @@
                     <li ng-show="sortBy != 'instance'"><a ng-click="sortBy = 'instance'">Instance</a></li>
                 </ul>
             </div>
+            <div metal:fill-slot="tile_header">
+                {{ item.ip_address }}
+            </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.ip_address }}</div>
                 <div>{{ item.instance }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">

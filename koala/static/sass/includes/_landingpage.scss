@@ -44,6 +44,12 @@ $gridwrapper-table-width: 98%;
     height: $tile-row-height;
     color: white;
     background-color: $euca-darkgrey;
+    a {
+        color: white;
+        &:hover {
+            color: $euca-green;
+        }
+    }
 }
 
 .tile .header strong {
