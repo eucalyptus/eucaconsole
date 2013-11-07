@@ -49,6 +49,8 @@
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { line-height: 1.8rem; }
 
+#filters { margin-top: 46px; }
+
 #properties-filter-form { font-size: 0.9rem; }
 
 /* ----------------------------------------- Media Queries
