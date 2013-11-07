@@ -28,7 +28,7 @@
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown">
-            <li><a href="https://engage.eucalyptus.com/?r=euca-" target="_blank">Help</a></li>
+            <li><a href="${layout.help_url}" target="_blank">Help</a></li>
             <li><a href="#">Change password</a></li>
             <li><a href="${request.route_url('logout')}">Logout</a></li>
         </ul>

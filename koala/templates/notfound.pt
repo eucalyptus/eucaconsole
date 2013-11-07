@@ -1,0 +1,15 @@
+<metal:block use-macro="main_template">
+
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            404 Not Found
+        </h3>
+        <div class="columns" style="min-height: 26rem;">
+            <p>The resource you have requested was not found.</p>
+        </div>
+    </div>
+</div>
+
+</metal:block>

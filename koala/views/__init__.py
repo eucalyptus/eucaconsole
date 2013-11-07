@@ -2,6 +2,7 @@
 Core views
 
 """
+from pyramid.view import notfound_view_config
 
 
 class LandingPageView(object):
@@ -28,3 +29,9 @@ class LandingPageView(object):
         self.initial_sort_key = ''
         self.items = []
         self.prefix = '/'
+
+
+@notfound_view_config(renderer='../templates/notfound.pt')
+def notfound_view(request):
+    """404 Not Found view"""
+    return dict()

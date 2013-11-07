@@ -15,6 +15,7 @@ class MasterLayout(object):
         self.context = context
         self.request = request
         self.home_url = request.application_url
+        self.help_url = request.registry.settings.get('help.url')
 
     def is_user_admin(self):
         return has_permission('manage', self.context, self.request)
