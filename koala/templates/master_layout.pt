@@ -77,7 +77,7 @@
                     <li class="divider"></li>
                     <li><a id="resource-menuitem-keypair" href="${request.route_url('keypairs')}">Key Pairs</a></li>
                     <li class="divider"></li>
-                    <li><a id="resource-menuitem-eip" href="#">IP Addresses</a></li>
+                    <li><a id="resource-menuitem-eip" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
                 </ul>
             </li>
         </ul>
