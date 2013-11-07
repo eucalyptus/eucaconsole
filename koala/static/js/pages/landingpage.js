@@ -32,9 +32,7 @@ angular.module('LandingPage', [])
                 $scope.items = results;
                 $scope.unfilteredItems = results;
                 if ($.url().param('filter')) {
-                    if ($.url().param('anyall') === 'any') {
-                        $scope.applyAnyGetRequestFilters();
-                    }
+                    $scope.applyAnyGetRequestFilters();
                 }
             });
         };

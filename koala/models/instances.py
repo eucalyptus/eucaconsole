@@ -47,6 +47,11 @@ class Instance(BotoInstance):
         # TODO: Implement
         raise NotImplementedError()
 
+    @staticmethod
+    def get_count_by_state(items=None, state=None):
+        assert state and items
+        return len([item for item in items if item.get('status') == state])
+
     # TODO: Remove after we're done prototyping
     @classmethod
     def fakeall(cls, availability_zone=None):

@@ -17,7 +17,7 @@ class IPAddress(Address):
         from string import letters
 
         items = []
-        count = 100
+        count = 10
 
         for idx in xrange(count):
             ip_address = '10.101.50.{0}'.format(choice(range(255)) + 1)

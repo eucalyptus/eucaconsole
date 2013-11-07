@@ -11,8 +11,8 @@
                 <div class="tile" id="running">
                     <h5 class="subheader">Running instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}">
-                            <i class="fi-cloud icon"><em>5</em></i>
+                        <a href="${request.route_url('instances')}?filter=apply&status=Running">
+                            <i class="fi-cloud icon"><em>${instances_running_count}</em></i>
                         </a>
                     </div>
                     <div class="footer">
@@ -22,8 +22,8 @@
                 <div class="tile" id="stopped">
                     <h5 class="subheader">Stopped instances</h5>
                     <div class="content">
-                        <a href="#">
-                            <i class="fi-cloud icon"><em>3</em></i>
+                        <a href="${request.route_url('instances')}?filter=apply&status=Stopped">
+                            <i class="fi-cloud icon"><em>${instances_stopped_count}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -84,7 +84,7 @@
                 <div class="tile small-6 columns" id="security-groups">
                     <h5 class="subheader">Security groups</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('securitygroups')}">
                             <i class="fi-lock icon"><em>2</em></i>
                         </a>
                     </div>
@@ -93,7 +93,7 @@
                 <div class="tile small-6 columns" id="key-pairs">
                     <h5 class="subheader">Key pairs</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('keypairs')}">
                             <i class="fi-key icon"><em>12</em></i>
                         </a>
                     </div>
@@ -106,7 +106,7 @@
                 <div class="tile">
                     <h5 class="subheader">Elastic IPs</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('ipaddresses')}">
                             <i class="fi-thumbnails icon"><em>12</em></i>
                         </a>
                     </div>
