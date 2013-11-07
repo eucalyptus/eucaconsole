@@ -75,6 +75,9 @@ body {
     padding: 5px 0 10px 15px;
     background-color: #fff;
     color: #333;
+    &.signedout {
+        box-shadow: 0 1px 1px 1px $euca-lightgrey;
+    }
 }
 
 #logobar a {

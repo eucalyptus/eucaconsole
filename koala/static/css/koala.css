@@ -1324,6 +1324,7 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 /* ----------------------------------------- Header
 ----------------------------------------- */
 #logobar { height: 44px; padding: 5px 0 10px 15px; background-color: #fff; color: #333; }
+#logobar.signedout { box-shadow: 0 1px 1px 1px #cccccc; }
 
 #logobar a { font-size: 0.9rem; color: #333; }
 
