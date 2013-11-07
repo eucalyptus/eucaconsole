@@ -57,7 +57,7 @@ class Instance(BotoInstance):
         from random import choice, randint
         from string import letters
 
-        instances = []
+        items = []
         count = 100
 
         if availability_zone is None:
@@ -68,7 +68,7 @@ class Instance(BotoInstance):
             instance_id = 'i-{0}'.format(randint(11111111, 99999999))
             launch_time = datetime.today() - relativedelta(days=randint(1, 30))
             root_device = 'volume-{0}'.format(randint(1, 10))
-            instances.append(dict(
+            items.append(dict(
                 id=instance_id,
                 name=instance_name,
                 root_device=root_device,
@@ -78,4 +78,4 @@ class Instance(BotoInstance):
                 availability_zone=availability_zone,
                 status=choice(cls.INSTANCE_STATE_CHOICES),
             ))
-        return instances
+        return items

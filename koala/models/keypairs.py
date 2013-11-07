@@ -17,14 +17,14 @@ class KeyPair(BotoKeyPair):
         from random import choice
         from string import letters
 
-        keypairs = []
+        items = []
         count = 10
 
         for idx in xrange(count):
             name = 'keypair_{0}'.format(''.join(choice(letters).lower() for i in range(6)))
             fingerprint = hashlib.md5(name).hexdigest()
-            keypairs.append(dict(
+            items.append(dict(
                 name=name,
                 fingerprint=fingerprint,
             ))
-        return keypairs
+        return items
