@@ -22,8 +22,10 @@ class SecurityGroup(BotoSecurityGroup):
         for idx in xrange(count):
             name = 'sgroup_{0}'.format(''.join(choice(letters).lower() for i in range(6)))
             description = 'description for {0}'.format(name)
+            tags = [dict(key='foo', value='bar'), dict(key='baz', value='bat'), dict(key='biz', value='buz')]
             items.append(dict(
                 name=name,
                 description=description,
+                tags=tags,
             ))
         return items

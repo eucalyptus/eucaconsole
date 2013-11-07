@@ -19,7 +19,7 @@ class SecurityGroupsView(LandingPageView):
     def securitygroups_landing(self):
         json_items_endpoint = self.request.route_url('securitygroups_json')
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['name', 'description']
+        self.filter_keys = ['name', 'description', 'tags']
 
         return dict(
             display_type=self.display_type,
