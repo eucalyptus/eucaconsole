@@ -31,7 +31,7 @@
                 <div class="tile" id="in-scaling-group">
                     <h5 class="subheader">In scaling groups</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('scalinggroups')}">
                             <i class="fi-cloud icon"><em>4</em></i>
                         </a>
                     </div>

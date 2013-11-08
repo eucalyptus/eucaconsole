@@ -71,6 +71,9 @@ button#aws-login-button.button {
 
 /* Small screen */
 @media screen and (max-width: $topbar-breakpoint) {
+    #login-panel-wrapper {
+        margin-top: 1rem;
+    }
     #login-panel {
         border-radius: 0;
         box-shadow: none;

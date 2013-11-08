@@ -1,0 +1,14 @@
+/* @fileOverview Scaling Groups landing page CSS */
+@import "../includes/eucavariables";
+
+@import "../includes/landingpage";
+
+
+// Status colors
+$status-color-allhealthy: $euca-green;
+$status-color-unhealthy: darkred;
+
+
+.tile .status.allhealthy { background-color: $status-color-allhealthy; }
+.tile .status.unhealthy { background-color: $status-color-unhealthy; }
+

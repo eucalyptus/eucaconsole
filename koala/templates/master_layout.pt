@@ -59,7 +59,7 @@
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-instance" href="${request.route_url('instances')}">Instances</a></li>
                     <li class="divider"></li>
-                    <li><a id="resource-menuitem-scaling" href="#">Auto Scaling Groups</a></li>
+                    <li><a id="resource-menuitem-scaling" href="${request.route_url('scalinggroups')}">Auto Scaling Groups</a></li>
                 </ul>
             </li>
             <li class="has-dropdown">

@@ -19,5 +19,6 @@ button#aws-login-button.button { background-color: #ff9900; border-color: #e3780
 @media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 768px) { #login-panel { border-radius: 0; box-shadow: none; padding-top: 46px; }
+@media screen and (max-width: 768px) { #login-panel-wrapper { margin-top: 1rem; }
+  #login-panel { border-radius: 0; box-shadow: none; padding-top: 46px; }
   #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

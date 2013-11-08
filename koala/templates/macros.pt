@@ -107,7 +107,7 @@
                 <div class="content">
                     <metal:block metal:define-slot="tile_content"></metal:block>
                 </div>
-                <div class="footer status {{ item.status | lowercase }}">{{ item.status }}</div>
+                <div class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
             </div>
         </div>
         <div class="gridwrapper" tal:condition="display_type == 'tableview'">
