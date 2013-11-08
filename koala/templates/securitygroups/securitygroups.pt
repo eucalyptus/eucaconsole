@@ -16,19 +16,6 @@
             <div metal:fill-slot="new_button">
                 <a class="button small">Create new security group</a>
             </div>
-            <div metal:fill-slot="sorting_controls">
-                Sort by
-                <a href="#" data-dropdown="sorting-dropdown">
-                    <span ng-show="sortBy == 'name'">Name</span>
-                    <span ng-show="sortBy == 'description'">Description</span>
-                </a>
-                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
-                    <li ng-show="sortBy != 'name'"><a ng-click="sortBy = 'name'">Name</a></li>
-                    <li ng-show="sortBy != 'description'">
-                        <a ng-click="sortBy = 'description'">Description</a>
-                    </li>
-                </ul>
-            </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.name }}</div>
                 <div>{{ item.description }}</div>

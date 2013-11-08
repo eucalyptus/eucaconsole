@@ -14,6 +14,9 @@ class LandingPageView(object):
     :ivar filter_keys: List of strings to pass to client-side filtering engine
         The search box input (usually above the landing page datagrid) will match each property in the list against
         each item in the collection to do the filtering.  See $scope.searchFilterItems in landingpage.js
+    :ivar sort_keys: List of strings to pass to client-side sorting engine
+        The sorting dropdown (usually above the landing page datagrid) will display a sorting option for
+        each item in the list.  See templates/macros.pt (id="sorting_controls")
     :ivar initial_sort_key: The initial sort key used for Angular-based client-side sorting.
         Prefix the key with a '-' to perform a descending sort (e.g. '-launch_time')
     :ivar items: The list of dicts to pass to the JSON renderer to display the collection of items.
@@ -26,6 +29,7 @@ class LandingPageView(object):
         self.display_type = self.request.params.get('display', 'gridview')
         self.filter_fields = []
         self.filter_keys = []
+        self.sort_keys = []
         self.initial_sort_key = ''
         self.items = []
         self.prefix = '/'

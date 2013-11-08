@@ -16,19 +16,6 @@
             <div metal:fill-slot="new_button">
                 <a class="button small">Launch New Instance</a>
             </div>
-            <div metal:fill-slot="sorting_controls">
-                Sort by
-                <a href="#" data-dropdown="sorting-dropdown">
-                    <span ng-show="sortBy == '-launch_time'">Launch time (most recent first)</span>
-                    <span ng-show="sortBy == 'instance_name'">Instance name</span>
-                </a>
-                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
-                    <li ng-show="sortBy != 'instance_name'"><a ng-click="sortBy = 'instance_name'">Name</a></li>
-                    <li ng-show="sortBy != '-launch_time'">
-                        <a ng-click="sortBy = '-launch_time'">Launch time (most recent first)</a>
-                    </li>
-                </ul>
-            </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.id }}</div>
                 <div>{{ item.root_device }}</div>

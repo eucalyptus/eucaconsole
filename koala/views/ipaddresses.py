@@ -21,11 +21,17 @@ class IPAddressesView(LandingPageView):
         json_items_endpoint = self.request.route_url('ipaddresses_json')
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['ip_address', 'instance']
+        # sort_keys are passed to sorting drop-down
+        self.sort_keys = [
+            dict(key='ip_address', name='IP Address'),
+            dict(key='instance', name='Instance'),
+        ]
 
         return dict(
             display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
+            sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,

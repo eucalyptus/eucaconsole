@@ -16,17 +16,6 @@
             <div metal:fill-slot="new_button">
                 <a class="button small">Allocate IP address</a>
             </div>
-            <div metal:fill-slot="sorting_controls">
-                Sort by
-                <a href="#" data-dropdown="sorting-dropdown">
-                    <span ng-show="sortBy == 'ip_address'">IP Address</span>
-                    <span ng-show="sortBy == 'instance'">Instance</span>
-                </a>
-                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
-                    <li ng-show="sortBy != 'ip_address'"><a ng-click="sortBy = 'ip_address'">IP Address</a></li>
-                    <li ng-show="sortBy != 'instance'"><a ng-click="sortBy = 'instance'">Instance</a></li>
-                </ul>
-            </div>
             <div metal:fill-slot="tile_header">
                 {{ item.ip_address }}
             </div>

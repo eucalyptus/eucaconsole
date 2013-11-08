@@ -16,19 +16,6 @@
             <div metal:fill-slot="new_button">
                 <a class="button small">Create new scaling group</a>
             </div>
-            <div metal:fill-slot="sorting_controls">
-                Sort by
-                <a href="#" data-dropdown="sorting-dropdown">
-                    <span ng-show="sortBy == 'name'">Name</span>
-                    <span ng-show="sortBy == 'instance_health'">Instance Health</span>
-                </a>
-                <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
-                    <li ng-show="sortBy != 'name'"><a ng-click="sortBy = 'name'">Name</a></li>
-                    <li ng-show="sortBy != 'instance_health'">
-                        <a ng-click="sortBy = 'instance_health'">Instance Health</a>
-                    </li>
-                </ul>
-            </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.launch_config }}</div>
                 <div>Current Instances: {{ item.instances.current }}</div>

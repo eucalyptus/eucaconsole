@@ -65,8 +65,18 @@
             </div>
         </div>
         <div class="row sort-search" ng-cloak="cloak">
-            <div class="small-5 columns">
-                <metal:block metal:define-slot="sorting_controls"></metal:block>
+            <div class="small-5 columns" id="sorting-controls">
+                <metal:block metal:define-slot="sorting_controls">
+                    Sort by
+                    <a href="#" data-dropdown="sorting-dropdown">
+                        <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
+                    </a>
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
+                        <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
+                            <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
+                        </li>
+                    </ul>
+                </metal:block>
             </div>
             <div class="small-4 columns search-filter">
                 <form class="custom" ng-submit="searchFilterItems(${filter_keys})" metal:define-slot="search_controls">

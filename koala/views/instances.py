@@ -36,11 +36,17 @@ class InstancesView(LandingPageView):
         more_filter_keys = ['id', 'name']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
+        # sort_keys are passed to sorting drop-down
+        self.sort_keys = [
+            dict(key='-launch_time', name='Launch time (most recent first)'),
+            dict(key='name', name='Instance name'),
+        ]
 
         return dict(
             display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
+            sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
