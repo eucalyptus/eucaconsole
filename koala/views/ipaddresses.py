@@ -14,7 +14,7 @@ class IPAddressesView(LandingPageView):
         self.items = IPAddress.fakeall()
         self.initial_sort_key = 'ip_address'
         self.prefix = '/ipaddresses'
-        self.display_type = 'tableview'  # Set table view as initial view
+        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
     @view_config(route_name='ipaddresses', renderer='../templates/ipaddresses/ipaddresses.pt')
     def ipaddresses_landing(self):

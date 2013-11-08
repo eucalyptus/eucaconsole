@@ -14,6 +14,7 @@ class KeyPairsView(LandingPageView):
         self.items = KeyPair.fakeall()
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
+        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):

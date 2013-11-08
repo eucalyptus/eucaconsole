@@ -14,7 +14,7 @@ class SecurityGroupsView(LandingPageView):
         self.items = SecurityGroup.fakeall()
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
-        self.display_type = 'tableview'
+        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
     @view_config(route_name='securitygroups', renderer='../templates/securitygroups/securitygroups.pt')
     def securitygroups_landing(self):
