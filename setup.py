@@ -13,7 +13,10 @@ requires = [
     'beaker == 1.6.4',
     'boto == 2.15',
     'chameleon == 2.13-1',
+    'gevent == 0.13.8',  # Requires libevent
+    'greenlet == 0.4.1',
     'lingua == 1.5',
+    'M2Crypto == 0.21.1',
     'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
     'pycrypto == 2.6.1',
     'pyramid == 1.5a2',
@@ -22,6 +25,7 @@ requires = [
     'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
     'pyramid_layout == 0.8',
     'simplejson == 3.3.1',
+    'SQLAlchemy == 0.8.3',
     'waitress == 0.8.7',
     'WTForms == 1.0.5',
 ]

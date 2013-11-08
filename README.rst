@@ -17,6 +17,17 @@ AWS Services supported
 Development environment setup
 =============================
 
+Prerequisites
+-------------
+Prior to installing Pyramid and it's dependencies, you may need to install the following libraries...
+
+* libevent-dev (required by gevent)
+* openssl (required by M2Crypto)
+
+Ubuntu: `apt-get install libevent-dev openssl`
+Fedora: `yum install libevent-devel openssl-devel`
+OS X: `brew install libevent openssl`
+
 Pyramid Setup
 -------------
 Run `python setup.py develop` to set up the development environment.
