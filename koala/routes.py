@@ -28,6 +28,9 @@ urls = [
     # Volumes
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    # Snapshots
+    Route(name='snapshots', pattern='/snapshots'),
+    Route(name='snapshots_json', pattern='/snapshots/json'),
     # Security Groups
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),

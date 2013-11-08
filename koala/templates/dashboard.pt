@@ -53,7 +53,7 @@
                 <div class="tile small-6 columns" id="snapshots">
                     <h5 class="subheader">Snapshots</h5>
                     <div class="content">
-                        <a href="#">
+                        <a href="${request.route_url('snapshots')}">
                             <i class="fi-list icon"><em>9</em></i>
                         </a>
                     </div>

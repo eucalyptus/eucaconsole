@@ -67,7 +67,7 @@
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-volume" href="${request.route_url('volumes')}">Volumes</a></li>
                     <li class="divider"></li>
-                    <li><a id="resource-menuitem-snapshot" href="#">Snapshots</a></li>
+                    <li><a id="resource-menuitem-snapshot" href="${request.route_url('snapshots')}">Snapshots</a></li>
                 </ul>
             </li>
             <li class="has-dropdown">
