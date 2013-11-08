@@ -20,7 +20,7 @@
                 Sort by
                 <a href="#" data-dropdown="sorting-dropdown">
                     <span ng-show="sortBy == '-create_time'">Create time (most recent first)</span>
-                    <span ng-show="sortBy == 'name'">Instance name</span>
+                    <span ng-show="sortBy == 'name'">Name</span>
                 </a>
                 <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
                     <li ng-show="sortBy != 'name'"><a ng-click="sortBy = 'name'">Name</a></li>
