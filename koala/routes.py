@@ -28,6 +28,9 @@ urls = [
     # Scaling Groups
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    # Launch Configurations
+    Route(name='launchconfigs', pattern='/launchconfigs'),
+    Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
     # Volumes
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
