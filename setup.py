@@ -24,6 +24,8 @@ requires = [
     'pyramid_chameleon == 0.1',
     'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
     'pyramid_layout == 0.8',
+    'pyramid_mailer == 0.13',
+    'pyramid_tm == 0.7',
     'simplejson == 3.3.1',
     'SQLAlchemy == 0.8.3',
     'waitress == 0.8.7',
