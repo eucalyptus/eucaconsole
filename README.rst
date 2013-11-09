@@ -96,6 +96,14 @@ You may also find it useful to set the logging level to DEBUG in the console.ini
 The management console assumes an SSL setup. To disable SSL for development purposes, set `session.secure = false`
 in the config file (console.ini)
 
+Running the tests
+-----------------
+The unit tests are based on Python's standard unittest library.
+
+To run all tests, run the following at the repo root:
+
+    python setup.py test
+
 
 Technology Stack
 ================
