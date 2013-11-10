@@ -15,6 +15,7 @@ requires = [
     'chameleon == 2.13-1',
     'gevent == 0.13.8',  # Requires libevent
     'greenlet == 0.4.1',
+    'gunicorn == 18.0',
     'lingua == 1.5',
     'M2Crypto == 0.21.1',
     'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
