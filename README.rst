@@ -65,11 +65,14 @@ Run the server with
 
     ./launcher.sh
 
-`launcher.sh` is provided as an alias for `pserve console.ini`
+`launcher.sh` is provided as an alias for `python runapp.py`
 
 
 Running the server in development/debug mode
 --------------------------------------------
+The launcher.sh script runs the application with gunicorn and gevent,
+closely matching the production deployment setup.
+
 To have Pyramid automatically detect modifications to templates and views,
 
 1. Change the reload_templates setting to true in console.ini: `pyramid.reload_templates = true`
@@ -96,6 +99,17 @@ You may also find it useful to set the logging level to DEBUG in the console.ini
 The management console assumes an SSL setup. To disable SSL for development purposes, set `session.secure = false`
 in the config file (console.ini)
 
+
+Running the server in production mode
+-------------------------------------
+A production deployment assumes an SSL setup, requiring nginx. To configure nginx...
+
+1. Copy the nginx.conf file at conf/nginx.conf to your system's nginx.conf location
+    - Location is usually /etc/nginx/nginx.conf on Linux and /usr/local/etc/nginx/nginx.conf on OS X
+2. Configure the location of the static folder (location /static/.*)
+3. Configure SSL (specify paths to certificate and key files)
+
+
 Running the tests
 -----------------
 The unit tests are based on Python's standard unittest library.
@@ -117,9 +131,9 @@ Primary Components
 
 Secondary Components
 --------------------
+* Beaker and pyramid_beaker (server-side cache/sessions)
 * Chameleon (server-side templates)
 * pyramid_layout (layout/themes for Pyramid)
+* Waitress or gunicorn (WSGI server)
 * WTForms (server-side forms and validation)
-* Beaker and pyramid_beaker (server-side cache/sessions)
-* Waitress (WSGI server)
 
