@@ -28,12 +28,16 @@ Ubuntu: `apt-get install libevent-dev openssl`
 Fedora: `yum install libevent-devel openssl-devel`
 OS X: `brew install libevent openssl`
 
+
 Pyramid Setup
 -------------
 Run `python setup.py develop` to set up the development environment.
 This only needs to be run once or when the "requires" package versions in setup.py are modified.
 
 Note: It is strongly recommended to set up the development environment in a virtualenv.
+
+If setup.py fails with an M2Crypto error and you're on a yum-based system (Fedora, CentOS, RHEL),
+see http://stackoverflow.com/questions/4380191/installing-m2crypto-on-centos
 
 Sass/Compass Setup
 ------------------
