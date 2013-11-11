@@ -122,6 +122,12 @@ To run all tests, run the following at the repo root:
 
     python setup.py test
 
+To run the tests with nose and report test coverage:
+
+    python setup.py nosetests --with-coverage
+
+Note that you will need to `pip install nose, coverage, nose-cov` to use nose with coverage
+
 
 Technology Stack
 ================
