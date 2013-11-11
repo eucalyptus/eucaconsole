@@ -37,7 +37,7 @@ This only needs to be run once or when the "requires" package versions in setup.
 Note: It is strongly recommended to set up the development environment in a virtualenv.
 
 If setup.py fails with an M2Crypto error and you're on a yum-based system (Fedora, CentOS, RHEL),
-see http://stackoverflow.com/questions/4380191/installing-m2crypto-on-centos
+download the M2Crypto package at https://pypi.python.org/pypi/M2Crypto and install via `fedora_setup.sh install`
 
 Sass/Compass Setup
 ------------------
