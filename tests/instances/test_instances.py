@@ -6,7 +6,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
-from koala.tests import BaseLiveTestCase
+from tests import BaseLiveTestCase
 
 
 class InstancesViewTests(BaseLiveTestCase):

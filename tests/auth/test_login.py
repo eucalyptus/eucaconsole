@@ -6,7 +6,7 @@ from pyramid.testing import DummyRequest
 
 from koala.forms.login import AWSLoginForm, EucaLoginForm
 from koala.models.auth import AWSAuthenticator, EucaAuthenticator
-from koala.tests import BaseTestCase, BaseFormTestCase
+from tests import BaseTestCase, BaseFormTestCase
 
 
 class EucaLoginFormTestCase(BaseFormTestCase):
