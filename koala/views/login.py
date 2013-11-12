@@ -91,7 +91,7 @@ class LoginView(object):
                     creds = auth.authenticate(timeout=10)
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
-                    session['access_key'] = creds.access_key
+                    session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
