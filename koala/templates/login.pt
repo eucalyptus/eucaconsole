@@ -10,6 +10,13 @@
         <div class="panel has-header ${'hide-aws' if not aws_enabled else ''}" id="login-panel">
             <div class="header">Log in to your console</div>
             <div class="row">
+                <div tal:condition="login_form_errors">
+                <div data-alert="alert" class="alert-box alert large-10 large-centered columns"
+                        tal:repeat="login_error login_form_errors">
+                    ${ login_error }
+                    <a href="#" class="close">&times;</a>
+                </div>
+                </div>
                 <div class="${'large-5' if aws_enabled else 'large-12'} columns">
                     <h6>Log in to Eucalyptus</h6>
                     <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}">
