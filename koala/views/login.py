@@ -95,10 +95,9 @@ class LoginView(object):
                     session['secret_key'] = creds.secret_key
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
-                # TODO: Handle proper exceptions from AWS
                 except HTTPError, err:
-                    if err.msg == u'Unauthorized':
-                        self.login_form_errors.append(u'Invalid user/account name and/or password.')
+                    if err.msg == 'Forbidden':
+                        self.login_form_errors.append(u'Invalid access key and/or secret key.')
                 except URLError, err:
                     if str(err.reason) == 'timed out':
                         self.login_form_errors.append(u'No response from host ' + clchost)
