@@ -29,8 +29,9 @@ class LoginView(object):
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
         referrer = self.request.url
         login_url = self.request.route_url('login')
-        if referrer == login_url:
-            referrer = '/'  # never use the login form itself as came_from
+        logout_url = self.request.route_url('logout')
+        if referrer in [login_url, logout_url]:
+            referrer = '/'  # never use the login form (or logout view) itself as came_from
         self.came_from = self.request.params.get('came_from', referrer)
         self.login_form_errors = []
 

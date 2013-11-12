@@ -40,7 +40,9 @@ class User(object):
 
 
 def groupfinder(user_id, request):
-    return [Authenticated]
+    if user_id is not None:
+        return [Authenticated]
+    return []
 
 
 class AWSQuery(object):
