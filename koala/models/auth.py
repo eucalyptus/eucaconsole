@@ -4,13 +4,15 @@ Authentication and Authorization models
 
 """
 import base64
-import time
 import hashlib
 import hmac
 import logging
 import urllib
 import urllib2
+import urlparse
 import xml
+
+from datetime import datetime
 
 from boto.handler import XmlHandler as BotoXmlHandler
 from boto.sts.credentials import Credentials
@@ -41,10 +43,67 @@ def groupfinder(user_id, request):
     return [Authenticated]
 
 
-class TokenAuthenticator(object):
+class AWSQuery(object):
+    """
+    Build a signed request to an Amazon AWS endpoint.
+    Credit: https://github.com/kesor/amazon-queries
+
+    :type endpoint: string
+    :param endpoint: from http://docs.amazonwebservices.com/general/latest/gr/rande.html
+
+    :type key_id: string
+    :param key_id: The Access Key ID for the request sender.
+
+    :type secret_key: string
+    :param secret_key: Secret Access Key used for request signature.
+
+    :type parameters: dict
+    :param parameters: Optional additional request parameters.
+
+    """
+    def __init__(self, endpoint, key_id, secret_key, parameters=None):
+        parameters = parameters or dict()
+        parsed = urlparse.urlparse(endpoint)
+        self.host = parsed.hostname
+        self.path = parsed.path or '/'
+        self.endpoint = endpoint
+        self.secret_key = secret_key
+        self.parameters = dict({
+            'AWSAccessKeyId': key_id,
+            'SignatureVersion': 2,
+            'SignatureMethod': 'HmacSHA256',
+        }, **parameters)
+
+    @property
+    def signed_parameters(self):
+        self.parameters['Timestamp'] = datetime.utcnow().isoformat()
+        params = dict(self.parameters, **{'Signature': self.signature})
+        return urllib.urlencode(params)
+
+    @property
+    def signature(self):
+        params = urllib.urlencode(sorted(self.parameters.items()))
+        text = "\n".join(['POST', self.host, self.path, params])
+        auth = hmac.new(str(self.secret_key), msg=text, digestmod=hashlib.sha256)
+        return base64.b64encode(auth.digest())
+
+
+class EucaAuthenticator(object):
+    """Eucalyptus cloud token authenticator"""
+
     def __init__(self, host, duration):
-        # make the call to STS service to authenticate with the CLC
-        self.auth_url = "https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}".format(
+        """
+        Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
+
+        :type host: string
+        :param host: IP address or FQDN of CLC host
+
+        :type duration: int
+        :param duration: Duration of the session token (in seconds)
+
+        """
+        template = 'https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}'
+        self.auth_url = template.format(
             host=host,
             dur=duration,
             service='services/Tokens',
@@ -79,34 +138,36 @@ class TokenAuthenticator(object):
         logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
         return creds
 
-    @staticmethod
-    def authenticate_aws(access_key, secret_key, duration):
+
+class AWSAuthenticator(AWSQuery):
+
+    def __init__(self, key_id, secret_key, duration):
+        """
+        Configure connection to AWS STS service
+
+        :type key_id: string
+        :param key_id: AWS access key
+
+        :type secret_key: string
+        :param secret_key: AWS secret key
+
+        :type duration: int
+        :param duration: Duration of AWS session token, in seconds
+
+        """
+        self.endpoint = 'https://sts.amazonaws.com'
         params = dict(
-            AWSAccessKeyId=access_key,
             Action='GetSessionToken',
             DurationSeconds=duration,
-            SignatureMethod='HmacSHA256',
-            SignatureVersion='2',
-            Timestamp=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
             Version='2011-06-15'
         )
-        encoded_params = urllib.urlencode(params)
-        string_to_sign = unicode("POST\nsts.amazonaws.com\n/\n{0}".format(encoded_params)).encode('utf-8')
-        secret_key = unicode(secret_key).encode('utf-8')
+        super(AWSAuthenticator, self).__init__(self.endpoint, key_id, secret_key, parameters=params)
 
-        # Sign the request
-        signature = hmac.new(key=secret_key, msg=string_to_sign, digestmod=hashlib.sha256).digest()
-
-        # Base64 encode the signature
-        encoded_sig = base64.encodestring(signature).strip()
-
-        # Make the signature URL safe and add to URL params
-        encoded = urllib.quote(encoded_sig)
-        params['Signature'] = encoded
-        package = base64.encodestring(urllib.urlencode(params))
-
-        req = urllib2.Request('https://sts.amazonaws.com', data=package)
-        response = urllib2.urlopen(req, timeout=20)
+    def authenticate(self, timeout=20):
+        """ Make authentication request to AWS STS service
+            Timeout defaults to 20 seconds"""
+        req = urllib2.Request(self.endpoint, data=self.signed_parameters)
+        response = urllib2.urlopen(req, timeout=timeout)
         body = response.read()
 
         # parse AccessKeyId, SecretAccessKey and SessionToken
@@ -115,3 +176,4 @@ class TokenAuthenticator(object):
         xml.sax.parseString(body, h)
         logging.info("Authenticated AWS user")
         return creds
+

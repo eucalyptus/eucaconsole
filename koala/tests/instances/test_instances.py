@@ -10,11 +10,6 @@ from koala.tests import BaseLiveTestCase
 
 
 class InstancesViewTests(BaseLiveTestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
 
     def test_instances_view_defaults(self):
         from koala.views.instances import InstancesView

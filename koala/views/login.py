@@ -10,7 +10,7 @@ from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, AWSLoginForm
-from ..models.auth import TokenAuthenticator
+from ..models.auth import AWSAuthenticator, EucaAuthenticator
 
 
 @forbidden_view_config()
@@ -55,10 +55,10 @@ class LoginView(object):
         session = self.request.session
         clchost = self.request.registry.settings.get('clchost')
         duration = self.request.registry.settings.get('session.cookie_expires')
-        auth = TokenAuthenticator(host=clchost, duration=duration)
         new_passwd = None
 
         if login_type == 'Eucalyptus':
+            auth = EucaAuthenticator(host=clchost, duration=duration)
             euca_login_form = EucaLoginForm(self.request, formdata=self.request.params)
             if euca_login_form.validate():
                 account = self.request.params.get('account')
@@ -86,9 +86,8 @@ class LoginView(object):
                 aws_access_key = self.request.params.get('access_key')
                 aws_secret_key = self.request.params.get('secret_key')
                 try:
-                    creds = auth.authenticate_aws(
-                        access_key=aws_access_key, secret_key=aws_secret_key, duration=duration
-                    )
+                    auth = AWSAuthenticator(key_id=aws_access_key, secret_key=aws_secret_key, duration=duration)
+                    creds = auth.authenticate(timeout=10)
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
                     session['access_key'] = creds.access_key
