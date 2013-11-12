@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
 """
 Authentication and Authorization models
 
 """
 import base64
+import time
+import hashlib
+import hmac
 import logging
+import urllib
 import urllib2
 import xml
 
@@ -71,12 +76,36 @@ class TokenAuthenticator(object):
         creds = Credentials(None)
         h = BotoXmlHandler(creds, None)
         xml.sax.parseString(body, h)
-        logging.info("authenticated user: " + account + "/" + user)
+        logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
         return creds
 
-    # raises EuiExcepiton for "Not Authorized" or "Timed out"
-    def authenticate_aws(self, package):
-        req = urllib2.Request('https://sts.amazonaws.com', package)
+    @staticmethod
+    def authenticate_aws(access_key, secret_key, duration):
+        params = dict(
+            AWSAccessKeyId=access_key,
+            Action='GetSessionToken',
+            DurationSeconds=duration,
+            SignatureMethod='HmacSHA256',
+            SignatureVersion='2',
+            Timestamp=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+            Version='2011-06-15'
+        )
+        encoded_params = urllib.urlencode(params)
+        string_to_sign = unicode("POST\nsts.amazonaws.com\n/\n{0}".format(encoded_params)).encode('utf-8')
+        secret_key = unicode(secret_key).encode('utf-8')
+
+        # Sign the request
+        signature = hmac.new(key=secret_key, msg=string_to_sign, digestmod=hashlib.sha256).digest()
+
+        # Base64 encode the signature
+        encoded_sig = base64.encodestring(signature).strip()
+
+        # Make the signature URL safe and add to URL params
+        encoded = urllib.quote(encoded_sig)
+        params['Signature'] = encoded
+        package = base64.encodestring(urllib.urlencode(params))
+
+        req = urllib2.Request('https://sts.amazonaws.com', data=package)
         response = urllib2.urlopen(req, timeout=20)
         body = response.read()
 
@@ -84,5 +113,5 @@ class TokenAuthenticator(object):
         creds = Credentials(None)
         h = BotoXmlHandler(creds, None)
         xml.sax.parseString(body, h)
-        logging.info("authenticated aws user")
+        logging.info("Authenticated AWS user")
         return creds

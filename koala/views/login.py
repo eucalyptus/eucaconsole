@@ -80,18 +80,28 @@ class LoginView(object):
                 except URLError, err:
                     if str(err.reason) == 'timed out':
                         self.login_form_errors.append(u'No response from host ' + clchost)
-                # If we've made it here, the form validated and the user authenticated successfully.
         elif login_type == 'AWS':
             aws_login_form = AWSLoginForm(self.request, formdata=self.request.params)
             if aws_login_form.validate():
-                session['cloud_type'] = 'aws'
                 aws_access_key = self.request.params.get('access_key')
                 aws_secret_key = self.request.params.get('secret_key')
-                session['aws_access_key'] = aws_access_key
-                session['aws_secret_key'] = aws_secret_key
-                # TODO: Authenticate credentials with AWS
-                headers = remember(self.request, aws_access_key)
-                return HTTPFound(location=self.came_from, headers=headers)
+                try:
+                    creds = auth.authenticate_aws(
+                        access_key=aws_access_key, secret_key=aws_secret_key, duration=duration
+                    )
+                    session['cloud_type'] = 'aws'
+                    session['session_token'] = creds.session_token
+                    session['access_key'] = creds.access_key
+                    session['secret_key'] = creds.secret_key
+                    headers = remember(self.request, aws_access_key)
+                    return HTTPFound(location=self.came_from, headers=headers)
+                # TODO: Handle proper exceptions from AWS
+                except HTTPError, err:
+                    if err.msg == u'Unauthorized':
+                        self.login_form_errors.append(u'Invalid user/account name and/or password.')
+                except URLError, err:
+                    if str(err.reason) == 'timed out':
+                        self.login_form_errors.append(u'No response from host ' + clchost)
         return dict(
             euca_login_form=euca_login_form,
             aws_login_form=aws_login_form,
