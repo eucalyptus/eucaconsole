@@ -4,10 +4,12 @@ Pyramid views for Dashboard
 """
 from pyramid.view import view_config
 from ..models.instances import Instance
+from . import BaseView
 
 
-class DashboardView(object):
+class DashboardView(BaseView):
     def __init__(self, request):
+        super(DashboardView, self).__init__(request)
         self.request = request
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')

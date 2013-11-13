@@ -10,7 +10,7 @@ from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, AWSLoginForm
-from ..models.auth import AWSAuthenticator, EucaAuthenticator
+from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
 
 
 @forbidden_view_config()
@@ -89,10 +89,14 @@ class LoginView(object):
                 try:
                     auth = AWSAuthenticator(key_id=aws_access_key, secret_key=aws_secret_key, duration=duration)
                     creds = auth.authenticate(timeout=10)
+                    default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
-                    session['access_id'] = creds.access_key
-                    session['secret_key'] = creds.secret_key
+                    session['access_id'] = aws_access_key
+                    session['secret_key'] = aws_secret_key
+                    session['region'] = default_region
+                    # Save EC2 Connection object in cache
+                    ConnectionManager.ec2_connection(default_region, aws_access_key, aws_secret_key)
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:

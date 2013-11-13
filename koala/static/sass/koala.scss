@@ -109,6 +109,10 @@ body {
     font-size: 1.5rem;
 }
 
+#region-dropdown li[data-selected] {
+    display: none;  // Hide selected region
+}
+
 
 // Nav bar styles
 nav.top-bar a {

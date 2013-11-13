@@ -30,23 +30,6 @@ class Instance(BotoInstance):
     """Eucalyptus or AWS Instance"""
     INSTANCE_STATE_CHOICES = [val for key, val in InstanceState.STATE_CHOICES]
 
-    def get(self, instance_id):
-        """Get an instance given an ID"""
-        # TODO: Implement
-        raise NotImplementedError()
-
-    @staticmethod
-    def filter(**kwargs):
-        """Get instances given one or more filter criteria"""
-        # TODO: Implement
-        raise NotImplementedError()
-
-    @staticmethod
-    def all(availability_zone=None):
-        """Get all instances from an availability zone"""
-        # TODO: Implement
-        raise NotImplementedError()
-
     @staticmethod
     def get_count_by_state(items=None, state=None):
         assert state and items

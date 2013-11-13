@@ -5,33 +5,33 @@ Pyramid views for Eucalyptus and AWS instances
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
-from ..models.instances import Instance
 from ..views import LandingPageView
 
 
 class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
-        self.items = Instance.fakeall()
+        self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
+
+    def get_items(self):
+        conn = self.get_connection()
+        return conn.get_only_instances()
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
         json_items_endpoint = self.request.route_url('instances_json')
-        status_choices = sorted(set(instance.get('status') for instance in self.items))
-        root_device_choices = sorted(set(instance.get('root_device') for instance in self.items))
-        instance_type_choices = sorted(set(instance.get('instance_type') for instance in self.items))
-        security_group_choices = sorted(set(instance.get('security_group') for instance in self.items))
-        avail_zone_choices = sorted(set(instance.get('availability_zone') for instance in self.items))
+        state_choices = sorted(set(instance.state for instance in self.items))
+        root_device_type_choices = ('ebs', 'instance-store')
+        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
+        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
-            LandingPageFilter(key='status', name='Status', choices=status_choices),
-            LandingPageFilter(key='root_device', name='Root device', choices=root_device_choices),
+            LandingPageFilter(key='state', name='Status', choices=state_choices),
+            LandingPageFilter(key='root_device_type', name='Root device', choices=root_device_type_choices),
             LandingPageFilter(key='instance_type', name='Instance type', choices=instance_type_choices),
-            LandingPageFilter(key='security_group', name='Security group', choices=security_group_choices),
-            LandingPageFilter(key='availability_zone', name='Availability zone', choices=avail_zone_choices),
-            LandingPageFilter(key='tags', name='Tags'),
+            LandingPageFilter(key='placement', name='Availability zone', choices=avail_zone_choices),
         ]
         more_filter_keys = ['id', 'name']
         # filter_keys are passed to client-side filtering in search box
@@ -54,7 +54,20 @@ class InstancesView(LandingPageView):
 
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
-        return dict(results=self.items)
+        from boto.ec2.group import Group
+        instances = []
+        for instance in self.items:
+            instances.append(dict(
+                id=instance.id,
+                instance_type=instance.instance_type,
+                ip_address=instance.ip_address,
+                launch_time=instance.launch_time,
+                placement=instance.placement,
+                root_device=instance.root_device_name,
+                security_groups=', '.join(group.name for group in instance.groups),
+                state=instance.state,
+            ))
+        return dict(results=instances)
 
 
 class InstanceView(object):
