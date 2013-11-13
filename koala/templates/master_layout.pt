@@ -33,13 +33,15 @@
             <li><a href="${request.route_url('logout')}">Logout</a></li>
         </ul>
     </section>
-    <section tal:condition="request.user.is_authenticated()">
+    <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
         <a href="#" data-dropdown="region-dropdown" class="small secondary button dropdown">
             <span class="hide-for-xsmall">us-west-2 (Oregon)</span>
             <span class="show-for-xsmall"><i class="fi-cloud icon"></i></span>
         </a>
         <ul id="region-dropdown" class="f-dropdown">
-            <li><a href="#">us-west-1 (Northern Cal)</a></li>
+            <li tal:repeat="region layout.aws_regions">
+                <a href="#">${region.label}</a>
+            </li>
         </ul>
     </section>
 </nav>
