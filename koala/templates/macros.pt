@@ -101,7 +101,7 @@
                 <div class="header">
                     <strong>
                         <a ng-href="${prefix}/{{ item.id || item.name }}">
-                            <metal:block metal:define-slot="tile_header"> {{ item.name }}</metal:block>
+                            <metal:block metal:define-slot="tile_header"> {{ item.name || item.id }}</metal:block>
                         </a>
                     </strong>
                     <span class="tiny secondary button dropdown right"
@@ -117,7 +117,7 @@
                 <div class="content">
                     <metal:block metal:define-slot="tile_content"></metal:block>
                 </div>
-                <div class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
+                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
             </div>
         </div>
         <div class="gridwrapper" tal:condition="display_type == 'tableview'">

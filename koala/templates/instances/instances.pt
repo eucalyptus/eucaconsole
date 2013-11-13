@@ -19,9 +19,9 @@
             <div metal:fill-slot="tile_content">
                 <div>{{ item.id }}</div>
                 <div>{{ item.root_device }}</div>
-                <div>{{ item.availability_zone }}</div>
+                <div>{{ item.placement }}</div>
                 <div>{{ item.instance_type }}</div>
-                <div>{{ item.security_group }}</div>
+                <div>{{ item.security_groups }}</div>
                 <div>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -35,9 +35,9 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
                 <td>{{ item.root_device }}</td>
-                <td>{{ item.availability_zone }}</td>
+                <td>{{ item.placement }}</td>
                 <td>{{ item.instance_type }}</td>
-                <td>{{ item.security_group }}</td>
+                <td>{{ item.security_groups }}</td>
                 <td>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</td>
             </metal:block>
         </div>

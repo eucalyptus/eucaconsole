@@ -4,6 +4,7 @@ Pyramid views for Login/Logout
 """
 from urllib2 import HTTPError, URLError
 
+from boto import ec2
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
@@ -89,10 +90,17 @@ class LoginView(object):
                 try:
                     auth = AWSAuthenticator(key_id=aws_access_key, secret_key=aws_secret_key, duration=duration)
                     creds = auth.authenticate(timeout=10)
+                    default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
+                    # Save EC2 Connection object in session
+                    conn = ec2.connect_to_region(
+                        default_region,
+                        aws_access_key_id=aws_access_key,
+                        aws_secret_access_key=aws_secret_key)
+                    session['conn'] = conn
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
