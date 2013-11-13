@@ -4,8 +4,37 @@ Core views
 """
 from pyramid.view import notfound_view_config
 
+from ..models.auth import ConnectionManager
 
-class LandingPageView(object):
+
+class BaseView(object):
+    """Base class for all views"""
+    def __init__(self, request):
+        self.request = request
+        self.region = request.session.get('region')
+        self.access_key = request.session.get('access_id')
+        self.secret_key = request.session.get('secret_key')
+        self.cloud_type = request.session.get('cloud_type')
+        self.clchost = request.registry.settings.get('clchost')
+        self.clcport = int(request.registry.settings.get('clcport', 8773))
+        self.security_token = request.session.get('session_token')
+
+    def get_connection(self):
+        conn = None
+
+        if self.cloud_type == 'aws':
+            conn = ConnectionManager.ec2_connection(self.region, self.access_key, self.secret_key)
+        elif self.cloud_type == 'euca':
+            conn = ConnectionManager.euca_connection(
+                self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token)
+            conn.APIVersion = '2012-12-01'
+            conn.https_validate_certificates = False
+            conn.http_connection_kwargs['timeout'] = 30
+
+        return conn
+
+
+class LandingPageView(BaseView):
     """Common view for landing pages
 
     :ivar display_type: Either 'tableview' or 'gridview'.  Defaults to 'gridview' if unspecified
@@ -25,7 +54,7 @@ class LandingPageView(object):
 
     """
     def __init__(self, request):
-        self.request = request
+        super(LandingPageView, self).__init__(request)
         self.display_type = self.request.params.get('display', 'gridview')
         self.filter_fields = []
         self.filter_keys = []

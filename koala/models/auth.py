@@ -16,7 +16,9 @@ from datetime import datetime
 
 from beaker.cache import cache_region
 from boto import ec2
+from boto.ec2.connection import EC2Connection
 from boto.handler import XmlHandler as BotoXmlHandler
+from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
 
@@ -47,6 +49,15 @@ class ConnectionManager(object):
     @cache_region('extra_long_term', 'ec2_connection_cache')
     def ec2_connection(region, access_key, secret_key):
         conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        return conn
+
+    @staticmethod
+    @cache_region('extra_long_term', 'euca_connection_cache')
+    def euca_connection(clchost, port, access_id, secret_key, token):
+        region = RegionInfo(name='eucalyptus', endpoint=clchost)
+        path = '/services/Eucalyptus'
+        conn = EC2Connection(
+            access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
         return conn
 
 
