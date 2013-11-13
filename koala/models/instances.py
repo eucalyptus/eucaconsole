@@ -31,11 +31,6 @@ class Instance(BotoInstance):
     INSTANCE_STATE_CHOICES = [val for key, val in InstanceState.STATE_CHOICES]
 
     @staticmethod
-    def all(conn, instance_ids=None, filters=None, dry_run=False):
-        """Get all instances given a connection object"""
-        return conn.get_only_instances(instance_ids=instance_ids, filters=filters, dry_run=dry_run)
-
-    @staticmethod
     def get_count_by_state(items=None, state=None):
         assert state and items
         return len([item for item in items if item.get('status') == state])

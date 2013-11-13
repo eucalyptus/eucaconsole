@@ -14,6 +14,8 @@ import xml
 
 from datetime import datetime
 
+from beaker.cache import cache_region
+from boto import ec2
 from boto.handler import XmlHandler as BotoXmlHandler
 from boto.sts.credentials import Credentials
 from pyramid.security import Authenticated, authenticated_userid
@@ -37,6 +39,15 @@ class User(object):
     def is_authenticated(self):
         """user_id will be None if the user isn't authenticated"""
         return self.user_id
+
+
+class ConnectionManager(object):
+    """Returns connection objects, pulling from Beaker cache when available"""
+    @staticmethod
+    @cache_region('extra_long_term', 'ec2_connection_cache')
+    def ec2_connection(region, access_key, secret_key):
+        conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        return conn
 
 
 def groupfinder(user_id, request):

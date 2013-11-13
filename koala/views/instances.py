@@ -5,16 +5,23 @@ Pyramid views for Eucalyptus and AWS instances
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
-from ..models.instances import Instance
+from ..models.auth import ConnectionManager
 from ..views import LandingPageView
 
 
 class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
-        self.items = Instance.all(self.request.session.get('conn'))
+        self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
+
+    def get_items(self):
+        region = self.request.session.get('region')
+        access_key = self.request.session.get('access_id')
+        secret_key = self.request.session.get('secret_key')
+        conn = ConnectionManager.ec2_connection(region, access_key, secret_key)
+        return conn.get_only_instances()
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
