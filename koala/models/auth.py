@@ -48,12 +48,41 @@ class ConnectionManager(object):
     @staticmethod
     @cache_region('extra_long_term', 'ec2_connection_cache')
     def ec2_connection(region, access_key, secret_key):
+        """Return AWS EC2 connection object
+        Pulls from Beaker cache on subsequent calls to avoid connection overhead
+
+        :type region: string
+        :param region: region name (e.g. 'us-east-1')
+
+        :type access_key: string
+        :param access_key: AWS access key
+
+        :type secret_key: string
+        :param secret_key: AWS secret key
+
+        """
         conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
         return conn
 
     @staticmethod
     @cache_region('extra_long_term', 'euca_connection_cache')
     def euca_connection(clchost, port, access_id, secret_key, token):
+        """Return Eucalyptus connection object
+        Pulls from Beaker cache on subsequent calls to avoid connection overhead
+
+        :type clchost: string
+        :param clchost: FQDN or IP of Eucalyptus CLC (cloud controller)
+
+        :type port: int
+        :param port: Port of Eucalyptus CLC (usually 8773)
+
+        :type access_id: string
+        :param access_id: Euca access id
+
+        :type secret_key: string
+        :param secret_key: Eucalyptus secret key
+
+        """
         region = RegionInfo(name='eucalyptus', endpoint=clchost)
         path = '/services/Eucalyptus'
         conn = EC2Connection(
