@@ -1336,6 +1336,8 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 
 #logobar section .icon { font-size: 1.5rem; }
 
+#region-dropdown li[data-selected] { display: none; }
+
 nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }

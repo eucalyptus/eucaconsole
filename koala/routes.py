@@ -21,6 +21,8 @@ urls = [
     Route(name='dashboard', pattern='/'),
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    # Common
+    Route(name='region_select', pattern='/region/select'),
     # Instances
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
