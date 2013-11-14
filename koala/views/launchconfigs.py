@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Pyramid views for Eucalyptus and AWS launch configurations
 

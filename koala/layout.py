@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Layout configuration via pyramid_layout
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html

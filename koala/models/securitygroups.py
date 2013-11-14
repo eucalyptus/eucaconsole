@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Models for Eucalyptus and AWS security groups
 

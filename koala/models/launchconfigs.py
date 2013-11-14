@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Eucalyptus and AWS Launch Configuration models
 
