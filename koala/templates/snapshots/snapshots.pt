@@ -17,12 +17,10 @@
                 <a class="button small">Create new snapshot</a>
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.id }}</div>
-                <div>{{ item.status }}</div>
-                <div>{{ item.size }} GB</div>
-                <div>{{ item.volume }}</div>
-                <div>{{ item.description }}</div>
-                <div>{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</div>
+                <div ng-show="item.size">{{ item.size }} GB</div>
+                <div ng-show="item.volume_id">{{ item.volume_id }}</div>
+                <div ng-show="item.description">{{ item.description | limitTo: 128 }}</div>
+                <div ng-show="item.start_time">{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Snapshot</th>

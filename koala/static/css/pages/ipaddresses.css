@@ -1,6 +1,6 @@
 /* @fileOverview IP Addresses landing page CSS */
 /* @section Landing pages styles */
-.columns.datagrid { padding-left: 0; padding-right: 0; padding-bottom: 2rem; }
+.columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 

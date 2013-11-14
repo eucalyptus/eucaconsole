@@ -73,6 +73,7 @@ class LoginView(object):
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
+                    session['username_label'] = '{user}@{account}'.format(user=username, account=account)
                     headers = remember(self.request, user_account)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
@@ -95,6 +96,7 @@ class LoginView(object):
                     session['access_id'] = aws_access_key
                     session['secret_key'] = aws_secret_key
                     session['region'] = default_region
+                    session['username_label'] = '{user}...@AWS'.format(user=aws_access_key[:8])
                     # Save EC2 Connection object in cache
                     ConnectionManager.ec2_connection(default_region, aws_access_key, aws_secret_key)
                     headers = remember(self.request, aws_access_key)

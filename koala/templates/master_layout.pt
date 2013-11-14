@@ -24,7 +24,7 @@
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
         <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
-            <span class="hide-for-xsmall">admin@ui-test-acct-01</span>
+            <span class="hide-for-xsmall">${layout.username_label}</span>
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown">

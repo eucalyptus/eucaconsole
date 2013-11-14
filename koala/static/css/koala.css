@@ -167,7 +167,7 @@ textarea { height: auto; min-height: 50px; }
 select { width: 100%; }
 
 /* Grid HTML Classes */
-.row { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 64em; *zoom: 1; }
+.row { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 65em; *zoom: 1; }
 .row:before, .row:after { content: " "; display: table; }
 .row:after { clear: both; }
 .row.collapse > .column, .row.collapse > .columns { position: relative; padding-left: 0; padding-right: 0; float: left; }
@@ -1015,7 +1015,7 @@ label.error { color: #c60f13; }
   .top-bar .name h1 a { width: auto; }
   .top-bar input, .top-bar .button { line-height: 2em; font-size: 0.875em; height: 2em; padding: 0 10px; position: relative; top: 8px; }
   .top-bar.expanded { background: #76b800; }
-  .contain-to-grid .top-bar { max-width: 64em; margin: 0 auto; margin-bottom: 0; }
+  .contain-to-grid .top-bar { max-width: 65em; margin: 0 auto; margin-bottom: 0; }
   .top-bar-section { -webkit-transition: none 0 0; -moz-transition: none 0 0; transition: none 0 0; left: 0 !important; }
   .top-bar-section ul { width: auto; height: auto !important; display: inline; }
   .top-bar-section ul li { float: left; }
