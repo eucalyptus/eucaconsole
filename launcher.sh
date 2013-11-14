@@ -18,6 +18,11 @@
 # CA 93117, USA or visit http://www.eucalyptus.com/licenses/ if you need
 # additional information or have any questions.
 
-python runapp.py
+# Fire up development server
+pserve console.ini --reload
+
+
+# Uncomment to run gunicorn
+# python runapp.py
 
 
