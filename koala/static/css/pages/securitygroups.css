@@ -4,7 +4,7 @@
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 200px; height: 200px; max-height: 200px; overflow: hidden; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; overflow: hidden; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 
 .tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 .tile .header a { color: white; }
