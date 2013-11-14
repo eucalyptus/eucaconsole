@@ -1,10 +1,10 @@
 /* @fileOverview Snapshots landing page CSS */
 /* @section Landing pages styles */
-.columns.datagrid { padding-left: 0; padding-right: 0; padding-bottom: 2rem; }
+.columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 198px; height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; width: 200px; height: 200px; max-height: 200px; overflow: hidden; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 
 .tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 .tile .header a { color: white; }
@@ -20,7 +20,9 @@
 
 .tile .header .f-dropdown { width: 120px; }
 
-.tile .content { padding: 8px; font-size: 0.9em; line-height: 1.3rem; }
+.tile .content { padding: 8px; font-size: 0.9em; }
+
+.tile .content div { margin-bottom: 0.5rem; }
 
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
 
@@ -45,9 +47,9 @@
 
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
-.gridwrapper .table thead tr th { line-height: 1.8rem; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
-.gridwrapper .table tr td { line-height: 1.8rem; }
+.gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 
 #filters { margin-top: 46px; }
 

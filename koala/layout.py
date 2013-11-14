@@ -25,6 +25,7 @@ class MasterLayout(object):
         self.cloud_type = request.session.get('cloud_type')
         self.selected_region = self.request.session.get('region', self.default_region)
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
+        self.username_label = self.request.session.get('username_label')
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

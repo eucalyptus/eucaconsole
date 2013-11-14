@@ -7,7 +7,7 @@
 /* @section Landing pages styles */
 
 // Sass variables
-$tile-width: 198px;
+$tile-width: 200px;
 $tile-height: 200px;
 $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
@@ -17,7 +17,7 @@ $gridwrapper-table-width: 98%;
 
 .columns.datagrid {
     padding-left: 0;
-    padding-right: 0;
+    padding-right: 1rem;
     padding-bottom: 2rem;
 }
 
@@ -29,7 +29,10 @@ $gridwrapper-table-width: 98%;
     font-size: $euca-font-size;
     position: relative;
     display: inline-block;
-    width: $tile-width; height: $tile-height;
+    width: $tile-width;
+    height: $tile-height;
+    max-height: $tile-height;
+    overflow: hidden;
     background-color: $tile-bg-color;
     margin-right: 10px;
     margin-bottom: 10px;
@@ -83,7 +86,10 @@ $gridwrapper-table-width: 98%;
 .tile .content {
     padding: 8px;
     font-size: 0.9em;
-    line-height: 1.3rem;
+}
+
+.tile .content div {
+    margin-bottom: 0.5rem;
 }
 
 .tile .footer {
@@ -147,7 +153,8 @@ $gridwrapper-table-width: 98%;
         border-top: 2px solid $euca-darkgrey;
         border-bottom: 2px solid $euca-darkgrey;
         th {
-            line-height: 1.8rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
             text-transform: uppercase;
         }
     }
@@ -155,7 +162,8 @@ $gridwrapper-table-width: 98%;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
-            line-height: 1.8rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
         }
     }
 }

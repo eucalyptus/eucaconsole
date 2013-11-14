@@ -57,7 +57,7 @@ class VolumesView(LandingPageView):
             volumes.append(dict(
                 create_time=volume.create_time,
                 id=volume.id,
-                instance=volume.attach_data.instance_id ,
+                instance=volume.attach_data.instance_id,
                 name=volume.tags.get('Name', volume.id),
                 snapshot_id=volume.snapshot_id,
                 size=volume.size,
