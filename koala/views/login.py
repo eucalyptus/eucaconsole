@@ -5,6 +5,7 @@ Pyramid views for Login/Logout
 """
 from urllib2 import HTTPError, URLError
 
+from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
@@ -99,7 +100,7 @@ class LoginView(object):
                     session['region'] = default_region
                     session['username_label'] = '{user}...@AWS'.format(user=aws_access_key[:8])
                     # Save EC2 Connection object in cache
-                    ConnectionManager.ec2_connection(default_region, aws_access_key, aws_secret_key)
+                    ConnectionManager.aws_connection(default_region, aws_access_key, aws_secret_key, 'ec2')
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
@@ -125,6 +126,10 @@ class LogoutView(object):
     @view_config(route_name='logout')
     def logout(self):
         forget(self.request)
+        # Clear session
         self.request.session.invalidate()
+        # Empty Beaker cache to clear connection objects
+        for _cache in cache_managers.values():
+            _cache.clear()
         return HTTPFound(location=self.login_url)
 

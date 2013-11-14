@@ -17,6 +17,8 @@ from datetime import datetime
 from beaker.cache import cache_region
 from boto import ec2
 from boto.ec2.connection import EC2Connection
+import boto.ec2.autoscale
+import boto.ec2.cloudwatch
 from boto.handler import XmlHandler as BotoXmlHandler
 from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
@@ -46,8 +48,8 @@ class User(object):
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
-    @cache_region('extra_long_term', 'ec2_connection_cache')
-    def ec2_connection(region, access_key, secret_key):
+    @cache_region('extra_long_term', 'aws_connection_cache')
+    def aws_connection(region, access_key, secret_key, conn_type):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -60,13 +62,24 @@ class ConnectionManager(object):
         :type secret_key: string
         :param secret_key: AWS secret key
 
+        :type conn_type: string
+        :param conn_type: Connection type ('ec2' or 'autoscale')
+
         """
-        conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        conn = None
+        if conn_type is 'ec2':
+            conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        elif conn_type is 'autoscale':
+            conn = ec2.autoscale.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+        elif conn_type is 'cloudwatch':
+            conn = ec2.cloudwatch.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
         return conn
 
     @staticmethod
     @cache_region('extra_long_term', 'euca_connection_cache')
-    def euca_connection(clchost, port, access_id, secret_key, token):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -82,11 +95,34 @@ class ConnectionManager(object):
         :type secret_key: string
         :param secret_key: Eucalyptus secret key
 
+        :type conn_type: string
+        :param conn_type: Connection type ('ec2' or 'autoscale')
+
         """
         region = RegionInfo(name='eucalyptus', endpoint=clchost)
         path = '/services/Eucalyptus'
-        conn = EC2Connection(
+        conn_class = EC2Connection
+        api_version = '2012-12-01'
+
+        # Configure based on connection type
+        if conn_type is 'autoscale':
+            api_version = '2011-01-01'
+            conn_class = boto.ec2.autoscale.AutoScaleConnection
+            path = '/services/AutoScaling'
+        if conn_type is 'cloudwatch':
+            path = '/services/CloudWatch'
+            conn_class = boto.ec2.cloudwatch.CloudWatchConnection
+
+        conn = conn_class(
             access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
+
+        # AutoScaling service needs additional auth info
+        if conn_type is 'autoscale':
+            conn.auth_region_name = 'Eucalyptus'
+
+        setattr(conn, 'APIVersion', api_version)
+        conn.https_validate_certificates = False
+        conn.http_connection_kwargs['timeout'] = 30
         return conn
 
 

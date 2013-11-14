@@ -20,17 +20,14 @@ class BaseView(object):
         self.clcport = int(request.registry.settings.get('clcport', 8773))
         self.security_token = request.session.get('session_token')
 
-    def get_connection(self):
+    def get_connection(self, conn_type='ec2'):
         conn = None
 
         if self.cloud_type == 'aws':
-            conn = ConnectionManager.ec2_connection(self.region, self.access_key, self.secret_key)
+            conn = ConnectionManager.aws_connection(self.region, self.access_key, self.secret_key, conn_type)
         elif self.cloud_type == 'euca':
             conn = ConnectionManager.euca_connection(
-                self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token)
-            conn.APIVersion = '2012-12-01'
-            conn.https_validate_certificates = False
-            conn.http_connection_kwargs['timeout'] = 30
+                self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token, conn_type)
 
         return conn
 
