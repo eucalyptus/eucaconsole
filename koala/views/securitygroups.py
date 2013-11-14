@@ -5,17 +5,19 @@ Pyramid views for Eucalyptus and AWS security groups
 """
 from pyramid.view import view_config
 
-from ..models.securitygroups import SecurityGroup
 from ..views import LandingPageView
 
 
 class SecurityGroupsView(LandingPageView):
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
-        self.items = SecurityGroup.fakeall()
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
+
+    def get_items(self):
+        conn = self.get_connection()
+        return conn.get_all_security_groups()
 
     @view_config(route_name='securitygroups', renderer='../templates/securitygroups/securitygroups.pt')
     def securitygroups_landing(self):
@@ -40,6 +42,25 @@ class SecurityGroupsView(LandingPageView):
 
     @view_config(route_name='securitygroups_json', renderer='json', request_method='GET')
     def securitygroups_json(self):
-        return dict(results=self.items)
+        securitygroups = []
+        for securitygroup in self.get_items():
+            rules = []
+            for plist in securitygroup.rules:
+                rules.append(dict(
+                    from_port=plist.from_port,
+                    grants=[dict(
+                        name=grant.name, owner_id=grant.owner_id, group_id=grant.group_id) for grant in plist.grants],
+                    to_port=plist.to_port,
+                ))
+            securitygroups.append(dict(
+                id=securitygroup.id,
+                description=securitygroup.description,
+                name=securitygroup.name,
+                owner_id=securitygroup.owner_id,
+                rules=rules,
+                tags=securitygroup.tags,
+                vpc_id=securitygroup.vpc_id,
+            ))
+        return dict(results=securitygroups)
 
 
