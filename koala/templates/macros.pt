@@ -33,8 +33,8 @@
             </div>
             <div tal:repeat="field filter_fields">
                 <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-                <select tal:define="num_choices len(field.choices)" tal:condition="field.choices" placeholder="${field.name}"
-                        tal:attributes="disabled num_choices == 1" name="${field.key}">
+                <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
+                        placeholder="${field.name}" name="${field.key}">
                     <option value="">${field.name}...</option>
                     <option tal:repeat="choice field.choices" value="${choice}"
                             tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
