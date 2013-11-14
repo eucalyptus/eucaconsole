@@ -49,13 +49,14 @@ angular.module('LandingPage', [])
                 for (var i=0; i < filterProps.length; i++) {  // Can't use $.each or Array.prototype.forEach here
                     var propName = filterProps[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
-                    if (itemProp && itemProp.indexOf(filterText) !== -1) {
+                    if (itemProp && typeof itemProp === "string" && itemProp.indexOf(filterText) !== -1) {
                         return item;
                     }
-                    // Match array of objects (i.e. tags)
-                    if (itemProp && $.type(itemProp === "array") && propName === "tags") {
-                        for (var j=0; j < itemProp.length; j++) {  // Can't use $.each or Array.prototype.forEach here
-                            if (itemProp[j]['key'].indexOf(filterText) !== -1 || itemProp[j]['value'].indexOf(filterText) !== -1) {
+                    // Match tags (object of key/value pairs)
+                    if (itemProp && propName === "tags") {
+                        var keys = Object.keys(itemProp);
+                        for (var j=0; j < keys.length; j++) {
+                            if (keys[j].indexOf(filterText) !== -1 || itemProp[keys[j]].indexOf(filterText) !== -1) {
                                 return item;
                             }
                         }

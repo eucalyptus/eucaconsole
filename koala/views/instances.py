@@ -54,7 +54,6 @@ class InstancesView(LandingPageView):
 
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
-        from boto.ec2.group import Group
         instances = []
         for instance in self.items:
             instances.append(dict(
