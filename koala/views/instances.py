@@ -23,13 +23,13 @@ class InstancesView(LandingPageView):
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
         json_items_endpoint = self.request.route_url('instances_json')
-        state_choices = sorted(set(instance.state for instance in self.items))
+        status_choices = sorted(set(instance.state for instance in self.items))
         root_device_type_choices = ('ebs', 'instance-store')
         instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
         avail_zone_choices = sorted(set(instance.placement for instance in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
-            LandingPageFilter(key='state', name='Status', choices=state_choices),
+            LandingPageFilter(key='status', name='Status', choices=status_choices),
             LandingPageFilter(key='root_device_type', name='Root device', choices=root_device_type_choices),
             LandingPageFilter(key='instance_type', name='Instance type', choices=instance_type_choices),
             LandingPageFilter(key='placement', name='Availability zone', choices=avail_zone_choices),
@@ -65,7 +65,7 @@ class InstancesView(LandingPageView):
                 placement=instance.placement,
                 root_device=instance.root_device_name,
                 security_groups=', '.join(group.name for group in instance.groups),
-                state=instance.state,
+                status=instance.state,
             ))
         return dict(results=instances)
 
