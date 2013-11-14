@@ -100,7 +100,7 @@ class LoginView(object):
                     session['region'] = default_region
                     session['username_label'] = '{user}...@AWS'.format(user=aws_access_key[:8])
                     # Save EC2 Connection object in cache
-                    ConnectionManager.aws_connection(default_region, aws_access_key, aws_secret_key)
+                    ConnectionManager.aws_connection(default_region, aws_access_key, aws_secret_key, 'ec2')
                     headers = remember(self.request, aws_access_key)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
