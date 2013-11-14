@@ -17,18 +17,20 @@
                 <a class="button small">Allocate IP address</a>
             </div>
             <div metal:fill-slot="tile_header">
-                {{ item.ip_address }}
+                {{ item.public_ip }}
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.instance }}</div>
+                <div>{{ item.instance_id }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Public IP Address</th>
                 <th>Assigned to Instance</th>
+                <th>Scope</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.ip_address }}">{{ item.ip_address }}</a></td>
-                <td>{{ item.instance }}</td>
+                <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
+                <td>{{ item.instance_id }}</td>
+                <td>{{ item.domain }}</td>
             </metal:block>
         </div>
     </div>
