@@ -18,22 +18,17 @@
             </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.launch_config }}</div>
-                <div>Current Instances: {{ item.instances.current }}</div>
-                <div>Desired Instances: {{ item.instances.desired }}</div>
+                <div>{{ item.availability_zones }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Name</th>
                 <th>Launch Config</th>
-                <th>Current Instances</th>
-                <th>Desired Instances</th>
-                <th>Instance Health</th>
+                <th>Availability Zones</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
                 <td>{{ item.launch_config }}</td>
-                <td>{{ item.instances.current }}</td>
-                <td>{{ item.instances.desired }}</td>
-                <td>{{ item.instance_health }}</td>
+                <td>{{ item.availability_zones }}</td>
             </metal:block>
         </div>
     </div>
