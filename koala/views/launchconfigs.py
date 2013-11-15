@@ -6,36 +6,34 @@ Pyramid views for Eucalyptus and AWS launch configurations
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
-from ..models.launchconfigs import LaunchConfiguration
 from ..views import LandingPageView
 
 
 class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
-        self.items = LaunchConfiguration.fakeall()
+        self.items = self.get_items()
         self.initial_sort_key = 'name'
         self.prefix = '/launchconfigs'
+
+    def get_items(self):
+        conn = self.get_connection(conn_type='autoscale')
+        return conn.get_all_launch_configurations() if conn else []
 
     @view_config(route_name='launchconfigs', renderer='../templates/launchconfigs/launchconfigs.pt')
     def launchconfigs_landing(self):
         json_items_endpoint = self.request.route_url('launchconfigs_json')
-        key_choices = sorted(set(item.get('key') for item in self.items))
-        security_group_choices = sorted(set(item.get('security_group') for item in self.items))
-        image_choices = sorted(set(item.get('image') for item in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
+        image_id_choices = sorted(set(item.image_id for item in self.items))
         self.filter_fields = [
-            LandingPageFilter(key='key', name='Key', choices=key_choices),
-            LandingPageFilter(key='security_group', name='Security group', choices=security_group_choices),
-            LandingPageFilter(key='image', name='Image', choices=image_choices),
+            LandingPageFilter(key='launch_config', name='Image', choices=image_id_choices),
         ]
-        more_filter_keys = ['name']
+        more_filter_keys = ['image_id', 'name', 'security_groups']
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name='Name'),
-            dict(key='-create_time', name='Create time (most recent first)'),
-            dict(key='create_time', name='Create time (oldest first)'),
+            dict(key='-created_time', name='Created time (recent first)'),
         ]
 
         return dict(
@@ -50,5 +48,19 @@ class LaunchConfigsView(LandingPageView):
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
-        return dict(results=self.items)
+        launchconfigs = []
+        for launchconfig in self.items:
+            security_groups = ', '.join(launchconfig.security_groups)
+            launchconfigs.append(dict(
+                created_time=launchconfig.created_time.isoformat(),
+                image_id=launchconfig.image_id,
+                instance_monitoring=bool(launchconfig.instance_monitoring),
+                kernel_id=launchconfig.kernel_id,
+                key_name=launchconfig.key_name,
+                name=launchconfig.name,
+                ramdisk_id=launchconfig.ramdisk_id,
+                security_groups=security_groups,
+                user_data=launchconfig.user_data,
+            ))
+        return dict(results=launchconfigs)
 
