@@ -17,7 +17,7 @@ class SecurityGroupsView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_all_security_groups()
+        return conn.get_all_security_groups() if conn else []
 
     @view_config(route_name='securitygroups', renderer='../templates/securitygroups/securitygroups.pt')
     def securitygroups_landing(self):

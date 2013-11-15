@@ -17,7 +17,7 @@ class KeyPairsView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_all_key_pairs()
+        return conn.get_all_key_pairs() if conn else []
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):

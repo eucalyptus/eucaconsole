@@ -18,7 +18,7 @@ class InstancesView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_only_instances()
+        return conn.get_only_instances() if conn else []
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):

@@ -18,7 +18,7 @@ class VolumesView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_all_volumes()
+        return conn.get_all_volumes() if conn else []
 
     @view_config(route_name='volumes', renderer='../templates/volumes/volumes.pt')
     def volumes_landing(self):

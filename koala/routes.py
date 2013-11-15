@@ -19,7 +19,10 @@ from collections import namedtuple
 Route = namedtuple('Route', ['name', 'pattern'])
 
 urls = [
+    # Dashboard
     Route(name='dashboard', pattern='/'),
+    Route(name='dashboard_json', pattern='/dashboard/json'),
+    # Login/logout
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
     # Common

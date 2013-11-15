@@ -155,6 +155,16 @@ nav.top-bar .dropdown li a {
 
 
 /* -----------------------------------------
+   Misc utilities
+----------------------------------------- */
+.dots {
+    display: inline-block;
+    width: 32px; height: 10px;
+    background-image: url(/static/img/dots32.gif)
+}
+
+
+/* -----------------------------------------
    Forms
 ----------------------------------------- */
 form .row input {
