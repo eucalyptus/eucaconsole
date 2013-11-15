@@ -5,14 +5,15 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="dashboard">
+    <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
+         ng-init="getItemCounts('${request.route_url('dashboard_json')}')" ng-cloak="cloak">
         <div class="large-3 columns">
             <div class="panel" id="instances">
                 <div class="tile" id="running">
                     <h5 class="subheader">Running instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?filter=apply&amp;status=Running">
-                            <i class="fi-cloud icon"><em>${instances_running_count}</em></i>
+                        <a href="${request.route_url('instances')}?filter=apply&amp;status=running">
+                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_running }}</em></i>
                         </a>
                     </div>
                     <div class="footer">
@@ -22,8 +23,8 @@
                 <div class="tile" id="stopped">
                     <h5 class="subheader">Stopped instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?filter=apply&amp;status=Stopped">
-                            <i class="fi-cloud icon"><em>${instances_stopped_count}</em></i>
+                        <a href="${request.route_url('instances')}?filter=apply&amp;status=stopped">
+                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_stopped }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -32,7 +33,7 @@
                     <h5 class="subheader">In scaling groups</h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
-                            <i class="fi-cloud icon"><em>4</em></i>
+                            <i class="fi-cloud icon"><em>0</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -45,7 +46,7 @@
                     <h5 class="subheader">Volumes</h5>
                     <div class="content">
                         <a href="${request.route_url('volumes')}">
-                            <i class="fi-list icon"><em>4</em></i>
+                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.volumes }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -54,7 +55,7 @@
                     <h5 class="subheader">Snapshots</h5>
                     <div class="content">
                         <a href="${request.route_url('snapshots')}">
-                            <i class="fi-list icon"><em>9</em></i>
+                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.snapshots }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -65,7 +66,7 @@
                     <h5 class="subheader">Groups</h5>
                     <div class="content">
                         <a href="#">
-                            <i class="fi-torsos-all icon"><em>3</em></i>
+                            <i class="fi-torsos-all icon"><em>0</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -74,7 +75,7 @@
                     <h5 class="subheader">Users</h5>
                     <div class="content">
                         <a href="#">
-                            <i class="fi-torso icon"><em>24</em></i>
+                            <i class="fi-torso icon"><em>0</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -85,7 +86,7 @@
                     <h5 class="subheader">Security groups</h5>
                     <div class="content">
                         <a href="${request.route_url('securitygroups')}">
-                            <i class="fi-lock icon"><em>2</em></i>
+                            <i class="fi-lock icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -94,7 +95,7 @@
                     <h5 class="subheader">Key pairs</h5>
                     <div class="content">
                         <a href="${request.route_url('keypairs')}">
-                            <i class="fi-key icon"><em>12</em></i>
+                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -107,7 +108,7 @@
                     <h5 class="subheader">Elastic IPs</h5>
                     <div class="content">
                         <a href="${request.route_url('ipaddresses')}">
-                            <i class="fi-thumbnails icon"><em>12</em></i>
+                            <i class="fi-thumbnails icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.eips }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
@@ -118,6 +119,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/dashboard.js')}"></script>
 </div>
 
 </metal:block>

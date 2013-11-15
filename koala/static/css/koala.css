@@ -1352,6 +1352,10 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
+/* ----------------------------------------- Misc utilities
+----------------------------------------- */
+.dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
+
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form .row input { margin: 0 0 0 0; }

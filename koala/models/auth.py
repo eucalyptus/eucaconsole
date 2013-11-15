@@ -67,12 +67,12 @@ class ConnectionManager(object):
 
         """
         conn = None
-        if conn_type is 'ec2':
+        if conn_type == 'ec2':
             conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-        elif conn_type is 'autoscale':
+        elif conn_type == 'autoscale':
             conn = ec2.autoscale.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-        elif conn_type is 'cloudwatch':
+        elif conn_type == 'cloudwatch':
             conn = ec2.cloudwatch.connect_to_region(
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
         return conn
@@ -105,11 +105,11 @@ class ConnectionManager(object):
         api_version = '2012-12-01'
 
         # Configure based on connection type
-        if conn_type is 'autoscale':
+        if conn_type == 'autoscale':
             api_version = '2011-01-01'
             conn_class = boto.ec2.autoscale.AutoScaleConnection
             path = '/services/AutoScaling'
-        if conn_type is 'cloudwatch':
+        if conn_type == 'cloudwatch':
             path = '/services/CloudWatch'
             conn_class = boto.ec2.cloudwatch.CloudWatchConnection
 
@@ -117,7 +117,7 @@ class ConnectionManager(object):
             access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
 
         # AutoScaling service needs additional auth info
-        if conn_type is 'autoscale':
+        if conn_type == 'autoscale':
             conn.auth_region_name = 'Eucalyptus'
 
         setattr(conn, 'APIVersion', api_version)
