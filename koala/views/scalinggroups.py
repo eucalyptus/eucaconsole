@@ -24,7 +24,7 @@ class ScalingGroupsView(LandingPageView):
     def scalinggroups_landing(self):
         json_items_endpoint = self.request.route_url('scalinggroups_json')
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        launch_config_choices = sorted(set(item.launch_config for item in self.items))
+        launch_config_choices = sorted(set(item.launch_config_name for item in self.items))
         self.filter_fields = [
             LandingPageFilter(key='launch_config', name='Launch Configuration', choices=launch_config_choices),
         ]
@@ -53,7 +53,7 @@ class ScalingGroupsView(LandingPageView):
             scalinggroups.append(dict(
                 availability_zones=', '.join(group.availability_zones),
                 desired_capacity=group.desired_capacity,
-                launch_config=group.launch_config,
+                launch_config=group.launch_config_name,
                 max_size=group.max_size,
                 min_size=group.min_size,
                 name=group.name,
