@@ -18,7 +18,7 @@ class SnapshotsView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_all_snapshots(owner='self')
+        return conn.get_all_snapshots(owner='self') if conn else []
 
     @view_config(route_name='snapshots', renderer='../templates/snapshots/snapshots.pt')
     def snapshots_landing(self):

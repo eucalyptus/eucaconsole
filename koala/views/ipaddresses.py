@@ -18,7 +18,7 @@ class IPAddressesView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection()
-        return conn.get_all_addresses()
+        return conn.get_all_addresses() if conn else []
 
     @view_config(route_name='ipaddresses', renderer='../templates/ipaddresses/ipaddresses.pt')
     def ipaddresses_landing(self):

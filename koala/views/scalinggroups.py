@@ -18,7 +18,7 @@ class ScalingGroupsView(LandingPageView):
 
     def get_items(self):
         conn = self.get_connection(conn_type='autoscale')
-        return conn.get_all_groups()
+        return conn.get_all_groups() if conn else []
 
     @view_config(route_name='scalinggroups', renderer='../templates/scalinggroups/scalinggroups.pt')
     def scalinggroups_landing(self):
