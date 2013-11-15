@@ -24,7 +24,7 @@ class BaseView(object):
         conn = None
 
         if self.cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(self.region, self.access_key, self.secret_key, conn_type)
+            conn = ConnectionManager.aws_connection(self.region, self.access_key, self.secret_key, self.security_token, conn_type)
         elif self.cloud_type == 'euca':
             conn = ConnectionManager.euca_connection(
                 self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token, conn_type)
