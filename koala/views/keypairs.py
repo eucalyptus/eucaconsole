@@ -5,17 +5,19 @@ Pyramid views for Eucalyptus and AWS key pairs
 """
 from pyramid.view import view_config
 
-from ..models.keypairs import KeyPair
 from ..views import LandingPageView
 
 
 class KeyPairsView(LandingPageView):
     def __init__(self, request):
         super(KeyPairsView, self).__init__(request)
-        self.items = KeyPair.fakeall()
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
+
+    def get_items(self):
+        conn = self.get_connection()
+        return conn.get_all_key_pairs()
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):
@@ -40,6 +42,12 @@ class KeyPairsView(LandingPageView):
 
     @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
     def keypairs_json(self):
-        return dict(results=self.items)
+        keypairs = []
+        for keypair in self.get_items():
+            keypairs.append(dict(
+                name=keypair.name,
+                fingerprint=keypair.fingerprint,
+            ))
+        return dict(results=keypairs)
 
 
