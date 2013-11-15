@@ -24,7 +24,7 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_landing(self):
         json_items_endpoint = self.request.route_url('ipaddresses_json')
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['domain', 'instance', 'ip_address']
+        self.filter_keys = ['domain', 'instance_id', 'public_ip']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='public_ip', name='IP Address'),
