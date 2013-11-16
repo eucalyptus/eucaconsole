@@ -17,10 +17,10 @@
                 <a class="button small">Create new launch configuration</a>
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.image }}</div>
-                <div>{{ item.key }}</div>
-                <div>{{ item.security_group }}</div>
-                <div>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</div>
+                <div>{{ item.image_id }}</div>
+                <div>{{ item.key_name }}</div>
+                <div>{{ item.security_groups }}</div>
+                <div>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Name</th>
@@ -31,10 +31,10 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
-                <td>{{ item.image }}</td>
-                <td>{{ item.key }}</td>
-                <td>{{ item.security_group }}</td>
-                <td>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.image_id }}</td>
+                <td>{{ item.key_name }}</td>
+                <td>{{ item.security_groups }}</td>
+                <td>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</td>
             </metal:block>
         </div>
     </div>

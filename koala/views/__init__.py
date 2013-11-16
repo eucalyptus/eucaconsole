@@ -16,8 +16,8 @@ class BaseView(object):
         self.access_key = request.session.get('access_id')
         self.secret_key = request.session.get('secret_key')
         self.cloud_type = request.session.get('cloud_type')
-        self.clchost = request.registry.settings.get('clchost')
-        self.clcport = int(request.registry.settings.get('clcport', 8773))
+        self.clchost = request.registry.settings.get('clchost') if request.registry.settings else 'localhost'
+        self.clcport = int(request.registry.settings.get('clcport', 8773)) if request.registry.settings else 8773
         self.security_token = request.session.get('session_token')
 
     def get_connection(self, conn_type='ec2'):

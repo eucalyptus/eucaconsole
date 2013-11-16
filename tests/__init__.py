@@ -14,7 +14,7 @@ from wtforms.validators import DataRequired, Length, Email, Optional, NumberRang
 from koala.routes import urls
 
 
-class BaseLiveTestCase(unittest.TestCase):
+class BaseViewTestCase(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         for route in urls:
@@ -26,7 +26,7 @@ class BaseLiveTestCase(unittest.TestCase):
 
 class BaseTestCase(unittest.TestCase):
     """Use this as a base when you need to run test with no routes automatically configured.
-       Note: You probably want to use BaseLiveTestCase instead."""
+       Note: You probably want to use BaseViewTestCase instead."""
     def setUp(self):
         self.config = testing.setUp()
 
