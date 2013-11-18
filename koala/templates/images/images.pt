@@ -1,0 +1,71 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/images.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LandingPage">
+        <h3 class="header" id="pagetitle">
+            Instances
+        </h3>
+        <div class="large-2 columns" id="landing-page-filters">
+            <div metal:use-macro="layout.global_macros['properties_filter_form']">
+                <metal:block metal:fill-slot="filter_form_fields">
+                    <div tal:repeat="field filter_fields">
+                        <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
+                        <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
+                                placeholder="${field.name}" name="${field.key}">
+                            <option value="">${field.name}...</option>
+                            <option tal:repeat="choice field.choices" value="${choice[0]}"
+                                    tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice[0]">${choice[1]}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="secondary small button">Apply</button>
+                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+                    </div>
+                </metal:block>
+            </div>
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button small">Launch New Instance</a>
+            </div>
+            <div metal:fill-slot="tile_header">
+                {{ item.id }}
+            </div>
+            <div metal:fill-slot="tile_content">
+                <div>{{ item.name }}</div>
+                <div>{{ item.platform }}</div>
+                <div>
+                    {{ item.description | limitTo: 128 }}
+                    <span ng-show="item.description.length > 128"
+                            data-tooltip="tooltip" class="label round has-tip"
+                            title="{{item.description}}">...</span>
+                </div>
+                <div>{{ item.architecture }}</div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Architecture</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.architecture }}</td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+</div>
+
+</metal:block>
+

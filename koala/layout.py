@@ -4,6 +4,8 @@ Layout configuration via pyramid_layout
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
+from urlparse import urlparse
+
 from beaker.cache import cache_region
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
@@ -27,6 +29,18 @@ class MasterLayout(object):
         self.selected_region = self.request.session.get('region', self.default_region)
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
         self.username_label = self.request.session.get('username_label')
+        self.tableview_url = self.get_datagridview_url('tableview')
+        self.gridview_url = self.get_datagridview_url('gridview')
+
+    def get_datagridview_url(self, display):
+        """Convience property to get tableview or gridview URL for landing pages"""
+        current_url = self.request.current_route_url()
+        parsed_url = urlparse(current_url)
+        otherview = 'gridview' if display == 'tableview' else 'tableview'
+        if 'display' in parsed_url.query:
+            return current_url.replace(otherview, display)
+        else:
+            return '{url}?display={view}'.format(url=current_url, view=display)
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

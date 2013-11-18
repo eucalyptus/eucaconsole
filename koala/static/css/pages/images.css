@@ -1,0 +1,62 @@
+/* @fileOverview Images landing page CSS */
+/* @section Landing pages styles */
+.columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
+
+.large-12.columns.datagrid { padding-left: 1rem; }
+
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; overflow: hidden; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+
+.tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
+.tile .header a { color: white; }
+.tile .header a:hover { color: #76b800; }
+
+.tile .header strong { font-weight: normal; }
+
+.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+
+.tile .header .button.dropdown i { position: relative; top: 2px; }
+
+.tile .header .button.dropdown::before { border: none; }
+
+.tile .header .f-dropdown { width: 120px; }
+
+.tile .content { padding: 8px; font-size: 0.9em; }
+
+.tile .content div { margin-bottom: 0.5rem; }
+
+.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
+
+.sort-search { font-size: 0.9rem; }
+
+.sort-search form { margin-bottom: 0; }
+
+.sort-search .go { position: relative; left: -2px; }
+
+.match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
+
+.displayicons { font-size: 2rem; }
+
+.displayicons a { float: right; border-bottom: none; color: black; }
+
+.displayicons a:hover { border-bottom: none; color: #76b800; }
+
+.displayicons .selected { background-color: #eeeeee; }
+.displayicons .selected :hover { color: black; cursor: default; }
+
+.displayicons i { display: inline-block; padding: 4px 12px; }
+
+.gridwrapper .table { border: none; width: 98%; }
+.gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; }
+.gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
+.gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+
+#filters { margin-top: 46px; }
+
+#properties-filter-form { font-size: 0.9rem; }
+
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+/* Small screen */
+@media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
+  .sort-search .go { min-width: 32px; } }

@@ -27,6 +27,9 @@ urls = [
     Route(name='logout', pattern='/logout'),
     # Common
     Route(name='region_select', pattern='/region/select'),
+    # Images
+    Route(name='images', pattern='/images'),
+    Route(name='images_json', pattern='/images/json'),
     # Instances
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
