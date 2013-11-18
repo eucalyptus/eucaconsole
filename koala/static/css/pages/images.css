@@ -49,11 +49,13 @@
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
-.gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
 
 #filters { margin-top: 46px; }
 
 #properties-filter-form { font-size: 0.9rem; }
+
+#sorting-controls, #results-count { padding-top: 1rem; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
@@ -61,3 +63,5 @@
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
 .tile .label.has-tip { background: white; color: #00415e; font-weight: bold; border-bottom: 1px solid #444444; }
+
+.tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #8dc640; color: white; }

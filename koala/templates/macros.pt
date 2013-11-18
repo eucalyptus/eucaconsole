@@ -84,7 +84,7 @@
                     </div>
                 </form>
             </div>
-            <div class="small-3 columns right" ng-show="!itemsLoading" ng-cloak="cloak" metal:define-slot="results_count">
+            <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading" ng-cloak="cloak" metal:define-slot="results_count">
                 {{ items.length }} <span class="hide-for-small">items</span> found
             </div>
         </div>
@@ -115,7 +115,9 @@
                 <div class="content">
                     <metal:block metal:define-slot="tile_content"></metal:block>
                 </div>
-                <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
+                <metal:block metal:define-slot="tile_footer">
+                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
+                </metal:block>
             </div>
         </div>
         <div class="gridwrapper" tal:condition="display_type == 'tableview'">

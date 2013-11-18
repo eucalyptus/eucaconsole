@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
         <h3 class="header" id="pagetitle">
-            Instances
+            Images
         </h3>
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']">
@@ -30,7 +30,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small">Launch New Instance</a>
+                &nbsp;
             </div>
             <div metal:fill-slot="tile_header">
                 {{ item.id }}
@@ -46,17 +46,24 @@
                 </div>
                 <div>{{ item.architecture }}</div>
             </div>
+            <div metal:fill-slot="tile_footer">
+                <div class="footer">
+                    <a href="/instances/launch?image_id={{ item.id }}" class="action">Launch instance</a>
+                </div>
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>ID</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>Architecture</th>
+                <th>Arch</th>
+                <th>&nbsp;</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
+                <td><a href="/instances/launch?image_id={{ item.id }}" class="button small">Launch&nbsp;instance</a></td>
             </metal:block>
         </div>
     </div>
