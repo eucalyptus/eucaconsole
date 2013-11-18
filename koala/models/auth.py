@@ -49,7 +49,7 @@ class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
     @cache_region('extra_long_term', 'aws_connection_cache')
-    def aws_connection(region, access_key, secret_key, conn_type):
+    def aws_connection(region, access_key, secret_key, token, conn_type):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -68,13 +68,13 @@ class ConnectionManager(object):
         """
         conn = None
         if conn_type == 'ec2':
-            conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+            conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'autoscale':
             conn = ec2.autoscale.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+                region, aws_access_key_id=access_key, security_token=token, aws_secret_access_key=secret_key)
         elif conn_type == 'cloudwatch':
             conn = ec2.cloudwatch.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+                region, aws_access_key_id=access_key, security_token=token, aws_secret_access_key=secret_key)
         return conn
 
     @staticmethod
