@@ -60,3 +60,4 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
+.tile .label.has-tip { background: white; color: #00415e; font-weight: bold; border-bottom: 1px solid #444444; }

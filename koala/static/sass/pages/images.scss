@@ -3,3 +3,9 @@
 
 @import "../includes/landingpage";
 
+.tile .label.has-tip {
+    background: white;
+    color: $euca-darkblue;
+    font-weight: bold;
+    border-bottom: 1px solid $euca-darkgrey;
+}

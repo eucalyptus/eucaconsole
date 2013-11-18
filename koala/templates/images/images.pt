@@ -17,8 +17,8 @@
                         <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
                                 placeholder="${field.name}" name="${field.key}">
                             <option value="">${field.name}...</option>
-                            <option tal:repeat="choice field.choices" value="${choice[0]}"
-                                    tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice[0]">${choice[1]}</option>
+                            <option tal:repeat="choice field.choices" value="${choice.key}"
+                                    tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice.key">${choice.label}</option>
                         </select>
                     </div>
                     <div>

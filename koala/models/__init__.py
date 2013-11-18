@@ -19,6 +19,12 @@ class SiteRootFactory(object):
 
 
 class LandingPageFilter(object):
+    """Filter for landing pages
+
+    :ivar key: the key to filter on (matches item attribute to filter)
+    :ivar name: The label to display in the filter selection
+
+    """
     def __init__(self, key=None, name=None, choices=None):
         self.key = key
         self.name = name

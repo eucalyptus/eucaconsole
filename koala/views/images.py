@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS images
 
 """
+from collections import namedtuple
 from urllib import urlencode
 
 from beaker.cache import cache_region
@@ -39,15 +40,18 @@ class ImagesView(LandingPageView):
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        owner_choices = (('', 'Anyone'), ('self', 'Me'))
+        Choice = namedtuple('FilterChoice', ['key', 'label'])
+        owner_choices = (
+            Choice(key='', label='Anyone'), Choice(key='self', label='Me')
+        )
         if self.cloud_type == 'aws':
             owner_choices = (
-                ('self', 'Owned by me'),
-                ('amazon', 'Amazon AMIs'),
-                ('aws-marketplace', 'AWS Marketplace'),
+                Choice(key='self', label='Owned by me'),
+                Choice(key='amazon', label='Amazon AMIs'),
+                Choice(key='aws-marketplace', label='AWS Marketplace'),
             )
         self.filter_fields = [
-            LandingPageFilter(key='owner_alias', name='AWS Images...', choices=owner_choices),
+            LandingPageFilter(key='owner_alias', name='Images', choices=owner_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']
