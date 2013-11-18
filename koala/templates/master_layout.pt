@@ -57,7 +57,7 @@
     <section class="top-bar-section">
         <ul class="resources-nav left-align">
             <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_url('dashboard')}">Dashboard</a></li>
-            <li><a id="resource-menu-image" class="lnk-image" href="#">Images</a></li>
+            <li><a id="resource-menu-image" class="lnk-image" href="${request.route_url('images')}">Images</a></li>
             <li class="has-dropdown">
                 <a id="resource-menu-instance" class="lnk-instance" href="${request.route_url('instances')}">Instances</a>
                 <ul class="dropdown">

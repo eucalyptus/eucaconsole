@@ -165,6 +165,7 @@ $gridwrapper-table-width: 98%;
         td {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
+            vertical-align: top;
         }
     }
 }
@@ -176,6 +177,11 @@ $gridwrapper-table-width: 98%;
 #properties-filter-form {
     font-size: 0.9rem;
 }
+
+#sorting-controls, #results-count {
+    padding-top: 1rem;
+}
+
 
 /* -----------------------------------------
    Media Queries

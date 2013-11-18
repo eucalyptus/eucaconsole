@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS instances
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import BaseView, LandingPageView
 
 
 class InstancesView(LandingPageView):
@@ -70,11 +70,21 @@ class InstancesView(LandingPageView):
         return dict(results=instances)
 
 
-class InstanceView(object):
+class InstanceView(BaseView):
     def __init__(self, request):
+        super(InstanceView, self).__init__(request)
         self.request = request
 
     @view_config(route_name='instance_view', renderer='../templates/instances/instance_view.pt')
     def instance_view(self):
         instance_id = self.request.matchdict.get('id')
         return dict(instance_id=instance_id)
+
+    @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
+    def instance_launch(self):
+        image_id = self.request.params.get('image_id')
+        conn = self.get_connection()
+        image = conn.get_image(image_id)
+        return dict(
+            image=image
+        )

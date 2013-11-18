@@ -28,7 +28,7 @@ class DashboardView(BaseView):
 
         # Volume/snapshot counts
         volumes_count = len(ec2_conn.get_all_volumes())
-        snapshots_count = len(ec2_conn.get_all_snapshots())
+        snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
 
         # Security groups, key pairs, IP addresses
         securitygroups_count = len(ec2_conn.get_all_security_groups())

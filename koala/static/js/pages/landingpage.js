@@ -43,20 +43,20 @@ angular.module('LandingPage', [])
          */
         $scope.searchFilterItems = function(filterProps) {
             $scope.items = $scope.unfilteredItems;  // reset prior to applying filter
-            var filterText = $scope.searchFilter || '';
+            var filterText = ($scope.searchFilter || '').toLowerCase();
             // Leverage Array.prototype.filter (ECMAScript 5)
             var filteredItems = $scope.items.filter(function(item) {
                 for (var i=0; i < filterProps.length; i++) {  // Can't use $.each or Array.prototype.forEach here
                     var propName = filterProps[i];
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
-                    if (itemProp && typeof itemProp === "string" && itemProp.indexOf(filterText) !== -1) {
+                    if (itemProp && typeof itemProp === "string" && itemProp.toLowerCase().indexOf(filterText) !== -1) {
                         return item;
                     }
                     // Match tags (object of key/value pairs)
                     if (itemProp && propName === "tags") {
                         var keys = Object.keys(itemProp);
                         for (var j=0; j < keys.length; j++) {
-                            if (keys[j].indexOf(filterText) !== -1 || itemProp[keys[j]].indexOf(filterText) !== -1) {
+                            if (keys[j].indexOf(filterText) !== -1 || itemProp[keys[j]].toLowerCase().indexOf(filterText) !== -1) {
                                 return item;
                             }
                         }
