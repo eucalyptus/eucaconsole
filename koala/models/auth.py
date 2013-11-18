@@ -1,4 +1,4 @@
- -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Authentication and Authorization models
 
@@ -70,7 +70,6 @@ class ConnectionManager(object):
         if conn_type == 'ec2':
             conn = ec2.connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'autoscale':
-            boto.set_stream_logger('autoscale')
             conn = ec2.autoscale.connect_to_region(
                 region, aws_access_key_id=access_key, security_token=token, aws_secret_access_key=secret_key)
         elif conn_type == 'cloudwatch':
