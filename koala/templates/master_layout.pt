@@ -20,7 +20,7 @@
 </head>
 
 <body>
-<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}">
+<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
         <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
@@ -28,9 +28,9 @@
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown">
-            <li><a href="${layout.help_url}" target="_blank">Help</a></li>
-            <li><a href="#">Change password</a></li>
-            <li><a href="${request.route_url('logout')}">Logout</a></li>
+            <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
+            <li><a href="#" i18n:translate="">Change password</a></li>
+            <li><a href="${request.route_url('logout')}" i18n:translate="">Logout</a></li>
         </ul>
     </section>
     <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
@@ -40,7 +40,7 @@
         </a>
         <ul id="region-dropdown" class="f-dropdown">
             <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
-                <a href="${request.route_url('region_select')}?region=${region.name}&returnto=${request.url}">
+                <a href="${request.route_url('region_select')}?region=${region.name}&amp;returnto=${request.url}">
                         ${region.label}
                 </a>
             </li>
@@ -48,10 +48,10 @@
     </section>
 </nav>
 
-<nav class="top-bar" tal:condition="request.user.is_authenticated()">
+<nav class="top-bar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar">
     <ul class="title-area">
         <li class="name"></li>
-        <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
     </ul>
 
     <section class="top-bar-section">
@@ -99,7 +99,8 @@
 <!-- Footer -->
 <footer>
     <div class="row">
-       <h6 class="copyright subheader">© 2012-2013 Eucalyptus Systems, Inc. All rights reserved.</h6>
+       <h6 class="copyright subheader">
+           © 2012-2013 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
     </div>
 </footer>
 

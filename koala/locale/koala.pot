@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-07 14:52-0800\n"
+"POT-Creation-Date: 2013-11-19 11:10-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,4 +16,32 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: koala/templates/login.pt:11
+msgid "Log in to your console"
+msgstr ""
+
+#: koala/templates/login.pt:21 koala/templates/login.pt:40
+msgid "Log in to Eucalyptus"
+msgstr ""
+
+#: koala/templates/login.pt:50 koala/templates/login.pt:69
+msgid "Log in to AWS"
+msgstr ""
+
+#: koala/templates/master_layout.pt:31
+msgid "Help"
+msgstr ""
+
+#: koala/templates/master_layout.pt:32
+msgid "Change password"
+msgstr ""
+
+#: koala/templates/master_layout.pt:33
+msgid "Logout"
+msgstr ""
+
+#: koala/templates/master_layout.pt:103
+msgid "All rights reserved"
+msgstr ""
 
