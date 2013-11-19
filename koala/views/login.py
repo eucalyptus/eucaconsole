@@ -7,6 +7,7 @@ from urllib2 import HTTPError, URLError
 
 from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
@@ -80,10 +81,12 @@ class LoginView(object):
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
                     if err.msg == u'Unauthorized':
-                        self.login_form_errors.append(u'Invalid user/account name and/or password.')
+                        msg = _(u'Invalid user/account name and/or password.')
+                        self.login_form_errors.append(msg)
                 except URLError, err:
                     if str(err.reason) == 'timed out':
-                        self.login_form_errors.append(u'No response from host ' + clchost)
+                        msg = _(u'No response from host ')
+                        self.login_form_errors.append(msg + clchost)
         elif login_type == 'AWS':
             aws_login_form = AWSLoginForm(self.request, formdata=self.request.params)
             if aws_login_form.validate():
@@ -106,10 +109,12 @@ class LoginView(object):
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
                     if err.msg == 'Forbidden':
-                        self.login_form_errors.append(u'Invalid access key and/or secret key.')
+                        msg = _(u'Invalid access key and/or secret key.')
+                        self.login_form_errors.append(msg)
                 except URLError, err:
                     if str(err.reason) == 'timed out':
-                        self.login_form_errors.append(u'No response from host ' + clchost)
+                        msg = _(u'No response from host ')
+                        self.login_form_errors.append(msg + clchost)
         return dict(
             euca_login_form=euca_login_form,
             aws_login_form=aws_login_form,
