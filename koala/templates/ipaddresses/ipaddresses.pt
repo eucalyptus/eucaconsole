@@ -20,11 +20,17 @@
                 <a class="button small" data-reveal-id="allocate-ip-modal">Allocate IP address</a>
             </div>
             <div metal:fill-slot="tile_header">
-                {{ item.public_ip }}
+                <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.instance_id }}</div>
+                <div>
+                    <span ng-show="item.instance_id">Associated with
+                        <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></b>
+                    </span>
+                    <span ng-show="!item.instance_id">Not associated with any instances</span>
+                </div>
             </div>
+            <div metal:fill-slot="tile-dropdown-button"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Public IP Address</th>
                 <th>Assigned to Instance</th>

@@ -98,19 +98,21 @@
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
                 <div class="header">
                     <strong>
-                        <a ng-href="${prefix}/{{ item.id || item.name }}">
-                            <metal:block metal:define-slot="tile_header"> {{ item.name || item.id }}</metal:block>
-                        </a>
-                    </strong>
-                    <span class="tiny secondary button dropdown right"
-                          data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <metal:block metal:define-slot="dropdown-items">
-                            <li><a href="#">This is a link</a></li>
-                            <li><a href="#">This is another</a></li>
-                            <li><a href="#">Yet another</a></li>
+                        <metal:block metal:define-slot="tile_header">
+                            <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
                         </metal:block>
-                    </ul>
+                    </strong>
+                    <metal:block metal:define-slot="tile-dropdown-button">
+                        <span class="tiny secondary button dropdown right"
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <metal:block metal:define-slot="tile-dropdown-items">
+                                <li><a href="#">This is a link</a></li>
+                                <li><a href="#">This is another</a></li>
+                                <li><a href="#">Yet another</a></li>
+                            </metal:block>
+                        </ul>
+                    </metal:block>
                 </div>
                 <div class="content">
                     <metal:block metal:define-slot="tile_content"></metal:block>
