@@ -90,9 +90,11 @@
         </div>
         <div ng-show="itemsLoading">Loading...</div>
         <div class="gridwrapper" tal:condition="display_type == 'gridview'">
-            <div data-alert="alert" class="alert-box secondary" ng-show="!itemsLoading && items.length == 0" ng-cloak="1">
-                No items were found
-                <a href="#" class="close">&times;</a>
+            <div ng-show="!itemsLoading">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
+                    No items were found
+                    <a href="#" class="close">&times;</a>
+                </div>
             </div>
             <!-- Begin grid view -->
             <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
@@ -140,7 +142,7 @@
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
         <div tal:repeat="notification layout.get_notifications()">
-            <div data-alert class="alert-box ${notification.style}">
+            <div data-alert="alert" class="alert-box ${notification.style}">
                 ${notification.message}
                 <a href="#" class="close">&times;</a>
             </div>

@@ -10,18 +10,18 @@
         <div class="large-3 columns">
             <div class="panel" id="instances">
                 <div class="tile" id="running">
-                    <h5 class="subheader">Running instances</h5>
+                    <h5 class="subheader" i18n:translate="">Running instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?filter=apply&amp;status=running">
                             <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_running }}</em></i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a class="button" href="#">Launch Instance</a>
+                        <a class="button" href="#" i18n:translate="">Launch Instance</a>
                     </div>
                 </div>
                 <div class="tile" id="stopped">
-                    <h5 class="subheader">Stopped instances</h5>
+                    <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?filter=apply&amp;status=stopped">
                             <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_stopped }}</em></i>
@@ -30,7 +30,7 @@
                     <div class="footer"></div>
                 </div>
                 <div class="tile" id="in-scaling-group">
-                    <h5 class="subheader">In scaling groups</h5>
+                    <h5 class="subheader" i18n:translate="">In scaling groups</h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
                             <i class="fi-cloud icon"><em>0</em></i>
@@ -43,7 +43,7 @@
         <div class="large-6 columns">
             <div class="panel row" id="volumes-snapshots">
                 <div class="tile small-6 columns" id="volumes">
-                    <h5 class="subheader">Volumes</h5>
+                    <h5 class="subheader" i18n:translate="">Volumes</h5>
                     <div class="content">
                         <a href="${request.route_url('volumes')}">
                             <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.volumes }}</em></i>
@@ -52,7 +52,7 @@
                     <div class="footer"></div>
                 </div>
                 <div class="tile small-6 columns" id="snapshots">
-                    <h5 class="subheader">Snapshots</h5>
+                    <h5 class="subheader" i18n:translate="">Snapshots</h5>
                     <div class="content">
                         <a href="${request.route_url('snapshots')}">
                             <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.snapshots }}</em></i>
@@ -63,7 +63,7 @@
             </div>
             <div class="panel row" id="users-groups">
                 <div class="tile small-6 columns" id="groups">
-                    <h5 class="subheader">Groups</h5>
+                    <h5 class="subheader" i18n:translate="">Groups</h5>
                     <div class="content">
                         <a href="#">
                             <i class="fi-torsos-all icon"><em>0</em></i>
@@ -72,7 +72,7 @@
                     <div class="footer"></div>
                 </div>
                 <div class="tile small-6 columns" id="users">
-                    <h5 class="subheader">Users</h5>
+                    <h5 class="subheader" i18n:translate="">Users</h5>
                     <div class="content">
                         <a href="#">
                             <i class="fi-torso icon"><em>0</em></i>
@@ -83,7 +83,7 @@
             </div>
             <div class="panel row">
                 <div class="tile small-6 columns" id="security-groups">
-                    <h5 class="subheader">Security groups</h5>
+                    <h5 class="subheader" i18n:translate="">Security groups</h5>
                     <div class="content">
                         <a href="${request.route_url('securitygroups')}">
                             <i class="fi-lock icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
@@ -92,7 +92,7 @@
                     <div class="footer"></div>
                 </div>
                 <div class="tile small-6 columns" id="key-pairs">
-                    <h5 class="subheader">Key pairs</h5>
+                    <h5 class="subheader" i18n:translate="">Key pairs</h5>
                     <div class="content">
                         <a href="${request.route_url('keypairs')}">
                             <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
@@ -105,7 +105,7 @@
         <div class="large-3 columns">
             <div class="panel" id="elastic-ips">
                 <div class="tile">
-                    <h5 class="subheader">Elastic IPs</h5>
+                    <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
                     <div class="content">
                         <a href="${request.route_url('ipaddresses')}">
                             <i class="fi-thumbnails icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.eips }}</em></i>
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div class="panel" id="notifications-log">
-                <h5 class="subheader">Log</h5>
+                <h5 class="subheader" i18n:translate="">Log</h5>
             </div>
         </div>
     </div>

@@ -1,17 +1,17 @@
-# Translations template for koala.
+# French translations for koala.
 # Copyright (C) 2013 ORGANIZATION
 # This file is distributed under the same license as the koala project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2013-11-19 11:37-0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -197,8 +197,8 @@ msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:56
 msgid ""
-"If you disassociate an IP address from an instance, you will no longer be "
-"able to connect to that instance using that IP address."
+"If you disassociate an IP address from an instance, you will no longer be"
+" able to connect to that instance using that IP address."
 msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:58
@@ -221,11 +221,11 @@ msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:74
 msgid ""
-"If you release an IP address to the cloud, you can no longer associate that "
-"IP address with any of your instances. If the IP address is currently "
-"associated with an instance when you release it to the cloud, the instance "
-"will get a new IP address as long as you did not specify private addressing "
-"when you launched the instance."
+"If you release an IP address to the cloud, you can no longer associate "
+"that IP address with any of your instances. If the IP address is "
+"currently associated with an instance when you release it to the cloud, "
+"the instance will get a new IP address as long as you did not specify "
+"private addressing when you launched the instance."
 msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:79

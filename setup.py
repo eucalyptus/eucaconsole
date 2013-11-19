@@ -50,7 +50,7 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
     ],
     author='Eucalyptus Systems',
-    author_email='',
+    author_email='info@eucalyptus.com',
     url='http://www.eucalyptus.com',
     keywords='web pyramid pylons',
     packages=find_packages(),

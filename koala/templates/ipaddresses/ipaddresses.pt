@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             IP Addresses
         </h3>
         <!-- Notifications -->
@@ -17,24 +17,26 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" data-reveal-id="allocate-ip-modal">Allocate IP address</a>
+                <a class="button small" data-reveal-id="allocate-ip-modal" i18n:translate="">
+                    Allocate IP address
+                </a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
             </div>
             <div metal:fill-slot="tile_content">
                 <div>
-                    <span ng-show="item.instance_id">Associated with
+                    <span ng-show="item.instance_id" i18n:translate="">Associated with
                         <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></b>
                     </span>
-                    <span ng-show="!item.instance_id">Not associated with any instances</span>
+                    <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
             </div>
             <div metal:fill-slot="tile-dropdown-button"></div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>Public IP Address</th>
-                <th>Assigned to Instance</th>
-                <th>Scope</th>
+                <th i18n:translate="">Public IP Address</th>
+                <th i18n:translate="">Assigned to Instance</th>
+                <th i18n:translate="">Scope</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
@@ -44,8 +46,8 @@
         </div>
         <!-- Modal dialog -->
         <div id="allocate-ip-modal" class="reveal-modal medium">
-            <h3>Allocate IP addresses</h3>
-            <p class="lead">How may IP addresses would you like to allocate?</p>
+            <h3 i18n:translate="">Allocate IP addresses</h3>
+            <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
                 ${structure:allocate_form['csrf_token']}
                 <div class="row inline controls-wrapper controls_${field.name}" tal:define="field allocate_form['ipcount']">
@@ -65,7 +67,9 @@
                 <div class="row">
                     <div class="small-4 columns"></div>
                     <div class="small-8 columns">
-                        <button type="submit" class="button radius">Allocate addresses from cloud</button>
+                        <button type="submit" class="button radius" i18n:translate="">
+                            Allocate addresses from cloud
+                        </button>
                     </div>
                 </div>
             </form>
