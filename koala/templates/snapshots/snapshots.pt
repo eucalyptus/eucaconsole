@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             Snapshots
         </h3>
         <div class="large-2 columns" id="landing-page-filters">
@@ -14,7 +14,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small">Create new snapshot</a>
+                <a class="button small" i18n:translate="">Create new snapshot</a>
             </div>
             <div metal:fill-slot="tile_content">
                 <div ng-show="item.size">{{ item.size }} GB</div>
@@ -23,12 +23,12 @@
                 <div ng-show="item.start_time">{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>Snapshot</th>
-                <th>Status</th>
-                <th>Size (GB)</th>
-                <th>Volume</th>
-                <th>Description</th>
-                <th>Time Started</th>
+                <th i18n:translate="">Snapshot</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Size (GB)</th>
+                <th i18n:translate="">Volume</th>
+                <th i18n:translate="">Description</th>
+                <th i18n:translate="">Time Started</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>

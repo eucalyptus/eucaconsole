@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             Images
         </h3>
         <div class="large-2 columns" id="landing-page-filters">
@@ -48,14 +48,15 @@
             </div>
             <div metal:fill-slot="tile_footer">
                 <div class="footer">
-                    <a href="/instances/launch?image_id={{ item.id }}" class="action">Launch instance</a>
+                    <a href="/instances/launch?image_id={{ item.id }}" class="action"
+                            i18n:translate="">Launch instance</a>
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Arch</th>
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Description</th>
+                <th i18n:translate="">Architecture</th>
                 <th>&nbsp;</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -63,7 +64,8 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
-                <td><a href="/instances/launch?image_id={{ item.id }}" class="button small">Launch&nbsp;instance</a></td>
+                <td><a href="/instances/launch?image_id={{ item.id }}" class="button small" style="white-space: nowrap"
+                        i18n:translate="">Launch instance</a></td>
             </metal:block>
         </div>
     </div>

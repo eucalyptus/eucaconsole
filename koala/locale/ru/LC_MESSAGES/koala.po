@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-19 11:10-0800\n"
+"POT-Creation-Date: 2013-11-19 11:37-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -17,6 +17,54 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: koala/templates/dashboard.pt:13
+msgid "Running instances"
+msgstr ""
+
+#: koala/templates/dashboard.pt:20
+msgid "Launch Instance"
+msgstr ""
+
+#: koala/templates/dashboard.pt:24
+msgid "Stopped instances"
+msgstr ""
+
+#: koala/templates/dashboard.pt:33
+msgid "In scaling groups"
+msgstr ""
+
+#: koala/templates/dashboard.pt:46 koala/templates/volumes/volumes.pt:9
+msgid "Volumes"
+msgstr ""
+
+#: koala/templates/dashboard.pt:55 koala/templates/snapshots/snapshots.pt:9
+msgid "Snapshots"
+msgstr ""
+
+#: koala/templates/dashboard.pt:66
+msgid "Groups"
+msgstr ""
+
+#: koala/templates/dashboard.pt:75
+msgid "Users"
+msgstr ""
+
+#: koala/templates/dashboard.pt:86
+msgid "Security groups"
+msgstr ""
+
+#: koala/templates/dashboard.pt:95
+msgid "Key pairs"
+msgstr ""
+
+#: koala/templates/dashboard.pt:108
+msgid "Elastic IPs"
+msgstr ""
+
+#: koala/templates/dashboard.pt:118
+msgid "Log"
+msgstr ""
 
 #: koala/templates/login.pt:11
 msgid "Log in to your console"
@@ -44,5 +92,272 @@ msgstr ""
 
 #: koala/templates/master_layout.pt:103
 msgid "All rights reserved"
+msgstr ""
+
+#: koala/templates/notfound.pt:6
+msgid "404 Not Found"
+msgstr ""
+
+#: koala/templates/notfound.pt:10
+msgid "The resource you have requested was not found."
+msgstr ""
+
+#: koala/templates/images/images.pt:9
+msgid "Images"
+msgstr ""
+
+#: koala/templates/images/images.pt:51 koala/templates/images/images.pt:67
+msgid "Launch instance"
+msgstr ""
+
+#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
+#: koala/templates/launchconfigs/launchconfigs.pt:26
+#: koala/templates/scalinggroups/scalinggroups.pt:24
+#: koala/templates/securitygroups/securitygroups.pt:26
+msgid "Name"
+msgstr ""
+
+#: koala/templates/images/images.pt:58
+#: koala/templates/securitygroups/securitygroups.pt:27
+#: koala/templates/snapshots/snapshots.pt:30
+msgid "Description"
+msgstr ""
+
+#: koala/templates/images/images.pt:59
+msgid "Architecture"
+msgstr ""
+
+#: koala/templates/instances/instance_launch.pt:5
+msgid "Launch new instance"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:9
+msgid "Instances"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:17
+msgid "Launch New Instance"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:29
+msgid "Root Device"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:30
+msgid "Availability Zone"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:31
+msgid "Instance Type"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:32
+#: koala/templates/launchconfigs/launchconfigs.pt:29
+msgid "Security Group"
+msgstr ""
+
+#: koala/templates/instances/instances.pt:33
+msgid "Launch Time"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:13
+msgid "Elastic IP"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:19
+msgid "The IP address is not associated with any instances."
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:20
+msgid "Associate with an instance"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:24
+msgid "Associate IP Address"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:25
+msgid "Associate <dynamic element> with an instance"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:36
+msgid "Instance is required"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:50
+msgid "The IP address is associated with instance ${eip.instance_id}."
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:51
+msgid "Disassociate from instance"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:55
+msgid "Disassociate IP Address"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:56
+msgid ""
+"If you disassociate an IP address from an instance, you will no longer be"
+" able to connect to that instance using that IP address."
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:58
+msgid ""
+"Are you sure you want to disassociate <dynamic element> from instance "
+"<dynamic element>"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:68
+msgid "If you no longer need this IP address you can..."
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:69
+msgid "Release IP address to cloud"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:73
+msgid "Release IP Address to Cloud"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:74
+msgid ""
+"If you release an IP address to the cloud, you can no longer associate "
+"that IP address with any of your instances. If the IP address is "
+"currently associated with an instance when you release it to the cloud, "
+"the instance will get a new IP address as long as you did not specify "
+"private addressing when you launched the instance."
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddress_view.pt:79
+msgid "Are you sure you want to release ${eip.public_ip} to the cloud?"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:9
+msgid "IP Addresses"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:20
+msgid "Allocate IP address"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:29
+msgid "Associated with <dynamic element>"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:32
+msgid "Not associated with any instances"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:37
+msgid "Public IP Address"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:38
+msgid "Assigned to Instance"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:39
+msgid "Scope"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:49
+msgid "Allocate IP addresses"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:50
+msgid "How may IP addresses would you like to allocate?"
+msgstr ""
+
+#: koala/templates/ipaddresses/ipaddresses.pt:70
+msgid "Allocate addresses from cloud"
+msgstr ""
+
+#: koala/templates/keypairs/keypairs.pt:9
+msgid "Key Pairs"
+msgstr ""
+
+#: koala/templates/keypairs/keypairs.pt:17
+msgid "Create new key pair"
+msgstr ""
+
+#: koala/templates/keypairs/keypairs.pt:25
+msgid "Fingerprint"
+msgstr ""
+
+#: koala/templates/launchconfigs/launchconfigs.pt:9
+msgid "Launch Configurations"
+msgstr ""
+
+#: koala/templates/launchconfigs/launchconfigs.pt:17
+msgid "Create new launch configuration"
+msgstr ""
+
+#: koala/templates/launchconfigs/launchconfigs.pt:27
+msgid "Image"
+msgstr ""
+
+#: koala/templates/launchconfigs/launchconfigs.pt:28
+msgid "Key"
+msgstr ""
+
+#: koala/templates/launchconfigs/launchconfigs.pt:30
+msgid "Create time"
+msgstr ""
+
+#: koala/templates/scalinggroups/scalinggroups.pt:9
+msgid "Scaling Groups"
+msgstr ""
+
+#: koala/templates/scalinggroups/scalinggroups.pt:17
+msgid "Create new scaling group"
+msgstr ""
+
+#: koala/templates/scalinggroups/scalinggroups.pt:25
+msgid "Launch Config"
+msgstr ""
+
+#: koala/templates/scalinggroups/scalinggroups.pt:26
+msgid "Availability Zones"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroups.pt:9
+msgid "Security Groups"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroups.pt:17
+msgid "Create new security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroups.pt:28
+msgid "Tags"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:17
+msgid "Create new snapshot"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:26
+msgid "Snapshot"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:27
+msgid "Status"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:28
+msgid "Size (GB)"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:29
+msgid "Volume"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:31
+msgid "Time Started"
+msgstr ""
+
+#: koala/templates/volumes/volumes.pt:17
+msgid "Create new volume"
 msgstr ""
 

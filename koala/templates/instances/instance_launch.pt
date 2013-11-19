@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             Launch new instance
         </h3>
         <div class="large-12 columns">

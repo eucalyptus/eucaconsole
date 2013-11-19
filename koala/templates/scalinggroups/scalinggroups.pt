@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             Scaling Groups
         </h3>
         <div class="large-2 columns" id="landing-page-filters">
@@ -14,16 +14,16 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small">Create new scaling group</a>
+                <a class="button small" i18n:translate="">Create new scaling group</a>
             </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.launch_config }}</div>
                 <div>{{ item.availability_zones }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>Name</th>
-                <th>Launch Config</th>
-                <th>Availability Zones</th>
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Launch Config</th>
+                <th i18n:translate="">Availability Zones</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>

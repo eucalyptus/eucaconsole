@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle">
+        <h3 class="header" id="pagetitle" i18n:translate="">
             Launch Configurations
         </h3>
         <div class="large-2 columns" id="landing-page-filters">
@@ -14,7 +14,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small">Create new launch configuration</a>
+                <a class="button small" i18n:translate="">Create new launch configuration</a>
             </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.image_id }}</div>
@@ -23,11 +23,11 @@
                 <div>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>Name</th>
-                <th>Image</th>
-                <th>Key</th>
-                <th>Security Group</th>
-                <th>Create time</th>
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Image</th>
+                <th i18n:translate="">Key</th>
+                <th i18n:translate="">Security Group</th>
+                <th i18n:translate="">Create time</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
