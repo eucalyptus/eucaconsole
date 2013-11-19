@@ -1372,8 +1372,7 @@ form .controls_csrf_token { display: none; }
 
 form .inline label { line-height: 1.8rem; }
 
-form .inline .field input { display: inline-block !important; }
-form .inline .field select { display: inline-block !important; }
+form .inline .field input { display: inline-block; }
 
 [data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
 

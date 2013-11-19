@@ -200,10 +200,7 @@ form .inline label {
 
 form .inline .field {
     input {
-        display: inline-block !important;
-    }
-    select {
-        display: inline-block !important;
+        display: inline-block;
     }
 }
 
