@@ -30,3 +30,20 @@ class LandingPageFilter(object):
         self.name = name
         self.choices = choices or []
 
+
+class Notification(object):
+    """Standardize notification types for flash messaging"""
+    INFO = 'info'
+    SUCCESS = 'success'
+    WARNING = 'warning'
+    ERROR = 'error'
+    TYPES = (INFO, SUCCESS, WARNING, ERROR)
+    # Map notification queues to Zurb Foundation alert box styles
+    # See http://foundation.zurb.com/docs/components/alert-boxes.html
+    FOUNDATION_STYLES = {
+        INFO: '',
+        SUCCESS: 'success',
+        WARNING: 'secondary',
+        ERROR: 'alert',
+    }
+

@@ -33,7 +33,7 @@
                 &nbsp;
             </div>
             <div metal:fill-slot="tile_header">
-                {{ item.id }}
+                <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.id }}</a>
             </div>
             <div metal:fill-slot="tile_content">
                 <div>{{ item.name }}</div>

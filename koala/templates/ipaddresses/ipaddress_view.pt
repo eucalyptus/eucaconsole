@@ -1,0 +1,101 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <style type="text/css">
+        #contentwrap { padding-bottom: 10rem; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            Elastic IP
+        </h3>
+        <div class="large-12 columns">
+            <h4>IP ${eip.public_ip}</h4>
+            <div tal:condition="not eip.instance_id">
+                <p>The IP address is not associated with any instances.</p>
+                <a class="button secondary" data-reveal-id="associate-ip-modal" id="associate-btn">
+                    Associate with an instance
+                </a>
+                <div id="associate-ip-modal" class="reveal-modal medium">
+                    <h3>Associate IP Address</h3>
+                    <p>Associate <b>${eip.public_ip}</b> with an instance</p>
+                    <form action="${request.route_url('ipaddress_associate', public_ip=eip.public_ip)}"
+                          method="post" data-abide="abide">
+                        ${structure:associate_form['csrf_token']}
+                        <div tal:define="instance_field associate_form['instance_id']"
+                             class="row inline controls-wrapper controls_${instance_field.name}">
+                            <div class="small-4 columns">
+                                <label for="right-label" class="right">${instance_field.label.text}</label>
+                            </div>
+                            <div class="small-8 columns field">
+                                ${structure:instance_field(required='required')}
+                                <small class="error">Instance is required</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <input type="submit" class="button" value="Associate with Instance" />
+                            </div>
+                        </div>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+            <div tal:condition="eip.instance_id">
+                <p>The IP address is associated with instance ${eip.instance_id}.</p>
+                <a class="button secondary" data-reveal-id="disassociate-ip-modal">Disassociate from instance</a>
+                <div id="disassociate-ip-modal" class="reveal-modal medium">
+                    <h3>Disassociate IP Address</h3>
+                    <p>If you disassociate an IP address from an instance,
+                        you will no longer be able to connect to that instance using that IP address.</p>
+                    <p>Are you sure you want to disassociate <b>${eip.public_ip}</b>
+                        from instance <b>${eip.instance_id}?</b></p>
+                    <form action="${request.route_url('ipaddress_disassociate', public_ip=eip.public_ip)}" method="post">
+                        ${structure:disassociate_form['csrf_token']}
+                        <input type="submit" class="button" value="Yes, disassociate" />
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+            <div>
+                <p>If you no longer need this IP address you can...</p>
+                <a class="button secondary" data-reveal-id="release-ip-modal">Release IP address to cloud</a>
+                <div id="release-ip-modal" class="reveal-modal medium">
+                    <h3>Release IP Address to Cloud</h3>
+                    <p>If you release an IP address to the cloud, you can no longer associate
+                        that IP address with any of your instances.
+                        If the IP address is currently associated with an instance when you release it to the cloud,
+                        the instance will get a new IP address as long as you did not
+                        specify private addressing when you launched the instance.</p>
+                    <p>Are you sure you want to release ${eip.public_ip} to the cloud?</p>
+                    <form action="${request.route_url('ipaddress_release', public_ip=eip.public_ip)}" method="post">
+                        ${structure:release_form['csrf_token']}
+                        <input type="submit" class="button" value="Yes, release" />
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#associate-ip-modal').foundation('reveal', {
+                'opened': function() {
+                    $('#instance_id').chosen();
+                }
+            })
+        });
+    </script>
+</div>
+
+</metal:block>
+

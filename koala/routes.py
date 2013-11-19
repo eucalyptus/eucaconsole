@@ -56,4 +56,8 @@ urls = [
     # IP Addresses
     Route(name='ipaddresses', pattern='/ipaddresses'),
     Route(name='ipaddresses_json', pattern='/ipaddresses/json'),
+    Route(name='ipaddress_view', pattern='/ipaddresses/{public_ip}'),
+    Route(name='ipaddress_associate', pattern='/ipaddresses/{public_ip}/associate'),
+    Route(name='ipaddress_disassociate', pattern='/ipaddresses/{public_ip}/disassociate'),
+    Route(name='ipaddress_release', pattern='/ipaddresses/{public_ip}/release'),
 ]

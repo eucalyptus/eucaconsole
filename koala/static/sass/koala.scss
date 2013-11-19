@@ -4,6 +4,7 @@
 @import "includes/normalize";
 
 // This includes all of the foundation global elements that are needed to work with any of the other files.
+// Note: foundation/variables imports includes/eucavariables
 @import "foundation/variables";
 
 // Foundation Components
@@ -163,6 +164,16 @@ nav.top-bar .dropdown li a {
     background-image: url(/static/img/dots32.gif)
 }
 
+#notifications {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: -1rem;
+}
+
+#notifications .alert-box.success {
+    background-color: $euca-notificationblue;
+    border-color: $euca-extralightblue;
+}
 
 /* -----------------------------------------
    Forms
@@ -181,6 +192,22 @@ form .server-validation span.error {
 
 form .controls_csrf_token {
     display: none;
+}
+
+form .inline label {
+    line-height: 1.8rem;
+}
+
+form .inline .field {
+    input {
+        display: inline-block;
+    }
+}
+
+[data-abide] .inline .error small.error {
+    display: inline !important;
+    background-color: transparent;
+    color: darkred;
 }
 
 
