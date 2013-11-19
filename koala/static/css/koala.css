@@ -584,8 +584,8 @@ button:hover, button:focus, .button:hover, .button:focus { color: white; }
 button.secondary, .button.secondary { background-color: #e9e9e9; border-color: #d0d0d0; color: #333333; }
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus { background-color: #d0d0d0; }
 button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus { color: #333333; }
-button.success, .button.success { background-color: #5da423; border-color: #457a1a; color: white; }
-button.success:hover, button.success:focus, .button.success:hover, .button.success:focus { background-color: #457a1a; }
+button.success, .button.success { background-color: #8dc640; border-color: #72a330; color: white; }
+button.success:hover, button.success:focus, .button.success:hover, .button.success:focus { background-color: #72a330; }
 button.success:hover, button.success:focus, .button.success:hover, .button.success:focus { color: white; }
 button.alert, .button.alert { background-color: #c60f13; border-color: #970b0e; color: white; }
 button.alert:hover, button.alert:focus, .button.alert:hover, .button.alert:focus { background-color: #970b0e; }
@@ -604,10 +604,10 @@ button.disabled.secondary, button[disabled].secondary, .button.disabled.secondar
 button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus { background-color: #d0d0d0; }
 button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus { color: #333333; }
 button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus { background-color: #e9e9e9; }
-button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success { background-color: #5da423; border-color: #457a1a; color: white; cursor: default; opacity: 0.6; -webkit-box-shadow: none; box-shadow: none; }
-button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus { background-color: #457a1a; }
+button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success { background-color: #8dc640; border-color: #72a330; color: white; cursor: default; opacity: 0.6; -webkit-box-shadow: none; box-shadow: none; }
+button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus { background-color: #72a330; }
 button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus { color: white; }
-button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus { background-color: #5da423; }
+button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus { background-color: #8dc640; }
 button.disabled.alert, button[disabled].alert, .button.disabled.alert, .button[disabled].alert { background-color: #c60f13; border-color: #970b0e; color: white; cursor: default; opacity: 0.6; -webkit-box-shadow: none; box-shadow: none; }
 button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus { background-color: #970b0e; }
 button.disabled.alert:hover, button.disabled.alert:focus, button[disabled].alert:hover, button[disabled].alert:focus, .button.disabled.alert:hover, .button.disabled.alert:focus, .button[disabled].alert:hover, .button[disabled].alert:focus { color: white; }
@@ -764,7 +764,7 @@ label.error { color: #c60f13; }
 .split.button.secondary span { border-left-color: #c3c3c3; }
 .split.button.secondary span:before { border-color: white transparent transparent transparent; }
 .split.button.alert span { border-left-color: #7f0a0c; }
-.split.button.success span { border-left-color: #396516; }
+.split.button.success span { border-left-color: #648f2b; }
 .split.button.tiny { padding-right: 3.9375em; }
 .split.button.tiny span { width: 2.84375em; }
 .split.button.tiny span:before { border-top-style: solid; border-width: 0.4375em; top: 0.875em; margin-left: -0.3125em; }
@@ -984,8 +984,8 @@ label.error { color: #c60f13; }
 .top-bar-section ul li > a.button:hover { background: #558500; }
 .top-bar-section ul li > a.button.secondary { background: #e9e9e9; }
 .top-bar-section ul li > a.button.secondary:hover { background: #d0d0d0; }
-.top-bar-section ul li > a.button.success { background: #5da423; }
-.top-bar-section ul li > a.button.success:hover { background: #457a1a; }
+.top-bar-section ul li > a.button.success { background: #8dc640; }
+.top-bar-section ul li > a.button.success:hover { background: #72a330; }
 .top-bar-section ul li > a.button.alert { background: #c60f13; }
 .top-bar-section ul li > a.button.alert:hover { background: #970b0e; }
 .top-bar-section ul li:hover > a { background: #468400; color: white; }
@@ -1102,7 +1102,7 @@ label.error { color: #c60f13; }
 .alert-box .close:hover, .alert-box .close:focus { opacity: 0.5; }
 .alert-box.radius { -webkit-border-radius: 3px; border-radius: 3px; }
 .alert-box.round { -webkit-border-radius: 1000px; border-radius: 1000px; }
-.alert-box.success { background-color: #5da423; border-color: #457a1a; color: white; }
+.alert-box.success { background-color: #8dc640; border-color: #72a330; color: white; }
 .alert-box.alert { background-color: #c60f13; border-color: #970b0e; color: white; }
 .alert-box.secondary { background-color: #e9e9e9; border-color: #d0d0d0; color: #505050; }
 
@@ -1153,7 +1153,7 @@ form.custom .custom.disabled { background: #dddddd; }
 .label.radius { -webkit-border-radius: 3px; border-radius: 3px; }
 .label.round { -webkit-border-radius: 1000px; border-radius: 1000px; }
 .label.alert { background-color: #c60f13; color: white; }
-.label.success { background-color: #5da423; color: white; }
+.label.success { background-color: #8dc640; color: white; }
 .label.secondary { background-color: #e9e9e9; color: #333333; }
 
 /* Inline Lists */
@@ -1196,7 +1196,7 @@ ul.pagination li { float: left; display: block; }
 .progress { background-color: transparent; height: 1.5625em; border: 1px solid #cccccc; padding: 0.125em; margin-bottom: 0.625em; }
 .progress .meter { background: #76b800; height: 100%; display: block; }
 .progress.secondary .meter { background: #e9e9e9; height: 100%; display: block; }
-.progress.success .meter { background: #5da423; height: 100%; display: block; }
+.progress.success .meter { background: #8dc640; height: 100%; display: block; }
 .progress.alert .meter { background: #c60f13; height: 100%; display: block; }
 .progress.radius { -webkit-border-radius: 3px; border-radius: 3px; }
 .progress.radius .meter { -webkit-border-radius: 2px; border-radius: 2px; }
@@ -1234,7 +1234,7 @@ ul.pagination li { float: left; display: block; }
   div.switch label { padding: 0; line-height: 2.3em; font-size: 0.875em; }
   div.switch input:first-of-type:checked ~ span:last-child { left: 100%; margin-left: -2.1875em; }
   div.switch span:last-child { width: 2.25em; height: 2.25em; }
-  div.switch span:last-child { border-color: #b3b3b3; background: white; background: -moz-linear-gradient(top, white 0%, #f2f2f2 100%); background: -webkit-linear-gradient(top, white 0%, #f2f2f2 100%); background: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%); -webkit-box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 1000px #e1f5d1, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke; box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 980px #e1f5d1, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke; }
+  div.switch span:last-child { border-color: #b3b3b3; background: white; background: -moz-linear-gradient(top, white 0%, #f2f2f2 100%); background: -webkit-linear-gradient(top, white 0%, #f2f2f2 100%); background: linear-gradient(to bottom, #ffffff 0%, #f2f2f2 100%); -webkit-box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 1000px white, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke; box-shadow: 2px 0 10px 0 rgba(0, 0, 0, 0.07), 1000px 0 0 980px white, -2px 0 10px 0 rgba(0, 0, 0, 0.07), -1000px 0 0 1000px whitesmoke; }
   div.switch:hover span:last-child, div.switch:focus span:last-child { background: white; background: -moz-linear-gradient(top, white 0%, #e6e6e6 100%); background: -webkit-linear-gradient(top, white 0%, #e6e6e6 100%); background: linear-gradient(to bottom, #ffffff 0%, #e6e6e6 100%); }
   div.switch:active { background: transparent; }
   div.switch.large { height: 2.75em; }
@@ -1356,6 +1356,10 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 ----------------------------------------- */
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
 
+#notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
+
+#notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
+
 /* ----------------------------------------- Forms
 ----------------------------------------- */
 form .row input { margin: 0 0 0 0; }
@@ -1365,6 +1369,13 @@ form .row.controls-wrapper { margin-bottom: 1rem; }
 form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
+
+form .inline label { line-height: 1.8rem; }
+
+form .inline .field input { display: inline-block !important; }
+form .inline .field select { display: inline-block !important; }
+
+[data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

@@ -9,12 +9,15 @@
         <h3 class="header" id="pagetitle">
             IP Addresses
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small">Allocate IP address</a>
+                <a class="button small" data-reveal-id="allocate-ip-modal">Allocate IP address</a>
             </div>
             <div metal:fill-slot="tile_header">
                 {{ item.public_ip }}
@@ -32,6 +35,35 @@
                 <td>{{ item.instance_id }}</td>
                 <td>{{ item.domain }}</td>
             </metal:block>
+        </div>
+        <!-- Modal dialog -->
+        <div id="allocate-ip-modal" class="reveal-modal medium">
+            <h3>Allocate IP addresses</h3>
+            <p class="lead">How may IP addresses would you like to allocate?</p>
+            <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
+                ${structure:allocate_form['csrf_token']}
+                <div class="row inline controls-wrapper controls_${field.name}" tal:define="field allocate_form['ipcount']">
+                    <div class="small-4 columns">
+                        <label for="right-label" class="right">${field.label.text}</label>
+                    </div>
+                    <div class="small-8 columns field inline">
+                        ${structure:field(required='required', pattern='integer')}
+                        <small class="error">${allocate_form.ipcount_error_msg}</small>
+                        <div tal:condition="field.errors" class="server-validation">
+                            <span class="error" tal:repeat="error field.errors">
+                                ${error}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"></div>
+                    <div class="small-8 columns">
+                        <button type="submit" class="button radius">Allocate addresses from cloud</button>
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

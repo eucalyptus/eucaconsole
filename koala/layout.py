@@ -4,6 +4,7 @@ Layout configuration via pyramid_layout
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
+from collections import namedtuple
 from urlparse import urlparse
 
 from beaker.cache import cache_region
@@ -12,6 +13,7 @@ from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
+from .models import Notification
 
 
 class MasterLayout(object):
@@ -31,6 +33,19 @@ class MasterLayout(object):
         self.username_label = self.request.session.get('username_label')
         self.tableview_url = self.get_datagridview_url('tableview')
         self.gridview_url = self.get_datagridview_url('gridview')
+
+    def get_notifications(self):
+        """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
+        To add a success notification, use self.request.session.flash(msg, 'success')
+        See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/sessions.html#using-the-session-flash-method
+        """
+        notifications = []
+        notification = namedtuple('Notification', ['message', 'type', 'style'])
+        for queue in Notification.TYPES:
+            for notice in self.request.session.pop_flash(queue=queue):
+                notifications.append(
+                    notification(message=notice, type=queue, style=Notification.FOUNDATION_STYLES.get(queue)))
+        return notifications
 
     def get_datagridview_url(self, display):
         """Convience property to get tableview or gridview URL for landing pages"""
