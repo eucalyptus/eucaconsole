@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS key pairs
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..views import LandingPageView
@@ -26,8 +27,8 @@ class KeyPairsView(LandingPageView):
         self.filter_keys = ['name', 'fingerprint']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name='Name'),
-            dict(key='fingerprint', name='Fingerprint'),
+            dict(key='name', name=_(u'Name')),
+            dict(key='fingerprint', name=_(u'Fingerprint')),
         ]
 
         return dict(

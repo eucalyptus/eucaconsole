@@ -3,7 +3,8 @@
 Pyramid views for Eucalyptus and AWS Elastic IP Addresses
 
 """
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.ipaddresses import AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm
@@ -30,8 +31,8 @@ class IPAddressesView(LandingPageView):
         self.filter_keys = ['domain', 'instance_id', 'public_ip']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='public_ip', name='IP Address'),
-            dict(key='instance_id', name='Instance'),
+            dict(key='public_ip', name=_(u'IP Address')),
+            dict(key='instance_id', name=_(u'Instance')),
         ]
         # Handle Allocate IP addresses form
         allocate_form = AllocateIPsForm(self.request, formdata=self.request.params)
@@ -43,7 +44,9 @@ class IPAddressesView(LandingPageView):
                 for i in xrange(ipcount):
                     new_ip = self.conn.allocate_address()
                     new_ips.append(new_ip.public_ip)
-                notification_msg = u'Successfully allocated IPs {0}'.format(', '.join(new_ips))
+                prefix = _(u'Successfully allocated IPs')
+                ips = ', '.join(new_ips)
+                notification_msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
 
@@ -82,7 +85,7 @@ class IPAddressView(BaseView):
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
 
     def get_instance_choices(self):
-        choices = [('', 'Select instance...')]
+        choices = [('', _(u'Select instance...'))]
         if self.conn:
             choices += [(inst.id, inst.tags.get('Name', inst.id)) for inst in self.conn.get_only_instances()]
         return choices
@@ -109,9 +112,8 @@ class IPAddressView(BaseView):
             instance_id = self.request.params.get('instance_id')
             self.elastic_ip.associate(instance_id)
             location = self.request.route_url('ipaddresses')
-            notification_msg = u'Successfully associated IP {ip} with instance {instance}'.format(
-                ip=self.elastic_ip.public_ip, instance=instance_id
-            )
+            msg = _(u'Successfully associated IP {ip} with instance {instance}')
+            notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
@@ -120,9 +122,8 @@ class IPAddressView(BaseView):
         if self.disassociate_form.validate():
             self.elastic_ip.disassociate()
             location = self.request.route_url('ipaddresses')
-            notification_msg = u'Successfully disassociated IP {ip} from instance {instance}'.format(
-                ip=self.elastic_ip.public_ip, instance=self.elastic_ip.instance_id
-            )
+            msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
+            notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=self.elastic_ip.instance_id)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
@@ -131,6 +132,7 @@ class IPAddressView(BaseView):
         if self.release_form.validate():
             self.elastic_ip.release()
             location = self.request.route_url('ipaddresses')
-            notification_msg = u'Successfully released {ip} to the cloud'.format(ip=self.elastic_ip.public_ip)
+            msg = _(u'Successfully released {ip} to the cloud')
+            notification_msg = msg.format(ip=self.elastic_ip.public_ip)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)

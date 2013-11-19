@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS snapshots
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
@@ -26,7 +27,7 @@ class SnapshotsView(LandingPageView):
         status_choices = sorted(set(item.status for item in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
-            LandingPageFilter(key='status', name='Status', choices=status_choices),
+            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
         ]
         more_filter_keys = [
             'id', 'name', 'owner_id', 'owner_alias', 'progress', 'size', 'start_time', 'tags', 'volume_id']
@@ -34,12 +35,12 @@ class SnapshotsView(LandingPageView):
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='-start_time', name='Start time'),
-            dict(key='name', name='Name'),
-            dict(key='owner_alias', name='Owner'),
-            dict(key='progress', name='Progress'),
-            dict(key='status', name='Status'),
-            dict(key='volume_id', name='Volume ID'),
+            dict(key='-start_time', name=_(u'Start time')),
+            dict(key='name', name=_(u'Name')),
+            dict(key='owner_alias', name=_(u'Owner')),
+            dict(key='progress', name=_(u'Progress')),
+            dict(key='status', name=_(u'Status')),
+            dict(key='volume_id', name=_(u'Volume ID')),
         ]
 
         return dict(

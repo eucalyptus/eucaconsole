@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
@@ -27,8 +28,8 @@ class VolumesView(LandingPageView):
         zone_choices = sorted(set(item.zone for item in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
-            LandingPageFilter(key='status', name='Status', choices=status_choices),
-            LandingPageFilter(key='zone', name='Availability zone', choices=zone_choices),
+            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
             # LandingPageFilter(key='tags', name='Tags'),
         ]
         more_filter_keys = ['id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
@@ -36,9 +37,9 @@ class VolumesView(LandingPageView):
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='-create_time', name='Create time'),
-            dict(key='name', name='Name'),
-            dict(key='status', name='Status'),
+            dict(key='-create_time', name=_(u'Create time')),
+            dict(key='name', name=_(u'Name')),
+            dict(key='status', name=_(u'Status')),
         ]
 
         return dict(
