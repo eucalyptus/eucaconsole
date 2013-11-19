@@ -31,8 +31,8 @@ class IPAddressesView(LandingPageView):
         self.filter_keys = ['domain', 'instance_id', 'public_ip']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='public_ip', name='IP Address'),
-            dict(key='instance_id', name='Instance'),
+            dict(key='public_ip', name=_(u'IP Address')),
+            dict(key='instance_id', name=_(u'Instance')),
         ]
         # Handle Allocate IP addresses form
         allocate_form = AllocateIPsForm(self.request, formdata=self.request.params)

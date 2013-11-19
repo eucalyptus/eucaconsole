@@ -7,6 +7,7 @@ from collections import namedtuple
 from urllib import urlencode
 
 from beaker.cache import cache_region
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
@@ -46,9 +47,9 @@ class ImagesView(LandingPageView):
         )
         if self.cloud_type == 'aws':
             owner_choices = (
-                Choice(key='self', label='Owned by me'),
+                Choice(key='self', label=_(u'Owned by me')),
                 Choice(key='amazon', label='Amazon AMIs'),
-                Choice(key='aws-marketplace', label='AWS Marketplace'),
+                Choice(key='aws-marketplace', label=_(u'AWS Marketplace')),
             )
         self.filter_fields = [
             LandingPageFilter(key='owner_alias', name='Images', choices=owner_choices),
@@ -58,10 +59,10 @@ class ImagesView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='id', name='ID'),
-            dict(key='name', name='Image name'),
-            dict(key='architecture', name='Architecture'),
-            dict(key='platform', name='Platform'),
-            dict(key='description', name='Description'),
+            dict(key='name', name=_(u'Image name')),
+            dict(key='architecture', name=_(u'Architecture')),
+            dict(key='platform', name=_(u'Platform')),
+            dict(key='description', name=_(u'Description')),
         ]
 
         return dict(

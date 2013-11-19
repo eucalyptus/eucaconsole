@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-19 13:53-0800\n"
+"POT-Creation-Date: 2013-11-19 14:32-0800\n"
 "PO-Revision-Date: 2013-10-29 20:29-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -19,6 +19,14 @@ msgstr ""
 
 #: koala/forms/ipaddresses.py:16
 msgid "Invalid number"
+msgstr ""
+
+#: koala/forms/ipaddresses.py:18
+msgid "Number to allocate:"
+msgstr ""
+
+#: koala/forms/ipaddresses.py:26
+msgid "Instance:"
 msgstr ""
 
 #: koala/forms/login.py:16
@@ -39,7 +47,6 @@ msgstr ""
 
 #: koala/forms/login.py:20
 #, fuzzy
-#| msgid "Change password"
 msgid "Password"
 msgstr "Cambiar contraseña"
 
@@ -160,16 +167,20 @@ msgstr ""
 #: koala/templates/launchconfigs/launchconfigs.pt:26
 #: koala/templates/scalinggroups/scalinggroups.pt:24
 #: koala/templates/securitygroups/securitygroups.pt:26
+#: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
+#: koala/views/securitygroups.py:30 koala/views/snapshots.py:39
+#: koala/views/volumes.py:41
 msgid "Name"
 msgstr ""
 
 #: koala/templates/images/images.pt:58
 #: koala/templates/securitygroups/securitygroups.pt:27
-#: koala/templates/snapshots/snapshots.pt:30
+#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
+#: koala/views/securitygroups.py:31
 msgid "Description"
 msgstr ""
 
-#: koala/templates/images/images.pt:59
+#: koala/templates/images/images.pt:59 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
 
@@ -327,7 +338,7 @@ msgstr ""
 msgid "Create new key pair"
 msgstr ""
 
-#: koala/templates/keypairs/keypairs.pt:25
+#: koala/templates/keypairs/keypairs.pt:25 koala/views/keypairs.py:31
 msgid "Fingerprint"
 msgstr ""
 
@@ -347,7 +358,7 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: koala/templates/launchconfigs/launchconfigs.pt:30
+#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:40
 msgid "Create time"
 msgstr ""
 
@@ -387,7 +398,9 @@ msgstr ""
 msgid "Snapshot"
 msgstr ""
 
-#: koala/templates/snapshots/snapshots.pt:27
+#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:33
+#: koala/views/snapshots.py:30 koala/views/snapshots.py:42
+#: koala/views/volumes.py:31 koala/views/volumes.py:42
 msgid "Status"
 msgstr ""
 
@@ -405,6 +418,50 @@ msgstr ""
 
 #: koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
+msgstr ""
+
+#: koala/views/images.py:50
+msgid "Owned by me"
+msgstr ""
+
+#: koala/views/images.py:52
+msgid "AWS Marketplace"
+msgstr ""
+
+#: koala/views/images.py:62
+msgid "Image name"
+msgstr ""
+
+#: koala/views/images.py:64
+msgid "Platform"
+msgstr ""
+
+#: koala/views/instances.py:34
+msgid "Root device"
+msgstr ""
+
+#: koala/views/instances.py:35
+msgid "Instance type"
+msgstr ""
+
+#: koala/views/instances.py:36 koala/views/volumes.py:32
+msgid "Availability zone"
+msgstr ""
+
+#: koala/views/instances.py:43
+msgid "Launch time (most recent first)"
+msgstr ""
+
+#: koala/views/instances.py:44
+msgid "Instance name"
+msgstr ""
+
+#: koala/views/ipaddresses.py:34
+msgid "IP Address"
+msgstr ""
+
+#: koala/views/ipaddresses.py:35
+msgid "Instance"
 msgstr ""
 
 #: koala/views/ipaddresses.py:47
@@ -438,4 +495,37 @@ msgstr ""
 #: koala/views/login.py:112
 msgid "Invalid access key and/or secret key."
 msgstr ""
+
+#: koala/views/scalinggroups.py:30
+msgid "Launch Configuration"
+msgstr ""
+
+#: koala/views/scalinggroups.py:37
+msgid "Launch configuration"
+msgstr ""
+
+#: koala/views/snapshots.py:38
+msgid "Start time"
+msgstr ""
+
+#: koala/views/snapshots.py:40
+msgid "Owner"
+msgstr ""
+
+#: koala/views/snapshots.py:41
+msgid "Progress"
+msgstr ""
+
+#: koala/views/snapshots.py:43
+msgid "Volume ID"
+msgstr ""
+
+#~ msgid "name"
+#~ msgstr ""
+
+#~ msgid "fingerprint"
+#~ msgstr ""
+
+#~ msgid "description"
+#~ msgstr ""
 

@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..views import LandingPageView
@@ -26,8 +27,8 @@ class SecurityGroupsView(LandingPageView):
         self.filter_keys = ['name', 'description', 'tags']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name='Name'),
-            dict(key='description', name='Description'),
+            dict(key='name', name=_(u'Name')),
+            dict(key='description', name=_(u'Description')),
         ]
 
         return dict(

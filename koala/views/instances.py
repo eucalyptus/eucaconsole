@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS instances
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
@@ -29,18 +30,18 @@ class InstancesView(LandingPageView):
         avail_zone_choices = sorted(set(instance.placement for instance in self.items))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         self.filter_fields = [
-            LandingPageFilter(key='status', name='Status', choices=status_choices),
-            LandingPageFilter(key='root_device_type', name='Root device', choices=root_device_type_choices),
-            LandingPageFilter(key='instance_type', name='Instance type', choices=instance_type_choices),
-            LandingPageFilter(key='placement', name='Availability zone', choices=avail_zone_choices),
+            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='root_device_type', name=_(u'Root device'), choices=root_device_type_choices),
+            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
+            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
         ]
         more_filter_keys = ['id', 'name']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='-launch_time', name='Launch time (most recent first)'),
-            dict(key='name', name='Instance name'),
+            dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
+            dict(key='name', name=_(u'Instance name')),
         ]
 
         return dict(

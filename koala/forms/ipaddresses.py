@@ -15,7 +15,7 @@ class AllocateIPsForm(BaseSecureForm):
     """Allocate IP Addresses form, used on IP Addresses landing page in modal dialog"""
     ipcount_error_msg = _(u'Invalid number')
     ipcount = wtforms.TextField(
-        label='Number to allocate:',
+        label=_(u'Number to allocate:'),
         validators=[validators.Required(message=ipcount_error_msg)],
         widget=widgets.TextInput(),
     )
@@ -23,7 +23,7 @@ class AllocateIPsForm(BaseSecureForm):
 
 class AssociateIPForm(BaseSecureForm):
     """Associate an Elastic IP with an instance"""
-    instance_id = wtforms.SelectField(label=u'Instance:')
+    instance_id = wtforms.SelectField(label=_(u'Instance:'))
 
 
 class DisassociateIPForm(BaseSecureForm):

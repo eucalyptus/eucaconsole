@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
@@ -26,14 +27,14 @@ class ScalingGroupsView(LandingPageView):
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         launch_config_choices = sorted(set(item.launch_config_name for item in self.items))
         self.filter_fields = [
-            LandingPageFilter(key='launch_config', name='Launch Configuration', choices=launch_config_choices),
+            LandingPageFilter(key='launch_config', name=_(u'Launch Configuration'), choices=launch_config_choices),
         ]
         more_filter_keys = ['availability_zones', 'name', 'placement_group']
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name='Name'),
-            dict(key='launch_config', name='Launch configuration'),
+            dict(key='name', name=_(u'Name')),
+            dict(key='launch_config', name=_(u'Launch configuration')),
         ]
 
         return dict(
