@@ -57,9 +57,9 @@ angular.module('TagEditor', [])
                     'value': tagValueField.val(),
                     'inserted': true
                 });
+                $scope.syncTags();
                 tagKeyField.val('').focus();
                 tagValueField.val('');
-                $scope.syncTags();
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
             }

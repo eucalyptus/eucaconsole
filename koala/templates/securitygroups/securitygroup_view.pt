@@ -7,7 +7,7 @@
         <div class="large-7 columns">
             <div class="panel has-title">
                 <h6 class="title">Settings for security group <strong>${security_group.name}</strong></h6>
-                <form action=""
+                <form action="${request.route_url('securitygroup_update', id=security_group.id)}"
                       method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
                     ${panel('form_field', field=securitygroup_form['name'])}

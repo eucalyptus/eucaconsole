@@ -1366,6 +1366,7 @@ a.has-tip { border-bottom: none !important; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
+.help-content { font-size: 0.9rem; }
 .help-content ol { list-style-position: inside; }
 .help-content ol li { text-indent: -1rem; margin-left: 1rem; }
 .help-content ol li p, .help-content ol li .note { text-indent: 0; }
@@ -1401,6 +1402,8 @@ form .cancel-link { margin-left: 2rem; }
 #tag-editor i.fi-plus.circle { border: 2px solid #333; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 #tag-editor i.fi-minus-circle { font-size: 1.4rem; }
 #tag-editor a.circle { color: black; }
+#tag-editor textarea#tags { position: absolute; left: 9999rem; }
+#tag-editor textarea#tags.debug { position: relative; left: 0; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

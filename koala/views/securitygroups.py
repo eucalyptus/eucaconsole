@@ -3,10 +3,18 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
+from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm
+from ..models import Notification
 from ..views import BaseView, LandingPageView
 
 
@@ -86,6 +94,30 @@ class SecurityGroupView(BaseView):
 
     @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
     def securitygroup_view(self):
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+        )
+
+    @view_config(route_name='securitygroup_update', request_method='POST')
+    def securitygroup_update(self):
+        if self.securitygroup_form.validate():
+            # Delete existing tags before adding updated/new ones
+            for tagkey, tagvalue in self.security_group.tags.items():
+                self.security_group.remove_tag(tagkey, tagvalue)
+            # Insert updated/new tags
+            tags_json = self.request.params.get('tags')
+            tags = json.loads(tags_json) if tags_json else {}
+            if tags:
+                self.security_group.tags = None
+                for key, value in tags.items():
+                    self.security_group.add_tag(key, value)
+            location = self.request.route_url('securitygroups')
+            msg = _(u'Successfully modified security group {group}')
+            notification_msg = msg.format(group=self.security_group.name)
+            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
         return dict(
             security_group=self.security_group,
             securitygroup_form=self.securitygroup_form,

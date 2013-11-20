@@ -196,6 +196,7 @@ a.has-tip {
    Help content
 ----------------------------------------- */
 .help-content {
+    font-size: 0.9rem;
     ol {
         list-style-position: inside;
         li {
@@ -290,7 +291,16 @@ form .cancel-link {
     a.circle {
         color: black;
     }
+    textarea#tags {
+        position: absolute;
+        left: 9999rem;
+        &.debug {
+            position: relative;
+            left: 0;
+        }
+    }
 }
+
 
 
 /* -----------------------------------------
