@@ -72,6 +72,7 @@ class LoginView(object):
                     creds = auth.authenticate(
                         account=account, user=username, passwd=password, new_passwd=new_passwd, timeout=8)
                     user_account = '{user}@{account}'.format(user=username, account=account)
+                    session.invalidate()  # Refresh session
                     session['cloud_type'] = 'euca'
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
@@ -96,6 +97,7 @@ class LoginView(object):
                     auth = AWSAuthenticator(key_id=aws_access_key, secret_key=aws_secret_key, duration=duration)
                     creds = auth.authenticate(timeout=10)
                     default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
+                    session.invalidate()  # Refresh session
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key

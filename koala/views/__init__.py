@@ -3,6 +3,7 @@
 Core views
 
 """
+from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -80,5 +81,8 @@ def ec2conn_error(exc, request):
     if isinstance(msg, int) and msg == 403:
         notice = _(u'Your session has timed out due to inactivity.')
         request.session.flash(notice, queue='info')
+        # Empty Beaker cache to clear connection objects
+        for _cache in cache_managers.values():
+            _cache.clear()
         location = request.route_url('login')
         return HTTPFound(location=location)
