@@ -6,7 +6,8 @@ Pyramid views for Eucalyptus and AWS security groups
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..views import LandingPageView
+from ..forms.securitygroups import SecurityGroupForm
+from ..views import BaseView, LandingPageView
 
 
 class SecurityGroupsView(LandingPageView):
@@ -65,3 +66,27 @@ class SecurityGroupsView(LandingPageView):
         return dict(results=securitygroups)
 
 
+class SecurityGroupView(BaseView):
+    """Views for actions on single Security Group"""
+    def __init__(self, request):
+        super(SecurityGroupView, self).__init__(request)
+        self.conn = self.get_connection()
+        self.security_group = self.get_security_group()
+        self.securitygroup_form = SecurityGroupForm(
+            self.request, security_group=self.security_group, formdata=self.request.params)
+
+    def get_security_group(self):
+        group_param = self.request.matchdict.get('id')
+        if group_param is None:
+            return None  # If missing, we're going to return an empty security group form
+        groupids = [group_param]
+        security_groups = self.conn.get_all_security_groups(group_ids=groupids)
+        security_group = security_groups[0] if security_groups else None
+        return security_group
+
+    @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
+    def securitygroup_view(self):
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+        )

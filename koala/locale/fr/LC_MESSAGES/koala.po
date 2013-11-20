@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-19 14:32-0800\n"
+"POT-Creation-Date: 2013-11-19 17:19-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -67,6 +67,45 @@ msgstr ""
 
 #: koala/forms/login.py:27
 msgid "Secret key is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:16
+msgid "Name is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:18 koala/templates/images/images.pt:57
+#: koala/templates/keypairs/keypairs.pt:24
+#: koala/templates/launchconfigs/launchconfigs.pt:26
+#: koala/templates/scalinggroups/scalinggroups.pt:24
+#: koala/templates/securitygroups/securitygroups.pt:26
+#: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
+#: koala/views/securitygroups.py:31 koala/views/snapshots.py:39
+#: koala/views/volumes.py:41
+msgid "Name"
+msgstr ""
+
+#: koala/forms/securitygroups.py:22 koala/templates/images/images.pt:58
+#: koala/templates/securitygroups/securitygroups.pt:27
+#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
+#: koala/views/securitygroups.py:32
+msgid "Description"
+msgstr ""
+
+#: koala/forms/securitygroups.py:24
+msgid "Description is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:25
+msgid "Description must be less than 255 characters"
+msgstr ""
+
+#: koala/forms/securitygroups.py:28
+msgid "Rules"
+msgstr ""
+
+#: koala/forms/securitygroups.py:29
+#: koala/templates/securitygroups/securitygroups.pt:28
+msgid "Tags"
 msgstr ""
 
 #: koala/templates/dashboard.pt:13
@@ -161,23 +200,6 @@ msgstr ""
 msgid "Launch instance"
 msgstr ""
 
-#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
-#: koala/templates/launchconfigs/launchconfigs.pt:26
-#: koala/templates/scalinggroups/scalinggroups.pt:24
-#: koala/templates/securitygroups/securitygroups.pt:26
-#: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
-#: koala/views/securitygroups.py:30 koala/views/snapshots.py:39
-#: koala/views/volumes.py:41
-msgid "Name"
-msgstr ""
-
-#: koala/templates/images/images.pt:58
-#: koala/templates/securitygroups/securitygroups.pt:27
-#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
-#: koala/views/securitygroups.py:31
-msgid "Description"
-msgstr ""
-
 #: koala/templates/images/images.pt:59 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
@@ -208,6 +230,7 @@ msgstr ""
 
 #: koala/templates/instances/instances.pt:32
 #: koala/templates/launchconfigs/launchconfigs.pt:29
+#: koala/templates/securitygroups/securitygroup_view.pt:6
 msgid "Security Group"
 msgstr ""
 
@@ -376,16 +399,16 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
+#: koala/templates/securitygroups/securitygroup_view.pt:20
+msgid "Update security group"
+msgstr ""
+
 #: koala/templates/securitygroups/securitygroups.pt:9
 msgid "Security Groups"
 msgstr ""
 
 #: koala/templates/securitygroups/securitygroups.pt:17
 msgid "Create new security group"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroups.pt:28
-msgid "Tags"
 msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:17

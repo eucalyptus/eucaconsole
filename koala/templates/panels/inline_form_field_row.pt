@@ -1,0 +1,17 @@
+
+<!--! Inline form field row -->
+<div class="row inline controls-wrapper controls_${field.name}">
+    <div class="small-4 columns">
+        <label class="right">
+            ${field.label.text}
+            <span tal:condition="field.flags.required" class="req">*</span>
+        </label>
+    </div>
+    <div class="small-8 columns field">
+        ${structure:field(**html_attrs)}
+        <small class="error" tal:condition="error_msg">${error_msg}</small>
+        <div tal:condition="field.errors" class="server-validation">
+            <span class="error" tal:repeat="error field.errors">${error}</span>
+        </div>
+    </div>
+</div>

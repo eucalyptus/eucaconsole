@@ -1,0 +1,42 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="main_content">
+
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle" i18n:translate="">
+            Security Group
+        </h3>
+        <div class="large-8 columns">
+            <h4>${security_group.name}</h4>
+            <p>${security_group.description}</p>
+            <form action=""
+                  method="post" data-abide="abide">
+                ${structure:securitygroup_form['csrf_token']}
+                ${panel('inline_form_field', field=securitygroup_form['name'], html_attrs=dict(required='required'))}
+                ${panel('inline_form_field', field=securitygroup_form['description'], html_attrs=dict(required='required'))}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <button type="submit" class="button" i18n:translate="">Update security group</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#associate-ip-modal').foundation('reveal', {
+                'opened': function() {
+                    $('#instance_id').chosen();
+                }
+            })
+        });
+    </script>
+</div>
+
+</metal:block>
+

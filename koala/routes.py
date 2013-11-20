@@ -50,6 +50,7 @@ urls = [
     # Security Groups
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    Route(name='securitygroup_view', pattern='/securitygroups/{id}'),
     # Key pairs
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
