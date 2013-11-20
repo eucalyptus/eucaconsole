@@ -1,30 +1,34 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row" ng-app="TagEditor" ng-controller="TagEditorCtrl" ng-init="syncTagsTextarea()">
+<div id="tag-editor" class="row" ng-app="TagEditor" ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}')">
     <div class="small-4 columns">
         <label class="right" i18n:translate="">Tags</label>
     </div>
     <div class="small-8 columns field">
-        <div class="row tagentry inline controls-wrapper" tal:repeat="(tagname,tagvalue) tags.items()">
+        <div class="row tagentry inline controls-wrapper" ng-repeat="tag in tagsArray" ng-cloak="cloak">
             <div class="small-4 columns">
-                <input class="taginput key inline" placeholder="Key" value="${tagname}" />
+                <input class="taginput key inline" placeholder="Key" value="{{ tag.name }}"
+                       ng-keyup="updateTagKey($index, $event)" />
             </div>
             <div class="small-4 columns">
-                <input class="taginput value inline" placeholder="Value" value="${tagvalue}" />
+                <input class="taginput value inline" placeholder="Value" value="{{ tag.value }}"
+                       ng-keyup="updateTagValue($index, $event)" />
             </div>
             <div class="small-2 columns">
-                +
+                <a href="#" ng-click="removeTag($index)" class="circle"
+                        class="has-tip" title="Remove tag"><i class="fi-minus-circle"></i></a>
             </div>
         </div>
         <div class="row tagentry inline controls-wrapper">
             <div class="small-4 columns">
-                <input class="taginput key" placeholder="Key" />
+                <input class="taginput key" placeholder="key..." />
             </div>
             <div class="small-4 columns">
-                <input class="taginput value" placeholder="Value" />
+                <input class="taginput value" placeholder="value..." />
             </div>
             <div class="small-2 columns">
-                +
+                <a href="#" ng-click="addTag($event)" class="circle"
+                        class="has-tip" title="Add new tag row"><i class="fi-plus circle"></i></a>
             </div>
         </div>
         <textarea id="tags" name="tags"></textarea>

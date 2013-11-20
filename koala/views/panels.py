@@ -3,6 +3,11 @@ Panels (reusable, parameterized template snippets) used across the app.
 
 See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html#using-panels
 """
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 from pyramid_layout.panel import panel_config
 
 
@@ -18,5 +23,6 @@ def form_field_row(context, request, field=None, html_attrs=None):
 
 @panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
 def tag_editor(context, request, tags=None):
-    return dict(tags=tags)
+    tags_json = json.dumps(tags)
+    return dict(tags=tags, tags_json=tags_json)
 

@@ -6,7 +6,7 @@
         </h3>
         <div class="large-7 columns">
             <div class="panel has-title">
-                <h6 class="title">Settings for security group ${security_group.name}</h6>
+                <h6 class="title">Settings for security group <strong>${security_group.name}</strong></h6>
                 <form action=""
                       method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
