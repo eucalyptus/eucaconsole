@@ -12,8 +12,8 @@
             <form action=""
                   method="post" data-abide="abide">
                 ${structure:securitygroup_form['csrf_token']}
-                ${panel('form_field', field=securitygroup_form['name'], html_attrs=dict(required='required'))}
-                ${panel('form_field', field=securitygroup_form['description'], html_attrs=dict(required='required'))}
+                ${panel('form_field', field=securitygroup_form['name'])}
+                ${panel('form_field', field=securitygroup_form['description'])}
                 ${panel('tag_editor', tags=security_group.tags)}
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
