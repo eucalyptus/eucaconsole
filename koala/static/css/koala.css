@@ -1374,6 +1374,10 @@ form .inline label { line-height: 1.8rem; }
 
 form .inline .field input { display: inline-block; }
 
+form label { cursor: default; }
+
+form label .req { color: darkred; }
+
 [data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
 
 /* ----------------------------------------- Footer

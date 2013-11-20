@@ -6,11 +6,14 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from pyramid_layout.panel import panel_config
 
 
-
-
-@panel_config('inline_form_field', renderer='../templates/panels/inline_form_field_row.pt')
-def inline_form_field(context, request, field=None, html_attrs=None):
+@panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
+def form_field_row(context, request, field=None, html_attrs=None):
     html_attrs = html_attrs or {}
     error_msg = getattr(field, 'error_msg', None)
     return dict(field=field, error_msg=error_msg, html_attrs=html_attrs)
+
+
+@panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
+def tag_editor(context, request, tags=None):
+    return dict(tags=tags)
 

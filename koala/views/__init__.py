@@ -3,7 +3,11 @@
 Core views
 
 """
-from pyramid.view import notfound_view_config
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import TranslationString as _
+from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.view import notfound_view_config, view_config
 
 from ..models.auth import ConnectionManager
 
@@ -24,7 +28,8 @@ class BaseView(object):
         conn = None
 
         if self.cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(self.region, self.access_key, self.secret_key, self.security_token, conn_type)
+            conn = ConnectionManager.aws_connection(
+                self.region, self.access_key, self.secret_key, self.security_token, conn_type)
         elif self.cloud_type == 'euca':
             conn = ConnectionManager.euca_connection(
                 self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -66,3 +71,14 @@ class LandingPageView(BaseView):
 def notfound_view(request):
     """404 Not Found view"""
     return dict()
+
+
+@view_config(context=EC2ResponseError, permission=NO_PERMISSION_REQUIRED)
+def ec2conn_error(exc, request):
+    """Handle session timeout by redirecting to login page with notice."""
+    msg = exc.args[0] if exc.args else ""
+    if isinstance(msg, int) and msg == 403:
+        notice = _(u'Your session has timed out due to inactivity.')
+        request.session.flash(notice, queue='info')
+        location = request.route_url('login')
+        return HTTPFound(location=location)

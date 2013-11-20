@@ -1,5 +1,5 @@
 
-<!--! Inline form field row -->
+<!--! Form field row -->
 <div class="row inline controls-wrapper controls_${field.name}">
     <div class="small-4 columns">
         <label class="right">

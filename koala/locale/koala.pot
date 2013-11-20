@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-19 17:19-0800\n"
+"POT-Creation-Date: 2013-11-19 21:47-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -102,11 +102,6 @@ msgstr ""
 msgid "Rules"
 msgstr ""
 
-#: koala/forms/securitygroups.py:29
-#: koala/templates/securitygroups/securitygroups.pt:28
-msgid "Tags"
-msgstr ""
-
 #: koala/templates/dashboard.pt:13
 msgid "Running instances"
 msgstr ""
@@ -155,15 +150,15 @@ msgstr ""
 msgid "Log"
 msgstr ""
 
-#: koala/templates/login.pt:11
+#: koala/templates/login.pt:13
 msgid "Log in to your console"
 msgstr ""
 
-#: koala/templates/login.pt:21 koala/templates/login.pt:40
+#: koala/templates/login.pt:23 koala/templates/login.pt:42
 msgid "Log in to Eucalyptus"
 msgstr ""
 
-#: koala/templates/login.pt:50 koala/templates/login.pt:69
+#: koala/templates/login.pt:52 koala/templates/login.pt:71
 msgid "Log in to AWS"
 msgstr ""
 
@@ -382,6 +377,11 @@ msgstr ""
 msgid "Create time"
 msgstr ""
 
+#: koala/templates/panels/tag_editor.pt:5
+#: koala/templates/securitygroups/securitygroups.pt:28
+msgid "Tags"
+msgstr ""
+
 #: koala/templates/scalinggroups/scalinggroups.pt:9
 msgid "Scaling Groups"
 msgstr ""
@@ -398,7 +398,7 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:20
+#: koala/templates/securitygroups/securitygroup_view.pt:21
 msgid "Update security group"
 msgstr ""
 
@@ -438,6 +438,10 @@ msgstr ""
 
 #: koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
+msgstr ""
+
+#: koala/views/__init__.py:81
+msgid "Your session has timed out due to inactivity."
 msgstr ""
 
 #: koala/views/images.py:50

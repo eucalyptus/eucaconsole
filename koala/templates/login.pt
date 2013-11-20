@@ -7,6 +7,8 @@
 <div metal:fill-slot="main_content">
 
     <div class="row" id="login-panel-wrapper">
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
         <div class="panel has-header ${'hide-aws' if not layout.aws_enabled else ''}" id="login-panel">
             <div class="header" i18n:translate="">Log in to your console</div>
             <div class="row">

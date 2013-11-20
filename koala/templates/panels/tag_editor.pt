@@ -1,0 +1,27 @@
+
+<!--! Tag editor -->
+<div id="tag-editor" ng-app="TagEditor" ng-controller="TagEditorCtrl" ng-init="syncTagsTextarea()">
+    <div class="small-4 columns">
+        <label class="right" i18n:translate="">Tags</label>
+    </div>
+    <div class="small-8 columns field">
+        <div class="row tagentry inline controls-wrapper" tal:repeat="tag tags">
+            <div class="small-6 columns">
+                <input class="taginput key" id="tag_key_${tag.id}" placeholder="Key" value="tag.name" />
+            </div>
+            <div>
+                <input class="taginput value" id="tag_value_${tag.id}" placeholder="Value" value="tag.value" />
+            </div>
+        </div>
+        <div class="row tagentry inline controls-wrapper">
+            <div class="small-6 columns">
+                <input class="taginput key" placeholder="Key" />
+            </div>
+            <div>
+                <input class="taginput value" placeholder="Value" />
+            </div>
+        </div>
+        <textarea id="tags" name="tags"></textarea>
+    </div>
+    <script src="${request.static_url('koala:static/js/pages/tageditor.js')}"></script>
+</div>

@@ -26,7 +26,6 @@ class SecurityGroupForm(BaseSecureForm):
         ],
     )
     rules = wtforms.TextAreaField(label=_(u'Rules'))
-    tags = wtforms.TextAreaField(label=_(u'Tags'))
 
     def __init__(self, request, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
