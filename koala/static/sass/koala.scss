@@ -129,11 +129,12 @@ nav.top-bar .dropdown li a {
     margin-top: 0;
     margin-bottom: 2rem;
     padding-left: 14px;
-    padding-top: 6px;
+    padding-top: 10px;
     color: $euca-darkgrey;
     background-color: $euca-extralightblue;
     letter-spacing: 1px;
     font-weight: normal;
+    font-size: 1.3rem;
 }
 
 
@@ -147,6 +148,7 @@ nav.top-bar .dropdown li a {
 #contentwrap {
     position: relative;
     background-color: white;
+    padding-bottom: 3rem;
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
@@ -170,10 +172,36 @@ nav.top-bar .dropdown li a {
     margin-top: -1rem;
 }
 
-#notifications .alert-box.success {
-    background-color: $euca-notificationblue;
-    border-color: $euca-extralightblue;
+#notifications {
+    .alert-box {
+        background-color: $euca-notificationblue;
+        .success {
+            background-color: $euca-notificationblue;
+            border-color: $euca-extralightblue;
+        }
+        .warning {
+            background-color: lightyellow;
+        }
+    }
 }
+
+
+/* -----------------------------------------
+   Help content
+----------------------------------------- */
+.help-content {
+    ol {
+        list-style-position: inside;
+        li {
+            text-indent: -1rem;
+            margin-left: 1rem;
+            p, .note {
+                text-indent: 0;
+            }
+        }
+    }
+}
+
 
 /* -----------------------------------------
    Forms
@@ -218,6 +246,30 @@ form label .req {
     color: darkred;
 }
 
+.panel.has-title {
+    position: relative;
+    padding-top: 60px;
+}
+
+.panel h6.title {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    line-height: 2rem;
+    padding-left: 8px;
+    background-color: $euca-extralightblue;
+    border-top: 2px solid $euca-darkblue;
+    border-bottom: 1px solid $euca-lightgrey;
+    font-weight: normal;
+}
+
+// Tag editor
+form input.taginput.key {
+    width: 7rem;
+}
+
+form .cancel-link {
+    margin-left: 2rem;
+}
 
 /* -----------------------------------------
    Footer

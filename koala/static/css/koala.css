@@ -1342,13 +1342,13 @@ nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
-#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
 #maincontent { position: relative; }
 
-#contentwrap { position: relative; background-color: white; }
+#contentwrap { position: relative; background-color: white; padding-bottom: 3rem; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
@@ -1358,7 +1358,15 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 
-#notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
+#notifications .alert-box { background-color: #40a8c6; }
+#notifications .alert-box .success { background-color: #40a8c6; border-color: #ecf4f7; }
+#notifications .alert-box .warning { background-color: lightyellow; }
+
+/* ----------------------------------------- Help content
+----------------------------------------- */
+.help-content ol { list-style-position: inside; }
+.help-content ol li { text-indent: -1rem; margin-left: 1rem; }
+.help-content ol li p, .help-content ol li .note { text-indent: 0; }
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */
@@ -1379,6 +1387,14 @@ form label { cursor: default; }
 form label .req { color: darkred; }
 
 [data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
+
+.panel.has-title { position: relative; padding-top: 60px; }
+
+.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+
+form input.taginput.key { width: 7rem; }
+
+form .cancel-link { margin-left: 2rem; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

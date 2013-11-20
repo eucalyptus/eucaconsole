@@ -1,31 +1,78 @@
 <metal:block use-macro="main_template">
-
 <div metal:fill-slot="main_content">
-
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Security Group
         </h3>
-        <div class="large-8 columns">
-            <h4>${security_group.name}</h4>
-            <p>${security_group.description}</p>
-            <form action=""
-                  method="post" data-abide="abide">
-                ${structure:securitygroup_form['csrf_token']}
-                ${panel('form_field', field=securitygroup_form['name'])}
-                ${panel('form_field', field=securitygroup_form['description'])}
-                ${panel('tag_editor', tags=security_group.tags)}
-                <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <button type="submit" class="button" i18n:translate="">Update security group</button>
+        <div class="large-7 columns">
+            <div class="panel has-title">
+                <h6 class="title">Settings for security group ${security_group.name}</h6>
+                <form action=""
+                      method="post" data-abide="abide">
+                    ${structure:securitygroup_form['csrf_token']}
+                    ${panel('form_field', field=securitygroup_form['name'])}
+                    ${panel('form_field', field=securitygroup_form['description'])}
+                    ${panel('tag_editor', tags=security_group.tags)}
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" i18n:translate="">Save changes</button>
+                            <a href="${request.route_url('securitygroups')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <div class="help-content">
+                <h5 class="title">Managing Security Group Rules</h5>
+                <div class="topic">
+                    <h6 class="title topictitle2">Add Security Group Rules</h6>
+                    <div class="body taskbody">
+                        <p class="shortdesc">You can optionally create one or more rules for the security
+                            group. A rule grants a specified range of IP addresses inbound
+                            access to your instances for a protocol or custom port range. Rules
+                            for many of the most popular protocols are pre-defined and available
+                            for selection in the drop-down list box, or you can define your own
+                            rule.
+                        </p>
+                        <ol class="steps">
+                            <li>Select a protocol for the rule from the <strong>Protocol</strong> drop-down list box.</li>
+                            <li>Enter a port range for the rule in the <strong>Port range</strong> text box.</li>
+                            <li>Select the type of inbound traffic for the rule using the radio buttons:
+                                <p>To grant access to an IP address or range of IP addresses,
+                                    select the <strong>IP Address</strong> radio button and enter a CIDR range in the text box.</p>
+                                <div class="note">
+                                    <strong>Note:</strong>
+                                    For more information on CIDR notation, please see the
+                                    <a class="xref" href="http://en.wikipedia.org/wiki/CIDR_notation"
+                                           target="_blank">CIDR notation Wikipedia article</a>.
+                                </div>
+                                <p>To grant access to another security group, select the <strong>Other security group</strong>
+                                    radio button and enter the name of the security group in the text box.</p>
+                                <div class="note">
+                                    <span class="notetitle">Note:</span>
+                                    To specify a security group in another account, use the format "userid/groupname".
+                                </div>
+                            </li>
+                            <li>Click the <strong>Save Changes</strong> button.</li>
+                        </ol>
                     </div>
                 </div>
-            </form>
+                <div class="topic task nested1" id="edit_sgroup_delete_rule_steps">
+                    <h6 class="title topictitle2">Delete Security Group Rules</h6>
+                    <div class="body taskbody"><p class="shortdesc"></p>
+                        <div class="li step p">
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Delete</span> link next to
+                        the existing rule you want to delete. </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script>
@@ -38,6 +85,4 @@
         });
     </script>
 </div>
-
 </metal:block>
-

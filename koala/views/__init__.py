@@ -79,8 +79,8 @@ def ec2conn_error(exc, request):
     """Handle session timeout by redirecting to login page with notice."""
     msg = exc.args[0] if exc.args else ""
     if isinstance(msg, int) and msg == 403:
-        notice = _(u'Your session has timed out due to inactivity.')
-        request.session.flash(notice, queue='info')
+        notice = _(u'Your session has timed out.')
+        request.session.flash(notice, queue='warning')
         # Empty Beaker cache to clear connection objects
         for _cache in cache_managers.values():
             _cache.clear()
