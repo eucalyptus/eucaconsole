@@ -229,6 +229,10 @@ form .controls_csrf_token {
     display: none;
 }
 
+form .inline label {
+    padding-top: 0.4rem;
+}
+
 form .inline.controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;

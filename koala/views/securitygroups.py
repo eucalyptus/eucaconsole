@@ -83,8 +83,8 @@ class SecurityGroupView(BaseView):
         self.securitygroup_form = SecurityGroupForm(
             self.request, security_group=self.security_group, formdata=self.request.params)
 
-    def get_security_group(self):
-        group_param = self.request.matchdict.get('id')
+    def get_security_group(self, group_id=None):
+        group_param = group_id or self.request.matchdict.get('id')
         if group_param is None:
             return None  # If missing, we're going to return an empty security group form
         groupids = [group_param]
@@ -92,29 +92,105 @@ class SecurityGroupView(BaseView):
         security_group = security_groups[0] if security_groups else None
         return security_group
 
+    def get_security_group_names(self):
+        groups = []
+        if self.conn:
+            groups = [g.name for g in self.conn.get_all_security_groups()]
+        return sorted(set(groups))
+
     @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
     def securitygroup_view(self):
         return dict(
             security_group=self.security_group,
             securitygroup_form=self.securitygroup_form,
+            security_group_names=self.get_security_group_names(),
         )
+
+    def update_tags(self):
+        # Delete existing tags before adding updated/new ones
+        for tagkey, tagvalue in self.security_group.tags.items():
+            self.security_group.remove_tag(tagkey, tagvalue)
+
+        tags_json = self.request.params.get('tags')
+        tags = json.loads(tags_json) if tags_json else {}
+
+        # Insert updated/new tags
+        if tags:
+            self.security_group.tags = None
+            for key, value in tags.items():
+                self.security_group.add_tag(key, value)
+
+    def update_rules(self):
+        # First revoke existing rules, since we're doing a fresh update
+        self.revoke_all_rules()
+
+        # Now add the fresh set of rules
+        rules_json = self.request.params.get('rules')
+        rules = json.loads(rules_json) if rules_json else []
+
+        for rule in rules:
+            ip_protocol = rule.get('ip_protocol')
+            from_port = rule.get('from_port')
+            to_port = rule.get('to_port')
+            cidr_ip = None
+
+            if from_port is not None and to_port is not None:
+                from_port = int(from_port)
+                to_port = int(to_port)
+                if to_port < from_port:
+                    to_port = from_port
+
+            src_group = None
+            grants = rule.get('grants', [])
+
+            for grant in grants:
+                cidr_ip = grant.get('cidr_ip')
+                group_name = grant.get('name')
+                if group_name:
+                    src_groups = self.conn.get_all_security_groups(groupnames=[group_name])
+                    if src_groups:
+                        src_group = src_groups[0]
+
+            auth_args = dict(ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            if src_group:
+                auth_args['src_group'] = src_group
+
+            self.security_group.authorize(**auth_args)
+
+    def revoke_all_rules(self):
+        for rule in self.security_group.rules:
+            cidr_ip = None
+            src_group = None
+            grants = rule.grants
+
+            # Grab group and cidr_ip from grants list (list of boto.ec2.securitygroup.GroupOrCIDR objects)
+            if grants:
+                group_ids = [grant.group_id for grant in grants if grant.group_id]
+                if group_ids:
+                    src_group = self.get_security_group(group_id=group_ids[0])
+                cidr_ips = [grant.cidr_ip for grant in grants if grant.cidr_ip]
+                if cidr_ips:
+                    cidr_ip = cidr_ips[0]
+
+            # NOTE: This will fail unless a recent version of Boto is used.
+            # See https://github.com/boto/boto/issues/1729
+            self.security_group.revoke(
+                ip_protocol=rule.ip_protocol,
+                from_port=rule.from_port,
+                to_port=rule.to_port,
+                cidr_ip=cidr_ip,
+                src_group=src_group,
+            )
 
     @view_config(route_name='securitygroup_update', request_method='POST')
     def securitygroup_update(self):
         if self.securitygroup_form.validate():
-            # Delete existing tags before adding updated/new ones
-            for tagkey, tagvalue in self.security_group.tags.items():
-                self.security_group.remove_tag(tagkey, tagvalue)
-            # Insert updated/new tags
-            tags_json = self.request.params.get('tags')
-            tags = json.loads(tags_json) if tags_json else {}
-            if tags:
-                self.security_group.tags = None
-                for key, value in tags.items():
-                    self.security_group.add_tag(key, value)
-            # Update inbound rules
-            # TODO: Use security_group.authorize() to add rules.
-            # TODO: wipe out rules before updating via security_group.revoke().
+            # Update tags
+            self.update_tags()
+
+            # Update rules
+            self.update_rules()
+
             location = self.request.route_url('securitygroups')
             msg = _(u'Successfully modified security group {group}')
             notification_msg = msg.format(group=self.security_group.name)

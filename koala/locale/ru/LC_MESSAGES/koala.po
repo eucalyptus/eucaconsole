@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-20 22:12-0800\n"
+"POT-Creation-Date: 2013-11-21 15:29-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -222,7 +222,7 @@ msgstr ""
 
 #: koala/templates/instances/instances.pt:32
 #: koala/templates/launchconfigs/launchconfigs.pt:29
-#: koala/templates/securitygroups/securitygroup_view.pt:12
+#: koala/templates/securitygroups/securitygroup_view.pt:9
 msgid "Security Group"
 msgstr ""
 
@@ -375,27 +375,57 @@ msgstr ""
 msgid "Create time"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:6
+#: koala/templates/panels/securitygroup_rules.pt:15
 msgid "Inbound Rules"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:16
+#: koala/templates/panels/securitygroup_rules.pt:25
 msgid "Rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:24
+#: koala/templates/panels/securitygroup_rules.pt:40
+msgid "Add a rule"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:41
 msgid "Add another rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:26
+#: koala/templates/panels/securitygroup_rules.pt:47
 msgid "Protocol"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:34
-msgid "Port"
+#: koala/templates/panels/securitygroup_rules.pt:52
+#: koala/templates/panels/securitygroup_rules.pt:69
+#: koala/templates/panels/securitygroup_rules.pt:91
+msgid "select..."
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:44
+#: koala/templates/panels/securitygroup_rules.pt:59
+msgid "Port range"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:65
+msgid "Must be a number"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:77
+msgid "Allow traffic from"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:82
+msgid "IP address"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:84
+msgid "IP address required"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:89
+msgid "Security group"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:102
 msgid "Add rule"
 msgstr ""
 
@@ -420,11 +450,11 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:31
+#: koala/templates/securitygroups/securitygroup_view.pt:28
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:32
+#: koala/templates/securitygroups/securitygroup_view.pt:29
 msgid "Cancel"
 msgstr ""
 
@@ -554,7 +584,7 @@ msgstr ""
 msgid "Launch configuration"
 msgstr ""
 
-#: koala/views/securitygroups.py:119
+#: koala/views/securitygroups.py:195
 msgid "Successfully modified security group {group}"
 msgstr ""
 
@@ -590,5 +620,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Rules"
+#~ msgstr ""
+
+#~ msgid "Port"
 #~ msgstr ""
 

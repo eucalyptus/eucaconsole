@@ -1,11 +1,8 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <style type="text/css">
-        input.port { width: 3.8rem; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
 </head>
-
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
@@ -21,13 +18,13 @@
                     ${panel('form_field', field=securitygroup_form['name'])}
                     ${panel('form_field', field=securitygroup_form['description'])}
                     <hr />
-                    ${panel('securitygroup_rules', rules=security_group.rules)}
+                    ${panel('securitygroup_rules', rules=security_group.rules, groupnames=security_group_names)}
                     <hr />
                     ${panel('tag_editor', tags=security_group.tags)}
                     <hr />
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
                             <button type="submit" class="button" i18n:translate="">Save changes</button>
                             <a href="${request.route_url('securitygroups')}"
                                class="cancel-link" i18n:translate="">Cancel</a>

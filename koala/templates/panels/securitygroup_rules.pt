@@ -2,6 +2,15 @@
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row inline" ng-app="SecurityGroupRules"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
+     <style type="text/css">
+         input.port { width: 3.8rem; }
+         form .row.trafficfrom { margin-top: 1rem; }
+         form .ip-label, form .sg-label { margin-right: 1rem; }
+         form label.ipaddress { margin-bottom: 1rem; }
+         form .cidr-ip, form .groupname { display: inline; width: 50%; }
+         form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
+         form label.protocol { margin-bottom: 1.5rem; }
+    </style>
     <div class="small-3 columns">
         <label class="right" i18n:translate="">Inbound Rules</label>
     </div>
@@ -16,7 +25,11 @@
                 <strong i18n:translate="">Rule</strong>:
                 {{ rule.ip_protocol.toUpperCase() }}
                 ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-                <span ng-repeat="grant in rule.grants">{{ grant.cidr_ip }}</span>
+                <span ng-repeat="grant in rule.grants">
+                    <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                </span>
+                <span ng-show="rule.fresh"><i class="fi-burst-new"></i></span>
             </div>
         </div>
         <div class="row rulesentry inline controls-wrapper">
@@ -31,45 +44,63 @@
             </div>
             <div class="row">
                 <div class="small-3 columns">
-                    <label class="right" i18n:translate="">Protocol</label>
+                    <label class="right protocol" i18n:translate="">Protocol</label>
                 </div>
                 <div class="small-9 columns">
-                    <select name="ip_protocol" ng-model="selected_ip_protocol" ng-change="setPorts(selected_ip_protocol)">
+                    <select name="ip_protocol" class="ip-protocol"
+                            ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)">
                         <option value="" i18n:translate="">select...</option>
                         <option tal:repeat="choice protocol_choices" value="${choice[0]}">${choice[1]}</option>
                     </select>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-show="selectedProtocol">
                 <div class="small-3 columns">
-                    <label class="right" i18n:translate="">Port</label>
+                    <label class="right" i18n:translate="">Port range</label>
                 </div>
                 <div class="small-9 columns">
-                    <input class="port from" name="from_port" ng-model="fromPort" pattern="integer"/>&nbsp;-
-                    <input class="port to" name="to_port" ng-model="toPort" pattern="integer"/>
-                    <small class="error" i18n:translate="">Must be a number</small>
+                    <div ng-show="selectedProtocol != 'icmp'">
+                        <input class="port from" name="from_port" ng-model="fromPort" pattern="integer"/>&nbsp;-
+                        <input class="port to" name="to_port" ng-model="toPort" pattern="integer"/>
+                        <small class="error" i18n:translate="">Must be a number</small>
+                    </div>
+                    <div ng-show="selectedProtocol == 'icmp'">
+                        <select name="icmp_range" ng-model="icmpRange">
+                            <option value="" i18n:translate="">select...</option>
+                            <option tal:repeat="choice icmp_choices" value="${choice[0]}">${choice[1]}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row trafficfrom" ng-show="selectedProtocol">
                 <div class="small-3 columns">
                     <label class="right" i18n:translate="">Allow traffic from</label>
                 </div>
                 <div class="small-9 columns">
-                    <label>
-                        <input type="radio" name="traffictype" value="ip" />
-                        <span i18n:translate="">IP address</span>
+                    <label class="ipaddress">
+                        <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
+                        <span i18n:translate="" class="ip-label">IP address</span>
+                        <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp" ng-required="trafficType == 'ip'" />
+                        <div><small class="error" i18n:translate="">IP address required</small></div>
                     </label>
                     <label>
-                        <input type="radio" name="traffictype" value="securitygroup" />
-                        <span i18n:translate="">Security group</span>
+                        <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType"
+                                ng-click="refreshAbideValidation()"/>
+                        <span i18n:translate="" class="sg-label">Security group</span>
+                        <select name="groupname" class="groupname" ng-model="groupName">
+                            <option value="" i18n:translate="">select...</option>
+                            <option tal:repeat="groupname groupnames"
+                                    value="${groupname}">${groupname}</option>
+                        </select>
                     </label>
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="selectedProtocol">
             <div class="small-3 columns">&nbsp;</div>
             <div class="small-9 columns">
-                <a href="#" class="button round secondary small" i18n:translate="">Add rule</a>
+                <a href="#" class="button round secondary small" i18n:translate=""
+                        ng-click="addRule($event)">Add rule</a>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
