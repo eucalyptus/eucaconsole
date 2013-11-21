@@ -3,8 +3,7 @@
 <div class="row inline controls-wrapper controls_${field.name}">
     <div class="small-4 columns">
         <label class="right">
-            ${field.label.text}
-            <span tal:condition="field.flags.required" class="req">*</span>
+            ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
         </label>
     </div>
     <div class="small-8 columns field">

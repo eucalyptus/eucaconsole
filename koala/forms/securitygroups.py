@@ -12,7 +12,9 @@ from . import BaseSecureForm
 
 
 class SecurityGroupForm(BaseSecureForm):
-    """Security Group form"""
+    """Security Group form
+       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
+    """
     name_error_msg = _(u'Name is required')
     name = wtforms.TextField(
         label=_(u'Name'),
@@ -25,7 +27,6 @@ class SecurityGroupForm(BaseSecureForm):
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
-    rules = wtforms.TextAreaField(label=_(u'Rules'))
 
     def __init__(self, request, security_group=None, **kwargs):
         super(SecurityGroupForm, self).__init__(request, **kwargs)

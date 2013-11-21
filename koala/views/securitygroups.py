@@ -112,6 +112,9 @@ class SecurityGroupView(BaseView):
                 self.security_group.tags = None
                 for key, value in tags.items():
                     self.security_group.add_tag(key, value)
+            # Update inbound rules
+            # TODO: Use security_group.authorize() to add rules.
+            # TODO: wipe out rules before updating via security_group.revoke().
             location = self.request.route_url('securitygroups')
             msg = _(u'Successfully modified security group {group}')
             notification_msg = msg.format(group=self.security_group.name)

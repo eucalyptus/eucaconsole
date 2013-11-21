@@ -230,7 +230,10 @@ form .controls_csrf_token {
 }
 
 form .inline label {
+    font-weight: bold;
     line-height: 1.8rem;
+    position: relative;
+    right: -0.5rem;
 }
 
 form .inline .field {
@@ -245,6 +248,10 @@ form label {
 
 form label .req {
     color: darkred;
+}
+
+form .columns input {
+    max-width: 100%;
 }
 
 [data-abide] .inline .error small.error {
@@ -269,38 +276,38 @@ form label .req {
     font-weight: normal;
 }
 
-// Tag editor
-form input.taginput.key {
-    width: 7rem;
-}
-
 form .cancel-link {
     margin-left: 2rem;
 }
 
-#tag-editor {
-    i.fi-plus.circle {
-        border: 2px solid #333;
-        border-radius: 100px;
-        padding: 0 2px;
-        font-size: 0.7rem;
-    }
-    i.fi-minus-circle {
-        font-size: 1.4rem;
-    }
-    a.circle {
-        color: black;
-    }
-    textarea#tags {
-        position: absolute;
-        left: 9999rem;
-        &.debug {
-            position: relative;
-            left: 0;
-        }
+i.fi-plus.circle {
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 0 2px;
+    font-size: 0.7rem;
+}
+
+textarea.hidden {
+    position: absolute;
+    left: 9999rem;
+    &.debug {
+        position: relative;
+        left: 0;
     }
 }
 
+i.fi-minus-circle {
+    font-size: 1.4rem;
+    &:hover {
+        color: darkred;
+    }
+}
+
+
+a.circle {
+    color: black;
+    display: inline-block;
+}
 
 
 /* -----------------------------------------

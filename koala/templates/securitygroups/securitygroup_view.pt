@@ -1,4 +1,12 @@
 <metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        input.port { width: 4rem; }
+    </style>
+</head>
+
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle" i18n:translate="">
@@ -12,7 +20,11 @@
                     ${structure:securitygroup_form['csrf_token']}
                     ${panel('form_field', field=securitygroup_form['name'])}
                     ${panel('form_field', field=securitygroup_form['description'])}
+                    <hr />
+                    ${panel('securitygroup_rules', rules=security_group.rules)}
+                    <hr />
                     ${panel('tag_editor', tags=security_group.tags)}
+                    <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
