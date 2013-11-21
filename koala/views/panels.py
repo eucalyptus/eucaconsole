@@ -15,13 +15,20 @@ from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, html_attrs=None):
+def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=3, rightcol_width=9):
+    """Widget for a singe form field row.
+    The left/right column widths are Zurb Foundation grid units.
+    e.g. leftcol_width=3 would set column for labes with a wrapper of <div class="small-3 columns">...</div>
+    """
     html_attrs = html_attrs or {}
     # Add required="required" attributed to form field if any "required" validators are detected
     if field.flags.required and html_attrs.get('required') is None:
         html_attrs['required'] = 'required'
     error_msg = getattr(field, 'error_msg', None)
-    return dict(field=field, error_msg=error_msg, html_attrs=html_attrs)
+    return dict(
+        field=field, error_msg=error_msg, html_attrs=html_attrs,
+        leftcol_width=leftcol_width, rightcol_width=rightcol_width
+    )
 
 
 @panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')

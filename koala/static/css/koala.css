@@ -1381,7 +1381,7 @@ form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
-form .inline label { font-weight: bold; line-height: 1.8rem; position: relative; right: -0.5rem; }
+form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
 form .inline .field input { display: inline-block; }
 

@@ -229,11 +229,11 @@ form .controls_csrf_token {
     display: none;
 }
 
-form .inline label {
+form .inline.controls-wrapper > [class*='small-'] label {
     font-weight: bold;
-    line-height: 1.8rem;
+    padding-top: 0.3rem;
     position: relative;
-    right: -0.5rem;
+    right: -1rem;
 }
 
 form .inline .field {

@@ -9,6 +9,8 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
+        $scope.fromPort = '';
+        $scope.toPort = '';
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
         };
@@ -17,18 +19,23 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesArray = JSON.parse(rulesArray);
             $scope.syncRules();
         };
-        $scope.updateRuleKey = function (index, $event) {
-
-        };
-        $scope.updateRuleValue = function (index, $event) {
-
-        };
-        $scope.removeRule = function (index) {
-
+        $scope.removeRule = function (index, $event) {
+            $event.preventDefault();
+            $scope.rulesArray.splice(index, 1);
+            $scope.syncRules();
         };
         $scope.addRule = function ($event) {
 
         };
+        $scope.setPorts = function(port) {
+            if (!isNaN(port)) {
+                $scope.fromPort = port;
+                $scope.toPort = port;
+            } else {
+                $scope.fromPort = $scope.toPort = '';
+                $('.port.from').focus();
+            }
+        }
     })
 ;
 

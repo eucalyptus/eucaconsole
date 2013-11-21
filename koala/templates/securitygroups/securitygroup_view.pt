@@ -2,7 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
-        input.port { width: 4rem; }
+        input.port { width: 3.8rem; }
     </style>
 </head>
 
