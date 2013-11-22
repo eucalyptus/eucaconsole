@@ -109,7 +109,8 @@
     // Initialize all Zurb Foundation components
     $(document).foundation().foundation('abide', {
         patterns: {
-            cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/
+            cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/,
+            tag_pattern: /^(?!aws:).*/  // Tags may not begin with 'aws:'
         }
     });
 </script>

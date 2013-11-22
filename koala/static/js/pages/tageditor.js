@@ -29,14 +29,26 @@ angular.module('TagEditor', [])
             $scope.syncTags();
         };
         $scope.updateTagKey = function (index, $event) {
+            var form = $($event.currentTarget).closest('form');
             var newKey = $($event.currentTarget).val();
+            // Validate tag key
+            form.trigger('validate');
+            if (form.find('[data-invalid]').length) {
+                return false;
+            }
             if (newKey) {
                 $scope.tagsArray[index]['name'] = newKey;
                 $scope.syncTags();
             }
         };
         $scope.updateTagValue = function (index, $event) {
+            var form = $($event.currentTarget).closest('form');
             var newVal = $($event.currentTarget).val();
+            // Validate tag value
+            form.trigger('validate');
+            if (form.find('[data-invalid]').length) {
+                return false;
+            }
             if (newVal) {
                 $scope.tagsArray[index]['value'] = newVal;
                 $scope.syncTags();

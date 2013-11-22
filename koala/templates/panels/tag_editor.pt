@@ -10,11 +10,13 @@
              ng-repeat="tag in tagsArray | orderBy: 'name'" ng-cloak="cloak">
             <div class="small-5 columns">
                 <input class="taginput key inline" placeholder="Key" value="{{ tag.name }}"
-                       ng-keyup="updateTagKey($index, $event)" />
+                       ng-keyup="updateTagKey($index, $event)" maxlength="127" pattern="tag_pattern" />
+                <small class="error" i18n:translate="">Invalid tag</small>
             </div>
             <div class="small-5 columns">
                 <input class="taginput value inline" placeholder="Value" value="{{ tag.value }}"
-                       ng-keyup="updateTagValue($index, $event)" />
+                       ng-keyup="updateTagValue($index, $event)" maxlength="255" pattern="tag_pattern" />
+                <small class="error" i18n:translate="">Invalid tag</small>
             </div>
             <div class="small-2 columns">
                 <a href="#" ng-click="removeTag($index)" class="circle has-tip"
@@ -23,10 +25,10 @@
         </div>
         <div class="row tagentry inline controls-wrapper">
             <div class="small-5 columns">
-                <input class="taginput key" placeholder="key..." />
+                <input class="taginput key" ng-model="" placeholder="key..." pattern="tag_pattern" />
             </div>
             <div class="small-5 columns">
-                <input class="taginput value" placeholder="value..." />
+                <input class="taginput value" ng-model="" placeholder="value..." pattern="tag_pattern" />
             </div>
             <div class="small-2 columns">
                 <a href="#" ng-click="addTag($event)"
