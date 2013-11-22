@@ -3,6 +3,11 @@
 Core views
 
 """
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
@@ -42,6 +47,23 @@ class BaseView(object):
         """Empty Beaker cache to clear connection objects"""
         for _cache in cache_managers.values():
             _cache.clear()
+
+
+class TaggedItemView(BaseView):
+    """Common view for items that have tags (e.g. security group)"""
+
+    def add_tags(self, tagged_obj=None):
+        tags_json = self.request.params.get('tags')
+        tags = json.loads(tags_json) if tags_json else {}
+
+        for key, value in tags.items():
+            tagged_obj.add_tag(key, value)
+
+    def update_tags(self, tagged_obj=None):
+        # Delete existing tags before adding new tag set
+        for tagkey, tagvalue in tagged_obj.tags.items():
+            tagged_obj.remove_tag(tagkey, tagvalue)
+        self.add_tags(tagged_obj=tagged_obj)
 
 
 class LandingPageView(BaseView):

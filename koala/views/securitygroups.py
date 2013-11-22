@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
-
 try:
     import simplejson as json
 except ImportError:
@@ -15,7 +14,7 @@ from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView
+from ..views import LandingPageView, TaggedItemView
 
 
 class SecurityGroupsView(LandingPageView):
@@ -74,7 +73,7 @@ class SecurityGroupsView(LandingPageView):
         return dict(results=securitygroups)
 
 
-class SecurityGroupView(BaseView):
+class SecurityGroupView(TaggedItemView):
     """Views for single Security Group"""
     TEMPLATE = '../templates/securitygroups/securitygroup_view.pt'
 
@@ -85,6 +84,7 @@ class SecurityGroupView(BaseView):
         self.securitygroup_form = SecurityGroupForm(
             self.request, security_group=self.security_group, formdata=self.request.params)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params)
+        self.tagged_obj = self.security_group
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):
@@ -120,7 +120,7 @@ class SecurityGroupView(BaseView):
             description = self.request.params.get('description')
             new_group = self.conn.create_security_group(name, description)
             self.add_rules(security_group=new_group)
-            self.add_tags(security_group=new_group)
+            self.add_tags(tagged_obj=new_group)
             location = self.request.route_url('securitygroups')
             msg = _(u'Successfully created security group {group}')
             notification_msg = msg.format(group=name)
@@ -137,7 +137,7 @@ class SecurityGroupView(BaseView):
     def securitygroup_update(self):
         if self.securitygroup_form.validate():
             # Update tags and rules
-            self.update_tags()
+            self.update_tags(tagged_obj=self.security_group)
             self.update_rules()
 
             location = self.request.route_url('securitygroups')
@@ -166,21 +166,6 @@ class SecurityGroupView(BaseView):
         if self.conn:
             groups = [g.name for g in self.conn.get_all_security_groups()]
         return sorted(set(groups))
-
-    def add_tags(self, security_group=None):
-        if security_group is None:
-            security_group = self.security_group
-        tags_json = self.request.params.get('tags')
-        tags = json.loads(tags_json) if tags_json else {}
-
-        for key, value in tags.items():
-            security_group.add_tag(key, value)
-
-    def update_tags(self):
-        # Delete existing tags before adding new tag set
-        for tagkey, tagvalue in self.security_group.tags.items():
-            self.security_group.remove_tag(tagkey, tagvalue)
-        self.add_tags()
 
     def add_rules(self, security_group=None):
         if security_group is None:
