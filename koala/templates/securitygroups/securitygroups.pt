@@ -23,7 +23,7 @@
             <div metal:fill-slot="tile_content">
                 <div ng-show="item.description">{{ item.description }}</div>
                 <div ng-show="item.tags">
-                    <span ng-repeat="(key, value) in item.tags">{{ key }}: {{ value }}<span ng-show="!$last">;</span></span>
+                    <span ng-repeat="(key, value) in item.tags">{{ key }}={{ value }}<span ng-show="!$last">, </span></span>
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -34,7 +34,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
-                <td><span ng-repeat="(key, value) in item.tags">{{ key }}: {{ value }}<span ng-show="!$last">, </span></span></td>
+                <td><span ng-repeat="(key, value) in item.tags">{{ key }}={{ value }}<span ng-show="!$last">, </span></span></td>
             </metal:block>
         </div>
     </div>

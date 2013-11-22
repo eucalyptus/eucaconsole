@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-21 21:20-0800\n"
+"POT-Creation-Date: 2013-11-22 12:44-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -417,7 +417,7 @@ msgid "IP address"
 msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:87
-msgid "Valid IP address required"
+msgid "Valid CIDR entry required"
 msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:91
@@ -437,6 +437,11 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+#: koala/templates/panels/tag_editor.pt:14
+#: koala/templates/panels/tag_editor.pt:19
+msgid "Invalid tag"
+msgstr ""
+
 #: koala/templates/scalinggroups/scalinggroups.pt:9
 msgid "Scaling Groups"
 msgstr ""
@@ -453,43 +458,37 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:22
+#: koala/templates/securitygroups/securitygroup_view.pt:24
 #: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:39
+#: koala/templates/securitygroups/securitygroup_view.pt:41
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:40
+#: koala/templates/securitygroups/securitygroup_view.pt:42
 msgid "Add security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:44
+#: koala/templates/securitygroups/securitygroup_view.pt:46
 msgid "Cancel"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:52
 #: koala/templates/securitygroups/securitygroup_view.pt:54
-#: koala/templates/securitygroups/securitygroup_view.pt:60
-#: koala/templates/securitygroups/securitygroup_view.pt:66
+msgid "Other security group actions"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:58
+#: koala/templates/securitygroups/securitygroup_view.pt:64
 msgid "Delete security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:55
-msgid "Displays confirmation dialog"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroup_view.pt:53
-msgid "<dynamic element>&nbsp;<dynamic element>. <dynamic element>."
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroup_view.pt:67
+#: koala/templates/securitygroups/securitygroup_view.pt:65
 msgid "Are you sure you want to delete the security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:71
+#: koala/templates/securitygroups/securitygroup_view.pt:69
 msgid "Yes, delete"
 msgstr ""
 
@@ -527,7 +526,7 @@ msgstr ""
 msgid "Create new volume"
 msgstr ""
 
-#: koala/views/__init__.py:82
+#: koala/views/__init__.py:88
 msgid "Your session has timed out."
 msgstr ""
 
@@ -595,15 +594,15 @@ msgstr ""
 msgid "Successfully released {ip} to the cloud"
 msgstr ""
 
-#: koala/views/login.py:85
+#: koala/views/login.py:87
 msgid "Invalid user/account name and/or password."
 msgstr ""
 
-#: koala/views/login.py:89 koala/views/login.py:118
+#: koala/views/login.py:91 koala/views/login.py:121
 msgid "No response from host "
 msgstr ""
 
-#: koala/views/login.py:114
+#: koala/views/login.py:117
 msgid "Invalid access key and/or secret key."
 msgstr ""
 
@@ -615,15 +614,19 @@ msgstr ""
 msgid "Launch configuration"
 msgstr ""
 
-#: koala/views/securitygroups.py:104
+#: koala/views/securitygroups.py:105
 msgid "Successfully deleted security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:124
+#: koala/views/securitygroups.py:108
+msgid "Unable to delete security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:125
 msgid "Successfully created security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:143
+#: koala/views/securitygroups.py:144
 msgid "Successfully modified security group {group}"
 msgstr ""
 
@@ -668,5 +671,14 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Must be a number"
+#~ msgstr ""
+
+#~ msgid "Valid IP address required"
+#~ msgstr ""
+
+#~ msgid "Displays confirmation dialog"
+#~ msgstr ""
+
+#~ msgid "<dynamic element>&nbsp;<dynamic element>. <dynamic element>."
 #~ msgstr ""
 

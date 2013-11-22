@@ -75,7 +75,9 @@ class SecurityGroupsView(LandingPageView):
 
 
 class SecurityGroupView(BaseView):
-    """Views for actions on single Security Group"""
+    """Views for single Security Group"""
+    TEMPLATE = '../templates/securitygroups/securitygroup_view.pt'
+
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
         self.conn = self.get_connection()
@@ -84,7 +86,7 @@ class SecurityGroupView(BaseView):
             self.request, security_group=self.security_group, formdata=self.request.params)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params)
 
-    @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
+    @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
     def securitygroup_view(self):
         return dict(
             security_group=self.security_group,
@@ -100,19 +102,18 @@ class SecurityGroupView(BaseView):
             deleted = self.security_group.delete()
 
             if deleted:
-                location = self.request.route_url('securitygroups')
                 msg = _(u'Successfully deleted security group {group}')
-                notification_msg = msg.format(group=name)
-                self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-                return HTTPFound(location=location)
+                queue = Notification.SUCCESS
+            else:
+                msg = _(u'Unable to delete security group {group}')
+                queue = Notification.ERROR
 
-        return dict(
-            security_group=self.security_group,
-            securitygroup_form=self.securitygroup_form,
-            security_group_names=self.get_security_group_names(),
-        )
+            location = self.request.route_url('securitygroups')
+            notification_msg = msg.format(group=name)
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
 
-    @view_config(route_name='securitygroup_create', request_method='POST')
+    @view_config(route_name='securitygroup_create', request_method='POST', renderer=TEMPLATE)
     def securitygroup_create(self):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
@@ -132,7 +133,7 @@ class SecurityGroupView(BaseView):
             security_group_names=self.get_security_group_names(),
         )
 
-    @view_config(route_name='securitygroup_update', request_method='POST')
+    @view_config(route_name='securitygroup_update', request_method='POST', renderer=TEMPLATE)
     def securitygroup_update(self):
         if self.securitygroup_form.validate():
             # Update tags and rules
@@ -148,6 +149,7 @@ class SecurityGroupView(BaseView):
         return dict(
             security_group=self.security_group,
             securitygroup_form=self.securitygroup_form,
+            security_group_names=self.get_security_group_names(),
         )
 
     def get_security_group(self, group_id=None):

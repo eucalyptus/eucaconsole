@@ -18,7 +18,7 @@ from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=3, rightcol_width=9):
+def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=3, rightcol_width=9, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
         e.g. leftcol_width=3 would set column for labes with a wrapper of <div class="small-3 columns">...</div>
@@ -35,6 +35,10 @@ def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=
         # If we have multiple Length validators, the last one wins
         if isinstance(validator, Length):
             html_attrs['maxlength'] = validator.max
+
+    # Detect readonly attribute
+    if kwargs.get('readonly'):
+        html_attrs['readonly'] = 'readonly'
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs,

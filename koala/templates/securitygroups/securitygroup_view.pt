@@ -14,7 +14,9 @@
                         if security_group else request.route_url('securitygroup_create')">
             <div class="panel has-title"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
-                                sgroup_tags security_group.tags if security_group else {}">
+                                sgroup_tags security_group.tags if security_group else {};
+                                readonly True if security_group else False;
+                                field_attrs {'readonly': 'readonly'} if readonly else {}">
                 <h6 class="title">
                     <span tal:condition="security_group">
                         Settings for security group <strong>${security_group.name}</strong>
@@ -25,8 +27,8 @@
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
-                    ${panel('form_field', field=securitygroup_form['name'])}
-                    ${panel('form_field', field=securitygroup_form['description'])}
+                    ${panel('form_field', field=securitygroup_form['name'], **field_attrs)}
+                    ${panel('form_field', field=securitygroup_form['description'], **field_attrs)}
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
                     <hr />
@@ -49,15 +51,11 @@
             </div>
 
             <div class="panel has-title" tal:condition="security_group">
-                <h6 class="title" i18n:translate="">Delete security group</h6>
-                <p i18n:translate="">
-                    <span i18n:translate="">Delete security group</span>&nbsp;<b>${security_group.name}</b>.
-                    <span i18n:translate="">Displays confirmation dialog</span>.
-                </p>
+                <h6 class="title" i18n:translate="">Other security group actions</h6>
                 <div class="row">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns">
-                        <a class="button alert" data-reveal-id="delete-securitygroup-modal" i18n:translate="">
+                        <a class="button secondary delete" data-reveal-id="delete-securitygroup-modal" i18n:translate="">
                             Delete security group
                         </a>
                     </div>

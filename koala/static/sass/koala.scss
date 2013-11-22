@@ -231,6 +231,7 @@ form .controls_csrf_token {
 
 form .inline label {
     padding-top: 0.4rem;
+    font-weight: bold;
 }
 
 form .inline.controls-wrapper > [class*='small-'] label {
@@ -307,12 +308,29 @@ i.fi-minus-circle {
     }
 }
 
+a.button.secondary.delete:hover {
+    color: white;
+    background-color: darkred ;
+}
 
 a.circle {
     color: black;
     display: inline-block;
 }
 
+#tag-editor {
+    .row.inline.new input {
+        background-color: lighten($euca-lightgreen, 40%);
+    }
+    #tags-preview  {
+        background-color: $euca-extralightblue;
+        padding: 4px;
+        border: 1px solid lighten($euca-darkblue, 70%);
+        .new {
+            color: $euca-green;
+        }
+    }
+}
 
 /* -----------------------------------------
    Footer

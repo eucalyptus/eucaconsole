@@ -37,6 +37,12 @@ class BaseView(object):
 
         return conn
 
+    @staticmethod
+    def invalidate_cache():
+        """Empty Beaker cache to clear connection objects"""
+        for _cache in cache_managers.values():
+            _cache.clear()
+
 
 class LandingPageView(BaseView):
     """Common view for landing pages
@@ -82,7 +88,6 @@ def ec2conn_error(exc, request):
         notice = _(u'Your session has timed out.')
         request.session.flash(notice, queue='warning')
         # Empty Beaker cache to clear connection objects
-        for _cache in cache_managers.values():
-            _cache.clear()
+        BaseView.invalidate_cache()
         location = request.route_url('login')
         return HTTPFound(location=location)

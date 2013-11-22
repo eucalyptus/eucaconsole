@@ -22,35 +22,22 @@ angular.module('TagEditor', [])
             Object.keys(tagsObj).forEach(function(key) {
                 $scope.tagsArray.push({
                     'name': key,
-                    'value': tagsObj[key],
-                    'inserted': true
+                    'value': tagsObj[key]
                 });
             });
             $scope.syncTags();
         };
-        $scope.updateTagKey = function (index, $event) {
-            var form = $($event.currentTarget).closest('form');
-            var newKey = $($event.currentTarget).val();
+        $scope.updateTag = function (index, $event, tagType) {
+            var field = $($event.currentTarget);
+            var fieldEntry = field.val().trim();  // Strip leading/trailing whitespace
+            field.val(fieldEntry);
             // Validate tag key
-            form.trigger('validate');
-            if (form.find('[data-invalid]').length) {
+            $scope.tagEditor.trigger('validate');
+            if ($scope.tagEditor.find('[data-invalid]').length) {
                 return false;
             }
-            if (newKey) {
-                $scope.tagsArray[index]['name'] = newKey;
-                $scope.syncTags();
-            }
-        };
-        $scope.updateTagValue = function (index, $event) {
-            var form = $($event.currentTarget).closest('form');
-            var newVal = $($event.currentTarget).val();
-            // Validate tag value
-            form.trigger('validate');
-            if (form.find('[data-invalid]').length) {
-                return false;
-            }
-            if (newVal) {
-                $scope.tagsArray[index]['value'] = newVal;
+            if (fieldEntry) {
+                $scope.tagsArray[index][tagType] = fieldEntry;
                 $scope.syncTags();
             }
         };
@@ -59,19 +46,31 @@ angular.module('TagEditor', [])
             $scope.syncTags();
         };
         $scope.addTag = function ($event) {
-            var plus = $($event.currentTarget),
-                tagEntry = plus.closest('.tagentry'),
+            var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
-                tagValueField = tagEntry.find('.value');
+                tagValueField = tagEntry.find('.value'),
+                tagsArrayLength = $scope.tagsArray.length,
+                existingTagFound = false;
             if (tagKeyField.val() && tagValueField.val()) {
-                $scope.tagsArray.push({
-                    'name': tagKeyField.val(),
-                    'value': tagValueField.val(),
-                    'inserted': true
-                });
-                $scope.syncTags();
-                tagKeyField.val('').focus();
-                tagValueField.val('');
+                // Avoid adding a new tag if the name duplicates an existing one.
+                for (var i=0; i < tagsArrayLength; i++) {
+                    if ($scope.tagsArray[i].name === tagKeyField.val()) {
+                        existingTagFound = true;
+                        break;
+                    }
+                }
+                if (existingTagFound) {
+                    tagKeyField.focus();
+                } else {
+                    $scope.tagsArray.push({
+                        'name': tagKeyField.val(),
+                        'value': tagValueField.val(),
+                        'fresh': 'new'
+                    });
+                    $scope.syncTags();
+                    tagKeyField.val('').focus();
+                    tagValueField.val('');
+                }
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
             }
