@@ -59,10 +59,12 @@
                     <label class="right" i18n:translate="">Port range</label>
                 </div>
                 <div class="small-9 columns">
-                    <div ng-show="selectedProtocol != 'icmp'">
-                        <input class="port from" name="from_port" ng-model="fromPort" pattern="integer"/>&nbsp;-
-                        <input class="port to" name="to_port" ng-model="toPort" pattern="integer"/>
-                        <small class="error" i18n:translate="">Must be a number</small>
+                    <div ng-show="selectedProtocol !== 'icmp'">
+                        <input class="port from" name="from_port" ng-model="fromPort" pattern="integer"
+                               ng-readonly="selectedProtocol &lt; 99999" />&nbsp;-
+                        <input class="port to" name="to_port" ng-model="toPort" pattern="integer"
+                               ng-readonly="selectedProtocol &lt; 99999" />
+                        <small class="error" i18n:translate="">Valid port range required</small>
                     </div>
                     <div ng-show="selectedProtocol == 'icmp'">
                         <select name="icmp_range" ng-model="icmpRange">
@@ -80,19 +82,20 @@
                     <label class="ipaddress">
                         <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
                         <span i18n:translate="" class="ip-label">IP address</span>
-                        <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp"
-                               ng-required="ipRequired" pattern="cidr_ip_address" />
+                        <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
+                               ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="cidr_ip_address" />
                         <div><small class="error" i18n:translate="">Valid IP address required</small></div>
                     </label>
                     <label>
-                        <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType"
-                                ng-click="refreshIPAddressValidation()" />
+                        <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
                         <span i18n:translate="" class="sg-label">Security group</span>
-                        <select name="groupname" class="groupname" ng-model="groupName">
+                        <select name="groupname" class="groupname" ng-model="groupName"
+                                ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'">
                             <option value="" i18n:translate="">select...</option>
                             <option tal:repeat="groupname groupnames"
                                     value="${groupname}">${groupname}</option>
                         </select>
+                        <div><small class="error" i18n:translate="">Security group is required</small></div>
                     </label>
                 </div>
             </div>

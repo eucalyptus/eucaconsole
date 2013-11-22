@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-21 17:37-0800\n"
+"POT-Creation-Date: 2013-11-21 21:20-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -396,8 +396,8 @@ msgid "Protocol"
 msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:52
-#: koala/templates/panels/securitygroup_rules.pt:69
-#: koala/templates/panels/securitygroup_rules.pt:92
+#: koala/templates/panels/securitygroup_rules.pt:71
+#: koala/templates/panels/securitygroup_rules.pt:94
 msgid "select..."
 msgstr ""
 
@@ -405,27 +405,31 @@ msgstr ""
 msgid "Port range"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:65
-msgid "Must be a number"
+#: koala/templates/panels/securitygroup_rules.pt:67
+msgid "Valid port range required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:77
+#: koala/templates/panels/securitygroup_rules.pt:79
 msgid "Allow traffic from"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:82
+#: koala/templates/panels/securitygroup_rules.pt:84
 msgid "IP address"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:85
+#: koala/templates/panels/securitygroup_rules.pt:87
 msgid "Valid IP address required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:90
+#: koala/templates/panels/securitygroup_rules.pt:91
 msgid "Security group"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:103
+#: koala/templates/panels/securitygroup_rules.pt:98
+msgid "Security group is required"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:106
 msgid "Add rule"
 msgstr ""
 
@@ -662,5 +666,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "IP address required"
+#~ msgstr ""
+
+#~ msgid "Must be a number"
 #~ msgstr ""
 

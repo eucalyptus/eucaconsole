@@ -171,17 +171,14 @@ class SecurityGroupView(BaseView):
         tags_json = self.request.params.get('tags')
         tags = json.loads(tags_json) if tags_json else {}
 
-        if tags:
-            security_group.tags = None
-            for key, value in tags.items():
-                security_group.add_tag(key, value)
+        for key, value in tags.items():
+            security_group.add_tag(key, value)
 
     def update_tags(self):
         # Delete existing tags before adding new tag set
         for tagkey, tagvalue in self.security_group.tags.items():
             self.security_group.remove_tag(tagkey, tagvalue)
         self.add_tags()
-
 
     def add_rules(self, security_group=None):
         if security_group is None:
@@ -229,22 +226,23 @@ class SecurityGroupView(BaseView):
             cidr_ip = None
             src_group = None
             grants = rule.grants
+            from_port = int(rule.from_port) if rule.from_port else None
+            to_port = int(rule.to_port) if rule.to_port else None
 
             # Grab group and cidr_ip from grants list (list of boto.ec2.securitygroup.GroupOrCIDR objects)
-            if grants:
-                group_ids = [grant.group_id for grant in grants if grant.group_id]
-                if group_ids:
-                    src_group = self.get_security_group(group_id=group_ids[0])
-                cidr_ips = [grant.cidr_ip for grant in grants if grant.cidr_ip]
-                if cidr_ips:
-                    cidr_ip = cidr_ips[0]
+            group_ids = [grant.group_id for grant in grants if grant.group_id]
+            if group_ids:
+                src_group = self.get_security_group(group_id=group_ids[0])
+            cidr_ips = [grant.cidr_ip for grant in grants if grant.cidr_ip]
+            if cidr_ips:
+                cidr_ip = cidr_ips[0]
 
             # NOTE: This will fail unless a recent version of Boto is used.
             # See https://github.com/boto/boto/issues/1729
             self.security_group.revoke(
                 ip_protocol=rule.ip_protocol,
-                from_port=rule.from_port,
-                to_port=rule.to_port,
+                from_port=from_port,
+                to_port=to_port,
                 cidr_ip=cidr_ip,
                 src_group=src_group,
             )

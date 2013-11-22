@@ -15,16 +15,10 @@ angular.module('SecurityGroupRules', [])
             $scope.toPort = '';
             $scope.cidrIp = '';
             $scope.selectedProtocol = '';
-            $scope.ipRequired = false;
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
+            $scope.ipProtocol = 'tcp';
             $('.ip-protocol').chosen({'width': '90%'});
-            $scope.setIpRequired();
-        };
-        $scope.setIpRequired = function () {
-            if ($scope.selectedProtocol && $scope.trafficType == 'ip') {
-                $scope.ipRequired = true;
-            }
         };
         $scope.resetValues();
         $scope.syncRules = function () {
@@ -44,12 +38,25 @@ angular.module('SecurityGroupRules', [])
         $scope.addRule = function ($event) {
             $event.preventDefault();
             // Trigger form validation to prevent borked rule entry
-            $($event.currentTarget).closest('form').trigger('validate');
+            var form = $($event.currentTarget).closest('form');
+            form.trigger('validate');
+            if (form.find('[data-invalid]').length) {
+                return false;
+            }
+            if ($scope.selectedProtocol === 'icmp') {
+                $scope.fromPort = $scope.icmpRange;
+                $scope.toPort = $scope.icmpRange;
+                $scope.ipProtocol = 'icmp'
+            } else if ($scope.selectedProtocol === 'udp') {
+                $scope.ipProtocol = 'udp'
+            }
+
             // Add the rule
             $scope.rulesArray.push({
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
-                'ip_protocol': $scope.selectedProtocol == 'icmp' ? 'icmp' : 'tcp',
+                // Warning: Ugly hack to properly set ip_protocol when 'udp' or 'icmp'
+                'ip_protocol': $scope.ipProtocol,
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.cidrIp : null,
                     'group_id': null,
@@ -68,9 +75,6 @@ angular.module('SecurityGroupRules', [])
             }
             $('.groupname').chosen({'width': '50%'});
         };
-        $scope.refreshIPAddressValidation = function () {
-            $('.ipaddress').removeClass('error');
-        }
     });
 ;
 
