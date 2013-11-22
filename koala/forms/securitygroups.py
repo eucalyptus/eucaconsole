@@ -21,12 +21,11 @@ class SecurityGroupForm(BaseSecureForm):
         validators=[validators.Required(message=name_error_msg)],
     )
     desc_error_msg = _(u'Description is required')
-    desc_max_length = 255
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
             validators.Required(message=desc_error_msg),
-            validators.Length(max=desc_max_length, message=_(u'Description must be less than 255 characters'))
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
 
@@ -34,7 +33,6 @@ class SecurityGroupForm(BaseSecureForm):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
-        self.description.max_length = self.desc_max_length
         if security_group is not None:
             self.name.data = security_group.name
             self.description.data = security_group.description

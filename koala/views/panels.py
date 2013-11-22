@@ -5,6 +5,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 from operator import itemgetter
+from wtforms.validators import Length
 
 try:
     import simplejson as json
@@ -23,12 +24,18 @@ def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=
         e.g. leftcol_width=3 would set column for labes with a wrapper of <div class="small-3 columns">...</div>
     """
     html_attrs = html_attrs or {}
-    # Add required="required" attributed to form field if any "required" validators are detected
+    error_msg = getattr(field, 'error_msg', None)
+
+    # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required and html_attrs.get('required') is None:
         html_attrs['required'] = 'required'
-    if hasattr(field, 'max_length'):
-        html_attrs['maxlength'] = field.max_length
-    error_msg = getattr(field, 'error_msg', None)
+
+    # Add maxlength="..." HTML attribute to form field if any length validators
+    for validator in field.validators:
+        # If we have multiple Length validators, the last one wins
+        if isinstance(validator, Length):
+            html_attrs['maxlength'] = validator.max
+
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width
