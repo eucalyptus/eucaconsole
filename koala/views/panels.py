@@ -18,16 +18,18 @@ from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=3, rightcol_width=9, **kwargs):
+def form_field_row(context, request, field=None, leftcol_width=3, rightcol_width=9, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
-        e.g. leftcol_width=3 would set column for labes with a wrapper of <div class="small-3 columns">...</div>
+            e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
+        Pass any HTML attributes to this widget as keyword arguments.
+            e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
-    html_attrs = html_attrs or {}
+    html_attrs = {}
     error_msg = getattr(field, 'error_msg', None)
 
     # Add required="required" HTML attribute to form field if any "required" validators
-    if field.flags.required and html_attrs.get('required') is None:
+    if field.flags.required:
         html_attrs['required'] = 'required'
 
     # Add maxlength="..." HTML attribute to form field if any length validators
@@ -36,9 +38,9 @@ def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=
         if isinstance(validator, Length):
             html_attrs['maxlength'] = validator.max
 
-    # Detect readonly attribute
-    if kwargs.get('readonly'):
-        html_attrs['readonly'] = 'readonly'
+    # Add any passed kwargs to field's HTML attributes
+    for key, value in kwargs.items():
+        html_attrs[key] = value
 
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs,
