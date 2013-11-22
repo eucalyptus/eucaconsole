@@ -107,7 +107,11 @@
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
-    $(document).foundation();
+    $(document).foundation().foundation('abide', {
+        patterns: {
+            cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)?$/
+        }
+    });
 </script>
 <div metal:define-slot="tail_js"></div>
 </body>

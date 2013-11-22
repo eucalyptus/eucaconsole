@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-21 15:29-0800\n"
+"POT-Creation-Date: 2013-11-21 17:37-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -77,25 +77,25 @@ msgstr ""
 #: koala/templates/keypairs/keypairs.pt:24
 #: koala/templates/launchconfigs/launchconfigs.pt:26
 #: koala/templates/scalinggroups/scalinggroups.pt:24
-#: koala/templates/securitygroups/securitygroups.pt:29
+#: koala/templates/securitygroups/securitygroups.pt:30
 #: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
 #: koala/views/securitygroups.py:39 koala/views/snapshots.py:39
 #: koala/views/volumes.py:41
 msgid "Name"
 msgstr ""
 
-#: koala/forms/securitygroups.py:24 koala/templates/images/images.pt:58
-#: koala/templates/securitygroups/securitygroups.pt:30
+#: koala/forms/securitygroups.py:23
+msgid "Description is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:25 koala/templates/images/images.pt:58
+#: koala/templates/securitygroups/securitygroups.pt:31
 #: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
 #: koala/views/securitygroups.py:40
 msgid "Description"
 msgstr ""
 
-#: koala/forms/securitygroups.py:26
-msgid "Description is required"
-msgstr ""
-
-#: koala/forms/securitygroups.py:27
+#: koala/forms/securitygroups.py:28
 msgid "Description must be less than 255 characters"
 msgstr ""
 
@@ -396,7 +396,7 @@ msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:52
 #: koala/templates/panels/securitygroup_rules.pt:69
-#: koala/templates/panels/securitygroup_rules.pt:91
+#: koala/templates/panels/securitygroup_rules.pt:92
 msgid "select..."
 msgstr ""
 
@@ -416,20 +416,20 @@ msgstr ""
 msgid "IP address"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:84
-msgid "IP address required"
+#: koala/templates/panels/securitygroup_rules.pt:85
+msgid "Valid IP address required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:89
+#: koala/templates/panels/securitygroup_rules.pt:90
 msgid "Security group"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:102
+#: koala/templates/panels/securitygroup_rules.pt:103
 msgid "Add rule"
 msgstr ""
 
 #: koala/templates/panels/tag_editor.pt:6
-#: koala/templates/securitygroups/securitygroups.pt:31
+#: koala/templates/securitygroups/securitygroups.pt:32
 msgid "Tags"
 msgstr ""
 
@@ -449,20 +449,48 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:28
+#: koala/templates/securitygroups/securitygroup_view.pt:22
+#: koala/templates/securitygroups/securitygroups.pt:20
+msgid "Create new security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:39
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:29
+#: koala/templates/securitygroups/securitygroup_view.pt:40
+msgid "Add security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:44
 msgid "Cancel"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:52
+#: koala/templates/securitygroups/securitygroup_view.pt:54
+#: koala/templates/securitygroups/securitygroup_view.pt:60
+#: koala/templates/securitygroups/securitygroup_view.pt:66
+msgid "Delete security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:55
+msgid "Displays confirmation dialog"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:53
+msgid "<dynamic element>&nbsp;<dynamic element>. <dynamic element>."
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:67
+msgid "Are you sure you want to delete the security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:71
+msgid "Yes, delete"
 msgstr ""
 
 #: koala/templates/securitygroups/securitygroups.pt:9
 msgid "Security Groups"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroups.pt:20
-msgid "Create new security group"
 msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:17
@@ -583,7 +611,15 @@ msgstr ""
 msgid "Launch configuration"
 msgstr ""
 
-#: koala/views/securitygroups.py:195
+#: koala/views/securitygroups.py:104
+msgid "Successfully deleted security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:124
+msgid "Successfully created security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:143
 msgid "Successfully modified security group {group}"
 msgstr ""
 
@@ -622,5 +658,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Port"
+#~ msgstr ""
+
+#~ msgid "IP address required"
 #~ msgstr ""
 

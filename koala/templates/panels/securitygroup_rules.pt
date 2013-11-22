@@ -80,12 +80,13 @@
                     <label class="ipaddress">
                         <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
                         <span i18n:translate="" class="ip-label">IP address</span>
-                        <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp" ng-required="trafficType == 'ip'" />
-                        <div><small class="error" i18n:translate="">IP address required</small></div>
+                        <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp"
+                               ng-required="ipRequired" pattern="cidr_ip_address" />
+                        <div><small class="error" i18n:translate="">Valid IP address required</small></div>
                     </label>
                     <label>
                         <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType"
-                                ng-click="refreshAbideValidation()"/>
+                                ng-click="refreshIPAddressValidation()" />
                         <span i18n:translate="" class="sg-label">Security group</span>
                         <select name="groupname" class="groupname" ng-model="groupName">
                             <option value="" i18n:translate="">select...</option>
@@ -104,7 +105,7 @@
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
-        <textarea id="rules" name="rules" class="hidden debug" style="height: 8rem;"></textarea>
+        <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
     </div>
     <script src="${request.static_url('koala:static/js/pages/securitygroup_rules.js')}"></script>
 </div>

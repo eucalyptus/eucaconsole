@@ -15,9 +15,16 @@ angular.module('SecurityGroupRules', [])
             $scope.toPort = '';
             $scope.cidrIp = '';
             $scope.selectedProtocol = '';
+            $scope.ipRequired = false;
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
-            $('.ip-protocol').chosen({'width': '90%'})
+            $('.ip-protocol').chosen({'width': '90%'});
+            $scope.setIpRequired();
+        };
+        $scope.setIpRequired = function () {
+            if ($scope.selectedProtocol && $scope.trafficType == 'ip') {
+                $scope.ipRequired = true;
+            }
         };
         $scope.resetValues();
         $scope.syncRules = function () {
@@ -36,6 +43,9 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.addRule = function ($event) {
             $event.preventDefault();
+            // Trigger form validation to prevent borked rule entry
+            $($event.currentTarget).closest('form').trigger('validate');
+            // Add the rule
             $scope.rulesArray.push({
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
@@ -58,8 +68,8 @@ angular.module('SecurityGroupRules', [])
             }
             $('.groupname').chosen({'width': '50%'});
         };
-        $scope.refreshAbideValidation = function (elemId) {
-            $('#' + elemId).trigger('validate');
+        $scope.refreshIPAddressValidation = function () {
+            $('.ipaddress').removeClass('error');
         }
     });
 ;

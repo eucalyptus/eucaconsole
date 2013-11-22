@@ -9,28 +9,69 @@
         <h3 class="header" id="pagetitle" i18n:translate="">
             Security Group
         </h3>
-        <div class="large-7 columns">
-            <div class="panel has-title">
-                <h6 class="title">Settings for security group <strong>${security_group.name}</strong></h6>
-                <form action="${request.route_url('securitygroup_update', id=security_group.id)}"
-                      method="post" data-abide="abide">
+        <div class="large-7 columns"
+                tal:define="form_action request.route_url('securitygroup_update', id=security_group.id)
+                        if security_group else request.route_url('securitygroup_create')">
+            <div class="panel has-title"
+                    tal:define="sgroup_rules security_group.rules if security_group else [];
+                                sgroup_tags security_group.tags if security_group else {}">
+                <h6 class="title">
+                    <span tal:condition="security_group">
+                        Settings for security group <strong>${security_group.name}</strong>
+                    </span>
+                    <span tal:condition="not security_group" i18n:translate="">
+                        Create new security group
+                    </span>
+                </h6>
+                <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
                     ${panel('form_field', field=securitygroup_form['name'])}
                     ${panel('form_field', field=securitygroup_form['description'])}
                     <hr />
-                    ${panel('securitygroup_rules', rules=security_group.rules, groupnames=security_group_names)}
+                    ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
                     <hr />
-                    ${panel('tag_editor', tags=security_group.tags)}
+                    ${panel('tag_editor', tags=sgroup_tags)}
                     <hr />
                     <div class="row">
                         <div class="small-3 columns">&nbsp;</div>
                         <div class="small-9 columns field inline">
-                            <button type="submit" class="button" i18n:translate="">Save changes</button>
+                            <button type="submit" class="button">
+                                <span tal:condition="security_group" i18n:translate="">Save changes</span>
+                                <span tal:condition="not security_group" i18n:translate="">
+                                    Add security group
+                                </span>
+                            </button>
                             <a href="${request.route_url('securitygroups')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                     </div>
                 </form>
+            </div>
+
+            <div class="panel has-title" tal:condition="security_group">
+                <h6 class="title" i18n:translate="">Delete security group</h6>
+                <p i18n:translate="">
+                    <span i18n:translate="">Delete security group</span>&nbsp;<b>${security_group.name}</b>.
+                    <span i18n:translate="">Displays confirmation dialog</span>.
+                </p>
+                <div class="row">
+                    <div class="small-3 columns">&nbsp;</div>
+                    <div class="small-9 columns">
+                        <a class="button alert" data-reveal-id="delete-securitygroup-modal" i18n:translate="">
+                            Delete security group
+                        </a>
+                    </div>
+                </div>
+                <div id="delete-securitygroup-modal" class="reveal-modal small">
+                    <h3 i18n:translate="">Delete security group</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the security group</span>
+                        <b>${security_group.name}</b>?</p>
+                    <form action="${request.route_url('securitygroup_delete', id=security_group.id)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
             </div>
         </div>
         <div class="large-5 columns">

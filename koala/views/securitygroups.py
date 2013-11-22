@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.securitygroups import SecurityGroupForm
+from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
@@ -82,6 +82,73 @@ class SecurityGroupView(BaseView):
         self.security_group = self.get_security_group()
         self.securitygroup_form = SecurityGroupForm(
             self.request, security_group=self.security_group, formdata=self.request.params)
+        self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params)
+
+    @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
+    def securitygroup_view(self):
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+            delete_form=self.delete_form,
+            security_group_names=self.get_security_group_names(),
+        )
+
+    @view_config(route_name='securitygroup_delete', request_method='POST')
+    def securitygroup_delete(self):
+        if self.security_group and self.delete_form.validate():
+            name = self.security_group.name
+            deleted = self.security_group.delete()
+
+            if deleted:
+                location = self.request.route_url('securitygroups')
+                msg = _(u'Successfully deleted security group {group}')
+                notification_msg = msg.format(group=name)
+                self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
+
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+            security_group_names=self.get_security_group_names(),
+        )
+
+    @view_config(route_name='securitygroup_create', request_method='POST')
+    def securitygroup_create(self):
+        if self.securitygroup_form.validate():
+            name = self.request.params.get('name')
+            description = self.request.params.get('description')
+            new_group = self.conn.create_security_group(name, description)
+            self.add_rules(security_group=new_group)
+            self.add_tags(security_group=new_group)
+            location = self.request.route_url('securitygroups')
+            msg = _(u'Successfully created security group {group}')
+            notification_msg = msg.format(group=name)
+            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+            security_group_names=self.get_security_group_names(),
+        )
+
+    @view_config(route_name='securitygroup_update', request_method='POST')
+    def securitygroup_update(self):
+        if self.securitygroup_form.validate():
+            # Update tags and rules
+            self.update_tags()
+            self.update_rules()
+
+            location = self.request.route_url('securitygroups')
+            msg = _(u'Successfully modified security group {group}')
+            notification_msg = msg.format(group=self.security_group.name)
+            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return dict(
+            security_group=self.security_group,
+            securitygroup_form=self.securitygroup_form,
+        )
 
     def get_security_group(self, group_id=None):
         group_param = group_id or self.request.matchdict.get('id')
@@ -98,32 +165,27 @@ class SecurityGroupView(BaseView):
             groups = [g.name for g in self.conn.get_all_security_groups()]
         return sorted(set(groups))
 
-    @view_config(route_name='securitygroup_view', renderer='../templates/securitygroups/securitygroup_view.pt')
-    def securitygroup_view(self):
-        return dict(
-            security_group=self.security_group,
-            securitygroup_form=self.securitygroup_form,
-            security_group_names=self.get_security_group_names(),
-        )
-
-    def update_tags(self):
-        # Delete existing tags before adding updated/new ones
-        for tagkey, tagvalue in self.security_group.tags.items():
-            self.security_group.remove_tag(tagkey, tagvalue)
-
+    def add_tags(self, security_group=None):
+        if security_group is None:
+            security_group = self.security_group
         tags_json = self.request.params.get('tags')
         tags = json.loads(tags_json) if tags_json else {}
 
-        # Insert updated/new tags
         if tags:
-            self.security_group.tags = None
+            security_group.tags = None
             for key, value in tags.items():
-                self.security_group.add_tag(key, value)
+                security_group.add_tag(key, value)
 
-    def update_rules(self):
-        # First revoke existing rules, since we're doing a fresh update
-        self.revoke_all_rules()
+    def update_tags(self):
+        # Delete existing tags before adding new tag set
+        for tagkey, tagvalue in self.security_group.tags.items():
+            self.security_group.remove_tag(tagkey, tagvalue)
+        self.add_tags()
 
+
+    def add_rules(self, security_group=None):
+        if security_group is None:
+            security_group = self.security_group
         # Now add the fresh set of rules
         rules_json = self.request.params.get('rules')
         rules = json.loads(rules_json) if rules_json else []
@@ -155,7 +217,12 @@ class SecurityGroupView(BaseView):
             if src_group:
                 auth_args['src_group'] = src_group
 
-            self.security_group.authorize(**auth_args)
+            security_group.authorize(**auth_args)
+
+    def update_rules(self):
+        # Remove existing rules prior to updating, since we're doing a fresh update
+        self.revoke_all_rules()
+        self.add_rules()
 
     def revoke_all_rules(self):
         for rule in self.security_group.rules:
@@ -181,23 +248,3 @@ class SecurityGroupView(BaseView):
                 cidr_ip=cidr_ip,
                 src_group=src_group,
             )
-
-    @view_config(route_name='securitygroup_update', request_method='POST')
-    def securitygroup_update(self):
-        if self.securitygroup_form.validate():
-            # Update tags
-            self.update_tags()
-
-            # Update rules
-            self.update_rules()
-
-            location = self.request.route_url('securitygroups')
-            msg = _(u'Successfully modified security group {group}')
-            notification_msg = msg.format(group=self.security_group.name)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-
-        return dict(
-            security_group=self.security_group,
-            securitygroup_form=self.securitygroup_form,
-        )
