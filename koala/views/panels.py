@@ -26,6 +26,8 @@ def form_field_row(context, request, field=None, html_attrs=None, leftcol_width=
     # Add required="required" attributed to form field if any "required" validators are detected
     if field.flags.required and html_attrs.get('required') is None:
         html_attrs['required'] = 'required'
+    if hasattr(field, 'max_length'):
+        html_attrs['maxlength'] = field.max_length
     error_msg = getattr(field, 'error_msg', None)
     return dict(
         field=field, error_msg=error_msg, html_attrs=html_attrs,
