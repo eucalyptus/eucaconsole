@@ -5,13 +5,10 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 from operator import itemgetter
+
+import simplejson as json
+
 from wtforms.validators import Length
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
 from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
@@ -63,6 +60,7 @@ def securitygroup_rules(context, request, rules=None, groupnames=None):
         Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
     """
     groupnames = groupnames or []
+    rules = rules or []
     rules_list = []
     for rule in rules:
         grants = [

@@ -3,10 +3,7 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import simplejson as json
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -82,8 +79,8 @@ class SecurityGroupView(TaggedItemView):
         self.conn = self.get_connection()
         self.security_group = self.get_security_group()
         self.securitygroup_form = SecurityGroupForm(
-            self.request, security_group=self.security_group, formdata=self.request.params)
-        self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params)
+            self.request, security_group=self.security_group, formdata=self.request.params or None)
+        self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
 
     @view_config(route_name='securitygroup_view', renderer=TEMPLATE)

@@ -3,10 +3,7 @@
 Core views
 
 """
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import simplejson as json
 
 from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError

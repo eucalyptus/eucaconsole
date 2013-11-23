@@ -35,7 +35,7 @@
                         class="circle has-tip" title="Add new tag row"><i class="fi-plus circle"></i></a>
             </div>
         </div>
-        <div>
+        <div ng-cloak="cloak">
             <div id="tags-preview" class="small-10 columns" ng-show="tagsArray.length">
                 <span ng-repeat="tag in tagsArray | orderBy: 'name'" ng-class="item.fresh">
                     {{ tag.name }}={{ tag.value }}<span ng-show="!$last">,&nbsp;</span>
