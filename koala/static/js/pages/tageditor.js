@@ -27,31 +27,27 @@ angular.module('TagEditor', [])
             });
             $scope.syncTags();
         };
-        $scope.updateTag = function (index, $event, tagType) {
-            var field = $($event.currentTarget);
-            var fieldEntry = field.val().trim();  // Strip leading/trailing whitespace
-            field.val(fieldEntry);
-            // Validate tag key
-            $scope.tagEditor.trigger('validate');
-            if ($scope.tagEditor.find('[data-invalid]').length) {
-                return false;
-            }
-            if (fieldEntry) {
-                $scope.tagsArray[index][tagType] = fieldEntry;
-                $scope.syncTags();
-            }
-        };
-        $scope.removeTag = function (index) {
+        $scope.removeTag = function (index, $event) {
+            $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
         };
         $scope.addTag = function ($event) {
+            $event.preventDefault();
             var tagEntry = $($event.currentTarget).closest('.tagentry'),
                 tagKeyField = tagEntry.find('.key'),
                 tagValueField = tagEntry.find('.value'),
                 tagsArrayLength = $scope.tagsArray.length,
-                existingTagFound = false;
+                existingTagFound = false,
+                form = $($event.currentTarget).closest('form'),
+                invalidFields = form.find('[data-invalid]');
             if (tagKeyField.val() && tagValueField.val()) {
+                // Trigger validation to avoid tags that start with 'aws:'
+                form.trigger('validate');
+                if (invalidFields.length) {
+                    invalidFields.focus();
+                    return false;
+                }
                 // Avoid adding a new tag if the name duplicates an existing one.
                 for (var i=0; i < tagsArrayLength; i++) {
                     if ($scope.tagsArray[i].name === tagKeyField.val()) {

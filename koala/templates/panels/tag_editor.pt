@@ -6,40 +6,40 @@
         <label class="right" i18n:translate="">Tags</label>
     </div>
     <div class="small-9 columns field">
-        <div class="row tagentry inline controls-wrapper {{ tag.fresh }}"
-             ng-repeat="tag in tagsArray | orderBy: 'name'" ng-cloak="cloak">
-            <div class="small-5 columns">
-                <input class="taginput key inline" placeholder="Key" value="{{ tag.name }}"
-                       ng-keyup="updateTag($index, $event, 'name')" maxlength="127" pattern="tag_pattern" />
-                <small class="error" i18n:translate="">Invalid tag</small>
-            </div>
-            <div class="small-5 columns">
-                <input class="taginput value inline" placeholder="Value" value="{{ tag.value }}"
-                       ng-keyup="updateTag($index, $event, 'value')" maxlength="255" pattern="tag_pattern" />
-                <small class="error" i18n:translate="">Invalid tag</small>
-            </div>
-            <div class="small-2 columns">
-                <a href="#" ng-click="removeTag($index)" class="circle has-tip"
+        <div class="row tagentry existing inline controls-wrapper"
+             ng-repeat="tag in tagsArray" ng-cloak="cloak">
+            <div class="small-1 columns">
+                <a href="#"  class="circle has-tip" ng-click="removeTag($index, $event)"
                         title="Remove tag"><i class="fi-minus-circle"></i></a>
             </div>
+            <div class="small-11 columns">
+                <strong i18n:translate="">Tag</strong>:
+                <span class="{{tag.fresh}}">{{ tag.name }} <em>=</em> {{ tag.value }}</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-1 columns">&nbsp;</div>
+            <div class="small-11 columns subheader"><span i18n:translate="">Add another tag</span>:</div>
         </div>
         <div class="row tagentry inline controls-wrapper">
-            <div class="small-5 columns">
-                <input class="taginput key" placeholder="key..." ng-model="newTagKey" pattern="tag_pattern" />
+            <div>
+                <div class="small-1 columns">&nbsp;</div>
+                <div class="small-5 columns">
+                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="tag_pattern" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
+                </div>
+                <div class="small-6 columns">
+                    <input class="taginput value" placeholder="value..." pattern="tag_pattern" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
+                </div>
             </div>
-            <div class="small-5 columns">
-                <input class="taginput value" placeholder="value..." pattern="tag_pattern" />
-            </div>
-            <div class="small-2 columns">
-                <a href="#" ng-click="addTag($event)"
-                        class="circle has-tip" title="Add new tag row"><i class="fi-plus circle"></i></a>
-            </div>
-        </div>
-        <div ng-cloak="cloak">
-            <div id="tags-preview" class="small-10 columns" ng-show="tagsArray.length">
-                <span ng-repeat="tag in tagsArray | orderBy: 'name'" ng-class="item.fresh">
-                    {{ tag.name }}={{ tag.value }}<span ng-show="!$last">,&nbsp;</span>
-                </span>
+            <div>&nbsp;</div>
+            <div>
+                <div class="small-1 columns">&nbsp;</div>
+                <div class="small-11 columns">
+                    <a href="#" ng-click="addTag($event)" class="button round secondary small" id="add-tag-btn"
+                       title="Add tag">Add tag</a>
+                </div>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
