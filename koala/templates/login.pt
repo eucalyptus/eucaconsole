@@ -9,6 +9,13 @@
     <div class="row" id="login-panel-wrapper">
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <div data-alert="alert" class="alert-box alert" tal:condition="https_required and request.scheme != 'https'">
+            <span i18n:translate="">
+                HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
+                in the configuration file.
+            </span>
+            <a href="#" class="close">&times;</a>
+        </div>
         <div class="panel has-header ${'hide-aws' if not layout.aws_enabled else ''}" id="login-panel">
             <div class="header" i18n:translate="">Log in to your console</div>
             <div class="row">
@@ -21,7 +28,8 @@
                 </div>
                 <div class="${'large-5' if layout.aws_enabled else 'large-12'} columns">
                     <h6 i18n:translate="">Log in to Eucalyptus</h6>
-                    <form class="custom" id="euca-login-form" method="post" action="${request.route_url('login')}">
+                    <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
+                          action="${request.route_url('login')}?login_type=Eucalyptus">
                         <input type="hidden" name="came_from" value="${came_from}" />
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                             <div class="small-4 columns">
@@ -39,8 +47,8 @@
                         <div class="row">
                             <div class="small-4 columns"></div>
                             <div class="small-8 columns">
-                                <button type="submit" class="button radius" name="login_type" value="Eucalyptus"
-                                        i18n:translate="">Log in to Eucalyptus</button>
+                                <input type="submit" class="submit button radius"
+                                       id="euca-login-button" value="Log in to Eucalyptus" />
                             </div>
                         </div>
                     </form>
@@ -50,7 +58,8 @@
                 </div>
                 <div class="large-6 columns" tal:condition="layout.aws_enabled">
                     <h6 i18n:translate="">Log in to AWS</h6>
-                    <form class="custom" id="aws-login-form" method="post" action="${request.route_url('login')}">
+                    <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
+                          action="${request.route_url('login')}?login_type=AWS">
                         <input type="hidden" name="came_from" value="${came_from}" />
                         <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                             <div class="small-4 columns">
@@ -68,8 +77,8 @@
                         <div class="row">
                             <div class="small-4 columns"></div>
                             <div class="small-8 columns">
-                                <button type="submit" class="button radius" id="aws-login-button" name="login_type"
-                                        value="AWS" i18n:translate="">Log in to AWS</button>
+                                <input type="submit" class="submit button radius"
+                                       id="aws-login-button" value="Log in to AWS" />
                             </div>
                         </div>
                     </form>

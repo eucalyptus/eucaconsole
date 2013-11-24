@@ -13,7 +13,9 @@
 
 #login-panel.hide-aws { max-width: 480px; margin: 0 auto; }
 
-button#aws-login-button.button { background-color: #ff9900; border-color: #e37800; }
+#euca-login-button.button { background-color: #76b800; border-color: #355200; }
+
+#aws-login-button.button { background-color: #ff9900; border-color: #995c00; }
 
 /* Medium/large screen */
 @media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
