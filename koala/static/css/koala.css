@@ -1403,8 +1403,8 @@ form .cancel-link { margin-left: 2rem; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
-textarea.hidden { position: absolute; left: 9999rem; }
-textarea.hidden.debug { position: relative; left: 0; }
+textarea.hidden { display: none; }
+textarea.hidden.debug { display: block; }
 
 i.fi-minus-circle { font-size: 1.4rem; }
 i.fi-minus-circle:hover { color: darkred; }
@@ -1414,8 +1414,8 @@ a.button.secondary.delete:hover { color: white; background-color: darkred; }
 a.circle { color: black; display: inline-block; }
 
 #tag-editor .row.inline.new input { background-color: #ebf5dd; }
-#tag-editor #tags-preview { background-color: #ecf4f7; padding: 4px; border: 1px solid #c4edff; }
-#tag-editor #tags-preview .new { color: #76b800; }
+#tag-editor .tagentry.controls-wrapper.existing { margin-bottom: 0.5rem; }
+#tag-editor .tagentry .new { color: #76b800; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
