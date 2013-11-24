@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-22 12:44-0800\n"
+"POT-Creation-Date: 2013-11-24 10:40-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgstr ""
 #: koala/templates/scalinggroups/scalinggroups.pt:24
 #: koala/templates/securitygroups/securitygroups.pt:30
 #: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
-#: koala/views/securitygroups.py:39 koala/views/snapshots.py:39
+#: koala/views/securitygroups.py:35 koala/views/snapshots.py:39
 #: koala/views/volumes.py:41
 msgid "Name"
 msgstr ""
@@ -92,7 +92,7 @@ msgstr ""
 #: koala/forms/securitygroups.py:25 koala/templates/images/images.pt:58
 #: koala/templates/securitygroups/securitygroups.pt:31
 #: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
-#: koala/views/securitygroups.py:40
+#: koala/views/securitygroups.py:36
 msgid "Description"
 msgstr ""
 
@@ -149,14 +149,20 @@ msgid "Log"
 msgstr ""
 
 #: koala/templates/login.pt:13
+msgid ""
+"HTTPS not detected. You will not be able to log in unless you disable the"
+" session.secure setting in the configuration file."
+msgstr ""
+
+#: koala/templates/login.pt:20
 msgid "Log in to your console"
 msgstr ""
 
-#: koala/templates/login.pt:23 koala/templates/login.pt:42
+#: koala/templates/login.pt:30
 msgid "Log in to Eucalyptus"
 msgstr ""
 
-#: koala/templates/login.pt:52 koala/templates/login.pt:71
+#: koala/templates/login.pt:60
 msgid "Log in to AWS"
 msgstr ""
 
@@ -438,9 +444,17 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: koala/templates/panels/tag_editor.pt:14
-#: koala/templates/panels/tag_editor.pt:19
-msgid "Invalid tag"
+#: koala/templates/panels/tag_editor.pt:16
+msgid "Tag"
+msgstr ""
+
+#: koala/templates/panels/tag_editor.pt:22
+msgid "Add another tag"
+msgstr ""
+
+#: koala/templates/panels/tag_editor.pt:29
+#: koala/templates/panels/tag_editor.pt:33
+msgid "Tag may not begin with \"aws:\""
 msgstr ""
 
 #: koala/templates/scalinggroups/scalinggroups.pt:9
@@ -527,7 +541,7 @@ msgstr ""
 msgid "Create new volume"
 msgstr ""
 
-#: koala/views/__init__.py:88
+#: koala/views/__init__.py:107
 msgid "Your session has timed out."
 msgstr ""
 
@@ -595,15 +609,15 @@ msgstr ""
 msgid "Successfully released {ip} to the cloud"
 msgstr ""
 
-#: koala/views/login.py:87
+#: koala/views/login.py:96
 msgid "Invalid user/account name and/or password."
 msgstr ""
 
-#: koala/views/login.py:91 koala/views/login.py:121
+#: koala/views/login.py:100
 msgid "No response from host "
 msgstr ""
 
-#: koala/views/login.py:117
+#: koala/views/login.py:129
 msgid "Invalid access key and/or secret key."
 msgstr ""
 
@@ -615,19 +629,19 @@ msgstr ""
 msgid "Launch configuration"
 msgstr ""
 
-#: koala/views/securitygroups.py:105
+#: koala/views/securitygroups.py:102
 msgid "Successfully deleted security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:108
+#: koala/views/securitygroups.py:105
 msgid "Unable to delete security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:125
+#: koala/views/securitygroups.py:122
 msgid "Successfully created security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:144
+#: koala/views/securitygroups.py:141
 msgid "Successfully modified security group {group}"
 msgstr ""
 
@@ -681,5 +695,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "<dynamic element>&nbsp;<dynamic element>. <dynamic element>."
+#~ msgstr ""
+
+#~ msgid "Invalid tag"
 #~ msgstr ""
 
