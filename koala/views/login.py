@@ -5,7 +5,6 @@ Pyramid views for Login/Logout
 """
 from urllib2 import HTTPError, URLError
 
-from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -14,6 +13,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, AWSLoginForm
 from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
+from ..views import BaseView
 
 
 @forbidden_view_config()
@@ -22,10 +22,11 @@ def redirect_to_login_page(request):
     return HTTPFound(login_url)
 
 
-class LoginView(object):
+class LoginView(BaseView):
     template = '../templates/login.pt'
 
     def __init__(self, request):
+        super(LoginView, self).__init__(request)
         self.request = request
         self.euca_login_form = EucaLoginForm(self.request)
         self.aws_login_form = AWSLoginForm(self.request)
@@ -72,6 +73,8 @@ class LoginView(object):
                     creds = auth.authenticate(
                         account=account, user=username, passwd=password, new_passwd=new_passwd, timeout=8)
                     user_account = '{user}@{account}'.format(user=username, account=account)
+                    self.invalidate_cache()  # Clear connection objects from cache
+                    session.invalidate()  # Refresh session
                     session['cloud_type'] = 'euca'
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
@@ -96,6 +99,8 @@ class LoginView(object):
                     auth = AWSAuthenticator(key_id=aws_access_key, secret_key=aws_secret_key, duration=duration)
                     creds = auth.authenticate(timeout=10)
                     default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
+                    self.invalidate_cache()  # Clear connection objects from cache
+                    session.invalidate()  # Refresh session
                     session['cloud_type'] = 'aws'
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
@@ -124,18 +129,16 @@ class LoginView(object):
         )
 
 
-class LogoutView(object):
+class LogoutView(BaseView):
     def __init__(self, request):
+        super(LogoutView, self).__init__(request)
         self.request = request
         self.login_url = request.route_url('login')
 
     @view_config(route_name='logout')
     def logout(self):
         forget(self.request)
-        # Clear session
         self.request.session.invalidate()
-        # Empty Beaker cache to clear connection objects
-        for _cache in cache_managers.values():
-            _cache.clear()
+        self.invalidate_cache()
         return HTTPFound(location=self.login_url)
 

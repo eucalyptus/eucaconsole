@@ -129,11 +129,12 @@ nav.top-bar .dropdown li a {
     margin-top: 0;
     margin-bottom: 2rem;
     padding-left: 14px;
-    padding-top: 6px;
+    padding-top: 10px;
     color: $euca-darkgrey;
     background-color: $euca-extralightblue;
     letter-spacing: 1px;
     font-weight: normal;
+    font-size: 1.3rem;
 }
 
 
@@ -147,6 +148,7 @@ nav.top-bar .dropdown li a {
 #contentwrap {
     position: relative;
     background-color: white;
+    padding-bottom: 3rem;
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
@@ -156,7 +158,7 @@ nav.top-bar .dropdown li a {
 
 
 /* -----------------------------------------
-   Misc utilities
+   Misc
 ----------------------------------------- */
 .dots {
     display: inline-block;
@@ -170,10 +172,43 @@ nav.top-bar .dropdown li a {
     margin-top: -1rem;
 }
 
-#notifications .alert-box.success {
-    background-color: $euca-notificationblue;
-    border-color: $euca-extralightblue;
+#notifications {
+    .alert-box {
+        background-color: $euca-notificationblue;
+        &.success {
+            background-color: $euca-notificationblue;
+            border-color: $euca-extralightblue;
+        }
+        &.warning {
+            color: #333;
+            background-color: lightyellow;
+            border-color: gray;
+        }
+    }
 }
+
+a.has-tip {
+    border-bottom: none !important;
+}
+
+
+/* -----------------------------------------
+   Help content
+----------------------------------------- */
+.help-content {
+    font-size: 0.9rem;
+    ol {
+        list-style-position: inside;
+        li {
+            text-indent: -1rem;
+            margin-left: 1rem;
+            p, .note {
+                text-indent: 0;
+            }
+        }
+    }
+}
+
 
 /* -----------------------------------------
    Forms
@@ -195,7 +230,15 @@ form .controls_csrf_token {
 }
 
 form .inline label {
-    line-height: 1.8rem;
+    padding-top: 0.4rem;
+    font-weight: bold;
+}
+
+form .inline.controls-wrapper > [class*='small-'] label {
+    font-weight: bold;
+    padding-top: 0.3rem;
+    position: relative;
+    right: -1rem;
 }
 
 form .inline .field {
@@ -204,12 +247,90 @@ form .inline .field {
     }
 }
 
+form label {
+    cursor: default;
+}
+
+form label .req {
+    color: darkred;
+}
+
+form .columns input {
+    max-width: 100%;
+}
+
 [data-abide] .inline .error small.error {
     display: inline !important;
     background-color: transparent;
     color: darkred;
 }
 
+.panel.has-title {
+    position: relative;
+    padding-top: 60px;
+}
+
+.panel h6.title {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    line-height: 2rem;
+    padding-left: 8px;
+    background-color: $euca-extralightblue;
+    border-top: 2px solid $euca-darkblue;
+    border-bottom: 1px solid $euca-lightgrey;
+    font-weight: normal;
+}
+
+form .cancel-link {
+    margin-left: 2rem;
+}
+
+i.fi-plus.circle {
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 0 2px;
+    font-size: 0.7rem;
+}
+
+textarea.hidden {
+    position: absolute;
+    left: 9999rem;
+    &.debug {
+        position: relative;
+        left: 0;
+    }
+}
+
+i.fi-minus-circle {
+    font-size: 1.4rem;
+    &:hover {
+        color: darkred;
+    }
+}
+
+a.button.secondary.delete:hover {
+    color: white;
+    background-color: darkred ;
+}
+
+a.circle {
+    color: black;
+    display: inline-block;
+}
+
+#tag-editor {
+    .row.inline.new input {
+        background-color: lighten($euca-lightgreen, 40%);
+    }
+    #tags-preview  {
+        background-color: $euca-extralightblue;
+        padding: 4px;
+        border: 1px solid lighten($euca-darkblue, 70%);
+        .new {
+            color: $euca-green;
+        }
+    }
+}
 
 /* -----------------------------------------
    Footer

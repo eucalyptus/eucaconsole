@@ -21,6 +21,9 @@ class EucaLoginFormTestCase(BaseFormTestCase):
         self.assert_required('username')
         self.assert_required('password')
 
+    def test_secure_form(self):
+        self.has_field('csrf_token')
+
 
 class AWSLoginFormTestCase(BaseFormTestCase):
     form_class = AWSLoginForm
@@ -29,6 +32,9 @@ class AWSLoginFormTestCase(BaseFormTestCase):
     def test_required_fields(self):
         self.assert_required('access_key')
         self.assert_required('secret_key')
+
+    def test_secure_form(self):
+        self.has_field('csrf_token')
 
 
 class EucaAuthTestCase(BaseTestCase):

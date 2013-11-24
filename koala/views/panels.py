@@ -1,0 +1,86 @@
+"""
+Panels (reusable, parameterized template snippets) used across the app.
+
+See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html#using-panels
+
+"""
+from operator import itemgetter
+
+import simplejson as json
+
+from wtforms.validators import Length
+from pyramid_layout.panel import panel_config
+
+from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
+
+
+@panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
+def form_field_row(context, request, field=None, leftcol_width=3, rightcol_width=9, **kwargs):
+    """ Widget for a singe form field row.
+        The left/right column widths are Zurb Foundation grid units.
+            e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
+        Pass any HTML attributes to this widget as keyword arguments.
+            e.g. ${panel('form_field', field=the_field, readonly='readonly')}
+    """
+    html_attrs = {}
+    error_msg = getattr(field, 'error_msg', None)
+
+    # Add required="required" HTML attribute to form field if any "required" validators
+    if field.flags.required:
+        html_attrs['required'] = 'required'
+
+    # Add maxlength="..." HTML attribute to form field if any length validators
+    for validator in field.validators:
+        # If we have multiple Length validators, the last one wins
+        if isinstance(validator, Length):
+            html_attrs['maxlength'] = validator.max
+
+    # Add any passed kwargs to field's HTML attributes
+    for key, value in kwargs.items():
+        html_attrs[key] = value
+
+    return dict(
+        field=field, error_msg=error_msg, html_attrs=html_attrs,
+        leftcol_width=leftcol_width, rightcol_width=rightcol_width
+    )
+
+
+@panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
+def tag_editor(context, request, tags=None):
+    """ Tag editor panel.
+        Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
+    """
+    tags_json = json.dumps(tags)
+    return dict(tags=tags, tags_json=tags_json)
+
+
+@panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
+def securitygroup_rules(context, request, rules=None, groupnames=None):
+    """ Security group rules panel.
+        Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
+    """
+    groupnames = groupnames or []
+    rules = rules or []
+    rules_list = []
+    for rule in rules:
+        grants = [
+            dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
+        ]
+        rules_list.append(dict(
+            ip_protocol=rule.ip_protocol,
+            from_port=rule.from_port,
+            to_port=rule.to_port,
+            grants=grants,
+        ))
+
+    # Sort rules and choices
+    rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
+    icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
+
+    return dict(
+        rules=rules_sorted,
+        groupnames=groupnames,
+        rules_json=json.dumps(rules_list),
+        protocol_choices=RULE_PROTOCOL_CHOICES,
+        icmp_choices=icmp_choices_sorted,
+    )

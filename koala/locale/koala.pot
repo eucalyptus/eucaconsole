@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-19 14:32-0800\n"
+"POT-Creation-Date: 2013-11-22 12:44-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,6 +69,35 @@ msgstr ""
 msgid "Secret key is required"
 msgstr ""
 
+#: koala/forms/securitygroups.py:18
+msgid "Name is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:20 koala/templates/images/images.pt:57
+#: koala/templates/keypairs/keypairs.pt:24
+#: koala/templates/launchconfigs/launchconfigs.pt:26
+#: koala/templates/scalinggroups/scalinggroups.pt:24
+#: koala/templates/securitygroups/securitygroups.pt:30 koala/views/keypairs.py:30
+#: koala/views/scalinggroups.py:36 koala/views/securitygroups.py:39
+#: koala/views/snapshots.py:39 koala/views/volumes.py:41
+msgid "Name"
+msgstr ""
+
+#: koala/forms/securitygroups.py:23
+msgid "Description is required"
+msgstr ""
+
+#: koala/forms/securitygroups.py:25 koala/templates/images/images.pt:58
+#: koala/templates/securitygroups/securitygroups.pt:31
+#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
+#: koala/views/securitygroups.py:40
+msgid "Description"
+msgstr ""
+
+#: koala/forms/securitygroups.py:28
+msgid "Description must be less than 255 characters"
+msgstr ""
+
 #: koala/templates/dashboard.pt:13
 msgid "Running instances"
 msgstr ""
@@ -117,15 +146,15 @@ msgstr ""
 msgid "Log"
 msgstr ""
 
-#: koala/templates/login.pt:11
+#: koala/templates/login.pt:13
 msgid "Log in to your console"
 msgstr ""
 
-#: koala/templates/login.pt:21 koala/templates/login.pt:40
+#: koala/templates/login.pt:23 koala/templates/login.pt:42
 msgid "Log in to Eucalyptus"
 msgstr ""
 
-#: koala/templates/login.pt:50 koala/templates/login.pt:69
+#: koala/templates/login.pt:52 koala/templates/login.pt:71
 msgid "Log in to AWS"
 msgstr ""
 
@@ -161,22 +190,6 @@ msgstr ""
 msgid "Launch instance"
 msgstr ""
 
-#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
-#: koala/templates/launchconfigs/launchconfigs.pt:26
-#: koala/templates/scalinggroups/scalinggroups.pt:24
-#: koala/templates/securitygroups/securitygroups.pt:26 koala/views/keypairs.py:30
-#: koala/views/scalinggroups.py:36 koala/views/securitygroups.py:30
-#: koala/views/snapshots.py:39 koala/views/volumes.py:41
-msgid "Name"
-msgstr ""
-
-#: koala/templates/images/images.pt:58
-#: koala/templates/securitygroups/securitygroups.pt:27
-#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
-#: koala/views/securitygroups.py:31
-msgid "Description"
-msgstr ""
-
 #: koala/templates/images/images.pt:59 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
@@ -207,6 +220,7 @@ msgstr ""
 
 #: koala/templates/instances/instances.pt:32
 #: koala/templates/launchconfigs/launchconfigs.pt:29
+#: koala/templates/securitygroups/securitygroup_view.pt:9
 msgid "Security Group"
 msgstr ""
 
@@ -359,6 +373,73 @@ msgstr ""
 msgid "Create time"
 msgstr ""
 
+#: koala/templates/panels/securitygroup_rules.pt:15
+msgid "Inbound Rules"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:25
+msgid "Rule"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:40
+msgid "Add a rule"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:41
+msgid "Add another rule"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:47
+msgid "Protocol"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:52
+#: koala/templates/panels/securitygroup_rules.pt:71
+#: koala/templates/panels/securitygroup_rules.pt:94
+msgid "select..."
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:59
+msgid "Port range"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:67
+msgid "Valid port range required"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:79
+msgid "Allow traffic from"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:84
+msgid "IP address"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:87
+msgid "Valid CIDR entry required"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:91
+msgid "Security group"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:98
+msgid "Security group is required"
+msgstr ""
+
+#: koala/templates/panels/securitygroup_rules.pt:106
+msgid "Add rule"
+msgstr ""
+
+#: koala/templates/panels/tag_editor.pt:6
+#: koala/templates/securitygroups/securitygroups.pt:32
+msgid "Tags"
+msgstr ""
+
+#: koala/templates/panels/tag_editor.pt:14 koala/templates/panels/tag_editor.pt:19
+msgid "Invalid tag"
+msgstr ""
+
 #: koala/templates/scalinggroups/scalinggroups.pt:9
 msgid "Scaling Groups"
 msgstr ""
@@ -375,16 +456,42 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroups.pt:9
-msgid "Security Groups"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroups.pt:17
+#: koala/templates/securitygroups/securitygroup_view.pt:24
+#: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroups.pt:28
-msgid "Tags"
+#: koala/templates/securitygroups/securitygroup_view.pt:41
+msgid "Save changes"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:42
+msgid "Add security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:46
+msgid "Cancel"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:54
+msgid "Other security group actions"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:58
+#: koala/templates/securitygroups/securitygroup_view.pt:64
+msgid "Delete security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:65
+msgid "Are you sure you want to delete the security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:69
+msgid "Yes, delete"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroups.pt:9
+msgid "Security Groups"
 msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:17
@@ -415,6 +522,10 @@ msgstr ""
 
 #: koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
+msgstr ""
+
+#: koala/views/__init__.py:88
+msgid "Your session has timed out."
 msgstr ""
 
 #: koala/views/images.py:50
@@ -481,15 +592,15 @@ msgstr ""
 msgid "Successfully released {ip} to the cloud"
 msgstr ""
 
-#: koala/views/login.py:84
+#: koala/views/login.py:87
 msgid "Invalid user/account name and/or password."
 msgstr ""
 
-#: koala/views/login.py:88 koala/views/login.py:116
+#: koala/views/login.py:91 koala/views/login.py:121
 msgid "No response from host "
 msgstr ""
 
-#: koala/views/login.py:112
+#: koala/views/login.py:117
 msgid "Invalid access key and/or secret key."
 msgstr ""
 
@@ -499,6 +610,22 @@ msgstr ""
 
 #: koala/views/scalinggroups.py:37
 msgid "Launch configuration"
+msgstr ""
+
+#: koala/views/securitygroups.py:105
+msgid "Successfully deleted security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:108
+msgid "Unable to delete security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:125
+msgid "Successfully created security group {group}"
+msgstr ""
+
+#: koala/views/securitygroups.py:144
+msgid "Successfully modified security group {group}"
 msgstr ""
 
 #: koala/views/snapshots.py:38

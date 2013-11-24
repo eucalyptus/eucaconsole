@@ -3,7 +3,14 @@
 Core views
 
 """
-from pyramid.view import notfound_view_config
+import simplejson as json
+
+from beaker.cache import cache_managers
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import TranslationString as _
+from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.view import notfound_view_config, view_config
 
 from ..models.auth import ConnectionManager
 
@@ -24,12 +31,36 @@ class BaseView(object):
         conn = None
 
         if self.cloud_type == 'aws':
-            conn = ConnectionManager.aws_connection(self.region, self.access_key, self.secret_key, self.security_token, conn_type)
+            conn = ConnectionManager.aws_connection(
+                self.region, self.access_key, self.secret_key, self.security_token, conn_type)
         elif self.cloud_type == 'euca':
             conn = ConnectionManager.euca_connection(
                 self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token, conn_type)
 
         return conn
+
+    @staticmethod
+    def invalidate_cache():
+        """Empty Beaker cache to clear connection objects"""
+        for _cache in cache_managers.values():
+            _cache.clear()
+
+
+class TaggedItemView(BaseView):
+    """Common view for items that have tags (e.g. security group)"""
+
+    def add_tags(self, tagged_obj=None):
+        tags_json = self.request.params.get('tags')
+        tags = json.loads(tags_json) if tags_json else {}
+
+        for key, value in tags.items():
+            tagged_obj.add_tag(key, value)
+
+    def update_tags(self, tagged_obj=None):
+        # Delete existing tags before adding new tag set
+        for tagkey, tagvalue in tagged_obj.tags.items():
+            tagged_obj.remove_tag(tagkey, tagvalue)
+        self.add_tags(tagged_obj=tagged_obj)
 
 
 class LandingPageView(BaseView):
@@ -66,3 +97,16 @@ class LandingPageView(BaseView):
 def notfound_view(request):
     """404 Not Found view"""
     return dict()
+
+
+@view_config(context=EC2ResponseError, permission=NO_PERMISSION_REQUIRED)
+def ec2conn_error(exc, request):
+    """Handle session timeout by redirecting to login page with notice."""
+    msg = exc.args[0] if exc.args else ""
+    if isinstance(msg, int) and msg == 403:
+        notice = _(u'Your session has timed out.')
+        request.session.flash(notice, queue='warning')
+        # Empty Beaker cache to clear connection objects
+        BaseView.invalidate_cache()
+        location = request.route_url('login')
+        return HTTPFound(location=location)

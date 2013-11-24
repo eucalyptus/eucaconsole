@@ -41,9 +41,9 @@ class Notification(object):
     # Map notification queues to Zurb Foundation alert box styles
     # See http://foundation.zurb.com/docs/components/alert-boxes.html
     FOUNDATION_STYLES = {
-        INFO: '',
+        INFO: 'secondary',
         SUCCESS: 'success',
-        WARNING: 'secondary',
+        WARNING: 'warning',
         ERROR: 'alert',
     }
 

@@ -29,7 +29,7 @@
                         <div tal:define="instance_field associate_form['instance_id']"
                              class="row inline controls-wrapper controls_${instance_field.name}">
                             <div class="small-4 columns">
-                                <label for="right-label" class="right">${instance_field.label.text}</label>
+                                <label class="right">${instance_field.label.text}</label>
                             </div>
                             <div class="small-8 columns field">
                                 ${structure:instance_field(required='required')}

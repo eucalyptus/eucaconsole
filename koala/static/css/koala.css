@@ -1342,23 +1342,34 @@ nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
-#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
 #maincontent { position: relative; }
 
-#contentwrap { position: relative; background-color: white; }
+#contentwrap { position: relative; background-color: white; padding-bottom: 3rem; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
-/* ----------------------------------------- Misc utilities
+/* ----------------------------------------- Misc
 ----------------------------------------- */
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 
+#notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
+#notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
+
+a.has-tip { border-bottom: none !important; }
+
+/* ----------------------------------------- Help content
+----------------------------------------- */
+.help-content { font-size: 0.9rem; }
+.help-content ol { list-style-position: inside; }
+.help-content ol li { text-indent: -1rem; margin-left: 1rem; }
+.help-content ol li p, .help-content ol li .note { text-indent: 0; }
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */
@@ -1370,11 +1381,41 @@ form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
-form .inline label { line-height: 1.8rem; }
+form .inline label { padding-top: 0.4rem; font-weight: bold; }
+
+form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
 form .inline .field input { display: inline-block; }
 
+form label { cursor: default; }
+
+form label .req { color: darkred; }
+
+form .columns input { max-width: 100%; }
+
 [data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
+
+.panel.has-title { position: relative; padding-top: 60px; }
+
+.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+
+form .cancel-link { margin-left: 2rem; }
+
+i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
+
+textarea.hidden { position: absolute; left: 9999rem; }
+textarea.hidden.debug { position: relative; left: 0; }
+
+i.fi-minus-circle { font-size: 1.4rem; }
+i.fi-minus-circle:hover { color: darkred; }
+
+a.button.secondary.delete:hover { color: white; background-color: darkred; }
+
+a.circle { color: black; display: inline-block; }
+
+#tag-editor .row.inline.new input { background-color: #ebf5dd; }
+#tag-editor #tags-preview { background-color: #ecf4f7; padding: 4px; border: 1px solid #c4edff; }
+#tag-editor #tags-preview .new { color: #76b800; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

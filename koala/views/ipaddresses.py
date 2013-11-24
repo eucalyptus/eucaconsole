@@ -79,7 +79,7 @@ class IPAddressView(BaseView):
         super(IPAddressView, self).__init__(request)
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
-        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params)
+        self.associate_form = AssociateIPForm(self.request, formdata=self.request.params)
         self.associate_form.instance_id.choices = self.get_instance_choices()
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
