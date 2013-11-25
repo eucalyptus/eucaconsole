@@ -33,6 +33,7 @@ class MasterLayout(object):
         self.username_label = self.request.session.get('username_label')
         self.tableview_url = self.get_datagridview_url('tableview')
         self.gridview_url = self.get_datagridview_url('gridview')
+        self.date_format = '%Y-%m-%d %H:%M %p'
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')

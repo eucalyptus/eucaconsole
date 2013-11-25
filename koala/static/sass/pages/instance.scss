@@ -1,0 +1,38 @@
+/* @fileOverview single Instance page CSS */
+
+@import "../foundation/variables";
+@import "../includes/eucavariables";
+
+
+// Status colors
+$instance-status-color-running: darken($euca-green, 10%);
+$instance-status-color-pending: lighten($euca-lightgreen, 20%);
+$instance-status-color-stopped: darken(red, 20%);
+$instance-status-color-stopping: lighten(red, 30%);
+$instance-status-color-terminated: $euca-grey;
+$instance-status-color-terminating: lightgrey;
+
+
+.row .status.running { color: $instance-status-color-running; }
+.row .status.pending { color: $instance-status-color-pending; }
+.row .status.stopped { color: $instance-status-color-stopped; }
+.row .status.stopping { color: $instance-status-color-stopping; }
+.row .status.terminated { color: $instance-status-color-terminated; }
+.row .status.terminating { color: $instance-status-color-terminating; }
+
+
+// Forms
+select { width: 50%; }
+
+form .row.controls-wrapper {
+    margin-bottom: 0;
+}
+
+/* -----------------------------------------
+   Media Queries
+----------------------------------------- */
+
+/* Small screen */
+@media screen and (max-width: 480px) {
+    select { width: 80%; }
+}

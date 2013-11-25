@@ -170,9 +170,6 @@ nav.top-bar .dropdown li a {
     margin-left: 1rem;
     margin-right: 1rem;
     margin-top: -1rem;
-}
-
-#notifications {
     .alert-box {
         background-color: $euca-notificationblue;
         &.success {
@@ -232,6 +229,16 @@ form .controls_csrf_token {
 form .inline label {
     padding-top: 0.4rem;
     font-weight: bold;
+    text-align: right;
+}
+
+form .row.inline.readonly {
+    margin-bottom: 0.5rem;
+    label {
+        position: relative;
+        right: -0.8rem;
+        top: -0.4rem;
+    }
 }
 
 form .inline.controls-wrapper > [class*='small-'] label {

@@ -27,6 +27,7 @@ requires = [
     'pyramid_layout == 0.8',
     'pyramid_mailer == 0.13',
     'pyramid_tm == 0.7',
+    'python-dateutil == 1.5',  # Don't use 2.x series unless on Python 3
     'simplejson == 3.3.1',
     'SQLAlchemy == 0.8.3',
     'waitress == 0.8.7',

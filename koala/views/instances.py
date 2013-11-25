@@ -3,11 +3,14 @@
 Pyramid views for Eucalyptus and AWS instances
 
 """
+from dateutil import parser
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.instances import InstanceForm
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView
+from ..views import LandingPageView, TaggedItemView
 
 
 class InstancesView(LandingPageView):
@@ -71,15 +74,29 @@ class InstancesView(LandingPageView):
         return dict(results=instances)
 
 
-class InstanceView(BaseView):
+class InstanceView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
+
     def __init__(self, request):
         super(InstanceView, self).__init__(request)
         self.request = request
+        self.conn = self.get_connection()
+        self.instance = self.get_instance()
+        self.instance_form = InstanceForm(
+            self.request, instance=self.instance, conn=self.conn, formdata=self.request.params or None)
+        self.tagged_obj = self.instance
+        self.launch_time = self.get_launch_time()
+        self.render_dict = dict(
+            instance_form=self.instance_form,
+            instance_launch_time=self.launch_time,
+            instance=self.instance,
+        )
 
-    @view_config(route_name='instance_view', renderer='../templates/instances/instance_view.pt')
+    @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE)
     def instance_view(self):
-        instance_id = self.request.matchdict.get('id')
-        return dict(instance_id=instance_id)
+        if self.instance is None:
+            raise HTTPNotFound()
+        return self.render_dict
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
     def instance_launch(self):
@@ -89,3 +106,16 @@ class InstanceView(BaseView):
         return dict(
             image=image
         )
+
+    def get_instance(self):
+        instance_id = self.request.matchdict.get('id')
+        instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+        instance = instances_list[0] if instances_list else None
+        return instance
+
+    def get_launch_time(self):
+        """Returns instance launch time as a python datetime.datetime object"""
+        if self.instance.launch_time:
+            return parser.parse(self.instance.launch_time)
+        return None
+

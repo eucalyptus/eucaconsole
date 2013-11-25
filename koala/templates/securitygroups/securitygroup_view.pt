@@ -19,7 +19,8 @@
                                 field_attrs {'readonly': 'readonly'} if readonly else {}">
                 <h6 class="title">
                     <span tal:condition="security_group">
-                        Settings for security group <strong>${security_group.name}</strong>
+                        <span i18n:translate="">Settings for security group</span>
+                        <strong>${security_group.name}</strong>
                     </span>
                     <span tal:condition="not security_group" i18n:translate="">
                         Create new security group
@@ -53,8 +54,8 @@
             <div class="panel has-title" tal:condition="security_group">
                 <h6 class="title" i18n:translate="">Other security group actions</h6>
                 <div class="row">
-                    <div class="small-3 columns">&nbsp;</div>
-                    <div class="small-9 columns">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
                         <a class="button secondary delete" data-reveal-id="delete-securitygroup-modal" i18n:translate="">
                             Delete security group
                         </a>

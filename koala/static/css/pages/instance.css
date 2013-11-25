@@ -1,0 +1,21 @@
+/* @fileOverview single Instance page CSS */
+.row .status.running { color: #558500; }
+
+.row .status.pending { color: #bcdd8f; }
+
+.row .status.stopped { color: #990000; }
+
+.row .status.stopping { color: #ff9999; }
+
+.row .status.terminated { color: #999999; }
+
+.row .status.terminating { color: lightgrey; }
+
+select { width: 50%; }
+
+form .row.controls-wrapper { margin-bottom: 0; }
+
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+/* Small screen */
+@media screen and (max-width: 480px) { select { width: 80%; } }

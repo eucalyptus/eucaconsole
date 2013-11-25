@@ -1357,7 +1357,6 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
-
 #notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
@@ -1381,7 +1380,10 @@ form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
-form .inline label { padding-top: 0.4rem; font-weight: bold; }
+form .inline label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
+
+form .row.inline.readonly { margin-bottom: 0.5rem; }
+form .row.inline.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
 
 form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 

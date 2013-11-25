@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-24 10:40-0800\n"
+"POT-Creation-Date: 2013-11-25 15:27-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -16,6 +16,36 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
+
+#: koala/forms/instances.py:19
+msgid "Instance type is required"
+msgstr ""
+
+#: koala/forms/instances.py:21 koala/views/instances.py:38
+msgid "Instance type"
+msgstr ""
+
+#: koala/forms/instances.py:24
+msgid "Public IP address"
+msgstr ""
+
+#: koala/forms/instances.py:25
+msgid "Monitoring enabled"
+msgstr ""
+
+#: koala/forms/instances.py:48
+msgid "Assign address..."
+msgstr ""
+
+#: koala/forms/instances.py:50
+msgid "Unassign address"
+msgstr ""
+
+#: koala/forms/instances.py:57 koala/templates/panels/securitygroup_rules.pt:52
+#: koala/templates/panels/securitygroup_rules.pt:71
+#: koala/templates/panels/securitygroup_rules.pt:94
+msgid "select..."
+msgstr ""
 
 #: koala/forms/ipaddresses.py:16
 msgid "Invalid number"
@@ -203,6 +233,89 @@ msgstr ""
 
 #: koala/templates/instances/instance_launch.pt:5
 msgid "Launch new instance"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:11 koala/views/ipaddresses.py:35
+msgid "Instance"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:10
+msgid "<dynamic element> ${instance_name}"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:16
+msgid "Settings for instance"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:22
+#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:36
+#: koala/views/snapshots.py:30 koala/views/snapshots.py:42
+#: koala/views/volumes.py:31 koala/views/volumes.py:42
+msgid "Status"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:29
+msgid "OS"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:33
+msgid "Root device type"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:37
+msgid "Instance ID"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:41 koala/views/instances.py:39
+#: koala/views/volumes.py:32
+msgid "Availability zone"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:46
+msgid "Private IP address"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:51
+msgid "Public hostname"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:56
+msgid "Private hostname"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:60
+msgid "Key name"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:64
+#: koala/templates/panels/securitygroup_rules.pt:91
+msgid "Security group"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:70
+msgid "Launch time"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:79
+#: koala/templates/securitygroups/securitygroup_view.pt:42
+msgid "Save changes"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:80
+#: koala/templates/securitygroups/securitygroup_view.pt:47
+msgid "Cancel"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:87
+msgid "Other actions"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:91
+msgid "Launch more like this"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:99
+msgid "Create scaling group launch configuration like this"
 msgstr ""
 
 #: koala/templates/instances/instances.pt:9
@@ -400,12 +513,6 @@ msgstr ""
 msgid "Protocol"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:52
-#: koala/templates/panels/securitygroup_rules.pt:71
-#: koala/templates/panels/securitygroup_rules.pt:94
-msgid "select..."
-msgstr ""
-
 #: koala/templates/panels/securitygroup_rules.pt:59
 msgid "Port range"
 msgstr ""
@@ -424,10 +531,6 @@ msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:87
 msgid "Valid CIDR entry required"
-msgstr ""
-
-#: koala/templates/panels/securitygroup_rules.pt:91
-msgid "Security group"
 msgstr ""
 
 #: koala/templates/panels/securitygroup_rules.pt:98
@@ -472,37 +575,33 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:24
+#: koala/templates/securitygroups/securitygroup_view.pt:22
+msgid "Settings for security group"
+msgstr ""
+
+#: koala/templates/securitygroups/securitygroup_view.pt:25
 #: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:41
-msgid "Save changes"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroup_view.pt:42
+#: koala/templates/securitygroups/securitygroup_view.pt:43
 msgid "Add security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:46
-msgid "Cancel"
-msgstr ""
-
-#: koala/templates/securitygroups/securitygroup_view.pt:54
+#: koala/templates/securitygroups/securitygroup_view.pt:55
 msgid "Other security group actions"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:58
-#: koala/templates/securitygroups/securitygroup_view.pt:64
+#: koala/templates/securitygroups/securitygroup_view.pt:59
+#: koala/templates/securitygroups/securitygroup_view.pt:65
 msgid "Delete security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:65
+#: koala/templates/securitygroups/securitygroup_view.pt:66
 msgid "Are you sure you want to delete the security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:69
+#: koala/templates/securitygroups/securitygroup_view.pt:70
 msgid "Yes, delete"
 msgstr ""
 
@@ -516,12 +615,6 @@ msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:26
 msgid "Snapshot"
-msgstr ""
-
-#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:33
-#: koala/views/snapshots.py:30 koala/views/snapshots.py:42
-#: koala/views/volumes.py:31 koala/views/volumes.py:42
-msgid "Status"
 msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:28
@@ -540,7 +633,7 @@ msgstr ""
 msgid "Create new volume"
 msgstr ""
 
-#: koala/views/__init__.py:107
+#: koala/views/__init__.py:116
 msgid "Your session has timed out."
 msgstr ""
 
@@ -560,32 +653,20 @@ msgstr ""
 msgid "Platform"
 msgstr ""
 
-#: koala/views/instances.py:34
+#: koala/views/instances.py:37
 msgid "Root device"
 msgstr ""
 
-#: koala/views/instances.py:35
-msgid "Instance type"
-msgstr ""
-
-#: koala/views/instances.py:36 koala/views/volumes.py:32
-msgid "Availability zone"
-msgstr ""
-
-#: koala/views/instances.py:43
+#: koala/views/instances.py:46
 msgid "Launch time (most recent first)"
 msgstr ""
 
-#: koala/views/instances.py:44
+#: koala/views/instances.py:47
 msgid "Instance name"
 msgstr ""
 
 #: koala/views/ipaddresses.py:34
 msgid "IP Address"
-msgstr ""
-
-#: koala/views/ipaddresses.py:35
-msgid "Instance"
 msgstr ""
 
 #: koala/views/ipaddresses.py:47
