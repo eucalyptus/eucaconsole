@@ -49,18 +49,27 @@ class BaseView(object):
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
 
-    def add_tags(self, tagged_obj=None):
+    def __init__(self, request):
+        super(TaggedItemView, self).__init__(request)
+        self.tagged_obj = None
+
+    def add_tags(self):
         tags_json = self.request.params.get('tags')
         tags = json.loads(tags_json) if tags_json else {}
 
         for key, value in tags.items():
-            tagged_obj.add_tag(key, value)
+            if not key.strip().startswith('aws:'):
+                self.tagged_obj.add_tag(key, value)
 
-    def update_tags(self, tagged_obj=None):
-        # Delete existing tags before adding new tag set
-        for tagkey, tagvalue in tagged_obj.tags.items():
-            tagged_obj.remove_tag(tagkey, tagvalue)
-        self.add_tags(tagged_obj=tagged_obj)
+    def remove_tags(self):
+        for tagkey, tagvalue in self.tagged_obj.tags.items():
+            if not tagkey.startswith('aws:'):
+                self.tagged_obj.remove_tag(tagkey, tagvalue)
+
+    def update_tags(self):
+        if self.tagged_obj is not None:
+            self.remove_tags()
+            self.add_tags()
 
 
 class LandingPageView(BaseView):

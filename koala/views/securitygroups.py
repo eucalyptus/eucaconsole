@@ -117,7 +117,7 @@ class SecurityGroupView(TaggedItemView):
             description = self.request.params.get('description')
             new_group = self.conn.create_security_group(name, description)
             self.add_rules(security_group=new_group)
-            self.add_tags(tagged_obj=new_group)
+            self.add_tags()
             location = self.request.route_url('securitygroups')
             msg = _(u'Successfully created security group {group}')
             notification_msg = msg.format(group=name)
@@ -134,7 +134,7 @@ class SecurityGroupView(TaggedItemView):
     def securitygroup_update(self):
         if self.securitygroup_form.validate():
             # Update tags and rules
-            self.update_tags(tagged_obj=self.security_group)
+            self.update_tags()
             self.update_rules()
 
             location = self.request.route_url('securitygroups')
