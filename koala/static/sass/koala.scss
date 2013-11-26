@@ -135,6 +135,7 @@ nav.top-bar .dropdown li a {
     letter-spacing: 1px;
     font-weight: normal;
     font-size: 1.3rem;
+    border-bottom: 1px solid darken($euca-extralightblue, 30%);
 }
 
 
@@ -166,6 +167,16 @@ nav.top-bar .dropdown li a {
     background-image: url(/static/img/dots32.gif)
 }
 
+a.has-tip {
+    border-bottom: none !important;
+}
+
+.tooltip {
+    font-weight: normal;
+    font-size: 0.825rem;
+    font-family: Verdana, Geneva, Helvetica, sans-serif;
+}
+
 #notifications {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -184,16 +195,23 @@ nav.top-bar .dropdown li a {
     }
 }
 
-a.has-tip {
-    border-bottom: none !important;
+#tag-editor {
+    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
+    .tagentry {
+        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
+        .new { color: $euca-green; }
+    }
 }
 
-.tooltip {
-    font-weight: normal;
-    font-size: 0.825rem;
-    font-family: Verdana, Geneva, Helvetica, sans-serif;
+#pagetitle .back-arrow {
+    display: inline-block;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    padding-right: 10px;
+    border-right: 1px solid $euca-grey;
+    margin-right: 0.8rem;
 }
-
 
 /* -----------------------------------------
    Help content
@@ -239,7 +257,7 @@ form .inline label {
 }
 
 form .row.inline.readonly {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
     label {
         position: relative;
         right: -0.8rem;
@@ -329,13 +347,6 @@ a.circle {
     display: inline-block;
 }
 
-#tag-editor {
-    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
-    .tagentry {
-        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
-        .new { color: $euca-green; }
-    }
-}
 
 /* -----------------------------------------
    Footer

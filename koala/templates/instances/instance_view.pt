@@ -7,7 +7,9 @@
 <div metal:fill-slot="main_content">
 
     <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)">
-        <h3 class="header" id="pagetitle" i18n:translate="">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('instances')}"
+               data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
         <!-- Notifications -->
@@ -28,9 +30,9 @@
                         </div>
                     </div>
                     ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
-                    <div class="row inline readonly" tal:condition="instance.platform">
+                    <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">OS</label></div>
-                        <div class="small-9 columns value">${instance.platform}</div>
+                        <div class="small-9 columns value">${image.platform}</div>
                     </div>
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Root device type</label></div>
@@ -93,6 +95,10 @@
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image name</label></div>
                         <div class="small-9 columns value">${image.name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div class="small-9 columns value">${image.location}</div>
                     </div>
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>

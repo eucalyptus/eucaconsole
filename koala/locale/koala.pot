@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-26 10:43-0800\n"
+"POT-Creation-Date: 2013-11-26 13:12-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Instance type is required"
 msgstr ""
 
-#: koala/forms/instances.py:21 koala/views/instances.py:36
+#: koala/forms/instances.py:21 koala/views/instances.py:38
 msgid "Instance type"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgid "Launch instance"
 msgstr ""
 
 #: koala/templates/images/images.pt:59
-#: koala/templates/instances/instance_view.pt:40 koala/views/images.py:63
+#: koala/templates/instances/instance_view.pt:42 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
 
@@ -235,110 +235,110 @@ msgstr ""
 msgid "Launch new instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:11 koala/views/ipaddresses.py:35
+#: koala/templates/instances/instance_view.pt:13 koala/views/ipaddresses.py:35
 msgid "Instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:10
-msgid "<dynamic element> ${instance_name}"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:19
+#: koala/templates/instances/instance_view.pt:21
 msgid "Settings for instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:25
-#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:35
+#: koala/templates/instances/instance_view.pt:27
+#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:37
 #: koala/views/snapshots.py:30 koala/views/snapshots.py:42
 #: koala/views/volumes.py:31 koala/views/volumes.py:42
 msgid "Status"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:32
+#: koala/templates/instances/instance_view.pt:34
 msgid "OS"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:36
+#: koala/templates/instances/instance_view.pt:38
 msgid "Root device type"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:44
+#: koala/templates/instances/instance_view.pt:46
 msgid "Instance ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:48 koala/views/instances.py:37
+#: koala/templates/instances/instance_view.pt:50 koala/views/instances.py:39
 #: koala/views/volumes.py:32
 msgid "Availability zone"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:53
+#: koala/templates/instances/instance_view.pt:55
 msgid "Private IP address"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:58
+#: koala/templates/instances/instance_view.pt:60
 msgid "Public hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:63
+#: koala/templates/instances/instance_view.pt:65
 msgid "Private hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:67
+#: koala/templates/instances/instance_view.pt:69
 msgid "Key name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:71
+#: koala/templates/instances/instance_view.pt:73
 #: koala/templates/panels/securitygroup_rules.pt:91
 msgid "Security group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:77
+#: koala/templates/instances/instance_view.pt:79
 msgid "Launch time"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:81
+#: koala/templates/instances/instance_view.pt:83
 msgid "Scaling group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:85
+#: koala/templates/instances/instance_view.pt:87
 msgid "Instance profile"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:90
+#: koala/templates/instances/instance_view.pt:92
 msgid "Image ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:94 koala/views/images.py:62
+#: koala/templates/instances/instance_view.pt:96 koala/views/images.py:62
 msgid "Image name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:98
+#: koala/templates/instances/instance_view.pt:100
+msgid "Image manifest"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:104
 msgid "Kernel ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:102
+#: koala/templates/instances/instance_view.pt:108
 msgid "RAM Disk ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:111
+#: koala/templates/instances/instance_view.pt:117
 #: koala/templates/securitygroups/securitygroup_view.pt:42
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:112
+#: koala/templates/instances/instance_view.pt:118
 #: koala/templates/securitygroups/securitygroup_view.pt:47
 msgid "Cancel"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:119
+#: koala/templates/instances/instance_view.pt:125
 msgid "Other actions"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:123
+#: koala/templates/instances/instance_view.pt:129
 msgid "Launch more like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:131
+#: koala/templates/instances/instance_view.pt:137
 msgid "Create scaling group launch configuration like this"
 msgstr ""
 
@@ -676,15 +676,15 @@ msgstr ""
 msgid "Platform"
 msgstr ""
 
-#: koala/views/instances.py:44
+#: koala/views/instances.py:46
 msgid "Launch time (most recent first)"
 msgstr ""
 
-#: koala/views/instances.py:45
+#: koala/views/instances.py:47
 msgid "Instance name"
 msgstr ""
 
-#: koala/views/instances.py:112
+#: koala/views/instances.py:118
 msgid "Successfully modified instance"
 msgstr ""
 

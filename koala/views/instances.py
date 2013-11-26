@@ -4,6 +4,8 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 from dateutil import parser
+import time
+
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -107,7 +109,11 @@ class InstanceView(TaggedItemView):
         if self.instance_form.validate():
             # Update tags
             self.update_tags()
-
+            # Update assigned IP address
+            new_ip = self.request.params.get('ip_address')
+            if new_ip and new_ip != self.instance.ip_address:
+                self.instance.use_ip(new_ip)
+                time.sleep(1)  # Give backend time to allocate IP address
             location = self.request.route_url('instance_view', id=self.instance.id)
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

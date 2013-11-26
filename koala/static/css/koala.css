@@ -1342,7 +1342,7 @@ nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
-#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
@@ -1356,14 +1356,20 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 ----------------------------------------- */
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
 
+a.has-tip { border-bottom: none !important; }
+
+.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
+
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 #notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 
-a.has-tip { border-bottom: none !important; }
+#tag-editor .row.inline.new input { background-color: #ebf5dd; }
+#tag-editor .tagentry.controls-wrapper.existing { margin-bottom: 0.5rem; }
+#tag-editor .tagentry .new { color: #76b800; }
 
-.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
+#pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 10px; border-right: 1px solid #999999; margin-right: 0.8rem; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
@@ -1384,7 +1390,7 @@ form .controls_csrf_token { display: none; }
 
 form .inline label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
 
-form .row.inline.readonly { margin-bottom: 0.5rem; }
+form .row.inline.readonly { margin-bottom: 0.2rem; }
 form .row.inline.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
 
 form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
@@ -1416,10 +1422,6 @@ i.fi-minus-circle:hover { color: darkred; }
 a.button.secondary.delete:hover { color: white; background-color: darkred; }
 
 a.circle { color: black; display: inline-block; }
-
-#tag-editor .row.inline.new input { background-color: #ebf5dd; }
-#tag-editor .tagentry.controls-wrapper.existing { margin-bottom: 0.5rem; }
-#tag-editor .tagentry .new { color: #76b800; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
