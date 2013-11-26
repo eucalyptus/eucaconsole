@@ -16,13 +16,37 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="">Launch New Instance</a>
             </div>
+            <div metal:fill-slot="tile_dropdown_button"></div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.id }}</div>
-                <div>{{ item.root_device }}</div>
-                <div>{{ item.placement }}</div>
-                <div>{{ item.instance_type }}</div>
-                <div>{{ item.security_groups }}</div>
-                <div>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</div>
+                <div>
+                    <span class="label">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
+                    {{ item.ip_address }}
+                </div>
+                <div>
+                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
+                    {{ item.root_device }}
+                </div>
+                <div>
+                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.placement }}
+                </div>
+                <div>
+                    <span class="label" title="Instance type" i18n:attributes="title" data-tooltip="">IT</span>
+                    {{ item.instance_type }}
+                </div>
+                <div ng-show="item.security_groups">
+                    <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
+                    {{ item.security_groups }}
+                </div>
+                <div>
+                    <span class="label" title="Launch time" data-tooltip=""
+                          i18n:attributes="title"><i class="icon fi-clock"></i></span>
+                    {{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>ID</th>
@@ -38,7 +62,7 @@
                 <td>{{ item.placement }}</td>
                 <td>{{ item.instance_type }}</td>
                 <td>{{ item.security_groups }}</td>
-                <td>{{ item.launch_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
             </metal:block>
         </div>
     </div>

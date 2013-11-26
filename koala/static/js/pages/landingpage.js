@@ -13,14 +13,27 @@ angular.module('LandingPage', [])
         $scope.setInitialSort = function(sortKey) {
             $scope.sortBy = sortKey;
         };
-        $scope.applyAnyGetRequestFilters = function() {
+        $scope.applyGetRequestFilters = function() {
+            // Apply an "all" match of filters based on URL params
+            // If item matches all applicable non-empty URL param filters, return the item.
             $scope.items = $scope.items.filter(function(item) {
-                for (var key in $scope.urlParams) {
-                    if ($scope.urlParams.hasOwnProperty(key) && $.url().param(key)) {
-                        if (item[key] === $.url().param(key)) {
-                            return item
-                        }
+                var urlParams = $scope.urlParams,
+                    matchedKeys = [];
+                delete urlParams['filter'];  // Ignore filter
+                delete urlParams['display'];  // Ignore display = tableview | gridview
+                var urlParamKeys = Object.keys(urlParams);
+                var filteredKeys = [];
+                for (var i=0; i < urlParamKeys.length; i++) {
+                    if (urlParams[urlParamKeys[i]]) {
+                        filteredKeys.push(1);  // Ignore empty URL params
                     }
+                    if (item[urlParamKeys[i]] === urlParams[urlParamKeys[i]]) {
+                        matchedKeys.push(1)
+                    }
+                }
+                // If all URL param keys match, return item.
+                if (matchedKeys.length === filteredKeys.length) {
+                    return item;
                 }
             });
         };
@@ -32,7 +45,7 @@ angular.module('LandingPage', [])
                 $scope.items = results;
                 $scope.unfilteredItems = results;
                 if ($.url().param('filter')) {
-                    $scope.applyAnyGetRequestFilters();
+                    $scope.applyGetRequestFilters();
                 }
             });
         };

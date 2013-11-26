@@ -34,6 +34,10 @@
                         <div class="small-9 columns value">${instance.root_device_type}</div>
                     </div>
                     <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
+                        <div class="small-9 columns value">${instance.architecture or image.architecture}</div>
+                    </div>
+                    <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Instance ID</label></div>
                         <div class="small-9 columns value">${instance.id}</div>
                     </div>
@@ -69,6 +73,31 @@
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Launch time</label></div>
                         <div class="small-9 columns value">${instance_launch_time.strftime(layout.date_format)}</div>
+                    </div>
+                    <div class="row inline readonly" tal:condition="scaling_group">
+                        <div class="small-3 columns"><label i18n:translate="">Scaling group</label></div>
+                        <div class="small-9 columns value">${scaling_group}</div>
+                    </div>
+                    <div class="row inline readonly" tal:condition="instance.instance_profile">
+                        <div class="small-3 columns"><label i18n:translate="">Instance profile</label></div>
+                        <div class="small-9 columns value">${instance.instance_profile}</div>
+                    </div>
+                    <hr />
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-9 columns value">${image.id}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image name</label></div>
+                        <div class="small-9 columns value">${image.name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                        <div class="small-9 columns value">${image.kernel_id}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">RAM Disk ID</label></div>
+                        <div class="small-9 columns value">${image.ramdisk_id}</div>
                     </div>
                     <hr />
                     ${panel('tag_editor', tags=instance.tags)}
