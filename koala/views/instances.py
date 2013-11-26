@@ -109,15 +109,22 @@ class InstanceView(TaggedItemView):
         if self.instance_form.validate():
             # Update tags
             self.update_tags()
+
             # Update assigned IP address
             new_ip = self.request.params.get('ip_address')
             if new_ip and new_ip != self.instance.ip_address:
                 self.instance.use_ip(new_ip)
                 time.sleep(1)  # Give backend time to allocate IP address
+
+            # Disassociate IP address
+            if new_ip == '':
+                self.disassociate_ip_address(ip_address=self.instance.ip_address)
+
             location = self.request.route_url('instance_view', id=self.instance.id)
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+
         return self.render_dict
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
@@ -146,3 +153,12 @@ class InstanceView(TaggedItemView):
 
     def get_scaling_group(self):
         return self.instance.tags.get('aws:autoscaling:groupName')
+
+    def disassociate_ip_address(self, ip_address=None):
+        ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
+        elastic_ip = ip_addresses[0] if ip_addresses else None
+        if elastic_ip:
+            disassociated = elastic_ip.disassociate()
+            if disassociated:
+                time.sleep(1)  # Give backend time to disassociate IP address
+

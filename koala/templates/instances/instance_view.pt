@@ -142,6 +142,23 @@
             </div>
         </div>
         <div class="large-4 columns">
+            <div class="help-content">
+                <h5 class="title">Connecting to an instance</h5>
+                <p> To connect to your instance, be sure security group "{security_group}" has
+                    TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
+                    apply if you did not select a key pair when you launched this instance):
+                </p>
+                <ol>
+                    <li> Open an SSH terminal window.</li>
+                    <li>Change your directory to the one where you stored your key file "{security_group}.pem"</li>
+                    <li> Run the following command to set the correct permissions for your key file:<br>
+                        <code>chmod 400 {security_group}.pem</code>
+                    </li>
+                    <li> Connect to your instance via its public IP address by running the following command:
+                        <code>ssh -i {security_group}.pem root@${instance.ip_address}</code>
+                    </li>
+                </ol>
+            </div>
             <!-- help goes here -->
         </div>
     </div>
