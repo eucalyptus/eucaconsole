@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-26 13:12-0800\n"
+"POT-Creation-Date: 2013-11-26 13:55-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -323,12 +323,12 @@ msgid "RAM Disk ID"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:117
-#: koala/templates/securitygroups/securitygroup_view.pt:42
+#: koala/templates/securitygroups/securitygroup_view.pt:44
 msgid "Save changes"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:118
-#: koala/templates/securitygroups/securitygroup_view.pt:47
+#: koala/templates/securitygroups/securitygroup_view.pt:49
 msgid "Cancel"
 msgstr ""
 
@@ -366,7 +366,7 @@ msgstr ""
 
 #: koala/templates/instances/instances.pt:59
 #: koala/templates/launchconfigs/launchconfigs.pt:29
-#: koala/templates/securitygroups/securitygroup_view.pt:9
+#: koala/templates/securitygroups/securitygroup_view.pt:12
 msgid "Security Group"
 msgstr ""
 
@@ -374,67 +374,67 @@ msgstr ""
 msgid "Launch Time"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:13
+#: koala/templates/ipaddresses/ipaddress_view.pt:16
 msgid "Elastic IP"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:19
+#: koala/templates/ipaddresses/ipaddress_view.pt:21
 msgid "The IP address is not associated with any instances."
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:20
+#: koala/templates/ipaddresses/ipaddress_view.pt:22
 msgid "Associate with an instance"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:24
+#: koala/templates/ipaddresses/ipaddress_view.pt:26
 msgid "Associate IP Address"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:25
+#: koala/templates/ipaddresses/ipaddress_view.pt:27
 msgid "Associate <dynamic element> with an instance"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:36
+#: koala/templates/ipaddresses/ipaddress_view.pt:38
 msgid "Instance is required"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:50
+#: koala/templates/ipaddresses/ipaddress_view.pt:52
 msgid "The IP address is associated with instance ${eip.instance_id}."
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:51
+#: koala/templates/ipaddresses/ipaddress_view.pt:53
 msgid "Disassociate from instance"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:55
+#: koala/templates/ipaddresses/ipaddress_view.pt:57
 msgid "Disassociate IP Address"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:56
+#: koala/templates/ipaddresses/ipaddress_view.pt:58
 msgid ""
 "If you disassociate an IP address from an instance, you will no longer be"
 " able to connect to that instance using that IP address."
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:58
+#: koala/templates/ipaddresses/ipaddress_view.pt:60
 msgid ""
 "Are you sure you want to disassociate <dynamic element> from instance "
 "<dynamic element>"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:68
+#: koala/templates/ipaddresses/ipaddress_view.pt:70
 msgid "If you no longer need this IP address you can..."
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:69
+#: koala/templates/ipaddresses/ipaddress_view.pt:71
 msgid "Release IP address to cloud"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:73
+#: koala/templates/ipaddresses/ipaddress_view.pt:75
 msgid "Release IP Address to Cloud"
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:74
+#: koala/templates/ipaddresses/ipaddress_view.pt:76
 msgid ""
 "If you release an IP address to the cloud, you can no longer associate "
 "that IP address with any of your instances. If the IP address is "
@@ -443,7 +443,7 @@ msgid ""
 "private addressing when you launched the instance."
 msgstr ""
 
-#: koala/templates/ipaddresses/ipaddress_view.pt:79
+#: koala/templates/ipaddresses/ipaddress_view.pt:81
 msgid "Are you sure you want to release ${eip.public_ip} to the cloud?"
 msgstr ""
 
@@ -605,33 +605,33 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:22
+#: koala/templates/securitygroups/securitygroup_view.pt:24
 msgid "Settings for security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:25
+#: koala/templates/securitygroups/securitygroup_view.pt:27
 #: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:43
+#: koala/templates/securitygroups/securitygroup_view.pt:45
 msgid "Add security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:55
+#: koala/templates/securitygroups/securitygroup_view.pt:57
 msgid "Other security group actions"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:59
-#: koala/templates/securitygroups/securitygroup_view.pt:65
+#: koala/templates/securitygroups/securitygroup_view.pt:61
+#: koala/templates/securitygroups/securitygroup_view.pt:67
 msgid "Delete security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:66
+#: koala/templates/securitygroups/securitygroup_view.pt:68
 msgid "Are you sure you want to delete the security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:70
+#: koala/templates/securitygroups/securitygroup_view.pt:72
 msgid "Yes, delete"
 msgstr ""
 

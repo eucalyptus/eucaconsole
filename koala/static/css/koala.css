@@ -1369,7 +1369,7 @@ a.has-tip { border-bottom: none !important; }
 #tag-editor .tagentry.controls-wrapper.existing { margin-bottom: 0.5rem; }
 #tag-editor .tagentry .new { color: #76b800; }
 
-#pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 10px; border-right: 1px solid #999999; margin-right: 0.8rem; }
+#pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */

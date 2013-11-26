@@ -208,8 +208,8 @@ a.has-tip {
     font-family: Verdana, Helvetica, sans-serif;
     font-weight: bold;
     font-size: 1.5rem;
-    padding-right: 10px;
-    border-right: 1px solid $euca-grey;
+    padding-right: 0.8rem;
+    border-right: 1px solid darken($euca-extralightblue, 30%);
     margin-right: 0.8rem;
 }
 

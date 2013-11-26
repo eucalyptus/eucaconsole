@@ -10,8 +10,10 @@
 <div metal:fill-slot="main_content">
 
     <div class="row" id="contentwrap">
-        <h3 class="header" id="pagetitle" i18n:translate="">
-            Elastic IP
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('ipaddresses')}"
+               data-tooltip="" title="Back to IP addresses" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Elastic IP</span> ${eip.public_ip}
         </h3>
         <div class="large-12 columns">
             <h4>IP ${eip.public_ip}</h4>
