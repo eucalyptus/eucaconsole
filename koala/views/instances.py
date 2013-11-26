@@ -4,12 +4,12 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 from dateutil import parser
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.instances import InstanceForm
-from ..models import LandingPageFilter
+from ..models import LandingPageFilter, Notification
 from ..views import LandingPageView, TaggedItemView
 
 
@@ -98,6 +98,20 @@ class InstanceView(TaggedItemView):
     def instance_view(self):
         if self.instance is None:
             raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE)
+    def instance_update(self):
+        if self.instance is None:
+            raise HTTPNotFound()
+        if self.instance_form.validate():
+            # Update tags
+            self.update_tags()
+
+            location = self.request.route_url('instance_view', id=self.instance.id)
+            msg = _(u'Successfully modified instance')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')

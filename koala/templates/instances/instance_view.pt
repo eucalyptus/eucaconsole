@@ -10,13 +10,16 @@
         <h3 class="header" id="pagetitle" i18n:translate="">
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
         <div class="large-8 columns">
             <div class="panel has-title">
                 <h6 class="title">
                     <span i18n:translate="">Settings for instance</span>
                     <strong>${instance_name}</strong>
                 </h6>
-                <form action="#" method="post" data-abide="abide">
+                <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Status</label></div>

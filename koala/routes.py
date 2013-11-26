@@ -35,6 +35,7 @@ urls = [
     Route(name='instances_json', pattern='/instances/json'),
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
+    Route(name='instance_update', pattern='/instances/{id}/update'),
     # Scaling Groups
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),

@@ -61,9 +61,3 @@ class InstanceForm(BaseSecureForm):
             choices += AWS_INSTANCE_TYPE_CHOICES
         self.instance_type.choices = choices
 
-
-class InstanceTagsForm(BaseSecureForm):
-    """Tags update form for an instance.
-       Only need to initialize as a secure form to generate CSRF token
-    """
-    pass
