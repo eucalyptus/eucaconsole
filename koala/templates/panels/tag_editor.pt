@@ -18,25 +18,25 @@
             </div>
         </div>
         <div class="row">
-            <div class="small-1 columns">&nbsp;</div>
-            <div class="small-11 columns subheader"><span i18n:translate="">Add another tag</span>:</div>
+            <div class="columns subheader">
+                <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
+                    ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
+            </div>
         </div>
         <div class="row tagentry inline controls-wrapper">
             <div>
-                <div class="small-1 columns">&nbsp;</div>
-                <div class="small-5 columns">
+                <div class="small-4 columns">
                     <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="tag_pattern" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
                 </div>
-                <div class="small-6 columns">
+                <div class="small-8 columns">
                     <input class="taginput value" placeholder="value..." pattern="tag_pattern" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
                 </div>
             </div>
             <div>&nbsp;</div>
             <div>
-                <div class="small-1 columns">&nbsp;</div>
-                <div class="small-11 columns">
+                <div class="columns">
                     <a href="#" ng-click="addTag($event)" class="button round secondary small" id="add-tag-btn"
                        title="Add tag">Add tag</a>
                 </div>

@@ -69,7 +69,7 @@ Run the server with
 
     ./launcher.sh
 
-`launcher.sh` is provided as an alias for `python runapp.py`
+`launcher.sh` is provided as an alias for `pserve console.ini --reload`
 
 
 Running the server in development/debug mode

@@ -20,10 +20,12 @@ angular.module('TagEditor', [])
             // Parse tags JSON and convert to a list of tags.
             var tagsObj = JSON.parse(tagsJson);
             Object.keys(tagsObj).forEach(function(key) {
-                $scope.tagsArray.push({
-                    'name': key,
-                    'value': tagsObj[key]
-                });
+                if (!key.match(/^aws:.*/)) {
+                    $scope.tagsArray.push({
+                        'name': key,
+                        'value': tagsObj[key]
+                    });
+                }
             });
             $scope.syncTags();
         };

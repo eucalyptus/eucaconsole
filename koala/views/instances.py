@@ -103,8 +103,7 @@ class InstanceView(TaggedItemView):
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
     def instance_launch(self):
         image_id = self.request.params.get('image_id')
-        conn = self.get_connection()
-        image = conn.get_image(image_id)
+        image = self.conn.get_image(image_id)
         return dict(
             image=image
         )

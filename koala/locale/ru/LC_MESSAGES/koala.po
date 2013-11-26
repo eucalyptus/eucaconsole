@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-25 21:30-0800\n"
+"POT-Creation-Date: 2013-11-25 22:09-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -580,8 +580,12 @@ msgstr ""
 msgid "Add another tag"
 msgstr ""
 
-#: koala/templates/panels/tag_editor.pt:29
-#: koala/templates/panels/tag_editor.pt:33
+#: koala/templates/panels/tag_editor.pt:22
+msgid "Add a tag"
+msgstr ""
+
+#: koala/templates/panels/tag_editor.pt:30
+#: koala/templates/panels/tag_editor.pt:34
 msgid "Tag may not begin with \"aws:\""
 msgstr ""
 

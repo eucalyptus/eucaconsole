@@ -24,7 +24,7 @@
                             <span class="status ${instance.state}">${instance.state.capitalize()}</span>
                         </div>
                     </div>
-                    ${panel('form_field', field=instance_form.instance_type)}
+                    ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
                     <div class="row inline readonly" tal:condition="instance.platform">
                         <div class="small-3 columns"><label i18n:translate="">OS</label></div>
                         <div class="small-9 columns value">${instance.platform}</div>
