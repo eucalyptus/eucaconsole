@@ -34,7 +34,7 @@
                     <div class="row inline readonly" ng-cloak="">
                         <div class="small-3 columns"><label i18n:translate="">Status</label></div>
                         <div class="small-9 columns value">
-                            <span class="status {{ instanceState }}">{{ instanceState }}</span>
+                            <span class="status {{ instanceState }}" ng-bind="instanceState">${instance.state}</span>
                             <div id="change-instance-state" ng-show="['pending', 'stopping', 'shutting-down'].indexOf(instanceState) === -1">
                                 <span class="tiny secondary button dropdown round"
                                       data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
@@ -171,18 +171,18 @@
         <div class="large-4 columns">
             <div class="help-content">
                 <h5 class="title">Connecting to an instance</h5>
-                <p> To connect to your instance, be sure security group "{security_group}" has
-                    TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
-                    apply if you did not select a key pair when you launched this instance):
+                <p>To connect to your instance, be sure the security group <b>${instance.groups or 'default'}</b> has
+                   TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
+                   apply if you did not select a key pair when you launched this instance):
                 </p>
                 <ol>
-                    <li> Open an SSH terminal window.</li>
-                    <li>Change your directory to the one where you stored your key file "{security_group}.pem"</li>
-                    <li> Run the following command to set the correct permissions for your key file:<br />
-                        <code>chmod 400 {security_group}.pem</code>
+                    <li>Open an SSH terminal window.</li>
+                    <li>Change your directory to the one where you stored your key file "${instance.key_name}.pem"</li>
+                    <li>Run the following command to set the correct permissions for your key file:<br />
+                        <code>chmod 400 ${instance.key_name}.pem</code>
                     </li>
-                    <li> Connect to your instance via its public IP address by running the following command:
-                        <code>ssh -i {security_group}.pem root@${instance.ip_address}</code>
+                    <li>Connect to your instance via its public IP address by running the following command:
+                        <code>ssh -i ${instance.key_name}.pem root@${instance.ip_address}</code>
                     </li>
                 </ol>
             </div>

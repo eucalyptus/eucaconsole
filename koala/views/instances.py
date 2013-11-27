@@ -138,6 +138,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
     def instance_launch(self):
+        # TODO: Implement
         image_id = self.request.params.get('image_id')
         image = self.conn.get_image(image_id)
         return dict(
@@ -148,6 +149,7 @@ class InstanceView(TaggedItemView):
     def instance_reboot(self):
         if self.reboot_form.validate():
             rebooted = self.instance.reboot()
+            time.sleep(1)
             location = self.request.route_url('instance_view', id=self.instance.id)
             msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
             queue = Notification.SUCCESS
@@ -197,6 +199,8 @@ class InstanceView(TaggedItemView):
         return None
 
     def get_image(self):
+        if self.instance is None:
+            raise HTTPNotFound()
         return self.conn.get_image(self.instance.image_id)
 
     def get_scaling_group(self):

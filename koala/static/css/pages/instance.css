@@ -1,13 +1,13 @@
 /* @fileOverview single Instance page CSS */
 .row .status.running { color: #558500; }
 
-.row .status.pending { color: #bcdd8f; }
+.row .status.pending { color: #999999; }
 
 .row .status.stopped { color: #990000; }
 
-.row .status.stopping { color: #ff9999; }
+.row .status.stopping { color: #ff6666; }
 
-.row .status.terminated { color: #999999; }
+.row .status.terminated { color: #444444; }
 
 .row .status.terminating { color: lightgrey; }
 

@@ -8,6 +8,8 @@
 angular.module('InstancePage', ['TagEditor'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
         $scope.instanceStateEndpoint = '';
+        // Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped"
+        // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
         $scope.isUpdating = false;
@@ -25,7 +27,7 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.instanceState = oData ? oData.results : '';
                 // Poll to obtain desired end state if current state is transitional
                 if ($scope.stateIsTransitional($scope.instanceState)) {
-                    $timeout(function() {$scope.getInstanceState()}, 5000);  // Poll every 5 seconds
+                    $timeout(function() {$scope.getInstanceState()}, 4000);  // Poll every 4 seconds
                 } else {
                     $scope.isUpdating = false;
                 }
