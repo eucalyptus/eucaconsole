@@ -150,6 +150,7 @@ nav.top-bar .dropdown li a {
     position: relative;
     background-color: white;
     padding-bottom: 3rem;
+    min-height: 30rem;
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
@@ -175,6 +176,13 @@ a.has-tip {
     font-weight: normal;
     font-size: 0.825rem;
     font-family: Verdana, Geneva, Helvetica, sans-serif;
+}
+
+.sub-nav a {
+    margin-right: 0.5rem;
+    &:hover {
+        color: $euca-green;
+    }
 }
 
 #notifications {
@@ -223,10 +231,15 @@ a.has-tip {
         li {
             text-indent: -1rem;
             margin-left: 1rem;
-            p, .note {
+            p {
                 text-indent: 0;
+                margin-bottom: 0.5rem;
+                margin-top: 0.5rem;
             }
         }
+    }
+    i {
+        text-indent: 0;
     }
 }
 

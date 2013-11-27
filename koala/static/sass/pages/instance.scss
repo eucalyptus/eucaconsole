@@ -3,6 +3,8 @@
 @import "../foundation/variables";
 @import "../includes/eucavariables";
 
+// Import landing page styles for tile view display on instance volumes page
+@import "../includes/landingpage";
 
 // Status colors
 $instance-status-color-running: darken($euca-green, 10%);
@@ -28,6 +30,7 @@ form .row.controls-wrapper {
     margin-bottom: 0;
 }
 
+// Misc
 .dots {
     margin-left: 1rem;
 }
@@ -43,6 +46,22 @@ form .row.controls-wrapper {
 
 #current-status {
     position: relative; top: 2px;
+}
+
+#instance-subnav {
+    position: relative;
+    top: -1.5rem;
+    left: 1rem;
+    margin-bottom: -1rem;
+}
+
+.tile {
+    background-color: white;
+    border: 1px solid $euca-lightgrey;
+    width: 180px; height: 140px;
+    .header .button.dropdown {
+        height: 30px;
+    }
 }
 
 

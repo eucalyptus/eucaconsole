@@ -1348,7 +1348,7 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 ----------------------------------------- */
 #maincontent { position: relative; }
 
-#contentwrap { position: relative; background-color: white; padding-bottom: 3rem; }
+#contentwrap { position: relative; background-color: white; padding-bottom: 3rem; min-height: 30rem; }
 
 @media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
@@ -1359,6 +1359,9 @@ nav.top-bar .dropdown li a { line-height: 1.5rem; }
 a.has-tip { border-bottom: none !important; }
 
 .tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
+
+.sub-nav a { margin-right: 0.5rem; }
+.sub-nav a:hover { color: #76b800; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 #notifications .alert-box { background-color: #40a8c6; }
@@ -1376,7 +1379,8 @@ a.has-tip { border-bottom: none !important; }
 .help-content { font-size: 0.9rem; }
 .help-content ol { list-style-position: inside; }
 .help-content ol li { text-indent: -1rem; margin-left: 1rem; }
-.help-content ol li p, .help-content ol li .note { text-indent: 0; }
+.help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
+.help-content i { text-indent: 0; }
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */

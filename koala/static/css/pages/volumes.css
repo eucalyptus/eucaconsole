@@ -69,3 +69,5 @@
 .tile .status.created { background-color: #76b800; }
 
 .tile .status.creating { background-color: #bcdd8f; }
+
+.tile .status.available { background-color: #76b800; }

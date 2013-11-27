@@ -17,6 +17,11 @@
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
+        <dl class="sub-nav" id="instance-subnav">
+            <dd class="active"><a href="#" i18n:translate="">Instance</a></dd>
+            <dd><a href="${request.route_url('instance_volumes', id=instance.id)}"
+                    i18n:translate="">Volumes</a></dd>
+        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
@@ -24,7 +29,7 @@
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}', '${instance.state}')">
             <div class="panel has-title">
                 <h6 class="title">
-                    <span i18n:translate="">Settings for instance</span>
+                    <span i18n:translate="">Properties of instance</span>
                     <strong>${instance_name}</strong>
                 </h6>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
@@ -133,6 +138,7 @@
                 </form>
             </div>
             <div class="panel has-title">
+                <a name="image" class="linktarget"></a>
                 <h6 class="title" i18n:translate="">Image properties</h6>
                 <form>
                     <div class="row inline readonly">

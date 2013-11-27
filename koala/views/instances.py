@@ -246,3 +246,32 @@ class InstanceStateView(BaseView):
             instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
             return instances_list[0] if instances_list else None
         return None
+
+
+class InstanceVolumesView(BaseView):
+    VIEW_TEMPLATE = '../templates/instances/instance_volumes.pt'
+
+    def __init__(self, request):
+        super(InstanceVolumesView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.instance = self.get_instance()
+        self.render_dict = dict(instance=self.instance)
+
+    @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE)
+    def instance_volumes(self):
+        if self.instance is None:
+            raise HTTPNotFound()
+        render_dict = self.render_dict
+        render_dict['volumes'] = self.get_attached_volumes()
+        return render_dict
+
+    def get_instance(self):
+        instance_id = self.request.matchdict.get('id')
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None
+
+    def get_attached_volumes(self):
+        return [vol for vol in self.conn.get_all_volumes() if vol.attach_data.instance_id == self.instance.id]
