@@ -13,7 +13,7 @@ from pyramid.view import view_config
 from ..forms.instances import InstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
-from ..views import LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView, TaggedItemView
 
 
 class InstancesView(LandingPageView):
@@ -163,15 +163,24 @@ class InstanceView(TaggedItemView):
         if self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
-                stopped = self.instance.stop()
+                self.instance.stop()
                 location = self.request.route_url('instance_view', id=self.instance.id)
                 msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
                 queue = Notification.SUCCESS
-                if not stopped:
-                    msg = _(u'Unable to stop the instance.')
-                    queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE)
+    def instance_start(self):
+        if self.start_form.validate():
+            # Can only start an instance if it has a volume attached
+            self.instance.start()
+            location = self.request.route_url('instance_view', id=self.instance.id)
+            msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
         return self.render_dict
 
     def get_instance(self):
@@ -201,3 +210,22 @@ class InstanceView(TaggedItemView):
             if disassociated:
                 time.sleep(1)  # Give backend time to disassociate IP address
 
+
+class InstanceStateView(BaseView):
+    def __init__(self, request):
+        super(InstanceStateView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.instance = self.get_instance()
+
+    @view_config(route_name='instance_state_json', renderer='json')
+    def instance_state_json(self):
+        """Return current instance state"""
+        return dict(results=self.instance.state)
+
+    def get_instance(self):
+        instance_id = self.request.matchdict.get('id')
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None

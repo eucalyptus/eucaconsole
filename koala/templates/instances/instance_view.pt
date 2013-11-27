@@ -4,9 +4,14 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance.css')}" />
 </head>
 
+<div metal:fill-slot="head_js">
+    <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
+</div>
+
 <div metal:fill-slot="main_content">
 
-    <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)">
+    <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)"
+         ng-app="InstancePage">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
@@ -15,7 +20,8 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
-        <div class="large-8 columns">
+        <div class="large-8 columns" ng-controller="InstancePageCtrl"
+             ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}', '${instance.state}')">
             <div class="panel has-title">
                 <h6 class="title">
                     <span i18n:translate="">Settings for instance</span>
@@ -25,28 +31,29 @@
                     ${structure:instance_form['csrf_token']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
-                    <div class="row inline readonly">
+                    <div class="row inline readonly" ng-cloak="">
                         <div class="small-3 columns"><label i18n:translate="">Status</label></div>
                         <div class="small-9 columns value">
-                            <span class="status ${instance.state}">${instance.state.capitalize()}</span>
-                            <div id="change-instance-state" tal:condition="instance.state not in ['pending', 'stopping', 'shutting-down']">
+                            <span class="status {{ instanceState }}">{{ instanceState }}</span>
+                            <div id="change-instance-state" ng-show="['pending', 'stopping', 'shutting-down'].indexOf(instanceState) === -1">
                                 <span class="tiny secondary button dropdown round"
                                       data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="instance-state-dropdown" class="f-dropdown">
-                                    <li tal:condition="instance.state == 'running'">
+                                    <li ng-show="instanceState == 'running'">
                                         <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
                                     </li>
-                                    <li tal:condition="instance.state == 'stopped'">
+                                    <li ng-show="instanceState == 'stopped'">
                                         <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
                                     </li>
-                                    <li tal:condition="instance.state == 'running' and image.root_device_type == 'ebs'">
+                                    <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
                                         <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
                                     </li>
-                                    <li tal:condition="instance.state == 'stopped'">
+                                    <li ng-show="instanceState == 'stopped'">
                                         <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
                                     </li>
                                 </ul>
                             </div>
+                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
                     ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
@@ -199,6 +206,20 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="start-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Start instance</h3>
+            <p><span i18n:translate="">Are you sure you want to start instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_start', id=instance.id)}" id="start-form">
+                ${structure:start_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, start instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
         <div id="stop-instance-modal" class="reveal-modal small">
             <h3 i18n:translate="">Stop instance</h3>
             <p><span i18n:translate="">Are you sure you want to stop instance</span> ${instance.id}?</p>
@@ -214,6 +235,6 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
-
 </div>
+
 </metal:block>

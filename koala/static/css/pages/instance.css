@@ -17,6 +17,8 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 #change-instance-state { display: inline-block; margin-left: 1rem; }
 
+.dots { margin-left: 1rem; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
