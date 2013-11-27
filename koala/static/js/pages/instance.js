@@ -22,11 +22,12 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.getInstanceState();
         };
         $scope.getInstanceState = function () {
-            $scope.isUpdating = true;
             $http.get($scope.instanceStateEndpoint).success(function(oData) {
                 $scope.instanceState = oData ? oData.results : '';
+
                 // Poll to obtain desired end state if current state is transitional
                 if ($scope.stateIsTransitional($scope.instanceState)) {
+                    $scope.isUpdating = true;
                     $timeout(function() {$scope.getInstanceState()}, 4000);  // Poll every 4 seconds
                 } else {
                     $scope.isUpdating = false;

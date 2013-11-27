@@ -23,7 +23,7 @@
 <nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
-        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
+        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown" data-options="is_hover: true">
             <span class="hide-for-xsmall">${layout.username_label}</span>
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
@@ -34,7 +34,7 @@
         </ul>
     </section>
     <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
-        <a href="#" data-dropdown="region-dropdown" class="small secondary button dropdown">
+        <a href="#" data-dropdown="region-dropdown" class="small secondary button dropdown" data-options="is_hover: true">
             <span class="hide-for-xsmall">${layout.selected_region_label}</span>
             <span class="show-for-xsmall"><i class="fi-cloud icon"></i></span>
         </a>

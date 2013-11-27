@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-11-26 18:29-0800\n"
+"POT-Creation-Date: 2013-11-27 12:47-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,7 +223,7 @@ msgid "Launch instance"
 msgstr ""
 
 #: koala/templates/images/images.pt:59
-#: koala/templates/instances/instance_view.pt:62 koala/views/images.py:63
+#: koala/templates/instances/instance_view.pt:75 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
 
@@ -231,141 +231,159 @@ msgstr ""
 msgid "Launch new instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:13 koala/views/ipaddresses.py:35
+#: koala/templates/instances/instance_view.pt:18 koala/views/ipaddresses.py:35
 msgid "Instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:21
+#: koala/templates/instances/instance_view.pt:27
 msgid "Settings for instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:29
+#: koala/templates/instances/instance_view.pt:35
 #: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:38
 #: koala/views/snapshots.py:30 koala/views/snapshots.py:42
 #: koala/views/volumes.py:31 koala/views/volumes.py:42
 msgid "Status"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:37
-#: koala/templates/instances/instance_view.pt:188
+#: koala/templates/instances/instance_view.pt:44
+#: koala/templates/instances/instance_view.pt:204
 msgid "Reboot instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:40
+#: koala/templates/instances/instance_view.pt:47
+#: koala/templates/instances/instance_view.pt:219
 msgid "Start instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:43
-#: koala/templates/instances/instance_view.pt:203
+#: koala/templates/instances/instance_view.pt:50
+#: koala/templates/instances/instance_view.pt:233
 msgid "Stop instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:46
+#: koala/templates/instances/instance_view.pt:53
+#: koala/templates/instances/instance_view.pt:247
 msgid "Terminate instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:54
+#: koala/templates/instances/instance_view.pt:63
 msgid "OS"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:58
+#: koala/templates/instances/instance_view.pt:67
+msgid "Root device name"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:71
 msgid "Root device type"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:66
+#: koala/templates/instances/instance_view.pt:79
 msgid "Instance ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:70 koala/views/instances.py:40
+#: koala/templates/instances/instance_view.pt:83 koala/views/instances.py:40
 #: koala/views/volumes.py:32
 msgid "Availability zone"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:75
+#: koala/templates/instances/instance_view.pt:87
 msgid "Private IP address"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:80
+#: koala/templates/instances/instance_view.pt:92
 msgid "Public hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:85
+#: koala/templates/instances/instance_view.pt:97
 msgid "Private hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:89
+#: koala/templates/instances/instance_view.pt:101
 msgid "Key name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:93
+#: koala/templates/instances/instance_view.pt:105
 #: koala/templates/panels/securitygroup_rules.pt:91
 msgid "Security group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:99
+#: koala/templates/instances/instance_view.pt:111
 msgid "Launch time"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:103
+#: koala/templates/instances/instance_view.pt:115
 msgid "Scaling group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:107
+#: koala/templates/instances/instance_view.pt:119
 msgid "Instance profile"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:112
-msgid "Image ID"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:116 koala/views/images.py:62
-msgid "Image name"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:120
-msgid "Image manifest"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:124
-msgid "Kernel ID"
-msgstr ""
-
 #: koala/templates/instances/instance_view.pt:128
-msgid "RAM Disk ID"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:137
 #: koala/templates/securitygroups/securitygroup_view.pt:44
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:138
+#: koala/templates/instances/instance_view.pt:129
 #: koala/templates/securitygroups/securitygroup_view.pt:49
 msgid "Cancel"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:145
+#: koala/templates/instances/instance_view.pt:136
+msgid "Image properties"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:139
+msgid "Image ID"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:143 koala/views/images.py:62
+msgid "Image name"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:147
+msgid "Image manifest"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:151
+msgid "Kernel ID"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:155
+msgid "RAM Disk ID"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:161
 msgid "Other actions"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:149
+#: koala/templates/instances/instance_view.pt:165
 msgid "Launch more like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:157
+#: koala/templates/instances/instance_view.pt:173
 msgid "Create scaling group launch configuration like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:189
+#: koala/templates/instances/instance_view.pt:205
 msgid "Rebooting preserves the root file system of your instance across restarts."
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:190
+#: koala/templates/instances/instance_view.pt:206
 msgid "Are you sure you want to reboot instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:204
+#: koala/templates/instances/instance_view.pt:220
+msgid "Are you sure you want to start instance"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:234
 msgid "Are you sure you want to stop instance"
+msgstr ""
+
+#: koala/templates/instances/instance_view.pt:248
+msgid "Are you sure you want to terminate instance"
 msgstr ""
 
 #: koala/templates/instances/instances.pt:9
@@ -376,25 +394,25 @@ msgstr ""
 msgid "Launch New Instance"
 msgstr ""
 
-#: koala/templates/instances/instances.pt:56
+#: koala/templates/instances/instances.pt:59
 msgid "Root Device"
 msgstr ""
 
-#: koala/templates/instances/instances.pt:57
+#: koala/templates/instances/instances.pt:60
 msgid "Availability Zone"
 msgstr ""
 
-#: koala/templates/instances/instances.pt:58
+#: koala/templates/instances/instances.pt:61
 msgid "Instance Type"
 msgstr ""
 
-#: koala/templates/instances/instances.pt:59
+#: koala/templates/instances/instances.pt:62
 #: koala/templates/launchconfigs/launchconfigs.pt:29
 #: koala/templates/securitygroups/securitygroup_view.pt:12
 msgid "Security Group"
 msgstr ""
 
-#: koala/templates/instances/instances.pt:60
+#: koala/templates/instances/instances.pt:63
 msgid "Launch Time"
 msgstr ""
 
@@ -710,28 +728,36 @@ msgstr ""
 msgid "Instance name"
 msgstr ""
 
-#: koala/views/instances.py:133
+#: koala/views/instances.py:134
 msgid "Successfully modified instance"
 msgstr ""
 
-#: koala/views/instances.py:152
+#: koala/views/instances.py:155
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:155
+#: koala/views/instances.py:158
 msgid "Unable to reboot the instance."
 msgstr ""
 
-#: koala/views/instances.py:168
+#: koala/views/instances.py:171
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:171
-msgid "Unable to stop the instance."
+#: koala/views/instances.py:183
+msgid ""
+"Successfully sent start instance request.  It may take a moment to start the "
+"instance."
+msgstr ""
+
+#: koala/views/instances.py:194
+msgid ""
+"Successfully sent terminate instance request.  It may take a moment to shut "
+"down the instance."
 msgstr ""
 
 #: koala/views/ipaddresses.py:34

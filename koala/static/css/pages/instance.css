@@ -15,9 +15,13 @@ select { width: 50%; }
 
 form .row.controls-wrapper { margin-bottom: 0; }
 
+.dots { margin-left: 1rem; }
+
 #change-instance-state { display: inline-block; margin-left: 1rem; }
 
-.dots { margin-left: 1rem; }
+#instance-status-label { position: relative; top: 0; }
+
+#current-status { position: relative; top: 2px; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

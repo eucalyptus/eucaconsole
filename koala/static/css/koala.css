@@ -1390,7 +1390,7 @@ form .controls_csrf_token { display: none; }
 
 form .inline label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
 
-form .row.inline.readonly { margin-bottom: 0.2rem; }
+form .row.inline.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
 form .row.inline.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
 
 form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }

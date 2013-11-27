@@ -22,7 +22,7 @@
             <div metal:fill-slot="tile_dropdown_button"></div>
             <div metal:fill-slot="tile_content">
                 <div>
-                    <span class="label">ID</span>
+                    <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
                 </div>
                 <div>
@@ -41,13 +41,16 @@
                     <span class="label" title="Instance type" i18n:attributes="title" data-tooltip="">IT</span>
                     {{ item.instance_type }}
                 </div>
-                <div ng-show="item.security_groups">
+                <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups }}
+                    {{ item.security_groups || 'default' }}
+                </div>
+                <div ng-show="item.key_name">
+                    <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
+                    {{ item.key_name }}
                 </div>
                 <div>
-                    <span class="label" title="Launch time" data-tooltip=""
-                          i18n:attributes="title"><i class="icon fi-clock"></i></span>
+                    <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
                     {{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}
                 </div>
             </div>

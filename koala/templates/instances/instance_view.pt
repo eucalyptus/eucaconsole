@@ -32,11 +32,12 @@
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
                     <div class="row inline readonly" ng-cloak="">
-                        <div class="small-3 columns"><label i18n:translate="">Status</label></div>
-                        <div class="small-9 columns value">
-                            <span class="status {{ instanceState }}" ng-bind="instanceState">${instance.state}</span>
-                            <div id="change-instance-state" ng-show="['pending', 'stopping', 'shutting-down'].indexOf(instanceState) === -1">
-                                <span class="tiny secondary button dropdown round"
+                        <div class="small-3 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
+                        <div class="small-9 columns value" ng-cloak="">
+                            <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
+                            <div id="change-instance-state"
+                                 ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
+                                <span class="tiny secondary button dropdown round" data-options="is_hover: true"
                                       data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="instance-state-dropdown" class="f-dropdown">
                                     <li ng-show="instanceState == 'running'">
@@ -48,7 +49,7 @@
                                     <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
                                         <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
                                     </li>
-                                    <li ng-show="instanceState == 'stopped'">
+                                    <li ng-show="instanceState != 'terminated'">
                                         <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
                                     </li>
                                 </ul>
@@ -57,9 +58,14 @@
                         </div>
                     </div>
                     ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
-                    <div class="row inline readonly">
+                    ${panel('form_field', field=instance_form.ip_address)}
+                    <div class="row inline readonly" tal:condition="image.platform">
                         <div class="small-3 columns"><label i18n:translate="">OS</label></div>
                         <div class="small-9 columns value">${image.platform}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Root device name</label></div>
+                        <div class="small-9 columns value">${instance.root_device_name}</div>
                     </div>
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Root device type</label></div>
@@ -77,7 +83,6 @@
                         <div class="small-3 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="small-9 columns value">${instance.placement}</div>
                     </div>
-                    ${panel('form_field', field=instance_form.ip_address)}
                     <div class="row inline readonly" tal:condition="instance.private_ip_address">
                         <div class="small-3 columns"><label i18n:translate="">Private IP address</label></div>
                         <div class="small-9 columns value">${instance.private_ip_address}</div>
@@ -115,6 +120,21 @@
                         <div class="small-9 columns value">${instance.instance_profile}</div>
                     </div>
                     <hr />
+                    ${panel('tag_editor', tags=instance.tags)}
+                    <hr />
+                    <div class="row">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
+                            <button type="submit" class="button"><span i18n:translate="">Save changes</span></button>
+                            <a href="${request.route_url('instances')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel has-title">
+                <h6 class="title" i18n:translate="">Image properties</h6>
+                <form>
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
                         <div class="small-9 columns value">${image.id}</div>
@@ -134,17 +154,6 @@
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">RAM Disk ID</label></div>
                         <div class="small-9 columns value">${image.ramdisk_id}</div>
-                    </div>
-                    <hr />
-                    ${panel('tag_editor', tags=instance.tags)}
-                    <hr />
-                    <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
-                            <button type="submit" class="button"><span i18n:translate="">Save changes</span></button>
-                            <a href="${request.route_url('instances')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -229,6 +238,20 @@
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
                         <input type="submit" class="button" value="Yes, stop instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_terminate', id=instance.id)}" id="terminate-form">
+                ${structure:terminate_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, terminate" i18n:attributes="value" />
                     </div>
                 </div>
             </form>

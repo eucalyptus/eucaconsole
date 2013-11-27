@@ -39,6 +39,7 @@ urls = [
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_start', pattern='/instances/{id}/start'),
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
+    Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     # Scaling Groups
     Route(name='scalinggroups', pattern='/scalinggroups'),

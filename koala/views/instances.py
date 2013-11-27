@@ -70,6 +70,7 @@ class InstancesView(LandingPageView):
                 placement=instance.placement,
                 root_device=instance.root_device_name,
                 security_groups=', '.join(group.name for group in instance.groups),
+                key_name=instance.key_name,
                 status=instance.state,
             ))
         return dict(results=instances)
@@ -180,6 +181,18 @@ class InstanceView(TaggedItemView):
             self.instance.start()
             location = self.request.route_url('instance_view', id=self.instance.id)
             msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE)
+    def instance_terminate(self):
+        if self.terminate_form.validate():
+            self.instance.terminate()
+            time.sleep(1)
+            location = self.request.route_url('instance_view', id=self.instance.id)
+            msg = _(u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
             queue = Notification.SUCCESS
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
