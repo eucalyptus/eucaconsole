@@ -60,3 +60,24 @@ class InstanceForm(BaseSecureForm):
             choices += AWS_INSTANCE_TYPE_CHOICES
         self.instance_type.choices = choices
 
+
+class StopInstanceForm(BaseSecureForm):
+    """CSRF-protected form to stop an instance"""
+    pass
+
+
+class StartInstanceForm(BaseSecureForm):
+    """CSRF-protected form to start an instance"""
+    pass
+
+
+class RebootInstanceForm(BaseSecureForm):
+    """CSRF-protected form to reboot an instance"""
+    pass
+
+
+class TerminateInstanceForm(BaseSecureForm):
+    """CSRF-protected form to terminate an instance"""
+    pass
+
+

@@ -1342,7 +1342,7 @@ nav.top-bar a { text-transform: uppercase; }
 
 nav.top-bar .dropdown li a { line-height: 1.5rem; }
 
-#pagetitle.header { margin-top: 0; margin-bottom: 2rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */

@@ -23,10 +23,30 @@
                 </h6>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
+                    <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
+                    <!--! Modal dialogs are near the bottom of this template -->
                     <div class="row inline readonly">
                         <div class="small-3 columns"><label i18n:translate="">Status</label></div>
                         <div class="small-9 columns value">
                             <span class="status ${instance.state}">${instance.state.capitalize()}</span>
+                            <div id="change-instance-state" tal:condition="instance.state not in ['pending', 'stopping', 'shutting-down']">
+                                <span class="tiny secondary button dropdown round"
+                                      data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
+                                <ul id="instance-state-dropdown" class="f-dropdown">
+                                    <li tal:condition="instance.state == 'running'">
+                                        <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                                    </li>
+                                    <li tal:condition="instance.state == 'stopped'">
+                                        <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                                    </li>
+                                    <li tal:condition="instance.state == 'running' and image.root_device_type == 'ebs'">
+                                        <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
+                                    </li>
+                                    <li tal:condition="instance.state == 'stopped'">
+                                        <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
@@ -151,7 +171,7 @@
                 <ol>
                     <li> Open an SSH terminal window.</li>
                     <li>Change your directory to the one where you stored your key file "{security_group}.pem"</li>
-                    <li> Run the following command to set the correct permissions for your key file:<br>
+                    <li> Run the following command to set the correct permissions for your key file:<br />
                         <code>chmod 400 {security_group}.pem</code>
                     </li>
                     <li> Connect to your instance via its public IP address by running the following command:
@@ -160,6 +180,38 @@
                 </ol>
             </div>
             <!-- help goes here -->
+        </div>
+    </div>
+    <!--! modal dialogs -->
+    <div id="change-state-dialogs">
+        <div id="reboot-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Reboot instance</h3>
+            <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
+            <p><span i18n:translate="">Are you sure you want to reboot instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_reboot', id=instance.id)}" id="reboot-form">
+                ${structure:reboot_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, reboot" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="stop-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Stop instance</h3>
+            <p><span i18n:translate="">Are you sure you want to stop instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_stop', id=instance.id)}" id="stop-form">
+                ${structure:stop_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, stop instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 

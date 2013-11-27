@@ -11,6 +11,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.instances import InstanceForm
+from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import LandingPageView, TaggedItemView
 
@@ -86,6 +87,10 @@ class InstanceView(TaggedItemView):
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
             self.request, instance=self.instance, conn=self.conn, formdata=self.request.params or None)
+        self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
+        self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
+        self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
+        self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
         self.render_dict = dict(
@@ -94,6 +99,10 @@ class InstanceView(TaggedItemView):
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
             instance_launch_time=self.launch_time,
+            reboot_form=self.reboot_form,
+            start_form=self.start_form,
+            stop_form=self.stop_form,
+            terminate_form=self.terminate_form,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE)
@@ -134,6 +143,36 @@ class InstanceView(TaggedItemView):
         return dict(
             image=image
         )
+
+    @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE)
+    def instance_reboot(self):
+        if self.reboot_form.validate():
+            rebooted = self.instance.reboot()
+            location = self.request.route_url('instance_view', id=self.instance.id)
+            msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+            queue = Notification.SUCCESS
+            if not rebooted:
+                msg = _(u'Unable to reboot the instance.')
+                queue = Notification.ERROR
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='instance_stop', renderer=VIEW_TEMPLATE)
+    def instance_stop(self):
+        if self.stop_form.validate():
+            # Only EBS-backed instances can be stopped
+            if self.image.root_device_type == 'ebs':
+                stopped = self.instance.stop()
+                location = self.request.route_url('instance_view', id=self.instance.id)
+                msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                queue = Notification.SUCCESS
+                if not stopped:
+                    msg = _(u'Unable to stop the instance.')
+                    queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+        return self.render_dict
 
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
