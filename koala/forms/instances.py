@@ -81,3 +81,35 @@ class TerminateInstanceForm(BaseSecureForm):
     pass
 
 
+class AttachVolumeForm(BaseSecureForm):
+    """CSRF-protected form to attach a volume to an instance"""
+    volume_error_msg = _(u'Volume is required')
+    volume_id = wtforms.SelectField(
+        label=_(u'Volume'),
+        validators=[validators.Required(message=volume_error_msg)],
+    )
+    device_error_msg = _(u'Device is required')
+    device = wtforms.TextField(
+        label=_(u'Device'),
+        validators=[validators.Required(message=device_error_msg)],
+    )
+
+    def __init__(self, request, conn=None, **kwargs):
+        super(AttachVolumeForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.conn = conn
+        self.device.error_msg = self.device_error_msg
+        if conn is not None:
+            self.set_volume_choices()
+
+    def set_volume_choices(self):
+        """Populate volume field with volumes available to attach"""
+        choices = [('', _(u'select...'))]
+        choices += [(vol.id, vol.id) for vol in self.conn.get_all_volumes() if vol.attach_data.status is None]
+        self.volume_id.choices = choices
+
+
+class DetachVolumeForm(BaseSecureForm):
+    """CSRF-protected form to detach a volume from an instance"""
+    pass
+

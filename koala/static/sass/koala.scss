@@ -304,6 +304,12 @@ form .columns input {
     max-width: 100%;
 }
 
+form a.remove.circle {
+    position: relative;
+    left: 12px; top: -2px;
+}
+
+
 [data-abide] .inline .error small.error {
     display: inline !important;
     background-color: transparent;

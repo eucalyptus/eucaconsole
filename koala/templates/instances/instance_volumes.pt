@@ -30,11 +30,17 @@
                     <span i18n:translate="">Volumes for instance</span>
                     <strong>${instance_name}</strong>
                 </h6>
-                <!--! Begin volumes -->
+                <div class="tile" id="attach-volume">
+                    <a href="#" data-reveal-id="attach-volume-modal" >
+                        <div class="plus">+</div>
+                        <div i18n:translate="">Attach a volume</div>
+                    </a>
+                </div>
                 <div class="tile item" tal:repeat="volume volumes">
                     <div class="header">
                         <strong>${volume.tags.get('Name', volume.id)}</strong>
-                        <span class="tiny secondary button dropdown right"><i class="icon fi-minus-circle"></i></span>
+                        <a class="tiny secondary button dropdown right" href="#"
+                           data-reveal-id="detach-volume-modal-${repeat.volume.index}"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content">
                         <div>
@@ -53,6 +59,25 @@
                             <span class="label" title="Attach time" i18n:attributes="title" data-tooltip="">AT</span>
                             ${parse_date(volume.attach_data.attach_time).strftime(layout.date_format)}
                         </div>
+                    </div>
+                    <div id="detach-volume-modal-${repeat.volume.index}" class="reveal-modal small">
+                        <h3 i18n:translate="">Detach volume</h3>
+                        <p>
+                            <span i18n:translate="">Are you sure you want to detach the volume from instance</span>
+                            <strong>${instance_name}</strong>?
+                        </p>
+                        <form method="post" id="attach-form" data-abide=""
+                              action="${request.route_url('instance_volume_detach', id=instance.id, volume_id=volume.id)}">
+                            ${structure:detach_form['csrf_token']}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <input type="submit" class="button" value="Yes, detach volume" i18n:attributes="value" />
+                                </div>
+                            </div>
+                        </form>
+                        <a class="close-reveal-modal">&#215;</a>
                     </div>
                 </div>
             </div>
@@ -82,8 +107,28 @@
                 </div>
             </div>
         </div>
+        <!--! modal dialogs -->
+        <div id="volume-dialogs">
+            <div id="attach-volume-modal" class="reveal-modal small">
+                <h3 i18n:translate="">Attach volume</h3>
+                <p i18n:translate="">Attach a volume to instance</p>
+                <form method="post" action="${request.route_url('instance_volume_attach', id=instance.id)}"
+                      id="attach-form" data-abide="">
+                    ${structure:attach_form['csrf_token']}
+                    ${panel('form_field', field=attach_form.volume_id)}
+                    ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
+                            <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
-
 </div>
 
 </metal:block>

@@ -18,7 +18,7 @@
         <div class="row rulesentry existing inline controls-wrapper"
              ng-repeat="rule in rulesArray">
             <div class="small-1 columns">
-                <a href="#"  class="circle has-tip" ng-click="removeRule($index, $event)"
+                <a href="#"  class="circle remove has-tip" ng-click="removeRule($index, $event)"
                         title="Remove rule"><i class="fi-minus-circle"></i></a>
             </div>
             <div class="small-11 columns">

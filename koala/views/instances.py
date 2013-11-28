@@ -4,13 +4,14 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 from dateutil import parser
+from operator import attrgetter
 import time
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.instances import InstanceForm
+from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView
@@ -106,13 +107,13 @@ class InstanceView(TaggedItemView):
             terminate_form=self.terminate_form,
         )
 
-    @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def instance_view(self):
         if self.instance is None:
             raise HTTPNotFound()
         return self.render_dict
 
-    @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
         if self.instance is None:
             raise HTTPNotFound()
@@ -146,7 +147,7 @@ class InstanceView(TaggedItemView):
             image=image
         )
 
-    @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_reboot(self):
         if self.reboot_form.validate():
             rebooted = self.instance.reboot()
@@ -161,7 +162,7 @@ class InstanceView(TaggedItemView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    @view_config(route_name='instance_stop', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_stop', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_stop(self):
         if self.stop_form.validate():
             # Only EBS-backed instances can be stopped
@@ -174,7 +175,7 @@ class InstanceView(TaggedItemView):
                 return HTTPFound(location=location)
         return self.render_dict
 
-    @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
         if self.start_form.validate():
             # Can only start an instance if it has a volume attached
@@ -186,7 +187,7 @@ class InstanceView(TaggedItemView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_terminate(self):
         if self.terminate_form.validate():
             self.instance.terminate()
@@ -235,7 +236,7 @@ class InstanceStateView(BaseView):
         self.conn = self.get_connection()
         self.instance = self.get_instance()
 
-    @view_config(route_name='instance_state_json', renderer='json')
+    @view_config(route_name='instance_state_json', renderer='json', request_method='GET')
     def instance_state_json(self):
         """Return current instance state"""
         return dict(results=self.instance.state)
@@ -256,15 +257,58 @@ class InstanceVolumesView(BaseView):
         self.request = request
         self.conn = self.get_connection()
         self.instance = self.get_instance()
-        self.render_dict = dict(instance=self.instance)
+        self.attach_form = AttachVolumeForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.detach_form = DetachVolumeForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            instance=self.instance,
+            attach_form=self.attach_form,
+            detach_form=self.detach_form,
+        )
 
-    @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE, request_method='GET')
     def instance_volumes(self):
         if self.instance is None:
             raise HTTPNotFound()
         render_dict = self.render_dict
         render_dict['volumes'] = self.get_attached_volumes()
         return render_dict
+
+    @view_config(route_name='instance_volume_attach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_volume_attach(self):
+        if self.attach_form.validate():
+            volume_id = self.request.params.get('volume_id')
+            device = self.request.params.get('device')
+            volume = None
+            if volume_id:
+                volume_ids = [volume_id]
+                volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
+                volume = volumes[0] if volumes else None
+            if self.instance and volume and device:
+                volume.attach(self.instance.id, device)
+                time.sleep(1)
+                location = self.request.route_url('instance_volumes', id=self.instance.id)
+                msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+
+    @view_config(route_name='instance_volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_volume_detach(self):
+        if self.detach_form.validate():
+            volume_id = self.request.matchdict.get('volume_id')
+            volume = None
+            if volume_id:
+                volume_ids = [volume_id]
+                volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
+                volume = volumes[0] if volumes else None
+            if volume:
+                volume.detach()
+                time.sleep(1)
+                location = self.request.route_url('instance_volumes', id=self.instance.id)
+                msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
 
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
@@ -274,4 +318,7 @@ class InstanceVolumesView(BaseView):
         return None
 
     def get_attached_volumes(self):
-        return [vol for vol in self.conn.get_all_volumes() if vol.attach_data.instance_id == self.instance.id]
+        volumes = [vol for vol in self.conn.get_all_volumes() if vol.attach_data.instance_id == self.instance.id]
+        # Sort by most recently attached first
+        return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
+
