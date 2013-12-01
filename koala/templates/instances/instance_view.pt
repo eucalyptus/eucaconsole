@@ -4,10 +4,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance.css')}" />
 </head>
 
-<div metal:fill-slot="head_js">
-    <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
-</div>
-
 <div metal:fill-slot="main_content">
 
     <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)"
@@ -263,6 +259,10 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
 </div>
 
 </metal:block>

@@ -4,13 +4,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance.css')}" />
 </head>
 
-<div metal:fill-slot="head_js">
-    <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
-</div>
-
 <div metal:fill-slot="main_content">
 
-    <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)">
+    <div class="row" id="contentwrap" ng-app="InstanceVolumes" tal:define="instance_name instance.tags.get('name', instance.id)">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
@@ -24,7 +20,8 @@
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
-        <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
+        <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse" ng-controller="InstanceVolumesCtrl"
+             ng-init="initController('${request.route_url('instance_volumes_json', id=instance.id)}')">
             <div class="panel has-title">
                 <h6 class="title">
                     <span i18n:translate="">Volumes for instance</span>
@@ -36,41 +33,42 @@
                         <div i18n:translate="">Attach a volume</div>
                     </a>
                 </div>
-                <div class="tile item" tal:repeat="volume volumes">
+                <span class="dots" ng-show="initialLoading">&nbsp;</span>
+                <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
-                        <strong>${volume.tags.get('Name', volume.id)}</strong>
+                        <strong>{{ volume.name || volume.id }}</strong>
                         <a class="tiny secondary button dropdown right" href="#"
-                           data-reveal-id="detach-volume-modal-${repeat.volume.index}"><i class="icon fi-minus-circle"></i></a>
+                           data-reveal-id="detach-volume-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content">
                         <div>
                             <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
-                            ${volume.size} GB
+                            {{ volume.size }} GB
                         </div>
                         <div>
-                            <span class="label" title="Device" i18n:attributes="title" data-tooltip="">MP</span>
-                            ${volume.attach_data.device}
+                            <span class="label" title="Device" i18n:attributes="title" data-tooltip="">DV</span>
+                            {{ volume.device }}
                         </div>
                         <div>
                             <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
-                            ${volume.id}
+                            {{ volume.id }}
                         </div>
                         <div>
                             <span class="label" title="Attach time" i18n:attributes="title" data-tooltip="">AT</span>
-                            ${parse_date(volume.attach_data.attach_time).strftime(layout.date_format)}
+                            {{ volume.attach_time | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
-                    <div class="footer status ${volume.attach_data.status}">
-                        ${volume.attach_data.status}
+                    <div class="footer status {{ volume.status }}">
+                        {{ volume.status }}
+                        <span class="dots" ng-show="volume.transitional">&nbsp;</span>
                     </div>
-                    <div id="detach-volume-modal-${repeat.volume.index}" class="reveal-modal small">
+                    <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small">
                         <h3 i18n:translate="">Detach volume</h3>
                         <p>
                             <span i18n:translate="">Are you sure you want to detach the volume from instance</span>
                             <strong>${instance_name}</strong>?
                         </p>
-                        <form method="post" id="attach-form" data-abide=""
-                              action="${request.route_url('instance_volume_detach', id=instance.id, volume_id=volume.id)}">
+                        <form method="post" id="detach-form" data-abide="" action="{{ volume.detach_form_action }}">
                             ${structure:detach_form['csrf_token']}
                             <div>&nbsp;</div>
                             <div class="row">
@@ -132,6 +130,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/instance_volumes.js')}"></script>
 </div>
 
 </metal:block>

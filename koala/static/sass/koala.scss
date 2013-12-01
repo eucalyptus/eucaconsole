@@ -200,6 +200,9 @@ a.has-tip {
             background-color: lightyellow;
             border-color: gray;
         }
+        &.alert {
+            background-color: darkred;
+        }
     }
 }
 

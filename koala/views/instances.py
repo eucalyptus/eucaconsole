@@ -7,6 +7,8 @@ from dateutil import parser
 from operator import attrgetter
 import time
 
+from boto.exception import EC2ResponseError
+
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -273,6 +275,26 @@ class InstanceVolumesView(BaseView):
         render_dict['volumes'] = self.get_attached_volumes()
         return render_dict
 
+    @view_config(route_name='instance_volumes_json', renderer='json', request_method='GET')
+    def instance_volumes_json(self):
+        volumes = []
+        transitional_states = ['attaching', 'detaching'];
+        for volume in self.get_attached_volumes():
+            detach_form_action = self.request.route_url(
+                'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
+            status = volume.attach_data.status
+            volumes.append(dict(
+                id=volume.id,
+                name=volume.tags.get('name', ''),
+                size=volume.size,
+                device=volume.attach_data.device,
+                attach_time=volume.attach_data.attach_time,
+                status=status,
+                detach_form_action=detach_form_action,
+                transitional=status in transitional_states,
+            ))
+        return dict(results=volumes)
+
     @view_config(route_name='instance_volume_attach', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_volume_attach(self):
         if self.attach_form.validate():
@@ -284,11 +306,15 @@ class InstanceVolumesView(BaseView):
                 volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
                 volume = volumes[0] if volumes else None
             if self.instance and volume and device:
-                volume.attach(self.instance.id, device)
-                time.sleep(1)
                 location = self.request.route_url('instance_volumes', id=self.instance.id)
-                msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
-                queue = Notification.SUCCESS
+                try:
+                    volume.attach(self.instance.id, device)
+                    msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
+                    queue = Notification.SUCCESS
+                    time.sleep(1)
+                except EC2ResponseError as err:
+                    msg = err.message
+                    queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
 
