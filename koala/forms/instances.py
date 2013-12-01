@@ -98,6 +98,7 @@ class AttachVolumeForm(BaseSecureForm):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
         self.conn = conn
+        self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
         if conn is not None:
             self.set_volume_choices()

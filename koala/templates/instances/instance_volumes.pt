@@ -112,7 +112,7 @@
         <div id="volume-dialogs">
             <div id="attach-volume-modal" class="reveal-modal small">
                 <h3 i18n:translate="">Attach volume</h3>
-                <p i18n:translate="">Attach a volume to instance</p>
+                <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
                 <form method="post" action="${request.route_url('instance_volume_attach', id=instance.id)}"
                       id="attach-form" data-abide="">
                     ${structure:attach_form['csrf_token']}
@@ -127,6 +127,61 @@
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
+                <p>&nbsp;</p>
+                <hr />
+                <div class="help-content">
+                    <h5 class="title" i18n:translate="">Volume device options for Linux</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">Possible for Connection</th>
+                                <th i18n:translate="">Instance Store</th>
+                                <th i18n:translate="">Recommended for EBS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <code>/dev/sd[a-z]</code><br />
+                                    <code>/dev/sd[a-z][1-15]</code><br />
+                                    <code>/dev/hd[a-z]</code><br />
+                                    <code>/dev/hd[a-z][1-15]</code>
+                                </td>
+                                <td><code>/dev/sd[b-e]</code></td>
+                                <td>
+                                    <code>/dev/sd[f-p]</code><br />
+                                    <code>/dev/sd[f-p][1-6]</code>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 class="title" i18n:translate="">Volume device options for Windows</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th i18n:translate="">Possible for Connection</th>
+                                <th i18n:translate="">Instance Store</th>
+                                <th i18n:translate="">Recommended for EBS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <code>xvd[a-z]</code><br />
+                                    <code>xvdb[a-z]</code><br />
+                                    <code>/dev/sda[1-2]</code><br />
+                                    <code>/dev/sd[b-e]</code>
+                                </td>
+                                <td><code>xvd[a-e]</code></td>
+                                <td>
+                                    <code>xvd[f-p]</code> (with Red Hat PV drivers)<br />
+                                    <code>xvd[f-z]</code> (with Citrix PV drivers)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
+                </div>
             </div>
         </div>
     </div>

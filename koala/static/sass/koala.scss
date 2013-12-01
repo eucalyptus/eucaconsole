@@ -244,6 +244,12 @@ a.has-tip {
     i {
         text-indent: 0;
     }
+    table.table {
+        width: 100%;
+        tr td {
+            line-height: 1.1rem;
+        }
+    }
 }
 
 
@@ -368,6 +374,16 @@ a.button.secondary.delete:hover {
 a.circle {
     color: black;
     display: inline-block;
+}
+
+
+/* -----------------------------------------
+   Tables
+----------------------------------------- */
+table.table {
+    tr td {
+        vertical-align: top;
+    }
 }
 
 

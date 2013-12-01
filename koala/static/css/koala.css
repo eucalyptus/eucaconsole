@@ -1382,6 +1382,8 @@ a.has-tip { border-bottom: none !important; }
 .help-content ol li { text-indent: -1rem; margin-left: 1rem; }
 .help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
 .help-content i { text-indent: 0; }
+.help-content table.table { width: 100%; }
+.help-content table.table tr td { line-height: 1.1rem; }
 
 /* ----------------------------------------- Forms
 ----------------------------------------- */
@@ -1429,6 +1431,10 @@ i.fi-minus-circle:hover { color: darkred; }
 a.button.secondary.delete:hover { color: white; background-color: darkred; }
 
 a.circle { color: black; display: inline-block; }
+
+/* ----------------------------------------- Tables
+----------------------------------------- */
+table.table tr td { vertical-align: top; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */

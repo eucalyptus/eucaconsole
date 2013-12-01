@@ -15,7 +15,7 @@ $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
 $volume-status-color-attached: $euca-green;
-$volume-status-color-attaching: lighten($euca-green, 20%);
+$volume-status-color-attaching: lighten($euca-green, 10%);
 $volume-status-color-detaching: $euca-grey;
 
 
@@ -91,6 +91,12 @@ form .row.controls-wrapper {
     .plus {
         font-size: 5rem;
         margin-bottom: 0.5rem;
+    }
+}
+
+#attach-volume-modal {
+    [data-abide] .inline .error small.error {
+        display: block !important;
     }
 }
 
