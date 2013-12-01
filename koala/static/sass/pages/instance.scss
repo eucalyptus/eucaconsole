@@ -14,6 +14,10 @@ $instance-status-color-stopping: lighten(red, 20%);
 $instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
 
+$volume-status-color-attached: $euca-green;
+$volume-status-color-attaching: lighten($euca-green, 20%);
+$volume-status-color-detaching: $euca-grey;
+
 
 .row .status.running { color: $instance-status-color-running; }
 .row .status.pending { color: $instance-status-color-pending; }
@@ -64,6 +68,11 @@ form .row.controls-wrapper {
     .header .button.dropdown {
         height: 30px;
         color: black;
+    }
+    .footer {
+        &.attached { background-color: $volume-status-color-attached; }
+        &.attaching { background-color: $volume-status-color-attaching; }
+        &.detaching { background-color: $volume-status-color-detaching; }
     }
 }
 

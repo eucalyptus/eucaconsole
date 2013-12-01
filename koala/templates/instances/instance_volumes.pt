@@ -60,6 +60,9 @@
                             ${parse_date(volume.attach_data.attach_time).strftime(layout.date_format)}
                         </div>
                     </div>
+                    <div class="footer status ${volume.attach_data.status}">
+                        ${volume.attach_data.status}
+                    </div>
                     <div id="detach-volume-modal-${repeat.volume.index}" class="reveal-modal small">
                         <h3 i18n:translate="">Detach volume</h3>
                         <p>

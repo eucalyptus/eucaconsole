@@ -86,6 +86,9 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }
+.tile .footer.attached { background-color: #76b800; }
+.tile .footer.attaching { background-color: #afff1f; }
+.tile .footer.detaching { background-color: #999999; }
 
 #attach-volume { text-align: center; text-transform: uppercase; position: relative; }
 #attach-volume a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }

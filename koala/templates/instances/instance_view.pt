@@ -138,7 +138,6 @@
                 </form>
             </div>
             <div class="panel has-title">
-                <a name="image" class="linktarget"></a>
                 <h6 class="title" i18n:translate="">Image properties</h6>
                 <form>
                     <div class="row inline readonly">
