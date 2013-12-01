@@ -18,7 +18,17 @@ angular.module('InstanceVolumes', [])
         };
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.initChosenSelector();
             $scope.getInstanceVolumes();
+        };
+        $scope.initChosenSelector = function () {
+            $(document).ready(function() {
+                $('#attach-volume-modal').foundation('reveal', {
+                    'opened': function() {
+                        $('#volume_id').chosen({'width': '75%'});
+                    }
+                })
+            });
         };
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

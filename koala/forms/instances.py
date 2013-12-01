@@ -106,7 +106,12 @@ class AttachVolumeForm(BaseSecureForm):
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
-        choices += [(vol.id, vol.id) for vol in self.conn.get_all_volumes() if vol.attach_data.status is None]
+        for volume in self.conn.get_all_volumes():
+            if volume.attach_data.status is None:
+                name_tag = volume.tags.get('Name')
+                extra = ' ({name})'.format(name=name_tag) if name_tag else ''
+                vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
+                choices.append((volume.id, vol_name))
         self.volume_id.choices = choices
 
 

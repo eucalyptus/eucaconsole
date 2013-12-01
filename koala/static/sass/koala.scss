@@ -185,6 +185,31 @@ a.has-tip {
     }
 }
 
+i.fi-plus.circle {
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 0 2px;
+    font-size: 0.7rem;
+}
+
+
+i.fi-minus-circle {
+    font-size: 1.4rem;
+    &:hover {
+        color: darkred;
+    }
+}
+
+a.button.secondary.delete:hover {
+    color: white;
+    background-color: darkred ;
+}
+
+a.circle {
+    color: black;
+    display: inline-block;
+}
+
 #notifications {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -318,6 +343,14 @@ form a.remove.circle {
     left: 12px; top: -2px;
 }
 
+form .cancel-link {
+    margin-left: 2rem;
+}
+
+form .error .chosen-container .chosen-single {
+    border-color: darkred;
+    background: lighten(lightpink, 10%);
+}
 
 [data-abide] .inline .error small.error {
     display: inline !important;
@@ -325,6 +358,17 @@ form a.remove.circle {
     color: darkred;
 }
 
+textarea.hidden {
+    display: none;
+    &.debug {
+        display: block;
+    }
+}
+
+
+/* -----------------------------------------
+   Panels and modals
+----------------------------------------- */
 .panel.has-title {
     position: relative;
     padding-top: 60px;
@@ -341,41 +385,9 @@ form a.remove.circle {
     font-weight: normal;
 }
 
-form .cancel-link {
-    margin-left: 2rem;
+.reveal-modal form .row.controls-wrapper {
+    margin-bottom: 1rem;
 }
-
-i.fi-plus.circle {
-    border: 2px solid black;
-    border-radius: 100px;
-    padding: 0 2px;
-    font-size: 0.7rem;
-}
-
-textarea.hidden {
-    display: none;
-    &.debug {
-        display: block;
-    }
-}
-
-i.fi-minus-circle {
-    font-size: 1.4rem;
-    &:hover {
-        color: darkred;
-    }
-}
-
-a.button.secondary.delete:hover {
-    color: white;
-    background-color: darkred ;
-}
-
-a.circle {
-    color: black;
-    display: inline-block;
-}
-
 
 /* -----------------------------------------
    Tables

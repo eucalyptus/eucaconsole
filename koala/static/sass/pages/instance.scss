@@ -97,6 +97,7 @@ form .row.controls-wrapper {
 #attach-volume-modal {
     [data-abide] .inline .error small.error {
         display: block !important;
+        margin-bottom: 0;
     }
 }
 

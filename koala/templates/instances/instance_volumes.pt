@@ -1,11 +1,11 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
-
     <div class="row" id="contentwrap" ng-app="InstanceVolumes" tal:define="instance_name instance.tags.get('name', instance.id)">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
@@ -188,6 +188,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance_volumes.js')}"></script>
 </div>
 

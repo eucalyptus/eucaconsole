@@ -1363,6 +1363,15 @@ a.has-tip { border-bottom: none !important; }
 .sub-nav a { margin-right: 0.5rem; }
 .sub-nav a:hover { color: #76b800; }
 
+i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
+
+i.fi-minus-circle { font-size: 1.4rem; }
+i.fi-minus-circle:hover { color: darkred; }
+
+a.button.secondary.delete:hover { color: white; background-color: darkred; }
+
+a.circle { color: black; display: inline-block; }
+
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 #notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
@@ -1412,25 +1421,22 @@ form .columns input { max-width: 100%; }
 
 form a.remove.circle { position: relative; left: 12px; top: -2px; }
 
-[data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
-
-.panel.has-title { position: relative; padding-top: 60px; }
-
-.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
-
 form .cancel-link { margin-left: 2rem; }
 
-i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
+form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
+
+[data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
-i.fi-minus-circle { font-size: 1.4rem; }
-i.fi-minus-circle:hover { color: darkred; }
+/* ----------------------------------------- Panels and modals
+----------------------------------------- */
+.panel.has-title { position: relative; padding-top: 60px; }
 
-a.button.secondary.delete:hover { color: white; background-color: darkred; }
+.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
 
-a.circle { color: black; display: inline-block; }
+.reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */

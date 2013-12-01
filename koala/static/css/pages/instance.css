@@ -95,7 +95,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 #attach-volume a:hover { background-color: #d3e9b6; }
 #attach-volume .plus { font-size: 5rem; margin-bottom: 0.5rem; }
 
-#attach-volume-modal [data-abide] .inline .error small.error { display: block !important; }
+#attach-volume-modal [data-abide] .inline .error small.error { display: block !important; margin-bottom: 0; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
