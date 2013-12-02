@@ -11,10 +11,10 @@
          form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
          form label.protocol { margin-bottom: 1.5rem; }
     </style>
-    <div class="small-3 columns">
+    <div class="small-${leftcol_width} columns">
         <label class="right" i18n:translate="">Inbound Rules</label>
     </div>
-    <div class="small-9 columns field" ng-cloak="cloak">
+    <div class="small-${rightcol_width} columns field" ng-cloak="cloak">
         <div class="row rulesentry existing inline controls-wrapper"
              ng-repeat="rule in rulesArray">
             <div class="small-1 columns">
