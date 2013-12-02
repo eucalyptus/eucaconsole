@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-01 13:26-0800\n"
+"POT-Creation-Date: 2013-12-01 16:09-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -422,6 +422,34 @@ msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:68
 msgid "Are you sure you want to detach the volume from instance"
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:88
+msgid "Attach a volume to this instance"
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:91
+msgid "Click the <dynamic element> icon"
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:92
+msgid ""
+"The <dynamic element> dialog box will appear. Select the volume you want to "
+"attach to this instance."
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:98
+msgid "Detach a volume from this instance"
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:101
+msgid "Click the <dynamic element> icon for the instance you want to detach."
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:104
+msgid ""
+"The <dynamic element> dialog box will appear. Click confirm to detach the "
+"volume."
 msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:114

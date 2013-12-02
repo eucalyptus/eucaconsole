@@ -285,7 +285,7 @@ class InstanceVolumesView(BaseView):
             status = volume.attach_data.status
             volumes.append(dict(
                 id=volume.id,
-                name=volume.tags.get('name', ''),
+                name=volume.tags.get('Name', ''),
                 size=volume.size,
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,

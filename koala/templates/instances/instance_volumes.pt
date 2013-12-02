@@ -85,23 +85,23 @@
         </div>
         <div class="large-4 columns">
             <div class="help-content">
-                <h5 class="title">Attach a Volume to This Instance</h5>
+                <h5 class="title" i18n:translate="">Attach a volume to this instance</h5>
                 <div class="topic">
                     <ol>
-                        <li>Click the <strong>Attach a volume</strong> icon</li>
-                        <li>
+                        <li i18n:translate="">Click the <strong>Attach a volume</strong> icon</li>
+                        <li i18n:translate="">
                             The <strong>Attach volume to instance</strong> dialog box will appear.
                             Select the volume you want to attach to this instance.
                         </li>
                     </ol>
                 </div>
-                <h5 class="title">Detach a Volume from This Instance</h5>
+                <h5 class="title" i18n:translate="">Detach a volume from this instance</h5>
                 <div class="topic">
                     <ol>
-                        <li>
+                        <li i18n:translate="">
                             Click the <i class="fi-minus-circle"></i> icon for the instance you want to detach.
                         </li>
-                        <li>
+                        <li i18n:translate="">
                             The <strong>Detach volume</strong> dialog box will appear.  Click confirm to detach the volume.
                         </li>
                     </ol>
