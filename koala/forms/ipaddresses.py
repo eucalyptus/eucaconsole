@@ -27,11 +27,11 @@ class AssociateIPForm(BaseSecureForm):
 
 
 class DisassociateIPForm(BaseSecureForm):
-    """No fields required here expect the CSRF token"""
+    """No fields required here except the CSRF token"""
     pass
 
 
 class ReleaseIPForm(BaseSecureForm):
-    """No fields required here expect the CSRF token"""
+    """No fields required here except the CSRF token"""
     pass
 

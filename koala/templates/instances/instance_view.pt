@@ -1,8 +1,268 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
 
-    <h2>The instance id is ${instance_id}</h2>
+    <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('name', instance.id)"
+         ng-app="InstancePage">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('instances')}"
+               data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Instance</span> ${instance_name}
+        </h3>
+        <dl class="sub-nav" id="instance-subnav">
+            <dd class="active"><a href="#" i18n:translate="">Instance</a></dd>
+            <dd><a href="${request.route_url('instance_volumes', id=instance.id)}"
+                    i18n:translate="">Volumes</a></dd>
+        </dl>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
+        <div class="large-8 columns" ng-controller="InstancePageCtrl"
+             ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}', '${instance.state}')">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span i18n:translate="">Properties of instance</span>
+                    <strong>${instance_name}</strong>
+                </h6>
+                <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
+                    ${structure:instance_form['csrf_token']}
+                    <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
+                    <!--! Modal dialogs are near the bottom of this template -->
+                    <div class="row inline readonly" ng-cloak="">
+                        <div class="small-3 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
+                        <div class="small-9 columns value" ng-cloak="">
+                            <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
+                            <div id="change-instance-state"
+                                 ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
+                                <span class="tiny secondary button dropdown round" data-options="is_hover: true"
+                                      data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
+                                <ul id="instance-state-dropdown" class="f-dropdown">
+                                    <li ng-show="instanceState == 'running'">
+                                        <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                                    </li>
+                                    <li ng-show="instanceState == 'stopped'">
+                                        <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                                    </li>
+                                    <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                                        <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
+                                    </li>
+                                    <li ng-show="instanceState != 'terminated'">
+                                        <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
+                        </div>
+                    </div>
+                    ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
+                    ${panel('form_field', field=instance_form.ip_address)}
+                    <div class="row inline readonly" tal:condition="image.platform">
+                        <div class="small-3 columns"><label i18n:translate="">OS</label></div>
+                        <div class="small-9 columns value">${image.platform}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Root device name</label></div>
+                        <div class="small-9 columns value">${instance.root_device_name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Root device type</label></div>
+                        <div class="small-9 columns value">${instance.root_device_type}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
+                        <div class="small-9 columns value">${instance.architecture or image.architecture}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Instance ID</label></div>
+                        <div class="small-9 columns value">${instance.id}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="small-9 columns value">${instance.placement}</div>
+                    </div>
+                    <div class="row inline readonly" tal:condition="instance.private_ip_address">
+                        <div class="small-3 columns"><label i18n:translate="">Private IP address</label></div>
+                        <div class="small-9 columns value">${instance.private_ip_address}</div>
+                    </div>
+                    <div class="row inline readonly"
+                         tal:condition="instance.public_dns_name != instance.ip_address">
+                        <div class="small-3 columns"><label i18n:translate="">Public hostname</label></div>
+                        <div class="small-9 columns value">${instance.public_dns_name}</div>
+                    </div>
+                    <div class="row inline readonly"
+                         tal:condition="instance.private_dns_name != instance.private_ip_address">
+                        <div class="small-3 columns"><label i18n:translate="">Private hostname</label></div>
+                        <div class="small-9 columns value">${instance.private_dns_name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Key name</label></div>
+                        <div class="small-9 columns value">${instance.key_name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
+                        <div class="small-9 columns value">
+                            <div tal:repeat="group instance.groups">${group.name}</div>
+                        </div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Launch time</label></div>
+                        <div class="small-9 columns value">${instance_launch_time.strftime(layout.date_format)}</div>
+                    </div>
+                    <div class="row inline readonly" tal:condition="scaling_group">
+                        <div class="small-3 columns"><label i18n:translate="">Scaling group</label></div>
+                        <div class="small-9 columns value">${scaling_group}</div>
+                    </div>
+                    <div class="row inline readonly" tal:condition="instance.instance_profile">
+                        <div class="small-3 columns"><label i18n:translate="">Instance profile</label></div>
+                        <div class="small-9 columns value">${instance.instance_profile}</div>
+                    </div>
+                    <hr />
+                    ${panel('tag_editor', tags=instance.tags)}
+                    <hr />
+                    <div class="row">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
+                            <button type="submit" class="button"><span i18n:translate="">Save changes</span></button>
+                            <a href="${request.route_url('instances')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel has-title">
+                <h6 class="title" i18n:translate="">Image properties</h6>
+                <form>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-9 columns value">${image.id}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image name</label></div>
+                        <div class="small-9 columns value">${image.name}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div class="small-9 columns value">${image.location}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                        <div class="small-9 columns value">${image.kernel_id}</div>
+                    </div>
+                    <div class="row inline readonly">
+                        <div class="small-3 columns"><label i18n:translate="">RAM Disk ID</label></div>
+                        <div class="small-9 columns value">${image.ramdisk_id}</div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel has-title">
+                <h6 class="title" i18n:translate="">Other actions</h6>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" i18n:translate="">
+                            Launch more like this
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" i18n:translate="">
+                            Create scaling group launch configuration like this
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-content">
+                <h5 class="title">Connecting to an instance</h5>
+                <p>To connect to your instance, be sure the security group <b>${instance.groups or 'default'}</b> has
+                   TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
+                   apply if you did not select a key pair when you launched this instance):
+                </p>
+                <ol>
+                    <li>Open an SSH terminal window.</li>
+                    <li>Change your directory to the one where you stored your key file "${instance.key_name}.pem"</li>
+                    <li>Run the following command to set the correct permissions for your key file:<br />
+                        <code>chmod 400 ${instance.key_name}.pem</code>
+                    </li>
+                    <li>Connect to your instance via its public IP address by running the following command:
+                        <code>ssh -i ${instance.key_name}.pem root@${instance.ip_address}</code>
+                    </li>
+                </ol>
+            </div>
+            <!-- help goes here -->
+        </div>
+    </div>
+    <!--! modal dialogs -->
+    <div id="change-state-dialogs">
+        <div id="reboot-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Reboot instance</h3>
+            <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
+            <p><span i18n:translate="">Are you sure you want to reboot instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_reboot', id=instance.id)}" id="reboot-form">
+                ${structure:reboot_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, reboot" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="start-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Start instance</h3>
+            <p><span i18n:translate="">Are you sure you want to start instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_start', id=instance.id)}" id="start-form">
+                ${structure:start_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, start instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="stop-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Stop instance</h3>
+            <p><span i18n:translate="">Are you sure you want to stop instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_stop', id=instance.id)}" id="stop-form">
+                ${structure:stop_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, stop instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-instance-modal" class="reveal-modal small">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_terminate', id=instance.id)}" id="terminate-form">
+                ${structure:terminate_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, terminate" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
 </div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
+</div>
+
 </metal:block>

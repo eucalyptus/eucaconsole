@@ -127,7 +127,7 @@ nav.top-bar .dropdown li a {
 // Page title
 #pagetitle.header {
     margin-top: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     padding-left: 14px;
     padding-top: 10px;
     color: $euca-darkgrey;
@@ -135,6 +135,7 @@ nav.top-bar .dropdown li a {
     letter-spacing: 1px;
     font-weight: normal;
     font-size: 1.3rem;
+    border-bottom: 1px solid darken($euca-extralightblue, 30%);
 }
 
 
@@ -149,6 +150,7 @@ nav.top-bar .dropdown li a {
     position: relative;
     background-color: white;
     padding-bottom: 3rem;
+    min-height: 30rem;
 }
 
 @media screen and (min-width: $topbar-breakpoint) {
@@ -166,13 +168,52 @@ nav.top-bar .dropdown li a {
     background-image: url(/static/img/dots32.gif)
 }
 
+a.has-tip {
+    border-bottom: none !important;
+}
+
+.tooltip {
+    font-weight: normal;
+    font-size: 0.825rem;
+    font-family: Verdana, Geneva, Helvetica, sans-serif;
+}
+
+.sub-nav a {
+    margin-right: 0.5rem;
+    &:hover {
+        color: $euca-green;
+    }
+}
+
+i.fi-plus.circle {
+    border: 2px solid black;
+    border-radius: 100px;
+    padding: 0 2px;
+    font-size: 0.7rem;
+}
+
+
+i.fi-minus-circle {
+    font-size: 1.4rem;
+    &:hover {
+        color: darkred;
+    }
+}
+
+a.button.secondary.delete:hover {
+    color: white;
+    background-color: darkred ;
+}
+
+a.circle {
+    color: black;
+    display: inline-block;
+}
+
 #notifications {
     margin-left: 1rem;
     margin-right: 1rem;
     margin-top: -1rem;
-}
-
-#notifications {
     .alert-box {
         background-color: $euca-notificationblue;
         &.success {
@@ -184,13 +225,29 @@ nav.top-bar .dropdown li a {
             background-color: lightyellow;
             border-color: gray;
         }
+        &.alert {
+            background-color: darkred;
+        }
     }
 }
 
-a.has-tip {
-    border-bottom: none !important;
+#tag-editor {
+    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
+    .tagentry {
+        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
+        .new { color: $euca-green; }
+    }
 }
 
+#pagetitle .back-arrow {
+    display: inline-block;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    padding-right: 0.8rem;
+    border-right: 1px solid darken($euca-extralightblue, 30%);
+    margin-right: 0.8rem;
+}
 
 /* -----------------------------------------
    Help content
@@ -202,9 +259,20 @@ a.has-tip {
         li {
             text-indent: -1rem;
             margin-left: 1rem;
-            p, .note {
+            p {
                 text-indent: 0;
+                margin-bottom: 0.5rem;
+                margin-top: 0.5rem;
             }
+        }
+    }
+    i {
+        text-indent: 0;
+    }
+    table.table {
+        width: 100%;
+        tr td {
+            line-height: 1.1rem;
         }
     }
 }
@@ -232,6 +300,17 @@ form .controls_csrf_token {
 form .inline label {
     padding-top: 0.4rem;
     font-weight: bold;
+    text-align: right;
+}
+
+form .row.inline.readonly {
+    margin-top: 0.1rem;
+    margin-bottom: 0.3rem;
+    label {
+        position: relative;
+        right: -0.8rem;
+        top: -0.4rem;
+    }
 }
 
 form .inline.controls-wrapper > [class*='small-'] label {
@@ -259,12 +338,37 @@ form .columns input {
     max-width: 100%;
 }
 
+form a.remove.circle {
+    position: relative;
+    left: 12px; top: -2px;
+}
+
+form .cancel-link {
+    margin-left: 2rem;
+}
+
+form .error .chosen-container .chosen-single {
+    border-color: darkred;
+    background: lighten(lightpink, 10%);
+}
+
 [data-abide] .inline .error small.error {
     display: inline !important;
     background-color: transparent;
     color: darkred;
 }
 
+textarea.hidden {
+    display: none;
+    &.debug {
+        display: block;
+    }
+}
+
+
+/* -----------------------------------------
+   Panels and modals
+----------------------------------------- */
 .panel.has-title {
     position: relative;
     padding-top: 60px;
@@ -281,48 +385,19 @@ form .columns input {
     font-weight: normal;
 }
 
-form .cancel-link {
-    margin-left: 2rem;
+.reveal-modal form .row.controls-wrapper {
+    margin-bottom: 1rem;
 }
 
-i.fi-plus.circle {
-    border: 2px solid black;
-    border-radius: 100px;
-    padding: 0 2px;
-    font-size: 0.7rem;
-}
-
-textarea.hidden {
-    display: none;
-    &.debug {
-        display: block;
+/* -----------------------------------------
+   Tables
+----------------------------------------- */
+table.table {
+    tr td {
+        vertical-align: top;
     }
 }
 
-i.fi-minus-circle {
-    font-size: 1.4rem;
-    &:hover {
-        color: darkred;
-    }
-}
-
-a.button.secondary.delete:hover {
-    color: white;
-    background-color: darkred ;
-}
-
-a.circle {
-    color: black;
-    display: inline-block;
-}
-
-#tag-editor {
-    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
-    .tagentry {
-        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
-        .new { color: $euca-green; }
-    }
-}
 
 /* -----------------------------------------
    Footer

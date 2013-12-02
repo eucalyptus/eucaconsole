@@ -11,7 +11,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'Babel == 1.3',
     'beaker == 1.6.4',
-    'boto == 2.17.0',
+    'boto == 2.13.3',
     'chameleon == 2.13-1',
     'gevent == 0.13.8',  # Requires libevent
     'greenlet == 0.4.1',
@@ -27,6 +27,7 @@ requires = [
     'pyramid_layout == 0.8',
     'pyramid_mailer == 0.13',
     'pyramid_tm == 0.7',
+    'python-dateutil == 1.5',  # Don't use 2.x series unless on Python 3
     'simplejson == 3.3.1',
     'SQLAlchemy == 0.8.3',
     'waitress == 0.8.7',

@@ -22,7 +22,7 @@
         <h6>Filters</h6>
         <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
             <input type="hidden" name="display" value="${display_type}" />
-            <div class="match-condition">Match any of...</div>
+            <div class="match-condition">Match all of...</div>
             <div metal:define-slot="filter_form_fields">
                 <div tal:repeat="field filter_fields">
                     <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
@@ -104,7 +104,7 @@
                             <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
                         </metal:block>
                     </strong>
-                    <metal:block metal:define-slot="tile-dropdown-button">
+                    <metal:block metal:define-slot="tile_dropdown_button">
                         <span class="tiny secondary button dropdown right"
                               data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">

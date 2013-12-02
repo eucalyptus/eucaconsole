@@ -1,4 +1,4 @@
-/* @fileOverview Scaling Groups landing page CSS */
+/* @fileOverview single Instance page CSS */
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
 
@@ -58,6 +58,46 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
-.tile .status.allhealthy { background-color: #76b800; }
+.row .status.running { color: #558500; }
 
-.tile .status.unhealthy { background-color: darkred; }
+.row .status.pending { color: #999999; }
+
+.row .status.stopped { color: #990000; }
+
+.row .status.stopping { color: #ff6666; }
+
+.row .status.terminated { color: #444444; }
+
+.row .status.terminating { color: lightgrey; }
+
+select { width: 50%; }
+
+form .row.controls-wrapper { margin-bottom: 0; }
+
+.dots { margin-left: 1rem; }
+
+#change-instance-state { display: inline-block; margin-left: 1rem; }
+
+#instance-status-label { position: relative; top: 0; }
+
+#current-status { position: relative; top: 2px; }
+
+#instance-subnav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
+
+.tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
+.tile .header .button.dropdown { height: 30px; color: black; }
+.tile .footer.attached { background-color: #76b800; }
+.tile .footer.attaching { background-color: #97eb00; }
+.tile .footer.detaching { background-color: #999999; }
+
+#attach-volume { text-align: center; text-transform: uppercase; position: relative; }
+#attach-volume a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+#attach-volume a:hover { background-color: #d3e9b6; }
+#attach-volume .plus { font-size: 5rem; margin-bottom: 0.5rem; }
+
+#attach-volume-modal [data-abide] .inline .error small.error { display: block !important; margin-bottom: 0; }
+
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+/* Small screen */
+@media screen and (max-width: 480px) { select { width: 80%; } }

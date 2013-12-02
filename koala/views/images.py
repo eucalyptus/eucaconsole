@@ -84,7 +84,6 @@ class ImagesView(LandingPageView):
                 description=image.description,
                 id=image.id,
                 kernel_id=image.kernel_id,
-                location=image.location,
                 name=image.name,
                 owner_alias=image.owner_alias,
                 platform=image.platform,

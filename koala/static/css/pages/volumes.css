@@ -6,25 +6,21 @@
 
 .tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 
-.tile .header { position: relative; padding: 4px 30px 4px 4px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
-.tile .header a { color: white; }
+.tile .header { position: relative; padding: 6px 30px 4px 10px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
+.tile .header a { display: block; color: white; }
 .tile .header a:hover { color: #76b800; }
-
 .tile .header strong { font-weight: normal; }
-
+.tile .header .f-dropdown { width: 120px; }
 .tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
-
 .tile .header .button.dropdown i { position: relative; top: 2px; }
 
 .tile .header .button.dropdown::before { border: none; }
 
-.tile .header .f-dropdown { width: 120px; }
-
 .tile .content { padding: 8px; font-size: 0.9em; }
+.tile .content div { margin-bottom: 0.3rem; }
+.tile .content .label { padding: 1px 3px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 
-.tile .content div { margin-bottom: 0.5rem; }
-
-.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px; color: white; }
+.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
 
 .sort-search { font-size: 0.9rem; }
 
@@ -73,3 +69,5 @@
 .tile .status.created { background-color: #76b800; }
 
 .tile .status.creating { background-color: #bcdd8f; }
+
+.tile .status.available { background-color: #76b800; }

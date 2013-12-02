@@ -42,54 +42,58 @@ $gridwrapper-table-width: 98%;
 
 .tile .header {
     position: relative;
-    padding: 4px 30px 4px 4px;
+    padding: 6px 30px 4px 10px;
     border-bottom: 1px solid $tile-border-color;
     height: $tile-row-height;
     color: white;
     background-color: $euca-darkgrey;
     a {
+        display: block;
         color: white;
         &:hover {
             color: $euca-green;
         }
     }
-}
-
-.tile .header strong {
-    font-weight: normal;
-}
-
-.tile .header .button.dropdown {
-    position: absolute;
-    width: 30px; height: $tile-row-height;
-    top: 0; right: 0;
-    font-size: 1rem;
-    padding: 0 0 0 0;
-    border: 1px solid $tile-border-color;
-    border-top: none;
-    border-right: none;
-}
-
-.tile .header .button.dropdown i {
-    position: relative;
-    top: 2px;
+    strong {
+        font-weight: normal;
+    }
+    .f-dropdown {
+        width: 120px;
+    }
+    .button.dropdown {
+        position: absolute;
+        width: 30px; height: $tile-row-height;
+        top: 0; right: 0;
+        font-size: 1rem;
+        padding: 0 0 0 0;
+        border: 1px solid $tile-border-color;
+        border-top: none;
+        border-right: none;
+        i {
+            position: relative;
+            top: 2px;
+        }
+    }
 }
 
 .tile .header .button.dropdown::before {
     border: none;
 }
 
-.tile .header .f-dropdown {
-    width: 120px;
-}
-
 .tile .content {
     padding: 8px;
     font-size: 0.9em;
-}
-
-.tile .content div {
-    margin-bottom: 0.5rem;
+    div {
+        margin-bottom: 0.3rem;
+    }
+    .label {
+        padding: 1px 3px;
+        background-color: $euca-grey;
+        margin-right: 0.2rem;
+        font-family: Verdana, sans-serif;
+        min-width: 22px;
+        text-align: center;
+    }
 }
 
 .tile .footer {
@@ -97,7 +101,7 @@ $gridwrapper-table-width: 98%;
     bottom: 0;
     left: 0; right: 0;
     height: $tile-row-height;
-    padding: 4px;
+    padding: 4px 4px 4px 10px;
     color: white;
 }
 

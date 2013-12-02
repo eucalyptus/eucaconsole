@@ -75,7 +75,7 @@ angular.module('SecurityGroupRules', [])
             }
             $('.groupname').chosen({'width': '50%'});
         };
-    });
+    })
 ;
 
 

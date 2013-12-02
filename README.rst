@@ -23,10 +23,11 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 * libevent-dev (required by gevent)
 * openssl (required by M2Crypto)
+* gcc, python development headers, swig (required to install Python libraries)
 
-Ubuntu: `apt-get install libevent-dev openssl`
-Fedora: `yum install libevent-devel openssl-devel`
-OS X: `brew install libevent openssl`
+Ubuntu: `apt-get install libevent-dev openssl build-essential python-dev swig`
+Fedora: `yum install libevent-devel openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+OS X: Install homebrew, then run `brew install libevent openssl swig`
 
 
 Pyramid Setup
@@ -69,7 +70,7 @@ Run the server with
 
     ./launcher.sh
 
-`launcher.sh` is provided as an alias for `python runapp.py`
+`launcher.sh` is provided as an alias for `pserve console.ini --reload`
 
 
 Running the server in development/debug mode
