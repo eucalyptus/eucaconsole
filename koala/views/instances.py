@@ -117,9 +117,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
-        if self.instance is None:
-            raise HTTPNotFound()
-        if self.instance_form.validate():
+        if self.instance and self.instance_form.validate():
             # Update tags
             self.update_tags()
 
@@ -151,7 +149,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_reboot(self):
-        if self.reboot_form.validate():
+        if self.instance and self.reboot_form.validate():
             rebooted = self.instance.reboot()
             time.sleep(1)
             location = self.request.route_url('instance_view', id=self.instance.id)
@@ -166,7 +164,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_stop', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_stop(self):
-        if self.stop_form.validate():
+        if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
                 self.instance.stop()
@@ -179,7 +177,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
-        if self.start_form.validate():
+        if self.instance and self.start_form.validate():
             # Can only start an instance if it has a volume attached
             self.instance.start()
             location = self.request.route_url('instance_view', id=self.instance.id)
@@ -191,7 +189,7 @@ class InstanceView(TaggedItemView):
 
     @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_terminate(self):
-        if self.terminate_form.validate():
+        if self.instance and self.terminate_form.validate():
             self.instance.terminate()
             time.sleep(1)
             location = self.request.route_url('instance_view', id=self.instance.id)
@@ -210,17 +208,19 @@ class InstanceView(TaggedItemView):
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
-        if self.instance.launch_time:
+        if self.instance and self.instance.launch_time:
             return parser.parse(self.instance.launch_time)
         return None
 
     def get_image(self):
-        if self.instance is None:
-            raise HTTPNotFound()
-        return self.conn.get_image(self.instance.image_id)
+        if self.instance:
+            return self.conn.get_image(self.instance.image_id)
+        return None
 
     def get_scaling_group(self):
-        return self.instance.tags.get('aws:autoscaling:groupName')
+        if self.instance:
+            return self.instance.tags.get('aws:autoscaling:groupName')
+        return None
 
     def disassociate_ip_address(self, ip_address=None):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
