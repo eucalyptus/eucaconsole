@@ -301,6 +301,9 @@ form .inline label {
     padding-top: 0.4rem;
     font-weight: bold;
     text-align: right;
+    select, input, .chosen-container {
+        text-align: left;
+    }
 }
 
 form .row.inline.readonly {

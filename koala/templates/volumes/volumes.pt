@@ -17,13 +17,30 @@
                 <a class="button small" i18n:translate="">Create new volume</a>
             </div>
             <div metal:fill-slot="tile_content">
-                <div>{{ item.id }}</div>
-                <div>{{ item.status }}</div>
-                <div>{{ item.size }} GB</div>
-                <div>{{ item.instance }}</div>
-                <div>{{ item.snapshot_id }}</div>
-                <div>{{ item.zone }}</div>
-                <div>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</div>
+                <div>
+                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    {{ item.size }} GB
+                </div>
+                <div ng-show="item.instance">
+                    <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
+                    {{ item.instance }}
+                </div>
+                <div ng-show="item.snapshot_id">
+                    <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
+                    {{ item.snapshot_id }}
+                </div>
+                <div>
+                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.zone }}
+                </div>
+                <div>
+                    <span class="label" title="Create time" i18n:attributes="title" data-tooltip="">LT</span>
+                    {{ item.create_time | date:'${layout.angular_date_format}' }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Volume</th>
@@ -41,7 +58,7 @@
                 <td>{{ item.instance }}</td>
                 <td>{{ item.snapshot }}</td>
                 <td>{{ item.zone }}</td>
-                <td>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
     </div>

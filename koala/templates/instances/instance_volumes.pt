@@ -127,7 +127,6 @@
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
-                <p>&nbsp;</p>
                 <hr />
                 <div class="help-content">
                     <h5 class="title" i18n:translate="">Volume device options for Linux</h5>

@@ -11,6 +11,9 @@
                data-tooltip="" title="Back to security groups" i18n:attributes="title">&lt;</a>
             <span i18n:translate="">Security Group</span> ${security_group.name}
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
         <div class="large-7 columns"
                 tal:define="form_action request.route_url('securitygroup_update', id=security_group.id)
                         if security_group else request.route_url('securitygroup_create')">

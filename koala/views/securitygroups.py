@@ -137,10 +137,9 @@ class SecurityGroupView(TaggedItemView):
             self.update_tags()
             self.update_rules()
 
-            location = self.request.route_url('securitygroups')
-            msg = _(u'Successfully modified security group {group}')
-            notification_msg = msg.format(group=self.security_group.name)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            location = self.request.route_url('securitygroup_view', id=self.security_group.id)
+            msg = _(u'Successfully modified security group')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
         return dict(

@@ -94,10 +94,11 @@ class AttachVolumeForm(BaseSecureForm):
         validators=[validators.Required(message=device_error_msg)],
     )
 
-    def __init__(self, request, conn=None, **kwargs):
+    def __init__(self, request, instance=None, conn=None, **kwargs):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
         self.conn = conn
+        self.instance = instance
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
         if conn is not None:
@@ -107,11 +108,13 @@ class AttachVolumeForm(BaseSecureForm):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
         for volume in self.conn.get_all_volumes():
-            if volume.attach_data.status is None:
+            if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, vol_name))
+        if len(choices) == 1:
+            choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
 

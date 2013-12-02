@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-01 16:09-0800\n"
+"POT-Creation-Date: 2013-12-02 13:58-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Unassign address..."
 msgstr ""
 
-#: koala/forms/instances.py:56 koala/forms/instances.py:108
+#: koala/forms/instances.py:56 koala/forms/instances.py:109
 #: koala/templates/panels/securitygroup_rules.pt:52
 #: koala/templates/panels/securitygroup_rules.pt:71
 #: koala/templates/panels/securitygroup_rules.pt:94
@@ -59,6 +59,10 @@ msgstr ""
 
 #: koala/forms/instances.py:93
 msgid "Device"
+msgstr ""
+
+#: koala/forms/instances.py:117
+msgid "No available volumes in the availability zone"
 msgstr ""
 
 #: koala/forms/ipaddresses.py:16
@@ -464,30 +468,30 @@ msgstr ""
 msgid "Attach a volume to instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:133
+#: koala/templates/instances/instance_volumes.pt:132
 msgid "Volume device options for Linux"
+msgstr ""
+
+#: koala/templates/instances/instance_volumes.pt:136
+#: koala/templates/instances/instance_volumes.pt:161
+msgid "Possible for Connection"
 msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:137
 #: koala/templates/instances/instance_volumes.pt:162
-msgid "Possible for Connection"
+msgid "Instance Store"
 msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:138
 #: koala/templates/instances/instance_volumes.pt:163
-msgid "Instance Store"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:139
-#: koala/templates/instances/instance_volumes.pt:164
 msgid "Recommended for EBS"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:158
+#: koala/templates/instances/instance_volumes.pt:157
 msgid "Volume device options for Windows"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:183
+#: koala/templates/instances/instance_volumes.pt:182
 msgid "Note: <dynamic element> is reserved for root device"
 msgstr ""
 
@@ -830,45 +834,45 @@ msgstr ""
 msgid "Instance name"
 msgstr ""
 
-#: koala/views/instances.py:137
+#: koala/views/instances.py:135
 msgid "Successfully modified instance"
 msgstr ""
 
-#: koala/views/instances.py:158
+#: koala/views/instances.py:156
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:161
+#: koala/views/instances.py:159
 msgid "Unable to reboot the instance."
 msgstr ""
 
-#: koala/views/instances.py:174
+#: koala/views/instances.py:172
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop "
 "the instance."
 msgstr ""
 
-#: koala/views/instances.py:186
+#: koala/views/instances.py:184
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start "
 "the instance."
 msgstr ""
 
-#: koala/views/instances.py:198
+#: koala/views/instances.py:196
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to "
 "shut down the instance."
 msgstr ""
 
-#: koala/views/instances.py:312
+#: koala/views/instances.py:313
 msgid ""
 "Request successfully submitted.  It may take a moment to attach the "
 "volume."
 msgstr ""
 
-#: koala/views/instances.py:334
+#: koala/views/instances.py:335
 msgid ""
 "Request successfully submitted.  It may take a moment to detach the "
 "volume."
@@ -931,7 +935,7 @@ msgid "Successfully created security group {group}"
 msgstr ""
 
 #: koala/views/securitygroups.py:141
-msgid "Successfully modified security group {group}"
+msgid "Successfully modified security group"
 msgstr ""
 
 #: koala/views/snapshots.py:38
@@ -1005,5 +1009,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Settings for instance"
+#~ msgstr ""
+
+#~ msgid "Successfully modified security group {group}"
 #~ msgstr ""
 

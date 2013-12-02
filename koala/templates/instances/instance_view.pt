@@ -21,7 +21,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
-        <div class="large-8 columns" ng-controller="InstancePageCtrl"
+        <div class="large-7 columns" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}', '${instance.state}')">
             <div class="panel has-title">
                 <h6 class="title">
@@ -178,7 +178,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-4 columns">
+        <div class="large-5 columns">
             <div class="help-content">
                 <h5 class="title">Connecting to an instance</h5>
                 <p>To connect to your instance, be sure the security group <b>${instance.groups or 'default'}</b> has
@@ -191,7 +191,7 @@
                     <li>Run the following command to set the correct permissions for your key file:<br />
                         <code>chmod 400 ${instance.key_name}.pem</code>
                     </li>
-                    <li>Connect to your instance via its public IP address by running the following command:
+                    <li>Connect to your instance via its public IP address by running the following command:<br />
                         <code>ssh -i ${instance.key_name}.pem root@${instance.ip_address}</code>
                     </li>
                 </ol>

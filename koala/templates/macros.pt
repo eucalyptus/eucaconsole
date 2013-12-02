@@ -120,7 +120,9 @@
                     <metal:block metal:define-slot="tile_content"></metal:block>
                 </div>
                 <metal:block metal:define-slot="tile_footer">
-                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
+                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                        {{ item.status.replace('-', ' ') }}
+                    </div>
                 </metal:block>
             </div>
         </div>
