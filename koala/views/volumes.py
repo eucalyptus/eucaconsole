@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.volumes import VolumeForm, DeleteVolumeForm
+from ..forms.volumes import VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm
 from ..models import LandingPageFilter, Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -173,6 +173,76 @@ class VolumeStateView(BaseView):
     def volume_state_json(self):
         """Return current volume status"""
         return dict(results=self.volume.status)
+
+    def get_volume(self):
+        volume_id = self.request.matchdict.get('id')
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
+
+
+class VolumeSnapshotsView(BaseView):
+    VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
+
+    def __init__(self, request):
+        super(VolumeSnapshotsView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.volume = self.get_volume()
+        self.add_form = None
+        self.create_form = CreateSnapshotForm(self.request, formdata=self.request.params or None)
+        self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            volume=self.volume,
+            create_form=self.create_form,
+            delete_form=self.delete_form,
+        )
+
+    @view_config(route_name='volume_snapshots', renderer=VIEW_TEMPLATE, request_method='GET')
+    def volume_snapshots(self):
+        if self.volume is None:
+            raise HTTPNotFound()
+        return self.render_dict
+
+    @view_config(route_name='volume_snapshots_json', renderer='json', request_method='GET')
+    def volume_snapshots_json(self):
+        snapshots = []
+        for snapshot in self.volume.snapshots():
+            delete_form_action = self.request.route_url(
+                'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
+            snapshots.append(dict(
+                id=snapshot.id,
+                name=snapshot.tags.get('Name', ''),
+                progress=snapshot.progress,
+                volume_size=self.volume.size,
+                start_time=snapshot.start_time,
+                status=snapshot.status,
+                delete_form_action=delete_form_action,
+            ))
+        return dict(results=snapshots)
+
+    @view_config(route_name='volume_snapshot_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_snapshot_create(self):
+        if self.create_form.validate():
+            description = self.request.params.get('description')
+            try:
+                self.volume.create_snapshot(description)
+                msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('volume_snapshots', id=self.volume.id)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='volume_snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_snapshot_delete(self):
+        if self.delete_form.validate():
+            # TODO: Implement
+            pass
 
     def get_volume(self):
         volume_id = self.request.matchdict.get('id')

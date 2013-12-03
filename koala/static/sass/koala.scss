@@ -178,10 +178,16 @@ a.has-tip {
     font-family: Verdana, Geneva, Helvetica, sans-serif;
 }
 
-.sub-nav a {
-    margin-right: 0.5rem;
-    &:hover {
-        color: $euca-green;
+.sub-nav {
+    position: relative;
+    top: -1.5rem;
+    left: 1rem;
+    margin-bottom: -1rem;
+    a {
+        margin-right: 0.5rem;
+        &:hover {
+            color: $euca-green;
+        }
     }
 }
 
@@ -209,6 +215,26 @@ a.circle {
     color: black;
     display: inline-block;
 }
+
+// Add tile on instance-volumes page and volume-snapshots page
+.tile.add {
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+    a {
+        display: block;
+        position: absolute;
+        top: 0; bottom: 0; left: 0; right: 0;
+        &:hover {
+            background-color: lighten($euca-lightgreen, 30%);
+        }
+    }
+    .plus {
+        font-size: 5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
 
 #notifications {
     margin-left: 1rem;

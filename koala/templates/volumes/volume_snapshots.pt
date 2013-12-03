@@ -1,0 +1,114 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/volume.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('name', volume.id)">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('volumes')}"
+               data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Volume</span> ${volume_name}
+        </h3>
+        <dl class="sub-nav" id="volume-subnav">
+            <dd><a href="${request.route_url('volume_view', id=volume.id)}" i18n:translate="">Volume</a></dd>
+            <dd class="active"><a href="#" i18n:translate="">Snapshots</a></dd>
+        </dl>
+        <!--! Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+        <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse" ng-controller="VolumeSnapshotsCtrl"
+             ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span i18n:translate="">Snapshots for volume</span>
+                    <strong>${volume_name}</strong>
+                </h6>
+                <div class="tile add" id="create-snapshot">
+                    <a href="#" data-reveal-id="create-snapshot-modal" >
+                        <div class="plus">+</div>
+                        <div i18n:translate="">Add a snapshot</div>
+                    </a>
+                </div>
+                <span class="dots" ng-show="initialLoading">&nbsp;</span>
+                <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
+                    <div class="header">
+                        <strong>{{ snapshot.name || snapshot.id }}</strong>
+                        <a class="tiny secondary button dropdown right" href="#"
+                           data-reveal-id="delete-snapshot-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
+                    </div>
+                    <div class="content">
+                        <div>
+                            <span class="label" title="Progress" i18n:attributes="title" data-tooltip="">PR</span>
+                            {{ snapshot.progress }}
+                        </div>
+                        <div>
+                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                            {{ snapshot.volume_size }}
+                        </div>
+                        <div>
+                            <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
+                            {{ snapshot.id }}
+                        </div>
+                        <div>
+                            <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
+                            {{ snapshot.start_time | date: '${layout.angular_date_format}' }}
+                        </div>
+                    </div>
+                    <div class="footer status {{ snapshot.status }}">
+                        {{ snapshot.status }}
+                    </div>
+                    <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small">
+                        <h3 i18n:translate="">Delete Snapshot</h3>
+                        <p>
+                            <span i18n:translate="">Are you sure you want to delete the snapshot</span>?
+                        </p>
+                        <form method="post" id="delete-form" data-abide="" action="{{ snapshot.delete_form_action }}">
+                            ${structure:delete_form['csrf_token']}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                                </div>
+                            </div>
+                        </form>
+                        <a class="close-reveal-modal">&#215;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-content">
+                <!--! Help goes here -->
+            </div>
+        </div>
+        <!--! modal dialogs -->
+        <div id="snapshot-dialogs">
+            <div id="create-snapshot-modal" class="reveal-modal small">
+                <h3 i18n:translate="">Add snapshot</h3>
+                <p><span i18n:translate="">Add a snapshot for</span> <strong>${volume_name}</strong></p>
+                <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
+                      id="create-snapshot-form" data-abide="">
+                    ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form.description)}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Add snapshot" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/volume_snapshots.js')}"></script>
+</div>
+
+</metal:block>

@@ -1,6 +1,8 @@
 /* @fileOverview Volumes landing page CSS */
 @import "../includes/eucavariables";
 
+// Import landing page styles for tile view display on Volume snapshots page
+@import "../includes/landingpage";
 
 // Volume status choices are: creating, available, in-use, deleting, deleted, error
 
@@ -16,4 +18,19 @@ $volume-status-color-attached: darkorange;
 .status.creating { color: $volume-status-color-creating; }
 .status.available { color: $volume-status-color-available; }
 .status.inuse { color: $volume-status-color-attached; }
+
+
+// Volume snapshots page
+.tile {
+    background-color: white;
+    border: 1px solid $euca-lightgrey;
+    width: 180px; height: 140px;
+    .header .button.dropdown {
+        height: 30px;
+        color: black;
+    }
+}
+
+.status.pending { background-color: lighten($euca-green, 10%); }
+.status.completed { background-color: $euca-green; }
 

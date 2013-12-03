@@ -46,7 +46,7 @@ class InstanceForm(BaseSecureForm):
                as it may not be in the get_all_addresses fetch.
         """
         empty_choice = ('', _(u'Unassign address...'))
-        ipaddress_choices = [empty_choice]
+        ipaddress_choices = [empty_choice] if self.instance.ip_address else []
         existing_ip_choices = [(eip.public_ip, eip.public_ip) for eip in self.conn.get_all_addresses()]
         ipaddress_choices += existing_ip_choices
         ipaddress_choices += [(self.instance.ip_address, self.instance.ip_address)]

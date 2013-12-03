@@ -64,3 +64,25 @@ class DeleteVolumeForm(BaseSecureForm):
     """CSRF-protected form to delete a volume"""
     pass
 
+
+class CreateSnapshotForm(BaseSecureForm):
+    """CSRF-protected form to create a snapshot from a volume"""
+    desc_error_msg = _(u'Description is required')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[
+            validators.Required(message=desc_error_msg),
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
+        ],
+    )
+
+    def __init__(self, request, **kwargs):
+        super(CreateSnapshotForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.description.error_msg = self.desc_error_msg
+
+
+class DeleteSnapshotForm(BaseSecureForm):
+    """CSRF-protected form to delete a snapshot from a volume"""
+    pass
+

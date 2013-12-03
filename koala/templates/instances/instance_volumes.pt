@@ -13,8 +13,7 @@
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
         <dl class="sub-nav" id="instance-subnav">
-            <dd><a href="${request.route_url('instance_view', id=instance.id)}"
-                    i18n:translate="">Instance</a></dd>
+            <dd><a href="${request.route_url('instance_view', id=instance.id)}" i18n:translate="">Instance</a></dd>
             <dd class="active"><a href="#" i18n:translate="">Volumes</a></dd>
         </dl>
         <!--! Notifications -->
@@ -27,7 +26,7 @@
                     <span i18n:translate="">Volumes for instance</span>
                     <strong>${instance_name}</strong>
                 </h6>
-                <div class="tile" id="attach-volume">
+                <div class="tile add" id="attach-volume">
                     <a href="#" data-reveal-id="attach-volume-modal" >
                         <div class="plus">+</div>
                         <div i18n:translate="">Attach a volume</div>
@@ -179,7 +178,7 @@
                             </tr>
                         </tbody>
                     </table>
-                <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
+                    <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
                 </div>
             </div>
         </div>

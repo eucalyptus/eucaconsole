@@ -15,8 +15,7 @@
         </h3>
         <dl class="sub-nav" id="instance-subnav">
             <dd class="active"><a href="#" i18n:translate="">Instance</a></dd>
-            <dd><a href="${request.route_url('instance_volumes', id=instance.id)}"
-                    i18n:translate="">Volumes</a></dd>
+            <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
         </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
@@ -161,16 +160,16 @@
             <div class="panel has-title">
                 <h6 class="title" i18n:translate="">Other actions</h6>
                 <div class="row">
-                    <div class="large-4 columns">&nbsp;</div>
-                    <div class="large-8 columns">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
                         <a class="button secondary" i18n:translate="">
                             Launch more like this
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="large-4 columns">&nbsp;</div>
-                    <div class="large-8 columns">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
                         <a class="button secondary" i18n:translate="">
                             Create scaling group launch configuration like this
                         </a>
@@ -181,7 +180,8 @@
         <div class="large-5 columns">
             <div class="help-content">
                 <h5 class="title">Connecting to an instance</h5>
-                <p>To connect to your instance, be sure the security group <b>${instance.groups or 'default'}</b> has
+                <p>To connect to your instance, be sure the security group
+                   <b>${instance.groups[0].name if instance.groups else 'default'}</b> has
                    TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
                    apply if you did not select a key pair when you launched this instance):
                 </p>
@@ -189,10 +189,10 @@
                     <li>Open an SSH terminal window.</li>
                     <li>Change your directory to the one where you stored your key file "${instance.key_name}.pem"</li>
                     <li>Run the following command to set the correct permissions for your key file:<br />
-                        <code>chmod 400 ${instance.key_name}.pem</code>
+                        <code>chmod 400 ${instance.key_name or 'key_file'}.pem</code>
                     </li>
                     <li>Connect to your instance via its public IP address by running the following command:<br />
-                        <code>ssh -i ${instance.key_name}.pem root@${instance.ip_address}</code>
+                        <code>ssh -i ${instance.key_name or 'key_file'}.pem root@${instance.ip_address}</code>
                     </li>
                 </ol>
             </div>

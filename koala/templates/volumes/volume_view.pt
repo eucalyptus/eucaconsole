@@ -19,6 +19,10 @@
             <span i18n:translate="">Volume</span>
             <span tal:condition="volume">${volume_name}</span>
         </h3>
+        <dl class="sub-nav" id="volume-subnav" tal:condition="volume">
+            <dd class="active"><a href="#" i18n:translate="">Volume</a></dd>
+            <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 

@@ -43,8 +43,8 @@ urls = [
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
-    Route(name='instance_volume_attach', pattern='/instances/{id}/volume/attach'),
-    Route(name='instance_volume_detach', pattern='/instances/{id}/volume/{volume_id}/detach'),
+    Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
+    Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
     # Scaling Groups
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
@@ -59,6 +59,10 @@ urls = [
     Route(name='volume_update', pattern='/volumes/{id}/update'),
     Route(name='volume_delete', pattern='/volumes/{id}/delete'),
     Route(name='volume_state_json', pattern='/volumes/{id}/state/json'),
+    Route(name='volume_snapshots', pattern='/volumes/{id}/snapshots'),
+    Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),
+    Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
+    Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
     # Snapshots
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
