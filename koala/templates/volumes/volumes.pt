@@ -17,7 +17,7 @@
                 <a class="button small" i18n:translate=""
                    href="${request.route_url('volume_view', id='new')}">Create new volume</a>
             </div>
-            <div metal:fill-slot="tile_dropdown_button"></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>

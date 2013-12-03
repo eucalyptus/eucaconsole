@@ -65,7 +65,7 @@
                             <span class="dots">&nbsp;</span>
                         </div>
                     </div>
-                    <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small">
+                    <div id="delete-snapshot-modal-{{ $index }}" class="reveal-modal small">
                         <h3 i18n:translate="">Delete Snapshot</h3>
                         <p>
                             <span i18n:translate="">Are you sure you want to delete the snapshot</span>?

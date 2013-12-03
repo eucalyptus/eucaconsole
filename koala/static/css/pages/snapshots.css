@@ -63,3 +63,5 @@
 .tile .status.completed { background-color: #468400; }
 
 .tile .status.failed { background-color: #990000; }
+
+table td.id, table td.volumeid, table td.starttime { white-space: nowrap; }

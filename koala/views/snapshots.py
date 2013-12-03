@@ -30,12 +30,13 @@ class SnapshotsView(LandingPageView):
             LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
         ]
         more_filter_keys = [
-            'id', 'name', 'owner_id', 'owner_alias', 'progress', 'size', 'start_time', 'tags', 'volume_id']
+            'id', 'name', 'owner_id', 'owner_alias', 'progress', 'volume_size', 'start_time', 'tags', 'volume_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='-start_time', name=_(u'Start time')),
+            dict(key='volume_size', name=_(u'Size')),
             dict(key='name', name=_(u'Name')),
             dict(key='owner_alias', name=_(u'Owner')),
             dict(key='progress', name=_(u'Progress')),

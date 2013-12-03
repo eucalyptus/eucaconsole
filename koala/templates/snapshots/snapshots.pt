@@ -16,6 +16,10 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="">Create new snapshot</a>
             </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <metal:block metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a>
+            </metal:block>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
@@ -47,12 +51,12 @@
                 <th i18n:translate="">Time Started</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.size }}</td>
-                <td>{{ item.volume }}</td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="status">{{ item.status }}</td>
+                <td class="size">{{ item.volume_size }}</td>
+                <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
     </div>

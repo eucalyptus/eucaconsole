@@ -32,7 +32,7 @@
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
             </div>
-            <div metal:fill-slot="tile_dropdown_button"></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP Address</th>
                 <th i18n:translate="">Assigned to Instance</th>
