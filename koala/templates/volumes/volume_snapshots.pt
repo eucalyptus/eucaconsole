@@ -40,12 +40,8 @@
                     </div>
                     <div class="content">
                         <div>
-                            <span class="label" title="Progress" i18n:attributes="title" data-tooltip="">PR</span>
-                            {{ snapshot.progress }}
-                        </div>
-                        <div>
                             <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
-                            {{ snapshot.volume_size }}
+                            {{ snapshot.volume_size }} GB
                         </div>
                         <div>
                             <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
@@ -55,9 +51,15 @@
                             <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
                             {{ snapshot.start_time | date: '${layout.angular_date_format}' }}
                         </div>
+                        <div>
+                            <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                            {{ snapshot.description | limitTo: 44 }}
+                        </div>
                     </div>
                     <div class="footer status {{ snapshot.status }}">
-                        {{ snapshot.status }}
+                        <div class="progress">
+                            <span class="meter" style="width: {{ snapshot.progress }}">{{ snapshot.status }}</span>
+                        </div>
                     </div>
                     <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small">
                         <h3 i18n:translate="">Delete Snapshot</h3>

@@ -16,11 +16,27 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="">Create new snapshot</a>
             </div>
-            <div metal:fill-slot="tile_content">
-                <div ng-show="item.size">{{ item.size }} GB</div>
-                <div ng-show="item.volume_id">{{ item.volume_id }}</div>
-                <div ng-show="item.description">{{ item.description | limitTo: 128 }}</div>
-                <div ng-show="item.start_time">{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    {{ item.volume_size }} GB
+                </div>
+                <div>
+                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">VO</span>
+                    <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a>
+                </div>
+                <div>
+                    <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
+                    {{ item.start_time | date: '${layout.angular_date_format}' }}
+                </div>
+                <div>
+                    <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                    {{ item.description | limitTo: 128 }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Snapshot</th>

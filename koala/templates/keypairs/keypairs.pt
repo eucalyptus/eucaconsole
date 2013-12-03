@@ -16,7 +16,7 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="">Create new key pair</a>
             </div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>{{ item.name }}</div>
                 <div>{{ item.fingerprint }}</div>
             </div>

@@ -12,6 +12,7 @@ $tile-height: 200px;
 $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
+$tile-label-padding: 28px;
 $gridwrapper-table-width: 98%;
 
 
@@ -85,9 +86,11 @@ $gridwrapper-table-width: 98%;
     font-size: 0.9em;
     div {
         margin-bottom: 0.3rem;
+        margin-left: $tile-label-padding;
     }
     .label {
         padding: 1px 3px;
+        margin-left: -$tile-label-padding;
         background-color: $euca-grey;
         margin-right: 0.2rem;
         font-family: Verdana, sans-serif;

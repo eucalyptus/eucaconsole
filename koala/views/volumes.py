@@ -217,6 +217,7 @@ class VolumeSnapshotsView(BaseView):
                 progress=snapshot.progress,
                 volume_size=self.volume.size,
                 start_time=snapshot.start_time,
+                description=snapshot.description,
                 status=snapshot.status,
                 delete_form_action=delete_form_action,
             ))

@@ -20,7 +20,7 @@
                 <a class="button small" i18n:translate=""
                         href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
             </div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.description">{{ item.description }}</div>
                 <div ng-show="item.tags">
                     <span ng-repeat="(key, value) in item.tags">{{ key }}={{ value }}<span ng-show="!$last">, </span></span>

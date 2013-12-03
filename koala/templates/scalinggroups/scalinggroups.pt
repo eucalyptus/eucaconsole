@@ -16,7 +16,7 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="">Create new scaling group</a>
             </div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>{{ item.launch_config }}</div>
                 <div>{{ item.availability_zones }}</div>
             </div>

@@ -20,7 +20,7 @@
                 <a class="button small" i18n:translate="">Launch New Instance</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button"></div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}

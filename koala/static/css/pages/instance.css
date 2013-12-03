@@ -17,8 +17,8 @@
 .tile .header .button.dropdown::before { border: none; }
 
 .tile .content { padding: 8px; font-size: 0.9em; }
-.tile .content div { margin-bottom: 0.3rem; }
-.tile .content .label { padding: 1px 3px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
+.tile .content div { margin-bottom: 0.3rem; margin-left: 28px; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
 
