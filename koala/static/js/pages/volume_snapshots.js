@@ -21,13 +21,14 @@ angular.module('VolumeSnapshots', [])
                 $scope.initialLoading = false;
                 // Detect if any snapshots are in progress
                 $scope.snapshots.forEach(function(snapshot) {
-                    if (snapshot.progress < 100) {
+                    var progress = parseInt(snapshot.progress.replace('%', ''), 10);
+                    if (progress < 100) {
                         inProgressCount += 1;
                     }
                 });
                 // Auto-refresh snapshots if any of them are in progress
                 if (inProgressCount > 0) {
-                    $timeout(function() {$scope.getInstanceVolumes()}, 4000);  // Poll every 4 seconds
+                    $timeout(function() {$scope.getVolumeSnapshots()}, 4000);  // Poll every 4 seconds
                 }
             });
         };

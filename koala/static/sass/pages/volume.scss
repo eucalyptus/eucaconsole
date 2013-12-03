@@ -31,11 +31,27 @@ $volume-status-color-attached: darkorange;
     }
     .footer {
         padding: 0 0 0 0;
-        .progress {
-            margin: 0 0 0 0;
+        .completed {
             padding: 4px 0 4px 8px;
             height: 24px;
+        }
+        .progress {
+            position: relative;
+            margin: 0 0 0 0;
+            height: 24px;
             border: none;
+            .meter {
+                padding: 4px 0 4px 8px;
+                height: 24px;
+                display: inline-block;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .dots {
+                position: absolute;
+                width: 32px; height: 10px;
+                top: 8px; right: 8px;
+            }
         }
     }
 }

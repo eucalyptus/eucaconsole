@@ -67,7 +67,10 @@
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }
 .tile .footer { padding: 0 0 0 0; }
-.tile .footer .progress { margin: 0 0 0 0; padding: 4px 0 4px 8px; height: 24px; border: none; }
+.tile .footer .completed { padding: 4px 0 4px 8px; height: 24px; }
+.tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
+.tile .footer .progress .meter { padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
 
 .status.pending { background-color: #97eb00; }
 
