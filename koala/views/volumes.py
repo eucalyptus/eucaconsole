@@ -110,6 +110,30 @@ class VolumeView(TaggedItemView):
 
         return self.render_dict
 
+    @view_config(route_name='volume_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_create(self):
+        if self.volume_form.validate():
+            name = self.request.params.get('name', '')
+            size = int(self.request.params.get('size', 1))
+            zone = self.request.params.get('zone')
+            snapshot_id = self.request.params.get('snapshot_id')
+            kwargs = dict(size=size, zone=zone)
+            if snapshot_id:
+                kwargs['snapshot_id'] = snapshot_id
+            volume = self.conn.create_volume(**kwargs)
+
+            # Add name tag
+            if name:
+                volume.add_tag('Name', name)
+
+            location = self.request.route_url('volumes')
+            prefix = _(u'Successfully created volume')
+            msg = '{prefix} {volume}'.format(prefix=prefix, volume=volume.id)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_delete(self):
         if self.volume and self.delete_form.validate():

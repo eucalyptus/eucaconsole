@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-02 17:13-0800\n"
+"POT-Creation-Date: 2013-12-02 17:30-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -994,7 +994,11 @@ msgstr ""
 msgid "Successfully modified volume"
 msgstr ""
 
-#: koala/views/volumes.py:119
+#: koala/views/volumes.py:130
+msgid "Successfully created volume"
+msgstr ""
+
+#: koala/views/volumes.py:143
 msgid ""
 "Successfully sent delete volume request.  It may take a moment to delete the "
 "volume."
