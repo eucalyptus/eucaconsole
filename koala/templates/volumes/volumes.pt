@@ -29,7 +29,7 @@
                 </div>
                 <div ng-show="item.instance">
                     <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
-                    {{ item.instance }}
+                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a>
                 </div>
                 <div ng-show="item.snapshot_id">
                     <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
@@ -57,7 +57,7 @@
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>{{ item.status }}</td>
                 <td>{{ item.size }} GB</td>
-                <td>{{ item.instance }}</td>
+                <td><a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a></td>
                 <td>{{ item.snapshot }}</td>
                 <td>{{ item.zone }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>

@@ -1,0 +1,6 @@
+/* @fileOverview Volumes landing page CSS */
+.status.creating { color: #97eb00; }
+
+.status.available { color: #76b800; }
+
+.status.inuse { color: darkorange; }

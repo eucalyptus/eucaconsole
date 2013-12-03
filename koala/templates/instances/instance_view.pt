@@ -161,16 +161,16 @@
             <div class="panel has-title">
                 <h6 class="title" i18n:translate="">Other actions</h6>
                 <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
+                    <div class="large-4 columns">&nbsp;</div>
+                    <div class="large-8 columns">
                         <a class="button secondary" i18n:translate="">
                             Launch more like this
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
+                    <div class="large-4 columns">&nbsp;</div>
+                    <div class="large-8 columns">
                         <a class="button secondary" i18n:translate="">
                             Create scaling group launch configuration like this
                         </a>

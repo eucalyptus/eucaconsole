@@ -2,6 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/volume.css')}" />
     <style type="text/css">
         input#size { width: 4rem; }
         input#name { width: 50%; }
@@ -10,7 +11,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" tal:define="volume_name volume.tags.get('Name', volume.id) if volume else ''">
+    <div class="row" id="contentwrap" tal:define="volume_name volume.tags.get('Name', volume.id) if volume else ''"
+         ng-app="VolumePage">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('volumes')}"
                data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
@@ -24,7 +26,9 @@
              tal:define="form_action request.route_url('volume_update', id=volume.id)
                          if volume else request.route_url('volume_create');
                          volume_tags volume.tags if volume else {};
-                         html_attrs {'disabled': 'disabled'} if volume else {}">
+                         html_attrs {'disabled': 'disabled'} if volume else {};"
+             ng-controller="VolumePageCtrl"
+             ng-init="initController('${request.route_url('volume_state_json', id=volume.id) if volume else ''}', '${volume.status if volume else ''}')">
             <div class="panel has-title">
                 <h6 class="title">
                     <span tal:condition="volume">
@@ -36,15 +40,30 @@
                     </span>
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
+                    <div class="row inline readonly" ng-cloak="" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <span class="status {{ volumeState.replace(' ', '') }}" id="current-status" ng-bind="volumeState">
+                                    ${volume.status.replace('-', ' ')}
+                            </span>
+                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
+                        </div>
+                    </div>
                     ${structure:volume_form['csrf_token']}
                     ${panel('form_field', field=volume_form['name'], **html_attrs)}
                     ${panel('form_field', field=volume_form['snapshot_id'], **html_attrs)}
                     ${panel('form_field', field=volume_form['size'], **html_attrs)}
                     ${panel('form_field', field=volume_form['zone'], **html_attrs)}
                     <hr />
-                    ${panel('tag_editor', tags=volume_tags)}
+                    <div ng-show="volumeState == 'available'">
+                        ${panel('tag_editor', tags=volume_tags)}
+                    </div>
                     <hr />
-                    <div class="row">
+                    <div ng-show="volumeState == 'deleted'">
+                        <span i18n:translate="">Volume was successfully deleted.</span>
+                        <a href="${request.route_url('volumes')}" i18n:translate="">Return to volumes page</a>
+                    </div>
+                    <div class="row" ng-show="volumeState == 'available'">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button">
@@ -57,8 +76,7 @@
                     </div>
                 </form>
             </div>
-
-            <div class="panel has-title" tal:condition="volume">
+            <div class="panel has-title" tal:condition="volume and volume.status == 'available'">
                 <h6 class="title" i18n:translate="">Other volume actions</h6>
                 <div class="row">
                     <div class="large-4 columns">&nbsp;</div>
@@ -85,12 +103,9 @@
         </div>
     </div>
 </div>
+
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#snapshot_id').chosen({'width': '75%'});
-        });
-    </script>
+    <script src="${request.static_url('koala:static/js/pages/volume.js')}"></script>
 </div>
 </metal:block>

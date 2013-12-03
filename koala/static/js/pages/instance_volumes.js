@@ -25,7 +25,7 @@ angular.module('InstanceVolumes', [])
             $(document).ready(function() {
                 $('#attach-volume-modal').foundation('reveal', {
                     'opened': function() {
-                        $('#volume_id').chosen({'width': '75%'});
+                        $('#volume_id').chosen({'width': '100%'});
                     }
                 })
             });

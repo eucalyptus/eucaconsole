@@ -1,0 +1,19 @@
+/* @fileOverview Volumes landing page CSS */
+@import "../includes/eucavariables";
+
+
+// Volume status choices are: creating, available, in-use, deleting, deleted, error
+
+// Status colors
+$volume-status-color-creating: lighten($euca-green, 10%);
+$volume-status-color-available: $euca-green;
+$volume-status-color-deleted: $euca-grey;
+$volume-status-color-error: darkred;
+$volume-status-color-attached: darkorange;
+
+
+// Volume status
+.status.creating { color: $volume-status-color-creating; }
+.status.available { color: $volume-status-color-available; }
+.status.inuse { color: $volume-status-color-attached; }
+

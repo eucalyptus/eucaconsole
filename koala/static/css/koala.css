@@ -1420,7 +1420,7 @@ form label .req { color: darkred; }
 
 form .columns input { max-width: 100%; }
 
-form a.remove.circle { position: relative; left: 12px; top: -2px; }
+form a.remove.circle { position: relative; left: 8px; top: -2px; }
 
 form .cancel-link { margin-left: 2rem; }
 

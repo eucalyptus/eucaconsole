@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-02 17:30-0800\n"
+"POT-Creation-Date: 2013-12-02 21:11-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -49,7 +49,7 @@ msgid "Volume is required"
 msgstr ""
 
 #: koala/forms/instances.py:88 koala/templates/snapshots/snapshots.pt:29
-#: koala/templates/volumes/volume_view.pt:17
+#: koala/templates/volumes/volume_view.pt:19
 msgid "Volume"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 #: koala/templates/securitygroups/securitygroups.pt:30
 #: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
 #: koala/views/securitygroups.py:35 koala/views/snapshots.py:39
-#: koala/views/volumes.py:45
+#: koala/views/volumes.py:47
 msgid "Name"
 msgstr ""
 
@@ -164,8 +164,8 @@ msgid "Availability zone is required"
 msgstr ""
 
 #: koala/forms/volumes.py:27 koala/templates/instances/instance_view.pt:84
-#: koala/views/instances.py:43 koala/views/volumes.py:36
-#: koala/views/volumes.py:47
+#: koala/views/instances.py:43 koala/views/volumes.py:38
+#: koala/views/volumes.py:49
 msgid "Availability zone"
 msgstr ""
 
@@ -296,9 +296,10 @@ msgid "Properties of instance"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:36
-#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:41
+#: koala/templates/snapshots/snapshots.pt:27
+#: koala/templates/volumes/volume_view.pt:44 koala/views/instances.py:41
 #: koala/views/snapshots.py:30 koala/views/snapshots.py:42
-#: koala/views/volumes.py:35 koala/views/volumes.py:46
+#: koala/views/volumes.py:37 koala/views/volumes.py:48
 msgid "Status"
 msgstr ""
 
@@ -373,13 +374,13 @@ msgstr ""
 
 #: koala/templates/instances/instance_view.pt:129
 #: koala/templates/securitygroups/securitygroup_view.pt:48
-#: koala/templates/volumes/volume_view.pt:51
+#: koala/templates/volumes/volume_view.pt:70
 msgid "Save changes"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:130
 #: koala/templates/securitygroups/securitygroup_view.pt:53
-#: koala/templates/volumes/volume_view.pt:54
+#: koala/templates/volumes/volume_view.pt:73
 msgid "Cancel"
 msgstr ""
 
@@ -689,7 +690,7 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:44
+#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:46
 msgid "Create time"
 msgstr ""
 
@@ -806,7 +807,7 @@ msgid "Are you sure you want to delete the security group"
 msgstr ""
 
 #: koala/templates/securitygroups/securitygroup_view.pt:76
-#: koala/templates/volumes/volume_view.pt:77
+#: koala/templates/volumes/volume_view.pt:95
 msgid "Yes, delete"
 msgstr ""
 
@@ -830,29 +831,37 @@ msgstr ""
 msgid "Time Started"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:31
+#: koala/templates/volumes/volume_view.pt:35
 msgid "Settings for volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:34
+#: koala/templates/volumes/volume_view.pt:38
 #: koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:52
+#: koala/templates/volumes/volume_view.pt:63
+msgid "Volume was successfully deleted."
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:64
+msgid "Return to volumes page"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:71
 msgid "Add volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:62
+#: koala/templates/volumes/volume_view.pt:80
 msgid "Other volume actions"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:66
-#: koala/templates/volumes/volume_view.pt:72
+#: koala/templates/volumes/volume_view.pt:84
+#: koala/templates/volumes/volume_view.pt:90
 msgid "Delete volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:73
+#: koala/templates/volumes/volume_view.pt:91
 msgid "Are you sure you want to delete the volume"
 msgstr ""
 
@@ -1000,15 +1009,15 @@ msgstr ""
 msgid "Volume ID"
 msgstr ""
 
-#: koala/views/volumes.py:107
+#: koala/views/volumes.py:111
 msgid "Successfully modified volume"
 msgstr ""
 
-#: koala/views/volumes.py:130
+#: koala/views/volumes.py:134
 msgid "Successfully created volume"
 msgstr ""
 
-#: koala/views/volumes.py:143
+#: koala/views/volumes.py:147
 msgid ""
 "Successfully sent delete volume request.  It may take a moment to delete "
 "the volume."

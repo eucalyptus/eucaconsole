@@ -120,8 +120,8 @@
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
                             <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
                         </div>
                     </div>
