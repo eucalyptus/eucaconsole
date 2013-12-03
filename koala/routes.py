@@ -54,6 +54,10 @@ urls = [
     # Volumes
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    Route(name='volume_create', pattern='/volumes/create'),
+    Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
+    Route(name='volume_update', pattern='/volumes/{id}/update'),
+    Route(name='volume_delete', pattern='/volumes/{id}/delete'),
     # Snapshots
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
@@ -61,7 +65,7 @@ urls = [
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
-    Route(name='securitygroup_view', pattern='/securitygroups/{id}'),
+    Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
     Route(name='securitygroup_update', pattern='/securitygroups/{id}/update'),
     Route(name='securitygroup_delete', pattern='/securitygroups/{id}/delete'),
     # Key pairs

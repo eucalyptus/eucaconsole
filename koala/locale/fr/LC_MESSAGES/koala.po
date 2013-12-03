@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-02 13:58-0800\n"
+"POT-Creation-Date: 2013-12-02 17:13-0800\n"
 "PO-Revision-Date: 2013-11-19 10:54-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -38,9 +38,9 @@ msgid "Unassign address..."
 msgstr ""
 
 #: koala/forms/instances.py:56 koala/forms/instances.py:109
-#: koala/templates/panels/securitygroup_rules.pt:52
-#: koala/templates/panels/securitygroup_rules.pt:71
-#: koala/templates/panels/securitygroup_rules.pt:94
+#: koala/forms/volumes.py:57 koala/templates/panels/securitygroup_rules.pt:53
+#: koala/templates/panels/securitygroup_rules.pt:72
+#: koala/templates/panels/securitygroup_rules.pt:95
 msgid "select..."
 msgstr ""
 
@@ -49,6 +49,7 @@ msgid "Volume is required"
 msgstr ""
 
 #: koala/forms/instances.py:88 koala/templates/snapshots/snapshots.pt:29
+#: koala/templates/volumes/volume_view.pt:17
 msgid "Volume"
 msgstr ""
 
@@ -120,14 +121,14 @@ msgstr ""
 msgid "Name is required"
 msgstr ""
 
-#: koala/forms/securitygroups.py:20 koala/templates/images/images.pt:57
-#: koala/templates/keypairs/keypairs.pt:24
+#: koala/forms/securitygroups.py:20 koala/forms/volumes.py:18
+#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
 #: koala/templates/launchconfigs/launchconfigs.pt:26
 #: koala/templates/scalinggroups/scalinggroups.pt:24
 #: koala/templates/securitygroups/securitygroups.pt:30
 #: koala/views/keypairs.py:30 koala/views/scalinggroups.py:36
 #: koala/views/securitygroups.py:35 koala/views/snapshots.py:39
-#: koala/views/volumes.py:41
+#: koala/views/volumes.py:45
 msgid "Name"
 msgstr ""
 
@@ -144,6 +145,32 @@ msgstr ""
 
 #: koala/forms/securitygroups.py:28
 msgid "Description must be less than 255 characters"
+msgstr ""
+
+#: koala/forms/volumes.py:19
+msgid "Create from snapshot?"
+msgstr ""
+
+#: koala/forms/volumes.py:20
+msgid "Volume size is required"
+msgstr ""
+
+#: koala/forms/volumes.py:22
+msgid "Volume size (GB)"
+msgstr ""
+
+#: koala/forms/volumes.py:25
+msgid "Availability zone is required"
+msgstr ""
+
+#: koala/forms/volumes.py:27 koala/templates/instances/instance_view.pt:84
+#: koala/views/instances.py:43 koala/views/volumes.py:36
+#: koala/views/volumes.py:47
+msgid "Availability zone"
+msgstr ""
+
+#: koala/forms/volumes.py:50
+msgid "None"
 msgstr ""
 
 #: koala/templates/dashboard.pt:13
@@ -271,7 +298,7 @@ msgstr ""
 #: koala/templates/instances/instance_view.pt:36
 #: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:41
 #: koala/views/snapshots.py:30 koala/views/snapshots.py:42
-#: koala/views/volumes.py:31 koala/views/volumes.py:42
+#: koala/views/volumes.py:35 koala/views/volumes.py:46
 msgid "Status"
 msgstr ""
 
@@ -311,11 +338,6 @@ msgstr ""
 msgid "Instance ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:84 koala/views/instances.py:43
-#: koala/views/volumes.py:32
-msgid "Availability zone"
-msgstr ""
-
 #: koala/templates/instances/instance_view.pt:88
 msgid "Private IP address"
 msgstr ""
@@ -333,7 +355,7 @@ msgid "Key name"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:106
-#: koala/templates/panels/securitygroup_rules.pt:91
+#: koala/templates/panels/securitygroup_rules.pt:92
 msgid "Security group"
 msgstr ""
 
@@ -350,12 +372,14 @@ msgid "Instance profile"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:129
-#: koala/templates/securitygroups/securitygroup_view.pt:44
+#: koala/templates/securitygroups/securitygroup_view.pt:48
+#: koala/templates/volumes/volume_view.pt:51
 msgid "Save changes"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:130
-#: koala/templates/securitygroups/securitygroup_view.pt:49
+#: koala/templates/securitygroups/securitygroup_view.pt:53
+#: koala/templates/volumes/volume_view.pt:54
 msgid "Cancel"
 msgstr ""
 
@@ -665,55 +689,55 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:40
+#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:44
 msgid "Create time"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:15
+#: koala/templates/panels/securitygroup_rules.pt:16
 msgid "Inbound Rules"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:25
+#: koala/templates/panels/securitygroup_rules.pt:26
 msgid "Rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:40
+#: koala/templates/panels/securitygroup_rules.pt:41
 msgid "Add a rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:41
+#: koala/templates/panels/securitygroup_rules.pt:42
 msgid "Add another rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:47
+#: koala/templates/panels/securitygroup_rules.pt:48
 msgid "Protocol"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:59
+#: koala/templates/panels/securitygroup_rules.pt:60
 msgid "Port range"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:67
+#: koala/templates/panels/securitygroup_rules.pt:68
 msgid "Valid port range required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:79
+#: koala/templates/panels/securitygroup_rules.pt:80
 msgid "Allow traffic from"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:84
+#: koala/templates/panels/securitygroup_rules.pt:85
 msgid "IP address"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:87
+#: koala/templates/panels/securitygroup_rules.pt:88
 msgid "Valid CIDR entry required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:98
+#: koala/templates/panels/securitygroup_rules.pt:99
 msgid "Security group is required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:106
+#: koala/templates/panels/securitygroup_rules.pt:107
 msgid "Add rule"
 msgstr ""
 
@@ -755,33 +779,34 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:24
+#: koala/templates/securitygroups/securitygroup_view.pt:28
 msgid "Settings for security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:27
+#: koala/templates/securitygroups/securitygroup_view.pt:31
 #: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:45
+#: koala/templates/securitygroups/securitygroup_view.pt:49
 msgid "Add security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:57
+#: koala/templates/securitygroups/securitygroup_view.pt:61
 msgid "Other security group actions"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:61
-#: koala/templates/securitygroups/securitygroup_view.pt:67
+#: koala/templates/securitygroups/securitygroup_view.pt:65
+#: koala/templates/securitygroups/securitygroup_view.pt:71
 msgid "Delete security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:68
+#: koala/templates/securitygroups/securitygroup_view.pt:72
 msgid "Are you sure you want to delete the security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:72
+#: koala/templates/securitygroups/securitygroup_view.pt:76
+#: koala/templates/volumes/volume_view.pt:77
 msgid "Yes, delete"
 msgstr ""
 
@@ -805,8 +830,30 @@ msgstr ""
 msgid "Time Started"
 msgstr ""
 
+#: koala/templates/volumes/volume_view.pt:31
+msgid "Settings for volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:34
 #: koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:52
+msgid "Add volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:62
+msgid "Other volume actions"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:66
+#: koala/templates/volumes/volume_view.pt:72
+msgid "Delete volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:73
+msgid "Are you sure you want to delete the volume"
 msgstr ""
 
 #: koala/views/__init__.py:116
@@ -951,6 +998,16 @@ msgstr ""
 
 #: koala/views/snapshots.py:43
 msgid "Volume ID"
+msgstr ""
+
+#: koala/views/volumes.py:107
+msgid "Successfully modified volume"
+msgstr ""
+
+#: koala/views/volumes.py:119
+msgid ""
+"Successfully sent delete volume request.  It may take a moment to delete "
+"the volume."
 msgstr ""
 
 #~ msgid "name"

@@ -3,11 +3,15 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
+import time
+
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..forms.volumes import VolumeForm, DeleteVolumeForm
+from ..models import LandingPageFilter, Notification
+from ..views import LandingPageView, TaggedItemView
 
 
 class VolumesView(LandingPageView):
@@ -40,6 +44,7 @@ class VolumesView(LandingPageView):
             dict(key='-create_time', name=_(u'Create time')),
             dict(key='name', name=_(u'Name')),
             dict(key='status', name=_(u'Status')),
+            dict(key='zone', name=_(u'Availability zone')),
         ]
 
         return dict(
@@ -68,4 +73,59 @@ class VolumesView(LandingPageView):
                 tags=volume.tags,
             ))
         return dict(results=volumes)
+
+
+class VolumeView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
+
+    def __init__(self, request):
+        super(VolumeView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.volume = self.get_volume()
+        self.volume_form = VolumeForm(
+            self.request, volume=self.volume, conn=self.conn, formdata=self.request.params or None)
+        self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
+        self.tagged_obj = self.volume
+        self.render_dict = dict(
+            volume=self.volume,
+            volume_form=self.volume_form,
+            delete_form=self.delete_form,
+        )
+
+    @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def volume_view(self):
+        return self.render_dict
+
+    @view_config(route_name='volume_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_update(self):
+        if self.volume and self.volume_form.validate():
+            # Update tags
+            self.update_tags()
+
+            location = self.request.route_url('volume_view', id=self.volume.id)
+            msg = _(u'Successfully modified volume')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
+    @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_delete(self):
+        if self.volume and self.delete_form.validate():
+            self.volume.delete()
+            time.sleep(1)
+            location = self.request.route_url('volume_view', id=self.volume.id)
+            msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    def get_volume(self):
+        volume_id = self.request.matchdict.get('id')
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
 

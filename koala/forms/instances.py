@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Forms for Security Groups
+Forms for Instances
 
 """
 import wtforms

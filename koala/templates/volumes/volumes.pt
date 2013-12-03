@@ -14,8 +14,10 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate="">Create new volume</a>
+                <a class="button small" i18n:translate=""
+                   href="${request.route_url('volume_view', id='new')}">Create new volume</a>
             </div>
+            <div metal:fill-slot="tile_dropdown_button"></div>
             <div metal:fill-slot="tile_content">
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>

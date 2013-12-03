@@ -1,0 +1,96 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <style type="text/css">
+        input#size { width: 4rem; }
+        input#name { width: 50%; }
+        select#zone { width: 75%; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" tal:define="volume_name volume.tags.get('Name', volume.id) if volume else ''">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('volumes')}"
+               data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Volume</span>
+            <span tal:condition="volume">${volume_name}</span>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+        <div class="large-7 columns"
+             tal:define="form_action request.route_url('volume_update', id=volume.id)
+                         if volume else request.route_url('volume_create');
+                         volume_tags volume.tags if volume else {};
+                         html_attrs {'disabled': 'disabled'} if volume else {}">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span tal:condition="volume">
+                        <span i18n:translate="">Settings for volume</span>
+                        <strong>${volume_name}</strong>
+                    </span>
+                    <span tal:condition="not volume" i18n:translate="">
+                        Create new volume
+                    </span>
+                </h6>
+                <form tal:attributes="action form_action" method="post" data-abide="abide">
+                    ${structure:volume_form['csrf_token']}
+                    ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['snapshot_id'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    <hr />
+                    ${panel('tag_editor', tags=volume_tags)}
+                    <hr />
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button">
+                                <span tal:condition="volume" i18n:translate="">Save changes</span>
+                                <span tal:condition="not volume" i18n:translate="">Add volume</span>
+                            </button>
+                            <a href="${request.route_url('volumes')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel has-title" tal:condition="volume">
+                <h6 class="title" i18n:translate="">Other volume actions</h6>
+                <div class="row">
+                    <div class="large-4 columns">&nbsp;</div>
+                    <div class="large-8 columns">
+                        <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
+                            Delete volume
+                        </a>
+                    </div>
+                </div>
+                <div id="delete-volume-modal" class="reveal-modal small">
+                    <h3 i18n:translate="">Delete volume</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the volume</span>
+                        <b>${volume_name}</b>?</p>
+                    <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <!--! help goes here -->
+        </div>
+    </div>
+</div>
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#snapshot_id').chosen({'width': '75%'});
+        });
+    </script>
+</div>
+</metal:block>
