@@ -6,7 +6,8 @@
          input.port { width: 3.8rem; }
          form .row.trafficfrom { margin-top: 1rem; }
          form .ip-label, form .sg-label { margin-right: 1rem; }
-         form label.ipaddress { margin-bottom: 1rem; }
+         form label.ipaddress { margin-bottom: 1rem; text-align: left; }
+         form label.securitygroupname { text-align: left; }
          form .cidr-ip, form .groupname { display: inline; width: 50%; }
          form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
          form label.protocol { margin-bottom: 1.5rem; }
@@ -86,7 +87,7 @@
                                ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="cidr_ip_address" />
                         <div><small class="error" i18n:translate="">Valid CIDR entry required</small></div>
                     </label>
-                    <label>
+                    <label class="securitygroupname">
                         <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
                         <span i18n:translate="" class="sg-label">Security group</span>
                         <select name="groupname" class="groupname" ng-model="groupName"

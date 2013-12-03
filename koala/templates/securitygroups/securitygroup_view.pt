@@ -9,7 +9,8 @@
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('securitygroups')}"
                data-tooltip="" title="Back to security groups" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Security Group</span> ${security_group.name}
+            <span i18n:translate="">Security Group</span>
+            <span tal:condition="security_group">${security_group.name}</span>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
