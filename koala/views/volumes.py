@@ -242,8 +242,22 @@ class VolumeSnapshotsView(BaseView):
     @view_config(route_name='volume_snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_snapshot_delete(self):
         if self.delete_form.validate():
-            # TODO: Implement
-            pass
+            volume_id = self.request.matchdict.get('id')
+            snapshot_id = self.request.matchdict.get('snapshot_id')
+            if volume_id and snapshot_id:
+                snapshot = self.get_snapshot(snapshot_id)
+                try:
+                    snapshot.delete()
+                    time.sleep(1)
+                    msg = _(u'Successfully deleted the snapshot.')
+                    queue = Notification.SUCCESS
+                except EC2ResponseError as err:
+                    msg = err.message
+                    queue = Notification.ERROR
+                location = self.request.route_url('volume_snapshots', id=self.volume.id)
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+        return self.render_dict
 
     def get_volume(self):
         volume_id = self.request.matchdict.get('id')
@@ -251,3 +265,7 @@ class VolumeSnapshotsView(BaseView):
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
             return volumes_list[0] if volumes_list else None
         return None
+
+    def get_snapshot(self, snapshot_id):
+        snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
+        return snapshots_list[0] if snapshots_list else None
