@@ -6,8 +6,8 @@
 
 .tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 
-.tile .header { position: relative; padding: 6px 30px 4px 10px; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
-.tile .header a { display: block; color: white; }
+.tile .header { position: relative; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
+.tile .header a { display: block; padding: 6px 30px 4px 10px; color: white; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
 .tile .header .f-dropdown { width: 120px; }

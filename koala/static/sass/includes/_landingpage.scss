@@ -43,13 +43,13 @@ $gridwrapper-table-width: 98%;
 
 .tile .header {
     position: relative;
-    padding: 6px 30px 4px 10px;
     border-bottom: 1px solid $tile-border-color;
     height: $tile-row-height;
     color: white;
     background-color: $euca-darkgrey;
     a {
         display: block;
+        padding: 6px 30px 4px 10px;
         color: white;
         &:hover {
             color: $euca-green;
