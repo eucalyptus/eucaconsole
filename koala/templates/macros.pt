@@ -152,5 +152,31 @@
     </div>
 </metal:notifications>
 
+
+<!-- Tag editor help -->
+<metal:tageditorhelp metal:define-macro="tageditor_help">
+    <div class="help-content" id="tag-editor-help">
+        <h5 class="title">Manage Tags</h5>
+        <p> To help you manage your cloud's instances, images, and other Eucalyptus resources,
+            you can optionally assign your own metadata to each resource in the form of tags.
+            You can use tags to create user-friendly names, make resource searching easier,
+            and improve coordination between multiple users.</p>
+        <h6>To add new tags:</h6>
+        <ol>
+            <li>Type the key name for your tag into the <strong>name...</strong> text box.</li>
+            <li>Type the value for your tag into the <strong>value...</strong> text box.</li>
+            <li>Click the <strong>Add tag</strong> button.</li>
+            <li>Repeat for any additional tags you wish to add.</li>
+            <li>When you are finished adding tags, click the <strong>Save changes</strong> button to save your changes.</li>
+        </ol>
+        <h6>To delete one or more tags:</h6>
+        <ol>
+            <li>Click the <i class="fi-minus-circle"></i> next to the tag you wish to remove.</li>
+            <li>Repeat for any additional tags you wish to delete.</li>
+            <li>When you are finished removing tags, click the <strong>Save changes</strong> button to save your changes.</li>
+        </ol>
+    </div>
+</metal:tageditorhelp>
+
 </body>
 </html>

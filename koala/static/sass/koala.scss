@@ -280,6 +280,10 @@ a.circle {
 ----------------------------------------- */
 .help-content {
     font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    p {
+        margin-bottom: 0.5rem;
+    }
     ol {
         list-style-position: inside;
         li {
@@ -294,6 +298,12 @@ a.circle {
     }
     i {
         text-indent: 0;
+        &.fi-minus-circle {
+            font-size: 1.2rem;
+            &:hover {
+                color: black;
+            }
+        }
     }
     table.table {
         width: 100%;

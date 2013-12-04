@@ -1392,11 +1392,14 @@ a.circle { color: black; display: inline-block; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
-.help-content { font-size: 0.9rem; }
+.help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
+.help-content p { margin-bottom: 0.5rem; }
 .help-content ol { list-style-position: inside; }
 .help-content ol li { text-indent: -1rem; margin-left: 1rem; }
 .help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
 .help-content i { text-indent: 0; }
+.help-content i.fi-minus-circle { font-size: 1.2rem; }
+.help-content i.fi-minus-circle:hover { color: black; }
 .help-content table.table { width: 100%; }
 .help-content table.table tr td { line-height: 1.1rem; }
 
