@@ -44,6 +44,12 @@
                     {{ item.create_time | date:'${layout.angular_date_format}' }}
                 </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.status || item.attach_status"
+                     class="footer status {{ item.attach_status || item.status }}">
+                    {{ item.attach_status || item.status }}
+                </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Volume</th>
                 <th>Status</th>

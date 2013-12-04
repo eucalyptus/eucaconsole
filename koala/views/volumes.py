@@ -38,7 +38,7 @@ class VolumesView(LandingPageView):
             LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
             # LandingPageFilter(key='tags', name='Tags'),
         ]
-        more_filter_keys = ['id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
+        more_filter_keys = ['attach_status', 'id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
@@ -46,6 +46,7 @@ class VolumesView(LandingPageView):
             dict(key='-create_time', name=_(u'Create time')),
             dict(key='name', name=_(u'Name')),
             dict(key='status', name=_(u'Status')),
+            dict(key='attach_status', name=_(u'Attach Status')),
             dict(key='zone', name=_(u'Availability zone')),
         ]
 
