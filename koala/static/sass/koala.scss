@@ -323,7 +323,7 @@ form .controls_csrf_token {
     display: none;
 }
 
-form .inline label {
+form .controls-wrapper label {
     padding-top: 0.4rem;
     font-weight: bold;
     text-align: right;
@@ -332,7 +332,7 @@ form .inline label {
     }
 }
 
-form .row.inline.readonly {
+form .row.controls-wrapper.readonly {
     margin-top: 0.1rem;
     margin-bottom: 0.3rem;
     label {
@@ -342,14 +342,14 @@ form .row.inline.readonly {
     }
 }
 
-form .inline.controls-wrapper > [class*='small-'] label {
+form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;
     position: relative;
     right: -1rem;
 }
 
-form .inline .field {
+form .controls-wrapper .field {
     input {
         display: inline-block;
     }
@@ -381,8 +381,7 @@ form .error .chosen-container .chosen-single {
     background: lighten(lightpink, 10%);
 }
 
-[data-abide] .inline .error small.error {
-    display: inline !important;
+[data-abide] .controls-wrapper .error small.error {
     background-color: transparent;
     color: darkred;
 }

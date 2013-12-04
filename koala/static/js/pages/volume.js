@@ -10,6 +10,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeStateEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting'];
         $scope.volumeState = '';
+        $scope.snapshotId = '';
         $scope.isUpdating = false;
         $scope.stateIsTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
@@ -39,6 +40,14 @@ angular.module('VolumePage', ['TagEditor'])
                 }
             });
         };
+        $scope.populateVolumeSize = function () {
+            var snapshotOptionText = $('#snapshot_id').find('option[value="' + $scope.snapshotId + '"]').text(),
+                snapshotSize = '';
+            if (snapshotOptionText !== 'None') {
+                snapshotSize = /(?:\(\d+\sGB\))/.exec(snapshotOptionText)[0].replace(/[^\d]/g, '');
+                $('input#size').val(snapshotSize);
+            }
+        }
     })
 ;
 

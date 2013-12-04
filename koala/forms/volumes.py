@@ -50,7 +50,9 @@ class VolumeForm(BaseSecureForm):
         choices = [('', _(u'None'))]
         # TODO: May need to filter get_all_snapshots() call for AWS?
         for snapshot in self.conn.get_all_snapshots():
-            choices.append((snapshot.id, snapshot.id))
+            value = snapshot.id
+            label = '{id} ({size} GB)'.format(id=snapshot.id, size=snapshot.volume_size)
+            choices.append((value, label))
         self.snapshot_id.choices = sorted(choices)
 
     def set_availability_zone_choices(self):

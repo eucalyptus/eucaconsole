@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('name', volume.id)">
+    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('Name', volume.id)">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('volumes')}"
                data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
@@ -28,7 +28,7 @@
                 <div class="tile add" id="create-snapshot">
                     <a href="#" data-reveal-id="create-snapshot-modal" >
                         <div class="plus">+</div>
-                        <div i18n:translate="">Add a snapshot</div>
+                        <div i18n:translate="">Create a snapshot</div>
                     </a>
                 </div>
                 <span class="dots" ng-show="initialLoading">&nbsp;</span>

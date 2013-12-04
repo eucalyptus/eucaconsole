@@ -14,12 +14,17 @@ $volume-status-color-error: darkred;
 $volume-status-color-attached: darkorange;
 
 
+// ***********
+// Volume page
+
 // Volume status
 .status.creating { color: $volume-status-color-creating; }
 .status.available { color: $volume-status-color-available; }
 .status.inuse { color: $volume-status-color-attached; }
 
 
+
+// *********************
 // Volume snapshots page
 .tile {
     background-color: white;

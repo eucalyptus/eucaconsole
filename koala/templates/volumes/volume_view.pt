@@ -43,7 +43,8 @@
                         Create new volume
                     </span>
                 </h6>
-                <form tal:attributes="action form_action" method="post" data-abide="abide">
+                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                    ${structure:volume_form['csrf_token']}
                     <div class="row inline readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
@@ -53,21 +54,27 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    ${structure:volume_form['csrf_token']}
+                    <div class="row inline readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
+                         tal:condition="instance_id">
+                        <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_url('instance_view', id=instance_id)}">${instance_id}</a>
+                        </div>
+                    </div>
                     ${panel('form_field', field=volume_form['name'], **html_attrs)}
-                    ${panel('form_field', field=volume_form['snapshot_id'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
                     ${panel('form_field', field=volume_form['size'], **html_attrs)}
                     ${panel('form_field', field=volume_form['zone'], **html_attrs)}
-                    <hr />
+                    <hr ng-show="volumeState == 'available'" />
                     <div ng-show="volumeState == 'available'">
                         ${panel('tag_editor', tags=volume_tags)}
                     </div>
-                    <hr />
+                    <hr ng-show="volumeState == 'available'" />
                     <div ng-show="volumeState == 'deleted'">
                         <span i18n:translate="">Volume was successfully deleted.</span>
                         <a href="${request.route_url('volumes')}" i18n:translate="">Return to volumes page</a>
                     </div>
-                    <div class="row" ng-show="volumeState == 'available'">
+                    <div class="row" tal:condition="not volume or volume.status == 'available'">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button">
@@ -103,7 +110,39 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <!--! help goes here -->
+            <div class="help-content" tal:condition="not volume">
+                <h5 class="title">Create a Volume</h5>
+                <p> Eucalyptus offers persistent storage that you can attach to a
+                    running instance. These elastic block storage (EBS) volumes persist
+                    autonomously from the running life of an instance. After you attach a
+                    block volume to an instance, you can use it like any other physical hard
+                    drive.
+                </p>
+                <div class="topic">
+                    <p>Add the details of your new volume:</p>
+                    <ol>
+                        <li>Type the name of your volume in the <strong>Name</strong> textbox.</li>
+                        <li>If you would like to create a volume from an existing
+                            snapshot, select the snapshot from the
+                            <strong>Create from snapshot?</strong> drop-down listbox.
+                        </li>
+                        <li>Enter the size of the volume in gigabytes in the
+                            <strong>Volume Size (GB)</strong> text box.
+                            <p><strong>Note:</strong>
+                                If you're creating a volume from a snapshot, you
+                                can't enter a volume size that's smaller than the
+                                original snapshot you've selected.
+                            </p>
+                        </li>
+                        <li>Select an availability zone from the
+                            <strong>Availability Zone</strong> drop-down list box.
+                            <p><strong>Note:</strong>
+                                You can only attach a volume to an instance in the same availability zone.
+                            </p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
         </div>
     </div>
 </div>
