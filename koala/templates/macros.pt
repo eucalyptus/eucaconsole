@@ -169,12 +169,14 @@
             <li>Repeat for any additional tags you wish to add.</li>
             <li>When you are finished adding tags, click the <strong>Save changes</strong> button to save your changes.</li>
         </ol>
-        <h6>To delete one or more tags:</h6>
-        <ol>
-            <li>Click the <i class="fi-minus-circle"></i> next to the tag you wish to remove.</li>
-            <li>Repeat for any additional tags you wish to delete.</li>
-            <li>When you are finished removing tags, click the <strong>Save changes</strong> button to save your changes.</li>
-        </ol>
+        <metal:block metal:define-slot="delete_tags">
+            <h6>To delete one or more tags:</h6>
+            <ol>
+                <li>Click the <i class="fi-minus-circle"></i> next to the tag you wish to remove.</li>
+                <li>Repeat for any additional tags you wish to delete.</li>
+                <li>When you are finished removing tags, click the <strong>Save changes</strong> button to save your changes.</li>
+            </ol>
+        </metal:block>
     </div>
 </metal:tageditorhelp>
 

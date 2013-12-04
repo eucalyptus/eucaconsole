@@ -125,24 +125,31 @@ class VolumeView(TaggedItemView):
     def volume_create(self):
         if self.volume_form.validate():
             name = self.request.params.get('name', '')
+            tags = self.request.params.get('tags', {})
             size = int(self.request.params.get('size', 1))
             zone = self.request.params.get('zone')
             snapshot_id = self.request.params.get('snapshot_id')
             kwargs = dict(size=size, zone=zone)
             if snapshot_id:
-                kwargs['snapshot_id'] = snapshot_id
-            volume = self.conn.create_volume(**kwargs)
-
-            # Add name tag
-            if name:
-                volume.add_tag('Name', name)
-
-            location = self.request.route_url('volume_view', id=volume.id)
-            prefix = _(u'Successfully created volume')
-            msg = '{prefix} {volume}'.format(prefix=prefix, volume=volume.id)
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-
+                snapshot = self.get_snapshot(snapshot_id)
+                kwargs['snapshot'] = snapshot
+            try:
+                volume = self.conn.create_volume(**kwargs)
+                # Add name tag
+                if name:
+                    volume.add_tag('Name', name)
+                for tagname, tagvalue in tags.items():
+                    volume.add_tag(tagname, tagvalue)
+                prefix = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
+                msg = '{prefix} {volume}'.format(prefix=prefix, volume=volume.id)
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('volume_view', id=volume.id)
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
         return self.render_dict
 
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -201,6 +208,10 @@ class VolumeView(TaggedItemView):
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
             return volumes_list[0] if volumes_list else None
         return None
+
+    def get_snapshot(self, snapshot_id):
+        snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
+        return snapshots_list[0] if snapshots_list else None
 
 
 class VolumeStateView(BaseView):

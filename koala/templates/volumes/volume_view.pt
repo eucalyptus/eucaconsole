@@ -105,7 +105,7 @@
                     </div>
                 </form>
             </div>
-            <div class="panel has-title" ng-show="volumeStatus == 'available'">
+            <div class="panel has-title" ng-show="volumeStatus == 'available'" tal:condition="volume">
                 <h6 class="title" i18n:translate="">Other volume actions</h6>
                 <div class="row">
                     <div class="large-4 columns">&nbsp;</div>
@@ -159,22 +159,24 @@
                     </li>
                 </ol>
             </div>
-            <div class="help-content">
+            <div class="help-content" tal:condition="volume">
                 <h5 class="title">Manage Snapshots</h5>
                 <p> To manage snapshots for this volume, click the
                     <strong><a href="${request.route_url('volume_snapshots', id=volume.id)}">Snapshots</a></strong> link.
                 </p>
             </div>
-            <div class="help-content">
+            <div class="help-content" tal:condition="volume">
                 <h5 class="title">Delete a Volume</h5>
                 <p> To delete a volume, click the "Delete Volume" button.</p>
                 <p><strong>Note:</strong>You may not delete a volume that is attached to an instance.</p>
             </div>
             <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
+            </metal:block>
         </div>
         <!--! Attach/Detach modal dialogs -->
-        <div id="attach-modal" class="reveal-modal small">
+        <div id="attach-modal" class="reveal-modal small" tal:condition="volume">
             <h3 i18n:translate="">Attach volume</h3>
             <p><span i18n:translate="">Attach a volume to an instance</span></p>
             <form method="post" action="${request.route_url('volume_attach', id=volume.id)}"
@@ -195,7 +197,7 @@
             <!--! Volume device help -->
             <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
         </div>
-        <div id="detach-modal" class="reveal-modal small">
+        <div id="detach-modal" class="reveal-modal small" tal:condition="volume">
             <h3 i18n:translate="">Detach volume</h3>
             <p><span i18n:translate="">Are you sure you want to detach the volume from the instance</span>?</p>
             <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">
