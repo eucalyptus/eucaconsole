@@ -20,8 +20,12 @@ $volume-status-color-attached: darkorange;
 // Volume status
 .status.creating { color: $volume-status-color-creating; }
 .status.available { color: $volume-status-color-available; }
-.status.inuse { color: $volume-status-color-attached; }
+.status.in-use { color: $volume-status-color-attached; }
 
+#volume-status-label {
+    position: relative;
+    top: 0;
+}
 
 
 // *********************

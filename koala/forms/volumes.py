@@ -88,3 +88,47 @@ class DeleteSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot from a volume"""
     pass
 
+
+class AttachForm(BaseSecureForm):
+    """CSRF-protected form to attach a volume to a selected instance
+       Note: This is for attaching a volume to a choice of instances on the volume detail page
+             The form to attach a volume to an instance at the instance page is at forms.instances.AttachVolumeForm
+    """
+    instance_error_msg = _(u'Instance is required')
+    instance_id = wtforms.SelectField(
+        label=_(u'Instance'),
+        validators=[validators.Required(message=instance_error_msg)],
+    )
+    device_error_msg = _(u'Device is required')
+    device = wtforms.TextField(
+        label=_(u'Device'),
+        validators=[validators.Required(message=device_error_msg)],
+    )
+
+    def __init__(self, request, volume=None, conn=None, **kwargs):
+        super(AttachForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.conn = conn
+        self.volume = volume
+        self.instance_id.error_msg = self.instance_error_msg
+        self.device.error_msg = self.device_error_msg
+        if conn is not None:
+            self.set_instance_choices()
+
+    def set_instance_choices(self):
+        """Populate instance field with instances available to attach volume to"""
+        choices = [('', _(u'select...'))]
+        for instance in self.conn.get_only_instances():
+            if self.volume and self.volume.zone == instance.placement:
+                name_tag = instance.tags.get('Name')
+                extra = ' ({name})'.format(name=name_tag) if name_tag else ''
+                vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                choices.append((instance.id, vol_name))
+        if len(choices) == 1:
+            choices = [('', _(u'No available volumes in the availability zone'))]
+        self.instance_id.choices = choices
+
+
+class DetachForm(BaseSecureForm):
+    """CSRF-protected form to detach a volume from an instance"""
+    pass

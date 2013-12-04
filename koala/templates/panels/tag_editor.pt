@@ -1,12 +1,12 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row inline" ng-app="TagEditor"
+<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
      ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}')">
     <div class="small-${leftcol_width} columns">
         <label class="right" i18n:translate="">Tags</label>
     </div>
     <div class="small-${rightcol_width} columns field">
-        <div class="row tagentry existing inline controls-wrapper"
+        <div class="row tagentry existing controls-wrapper"
              ng-repeat="tag in tagsArray" ng-cloak="cloak">
             <div class="small-1 columns">
                 <a href="#" class="circle remove has-tip" ng-click="removeTag($index, $event)"
@@ -23,7 +23,7 @@
                       ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
             </div>
         </div>
-        <div class="row tagentry inline controls-wrapper">
+        <div class="row tagentry controls-wrapper">
             <div>
                 <div class="small-4 columns">
                     <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="tag_pattern" />

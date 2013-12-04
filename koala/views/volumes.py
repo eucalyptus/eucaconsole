@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.volumes import VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm
+from ..forms.volumes import VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm
 from ..models import LandingPageFilter, Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -71,6 +71,7 @@ class VolumesView(LandingPageView):
                 snapshot_id=volume.snapshot_id,
                 size=volume.size,
                 status=volume.status,
+                attach_status=volume.attach_data.status,
                 zone=volume.zone,
                 tags=volume.tags,
             ))
@@ -88,11 +89,16 @@ class VolumeView(TaggedItemView):
         self.volume_form = VolumeForm(
             self.request, volume=self.volume, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
+        self.attach_form = AttachForm(
+            self.request, conn=self.conn, volume=self.volume, formdata=self.request.params or None)
+        self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.volume
         self.render_dict = dict(
             volume=self.volume,
             volume_form=self.volume_form,
             delete_form=self.delete_form,
+            attach_form=self.attach_form,
+            detach_form=self.detach_form,
         )
 
     @view_config(route_name='volume_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -154,6 +160,40 @@ class VolumeView(TaggedItemView):
             return HTTPFound(location=location)
         return self.render_dict
 
+    @view_config(route_name='volume_attach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_attach(self):
+        if self.volume and self.attach_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            device = self.request.params.get('device')
+            try:
+                self.volume.attach(instance_id, device)
+                time.sleep(1)
+                msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('volume_view', id=self.volume.id)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
+    def volume_detach(self):
+        if self.detach_form.validate():
+            try:
+                self.volume.detach()
+                time.sleep(1)
+                msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('volume_view', id=self.volume.id)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
     def get_volume(self):
         volume_id = self.request.matchdict.get('id')
         if volume_id:
@@ -172,7 +212,11 @@ class VolumeStateView(BaseView):
     @view_config(route_name='volume_state_json', renderer='json', request_method='GET')
     def volume_state_json(self):
         """Return current volume status"""
-        return dict(results=self.volume.status)
+        volume_status = self.volume.status
+        attach_status = self.volume.attach_data.status
+        return dict(
+            results=dict(volume_status=volume_status, attach_status=attach_status)
+        )
 
     def get_volume(self):
         volume_id = self.request.matchdict.get('id')

@@ -62,7 +62,9 @@
 
 .status.available { color: #76b800; }
 
-.status.inuse { color: darkorange; }
+.status.in-use { color: darkorange; }
+
+#volume-status-label { position: relative; top: 0; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }

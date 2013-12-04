@@ -82,7 +82,10 @@ class TerminateInstanceForm(BaseSecureForm):
 
 
 class AttachVolumeForm(BaseSecureForm):
-    """CSRF-protected form to attach a volume to an instance"""
+    """CSRF-protected form to attach a volume to an instance
+       Note: This is for attaching a volume on the instance detail page
+             The form to attach a volume to any instance from the volume detail page is at forms.volumes.AttachForm
+    """
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Volume'),

@@ -58,6 +58,8 @@ urls = [
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
     Route(name='volume_update', pattern='/volumes/{id}/update'),
     Route(name='volume_delete', pattern='/volumes/{id}/delete'),
+    Route(name='volume_attach', pattern='/volumes/{id}/attach'),
+    Route(name='volume_detach', pattern='/volumes/{id}/detach'),
     Route(name='volume_state_json', pattern='/volumes/{id}/state/json'),
     Route(name='volume_snapshots', pattern='/volumes/{id}/snapshots'),
     Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),

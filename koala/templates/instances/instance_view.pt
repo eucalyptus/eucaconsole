@@ -6,8 +6,7 @@
 
 <div metal:fill-slot="main_content">
 
-    <div class="row" id="contentwrap" tal:define="instance_name instance.tags.get('Name', instance.id)"
-         ng-app="InstancePage">
+    <div class="row" id="contentwrap" ng-app="InstancePage">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
