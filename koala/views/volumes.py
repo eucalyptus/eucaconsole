@@ -69,7 +69,7 @@ class VolumesView(LandingPageView):
                 id=volume.id,
                 instance=volume.attach_data.instance_id,
                 name=volume.tags.get('Name', volume.id),
-                snapshot_id=volume.snapshot_id,
+                snapshots=len(volume.snapshots()),
                 size=volume.size,
                 status=volume.status,
                 attach_status=volume.attach_data.status,
