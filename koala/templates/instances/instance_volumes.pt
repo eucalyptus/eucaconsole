@@ -35,7 +35,7 @@
                 <span class="dots" ng-show="initialLoading">&nbsp;</span>
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
-                        <strong>{{ volume.name || volume.id }}</strong>
+                        <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
                         <a class="tiny secondary button dropdown right" href="#"
                            data-reveal-id="detach-volume-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
                     </div>

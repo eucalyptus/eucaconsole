@@ -40,7 +40,7 @@
                     {{ item.zone }}
                 </div>
                 <div>
-                    <span class="label" title="Create time" i18n:attributes="title" data-tooltip="">LT</span>
+                    <span class="label" title="Create time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.create_time | date:'${layout.angular_date_format}' }}
                 </div>
             </div>

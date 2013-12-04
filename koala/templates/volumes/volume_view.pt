@@ -45,7 +45,7 @@
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:volume_form['csrf_token']}
-                    <div class="row inline readonly" ng-cloak="" tal:condition="volume">
+                    <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
                             <span class="status {{ volumeState.replace(' ', '') }}" id="current-status" ng-bind="volumeState">
@@ -54,7 +54,7 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div class="row inline readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
+                    <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
                          tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">

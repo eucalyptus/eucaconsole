@@ -31,7 +31,7 @@
                     ${structure:instance_form['csrf_token']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
-                    <div class="row inline readonly" ng-cloak="">
+                    <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
                             <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
@@ -59,63 +59,63 @@
                     </div>
                     ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
                     ${panel('form_field', field=instance_form.ip_address)}
-                    <div class="row inline readonly" tal:condition="image.platform">
+                    <div class="row controls-wrapper readonly" tal:condition="image.platform">
                         <div class="small-4 columns"><label i18n:translate="">OS</label></div>
                         <div class="small-8 columns value">${image.platform}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Root device name</label></div>
                         <div class="small-8 columns value">${instance.root_device_name}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
                         <div class="small-8 columns value">${instance.root_device_type}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Architecture</label></div>
                         <div class="small-8 columns value">${instance.architecture or image.architecture}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Instance ID</label></div>
                         <div class="small-8 columns value">${instance.id}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="small-8 columns value">${instance.placement}</div>
                     </div>
-                    <div class="row inline readonly" tal:condition="instance.private_ip_address">
+                    <div class="row controls-wrapper readonly" tal:condition="instance.private_ip_address">
                         <div class="small-4 columns"><label i18n:translate="">Private IP address</label></div>
                         <div class="small-8 columns value">${instance.private_ip_address}</div>
                     </div>
-                    <div class="row inline readonly"
+                    <div class="row controls-wrapper readonly"
                          tal:condition="instance.public_dns_name != instance.ip_address">
                         <div class="small-4 columns"><label i18n:translate="">Public hostname</label></div>
                         <div class="small-8 columns value">${instance.public_dns_name}</div>
                     </div>
-                    <div class="row inline readonly"
+                    <div class="row controls-wrapper readonly"
                          tal:condition="instance.private_dns_name != instance.private_ip_address">
                         <div class="small-4 columns"><label i18n:translate="">Private hostname</label></div>
                         <div class="small-8 columns value">${instance.private_dns_name}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
                         <div class="small-8 columns value">${instance.key_name}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="group instance.groups">${group.name}</div>
                         </div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Launch time</label></div>
                         <div class="small-8 columns value">${instance_launch_time.strftime(layout.date_format)}</div>
                     </div>
-                    <div class="row inline readonly" tal:condition="scaling_group">
+                    <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
                         <div class="small-8 columns value">${scaling_group}</div>
                     </div>
-                    <div class="row inline readonly" tal:condition="instance.instance_profile">
+                    <div class="row controls-wrapper readonly" tal:condition="instance.instance_profile">
                         <div class="small-4 columns"><label i18n:translate="">Instance profile</label></div>
                         <div class="small-8 columns value">${instance.instance_profile}</div>
                     </div>
@@ -135,23 +135,23 @@
             <div class="panel has-title">
                 <h6 class="title" i18n:translate="">Image properties</h6>
                 <form>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
                         <div class="small-8 columns value">${image.id}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
                         <div class="small-8 columns value">${image.name}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
                         <div class="small-8 columns value">${image.location}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
                         <div class="small-8 columns value">${image.kernel_id}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">RAM Disk ID</label></div>
                         <div class="small-8 columns value">${image.ramdisk_id}</div>
                     </div>
