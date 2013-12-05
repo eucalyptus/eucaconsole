@@ -68,6 +68,11 @@ urls = [
     # Snapshots
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
+    Route(name='snapshot_create', pattern='/snapshots/create'),
+    Route(name='snapshot_view', pattern='/snapshots/{id}'),  # Pass id='new' to render Add Snapshot page
+    Route(name='snapshot_update', pattern='/snapshots/{id}/update'),
+    Route(name='snapshot_delete', pattern='/snapshots/{id}/delete'),
+    Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
     # Security Groups
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
