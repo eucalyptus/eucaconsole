@@ -1360,8 +1360,9 @@ a.has-tip { border-bottom: none !important; }
 
 .tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
 
-.sub-nav a { margin-right: 0.5rem; }
-.sub-nav a:hover { color: #76b800; }
+.sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
+.sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
+.sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
@@ -1371,6 +1372,11 @@ i.fi-minus-circle:hover { color: darkred; }
 a.button.secondary.delete:hover { color: white; background-color: darkred; }
 
 a.circle { color: black; display: inline-block; }
+
+.tile.add { text-align: center; text-transform: uppercase; position: relative; }
+.tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.tile.add a:hover { background-color: #d3e9b6; }
+.tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
 #notifications .alert-box { background-color: #40a8c6; }
@@ -1386,11 +1392,14 @@ a.circle { color: black; display: inline-block; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
-.help-content { font-size: 0.9rem; }
+.help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
+.help-content p { margin-bottom: 0.5rem; }
 .help-content ol { list-style-position: inside; }
 .help-content ol li { text-indent: -1rem; margin-left: 1rem; }
 .help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
 .help-content i { text-indent: 0; }
+.help-content i.fi-minus-circle { font-size: 1.2rem; }
+.help-content i.fi-minus-circle:hover { color: black; }
 .help-content table.table { width: 100%; }
 .help-content table.table tr td { line-height: 1.1rem; }
 
@@ -1404,15 +1413,15 @@ form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
-form .inline label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
-form .inline label select, form .inline label input, form .inline label .chosen-container { text-align: left; }
+form .controls-wrapper label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
+form .controls-wrapper label select, form .controls-wrapper label input, form .controls-wrapper label .chosen-container { text-align: left; }
 
-form .row.inline.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
-form .row.inline.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
+form .row.controls-wrapper.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
+form .row.controls-wrapper.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
 
-form .inline.controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
+form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
-form .inline .field input { display: inline-block; }
+form .controls-wrapper .field input { display: inline-block; }
 
 form label { cursor: default; }
 
@@ -1420,13 +1429,13 @@ form label .req { color: darkred; }
 
 form .columns input { max-width: 100%; }
 
-form a.remove.circle { position: relative; left: 12px; top: -2px; }
+form a.remove.circle { position: relative; left: 8px; top: -2px; }
 
 form .cancel-link { margin-left: 2rem; }
 
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
-[data-abide] .inline .error small.error { display: inline !important; background-color: transparent; color: darkred; }
+[data-abide] .controls-wrapper .error small.error { background-color: transparent; color: darkred; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }

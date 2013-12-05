@@ -43,8 +43,8 @@ urls = [
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
-    Route(name='instance_volume_attach', pattern='/instances/{id}/volume/attach'),
-    Route(name='instance_volume_detach', pattern='/instances/{id}/volume/{volume_id}/detach'),
+    Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
+    Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
     # Scaling Groups
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
@@ -54,6 +54,17 @@ urls = [
     # Volumes
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    Route(name='volume_create', pattern='/volumes/create'),
+    Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
+    Route(name='volume_update', pattern='/volumes/{id}/update'),
+    Route(name='volume_delete', pattern='/volumes/{id}/delete'),
+    Route(name='volume_attach', pattern='/volumes/{id}/attach'),
+    Route(name='volume_detach', pattern='/volumes/{id}/detach'),
+    Route(name='volume_state_json', pattern='/volumes/{id}/state/json'),
+    Route(name='volume_snapshots', pattern='/volumes/{id}/snapshots'),
+    Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),
+    Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
+    Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
     # Snapshots
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
@@ -61,7 +72,7 @@ urls = [
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
-    Route(name='securitygroup_view', pattern='/securitygroups/{id}'),
+    Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
     Route(name='securitygroup_update', pattern='/securitygroups/{id}/update'),
     Route(name='securitygroup_delete', pattern='/securitygroups/{id}/delete'),
     # Key pairs

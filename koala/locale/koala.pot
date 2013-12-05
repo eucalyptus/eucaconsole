@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-02 13:58-0800\n"
+"POT-Creation-Date: 2013-12-04 17:11-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,30 +37,35 @@ msgstr ""
 msgid "Unassign address..."
 msgstr ""
 
-#: koala/forms/instances.py:56 koala/forms/instances.py:109
-#: koala/templates/panels/securitygroup_rules.pt:52
-#: koala/templates/panels/securitygroup_rules.pt:71
-#: koala/templates/panels/securitygroup_rules.pt:94
+#: koala/forms/instances.py:56 koala/forms/instances.py:112
+#: koala/forms/volumes.py:59 koala/forms/volumes.py:120
+#: koala/templates/panels/securitygroup_rules.pt:53
+#: koala/templates/panels/securitygroup_rules.pt:72
+#: koala/templates/panels/securitygroup_rules.pt:95
 msgid "select..."
 msgstr ""
 
-#: koala/forms/instances.py:86
+#: koala/forms/instances.py:89
 msgid "Volume is required"
 msgstr ""
 
-#: koala/forms/instances.py:88 koala/templates/snapshots/snapshots.pt:29
+#: koala/forms/instances.py:91 koala/templates/snapshots/snapshots.pt:53
+#: koala/templates/volumes/volume_snapshots.pt:12
+#: koala/templates/volumes/volume_snapshots.pt:15
+#: koala/templates/volumes/volume_view.pt:24
+#: koala/templates/volumes/volume_view.pt:28
 msgid "Volume"
 msgstr ""
 
-#: koala/forms/instances.py:91
+#: koala/forms/instances.py:94 koala/forms/volumes.py:102
 msgid "Device is required"
 msgstr ""
 
-#: koala/forms/instances.py:93
+#: koala/forms/instances.py:96 koala/forms/volumes.py:104
 msgid "Device"
 msgstr ""
 
-#: koala/forms/instances.py:117
+#: koala/forms/instances.py:120 koala/forms/volumes.py:128
 msgid "No available volumes in the availability zone"
 msgstr ""
 
@@ -120,29 +125,66 @@ msgstr ""
 msgid "Name is required"
 msgstr ""
 
-#: koala/forms/securitygroups.py:20 koala/templates/images/images.pt:57
-#: koala/templates/keypairs/keypairs.pt:24
+#: koala/forms/securitygroups.py:20 koala/forms/volumes.py:18
+#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
 #: koala/templates/launchconfigs/launchconfigs.pt:26
 #: koala/templates/scalinggroups/scalinggroups.pt:24
-#: koala/templates/securitygroups/securitygroups.pt:30 koala/views/keypairs.py:30
+#: koala/templates/securitygroups/securitygroups.pt:38 koala/views/keypairs.py:30
 #: koala/views/scalinggroups.py:36 koala/views/securitygroups.py:35
-#: koala/views/snapshots.py:39 koala/views/volumes.py:41
+#: koala/views/snapshots.py:39 koala/views/volumes.py:49
 msgid "Name"
 msgstr ""
 
-#: koala/forms/securitygroups.py:23
+#: koala/forms/securitygroups.py:23 koala/forms/volumes.py:72
 msgid "Description is required"
 msgstr ""
 
-#: koala/forms/securitygroups.py:25 koala/templates/images/images.pt:58
-#: koala/templates/securitygroups/securitygroups.pt:31
-#: koala/templates/snapshots/snapshots.pt:30 koala/views/images.py:65
+#: koala/forms/securitygroups.py:25 koala/forms/volumes.py:74
+#: koala/templates/images/images.pt:58
+#: koala/templates/securitygroups/securitygroups.pt:39
+#: koala/templates/snapshots/snapshots.pt:54 koala/views/images.py:65
 #: koala/views/securitygroups.py:36
 msgid "Description"
 msgstr ""
 
-#: koala/forms/securitygroups.py:28
+#: koala/forms/securitygroups.py:28 koala/forms/volumes.py:77
 msgid "Description must be less than 255 characters"
+msgstr ""
+
+#: koala/forms/volumes.py:19
+msgid "Create from snapshot?"
+msgstr ""
+
+#: koala/forms/volumes.py:20
+msgid "Volume size is required"
+msgstr ""
+
+#: koala/forms/volumes.py:22
+msgid "Volume size (GB)"
+msgstr ""
+
+#: koala/forms/volumes.py:25
+msgid "Availability zone is required"
+msgstr ""
+
+#: koala/forms/volumes.py:27 koala/templates/instances/instance_view.pt:82
+#: koala/views/instances.py:43 koala/views/volumes.py:40 koala/views/volumes.py:52
+msgid "Availability zone"
+msgstr ""
+
+#: koala/forms/volumes.py:50
+msgid "None"
+msgstr ""
+
+#: koala/forms/volumes.py:97 koala/templates/ipaddresses/ipaddress_view.pt:38
+msgid "Instance is required"
+msgstr ""
+
+#: koala/forms/volumes.py:99 koala/templates/instances/instance_view.pt:13
+#: koala/templates/instances/instance_view.pt:16
+#: koala/templates/instances/instance_volumes.pt:13
+#: koala/templates/instances/instance_volumes.pt:16 koala/views/ipaddresses.py:35
+msgid "Instance"
 msgstr ""
 
 #: koala/templates/dashboard.pt:13
@@ -161,13 +203,15 @@ msgstr ""
 msgid "In scaling groups"
 msgstr ""
 
-#: koala/templates/dashboard.pt:46 koala/templates/instances/instance_view.pt:18
-#: koala/templates/instances/instance_volumes.pt:18
+#: koala/templates/dashboard.pt:46 koala/templates/instances/instance_view.pt:17
+#: koala/templates/instances/instance_volumes.pt:17
 #: koala/templates/volumes/volumes.pt:9
 msgid "Volumes"
 msgstr ""
 
 #: koala/templates/dashboard.pt:55 koala/templates/snapshots/snapshots.pt:9
+#: koala/templates/volumes/volume_snapshots.pt:16
+#: koala/templates/volumes/volume_view.pt:29
 msgid "Snapshots"
 msgstr ""
 
@@ -213,6 +257,30 @@ msgstr ""
 msgid "Log in to AWS"
 msgstr ""
 
+#: koala/templates/macros.pt:200
+msgid "Volume device options for Linux"
+msgstr ""
+
+#: koala/templates/macros.pt:204 koala/templates/macros.pt:229
+msgid "Possible for Connection"
+msgstr ""
+
+#: koala/templates/macros.pt:205 koala/templates/macros.pt:230
+msgid "Instance Store"
+msgstr ""
+
+#: koala/templates/macros.pt:206 koala/templates/macros.pt:231
+msgid "Recommended for EBS"
+msgstr ""
+
+#: koala/templates/macros.pt:225
+msgid "Volume device options for Windows"
+msgstr ""
+
+#: koala/templates/macros.pt:250
+msgid "Note: <dynamic element> is reserved for root device"
+msgstr ""
+
 #: koala/templates/master_layout.pt:31
 msgid "Help"
 msgstr ""
@@ -246,7 +314,7 @@ msgid "Launch instance"
 msgstr ""
 
 #: koala/templates/images/images.pt:59
-#: koala/templates/instances/instance_view.pt:76 koala/views/images.py:63
+#: koala/templates/instances/instance_view.pt:74 koala/views/images.py:63
 msgid "Architecture"
 msgstr ""
 
@@ -254,141 +322,132 @@ msgstr ""
 msgid "Launch new instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:14
-#: koala/templates/instances/instance_view.pt:17
-#: koala/templates/instances/instance_volumes.pt:13
-#: koala/templates/instances/instance_volumes.pt:16 koala/views/ipaddresses.py:35
-msgid "Instance"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:28
+#: koala/templates/instances/instance_view.pt:26
 msgid "Properties of instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:36
-#: koala/templates/snapshots/snapshots.pt:27 koala/views/instances.py:41
-#: koala/views/snapshots.py:30 koala/views/snapshots.py:42
-#: koala/views/volumes.py:31 koala/views/volumes.py:42
+#: koala/templates/instances/instance_view.pt:34
+#: koala/templates/snapshots/snapshots.pt:51
+#: koala/templates/volumes/volume_view.pt:51 koala/views/instances.py:41
+#: koala/views/snapshots.py:30 koala/views/snapshots.py:40
+#: koala/views/volumes.py:39 koala/views/volumes.py:50
 msgid "Status"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:45
+#: koala/templates/instances/instance_view.pt:43
 #: koala/templates/instances/instance_view.pt:205
 msgid "Reboot instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:48
+#: koala/templates/instances/instance_view.pt:46
 #: koala/templates/instances/instance_view.pt:220
 msgid "Start instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:51
+#: koala/templates/instances/instance_view.pt:49
 #: koala/templates/instances/instance_view.pt:234
 msgid "Stop instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:54
+#: koala/templates/instances/instance_view.pt:52
 #: koala/templates/instances/instance_view.pt:248
 msgid "Terminate instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:64
+#: koala/templates/instances/instance_view.pt:62
 msgid "OS"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:68
+#: koala/templates/instances/instance_view.pt:66
 msgid "Root device name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:72
+#: koala/templates/instances/instance_view.pt:70
 msgid "Root device type"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:80
+#: koala/templates/instances/instance_view.pt:78
 msgid "Instance ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:84 koala/views/instances.py:43
-#: koala/views/volumes.py:32
-msgid "Availability zone"
-msgstr ""
-
-#: koala/templates/instances/instance_view.pt:88
+#: koala/templates/instances/instance_view.pt:86
 msgid "Private IP address"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:93
+#: koala/templates/instances/instance_view.pt:91
 msgid "Public hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:98
+#: koala/templates/instances/instance_view.pt:96
 msgid "Private hostname"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:102
+#: koala/templates/instances/instance_view.pt:100
 msgid "Key name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:106
-#: koala/templates/panels/securitygroup_rules.pt:91
+#: koala/templates/instances/instance_view.pt:104
+#: koala/templates/panels/securitygroup_rules.pt:92
 msgid "Security group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:112
+#: koala/templates/instances/instance_view.pt:110
 msgid "Launch time"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:116
+#: koala/templates/instances/instance_view.pt:114
 msgid "Scaling group"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:120
+#: koala/templates/instances/instance_view.pt:118
 msgid "Instance profile"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:129
-#: koala/templates/securitygroups/securitygroup_view.pt:44
+#: koala/templates/instances/instance_view.pt:127
+#: koala/templates/securitygroups/securitygroup_view.pt:48
+#: koala/templates/volumes/volume_view.pt:99
 msgid "Save changes"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:130
-#: koala/templates/securitygroups/securitygroup_view.pt:49
+#: koala/templates/instances/instance_view.pt:128
+#: koala/templates/securitygroups/securitygroup_view.pt:53
+#: koala/templates/volumes/volume_view.pt:102
 msgid "Cancel"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:137
+#: koala/templates/instances/instance_view.pt:135
 msgid "Image properties"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:140
+#: koala/templates/instances/instance_view.pt:138
 msgid "Image ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:144 koala/views/images.py:62
+#: koala/templates/instances/instance_view.pt:142 koala/views/images.py:62
 msgid "Image name"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:148
+#: koala/templates/instances/instance_view.pt:146
 msgid "Image manifest"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:152
+#: koala/templates/instances/instance_view.pt:150
 msgid "Kernel ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:156
+#: koala/templates/instances/instance_view.pt:154
 msgid "RAM Disk ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:162
+#: koala/templates/instances/instance_view.pt:160
 msgid "Other actions"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:166
+#: koala/templates/instances/instance_view.pt:164
 msgid "Launch more like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:174
+#: koala/templates/instances/instance_view.pt:172
 msgid "Create scaling group launch configuration like this"
 msgstr ""
 
@@ -412,83 +471,58 @@ msgstr ""
 msgid "Are you sure you want to terminate instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:27
+#: koala/templates/instances/instance_volumes.pt:26
 msgid "Volumes for instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:33
+#: koala/templates/instances/instance_volumes.pt:32
 msgid "Attach a volume"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:66
+#: koala/templates/instances/instance_volumes.pt:65
+#: koala/templates/volumes/volume_view.pt:201
 msgid "Detach volume"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:68
+#: koala/templates/instances/instance_volumes.pt:67
 msgid "Are you sure you want to detach the volume from instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:88
+#: koala/templates/instances/instance_volumes.pt:87
 msgid "Attach a volume to this instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:91
+#: koala/templates/instances/instance_volumes.pt:90
 msgid "Click the <dynamic element> icon"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:92
+#: koala/templates/instances/instance_volumes.pt:91
 msgid ""
 "The <dynamic element> dialog box will appear. Select the volume you want to "
 "attach to this instance."
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:98
+#: koala/templates/instances/instance_volumes.pt:97
 msgid "Detach a volume from this instance"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:101
+#: koala/templates/instances/instance_volumes.pt:100
 msgid "Click the <dynamic element> icon for the instance you want to detach."
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:104
+#: koala/templates/instances/instance_volumes.pt:103
 msgid ""
 "The <dynamic element> dialog box will appear. Click confirm to detach the "
 "volume."
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:114
+#: koala/templates/instances/instance_volumes.pt:113
+#: koala/templates/volumes/volume_view.pt:180
 msgid "Attach volume"
 msgstr ""
 
-#: koala/templates/instances/instance_volumes.pt:115
+#: koala/templates/instances/instance_volumes.pt:114
 msgid "Attach a volume to instance"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:132
-msgid "Volume device options for Linux"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:136
-#: koala/templates/instances/instance_volumes.pt:161
-msgid "Possible for Connection"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:137
-#: koala/templates/instances/instance_volumes.pt:162
-msgid "Instance Store"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:138
-#: koala/templates/instances/instance_volumes.pt:163
-msgid "Recommended for EBS"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:157
-msgid "Volume device options for Windows"
-msgstr ""
-
-#: koala/templates/instances/instance_volumes.pt:182
-msgid "Note: <dynamic element> is reserved for root device"
 msgstr ""
 
 #: koala/templates/instances/instances.pt:9
@@ -539,10 +573,6 @@ msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:27
 msgid "Associate <dynamic element> with an instance"
-msgstr ""
-
-#: koala/templates/ipaddresses/ipaddress_view.pt:38
-msgid "Instance is required"
 msgstr ""
 
 #: koala/templates/ipaddresses/ipaddress_view.pt:52
@@ -662,60 +692,61 @@ msgstr ""
 msgid "Key"
 msgstr ""
 
-#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:40
+#: koala/templates/launchconfigs/launchconfigs.pt:30 koala/views/volumes.py:48
 msgid "Create time"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:15
+#: koala/templates/panels/securitygroup_rules.pt:16
 msgid "Inbound Rules"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:25
+#: koala/templates/panels/securitygroup_rules.pt:26
 msgid "Rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:40
+#: koala/templates/panels/securitygroup_rules.pt:41
 msgid "Add a rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:41
+#: koala/templates/panels/securitygroup_rules.pt:42
 msgid "Add another rule"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:47
+#: koala/templates/panels/securitygroup_rules.pt:48
 msgid "Protocol"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:59
+#: koala/templates/panels/securitygroup_rules.pt:60
 msgid "Port range"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:67
+#: koala/templates/panels/securitygroup_rules.pt:68
 msgid "Valid port range required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:79
+#: koala/templates/panels/securitygroup_rules.pt:80
 msgid "Allow traffic from"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:84
+#: koala/templates/panels/securitygroup_rules.pt:85
 msgid "IP address"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:87
+#: koala/templates/panels/securitygroup_rules.pt:88
 msgid "Valid CIDR entry required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:98
+#: koala/templates/panels/securitygroup_rules.pt:99
 msgid "Security group is required"
 msgstr ""
 
-#: koala/templates/panels/securitygroup_rules.pt:106
+#: koala/templates/panels/securitygroup_rules.pt:107
 msgid "Add rule"
 msgstr ""
 
 #: koala/templates/panels/tag_editor.pt:6
-#: koala/templates/securitygroups/securitygroups.pt:32
+#: koala/templates/securitygroups/securitygroups.pt:41
+#: koala/templates/snapshots/snapshots.pt:55
 msgid "Tags"
 msgstr ""
 
@@ -751,33 +782,34 @@ msgstr ""
 msgid "Availability Zones"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:24
+#: koala/templates/securitygroups/securitygroup_view.pt:28
 msgid "Settings for security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:27
+#: koala/templates/securitygroups/securitygroup_view.pt:31
 #: koala/templates/securitygroups/securitygroups.pt:20
 msgid "Create new security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:45
+#: koala/templates/securitygroups/securitygroup_view.pt:49
 msgid "Add security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:57
+#: koala/templates/securitygroups/securitygroup_view.pt:61
 msgid "Other security group actions"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:61
-#: koala/templates/securitygroups/securitygroup_view.pt:67
+#: koala/templates/securitygroups/securitygroup_view.pt:65
+#: koala/templates/securitygroups/securitygroup_view.pt:71
 msgid "Delete security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:68
+#: koala/templates/securitygroups/securitygroup_view.pt:72
 msgid "Are you sure you want to delete the security group"
 msgstr ""
 
-#: koala/templates/securitygroups/securitygroup_view.pt:72
+#: koala/templates/securitygroups/securitygroup_view.pt:76
+#: koala/templates/volumes/volume_view.pt:124
 msgid "Yes, delete"
 msgstr ""
 
@@ -785,27 +817,104 @@ msgstr ""
 msgid "Security Groups"
 msgstr ""
 
-#: koala/templates/snapshots/snapshots.pt:17
-msgid "Create new snapshot"
+#: koala/templates/securitygroups/securitygroups.pt:40
+msgid "Rules"
 msgstr ""
 
-#: koala/templates/snapshots/snapshots.pt:26
+#: koala/templates/snapshots/snapshots.pt:17
+msgid "Create snapshot"
+msgstr ""
+
+#: koala/templates/snapshots/snapshots.pt:50
 msgid "Snapshot"
 msgstr ""
 
-#: koala/templates/snapshots/snapshots.pt:28
+#: koala/templates/snapshots/snapshots.pt:52
 msgid "Size (GB)"
 msgstr ""
 
-#: koala/templates/snapshots/snapshots.pt:31
+#: koala/templates/snapshots/snapshots.pt:56
 msgid "Time Started"
 msgstr ""
 
-#: koala/templates/volumes/volumes.pt:17
+#: koala/templates/volumes/volume_snapshots.pt:25
+msgid "Snapshots for volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_snapshots.pt:31
+msgid "Create a snapshot"
+msgstr ""
+
+#: koala/templates/volumes/volume_snapshots.pt:69
+msgid "Delete Snapshot"
+msgstr ""
+
+#: koala/templates/volumes/volume_snapshots.pt:71
+msgid "Are you sure you want to delete the snapshot"
+msgstr ""
+
+#: koala/templates/volumes/volume_snapshots.pt:96
+msgid "Add snapshot"
+msgstr ""
+
+#: koala/templates/volumes/volume_snapshots.pt:97
+msgid "Add a snapshot for"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:41
+msgid "Settings for volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:44 koala/templates/volumes/volumes.pt:17
 msgid "Create new volume"
 msgstr ""
 
-#: koala/views/__init__.py:116
+#: koala/templates/volumes/volume_view.pt:67
+msgid "Attach to instance"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:70
+msgid "Detach from instance"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:79
+msgid "Attached to instance"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:92
+msgid "Volume was successfully deleted."
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:93
+msgid "Return to volumes page"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:100
+msgid "Add volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:109
+msgid "Other volume actions"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:113
+#: koala/templates/volumes/volume_view.pt:119
+msgid "Delete volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:120
+msgid "Are you sure you want to delete the volume"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:181
+msgid "Attach a volume to an instance"
+msgstr ""
+
+#: koala/templates/volumes/volume_view.pt:202
+msgid "Are you sure you want to detach the volume from the instance"
+msgstr ""
+
+#: koala/views/__init__.py:126
 msgid "Your session has timed out."
 msgstr ""
 
@@ -829,43 +938,43 @@ msgstr ""
 msgid "Instance name"
 msgstr ""
 
-#: koala/views/instances.py:135
+#: koala/views/instances.py:139
 msgid "Successfully modified instance"
 msgstr ""
 
-#: koala/views/instances.py:156
+#: koala/views/instances.py:160
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:159
+#: koala/views/instances.py:163
 msgid "Unable to reboot the instance."
 msgstr ""
 
-#: koala/views/instances.py:172
+#: koala/views/instances.py:176
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:184
+#: koala/views/instances.py:188
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:196
+#: koala/views/instances.py:200
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to shut "
 "down the instance."
 msgstr ""
 
-#: koala/views/instances.py:313
+#: koala/views/instances.py:317
 msgid "Request successfully submitted.  It may take a moment to attach the volume."
 msgstr ""
 
-#: koala/views/instances.py:335
+#: koala/views/instances.py:339 koala/views/volumes.py:198
 msgid "Request successfully submitted.  It may take a moment to detach the volume."
 msgstr ""
 
@@ -913,35 +1022,67 @@ msgstr ""
 msgid "Launch configuration"
 msgstr ""
 
-#: koala/views/securitygroups.py:102
+#: koala/views/securitygroups.py:109
 msgid "Successfully deleted security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:105
+#: koala/views/securitygroups.py:112
 msgid "Unable to delete security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:122
+#: koala/views/securitygroups.py:129
 msgid "Successfully created security group {group}"
 msgstr ""
 
-#: koala/views/securitygroups.py:141
+#: koala/views/securitygroups.py:148
 msgid "Successfully modified security group"
 msgstr ""
 
-#: koala/views/snapshots.py:38
+#: koala/views/snapshots.py:37
 msgid "Start time"
 msgstr ""
 
-#: koala/views/snapshots.py:40
-msgid "Owner"
+#: koala/views/snapshots.py:38
+msgid "Size"
 msgstr ""
 
 #: koala/views/snapshots.py:41
-msgid "Progress"
+msgid "Volume ID"
 msgstr ""
 
-#: koala/views/snapshots.py:43
-msgid "Volume ID"
+#: koala/views/volumes.py:51
+msgid "Attach Status"
+msgstr ""
+
+#: koala/views/volumes.py:120
+msgid "Successfully modified volume"
+msgstr ""
+
+#: koala/views/volumes.py:147
+msgid ""
+"Successfully sent create volume request.  It may take a moment to create the "
+"volume."
+msgstr ""
+
+#: koala/views/volumes.py:164
+msgid ""
+"Successfully sent delete volume request.  It may take a moment to delete the "
+"volume."
+msgstr ""
+
+#: koala/views/volumes.py:182
+msgid ""
+"Successfully sent request to attach volume.  It may take a moment to attach "
+"to instance."
+msgstr ""
+
+#: koala/views/volumes.py:291
+msgid ""
+"Successfully sent create snapshot request.  It may take a moment to create "
+"the snapshot."
+msgstr ""
+
+#: koala/views/volumes.py:311
+msgid "Successfully deleted the snapshot."
 msgstr ""
 

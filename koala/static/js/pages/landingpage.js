@@ -52,7 +52,7 @@ angular.module('LandingPage', [])
         /*  Filter items client side based on search criteria.
          *  @param {array} filterProps Array of properties to filter items on
          *  Note: We could potentially use Angular's template filter here, but it may be tricky to
-         *        filter by nested properties (read: tags).
+         *        filter by nested properties.
          */
         $scope.searchFilterItems = function(filterProps) {
             $scope.items = $scope.unfilteredItems;  // reset prior to applying filter
@@ -64,15 +64,6 @@ angular.module('LandingPage', [])
                     var itemProp = item.hasOwnProperty(propName) && item[propName];
                     if (itemProp && typeof itemProp === "string" && itemProp.toLowerCase().indexOf(filterText) !== -1) {
                         return item;
-                    }
-                    // Match tags (object of key/value pairs)
-                    if (itemProp && propName === "tags") {
-                        var keys = Object.keys(itemProp);
-                        for (var j=0; j < keys.length; j++) {
-                            if (keys[j].indexOf(filterText) !== -1 || itemProp[keys[j]].toLowerCase().indexOf(filterText) !== -1) {
-                                return item;
-                            }
-                        }
                     }
                 }
             });
