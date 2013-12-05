@@ -7,7 +7,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import LandingPageView, TaggedItemView
 
 
 class SnapshotsView(LandingPageView):
@@ -29,8 +29,7 @@ class SnapshotsView(LandingPageView):
         self.filter_fields = [
             LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
         ]
-        more_filter_keys = [
-            'id', 'name', 'owner_id', 'owner_alias', 'volume_size', 'start_time', 'tags', 'volume_id']
+        more_filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
@@ -38,7 +37,6 @@ class SnapshotsView(LandingPageView):
             dict(key='-start_time', name=_(u'Start time')),
             dict(key='volume_size', name=_(u'Size')),
             dict(key='name', name=_(u'Name')),
-            dict(key='owner_alias', name=_(u'Owner')),
             dict(key='status', name=_(u'Status')),
             dict(key='volume_id', name=_(u'Volume ID')),
         ]
@@ -61,12 +59,9 @@ class SnapshotsView(LandingPageView):
                 id=snapshot.id,
                 description=snapshot.description,
                 name=snapshot.tags.get('Name', snapshot.id),
-                owner_alias=snapshot.owner_alias,
-                owner_id=snapshot.owner_id,
-                progress=snapshot.progress,
                 start_time=snapshot.start_time,
                 status=snapshot.status,
-                tags=snapshot.tags,
+                tags=TaggedItemView.get_tags_display(snapshot.tags),
                 volume_id=snapshot.volume_id,
                 volume_size=snapshot.volume_size,
             ))

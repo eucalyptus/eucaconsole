@@ -37,9 +37,13 @@
                     <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
                     {{ item.start_time | date: '${layout.angular_date_format}' }}
                 </div>
-                <div>
+                <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
                     {{ item.description | limitTo: 128 }}
+                </div>
+                <div ng-show="item.tags">
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -48,6 +52,7 @@
                 <th i18n:translate="">Size (GB)</th>
                 <th i18n:translate="">Volume</th>
                 <th i18n:translate="">Description</th>
+                <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Time Started</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -56,6 +61,7 @@
                 <td class="size">{{ item.volume_size }}</td>
                 <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
+                <td>{{ item.tags }}</td>
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
