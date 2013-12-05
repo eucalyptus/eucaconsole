@@ -6,8 +6,8 @@ Pyramid views for Eucalyptus and AWS key pairs
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..views import LandingPageView
-
+from ..models import Notification
+from ..views import BaseView, LandingPageView
 
 class KeyPairsView(LandingPageView):
     def __init__(self, request):
@@ -50,5 +50,29 @@ class KeyPairsView(LandingPageView):
                 fingerprint=keypair.fingerprint,
             ))
         return dict(results=keypairs)
+
+
+class KeyPairView(BaseView):
+    """Views for single Key Pair"""
+    TEMPLATE = '../templates/keypairs/keypair_view.pt'
+
+    def __init__(self, request):
+        super(KeyPairView, self).__init__(request)
+        print "HELLO"
+        self.conn = self.get_connection()
+        self.keypair = self.get_keypair()
+
+    def get_keypair(self):
+        keypair_param = self.request.matchdict.get('id')
+        keypairs_param = [keypair_param]
+        keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+        keypair = keypairs[0] if keypairs else None
+        return keypair 
+
+    @view_config(route_name='keypair_view', renderer=TEMPLATE)
+    def keypair_view(self):
+        return dict(
+            keypair=self.keypair,
+        )
 
 

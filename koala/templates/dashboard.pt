@@ -95,7 +95,7 @@
                     <h5 class="subheader" i18n:translate="">Key pairs</h5>
                     <div class="content">
                         <a href="${request.route_url('keypairs')}">
-                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
+                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.keypairs }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>
