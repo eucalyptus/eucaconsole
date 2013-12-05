@@ -17,8 +17,14 @@
                 <a class="button small" i18n:translate="">Create new key pair</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>{{ item.name }}</div>
-                <div>{{ item.fingerprint }}</div>
+                <div>
+                    <span class="label" title="Keypair Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
+                </div>
+                <div>
+                    <span class="label" title="Keypair Fingerprint" i18n:attributes="title" data-tooltip="">FP</span>
+                    {{ item.fingerprint }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
