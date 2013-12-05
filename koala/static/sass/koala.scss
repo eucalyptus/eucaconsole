@@ -183,10 +183,12 @@ a.has-tip {
     top: -1.5rem;
     left: 1rem;
     margin-bottom: -1rem;
-    a {
+    dd a {
+        font-weight: bold;
         margin-right: 0.5rem;
         &:hover {
             color: $euca-green;
+            text-decoration: underline;
         }
     }
 }

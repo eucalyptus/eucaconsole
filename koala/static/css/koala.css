@@ -1361,8 +1361,8 @@ a.has-tip { border-bottom: none !important; }
 .tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
-.sub-nav a { margin-right: 0.5rem; }
-.sub-nav a:hover { color: #76b800; }
+.sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
+.sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
