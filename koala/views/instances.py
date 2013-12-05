@@ -98,8 +98,9 @@ class InstanceView(TaggedItemView):
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
-        self.name_tag = self.instance.tags.get('Name', '')
-        self.instance_name = '{}{}'.format(self.instance.id, ' ({})'.format(self.name_tag) if self.name_tag else '')
+        self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
+        self.instance_name = '{}{}'.format(
+            self.instance.id, ' ({})'.format(self.name_tag) if self.name_tag else '') if self.instance else ''
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
