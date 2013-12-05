@@ -6,6 +6,7 @@ Pyramid views for Eucalyptus and AWS key pairs
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.keypairs import KeyPairForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
@@ -60,6 +61,7 @@ class KeyPairView(BaseView):
         super(KeyPairView, self).__init__(request)
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
+        self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
@@ -73,5 +75,25 @@ class KeyPairView(BaseView):
         return dict(
             keypair=self.keypair,
         )
+
+    @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
+    def keypair_create(self):
+        """
+        if self.keypair_form.validate():
+            name = self.request.params.get('name')
+            new_keypair = self.conn.create_key_pair(name)
+            location = self.request.route_url('keypairs')
+            msg = _(u'Successfully created key pair {keypair}')
+            notification_msg = msg.format(keypair=name)
+            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        """
+        print "HERELO"
+        return dict(
+            keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            #keypair_names=self.get_security_group_names(),
+        )
+
 
 

@@ -5,33 +5,50 @@
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('keypairs')}"
                data-tooltip="" title="Back to keypairs" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Keypair</span> ${keypair.name}
+            <span i18n:translate="">Keypair</span> ${keypair.name if keypair else ''}
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
-        <div class="large-7 columns">
+        <div class="large-7 columns"
+            tal:define="form_action request.route_url('keypair_create')">
             <div class="panel has-title">
                 <h6 class="title">
                     <span tal:condition="keypair">
                         <span i18n:translate="">Properties of keypair</span>
-                        <strong>${keypair.name}</strong>
+                        <strong>${keypair.name }</strong>
                     </span>
                     <span tal:condition="not keypair" i18n:translate="">
                         Create new keypair 
                     </span>
                 </h6>
-                <form>
+                <div tal:condition="keypair">
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${keypair.name}</div>
+                        <div class="small-9 columns value">${keypair.name if keypair else ''}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="keypair">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                        <div class="small-9 columns value">${keypair.fingerprint}</div>
+                        <div class="small-9 columns value">${keypair.fingerprint if keypair else ''}</div>
                     </div>
-                    <hr/>
-                </form>
+                </div>
+                <div tal:condition="not keypair">
+                    <form tal:attributes="action form_action" method="post" data-abide="abide"> 
+                        <hr>
+                        <div class="row">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns field inline">
+                                <button type="submit" class="button">
+                                    <span i18n:translate="">
+                                        Create keypair
+                                    </span>
+                                </button>
+                                <a href="${request.route_url('keypairs')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
