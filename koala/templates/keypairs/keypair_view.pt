@@ -1,9 +1,5 @@
 <metal:block use-macro="main_template">
 
-<head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
-</head>
-
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
@@ -26,11 +22,11 @@
                     </span>
                 </h6>
                 <form>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
                         <div class="small-9 columns value">${keypair.name}</div>
                     </div>
-                    <div class="row inline readonly">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
                         <div class="small-9 columns value">${keypair.fingerprint}</div>
                     </div>
@@ -41,8 +37,5 @@
     </div>
 </div>
 
-<div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-</div>
 </metal:block>
 
