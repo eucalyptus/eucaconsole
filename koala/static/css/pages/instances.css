@@ -43,7 +43,7 @@
 
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
 

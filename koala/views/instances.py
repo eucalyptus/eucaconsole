@@ -75,6 +75,7 @@ class InstancesView(LandingPageView):
                 security_groups=', '.join(group.name for group in instance.groups),
                 key_name=instance.key_name,
                 status=instance.state,
+                tags=TaggedItemView.get_tags_display(instance.tags)
             ))
         return dict(results=instances)
 

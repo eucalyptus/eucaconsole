@@ -153,6 +153,20 @@
 </metal:notifications>
 
 
+<!-- Security group rules display
+     For displaying a list of rules (one per line) in a tableview column or gridview tile row -->
+<metal:securitygrouprules metal:define-macro="securitygroup_rulesdisplay">
+    <span ng-repeat="rule in item.rules">
+        {{ rule.ip_protocol.toUpperCase() }}
+        ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+        <span ng-repeat="grant in rule.grants">
+            <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+            <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+        </span><br ng-show="!$last" />
+    </span>
+</metal:securitygrouprules>
+
+
 <!-- Tag editor help -->
 <metal:tageditorhelp metal:define-macro="tageditor_help">
     <div class="help-content" id="tag-editor-help">

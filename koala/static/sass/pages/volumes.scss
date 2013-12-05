@@ -25,10 +25,12 @@ $volume-status-color-available: $euca-green;
 .tile .status.deleted { background-color: $volume-status-color-detaching; }
 
 // Volume attach_data status styles
-// TODO: Incorporate attach_data on Volumes landing page
 .tile .status.attaching { background-color: $volume-status-color-attaching; }
 .tile .status.attached { background-color: $volume-status-color-attached; }
 .tile .status.detached { background-color: $volume-status-color-detached; }
 .tile .status.detaching { background-color: $volume-status-color-detaching; }
 
 
+.table td.instance {
+    white-space: nowrap;
+}

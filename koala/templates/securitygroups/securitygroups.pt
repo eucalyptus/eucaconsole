@@ -21,20 +21,30 @@
                         href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div ng-show="item.description">{{ item.description }}</div>
+                <div ng-show="item.rules">
+                    <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
+                    <metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block>
+                </div>
+                <div ng-show="item.description">
+                    <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                    {{ item.description }}
+                </div>
                 <div ng-show="item.tags">
-                    <span ng-repeat="(key, value) in item.tags">{{ key }}={{ value }}<span ng-show="!$last">, </span></span>
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Description</th>
+                <th i18n:translate="">Rules</th>
                 <th i18n:translate="">Tags</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
-                <td><span ng-repeat="(key, value) in item.tags">{{ key }}={{ value }}<span ng-show="!$last">, </span></span></td>
+                <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block></td>
+                <td>{{ item.tags }}</td>
             </metal:block>
         </div>
     </div>

@@ -76,7 +76,7 @@ class VolumesView(LandingPageView):
                 status=volume.status,
                 attach_status=volume.attach_data.status,
                 zone=volume.zone,
-                tags=volume.tags,
+                tags=TaggedItemView.get_tags_display(volume.tags),
             ))
         return dict(results=volumes)
 
