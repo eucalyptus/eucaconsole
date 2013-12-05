@@ -5,6 +5,8 @@ Pyramid views for Eucalyptus and AWS volumes
 """
 import time
 
+import simplejson as json
+
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -125,7 +127,7 @@ class VolumeView(TaggedItemView):
     def volume_create(self):
         if self.volume_form.validate():
             name = self.request.params.get('name', '')
-            tags = self.request.params.get('tags', {})
+            tags_json = self.request.params.get('tags')
             size = int(self.request.params.get('size', 1))
             zone = self.request.params.get('zone')
             snapshot_id = self.request.params.get('snapshot_id')
@@ -138,10 +140,11 @@ class VolumeView(TaggedItemView):
                 # Add name tag
                 if name:
                     volume.add_tag('Name', name)
-                for tagname, tagvalue in tags.items():
-                    volume.add_tag(tagname, tagvalue)
-                prefix = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
-                msg = '{prefix} {volume}'.format(prefix=prefix, volume=volume.id)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    for tagname, tagvalue in tags.items():
+                        volume.add_tag(tagname, tagvalue)
+                msg = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_url('volume_view', id=volume.id)
