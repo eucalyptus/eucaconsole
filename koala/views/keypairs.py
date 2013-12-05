@@ -58,7 +58,6 @@ class KeyPairView(BaseView):
 
     def __init__(self, request):
         super(KeyPairView, self).__init__(request)
-        print "HELLO"
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
 
