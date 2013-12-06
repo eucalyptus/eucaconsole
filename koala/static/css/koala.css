@@ -1363,6 +1363,7 @@ a.has-tip { border-bottom: none !important; }
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
 .sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
+.sub-nav dd.active a:hover { color: white; text-decoration: none; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
@@ -1475,7 +1476,8 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
   #logobar section .button { margin-top: -6px; } }
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
-  #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; } }
+  #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; }
+  .sub-nav { top: 0; left: 0; margin-top: 0.5rem; margin-bottom: 1.5rem; margin-left: 0.5rem; } }
 @media screen and (min-width: 768px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
