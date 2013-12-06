@@ -94,6 +94,9 @@
                 <div class="row">
                     <div class="large-4 columns">&nbsp;</div>
                     <div class="large-8 columns">
+                        <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
+                            Create volume from snapshot
+                        </a>
                         <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
                             Delete snapshot
                         </a>

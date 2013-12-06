@@ -43,6 +43,7 @@
                     </span>
                     <span tal:condition="not volume" i18n:translate="">
                         Create new volume
+                        <span ng-show="snapshotId">from {{ snapshotId }}</span>
                     </span>
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
@@ -217,6 +218,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/volume.js')}"></script>
 </div>
 </metal:block>
