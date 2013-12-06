@@ -1,3 +1,14 @@
 /* @fileOverview Snapshot detail page CSS */
 @import "../includes/eucavariables";
 
+.progress {
+    display: inline-block;
+    width: 50%;
+    .meter {
+        padding-left: 6px;
+        padding-top: 4px;
+        font-size: 0.825rem;
+        font-weight: bold;
+    }
+}
+

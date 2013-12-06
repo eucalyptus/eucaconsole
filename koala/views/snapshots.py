@@ -145,12 +145,13 @@ class SnapshotView(TaggedItemView):
             try:
                 self.snapshot.delete()
                 time.sleep(1)
-                msg = _(u'Successfully sent delete snapshot request.  It may take a moment to delete the snapshot.')
+                prefix = _(u'Successfully deleted snapshot.')
+                msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('snapshot_view', id=self.snapshot.id)
+            location = self.request.route_url('snapshots')
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict

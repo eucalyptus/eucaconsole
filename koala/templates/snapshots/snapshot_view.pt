@@ -39,15 +39,26 @@
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
-                        <div class="small-4 columns"><label i18n:translate="" id="snapshot-status-label">Status</label></div>
+                        <div class="small-4 columns">
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus === 'completed'">Status</label>
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus !== 'completed'">Progress</label>
+                        </div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="status {{ snapshotStatus }}" id="current-status" ng-bind="snapshotStatus">
+                            <div class="progress round" ng-show="snapshotStatus !== 'completed'"><span
+                                    class="meter" style="width: {{ snapshotProgress }}">{{ snapshotProgress }}</span>
+                            </div>
+                            <span class="status {{ snapshotStatus }}" id="current-status"
+                                  ng-bind="snapshotStatus" ng-show="snapshotStatus == 'completed'">
                                 ${snapshot.status}
                             </span>
                             <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
                         </div>
                     </div>
                     ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
+                        <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
+                        <div class="small-8 columns value">${snapshot.id}</div>
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value">
