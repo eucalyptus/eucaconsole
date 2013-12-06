@@ -2,10 +2,10 @@
 @import "../foundation/variables";
 @import "../includes/eucavariables";
 
-$dashboard-panel-bottom-margin: 1.25rem;
 $dashboard-panel-tile-height: 200px;
 $dashboard-panel-padding: 4px;
-$notifications-log-height: 436px;
+$dashboard-panel-border-width: 4px;
+$dashboard-panel-border-color: $euca-lightgrey;
 
 #maincontent {
     padding-top: 1.5rem;
@@ -20,13 +20,14 @@ $notifications-log-height: 436px;
 }
 
 .large-6.columns .row {
-    margin-bottom: $dashboard-panel-bottom-margin;
+    margin-bottom: 3 * $dashboard-panel-border-width;
 }
 
 .panel {
+    box-sizing: border-box;
     position: relative;
     padding: $dashboard-panel-padding;
-    border: none;
+    border: $dashboard-panel-border-width solid $dashboard-panel-border-color;
     background-color: white;
     font-size: 0.825rem;
 }
@@ -98,16 +99,12 @@ $notifications-log-height: 436px;
 }
 
 #elastic-ips.panel {
-    margin-bottom: $dashboard-panel-bottom-margin;
-    max-height: 208px;
-}
-
-#elastic-ips-panel .tile {
-    height: $dashboard-panel-tile-height - 20px;
+    margin-bottom: 3 * $dashboard-panel-border-width;
+    max-height: $dashboard-panel-tile-height + (2 * $dashboard-panel-padding) + (2 * $dashboard-panel-border-width);
 }
 
 #notifications-log {
-    height: $notifications-log-height;
+    height: 2 * $dashboard-panel-tile-height + 11 * $dashboard-panel-border-width;
     overflow: scroll-y;
 }
 
