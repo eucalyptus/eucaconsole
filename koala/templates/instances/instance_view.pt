@@ -156,27 +156,17 @@
                     </div>
                 </form>
             </div>
-            <div class="panel has-title">
-                <h6 class="title" i18n:translate="">Other actions</h6>
-                <div class="row">
-                    <div class="large-1 columns">&nbsp;</div>
-                    <div class="large-11 columns">
-                        <a class="button secondary" i18n:translate="">
-                            Launch more like this
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-1 columns">&nbsp;</div>
-                    <div class="large-11 columns">
-                        <a class="button secondary" i18n:translate="">
-                            Create scaling group launch configuration like this
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="large-5 columns">
+            <div class="panel has-title other-actions">
+                <h6 class="title" i18n:translate="">Other actions</h6>
+                <a class="button secondary" i18n:translate="">
+                    Launch more like this
+                </a>
+                <a class="button secondary" i18n:translate="">
+                    Create scaling group launch configuration like this
+                </a>
+            </div>
             <div class="help-content">
                 <h5 class="title">Connecting to an instance</h5>
                 <p>To connect to your instance, be sure the security group

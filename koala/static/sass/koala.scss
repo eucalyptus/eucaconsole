@@ -419,21 +419,26 @@ textarea.hidden {
 /* -----------------------------------------
    Panels and modals
 ----------------------------------------- */
-.panel.has-title {
-    position: relative;
-    padding-top: 60px;
+.panel{
+    &.has-title {
+        position: relative;
+        padding-top: 60px;
+        h6.title {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            line-height: 2rem;
+            padding-left: 8px;
+            background-color: $euca-extralightblue;
+            border-top: 2px solid $euca-darkblue;
+            border-bottom: 1px solid $euca-lightgrey;
+            font-weight: normal;
+        }
+    }
+    &.other-actions {
+        background-color: white;
+    }
 }
 
-.panel h6.title {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    line-height: 2rem;
-    padding-left: 8px;
-    background-color: $euca-extralightblue;
-    border-top: 2px solid $euca-darkblue;
-    border-bottom: 1px solid $euca-lightgrey;
-    font-weight: normal;
-}
 
 .reveal-modal form .row.controls-wrapper {
     margin-bottom: 1rem;

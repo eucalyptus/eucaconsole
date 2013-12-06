@@ -1445,8 +1445,8 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel.has-title { position: relative; padding-top: 60px; }
-
-.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+.panel.other-actions { background-color: white; }
 
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 

@@ -106,29 +106,24 @@
                     </div>
                 </form>
             </div>
-            <div class="panel has-title" ng-show="volumeStatus == 'available'" tal:condition="volume">
-                <h6 class="title" i18n:translate="">Other volume actions</h6>
-                <div class="row">
-                    <div class="large-4 columns">&nbsp;</div>
-                    <div class="large-8 columns">
-                        <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
-                            Delete volume
-                        </a>
-                    </div>
-                </div>
-                <div id="delete-volume-modal" class="reveal-modal small">
-                    <h3 i18n:translate="">Delete volume</h3>
-                    <p><span i18n:translate="">Are you sure you want to delete the volume</span>
-                        <b>${volume_name}</b>?</p>
-                    <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
-                        ${structure:delete_form['csrf_token']}
-                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
-            </div>
         </div>
         <div class="large-5 columns">
+            <div class="panel has-title other-actions" ng-show="volumeStatus == 'available'" tal:condition="volume">
+                <h6 class="title" i18n:translate="">Other volume actions</h6>
+                <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
+                    Delete volume
+                </a>
+            </div>
+            <div id="delete-volume-modal" class="reveal-modal small">
+                <h3 i18n:translate="">Delete volume</h3>
+                <p><span i18n:translate="">Are you sure you want to delete the volume</span>
+                    <b>${volume_name}</b>?</p>
+                <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
+                    ${structure:delete_form['csrf_token']}
+                    <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
             <div class="help-content" tal:condition="not volume">
                 <h5 class="title">Create a Volume</h5>
                 <p> Eucalyptus offers persistent storage that you can attach to a
