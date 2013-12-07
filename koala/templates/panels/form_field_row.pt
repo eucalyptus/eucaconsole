@@ -1,6 +1,6 @@
 
 <!--! Form field row -->
-<div class="row inline controls-wrapper" id="controls_${field.name}">
+<div class="row ${inline} controls-wrapper" id="controls_${field.name}">
     <div class="small-${leftcol_width} columns">
         <label class="right">
             ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>

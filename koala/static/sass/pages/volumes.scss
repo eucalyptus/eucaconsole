@@ -3,22 +3,34 @@
 
 @import "../includes/landingpage";
 
+// Volume status choices are: creating, available, in-use, deleting, deleted, error
+// Attach status choices (volume.attach_data.status) are: attaching, attached, detaching, detached
 
 // Status colors
 $volume-status-color-attached: darkorange;
 $volume-status-color-attaching: lighten(orange, 20%);
 $volume-status-color-detached: darken(skyblue, 10%);
 $volume-status-color-detaching: lighten(skyblue, 10%);
-$volume-status-color-created: $euca-green;
+$volume-status-color-deleted: $euca-grey;
+$volume-status-color-error: darkred;
 $volume-status-color-creating: lighten($euca-lightgreen, 20%);
 $volume-status-color-available: $euca-green;
 
 
-.tile .status.attached { background-color: $volume-status-color-attached; }
-.tile .status.attaching { background-color: $volume-status-color-attaching; }
-.tile .status.detached { background-color: $volume-status-color-detached; }
-.tile .status.detaching { background-color: $volume-status-color-detaching; }
-.tile .status.created { background-color: $volume-status-color-created; }
+// Volume status
 .tile .status.creating { background-color: $volume-status-color-creating; }
 .tile .status.available { background-color: $volume-status-color-available; }
+.tile .status.in-use { background-color: $volume-status-color-attached; }
+.tile .status.deleting { background-color: $volume-status-color-detaching; }
+.tile .status.deleted { background-color: $volume-status-color-detaching; }
 
+// Volume attach_data status styles
+.tile .status.attaching { background-color: $volume-status-color-attaching; }
+.tile .status.attached { background-color: $volume-status-color-attached; }
+.tile .status.detached { background-color: $volume-status-color-detached; }
+.tile .status.detaching { background-color: $volume-status-color-detaching; }
+
+
+.table td.instance {
+    white-space: nowrap;
+}

@@ -71,6 +71,16 @@ class TaggedItemView(BaseView):
             self.remove_tags()
             self.add_tags()
 
+    @staticmethod
+    def get_tags_display(tags, skip_name=True):
+        """Return comma-separated list of tags as a string.
+           Skips the 'Name' tag by default"""
+        if skip_name:
+            tags_array = ['{}={}'.format(key, val) for key, val in tags.items() if key != 'Name']
+        else:
+            tags_array = ['{}={}'.format(key, val) for key, val in tags.items()]
+        return ', '.join(tags_array)
+
 
 class LandingPageView(BaseView):
     """Common view for landing pages

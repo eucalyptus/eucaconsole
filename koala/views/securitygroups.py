@@ -50,24 +50,31 @@ class SecurityGroupsView(LandingPageView):
     def securitygroups_json(self):
         securitygroups = []
         for securitygroup in self.get_items():
-            rules = []
-            for plist in securitygroup.rules:
-                rules.append(dict(
-                    from_port=plist.from_port,
-                    grants=[dict(
-                        name=grant.name, owner_id=grant.owner_id, group_id=grant.group_id) for grant in plist.grants],
-                    to_port=plist.to_port,
-                ))
             securitygroups.append(dict(
                 id=securitygroup.id,
                 description=securitygroup.description,
                 name=securitygroup.name,
                 owner_id=securitygroup.owner_id,
-                rules=rules,
-                tags=securitygroup.tags,
+                rules=self.get_rules(securitygroup.rules),
+                tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 vpc_id=securitygroup.vpc_id,
             ))
         return dict(results=securitygroups)
+
+    @staticmethod
+    def get_rules(rules):
+        rules_list = []
+        for rule in rules:
+            grants = [
+                dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
+            ]
+            rules_list.append(dict(
+                ip_protocol=rule.ip_protocol,
+                from_port=rule.from_port,
+                to_port=rule.to_port,
+                grants=grants,
+            ))
+        return rules_list
 
 
 class SecurityGroupView(TaggedItemView):
@@ -137,10 +144,9 @@ class SecurityGroupView(TaggedItemView):
             self.update_tags()
             self.update_rules()
 
-            location = self.request.route_url('securitygroups')
-            msg = _(u'Successfully modified security group {group}')
-            notification_msg = msg.format(group=self.security_group.name)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            location = self.request.route_url('securitygroup_view', id=self.security_group.id)
+            msg = _(u'Successfully modified security group')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
         return dict(

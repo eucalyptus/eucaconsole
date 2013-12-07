@@ -14,13 +14,37 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate="">Create new snapshot</a>
+                <a class="button small" i18n:translate="">Create snapshot</a>
             </div>
-            <div metal:fill-slot="tile_content">
-                <div ng-show="item.size">{{ item.size }} GB</div>
-                <div ng-show="item.volume_id">{{ item.volume_id }}</div>
-                <div ng-show="item.description">{{ item.description | limitTo: 128 }}</div>
-                <div ng-show="item.start_time">{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <metal:block metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a>
+            </metal:block>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    {{ item.volume_size }} GB
+                </div>
+                <div>
+                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">VO</span>
+                    <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a>
+                </div>
+                <div>
+                    <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
+                    {{ item.start_time | date: '${layout.angular_date_format}' }}
+                </div>
+                <div ng-show="item.description">
+                    <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                    {{ item.description | limitTo: 128 }}
+                </div>
+                <div ng-show="item.tags">
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Snapshot</th>
@@ -28,15 +52,17 @@
                 <th i18n:translate="">Size (GB)</th>
                 <th i18n:translate="">Volume</th>
                 <th i18n:translate="">Description</th>
+                <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Time Started</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
-                <td>{{ item.status }}</td>
-                <td>{{ item.size }}</td>
-                <td>{{ item.volume }}</td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="status">{{ item.status }}</td>
+                <td class="size">{{ item.volume_size }}</td>
+                <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.start_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.tags }}</td>
+                <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
     </div>

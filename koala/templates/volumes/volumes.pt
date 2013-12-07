@@ -14,34 +14,65 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate="">Create new volume</a>
+                <a class="button small" i18n:translate=""
+                   href="${request.route_url('volume_view', id='new')}">Create new volume</a>
             </div>
-            <div metal:fill-slot="tile_content">
-                <div>{{ item.id }}</div>
-                <div>{{ item.status }}</div>
-                <div>{{ item.size }} GB</div>
-                <div>{{ item.instance }}</div>
-                <div>{{ item.snapshot_id }}</div>
-                <div>{{ item.zone }}</div>
-                <div>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                    {{ item.size }} GB
+                </div>
+                <div>
+                    <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
+                    <a ng-href="/volumes/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
+                </div>
+                <div>
+                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.zone }}
+                </div>
+                <div>
+                    <span class="label" title="Create time" i18n:attributes="title" data-tooltip="">CT</span>
+                    {{ item.create_time | date:'${layout.angular_date_format}' }}
+                </div>
+                <div ng-show="item.instance">
+                    <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
+                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a>
+                </div>
+                <div ng-show="item.tags">
+                    <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
+                    {{ item.tags }}
+                </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.status || item.attach_status"
+                     class="footer status {{ item.attach_status || item.status }}">
+                    {{ item.attach_status || item.status }}
+                </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>Volume</th>
                 <th>Status</th>
                 <th>Size</th>
                 <th>Instance</th>
-                <th>Snapshot</th>
-                <th>Availability Zone</th>
+                <th>Snapshots</th>
+                <th>Avail Zone</th>
+                <th>Tags</th>
                 <th>Create Time</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>{{ item.status }}</td>
-                <td>{{ item.size }} GB</td>
-                <td>{{ item.instance }}</td>
-                <td>{{ item.snapshot }}</td>
+                <td>{{ item.size }}&nbsp;GB</td>
+                <td class="instance"><a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a></td>
+                <td><a ng-href="/volumes/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
                 <td>{{ item.zone }}</td>
-                <td>{{ item.create_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.tags }}</td>
+                <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
     </div>

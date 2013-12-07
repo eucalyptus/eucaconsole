@@ -1,0 +1,70 @@
+/* @fileOverview Volumes landing page CSS */
+@import "../includes/eucavariables";
+
+// Import landing page styles for tile view display on Volume snapshots page
+@import "../includes/landingpage";
+
+// Volume status choices are: creating, available, in-use, deleting, deleted, error
+
+// Status colors
+$volume-status-color-creating: lighten($euca-green, 10%);
+$volume-status-color-available: $euca-green;
+$volume-status-color-deleted: $euca-grey;
+$volume-status-color-error: darkred;
+$volume-status-color-attached: darkorange;
+
+
+// ***********
+// Volume page
+
+// Volume status
+.status.creating { color: $volume-status-color-creating; }
+.status.available { color: $volume-status-color-available; }
+.status.in-use { color: $volume-status-color-attached; }
+
+#volume-status-label {
+    position: relative;
+    top: 0;
+}
+
+
+// *********************
+// Volume snapshots page
+.tile {
+    background-color: white;
+    border: 1px solid $euca-lightgrey;
+    width: 180px; height: 140px;
+    .header .button.dropdown {
+        height: 30px;
+        color: black;
+    }
+    .footer {
+        padding: 0 0 0 0;
+        .completed {
+            padding: 4px 0 4px 8px;
+            height: 24px;
+        }
+        .progress {
+            position: relative;
+            margin: 0 0 0 0;
+            height: 24px;
+            border: none;
+            .meter {
+                padding: 4px 0 4px 8px;
+                height: 24px;
+                display: inline-block;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+            .dots {
+                position: absolute;
+                width: 32px; height: 10px;
+                top: 8px; right: 8px;
+            }
+        }
+    }
+}
+
+.status.pending { background-color: lighten($euca-green, 10%); }
+.status.completed { background-color: $euca-green; }
+

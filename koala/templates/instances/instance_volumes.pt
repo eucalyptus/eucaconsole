@@ -6,15 +6,14 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="InstanceVolumes" tal:define="instance_name instance.tags.get('name', instance.id)">
+    <div class="row" id="contentwrap" ng-app="InstanceVolumes" tal:define="instance_name instance.tags.get('Name', instance.id)">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
         <dl class="sub-nav" id="instance-subnav">
-            <dd><a href="${request.route_url('instance_view', id=instance.id)}"
-                    i18n:translate="">Instance</a></dd>
+            <dd><a href="${request.route_url('instance_view', id=instance.id)}" i18n:translate="">Instance</a></dd>
             <dd class="active"><a href="#" i18n:translate="">Volumes</a></dd>
         </dl>
         <!--! Notifications -->
@@ -27,7 +26,7 @@
                     <span i18n:translate="">Volumes for instance</span>
                     <strong>${instance_name}</strong>
                 </h6>
-                <div class="tile" id="attach-volume">
+                <div class="tile add" id="attach-volume">
                     <a href="#" data-reveal-id="attach-volume-modal" >
                         <div class="plus">+</div>
                         <div i18n:translate="">Attach a volume</div>
@@ -36,7 +35,7 @@
                 <span class="dots" ng-show="initialLoading">&nbsp;</span>
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
-                        <strong>{{ volume.name || volume.id }}</strong>
+                        <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
                         <a class="tiny secondary button dropdown right" href="#"
                            data-reveal-id="detach-volume-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
                     </div>
@@ -120,68 +119,16 @@
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
                             <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
-                <p>&nbsp;</p>
                 <hr />
-                <div class="help-content">
-                    <h5 class="title" i18n:translate="">Volume device options for Linux</h5>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th i18n:translate="">Possible for Connection</th>
-                                <th i18n:translate="">Instance Store</th>
-                                <th i18n:translate="">Recommended for EBS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <code>/dev/sd[a-z]</code><br />
-                                    <code>/dev/sd[a-z][1-15]</code><br />
-                                    <code>/dev/hd[a-z]</code><br />
-                                    <code>/dev/hd[a-z][1-15]</code>
-                                </td>
-                                <td><code>/dev/sd[b-e]</code></td>
-                                <td>
-                                    <code>/dev/sd[f-p]</code><br />
-                                    <code>/dev/sd[f-p][1-6]</code>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h5 class="title" i18n:translate="">Volume device options for Windows</h5>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th i18n:translate="">Possible for Connection</th>
-                                <th i18n:translate="">Instance Store</th>
-                                <th i18n:translate="">Recommended for EBS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <code>xvd[a-z]</code><br />
-                                    <code>xvdb[a-z]</code><br />
-                                    <code>/dev/sda[1-2]</code><br />
-                                    <code>/dev/sd[b-e]</code>
-                                </td>
-                                <td><code>xvd[a-e]</code></td>
-                                <td>
-                                    <code>xvd[f-p]</code> (with Red Hat PV drivers)<br />
-                                    <code>xvd[f-z]</code> (with Citrix PV drivers)
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
-                </div>
+                <!--! Volume device help -->
+                <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
             </div>
         </div>
     </div>

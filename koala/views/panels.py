@@ -15,7 +15,7 @@ from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, leftcol_width=3, rightcol_width=9, **kwargs):
+def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
@@ -39,23 +39,31 @@ def form_field_row(context, request, field=None, leftcol_width=3, rightcol_width
     for key, value in kwargs.items():
         html_attrs[key] = value
 
+    # Add AngularJS attributes
+    # A bit of a hack since we can't pass ng-model='foo' to the form_field panel
+    # So instead we pass ng_attrs={'model': 'foo'} to the form field
+    # e.g. ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshot_id'}, **html_attrs)}
+    if ng_attrs:
+        for ngkey, ngvalue in ng_attrs.items():
+            html_attrs['ng-{0}'.format(ngkey)] = ngvalue
+
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs,
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width
     )
 
 
 @panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
-def tag_editor(context, request, tags=None):
+def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     """ Tag editor panel.
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags_json = json.dumps(tags)
-    return dict(tags=tags, tags_json=tags_json)
+    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
-def securitygroup_rules(context, request, rules=None, groupnames=None):
+def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_width=3, rightcol_width=9):
     """ Security group rules panel.
         Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
     """
@@ -83,4 +91,6 @@ def securitygroup_rules(context, request, rules=None, groupnames=None):
         rules_json=json.dumps(rules_list),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
+        leftcol_width=leftcol_width,
+        rightcol_width=rightcol_width,
     )

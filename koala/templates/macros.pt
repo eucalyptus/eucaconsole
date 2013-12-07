@@ -120,7 +120,9 @@
                     <metal:block metal:define-slot="tile_content"></metal:block>
                 </div>
                 <metal:block metal:define-slot="tile_footer">
-                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">{{ item.status }}</div>
+                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                        {{ item.status.replace('-', ' ') }}
+                    </div>
                 </metal:block>
             </div>
         </div>
@@ -149,6 +151,105 @@
         </div>
     </div>
 </metal:notifications>
+
+
+<!-- Security group rules display
+     For displaying a list of rules (one per line) in a tableview column or gridview tile row -->
+<metal:securitygrouprules metal:define-macro="securitygroup_rulesdisplay">
+    <span ng-repeat="rule in item.rules">
+        {{ rule.ip_protocol.toUpperCase() }}
+        ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+        <span ng-repeat="grant in rule.grants">
+            <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+            <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+        </span><br ng-show="!$last" />
+    </span>
+</metal:securitygrouprules>
+
+
+<!-- Tag editor help -->
+<metal:tageditorhelp metal:define-macro="tageditor_help">
+    <div class="help-content" id="tag-editor-help">
+        <h5 class="title">Manage Tags</h5>
+        <p> To help you manage your cloud's instances, images, and other Eucalyptus resources,
+            you can optionally assign your own metadata to each resource in the form of tags.
+            You can use tags to create user-friendly names, make resource searching easier,
+            and improve coordination between multiple users.</p>
+        <h6>To add new tags:</h6>
+        <ol>
+            <li>Type the key name for your tag into the <strong>name...</strong> text box.</li>
+            <li>Type the value for your tag into the <strong>value...</strong> text box.</li>
+            <li>Click the <strong>Add tag</strong> button.</li>
+            <li>Repeat for any additional tags you wish to add.</li>
+            <li>When you are finished adding tags, click the <strong>Save changes</strong> button to save your changes.</li>
+        </ol>
+        <metal:block metal:define-slot="delete_tags">
+            <h6>To delete one or more tags:</h6>
+            <ol>
+                <li>Click the <i class="fi-minus-circle"></i> next to the tag you wish to remove.</li>
+                <li>Repeat for any additional tags you wish to delete.</li>
+                <li>When you are finished removing tags, click the <strong>Save changes</strong> button to save your changes.</li>
+            </ol>
+        </metal:block>
+    </div>
+</metal:tageditorhelp>
+
+<!-- Volume device help -->
+<metal:volumedevicehelp metal:define-macro="volumedevice_help">
+    <div class="help-content">
+        <h5 class="title" i18n:translate="">Volume device options for Linux</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th i18n:translate="">Possible for Connection</th>
+                    <th i18n:translate="">Instance Store</th>
+                    <th i18n:translate="">Recommended for EBS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <code>/dev/sd[a-z]</code><br />
+                        <code>/dev/sd[a-z][1-15]</code><br />
+                        <code>/dev/hd[a-z]</code><br />
+                        <code>/dev/hd[a-z][1-15]</code>
+                    </td>
+                    <td><code>/dev/sd[b-e]</code></td>
+                    <td>
+                        <code>/dev/sd[f-p]</code><br />
+                        <code>/dev/sd[f-p][1-6]</code>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h5 class="title" i18n:translate="">Volume device options for Windows</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th i18n:translate="">Possible for Connection</th>
+                    <th i18n:translate="">Instance Store</th>
+                    <th i18n:translate="">Recommended for EBS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <code>xvd[a-z]</code><br />
+                        <code>xvdb[a-z]</code><br />
+                        <code>/dev/sda[1-2]</code><br />
+                        <code>/dev/sd[b-e]</code>
+                    </td>
+                    <td><code>xvd[a-e]</code></td>
+                    <td>
+                        <code>xvd[f-p]</code> (with Red Hat PV drivers)<br />
+                        <code>xvd[f-z]</code> (with Citrix PV drivers)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
+    </div>
+</metal:volumedevicehelp>
 
 </body>
 </html>

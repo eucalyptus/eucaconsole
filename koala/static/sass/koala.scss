@@ -178,10 +178,18 @@ a.has-tip {
     font-family: Verdana, Geneva, Helvetica, sans-serif;
 }
 
-.sub-nav a {
-    margin-right: 0.5rem;
-    &:hover {
-        color: $euca-green;
+.sub-nav {
+    position: relative;
+    top: -1.5rem;
+    left: 1rem;
+    margin-bottom: -1rem;
+    dd a {
+        font-weight: bold;
+        margin-right: 0.5rem;
+        &:hover {
+            color: $euca-green;
+            text-decoration: underline;
+        }
     }
 }
 
@@ -209,6 +217,26 @@ a.circle {
     color: black;
     display: inline-block;
 }
+
+// Add tile on instance-volumes page and volume-snapshots page
+.tile.add {
+    text-align: center;
+    text-transform: uppercase;
+    position: relative;
+    a {
+        display: block;
+        position: absolute;
+        top: 0; bottom: 0; left: 0; right: 0;
+        &:hover {
+            background-color: lighten($euca-lightgreen, 30%);
+        }
+    }
+    .plus {
+        font-size: 5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
 
 #notifications {
     margin-left: 1rem;
@@ -254,6 +282,10 @@ a.circle {
 ----------------------------------------- */
 .help-content {
     font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    p {
+        margin-bottom: 0.5rem;
+    }
     ol {
         list-style-position: inside;
         li {
@@ -268,6 +300,12 @@ a.circle {
     }
     i {
         text-indent: 0;
+        &.fi-minus-circle {
+            font-size: 1.2rem;
+            &:hover {
+                color: black;
+            }
+        }
     }
     table.table {
         width: 100%;
@@ -297,13 +335,16 @@ form .controls_csrf_token {
     display: none;
 }
 
-form .inline label {
+form .controls-wrapper label {
     padding-top: 0.4rem;
     font-weight: bold;
     text-align: right;
+    select, input, .chosen-container {
+        text-align: left;
+    }
 }
 
-form .row.inline.readonly {
+form .row.controls-wrapper.readonly {
     margin-top: 0.1rem;
     margin-bottom: 0.3rem;
     label {
@@ -313,14 +354,14 @@ form .row.inline.readonly {
     }
 }
 
-form .inline.controls-wrapper > [class*='small-'] label {
+form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;
     position: relative;
     right: -1rem;
 }
 
-form .inline .field {
+form .controls-wrapper .field {
     input {
         display: inline-block;
     }
@@ -340,7 +381,7 @@ form .columns input {
 
 form a.remove.circle {
     position: relative;
-    left: 12px; top: -2px;
+    left: 8px; top: -2px;
 }
 
 form .cancel-link {
@@ -352,8 +393,7 @@ form .error .chosen-container .chosen-single {
     background: lighten(lightpink, 10%);
 }
 
-[data-abide] .inline .error small.error {
-    display: inline !important;
+[data-abide] .controls-wrapper .error small.error {
     background-color: transparent;
     color: darkred;
 }

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Forms for Security Groups
+Forms for Instances
 
 """
 import wtforms
@@ -46,7 +46,7 @@ class InstanceForm(BaseSecureForm):
                as it may not be in the get_all_addresses fetch.
         """
         empty_choice = ('', _(u'Unassign address...'))
-        ipaddress_choices = [empty_choice]
+        ipaddress_choices = [empty_choice] if self.instance.ip_address else []
         existing_ip_choices = [(eip.public_ip, eip.public_ip) for eip in self.conn.get_all_addresses()]
         ipaddress_choices += existing_ip_choices
         ipaddress_choices += [(self.instance.ip_address, self.instance.ip_address)]
@@ -82,7 +82,10 @@ class TerminateInstanceForm(BaseSecureForm):
 
 
 class AttachVolumeForm(BaseSecureForm):
-    """CSRF-protected form to attach a volume to an instance"""
+    """CSRF-protected form to attach a volume to an instance
+       Note: This is for attaching a volume on the instance detail page
+             The form to attach a volume to any instance from the volume detail page is at forms.volumes.AttachForm
+    """
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Volume'),
@@ -94,10 +97,11 @@ class AttachVolumeForm(BaseSecureForm):
         validators=[validators.Required(message=device_error_msg)],
     )
 
-    def __init__(self, request, conn=None, **kwargs):
+    def __init__(self, request, instance=None, conn=None, **kwargs):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
         self.conn = conn
+        self.instance = instance
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
         if conn is not None:
@@ -107,11 +111,13 @@ class AttachVolumeForm(BaseSecureForm):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
         for volume in self.conn.get_all_volumes():
-            if volume.attach_data.status is None:
+            if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, vol_name))
+        if len(choices) == 1:
+            choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
 
