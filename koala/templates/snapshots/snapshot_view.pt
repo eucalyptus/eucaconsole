@@ -91,27 +91,29 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title other-actions" tal:condition="snapshot">
-                <h6 class="title" i18n:translate="">Other snapshot actions</h6>
-                <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
-                    Create volume from snapshot
-                </a>
-                <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
-                    Delete snapshot
-                </a>
-            </div>
-            <div id="delete-snapshot-modal" class="reveal-modal small">
-                <h3 i18n:translate="">Delete snapshot</h3>
-                <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
-                    <b>${snapshot_name}</b>?</p>
-                <form action="${request.route_url('snapshot_delete', id=snapshot.id)}" method="post">
-                    ${structure:delete_form['csrf_token']}
-                    <div class="large-4 columns">&nbsp;</div>
-                    <div class="large-8 columns">
-                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                    </div>
-                </form>
-                <a class="close-reveal-modal">&#215;</a>
+            <div tal:condition="snapshot" tal:omit-tag="">
+                <div class="panel has-title other-actions">
+                    <h6 class="title" i18n:translate="">Other snapshot actions</h6>
+                    <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
+                        Create volume from snapshot
+                    </a>
+                    <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
+                        Delete snapshot
+                    </a>
+                </div>
+                <div id="delete-snapshot-modal" class="reveal-modal small">
+                    <h3 i18n:translate="">Delete snapshot</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
+                        <b>${snapshot_name}</b>?</p>
+                    <form action="${request.route_url('snapshot_delete', id=snapshot.id)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <div class="large-4 columns">&nbsp;</div>
+                        <div class="large-8 columns">
+                            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                        </div>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
             </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">

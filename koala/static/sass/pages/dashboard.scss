@@ -6,91 +6,89 @@ $dashboard-panel-tile-height: 200px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-border-width: 4px;
 $dashboard-panel-border-color: $euca-lightgrey;
+$dashboard-panel-icon-width: 120px;
+
 
 #maincontent {
     padding-top: 1.5rem;
 }
 
-.large-3.columns .tile {
-    margin-bottom: 10px;
-}
-
-.large-3.columns .subheader {
-    padding-left: 10px;
+.large-3.columns {
+    .tile {
+        margin-bottom: 10px;
+    }
 }
 
 .large-6.columns .row {
-    margin-bottom: 3 * $dashboard-panel-border-width;
+    margin-bottom: 5 * $dashboard-panel-border-width;
 }
 
 .panel {
     box-sizing: border-box;
     position: relative;
-    padding: $dashboard-panel-padding;
+    padding: 0 0 0 0;
     border: $dashboard-panel-border-width solid $dashboard-panel-border-color;
     background-color: white;
     font-size: 0.825rem;
+    .subheader {
+        background-color: $euca-extralightblue;
+        font-weight: bold;
+        text-align: center;
+        color: $euca-darkblue;
+        padding: 4px 0;
+        margin: 0 0 0 0;
+    }
+    .tile {
+        position: relative;
+        height: $dashboard-panel-tile-height;
+        padding: 0 0 0 0;
+        .icon {
+            position: absolute;
+            top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-width/2);
+            display: inline-block;
+            width: $dashboard-panel-icon-width; height: 120px;
+            border-radius: 100px;
+            text-align: center;
+            background: lighten($euca-extralightgrey, 2%);
+            color: lighten($euca-lightgreen, 20%);
+            font-size: 5rem;
+            em {
+                font-size: 4rem;
+                position: absolute;
+                bottom: 15%; left: 0; right: 0;
+                text-align: center;
+                color: darken($euca-darkgreen, 5%);
+                font-style: normal;
+            }
+        }
+        .footer {
+            position: absolute;
+            height: 30px;
+            left: 0; right: 0; bottom: 0;
+            text-align: center;
+            a {
+                font-weight: bold;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+            .button {
+                display: block;
+                margin: 0 8px;
+            }
+        }
+        a:hover .icon {
+            background-color: lighten($euca-lightgreen, 35%);
+        }
+    }
 }
 
-.panel .tile {
-    position: relative;
-    height: $dashboard-panel-tile-height;
-}
-
-.panel .tile a:hover .icon {
-    background-color: lighten($euca-lightgreen, 35%);
-}
-
-.panel .tile .icon {
-    position: absolute;
-    top: 20%; left: 20%;
-    display: inline-block;
-    width: 120px; height: 120px;
-    border-radius: 100px;
-    text-align: center;
-    background: lighten($euca-extralightgrey, 2%);
-    color: lighten($euca-lightgreen, 20%);
-    font-size: 5rem;
-}
-
-.panel .tile .icon em {
-    font-size: 4rem;
-    position: absolute;
-    bottom: 15%; left: 0; right: 0;
-    text-align: center;
-    color: $euca-darkgreen;
-    font-style: normal;
-}
-
-.panel .tile .footer {
-    position: absolute;
-    height: 30px;
-    left: 0; right: 0; bottom: 0;
-}
-
-.panel .tile .footer .button {
-    display: block;
-    border: none;
-}
-
-#instances #running.tile .icon {
-    top: 15%;
-}
 
 #instances #running.tile .icon em {
     font-size: 5rem;
 }
 
-#instances #stopped.tile .icon {
-    color: lightpink;
-}
-
-#instances #stopped.tile .icon em {
-    color: indianred;
-}
-
 #instances.panel .tile {
-    border-bottom: 2px solid $euca-lightgrey;
     margin-bottom: 28px;
 }
 
@@ -100,12 +98,12 @@ $dashboard-panel-border-color: $euca-lightgrey;
 }
 
 #elastic-ips.panel {
-    margin-bottom: 3 * $dashboard-panel-border-width;
-    max-height: $dashboard-panel-tile-height + (2 * $dashboard-panel-padding) + (2 * $dashboard-panel-border-width);
+    margin-bottom: 5 * $dashboard-panel-border-width;
+    max-height: $dashboard-panel-tile-height + 8px;
 }
 
-#notifications-log {
-    height: 2 * $dashboard-panel-tile-height + 11 * $dashboard-panel-border-width;
+#recent-actions {
+    height: 2 * $dashboard-panel-tile-height + 9 * $dashboard-panel-border-width;
     overflow: scroll-y;
 }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-06 15:10-0800\n"
+"POT-Creation-Date: 2013-12-06 16:59-0800\n"
 "PO-Revision-Date: 2013-10-29 20:29-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -222,34 +222,58 @@ msgstr ""
 msgid "Volumes"
 msgstr ""
 
-#: koala/templates/dashboard.pt:55 koala/templates/snapshots/snapshots.pt:9
+#: koala/templates/dashboard.pt:53
+msgid "Create volume"
+msgstr ""
+
+#: koala/templates/dashboard.pt:57 koala/templates/snapshots/snapshots.pt:9
 #: koala/templates/volumes/volume_snapshots.pt:16
 #: koala/templates/volumes/volume_view.pt:29
 msgid "Snapshots"
 msgstr ""
 
-#: koala/templates/dashboard.pt:66
+#: koala/templates/dashboard.pt:64 koala/templates/snapshots/snapshots.pt:19
+msgid "Create snapshot"
+msgstr ""
+
+#: koala/templates/dashboard.pt:70
 msgid "Groups"
 msgstr ""
 
-#: koala/templates/dashboard.pt:75
+#: koala/templates/dashboard.pt:77
+msgid "Add group"
+msgstr ""
+
+#: koala/templates/dashboard.pt:81
 msgid "Users"
 msgstr ""
 
-#: koala/templates/dashboard.pt:86
+#: koala/templates/dashboard.pt:88
+msgid "Add user"
+msgstr ""
+
+#: koala/templates/dashboard.pt:94
 msgid "Security groups"
 msgstr ""
 
-#: koala/templates/dashboard.pt:95
+#: koala/templates/dashboard.pt:101
+msgid "Create security group"
+msgstr ""
+
+#: koala/templates/dashboard.pt:105
 msgid "Key pairs"
 msgstr ""
 
-#: koala/templates/dashboard.pt:108
+#: koala/templates/dashboard.pt:112
+msgid "Create key pair"
+msgstr ""
+
+#: koala/templates/dashboard.pt:120
 msgid "Elastic IPs"
 msgstr ""
 
-#: koala/templates/dashboard.pt:118
-msgid "Log"
+#: koala/templates/dashboard.pt:130
+msgid "Recent Actions"
 msgstr ""
 
 #: koala/templates/login.pt:13
@@ -350,22 +374,22 @@ msgid "Status"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:43
-#: koala/templates/instances/instance_view.pt:205
+#: koala/templates/instances/instance_view.pt:195
 msgid "Reboot instance"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:46
-#: koala/templates/instances/instance_view.pt:220
+#: koala/templates/instances/instance_view.pt:210
 msgid "Start instance"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:49
-#: koala/templates/instances/instance_view.pt:234
+#: koala/templates/instances/instance_view.pt:224
 msgid "Stop instance"
 msgstr ""
 
 #: koala/templates/instances/instance_view.pt:52
-#: koala/templates/instances/instance_view.pt:248
+#: koala/templates/instances/instance_view.pt:238
 msgid "Terminate instance"
 msgstr ""
 
@@ -456,35 +480,35 @@ msgstr ""
 msgid "RAM Disk ID"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:160
+#: koala/templates/instances/instance_view.pt:162
 msgid "Other actions"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:164
+#: koala/templates/instances/instance_view.pt:163
 msgid "Launch more like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:172
+#: koala/templates/instances/instance_view.pt:166
 msgid "Create scaling group launch configuration like this"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:206
+#: koala/templates/instances/instance_view.pt:196
 msgid "Rebooting preserves the root file system of your instance across restarts."
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:207
+#: koala/templates/instances/instance_view.pt:197
 msgid "Are you sure you want to reboot instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:221
+#: koala/templates/instances/instance_view.pt:211
 msgid "Are you sure you want to start instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:235
+#: koala/templates/instances/instance_view.pt:225
 msgid "Are you sure you want to stop instance"
 msgstr ""
 
-#: koala/templates/instances/instance_view.pt:249
+#: koala/templates/instances/instance_view.pt:239
 msgid "Are you sure you want to terminate instance"
 msgstr ""
 
@@ -497,7 +521,7 @@ msgid "Attach a volume"
 msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:65
-#: koala/templates/volumes/volume_view.pt:202
+#: koala/templates/volumes/volume_view.pt:199
 msgid "Detach volume"
 msgstr ""
 
@@ -534,7 +558,7 @@ msgid ""
 msgstr ""
 
 #: koala/templates/instances/instance_volumes.pt:113
-#: koala/templates/volumes/volume_view.pt:181
+#: koala/templates/volumes/volume_view.pt:178
 msgid "Attach volume"
 msgstr ""
 
@@ -840,8 +864,8 @@ msgid "Are you sure you want to delete the security group"
 msgstr ""
 
 #: koala/templates/securitygroups/securitygroup_view.pt:76
-#: koala/templates/snapshots/snapshot_view.pt:113
-#: koala/templates/volumes/volume_view.pt:125
+#: koala/templates/snapshots/snapshot_view.pt:112
+#: koala/templates/volumes/volume_view.pt:124
 msgid "Yes, delete"
 msgstr ""
 
@@ -891,7 +915,7 @@ msgstr ""
 msgid "Add snapshot"
 msgstr ""
 
-#: koala/templates/snapshots/snapshot_view.pt:93
+#: koala/templates/snapshots/snapshot_view.pt:96
 msgid "Other snapshot actions"
 msgstr ""
 
@@ -900,17 +924,13 @@ msgid "Create volume from snapshot"
 msgstr ""
 
 #: koala/templates/snapshots/snapshot_view.pt:100
-#: koala/templates/snapshots/snapshot_view.pt:106
+#: koala/templates/snapshots/snapshot_view.pt:105
 msgid "Delete snapshot"
 msgstr ""
 
-#: koala/templates/snapshots/snapshot_view.pt:107
+#: koala/templates/snapshots/snapshot_view.pt:106
 #: koala/templates/volumes/volume_snapshots.pt:71
 msgid "Are you sure you want to delete the snapshot"
-msgstr ""
-
-#: koala/templates/snapshots/snapshots.pt:19
-msgid "Create snapshot"
 msgstr ""
 
 #: koala/templates/snapshots/snapshots.pt:54
@@ -969,24 +989,24 @@ msgstr ""
 msgid "Add volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:110
+#: koala/templates/volumes/volume_view.pt:113
 msgid "Other volume actions"
 msgstr ""
 
 #: koala/templates/volumes/volume_view.pt:114
-#: koala/templates/volumes/volume_view.pt:120
+#: koala/templates/volumes/volume_view.pt:119
 msgid "Delete volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:121
+#: koala/templates/volumes/volume_view.pt:120
 msgid "Are you sure you want to delete the volume"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:182
+#: koala/templates/volumes/volume_view.pt:179
 msgid "Attach a volume to an instance"
 msgstr ""
 
-#: koala/templates/volumes/volume_view.pt:203
+#: koala/templates/volumes/volume_view.pt:200
 msgid "Are you sure you want to detach the volume from the instance"
 msgstr ""
 
@@ -1248,5 +1268,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Successfully created volume"
+#~ msgstr ""
+
+#~ msgid "Log"
 #~ msgstr ""
 
