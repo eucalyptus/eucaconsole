@@ -85,6 +85,9 @@ class LoginView(BaseView):
                 self.invalidate_cache()  # Clear connection objects from cache
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
+                session['account'] = account
+                session['username'] = username
+                session['password'] = password
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key

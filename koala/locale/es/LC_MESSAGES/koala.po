@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: koala 4.0.0-prealpha\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-04 17:11-0800\n"
+"POT-Creation-Date: 2013-12-06 19:32-0500\n"
 "PO-Revision-Date: 2013-10-29 20:29-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -97,12 +97,12 @@ msgstr ""
 msgid "Username is required"
 msgstr ""
 
-#: koala/forms/login.py:20
+#: koala/forms/login.py:20 koala/forms/login.py:31
 #, fuzzy
 msgid "Password"
 msgstr "Cambiar contraseña"
 
-#: koala/forms/login.py:20
+#: koala/forms/login.py:20 koala/forms/login.py:31
 msgid "Password is required"
 msgstr ""
 
@@ -122,12 +122,27 @@ msgstr ""
 msgid "Secret key is required"
 msgstr ""
 
+#: koala/forms/login.py:34 koala/forms/login.py:41
+#, fuzzy
+msgid "New Password"
+msgstr "Cambiar contraseña"
+
+#: koala/forms/login.py:36 koala/forms/login.py:43
+msgid "New Password is required"
+msgstr ""
+
+#: koala/forms/login.py:37 koala/forms/login.py:44
+msgid "Password must be more than 6 characters"
+msgstr ""
+
 #: koala/forms/securitygroups.py:18
 msgid "Name is required"
 msgstr ""
 
 #: koala/forms/securitygroups.py:20 koala/forms/volumes.py:18
-#: koala/templates/images/images.pt:57 koala/templates/keypairs/keypairs.pt:24
+#: koala/templates/images/images.pt:57
+#: koala/templates/keypairs/keypair_view.pt:26
+#: koala/templates/keypairs/keypairs.pt:30
 #: koala/templates/launchconfigs/launchconfigs.pt:26
 #: koala/templates/scalinggroups/scalinggroups.pt:24
 #: koala/templates/securitygroups/securitygroups.pt:38
@@ -189,6 +204,23 @@ msgstr ""
 #: koala/templates/instances/instance_volumes.pt:16
 #: koala/views/ipaddresses.py:35
 msgid "Instance"
+msgstr ""
+
+#: koala/templates/changepassword.pt:45 koala/templates/changepassword.pt:81
+#: koala/templates/master_layout.pt:32
+msgid "Change password"
+msgstr "Cambiar contraseña"
+
+#: koala/templates/changepassword.pt:47
+msgid "Your password has expired. Please update your password."
+msgstr ""
+
+#: koala/templates/changepassword.pt:68
+msgid "New password must be different than old one"
+msgstr ""
+
+#: koala/templates/changepassword.pt:75
+msgid "Passwords must match"
 msgstr ""
 
 #: koala/templates/dashboard.pt:13
@@ -291,15 +323,11 @@ msgstr ""
 msgid "Help"
 msgstr "Ayudar"
 
-#: koala/templates/master_layout.pt:32
-msgid "Change password"
-msgstr "Cambiar contraseña"
-
-#: koala/templates/master_layout.pt:33
+#: koala/templates/master_layout.pt:34
 msgid "Logout"
 msgstr "Salir"
 
-#: koala/templates/master_layout.pt:103
+#: koala/templates/master_layout.pt:104
 msgid "All rights reserved"
 msgstr "Reservados todos los derechos"
 
@@ -670,16 +698,29 @@ msgstr ""
 msgid "Allocate addresses from cloud"
 msgstr ""
 
+#: koala/templates/keypairs/keypair_view.pt:8
+msgid "Keypair"
+msgstr ""
+
+#: koala/templates/keypairs/keypair_view.pt:17
+msgid "Properties of keypair"
+msgstr ""
+
+#: koala/templates/keypairs/keypair_view.pt:20
+msgid "Create new keypair"
+msgstr ""
+
+#: koala/templates/keypairs/keypair_view.pt:30
+#: koala/templates/keypairs/keypairs.pt:31 koala/views/keypairs.py:31
+msgid "Fingerprint"
+msgstr ""
+
 #: koala/templates/keypairs/keypairs.pt:9
 msgid "Key Pairs"
 msgstr ""
 
 #: koala/templates/keypairs/keypairs.pt:17
 msgid "Create new key pair"
-msgstr ""
-
-#: koala/templates/keypairs/keypairs.pt:25 koala/views/keypairs.py:31
-msgid "Fingerprint"
 msgstr ""
 
 #: koala/templates/launchconfigs/launchconfigs.pt:9
@@ -946,45 +987,45 @@ msgstr ""
 msgid "Instance name"
 msgstr ""
 
-#: koala/views/instances.py:139
+#: koala/views/instances.py:140
 msgid "Successfully modified instance"
 msgstr ""
 
-#: koala/views/instances.py:160
+#: koala/views/instances.py:161
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
 msgstr ""
 
-#: koala/views/instances.py:163
+#: koala/views/instances.py:164
 msgid "Unable to reboot the instance."
 msgstr ""
 
-#: koala/views/instances.py:176
+#: koala/views/instances.py:177
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop "
 "the instance."
 msgstr ""
 
-#: koala/views/instances.py:188
+#: koala/views/instances.py:189
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start "
 "the instance."
 msgstr ""
 
-#: koala/views/instances.py:200
+#: koala/views/instances.py:201
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to "
 "shut down the instance."
 msgstr ""
 
-#: koala/views/instances.py:317
+#: koala/views/instances.py:318
 msgid ""
 "Request successfully submitted.  It may take a moment to attach the "
 "volume."
 msgstr ""
 
-#: koala/views/instances.py:339 koala/views/volumes.py:198
+#: koala/views/instances.py:340 koala/views/volumes.py:198
 msgid ""
 "Request successfully submitted.  It may take a moment to detach the "
 "volume."
@@ -1014,15 +1055,15 @@ msgstr ""
 msgid "Successfully released {ip} to the cloud"
 msgstr ""
 
-#: koala/views/login.py:96
+#: koala/views/login.py:99
 msgid "Invalid user/account name and/or password."
 msgstr ""
 
-#: koala/views/login.py:100
+#: koala/views/login.py:103
 msgid "No response from host "
 msgstr ""
 
-#: koala/views/login.py:129
+#: koala/views/login.py:132
 msgid "Invalid access key and/or secret key."
 msgstr ""
 
@@ -1155,18 +1196,15 @@ msgstr ""
 #~ msgid "Settings for instance"
 #~ msgstr ""
 
-#~ msgid "Successfully modified security group {group}"
+#~ msgid "Create new snapshot"
 #~ msgstr ""
 
-#~ msgid "Create new snapshot"
+#~ msgid "Successfully modified security group {group}"
 #~ msgstr ""
 
 #~ msgid "Owner"
 #~ msgstr ""
 
 #~ msgid "Progress"
-#~ msgstr ""
-
-#~ msgid "Successfully created volume"
 #~ msgstr ""
 
