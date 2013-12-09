@@ -49,7 +49,7 @@
     </section>
 </nav>
 
-<nav class="top-bar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar">
+<nav class="top-bar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar" data-topbar="">
     <ul class="title-area">
         <li class="name"></li>
         <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -108,12 +108,13 @@
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
-    $(document).foundation().foundation('abide', {
-        patterns: {
-            cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/,
-            tag_pattern: /^(?!aws:).*/,  // Tags may not begin with 'aws:'
-            password : /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-            
+    $(document).foundation().foundation({
+        'abide': {
+            patterns: {
+                cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/,
+                tag_pattern: /^(?!aws:).*/,  // Tags may not begin with 'aws:'
+                password : /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
+            }
         }
     });
 </script>

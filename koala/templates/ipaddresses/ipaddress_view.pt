@@ -94,11 +94,13 @@
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script>
         $(document).ready(function() {
-            $('#associate-ip-modal').foundation('reveal', {
-                'opened': function() {
-                    $('#instance_id').chosen();
+            $('#associate-ip-modal').foundation({
+                'reveal': {
+                    'opened': function() {
+                        $('#instance_id').chosen();
+                    }
                 }
-            })
+            });
         });
     </script>
 </div>
