@@ -19,7 +19,7 @@
     <meta metal:define-slot="head_js" />
 </head>
 
-<body>
+<body onload="if (typeof page_loaded == 'function') { page_loaded(); }">
 <nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
@@ -29,7 +29,8 @@
         </a>
         <ul id="user-dropdown" class="f-dropdown">
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
-            <li><a href="#" i18n:translate="">Change password</a></li>
+            <li><a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a></li>
+            
             <li><a href="${request.route_url('logout')}" i18n:translate="">Logout</a></li>
         </ul>
     </section>
@@ -110,7 +111,9 @@
     $(document).foundation().foundation('abide', {
         patterns: {
             cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/,
-            tag_pattern: /^(?!aws:).*/  // Tags may not begin with 'aws:'
+            tag_pattern: /^(?!aws:).*/,  // Tags may not begin with 'aws:'
+            password : /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
+            
         }
     });
 </script>

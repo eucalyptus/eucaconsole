@@ -25,6 +25,7 @@ urls = [
     # Login/logout
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
+    Route(name='changepassword', pattern='/changepassword'),
     # Common
     Route(name='region_select', pattern='/region/select'),
     # Images
