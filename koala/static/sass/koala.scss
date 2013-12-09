@@ -276,14 +276,16 @@ a.circle {
     }
 }
 
-#pagetitle .back-arrow {
-    display: inline-block;
-    font-family: Verdana, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 1.5rem;
-    padding-right: 0.8rem;
-    border-right: 1px solid darken($euca-extralightblue, 30%);
-    margin-right: 0.8rem;
+#pagetitle {
+    .back-arrow {
+        display: inline-block;
+        font-family: Verdana, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 1.5rem;
+        padding-right: 0.8rem;
+        border-right: 1px solid darken($euca-extralightblue, 30%);
+        margin-right: 0.8rem;
+    }
 }
 
 /* -----------------------------------------
@@ -524,7 +526,6 @@ footer {
     }
     #pagetitle.header {
         margin-bottom: 0.5rem;
-        padding-bottom: 6px;
     }
     .sub-nav {
         top: 0;
