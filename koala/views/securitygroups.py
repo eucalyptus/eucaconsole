@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
+from boto.exception import EC2ResponseError
 import simplejson as json
 
 from pyramid.httpexceptions import HTTPFound
@@ -103,13 +104,13 @@ class SecurityGroupView(TaggedItemView):
     def securitygroup_delete(self):
         if self.security_group and self.delete_form.validate():
             name = self.security_group.name
-            deleted = self.security_group.delete()
-
-            if deleted:
-                msg = _(u'Successfully deleted security group {group}')
+            try:
+                self.security_group.delete()
+                prefix = _(u'Successfully deleted security group')
+                msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            else:
-                msg = _(u'Unable to delete security group {group}')
+            except EC2ResponseError as err:
+                msg = err.message
                 queue = Notification.ERROR
 
             location = self.request.route_url('securitygroups')
@@ -122,13 +123,22 @@ class SecurityGroupView(TaggedItemView):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
             description = self.request.params.get('description')
-            new_group = self.conn.create_security_group(name, description)
-            self.add_rules(security_group=new_group)
-            self.add_tags()
-            location = self.request.route_url('securitygroups')
-            msg = _(u'Successfully created security group {group}')
-            notification_msg = msg.format(group=name)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            tags_json = self.request.params.get('tags')
+            try:
+                new_security_group = self.conn.create_security_group(name, description)
+                self.add_rules(security_group=new_security_group)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    for tagname, tagvalue in tags.items():
+                        new_security_group.add_tag(tagname, tagvalue)
+                msg = _(u'Successfully created security group')
+                queue = Notification.SUCCESS
+                location = self.request.route_url('securitygroup_view', id=new_security_group.id)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                location = self.request.route_url('securitygroups')
+            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
         return dict(
