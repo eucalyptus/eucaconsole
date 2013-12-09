@@ -228,6 +228,17 @@ a.circle {
     display: inline-block;
 }
 
+.down-caret {
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-top: 6px solid $euca-green;
+    border-left: 6px solid transparent;
+    content: '';
+}
+
+
 // Add tile on instance-volumes page and volume-snapshots page
 .tile.add {
     text-align: center;

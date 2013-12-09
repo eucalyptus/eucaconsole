@@ -1509,6 +1509,8 @@ a.button.secondary.delete:hover { color: white; background-color: darkred; }
 
 a.circle { color: black; display: inline-block; }
 
+.down-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-top: 6px solid #76b800; border-left: 6px solid transparent; content: ''; }
+
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d3e9b6; }
