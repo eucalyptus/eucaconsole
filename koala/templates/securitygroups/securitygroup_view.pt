@@ -2,6 +2,13 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <style type="text/css">
+        [data-abide] .ipaddress.error small.error {
+            background-color: transparent;
+            color: darkred;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <div metal:fill-slot="main_content">
