@@ -20,7 +20,7 @@
 <metal:properties_filter_form metal:define-macro="properties_filter_form">
     <div id="filters" tal:condition="filter_fields">
         <h6>Filters</h6>
-        <form class="custom" method="get" id="properties-filter-form" action="${request.current_route_url()}">
+        <form method="get" id="properties-filter-form" action="${request.current_route_url()}">
             <input type="hidden" name="display" value="${display_type}" />
             <div class="match-condition">Match all of...</div>
             <div metal:define-slot="filter_form_fields">

@@ -17,7 +17,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" data-reveal-id="allocate-ip-modal" i18n:translate="">
+                <a class="button" data-reveal-id="allocate-ip-modal" i18n:translate="">
                     Allocate IP address
                 </a>
             </div>
