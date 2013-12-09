@@ -1545,18 +1545,18 @@ a.circle { color: black; display: inline-block; }
 ----------------------------------------- */
 form .row input { margin: 0 0 0 0; }
 
-form .row.controls-wrapper { margin-bottom: 1rem; }
-form .row.controls-wrapper.readonly { margin-bottom: 0.4rem; }
-
 form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
+form .row.controls-wrapper { margin-bottom: 1rem; }
+form .row.controls-wrapper.readonly { margin-bottom: 0.4rem; }
+
 form .controls-wrapper label { padding-top: 0.4rem; font-weight: bold; text-align: right; line-height: 1rem; }
 form .controls-wrapper label select, form .controls-wrapper label input, form .controls-wrapper label .chosen-container { text-align: left; }
 
-form .row.controls-wrapper.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
-form .row.controls-wrapper.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
+form .controls-wrapper.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
+form .controls-wrapper.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
@@ -1574,7 +1574,9 @@ form .cancel-link { margin-left: 2rem; }
 
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
-[data-abide] .controls-wrapper .error small.error { background-color: transparent; color: darkred; }
+form .chosen-drop .chosen-results { font-size: 0.825rem; }
+
+[data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: darkred; font-style: normal; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }

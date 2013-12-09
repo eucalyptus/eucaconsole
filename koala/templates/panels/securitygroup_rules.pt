@@ -84,7 +84,7 @@
                         <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
                         <span i18n:translate="" class="ip-label">IP address</span>
                         <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
-                               ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="cidr_ip_address" />
+                               ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="${layout.cidr_pattern}" />
                         <div><small class="error" i18n:translate="">Valid CIDR entry required</small></div>
                     </label>
                     <label class="securitygroupname">

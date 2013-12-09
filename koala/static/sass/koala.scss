@@ -345,19 +345,19 @@ form .row input {
     margin: 0 0 0 0;
 }
 
-form .row.controls-wrapper {
-    margin-bottom: 1rem;
-    &.readonly {
-        margin-bottom: 0.4rem;
-    }
-}
-
 form .server-validation span.error {
     display: block !important;
 }
 
 form .controls_csrf_token {
     display: none;
+}
+
+form .row.controls-wrapper {
+    margin-bottom: 1rem;
+    &.readonly {
+        margin-bottom: 0.4rem;
+    }
 }
 
 form .controls-wrapper label {
@@ -370,7 +370,7 @@ form .controls-wrapper label {
     }
 }
 
-form .row.controls-wrapper.readonly {
+form .controls-wrapper.readonly {
     margin-top: 0.1rem;
     margin-bottom: 0.3rem;
     label {
@@ -419,9 +419,14 @@ form .error .chosen-container .chosen-single {
     background: lighten(lightpink, 10%);
 }
 
+form .chosen-drop .chosen-results {
+    font-size: 0.825rem;
+}
+
 [data-abide] .controls-wrapper .error small.error {
-    background-color: transparent;
-    color: darkred;
+    margin-bottom: 6px;
+    background-color: darkred;
+    font-style: normal;
 }
 
 textarea.hidden {
