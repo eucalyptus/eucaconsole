@@ -43,6 +43,7 @@
                     </span>
                     <span tal:condition="not volume" i18n:translate="">
                         Create new volume
+                        <span ng-show="snapshotId">from {{ snapshotId }}</span>
                     </span>
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
@@ -105,15 +106,14 @@
                     </div>
                 </form>
             </div>
-            <div class="panel has-title" ng-show="volumeStatus == 'available'" tal:condition="volume">
-                <h6 class="title" i18n:translate="">Other volume actions</h6>
-                <div class="row">
-                    <div class="large-4 columns">&nbsp;</div>
-                    <div class="large-8 columns">
-                        <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
-                            Delete volume
-                        </a>
-                    </div>
+        </div>
+        <div class="large-5 columns">
+            <div tal:condition="volume" tal:omit-tag="">
+                <div class="panel has-title other-actions" ng-show="volumeStatus == 'available'">
+                    <h6 class="title" i18n:translate="">Other volume actions</h6>
+                    <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
+                        Delete volume
+                    </a>
                 </div>
                 <div id="delete-volume-modal" class="reveal-modal small">
                     <h3 i18n:translate="">Delete volume</h3>
@@ -126,8 +126,6 @@
                     <a class="close-reveal-modal">&#215;</a>
                 </div>
             </div>
-        </div>
-        <div class="large-5 columns">
             <div class="help-content" tal:condition="not volume">
                 <h5 class="title">Create a Volume</h5>
                 <p> Eucalyptus offers persistent storage that you can attach to a
@@ -217,6 +215,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/volume.js')}"></script>
 </div>
 </metal:block>

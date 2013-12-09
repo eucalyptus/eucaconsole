@@ -183,12 +183,18 @@ a.has-tip {
     top: -1.5rem;
     left: 1rem;
     margin-bottom: -1rem;
-    dd a {
-        font-weight: bold;
-        margin-right: 0.5rem;
-        &:hover {
-            color: $euca-green;
-            text-decoration: underline;
+    dd {
+        a {
+            font-weight: bold;
+            margin-right: 0.5rem;
+            &:hover {
+                color: $euca-green;
+                text-decoration: underline;
+            }
+        }
+        &.active a:hover {
+            color: white;
+            text-decoration: none;
         }
     }
 }
@@ -325,6 +331,9 @@ form .row input {
 
 form .row.controls-wrapper {
     margin-bottom: 1rem;
+    &.readonly {
+        margin-bottom: 0.4rem;
+    }
 }
 
 form .server-validation span.error {
@@ -339,6 +348,7 @@ form .controls-wrapper label {
     padding-top: 0.4rem;
     font-weight: bold;
     text-align: right;
+    line-height: 1rem;
     select, input, .chosen-container {
         text-align: left;
     }
@@ -409,21 +419,26 @@ textarea.hidden {
 /* -----------------------------------------
    Panels and modals
 ----------------------------------------- */
-.panel.has-title {
-    position: relative;
-    padding-top: 60px;
+.panel{
+    &.has-title {
+        position: relative;
+        padding-top: 60px;
+        h6.title {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            line-height: 2rem;
+            padding-left: 8px;
+            background-color: $euca-extralightblue;
+            border-top: 2px solid $euca-darkblue;
+            border-bottom: 1px solid $euca-lightgrey;
+            font-weight: normal;
+        }
+    }
+    &.other-actions {
+        background-color: white;
+    }
 }
 
-.panel h6.title {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    line-height: 2rem;
-    padding-left: 8px;
-    background-color: $euca-extralightblue;
-    border-top: 2px solid $euca-darkblue;
-    border-bottom: 1px solid $euca-lightgrey;
-    font-weight: normal;
-}
 
 .reveal-modal form .row.controls-wrapper {
     margin-bottom: 1rem;
@@ -497,6 +512,13 @@ footer {
     #pagetitle.header {
         margin-bottom: 0.5rem;
         padding-bottom: 6px;
+    }
+    .sub-nav {
+        top: 0;
+        left: 0;
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+        margin-left: 0.5rem;
     }
 }
 

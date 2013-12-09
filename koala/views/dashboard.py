@@ -22,9 +22,13 @@ class DashboardView(BaseView):
         ec2_conn = self.get_connection()
 
         # Instances counts
-        instances = ec2_conn.get_only_instances()
-        instances_running_count = len([i for i in instances if i.state == u'running'])
-        instances_stopped_count = len([i for i in instances if i.state == u'stopped'])
+        instances_total_count = instances_running_count = instances_stopped_count = 0
+        for instance in ec2_conn.get_only_instances():
+            instances_total_count += 1
+            if instance.state == u'running':
+                instances_running_count += 1
+            elif instance.state == u'stopped':
+                instances_stopped_count += 1
 
         # Volume/snapshot counts
         volumes_count = len(ec2_conn.get_all_volumes())
@@ -36,6 +40,7 @@ class DashboardView(BaseView):
         elasticips_count = len(ec2_conn.get_all_addresses())
 
         return dict(
+            instance_total=instances_total_count,
             instances_running=instances_running_count,
             instances_stopped=instances_stopped_count,
             volumes=volumes_count,

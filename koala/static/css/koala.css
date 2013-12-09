@@ -1363,6 +1363,7 @@ a.has-tip { border-bottom: none !important; }
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
 .sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
+.sub-nav dd.active a:hover { color: white; text-decoration: none; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
@@ -1408,12 +1409,13 @@ a.circle { color: black; display: inline-block; }
 form .row input { margin: 0 0 0 0; }
 
 form .row.controls-wrapper { margin-bottom: 1rem; }
+form .row.controls-wrapper.readonly { margin-bottom: 0.4rem; }
 
 form .server-validation span.error { display: block !important; }
 
 form .controls_csrf_token { display: none; }
 
-form .controls-wrapper label { padding-top: 0.4rem; font-weight: bold; text-align: right; }
+form .controls-wrapper label { padding-top: 0.4rem; font-weight: bold; text-align: right; line-height: 1rem; }
 form .controls-wrapper label select, form .controls-wrapper label input, form .controls-wrapper label .chosen-container { text-align: left; }
 
 form .row.controls-wrapper.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
@@ -1443,8 +1445,8 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel.has-title { position: relative; padding-top: 60px; }
-
-.panel h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+.panel.other-actions { background-color: white; }
 
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 
@@ -1474,7 +1476,8 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
   #logobar section .button { margin-top: -6px; } }
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
-  #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; } }
+  #pagetitle.header { margin-bottom: 0.5rem; padding-bottom: 6px; }
+  .sub-nav { top: 0; left: 0; margin-top: 0.5rem; margin-bottom: 1.5rem; margin-left: 0.5rem; } }
 @media screen and (min-width: 768px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */

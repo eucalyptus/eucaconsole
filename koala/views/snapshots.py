@@ -3,11 +3,17 @@
 Pyramid views for Eucalyptus and AWS snapshots
 
 """
+import simplejson as json
+import time
+
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..models import LandingPageFilter
-from ..views import LandingPageView, TaggedItemView
+from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm
+from ..models import LandingPageFilter, Notification
+from ..views import LandingPageView, TaggedItemView, BaseView
 
 
 class SnapshotsView(LandingPageView):
@@ -66,4 +72,122 @@ class SnapshotsView(LandingPageView):
                 volume_size=snapshot.volume_size,
             ))
         return dict(results=snapshots)
+
+
+class SnapshotView(TaggedItemView):
+    VIEW_TEMPLATE = '../templates/snapshots/snapshot_view.pt'
+
+    def __init__(self, request):
+        super(SnapshotView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.snapshot = self.get_snapshot()
+        self.snapshot_form = SnapshotForm(
+            self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
+        self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.tagged_obj = self.snapshot
+        self.render_dict = dict(
+            snapshot=self.snapshot,
+            snapshot_form=self.snapshot_form,
+            delete_form=self.delete_form,
+        )
+
+    @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
+    def snapshot_view(self):
+        if self.snapshot is None and self.request.matchdict.get('id') != 'new':
+            raise HTTPNotFound
+        return self.render_dict
+
+    @view_config(route_name='snapshot_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshot_update(self):
+        if self.snapshot and self.snapshot_form.validate():
+            # Update tags
+            self.update_tags()
+
+            location = self.request.route_url('snapshot_view', id=self.snapshot.id)
+            msg = _(u'Successfully modified snapshot')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
+    @view_config(route_name='snapshot_create', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshot_create(self):
+        if self.snapshot_form.validate():
+            name = self.request.params.get('name', '')
+            description = self.request.params.get('description', '')
+            tags_json = self.request.params.get('tags')
+            volume_id = self.request.params.get('volume_id')
+            try:
+                volume = self.get_volume(volume_id)
+                snapshot = volume.create_snapshot(description)
+                # Add name tag
+                if name:
+                    snapshot.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    for tagname, tagvalue in tags.items():
+                        snapshot.add_tag(tagname, tagvalue)
+                msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('snapshot_view', id=snapshot.id)
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+        return self.render_dict
+
+    @view_config(route_name='snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshot_delete(self):
+        if self.snapshot and self.delete_form.validate():
+            try:
+                self.snapshot.delete()
+                time.sleep(1)
+                prefix = _(u'Successfully deleted snapshot.')
+                msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('snapshots')
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    def get_snapshot(self):
+        snapshot_id = self.request.matchdict.get('id')
+        if snapshot_id:
+            snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
+            return snapshots_list[0] if snapshots_list else None
+        return None
+
+    def get_volume(self, volume_id):
+        volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+        return volumes_list[0] if volumes_list else None
+
+
+class SnapshotStateView(BaseView):
+    def __init__(self, request):
+        super(SnapshotStateView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.snapshot = self.get_snapshot()
+
+    @view_config(route_name='snapshot_state_json', renderer='json', request_method='GET')
+    def snapshot_state_json(self):
+        """Return current snapshot state"""
+        status = self.snapshot.status
+        progress = self.snapshot.progress
+        return dict(
+            results=dict(status=status, progress=progress)
+        )
+
+    def get_snapshot(self):
+        snapshot_id = self.request.matchdict.get('id')
+        if snapshot_id:
+            snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
+            return snapshots_list[0] if snapshots_list else None
+        return None
 
