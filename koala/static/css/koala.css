@@ -1522,8 +1522,6 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
 
-#tag-editor .row.inline.new input { background-color: #ebf5dd; }
-#tag-editor .tagentry.controls-wrapper.existing { margin-bottom: 0.5rem; }
 #tag-editor .tagentry .new { color: #76b800; }
 
 #pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
@@ -1560,6 +1558,8 @@ form .row.controls-wrapper label select, form .row.controls-wrapper label input,
 form .row.controls-wrapper .field input { display: inline-block; }
 form .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 form .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
+form .row.controls-wrapper.inline { margin-bottom: 4px; }
+form .row.controls-wrapper.inline label { right: -6px; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 

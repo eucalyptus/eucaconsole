@@ -6,8 +6,7 @@
          input.port { width: 3.8rem; }
          form .row.trafficfrom { margin-top: 1rem; }
          form .ip-label, form .sg-label { margin-right: 1rem; }
-         form label.ipaddress { margin-bottom: 1rem; text-align: left; }
-         form label.securitygroupname { text-align: left; }
+         form label.ipaddress, form label.securitygroupname { text-align: left !important; }
          form .cidr-ip, form .groupname { display: inline; width: 50%; }
          form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
          form label.protocol { margin-bottom: 1.5rem; }
@@ -45,7 +44,7 @@
             </div>
             <div class="row">
                 <div class="small-3 columns">
-                    <label class="right protocol" i18n:translate="">Protocol</label>
+                    <label class="protocol" i18n:translate="">Protocol</label>
                 </div>
                 <div class="small-9 columns">
                     <select name="ip_protocol" class="ip-protocol"

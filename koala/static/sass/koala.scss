@@ -282,9 +282,7 @@ a.circle {
 }
 
 #tag-editor {
-    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
     .tagentry {
-        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
         .new { color: $euca-green; }
     }
 }
@@ -407,6 +405,12 @@ form .row.controls-wrapper {
             padding-top: 0;
             position: relative;
             right: -12px;
+        }
+    }
+    &.inline {
+        margin-bottom: 4px;
+        label {
+            right: -6px;
         }
     }
 }
