@@ -5,7 +5,9 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('Name', volume.id)">
+    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('Name', volume.id)"
+         ng-controller="VolumeSnapshotsCtrl"
+         ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('volumes')}"
                data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
@@ -18,8 +20,7 @@
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
-        <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse" ng-controller="VolumeSnapshotsCtrl"
-             ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
+        <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
             <div class="panel has-title">
                 <h6 class="title">
                     <span i18n:translate="">Snapshots for volume</span>
@@ -35,8 +36,8 @@
                 <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right" href="#"
-                           data-reveal-id="delete-snapshot-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
+                        <a class="tiny secondary button dropdown right" ng-click="revealDeleteModal(snapshot.delete_form_action)"
+                           data-reveal-id="delete-snapshot-modal"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content">
                         <div>
@@ -65,23 +66,6 @@
                             <span class="dots">&nbsp;</span>
                         </div>
                     </div>
-                    <div id="delete-snapshot-modal-{{ $index }}" class="reveal-modal small" data-reveal="">
-                        <h3 i18n:translate="">Delete Snapshot</h3>
-                        <p>
-                            <span i18n:translate="">Are you sure you want to delete the snapshot</span>?
-                        </p>
-                        <form method="post" id="delete-form" data-abide="" action="{{ snapshot.delete_form_action }}">
-                            ${structure:delete_form['csrf_token']}
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
-                                </div>
-                            </div>
-                        </form>
-                        <a class="close-reveal-modal">&#215;</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -104,6 +88,23 @@
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <input type="submit" class="button" value="Add snapshot" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete Snapshot</h3>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the snapshot</span>?
+                </p>
+                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
