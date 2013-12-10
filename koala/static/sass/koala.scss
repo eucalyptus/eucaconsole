@@ -120,13 +120,16 @@ body {
 
 
 // Nav bar styles
-nav.top-bar a {
-    text-transform: uppercase;
+#navbar {
+    a {
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+    .dropdown li a {
+        line-height: 1.2rem;
+    }
 }
 
-nav.top-bar .dropdown li a {
-    line-height: 1.5rem;
-}
 
 // Page title
 #pagetitle.header {
