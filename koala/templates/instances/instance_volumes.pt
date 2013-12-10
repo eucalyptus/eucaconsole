@@ -36,7 +36,7 @@
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right" href="#"
+                        <a class="tiny secondary button dropdown right"
                            data-reveal-id="detach-volume-modal-{{ $index }}"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content">
@@ -61,7 +61,7 @@
                         {{ volume.status }}
                         <span class="dots" ng-show="volume.transitional">&nbsp;</span>
                     </div>
-                    <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small">
+                    <div id="detach-volume-modal-{{ $index }}" class="reveal-modal small" data-reveal="">
                         <h3 i18n:translate="">Detach volume</h3>
                         <p>
                             <span i18n:translate="">Are you sure you want to detach the volume from instance</span>
@@ -109,7 +109,7 @@
         </div>
         <!--! modal dialogs -->
         <div id="volume-dialogs">
-            <div id="attach-volume-modal" class="reveal-modal medium" data-reveal="">
+            <div id="attach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Attach volume</h3>
                 <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
                 <form method="post" action="${request.route_url('instance_volume_attach', id=instance.id)}"
@@ -117,7 +117,6 @@
                     ${structure:attach_form['csrf_token']}
                     ${panel('form_field', field=attach_form.volume_id)}
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
-                    <div>&nbsp;</div>
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">

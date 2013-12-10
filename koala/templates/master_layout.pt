@@ -20,7 +20,7 @@
 </head>
 
 <body onload="if (typeof page_loaded == 'function') { page_loaded(); }">
-<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
+<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar" data-topbar="">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
         <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
