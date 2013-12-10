@@ -199,6 +199,7 @@ a.has-tip {
         &.active a:hover {
             color: white;
             text-decoration: none;
+            background-color: $euca-green;
         }
     }
 }
@@ -351,7 +352,11 @@ form {
         }
     }
     .row input {
-        margin: 0 0 0 0;
+        &[type='text'], &[type='password'] {
+            margin: 0 0 0 0;
+            height: $euca-input-field-height;
+            line-height: $euca-input-field-height;
+        }
     }
     .columns input {
         max-width: 100%;
@@ -374,23 +379,14 @@ form {
     }
     .error .chosen-container .chosen-single {
         border-color: darkred;
-        background: lighten(lightpink, 10%);
+        background: $euca-validation-input-bgcolor;
     }
 }
 
-form .controls-wrapper {
+form .row.controls-wrapper {
     margin-bottom: 1rem;
-    &.readonly {
-        margin-top: 0.1rem;
-        margin-bottom: 0.3rem;
-        label {
-            position: relative;
-            right: -0.8rem;
-            top: -0.4rem;
-        }
-    }
     label {
-        padding-top: 0.4rem;
+        padding-top: 4px;
         font-weight: bold;
         text-align: right;
         line-height: 1rem;
@@ -403,6 +399,15 @@ form .controls-wrapper {
             display: inline-block;
         }
     }
+    &.readonly {
+        margin-top: 0;
+        margin-bottom: 0;
+        label {
+            padding-top: 0;
+            position: relative;
+            right: -12px;
+        }
+    }
 }
 
 
@@ -413,11 +418,20 @@ form .controls-wrapper > [class*='small-'] label {
     right: -1rem;
 }
 
-[data-abide] .controls-wrapper .error small.error {
-    margin-bottom: 6px;
-    background-color: $euca-validation-error-bgcolor;
-    font-style: normal;
-    padding-bottom: 4px;
+[data-abide] .controls-wrapper .error {
+    input, select {
+        border: 1px solid darkred;
+        background-color: $euca-validation-input-bgcolor;
+    }
+    small.error {
+        margin-bottom: 6px;
+        background-color: transparent;
+        color: $euca-validation-error-color;
+        font-weight: bold;
+        padding-left: 0;
+        font-style: normal;
+        padding-bottom: 4px;
+    }
 }
 
 textarea.hidden {

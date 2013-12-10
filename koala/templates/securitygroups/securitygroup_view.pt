@@ -85,7 +85,7 @@
                         </a>
                     </div>
                 </div>
-                <div id="delete-securitygroup-modal" class="reveal-modal small">
+                <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal="">
                     <h3 i18n:translate="">Delete security group</h3>
                     <p><span i18n:translate="">Are you sure you want to delete the security group</span>
                         <b>${security_group.name}</b>?</p>

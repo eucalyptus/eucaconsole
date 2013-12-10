@@ -22,7 +22,7 @@
                 <a class="button secondary" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
                     Associate with an instance
                 </a>
-                <div id="associate-ip-modal" class="reveal-modal medium">
+                <div id="associate-ip-modal" class="reveal-modal medium" data-reveal="">
                     <h3 i18n:translate="">Associate IP Address</h3>
                     <p i18n:translate="">Associate <b>${eip.public_ip}</b> with an instance</p>
                     <form action="${request.route_url('ipaddress_associate', public_ip=eip.public_ip)}"
@@ -53,7 +53,7 @@
                 <a class="button secondary" data-reveal-id="disassociate-ip-modal" i18n:translate="">
                     Disassociate from instance
                 </a>
-                <div id="disassociate-ip-modal" class="reveal-modal medium">
+                <div id="disassociate-ip-modal" class="reveal-modal medium" data-reveal="">
                     <h3 i18n:translate="">Disassociate IP Address</h3>
                     <p i18n:translate="">If you disassociate an IP address from an instance,
                         you will no longer be able to connect to that instance using that IP address.</p>
@@ -71,7 +71,7 @@
                 <a class="button secondary" data-reveal-id="release-ip-modal" i18n:translate=""
                         >Release IP address to cloud
                 </a>
-                <div id="release-ip-modal" class="reveal-modal medium">
+                <div id="release-ip-modal" class="reveal-modal medium" data-reveal="">
                     <h3 i18n:translate="">Release IP Address to Cloud</h3>
                     <p i18n:translate="">If you release an IP address to the cloud, you can no longer associate
                         that IP address with any of your instances.

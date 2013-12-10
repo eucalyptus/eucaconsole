@@ -45,7 +45,7 @@
             </metal:block>
         </div>
         <!-- Modal dialog -->
-        <div id="allocate-ip-modal" class="reveal-modal medium">
+        <div id="allocate-ip-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Allocate IP addresses</h3>
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">

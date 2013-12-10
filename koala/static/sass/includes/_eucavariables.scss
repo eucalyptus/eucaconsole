@@ -22,8 +22,11 @@ $euca-extralightgrey: #eee;
 
 $aws-orange: #ff9900;
 
-$euca-validation-error-bgcolor: darkred;
+$euca-validation-error-color: darkred;
+$euca-validation-input-bgcolor: lighten(lightpink, 10%);
 
+// Forms
+$euca-input-field-height: 2rem;
 
 // Text
 $euca-header-font: 'Trebuchet MS', 'Droid Sans', 'OpenSans', 'Helvetica Nueue', Helvetica, sans-serif;

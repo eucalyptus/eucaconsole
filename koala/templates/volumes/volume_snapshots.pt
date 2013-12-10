@@ -26,7 +26,7 @@
                     <strong>${volume_name}</strong>
                 </h6>
                 <div class="tile add" id="create-snapshot">
-                    <a href="#" data-reveal-id="create-snapshot-modal" >
+                    <a href="#" data-reveal-id="create-snapshot-modal">
                         <div class="plus">+</div>
                         <div i18n:translate="">Create a snapshot</div>
                     </a>
@@ -65,7 +65,7 @@
                             <span class="dots">&nbsp;</span>
                         </div>
                     </div>
-                    <div id="delete-snapshot-modal-{{ $index }}" class="reveal-modal small">
+                    <div id="delete-snapshot-modal-{{ $index }}" class="reveal-modal small" data-reveal="reveal-{{ $index }}">
                         <h3 i18n:translate="">Delete Snapshot</h3>
                         <p>
                             <span i18n:translate="">Are you sure you want to delete the snapshot</span>?
@@ -92,7 +92,7 @@
         </div>
         <!--! modal dialogs -->
         <div id="snapshot-dialogs">
-            <div id="create-snapshot-modal" class="reveal-modal small">
+            <div id="create-snapshot-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Add snapshot</h3>
                 <p><span i18n:translate="">Add a snapshot for</span> <strong>${volume_name}</strong></p>
                 <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"

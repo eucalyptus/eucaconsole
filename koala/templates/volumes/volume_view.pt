@@ -115,7 +115,7 @@
                         Delete volume
                     </a>
                 </div>
-                <div id="delete-volume-modal" class="reveal-modal small">
+                <div id="delete-volume-modal" class="reveal-modal small" data-reveal="">
                     <h3 i18n:translate="">Delete volume</h3>
                     <p><span i18n:translate="">Are you sure you want to delete the volume</span>
                         <b>${volume_name}</b>?</p>
@@ -174,7 +174,7 @@
             </metal:block>
         </div>
         <!--! Attach/Detach modal dialogs -->
-        <div id="attach-modal" class="reveal-modal small" tal:condition="volume">
+        <div id="attach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
             <h3 i18n:translate="">Attach volume</h3>
             <p><span i18n:translate="">Attach a volume to an instance</span></p>
             <form method="post" action="${request.route_url('volume_attach', id=volume.id)}"
@@ -195,7 +195,7 @@
             <!--! Volume device help -->
             <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
         </div>
-        <div id="detach-modal" class="reveal-modal small" tal:condition="volume">
+        <div id="detach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
             <h3 i18n:translate="">Detach volume</h3>
             <p><span i18n:translate="">Are you sure you want to detach the volume from the instance</span>?</p>
             <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">

@@ -101,7 +101,7 @@
                         Delete snapshot
                     </a>
                 </div>
-                <div id="delete-snapshot-modal" class="reveal-modal small">
+                <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
                     <h3 i18n:translate="">Delete snapshot</h3>
                     <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
                         <b>${snapshot_name}</b>?</p>

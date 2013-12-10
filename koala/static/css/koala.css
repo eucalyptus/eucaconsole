@@ -1498,7 +1498,7 @@ a.has-tip { border-bottom: none !important; }
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
 .sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
-.sub-nav dd.active a:hover { color: white; text-decoration: none; }
+.sub-nav dd.active a:hover { color: white; text-decoration: none; background-color: #76b800; }
 
 i.fi-plus.circle { border: 2px solid black; border-radius: 100px; padding: 0 2px; font-size: 0.7rem; }
 
@@ -1545,7 +1545,7 @@ a.circle { color: black; display: inline-block; }
 ----------------------------------------- */
 form label { cursor: default; }
 form label .req { color: darkred; }
-form .row input { margin: 0 0 0 0; }
+form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }
 form .columns input { max-width: 100%; }
 form a.remove.circle { position: relative; left: 8px; top: -2px; }
 form .cancel-link { margin-left: 2rem; }
@@ -1554,16 +1554,17 @@ form .server-validation span.error { display: block !important; }
 form .chosen-drop .chosen-results { font-size: 0.825rem; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
-form .controls-wrapper { margin-bottom: 1rem; }
-form .controls-wrapper.readonly { margin-top: 0.1rem; margin-bottom: 0.3rem; }
-form .controls-wrapper.readonly label { position: relative; right: -0.8rem; top: -0.4rem; }
-form .controls-wrapper label { padding-top: 0.4rem; font-weight: bold; text-align: right; line-height: 1rem; }
-form .controls-wrapper label select, form .controls-wrapper label input, form .controls-wrapper label .chosen-container { text-align: left; }
-form .controls-wrapper .field input { display: inline-block; }
+form .row.controls-wrapper { margin-bottom: 1rem; }
+form .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
+form .row.controls-wrapper label select, form .row.controls-wrapper label input, form .row.controls-wrapper label .chosen-container { text-align: left; }
+form .row.controls-wrapper .field input { display: inline-block; }
+form .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
+form .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
-[data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: darkred; font-style: normal; padding-bottom: 4px; }
+[data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
+[data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
