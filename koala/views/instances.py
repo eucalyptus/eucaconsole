@@ -42,7 +42,7 @@ class InstancesView(LandingPageView):
             LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
             LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
         ]
-        more_filter_keys = ['id', 'name', 'ip_address']
+        more_filter_keys = ['id', 'name', 'ip_address', 'key_name', 'security_groups', 'root_device', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down

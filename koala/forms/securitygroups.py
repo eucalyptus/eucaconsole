@@ -33,6 +33,8 @@ class SecurityGroupForm(BaseSecureForm):
         super(SecurityGroupForm, self).__init__(request, **kwargs)
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
+
+        # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid
         if security_group is not None:
             self.name.data = security_group.name
             self.description.data = security_group.description

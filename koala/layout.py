@@ -36,6 +36,11 @@ class MasterLayout(object):
         self.gridview_url = self.get_datagridview_url('gridview')
         self.date_format = '%Y-%m-%d %H:%M %p'
         self.angular_date_format = 'yyyy-MM-dd h:mm a'
+        self.tag_pattern = '^(?!aws:).*'
+        self.cidr_pattern = '{0}{1}'.format(
+            '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
+            '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
+        )
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')

@@ -10,9 +10,15 @@ angular.module('VolumeSnapshots', [])
         $scope.snapshots = [];
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
+        $scope.deleteFormAction = '';
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getVolumeSnapshots();
+        };
+        $scope.revealDeleteModal = function (action) {
+            var modal = $('#delete-snapshot-modal');
+            $scope.deleteFormAction = action;
+            modal.foundation('reveal', 'open');
         };
         $scope.getVolumeSnapshots = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

@@ -13,6 +13,7 @@ angular.module('InstanceVolumes', [])
         $scope.volumes = [];
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
+        $scope.detachFormAction = '';
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -23,12 +24,15 @@ angular.module('InstanceVolumes', [])
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
-                $('#attach-volume-modal').foundation('reveal', {
-                    'opened': function() {
-                        $('#volume_id').chosen({'width': '100%'});
-                    }
-                })
+                $('#attach-volume-modal').on('open', function() {
+                    $('#volume_id').chosen({'width': '100%'});
+                });
             });
+        };
+        $scope.revealDetachModal = function (action) {
+            var modal = $('#detach-volume-modal');
+            $scope.detachFormAction = action;
+            modal.foundation('reveal', 'open');
         };
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

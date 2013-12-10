@@ -36,7 +36,7 @@
                             <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
                             <div id="change-instance-state"
                                  ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
-                                <span class="tiny secondary button dropdown round" data-options="is_hover: true"
+                                <span class="tiny secondary button dropdown round"
                                       data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="instance-state-dropdown" class="f-dropdown">
                                     <li ng-show="instanceState == 'running'">
@@ -191,7 +191,7 @@
     </div>
     <!--! modal dialogs -->
     <div id="change-state-dialogs">
-        <div id="reboot-instance-modal" class="reveal-modal small">
+        <div id="reboot-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Reboot instance</h3>
             <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
             <p><span i18n:translate="">Are you sure you want to reboot instance</span> ${instance.id}?</p>
@@ -206,7 +206,7 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="start-instance-modal" class="reveal-modal small">
+        <div id="start-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Start instance</h3>
             <p><span i18n:translate="">Are you sure you want to start instance</span> ${instance.id}?</p>
             <form method="post" action="${request.route_url('instance_start', id=instance.id)}" id="start-form">
@@ -220,7 +220,7 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="stop-instance-modal" class="reveal-modal small">
+        <div id="stop-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Stop instance</h3>
             <p><span i18n:translate="">Are you sure you want to stop instance</span> ${instance.id}?</p>
             <form method="post" action="${request.route_url('instance_stop', id=instance.id)}" id="stop-form">
@@ -234,7 +234,7 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="terminate-instance-modal" class="reveal-modal small">
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Terminate instance</h3>
             <p><span i18n:translate="">Are you sure you want to terminate instance</span> ${instance.id}?</p>
             <form method="post" action="${request.route_url('instance_terminate', id=instance.id)}" id="terminate-form">

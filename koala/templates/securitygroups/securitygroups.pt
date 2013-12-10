@@ -17,7 +17,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate=""
+                <a class="button" i18n:translate=""
                         href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">

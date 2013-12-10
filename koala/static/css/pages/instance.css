@@ -13,20 +13,17 @@
 .tile .header .f-dropdown { width: 120px; }
 .tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
 .tile .header .button.dropdown i { position: relative; top: 2px; }
-
 .tile .header .button.dropdown::before { border: none; }
 
 .tile .content { padding: 8px; font-size: 0.9em; }
-.tile .content div { margin-bottom: 0.3rem; margin-left: 28px; }
+.tile .content div { margin-bottom: 2px; margin-left: 28px; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
 
 .sort-search { font-size: 0.9rem; }
-
 .sort-search form { margin-bottom: 0; }
-
-.sort-search .go { position: relative; left: -2px; }
+.sort-search .go { position: relative; left: -2px; font-size: 1.2rem; color: #666666; }
 
 .match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
 
@@ -78,7 +75,7 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 #change-instance-state { display: inline-block; margin-left: 1rem; }
 
-#instance-status-label { position: relative; top: 0; }
+#instance-status-label { position: relative; top: 6px; }
 
 #current-status { position: relative; top: 2px; }
 

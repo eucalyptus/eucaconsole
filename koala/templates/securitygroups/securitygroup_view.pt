@@ -2,6 +2,13 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <style type="text/css">
+        [data-abide] .ipaddress.error small.error {
+            background-color: transparent;
+            color: darkred;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -21,8 +28,7 @@
             <div class="panel has-title"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
                                 sgroup_tags security_group.tags if security_group else {};
-                                readonly True if security_group else False;
-                                field_attrs {'readonly': 'readonly'} if readonly else {};">
+                                readonly True if security_group else False;">
                 <h6 class="title">
                     <span tal:condition="security_group">
                         <span i18n:translate="">Settings for security group</span>
@@ -34,8 +40,20 @@
                 </h6>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
-                    ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9, **field_attrs)}
-                    ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9, **field_attrs)}
+                    <div tal:condition="not security_group" tal:omit-tag="">
+                        ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="security_group">
+                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-9 columns field inline">${security_group.name}</div>
+                    </div>
+                    <div tal:condition="not security_group" tal:omit-tag="">
+                        ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
+                        <div class="small-3 columns"><label i18n:translate="">Description</label></div>
+                        <div class="small-9 columns field inline">${security_group.description}</div>
+                    </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
                     <hr />
@@ -67,7 +85,7 @@
                         </a>
                     </div>
                 </div>
-                <div id="delete-securitygroup-modal" class="reveal-modal small">
+                <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal="">
                     <h3 i18n:translate="">Delete security group</h3>
                     <p><span i18n:translate="">Are you sure you want to delete the security group</span>
                         <b>${security_group.name}</b>?</p>
@@ -128,11 +146,13 @@
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script>
         $(document).ready(function() {
-            $('#associate-ip-modal').foundation('reveal', {
-                'opened': function() {
-                    $('#instance_id').chosen();
+            $('#associate-ip-modal').foundation({
+                'reveal': {
+                    'opened': function() {
+                        $('#instance_id').chosen();
+                    }
                 }
-            })
+            });
         });
     </script>
 </div>

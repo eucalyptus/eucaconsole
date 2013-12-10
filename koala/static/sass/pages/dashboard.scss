@@ -1,5 +1,4 @@
 /* @fileOverview Dashboard CSS */
-@import "../foundation/variables";
 @import "../includes/eucavariables";
 
 $dashboard-panel-tile-height: 200px;
@@ -33,6 +32,7 @@ $dashboard-panel-icon-width: 120px;
     .subheader {
         background-color: $euca-extralightblue;
         font-weight: bold;
+        font-size: 1rem;
         text-align: center;
         color: $euca-darkblue;
         padding: 4px 0;
@@ -83,11 +83,6 @@ $dashboard-panel-icon-width: 120px;
     }
 }
 
-
-#instances #running.tile .icon em {
-    font-size: 5rem;
-}
-
 #instances.panel .tile {
     margin-bottom: 28px;
 }
@@ -106,7 +101,6 @@ $dashboard-panel-icon-width: 120px;
     height: 2 * $dashboard-panel-tile-height + 9 * $dashboard-panel-border-width;
     overflow: scroll-y;
 }
-
 
 
 

@@ -6,7 +6,7 @@
 .large-6.columns .row { margin-bottom: 20px; }
 
 .panel { box-sizing: border-box; position: relative; padding: 0 0 0 0; border: 4px solid #cccccc; background-color: white; font-size: 0.825rem; }
-.panel .subheader { background-color: #ecf4f7; font-weight: bold; text-align: center; color: #00415e; padding: 4px 0; margin: 0 0 0 0; }
+.panel .subheader { background-color: #ecf4f7; font-weight: bold; font-size: 1rem; text-align: center; color: #00415e; padding: 4px 0; margin: 0 0 0 0; }
 .panel .tile { position: relative; height: 200px; padding: 0 0 0 0; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -60px; display: inline-block; width: 120px; height: 120px; border-radius: 100px; text-align: center; background: #f3f3f3; color: #bcdd8f; font-size: 5rem; }
 .panel .tile .icon em { font-size: 4rem; position: absolute; bottom: 15%; left: 0; right: 0; text-align: center; color: #386b00; font-style: normal; }
@@ -15,8 +15,6 @@
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: block; margin: 0 8px; }
 .panel .tile a:hover .icon { background-color: #dfefc9; }
-
-#instances #running.tile .icon em { font-size: 5rem; }
 
 #instances.panel .tile { margin-bottom: 28px; }
 

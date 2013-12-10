@@ -1,6 +1,5 @@
 /* @fileOverview single Instance page CSS */
 
-@import "../foundation/variables";
 @import "../includes/eucavariables";
 
 // Import landing page styles for tile view display on instance volumes page
@@ -45,7 +44,7 @@ form .row.controls-wrapper {
 }
 
 #instance-status-label {
-    position: relative; top: 0;
+    position: relative; top: 6px;
 }
 
 #current-status {

@@ -1,49 +1,53 @@
+@charset "UTF-8";
+
 /* Sass Imports */
 
 // Normalize/reset CSS styles
 @import "includes/normalize";
 
 // This includes all of the foundation global elements that are needed to work with any of the other files.
-// Note: foundation/variables imports includes/eucavariables
-@import "foundation/variables";
+// Note: foundation/settings imports includes/eucavariables
+@import "foundation/settings";
 
-// Foundation Components
+
+// Behold, here are all the Foundation 5 components.
 @import
-  "foundation/components/global",
-  "foundation/components/grid",
-  "foundation/components/visibility",
-  "foundation/components/block-grid",
-  "foundation/components/type",
-  "foundation/components/buttons",
-  "foundation/components/forms",
-  "foundation/components/button-groups",
-  "foundation/components/dropdown-buttons",
-  "foundation/components/split-buttons",
-  // "foundation/components/flex-video",
-  "foundation/components/section",
-  "foundation/components/top-bar",
-  // "foundation/components/orbit",
-  "foundation/components/reveal",
-  // "foundation/components/joyride",
-  "foundation/components/clearing",
+  "foundation/components/accordion",
   "foundation/components/alert-boxes",
-  // "foundation/components/breadcrumbs",
-  "foundation/components/custom-forms",
+  "foundation/components/block-grid",
+  "foundation/components/breadcrumbs",
+  "foundation/components/button-groups",
+  "foundation/components/buttons",
+  "foundation/components/clearing",
+  "foundation/components/dropdown",
+  "foundation/components/dropdown-buttons",
+  "foundation/components/flex-video",
+  "foundation/components/forms",
+  "foundation/components/grid",
+  "foundation/components/inline-lists",
+//  "foundation/components/joyride",
   "foundation/components/keystrokes",
   "foundation/components/labels",
-  "foundation/components/inline-lists",
+  "foundation/components/magellan",
+//  "foundation/components/orbit",
   "foundation/components/pagination",
   "foundation/components/panels",
-  // "foundation/components/pricing-tables",
+  "foundation/components/pricing-tables",
   "foundation/components/progress-bars",
+  "foundation/components/reveal",
   "foundation/components/side-nav",
+  "foundation/components/split-buttons",
   "foundation/components/sub-nav",
   "foundation/components/switch",
-  "foundation/components/magellan",
   "foundation/components/tables",
+  "foundation/components/tabs",
   "foundation/components/thumbs",
   "foundation/components/tooltips",
-  "foundation/components/dropdown";
+  "foundation/components/top-bar",
+  "foundation/components/type",
+  "foundation/components/offcanvas",
+  "foundation/components/visibility";
+
 
 /* =========================================================== */
 /* Eucalyptus Management Console main styles */
@@ -116,13 +120,16 @@ body {
 
 
 // Nav bar styles
-nav.top-bar a {
-    text-transform: uppercase;
+#navbar {
+    a {
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+    .dropdown li a {
+        line-height: 1.2rem;
+    }
 }
 
-nav.top-bar .dropdown li a {
-    line-height: 1.5rem;
-}
 
 // Page title
 #pagetitle.header {
@@ -195,6 +202,7 @@ a.has-tip {
         &.active a:hover {
             color: white;
             text-decoration: none;
+            background-color: $euca-green;
         }
     }
 }
@@ -216,13 +224,24 @@ i.fi-minus-circle {
 
 a.button.secondary.delete:hover {
     color: white;
-    background-color: darkred ;
+    background-color: darkred;
 }
 
 a.circle {
     color: black;
     display: inline-block;
 }
+
+.down-caret {
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-top: 6px solid $euca-green;
+    border-left: 6px solid transparent;
+    content: '';
+}
+
 
 // Add tile on instance-volumes page and volume-snapshots page
 .tile.add {
@@ -243,11 +262,11 @@ a.circle {
     }
 }
 
-
 #notifications {
     margin-left: 1rem;
     margin-right: 1rem;
     margin-top: -1rem;
+    font-weight: bold;
     .alert-box {
         background-color: $euca-notificationblue;
         &.success {
@@ -266,21 +285,21 @@ a.circle {
 }
 
 #tag-editor {
-    .row.inline.new input { background-color: lighten($euca-lightgreen, 40%); }
     .tagentry {
-        &.controls-wrapper.existing { margin-bottom: 0.5rem; }
         .new { color: $euca-green; }
     }
 }
 
-#pagetitle .back-arrow {
-    display: inline-block;
-    font-family: Verdana, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 1.5rem;
-    padding-right: 0.8rem;
-    border-right: 1px solid darken($euca-extralightblue, 30%);
-    margin-right: 0.8rem;
+#pagetitle {
+    .back-arrow {
+        display: inline-block;
+        font-family: Verdana, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 1.5rem;
+        padding-right: 0.8rem;
+        border-right: 1px solid darken($euca-extralightblue, 30%);
+        margin-right: 0.8rem;
+    }
 }
 
 /* -----------------------------------------
@@ -325,44 +344,80 @@ a.circle {
 /* -----------------------------------------
    Forms
 ----------------------------------------- */
-form .row input {
-    margin: 0 0 0 0;
+
+
+form {
+    label {
+        cursor: default;
+        .req {
+            color: darkred;
+        }
+    }
+    .row input {
+        &[type='text'], &[type='password'] {
+            margin: 0 0 0 0;
+            height: $euca-input-field-height;
+            line-height: $euca-input-field-height;
+        }
+    }
+    .columns input {
+        max-width: 100%;
+    }
+    a.remove.circle {
+        position: relative;
+        left: 8px; top: -2px;
+    }
+    .cancel-link {
+        margin-left: 2rem;
+    }
+    .controls_csrf_token {
+        display: none;
+    }
+    .server-validation span.error {
+        display: block !important;
+    }
+    .chosen-drop .chosen-results {
+        font-size: 0.825rem;
+    }
+    .error .chosen-container .chosen-single {
+        border-color: darkred;
+        background: $euca-validation-input-bgcolor;
+    }
 }
 
 form .row.controls-wrapper {
     margin-bottom: 1rem;
-    &.readonly {
-        margin-bottom: 0.4rem;
-    }
-}
-
-form .server-validation span.error {
-    display: block !important;
-}
-
-form .controls_csrf_token {
-    display: none;
-}
-
-form .controls-wrapper label {
-    padding-top: 0.4rem;
-    font-weight: bold;
-    text-align: right;
-    line-height: 1rem;
-    select, input, .chosen-container {
-        text-align: left;
-    }
-}
-
-form .row.controls-wrapper.readonly {
-    margin-top: 0.1rem;
-    margin-bottom: 0.3rem;
     label {
-        position: relative;
-        right: -0.8rem;
-        top: -0.4rem;
+        padding-top: 4px;
+        font-weight: bold;
+        text-align: right;
+        line-height: 1rem;
+        select, input, .chosen-container {
+            text-align: left;
+        }
+    }
+    .field {
+        input {
+            display: inline-block;
+        }
+    }
+    &.readonly {
+        margin-top: 0;
+        margin-bottom: 0;
+        label {
+            padding-top: 0;
+            position: relative;
+            right: -12px;
+        }
+    }
+    &.inline {
+        margin-bottom: 4px;
+        label {
+            right: -6px;
+        }
     }
 }
+
 
 form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
@@ -371,41 +426,20 @@ form .controls-wrapper > [class*='small-'] label {
     right: -1rem;
 }
 
-form .controls-wrapper .field {
-    input {
-        display: inline-block;
+[data-abide] .controls-wrapper .error {
+    input, select {
+        border: 1px solid darkred;
+        background-color: $euca-validation-input-bgcolor;
     }
-}
-
-form label {
-    cursor: default;
-}
-
-form label .req {
-    color: darkred;
-}
-
-form .columns input {
-    max-width: 100%;
-}
-
-form a.remove.circle {
-    position: relative;
-    left: 8px; top: -2px;
-}
-
-form .cancel-link {
-    margin-left: 2rem;
-}
-
-form .error .chosen-container .chosen-single {
-    border-color: darkred;
-    background: lighten(lightpink, 10%);
-}
-
-[data-abide] .controls-wrapper .error small.error {
-    background-color: transparent;
-    color: darkred;
+    small.error {
+        margin-bottom: 6px;
+        background-color: transparent;
+        color: $euca-validation-error-color;
+        font-weight: bold;
+        padding-left: 0;
+        font-style: normal;
+        padding-bottom: 4px;
+    }
 }
 
 textarea.hidden {
@@ -440,8 +474,13 @@ textarea.hidden {
 }
 
 
-.reveal-modal form .row.controls-wrapper {
-    margin-bottom: 1rem;
+.reveal-modal {
+    h3 {
+        font-weight: bold;
+    }
+    form .row.controls-wrapper {
+        margin-bottom: 1rem;
+    }
 }
 
 /* -----------------------------------------
@@ -466,6 +505,16 @@ footer {
 
 .copyright {
     font-size: 0.8em;
+}
+
+
+/* -----------------------------------------
+   Buttons
+----------------------------------------- */
+.button {
+    &.secondary {
+        border: 1px solid lighten($euca-grey, 10%);
+    }
 }
 
 
@@ -509,16 +558,12 @@ footer {
     .columns.datagrid {
         padding-left: 1rem;
     }
-    #pagetitle.header {
-        margin-bottom: 0.5rem;
-        padding-bottom: 6px;
-    }
     .sub-nav {
         top: 0;
         left: 0;
-        margin-top: 0.5rem;
+        margin-top: -28px;
+        margin-left: 4px;
         margin-bottom: 1.5rem;
-        margin-left: 0.5rem;
     }
 }
 
