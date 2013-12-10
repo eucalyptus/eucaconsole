@@ -27,7 +27,7 @@
                     <strong>${instance_name}</strong>
                 </h6>
                 <div class="tile add" id="attach-volume">
-                    <a href="#" data-reveal-id="attach-volume-modal" >
+                    <a href="#" data-reveal-id="attach-volume-modal">
                         <div class="plus">+</div>
                         <div i18n:translate="">Attach a volume</div>
                     </a>
@@ -109,7 +109,7 @@
         </div>
         <!--! modal dialogs -->
         <div id="volume-dialogs">
-            <div id="attach-volume-modal" class="reveal-modal small">
+            <div id="attach-volume-modal" class="reveal-modal medium" data-reveal="">
                 <h3 i18n:translate="">Attach volume</h3>
                 <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
                 <form method="post" action="${request.route_url('instance_volume_attach', id=instance.id)}"

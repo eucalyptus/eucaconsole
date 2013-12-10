@@ -36,7 +36,7 @@
                             <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
                             <div id="change-instance-state"
                                  ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
-                                <span class="tiny secondary button dropdown round" data-options="is_hover: true"
+                                <span class="tiny secondary button dropdown round"
                                       data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="instance-state-dropdown" class="f-dropdown">
                                     <li ng-show="instanceState == 'running'">

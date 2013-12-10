@@ -1,6 +1,6 @@
 
 <!--! Security group rules editor -->
-<div id="rules-editor" class="row inline" ng-app="SecurityGroupRules"
+<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
      <style type="text/css">
          input.port { width: 3.8rem; }

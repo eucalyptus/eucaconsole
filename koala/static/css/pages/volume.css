@@ -23,7 +23,7 @@
 
 .sort-search { font-size: 0.9rem; }
 .sort-search form { margin-bottom: 0; }
-.sort-search .go { position: relative; left: -2px; font-size: 1.2rem; height: 2rem; color: #666666; }
+.sort-search .go { position: relative; left: -2px; font-size: 1.2rem; color: #666666; }
 
 .match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
 
@@ -62,6 +62,8 @@
 .status.in-use { color: darkorange; }
 
 #volume-status-label { position: relative; top: 0; }
+
+.reveal-modal #device { width: 10rem; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }

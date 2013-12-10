@@ -1516,7 +1516,7 @@ a.circle { color: black; display: inline-block; }
 .tile.add a:hover { background-color: #d3e9b6; }
 .tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
 
-#notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; }
+#notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
