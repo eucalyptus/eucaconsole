@@ -10,8 +10,22 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
+        <!-- New Keypair Material Download -->
+        <div tal:condition="keypair_created ">
+           <form id="download-keypair-form" action="${request.route_url('keypair_download')}" method="post">
+               ${structure:keypair_form['csrf_token']}
+           </form>
+           <script language="Javascript">
+               function trigger(){ 
+                  setTimeout(function(){ $("#download-keypair-form").submit(); }, 1000); // download the keypair material 1 second after.
+               }
+               trigger();
+           </script>
+        </div>
+
         <div class="large-7 columns"
-            tal:define="form_action request.route_url('keypair_create')">
+            tal:define="form_action request.route_url('keypair_create');
+                         html_attrs {'disabled': 'disabled'} if keypair else {};">
             <div class="panel has-title">
                 <h6 class="title">
                     <span tal:condition="keypair">
@@ -22,25 +36,48 @@
                         Create new keypair 
                     </span>
                 </h6>
-                <div tal:condition="keypair">
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${keypair.name if keypair else ''}</div>
-                    </div>
+                <form tal:attributes="action form_action" method="post" data-abide="abide"> 
+                    ${structure:keypair_form['csrf_token']}
+                    ${panel('form_field', field=keypair_form['name'], **html_attrs)}
                     <div class="row controls-wrapper readonly" tal:condition="keypair">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                        <div class="small-9 columns value">${keypair.fingerprint if keypair else ''}</div>
+                        <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
-                </div>
-                <div tal:condition="not keypair">
-                    <form tal:attributes="action form_action" method="post" data-abide="abide"> 
+                    <hr>
+                    <div class="row" tal:condition="not keypair">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
+                            <button type="submit" class="button">
+                                <span i18n:translate="">
+                                    Create keypair
+                                </span>
+                            </button>
+                            <a href="${request.route_url('keypairs')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                 </form>
+                 <div tal:condition="not keypair" i18n:translate="">
+                     <hr>
+                     <span>
+                         Import keypair 
+                     </span>
+                     <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide"> 
+                        ${structure:keypair_form['csrf_token']}
+                        ${panel('form_field', field=keypair_form['name'], **html_attrs)}
+                        ${panel('form_field', field=keypair_form['key_material'], **html_attrs)}
+                        <input type="file" id="key-import-file"/>
+                        <div class="row controls-wrapper readonly" tal:condition="keypair">
+                            <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
+                            <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
+                        </div>
                         <hr>
-                        <div class="row">
+                        <div class="row" tal:condition="not keypair">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field inline">
                                 <button type="submit" class="button">
                                     <span i18n:translate="">
-                                        Create keypair
+                                        Import keypair
                                     </span>
                                 </button>
                                 <a href="${request.route_url('keypairs')}"
@@ -52,6 +89,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/keypair.js')}"></script>
 </div>
 
 </metal:block>
