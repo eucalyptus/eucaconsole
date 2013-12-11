@@ -53,7 +53,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP Address</th>
                 <th i18n:translate="">Assigned to Instance</th>
-                <th i18n:translate="">Actions</th>
+                <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
@@ -69,8 +69,7 @@
                             <a i18n:translate=""
                                ng-click="revealModal('associate', item.public_ip)">Associate with instance</a>
                         </li>
-                        <li ng-show="!item.instance_id">
-                            <a i18n:translate=""
+                        <li><a i18n:translate=""
                                ng-click="revealModal('release', item.public_ip)">Release to cloud</a>
                         </li>
                     </ul>

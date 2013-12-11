@@ -53,7 +53,7 @@
             If the IP address is currently associated with an instance when you release it to the cloud,
             the instance will get a new IP address as long as you did not
             specify private addressing when you launched the instance.</p>
-        <p i18n:translate="">Are you sure you want to release ${eip.public_ip if eip else '{{ publicIP }}'} to the cloud?</p>
+        <p i18n:translate="">Are you sure you want to release <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> to the cloud?</p>
         <form action="${action}" method="post">
             ${structure:release_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
