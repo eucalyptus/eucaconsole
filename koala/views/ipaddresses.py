@@ -25,6 +25,11 @@ class IPAddressesView(LandingPageView):
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.json_items_endpoint = self.request.route_url('ipaddresses_json')
+        self.sort_keys = [
+            dict(key='public_ip', name=_(u'IP Address')),
+            dict(key='instance_id', name=_(u'Instance')),
+        ]
+        self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
             display_type=self.display_type,
             filter_fields=self.filter_fields,
@@ -45,10 +50,6 @@ class IPAddressesView(LandingPageView):
     @view_config(route_name='ipaddresses', renderer='../templates/ipaddresses/ipaddresses.pt')
     def ipaddresses_landing(self):
         # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='public_ip', name=_(u'IP Address')),
-            dict(key='instance_id', name=_(u'Instance')),
-        ]
         # Handle Allocate IP addresses form
         if self.request.method == 'POST':
             if self.allocate_form.validate():

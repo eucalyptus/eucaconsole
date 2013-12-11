@@ -1,0 +1,67 @@
+<!--! Modal dialogs for Elastic IPs on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="associate-ip-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('ipaddresses_associate');
+                     detailpage_action request.route_url('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Associate IP Address</h3>
+        <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
+        <form action="${action}"
+              method="post" data-abide="abide">
+            ${structure:associate_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+            </div>
+            ${panel('form_field', field=associate_form.instance_id)}
+            <div class="row">
+                <div class="small-4 columns">&nbsp;</div>
+                <div class="small-8 columns field inline">
+                    <input type="submit" class="button" value="Associate with Instance"
+                           i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('ipaddresses_disassociate');
+                     detailpage_action request.route_url('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Disassociate IP Address</h3>
+        <p i18n:translate="">If you disassociate an IP address from an instance,
+            you will no longer be able to connect to that instance using that IP address.</p>
+        <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b><br />
+            from instance <b>${eip.instance_id if eip else '{{ instanceID }}'}</b>?</p>
+        <form action="${action}" method="post">
+            ${structure:disassociate_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+            </div>
+            <input type="submit" class="button" value="Yes, disassociate" />
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('ipaddresses_release');
+                     detailpage_action request.route_url('ipaddress_release', public_ip=eip.public_ip) if eip else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Release IP Address to Cloud</h3>
+        <p i18n:translate="">If you release an IP address to the cloud, you can no longer associate
+            that IP address with any of your instances.
+            If the IP address is currently associated with an instance when you release it to the cloud,
+            the instance will get a new IP address as long as you did not
+            specify private addressing when you launched the instance.</p>
+        <p i18n:translate="">Are you sure you want to release ${eip.public_ip if eip else '{{ publicIP }}'} to the cloud?</p>
+        <form action="${action}" method="post">
+            ${structure:release_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+            </div>
+            <input type="submit" class="button" value="Yes, release" />
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

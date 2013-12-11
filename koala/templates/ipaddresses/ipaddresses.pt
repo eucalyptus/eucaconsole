@@ -63,7 +63,7 @@
                     <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                         <li ng-show="item.instance_id">
                             <a i18n:translate=""
-                               ng-click="revealModal('disassociate', item.public_ip)">Disassociate from instance</a>
+                               ng-click="revealModal('disassociate', item.public_ip, item.instance_id)">Disassociate from instance</a>
                         </li>
                         <li ng-show="!item.instance_id">
                             <a i18n:translate=""
@@ -96,53 +96,9 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="associate-ip-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Associate IP Address</h3>
-            <p i18n:translate="">Associate <b>{{ publicIP }}</b> with an instance</p>
-            <form action="${request.route_url('ipaddresses_associate')}" method="post" data-abide="abide">
-                ${structure:associate_form['csrf_token']}
-                <input type="hidden" name="display" value="{{ displayType }}" />
-                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
-                ${panel('form_field', field=associate_form.instance_id)}
-                <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Associate with Instance" i18n:attributes="value" />
-                    </div>
-                </div>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
-        <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Disassociate IP Address</h3>
-            <p i18n:translate="">If you disassociate an IP address from an instance,
-                you will no longer be able to connect to that instance using that IP address.</p>
-            <p i18n:translate="">Are you sure you want to disassociate <b>{{ publicIP }}</b>
-                from the instance?</p>
-            <form action="${request.route_url('ipaddresses_disassociate')}" method="post">
-                ${structure:disassociate_form['csrf_token']}
-                <input type="hidden" name="display" value="{{ displayType }}" />
-                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
-                <input type="submit" class="button" value="Yes, disassociate" />
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
-        <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Release IP Address to Cloud</h3>
-            <p i18n:translate="">If you release an IP address to the cloud, you can no longer associate
-                that IP address with any of your instances.
-                If the IP address is currently associated with an instance when you release it to the cloud,
-                the instance will get a new IP address as long as you did not
-                specify private addressing when you launched the instance.</p>
-            <p i18n:translate="">Are you sure you want to release {{ publicIP }} to the cloud?</p>
-            <form action="${request.route_url('ipaddresses_release')}" method="post">
-                ${structure:release_form['csrf_token']}
-                <input type="hidden" name="display" value="{{ displayType }}" />
-                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
-                <input type="submit" class="button" value="Yes, release" />
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        <!--! Modal dialogs -->
+        ${panel('ipaddress_dialogs', associate_form=associate_form,
+                disassociate_form=disassociate_form, release_form=release_form, landingpage=True)}
     </div>
 </div>
 

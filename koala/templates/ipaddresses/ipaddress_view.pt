@@ -22,62 +22,22 @@
                 <a class="button secondary" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
                     Associate with an instance
                 </a>
-                <div id="associate-ip-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Associate IP Address</h3>
-                    <p i18n:translate="">Associate <b>${eip.public_ip}</b> with an instance</p>
-                    <form action="${request.route_url('ipaddress_associate', public_ip=eip.public_ip)}"
-                          method="post" data-abide="abide">
-                        ${structure:associate_form['csrf_token']}
-                        ${panel('form_field', field=associate_form.instance_id)}
-                        <div class="row">
-                            <div class="small-4 columns">&nbsp;</div>
-                            <div class="small-8 columns field inline">
-                                <input type="submit" class="button" value="Associate with Instance"
-                                       i18n:attributes="value" />
-                            </div>
-                        </div>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
             </div>
             <div tal:condition="eip.instance_id">
                 <p i18n:translate="">The IP address is associated with instance ${eip.instance_id}.</p>
                 <a class="button secondary" data-reveal-id="disassociate-ip-modal" i18n:translate="">
                     Disassociate from instance
                 </a>
-                <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Disassociate IP Address</h3>
-                    <p i18n:translate="">If you disassociate an IP address from an instance,
-                        you will no longer be able to connect to that instance using that IP address.</p>
-                    <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip}</b>
-                        from instance <b>${eip.instance_id}?</b></p>
-                    <form action="${request.route_url('ipaddress_disassociate', public_ip=eip.public_ip)}" method="post">
-                        ${structure:disassociate_form['csrf_token']}
-                        <input type="submit" class="button" value="Yes, disassociate" />
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
             </div>
             <div>
                 <p i18n:translate="">If you no longer need this IP address you can...</p>
                 <a class="button secondary" data-reveal-id="release-ip-modal" i18n:translate=""
                         >Release IP address to cloud
                 </a>
-                <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Release IP Address to Cloud</h3>
-                    <p i18n:translate="">If you release an IP address to the cloud, you can no longer associate
-                        that IP address with any of your instances.
-                        If the IP address is currently associated with an instance when you release it to the cloud,
-                        the instance will get a new IP address as long as you did not
-                        specify private addressing when you launched the instance.</p>
-                    <p i18n:translate="">Are you sure you want to release ${eip.public_ip} to the cloud?</p>
-                    <form action="${request.route_url('ipaddress_release', public_ip=eip.public_ip)}" method="post">
-                        ${structure:release_form['csrf_token']}
-                        <input type="submit" class="button" value="Yes, release" />
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
             </div>
+            <!--! Modal dialogs -->
+            ${panel('ipaddress_dialogs', eip=eip, associate_form=associate_form,
+                    disassociate_form=disassociate_form, release_form=release_form)}
         </div>
     </div>
 </div>
