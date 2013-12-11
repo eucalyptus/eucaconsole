@@ -14,9 +14,9 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate="">Create new launch configuration</a>
+                <a class="button" i18n:translate="">Create new launch configuration</a>
             </div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>{{ item.image_id }}</div>
                 <div>{{ item.key_name }}</div>
                 <div>{{ item.security_groups }}</div>

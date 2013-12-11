@@ -35,16 +35,26 @@
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.id }}</a>
             </div>
-            <div metal:fill-slot="tile_content">
-                <div>{{ item.name }}</div>
-                <div>{{ item.platform }}</div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
+                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
+                </div>
+                <div ng-show="item.platform">
+                    <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
+                    {{ item.platform }}
+                </div>
+                <div ng-show="item.description">
+                    <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
                     {{ item.description | limitTo: 128 }}
                     <span ng-show="item.description.length > 128"
                             data-tooltip="tooltip" class="label round has-tip"
                             title="{{item.description}}">...</span>
                 </div>
-                <div>{{ item.architecture }}</div>
+                <div>
+                    <span class="label" title="Architecture" i18n:attributes="title" data-tooltip="">AR</span>
+                    {{ item.architecture }}
+                </div>
             </div>
             <div metal:fill-slot="tile_footer">
                 <div class="footer">

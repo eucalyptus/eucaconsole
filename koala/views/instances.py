@@ -42,7 +42,7 @@ class InstancesView(LandingPageView):
             LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
             LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
         ]
-        more_filter_keys = ['id', 'name', 'ip_address']
+        more_filter_keys = ['id', 'name', 'ip_address', 'key_name', 'security_groups', 'root_device', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         # sort_keys are passed to sorting drop-down
@@ -75,6 +75,7 @@ class InstancesView(LandingPageView):
                 security_groups=', '.join(group.name for group in instance.groups),
                 key_name=instance.key_name,
                 status=instance.state,
+                tags=TaggedItemView.get_tags_display(instance.tags)
             ))
         return dict(results=instances)
 
@@ -97,8 +98,12 @@ class InstanceView(TaggedItemView):
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
+        self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
+        self.instance_name = '{}{}'.format(
+            self.instance.id, ' ({})'.format(self.name_tag) if self.name_tag else '') if self.instance else ''
         self.render_dict = dict(
             instance=self.instance,
+            instance_name=self.instance_name,
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,

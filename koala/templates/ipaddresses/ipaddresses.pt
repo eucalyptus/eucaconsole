@@ -17,14 +17,14 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" data-reveal-id="allocate-ip-modal" i18n:translate="">
+                <a class="button" data-reveal-id="allocate-ip-modal" i18n:translate="">
                     Allocate IP address
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
             </div>
-            <div metal:fill-slot="tile_content">
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span ng-show="item.instance_id" i18n:translate="">Associated with
                         <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></b>
@@ -32,7 +32,7 @@
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
             </div>
-            <div metal:fill-slot="tile_dropdown_button"></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP Address</th>
                 <th i18n:translate="">Assigned to Instance</th>
@@ -45,7 +45,7 @@
             </metal:block>
         </div>
         <!-- Modal dialog -->
-        <div id="allocate-ip-modal" class="reveal-modal medium">
+        <div id="allocate-ip-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Allocate IP addresses</h3>
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">

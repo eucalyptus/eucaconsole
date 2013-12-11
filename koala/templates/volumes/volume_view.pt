@@ -1,0 +1,220 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/volume.css')}" />
+    <style type="text/css">
+        input#size { width: 4rem; }
+        input#name { width: 50%; }
+        select#zone { width: 75%; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" tal:define="volume_name volume.tags.get('Name', volume.id) if volume else ''"
+         ng-app="VolumePage" ng-controller="VolumePageCtrl"
+         ng-init="initController('${request.route_url(
+                 'volume_state_json', id=volume.id) if volume else ''}',
+                 '${volume.status if volume else ''}',
+                 '${volume.attach_data.status if volume else ''}'
+                 )">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('volumes')}"
+               data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Volume</span>
+            <span tal:condition="volume">${volume_name}</span>
+        </h3>
+        <dl class="sub-nav" id="volume-subnav" tal:condition="volume">
+            <dd class="active"><a href="#" i18n:translate="">Volume</a></dd>
+            <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+        </dl>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <div class="large-7 columns"
+             tal:define="form_action request.route_url('volume_update', id=volume.id)
+                         if volume else request.route_url('volume_create');
+                         volume_tags volume.tags if volume else {};
+                         html_attrs {'disabled': 'disabled'} if volume else {};">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span tal:condition="volume">
+                        <span i18n:translate="">Settings for volume</span>
+                        <strong>${volume_name}</strong>
+                    </span>
+                    <span tal:condition="not volume" i18n:translate="">
+                        Create new volume
+                        <span ng-show="snapshotId">from {{ snapshotId }}</span>
+                    </span>
+                </h6>
+                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                    ${structure:volume_form['csrf_token']}
+                    <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <span class="status {{ volumeStatus }}" id="current-status" ng-bind="volumeStatus">
+                                ${volume.status}
+                            </span>
+                            <span ng-show="volumeAttachStatus">
+                                (<span class="status {{ volumeAttachStatus }}"
+                                       ng-bind="volumeAttachStatus">${volume.attach_data.status}</span>)
+                            </span>
+                            &nbsp;
+                            <span id="change-volume-attachment"
+                                 ng-show="['available', 'in-use'].indexOf(volumeStatus) !== -1">
+                                <span class="tiny secondary button dropdown round"
+                                      data-dropdown="volume-state-dropdown"><i class="fi-widget"></i></span>
+                                <ul id="volume-state-dropdown" class="f-dropdown">
+                                    <li ng-show="volumeStatus == 'available'">
+                                        <a href="#" data-reveal-id="attach-modal" i18n:translate="">Attach to instance</a>
+                                    </li>
+                                    <li ng-show="volumeStatus == 'in-use'">
+                                        <a href="#" data-reveal-id="detach-modal" i18n:translate="">Detach from instance</a>
+                                    </li>
+                                </ul>
+                            </span>
+                            <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
+                         tal:condition="instance_id">
+                        <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_url('instance_view', id=instance_id)}">${instance_id}</a>
+                        </div>
+                    </div>
+                    ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                    ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                    ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    <hr />
+                    ${panel('tag_editor', tags=volume_tags)}
+                    <hr ng-show="volumeStatus == 'available'" />
+                    <div ng-show="volumeStatus == 'deleted'">
+                        <span i18n:translate="">Volume was successfully deleted.</span>
+                        <a href="${request.route_url('volumes')}" i18n:translate="">Return to volumes page</a>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button">
+                                <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save changes</span>
+                                <span tal:condition="not volume" i18n:translate="">Add volume</span>
+                            </button>
+                            <a href="${request.route_url('volumes')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <div tal:condition="volume" tal:omit-tag="">
+                <div class="panel has-title other-actions" ng-show="volumeStatus == 'available'">
+                    <h6 class="title" i18n:translate="">Other volume actions</h6>
+                    <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
+                        Delete volume
+                    </a>
+                </div>
+                <div id="delete-volume-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Delete volume</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
+                        <b>${volume_name}</b>?</p>
+                    <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+            <div class="help-content" tal:condition="not volume">
+                <h5 class="title">Create a Volume</h5>
+                <p> Eucalyptus offers persistent storage that you can attach to a
+                    running instance. These elastic block storage (EBS) volumes persist
+                    autonomously from the running life of an instance. After you attach a
+                    block volume to an instance, you can use it like any other physical hard
+                    drive.
+                </p>
+                <p>Add the details of your new volume:</p>
+                <ol>
+                    <li>Type the name of your volume in the <strong>Name</strong> textbox.</li>
+                    <li>If you would like to create a volume from an existing
+                        snapshot, select the snapshot from the
+                        <strong>Create from snapshot?</strong> drop-down listbox.
+                    </li>
+                    <li>Enter the size of the volume in gigabytes in the
+                        <strong>Volume Size (GB)</strong> text box.
+                        <p><strong>Note:</strong>
+                            If you're creating a volume from a snapshot, you
+                            can't enter a volume size that's smaller than the
+                            original snapshot you've selected.
+                        </p>
+                    </li>
+                    <li>Select an availability zone from the
+                        <strong>Availability Zone</strong> drop-down list box.
+                        <p><strong>Note:</strong>
+                            You can only attach a volume to an instance in the same availability zone.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+            <div class="help-content" tal:condition="volume">
+                <h5 class="title">Manage Snapshots</h5>
+                <p> To manage snapshots for this volume, click the
+                    <strong><a href="${request.route_url('volume_snapshots', id=volume.id)}">Snapshots</a></strong> link.
+                </p>
+            </div>
+            <div class="help-content" tal:condition="volume">
+                <h5 class="title">Delete a Volume</h5>
+                <p> To delete a volume, click the "Delete Volume" button.</p>
+                <p><strong>Note:</strong>You may not delete a volume that is attached to an instance.</p>
+            </div>
+            <!--! Tag editor help content -->
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
+            </metal:block>
+        </div>
+        <!--! Attach/Detach modal dialogs -->
+        <div id="attach-modal" class="reveal-modal medium" tal:condition="volume" data-reveal="">
+            <h3 i18n:translate="">Attach volume</h3>
+            <p><span i18n:translate="">Attach a volume to an instance</span></p>
+            <form method="post" action="${request.route_url('volume_attach', id=volume.id)}"
+                  id="attach-form" data-abide="">
+                ${structure:attach_form['csrf_token']}
+                ${panel('form_field', field=attach_form.instance_id)}
+                ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+            <hr />
+            <!--! Volume device help -->
+            <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
+        </div>
+        <div id="detach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
+            <h3 i18n:translate="">Detach volume</h3>
+            <p><span i18n:translate="">Are you sure you want to detach the volume from the instance</span>?</p>
+            <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">
+                ${structure:detach_form['csrf_token']}
+                <div>&nbsp;</div>
+                <div class="row">
+                    <div class="small-3 columns">&nbsp;</div>
+                    <div class="small-9 columns field inline">
+                        <input type="submit" class="button" value="Yes, detach volume" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/volume.js')}"></script>
+</div>
+</metal:block>

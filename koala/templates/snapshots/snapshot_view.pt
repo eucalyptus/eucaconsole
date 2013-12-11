@@ -1,0 +1,130 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/snapshot.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" tal:define="snapshot_name snapshot.tags.get('Name', snapshot.id) if snapshot else ''"
+         ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
+         ng-init="initController('${request.route_url(
+                 'snapshot_state_json', id=snapshot.id) if snapshot else ''}',
+                 '${snapshot.status if snapshot else ''}',
+                 '${snapshot.progress if snapshot else ''}'
+                 )">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('snapshots')}"
+               data-tooltip="" title="Back to snapshots" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Snapshot</span>
+            <span tal:condition="snapshot">${snapshot_name}</span>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <div class="large-7 columns"
+             tal:define="form_action request.route_url('snapshot_update', id=snapshot.id)
+                         if snapshot else request.route_url('snapshot_create');
+                         snapshot_tags snapshot.tags if snapshot else {};
+                         html_attrs {'disabled': 'disabled'} if snapshot else {};">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span tal:condition="snapshot">
+                        <span i18n:translate="">Settings for snapshot</span>
+                        <strong>${snapshot_name}</strong>
+                    </span>
+                    <span tal:condition="not snapshot" i18n:translate="">
+                        Create new snapshot
+                    </span>
+                </h6>
+                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                    ${structure:snapshot_form['csrf_token']}
+                    <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
+                        <div class="small-4 columns">
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus === 'completed'">Status</label>
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus !== 'completed'">Progress</label>
+                        </div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <div class="progress round" ng-show="snapshotStatus !== 'completed'"><span
+                                    class="meter" style="width: {{ snapshotProgress }}">{{ snapshotProgress }}</span>
+                            </div>
+                            <span class="status {{ snapshotStatus }}" id="current-status"
+                                  ng-bind="snapshotStatus" ng-show="snapshotStatus == 'completed'">
+                                ${snapshot.status}
+                            </span>
+                            <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
+                        </div>
+                    </div>
+                    ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
+                        <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
+                        <div class="small-8 columns value">${snapshot.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
+                        <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}">${snapshot.volume_id}</a>
+                        </div>
+                    </div>
+                    <div tal:condition="not snapshot" tal:omit-tag="">
+                        ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}
+                    </div>
+                    ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
+                    <hr />
+                    ${panel('tag_editor', tags=snapshot_tags)}
+                    <hr  />
+                    <div ng-show="snapshotStatus == 'deleted'">
+                        <span i18n:translate="">Snapshot was successfully deleted.</span>
+                        <a href="${request.route_url('snapshots')}" i18n:translate="">Return to snapshots page</a>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button">
+                                <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
+                                <span tal:condition="not snapshot" i18n:translate="">Add snapshot</span>
+                            </button>
+                            <a href="${request.route_url('snapshots')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <div tal:condition="snapshot" tal:omit-tag="">
+                <div class="panel has-title other-actions">
+                    <h6 class="title" i18n:translate="">Other snapshot actions</h6>
+                    <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
+                        Create volume from snapshot
+                    </a>
+                    <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
+                        Delete snapshot
+                    </a>
+                </div>
+                <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Delete snapshot</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
+                        <b>${snapshot_name}</b>?</p>
+                    <form action="${request.route_url('snapshot_delete', id=snapshot.id)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <div class="large-4 columns">&nbsp;</div>
+                        <div class="large-8 columns">
+                            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                        </div>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+            <!--! Tag editor help content -->
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/snapshot.js')}"></script>
+</div>
+</metal:block>

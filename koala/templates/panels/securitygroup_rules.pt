@@ -1,20 +1,20 @@
 
 <!--! Security group rules editor -->
-<div id="rules-editor" class="row inline" ng-app="SecurityGroupRules"
+<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
      <style type="text/css">
          input.port { width: 3.8rem; }
          form .row.trafficfrom { margin-top: 1rem; }
          form .ip-label, form .sg-label { margin-right: 1rem; }
-         form label.ipaddress { margin-bottom: 1rem; }
+         form label.ipaddress, form label.securitygroupname { text-align: left !important; }
          form .cidr-ip, form .groupname { display: inline; width: 50%; }
          form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
          form label.protocol { margin-bottom: 1.5rem; }
     </style>
-    <div class="small-3 columns">
+    <div class="small-${leftcol_width} columns">
         <label class="right" i18n:translate="">Inbound Rules</label>
     </div>
-    <div class="small-9 columns field" ng-cloak="cloak">
+    <div class="small-${rightcol_width} columns field" ng-cloak="cloak">
         <div class="row rulesentry existing inline controls-wrapper"
              ng-repeat="rule in rulesArray">
             <div class="small-1 columns">
@@ -44,7 +44,7 @@
             </div>
             <div class="row">
                 <div class="small-3 columns">
-                    <label class="right protocol" i18n:translate="">Protocol</label>
+                    <label class="protocol" i18n:translate="">Protocol</label>
                 </div>
                 <div class="small-9 columns">
                     <select name="ip_protocol" class="ip-protocol"
@@ -83,10 +83,10 @@
                         <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
                         <span i18n:translate="" class="ip-label">IP address</span>
                         <input type="text" name="cidr_ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
-                               ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="cidr_ip_address" />
+                               ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="${layout.cidr_pattern}" />
                         <div><small class="error" i18n:translate="">Valid CIDR entry required</small></div>
                     </label>
-                    <label>
+                    <label class="securitygroupname">
                         <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
                         <span i18n:translate="" class="sg-label">Security group</span>
                         <select name="groupname" class="groupname" ng-model="groupName"

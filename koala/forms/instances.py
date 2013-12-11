@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Forms for Security Groups
+Forms for Instances
 
 """
 import wtforms
@@ -46,7 +46,7 @@ class InstanceForm(BaseSecureForm):
                as it may not be in the get_all_addresses fetch.
         """
         empty_choice = ('', _(u'Unassign address...'))
-        ipaddress_choices = [empty_choice]
+        ipaddress_choices = [empty_choice] if self.instance.ip_address else []
         existing_ip_choices = [(eip.public_ip, eip.public_ip) for eip in self.conn.get_all_addresses()]
         ipaddress_choices += existing_ip_choices
         ipaddress_choices += [(self.instance.ip_address, self.instance.ip_address)]
@@ -82,7 +82,10 @@ class TerminateInstanceForm(BaseSecureForm):
 
 
 class AttachVolumeForm(BaseSecureForm):
-    """CSRF-protected form to attach a volume to an instance"""
+    """CSRF-protected form to attach a volume to an instance
+       Note: This is for attaching a volume on the instance detail page
+             The form to attach a volume to any instance from the volume detail page is at forms.volumes.AttachForm
+    """
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Volume'),

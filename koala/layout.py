@@ -9,6 +9,7 @@ from urlparse import urlparse
 
 from beaker.cache import cache_region
 from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
@@ -35,6 +36,11 @@ class MasterLayout(object):
         self.gridview_url = self.get_datagridview_url('gridview')
         self.date_format = '%Y-%m-%d %H:%M %p'
         self.angular_date_format = 'yyyy-MM-dd h:mm a'
+        self.tag_pattern = '^(?!aws:).*'
+        self.cidr_pattern = '{0}{1}'.format(
+            '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
+            '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
+        )
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -51,7 +57,11 @@ class MasterLayout(object):
 
     def get_datagridview_url(self, display):
         """Convience property to get tableview or gridview URL for landing pages"""
-        current_url = self.request.current_route_url()
+        try:
+            current_url = self.request.current_route_url()
+        except ValueError:
+            # Handle "ValueError: Current request matches no route" errors
+            return HTTPNotFound()
         parsed_url = urlparse(current_url)
         otherview = 'gridview' if display == 'tableview' else 'tableview'
         if 'display' in parsed_url.query:

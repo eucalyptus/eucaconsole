@@ -15,21 +15,22 @@
     <meta metal:define-slot="head_css" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.0.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.4.min.js')}"></script>
     <meta metal:define-slot="head_js" />
 </head>
 
-<body>
-<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
+<body onload="if (typeof page_loaded == 'function') { page_loaded(); }">
+<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar" data-topbar="">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
-        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown" data-options="is_hover: true">
+        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
             <span class="hide-for-xsmall">${layout.username_label}</span>
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown">
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
-            <li><a href="#" i18n:translate="">Change password</a></li>
+            <li><a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a></li>
+            
             <li><a href="${request.route_url('logout')}" i18n:translate="">Logout</a></li>
         </ul>
     </section>
@@ -48,7 +49,7 @@
     </section>
 </nav>
 
-<nav class="top-bar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar">
+<nav class="top-bar" id="navbar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar" data-topbar="">
     <ul class="title-area">
         <li class="name"></li>
         <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -107,12 +108,7 @@
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
-    $(document).foundation().foundation('abide', {
-        patterns: {
-            cidr_ip_address: /^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$/,
-            tag_pattern: /^(?!aws:).*/  // Tags may not begin with 'aws:'
-        }
-    });
+    $(document).foundation();
 </script>
 <div metal:define-slot="tail_js"></div>
 </body>

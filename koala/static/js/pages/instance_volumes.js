@@ -13,7 +13,8 @@ angular.module('InstanceVolumes', [])
         $scope.volumes = [];
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
-        $scope.stateIsTransitional = function (state) {
+        $scope.detachFormAction = '';
+        $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.initController = function (jsonEndpoint) {
@@ -23,12 +24,15 @@ angular.module('InstanceVolumes', [])
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
-                $('#attach-volume-modal').foundation('reveal', {
-                    'opened': function() {
-                        $('#volume_id').chosen({'width': '75%'});
-                    }
-                })
+                $('#attach-volume-modal').on('open', function() {
+                    $('#volume_id').chosen({'width': '100%'});
+                });
             });
+        };
+        $scope.revealDetachModal = function (action) {
+            var modal = $('#detach-volume-modal');
+            $scope.detachFormAction = action;
+            modal.foundation('reveal', 'open');
         };
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -37,7 +41,7 @@ angular.module('InstanceVolumes', [])
                 $scope.initialLoading = false;
                 // Detect if any volume states are transitional
                 $scope.volumes.forEach(function(volume) {
-                    if ($scope.stateIsTransitional(volume.status)) {
+                    if ($scope.isTransitional(volume.status)) {
                         transitionalVolumesCount += 1;
                     }
                 });

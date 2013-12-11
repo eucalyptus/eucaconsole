@@ -1,8 +1,6 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
-// This includes all of the foundation global elements that are needed to work with any of the other files.
-@import "../foundation/variables";
 
 /* @section Landing pages styles */
 
@@ -12,6 +10,7 @@ $tile-height: 200px;
 $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
+$tile-label-padding: 28px;
 $gridwrapper-table-width: 98%;
 
 
@@ -42,13 +41,13 @@ $gridwrapper-table-width: 98%;
 
 .tile .header {
     position: relative;
-    padding: 6px 30px 4px 10px;
     border-bottom: 1px solid $tile-border-color;
     height: $tile-row-height;
     color: white;
     background-color: $euca-darkgrey;
     a {
         display: block;
+        padding: 6px 30px 4px 10px;
         color: white;
         &:hover {
             color: $euca-green;
@@ -74,20 +73,21 @@ $gridwrapper-table-width: 98%;
             top: 2px;
         }
     }
-}
-
-.tile .header .button.dropdown::before {
-    border: none;
+    .button.dropdown::before {
+        border: none;
+    }
 }
 
 .tile .content {
     padding: 8px;
     font-size: 0.9em;
     div {
-        margin-bottom: 0.3rem;
+        margin-bottom: 2px;
+        margin-left: $tile-label-padding;
     }
     .label {
         padding: 1px 3px;
+        margin-left: -$tile-label-padding;
         background-color: $euca-grey;
         margin-right: 0.2rem;
         font-family: Verdana, sans-serif;
@@ -107,16 +107,17 @@ $gridwrapper-table-width: 98%;
 
 .sort-search {
     font-size: 0.9rem;
+    form {
+        margin-bottom: 0;
+    }
+    .go {
+        position: relative;
+        left: -2px;
+        font-size: 1.2rem;
+        color: darken($euca-grey, 20%);
+    }
 }
 
-.sort-search form {
-    margin-bottom: 0;
-}
-
-.sort-search .go {
-    position: relative;
-    left: -2px;
-}
 
 .match-condition {
     font-size: $euca-font-size;
@@ -160,6 +161,7 @@ $gridwrapper-table-width: 98%;
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
             text-transform: uppercase;
+            white-space: nowrap;
         }
     }
     tr {
