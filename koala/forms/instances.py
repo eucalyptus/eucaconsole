@@ -106,6 +106,8 @@ class AttachVolumeForm(BaseSecureForm):
         self.device.error_msg = self.device_error_msg
         if conn is not None:
             self.set_volume_choices()
+            if self.instance is not None:
+                self.device.data = self.suggest_next_device_name(self.instance.id)
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
@@ -120,6 +122,18 @@ class AttachVolumeForm(BaseSecureForm):
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
+    def suggest_next_device_name(self, instanceId):
+        instances = self.conn.get_only_instances([instanceId]);
+        if instances is None:
+            return 'error'
+        mappings = instances[0].block_device_mapping
+        for i in range(0, 10):   # Test names with char 'f' to 'p'
+            dev_name = '/dev/sd'+str(unichr(102+i))
+            try:
+                mappings[dev_name]
+            except KeyError:
+                return dev_name
+        return 'error'
 
 class DetachVolumeForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""

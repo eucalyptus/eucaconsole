@@ -96,8 +96,20 @@ class VolumeView(TaggedItemView):
             self.request, conn=self.conn, volume=self.volume, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.volume
+        self.attach_data = self.volume.attach_data
+        self.vol_name_tag = self.volume.tags.get('Name', '')
+        self.volume_name = '{}{}'.format(
+            self.volume.id, ' ({})'.format(self.vol_name_tag) if self.vol_name_tag else '')
+        self.instance_name = None
+        if self.attach_data is not None and self.attach_data.instance_id is not None:
+            instance = self.get_instance(self.attach_data.instance_id)
+            self.inst_name_tag = instance.tags.get('Name', '') if instance else None
+            self.instance_name = '{}{}'.format(
+                instance.id, ' ({})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
         self.render_dict = dict(
             volume=self.volume,
+            volume_name=self.volume_name,
+            instance_name=self.instance_name,
             volume_form=self.volume_form,
             delete_form=self.delete_form,
             attach_form=self.attach_form,
@@ -216,6 +228,11 @@ class VolumeView(TaggedItemView):
         snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
         return snapshots_list[0] if snapshots_list else None
 
+    def get_instance(self, instance_id):
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None
 
 class VolumeStateView(BaseView):
     def __init__(self, request):
