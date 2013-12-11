@@ -79,16 +79,10 @@ class IPAddressView(BaseView):
         super(IPAddressView, self).__init__(request)
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
-        self.associate_form = AssociateIPForm(self.request, formdata=self.request.params)
-        self.associate_form.instance_id.choices = self.get_instance_choices()
+        self.associate_form = AssociateIPForm(
+            self.request, elastic_ip=self.elastic_ip, conn=self.conn, formdata=self.request.params)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
-
-    def get_instance_choices(self):
-        choices = [('', _(u'Select instance...'))]
-        if self.conn:
-            choices += [(inst.id, inst.tags.get('Name', inst.id)) for inst in self.conn.get_only_instances()]
-        return choices
 
     def get_elastic_ip(self):
         address_param = self.request.matchdict.get('public_ip')
