@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ElasticIPsPage">
+    <div class="row" id="contentwrap" ng-app="ElasticIPsPage" ng-controller="ElasticIPsCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             IP Addresses
         </h3>
@@ -35,9 +35,15 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a href="#">This is a link</a></li>
-                    <li><a href="#">This is another</a></li>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li ng-show="item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('disassociate', item.public_ip)">Disassociate from instance</a>
+                    </li>
+                    <li ng-show="!item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('associate', item.public_ip)">Associate with instance</a>
+                    </li>
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -49,8 +55,8 @@
                 <td><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></td>
             </metal:block>
         </div>
-        <!-- Modal dialog -->
-        <div id="allocate-ip-modal" class="reveal-modal medium" data-reveal="">
+        <!-- Modal dialogs -->
+        <div id="allocate-ip-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Allocate IP addresses</h3>
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
@@ -77,6 +83,35 @@
                         </button>
                     </div>
                 </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="associate-ip-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Associate IP Address</h3>
+            <p i18n:translate="">Associate <b>{{ publicIP }}</b> with an instance</p>
+            <form action="${request.route_url('ipaddresses_associate')}" method="post" data-abide="abide">
+                ${structure:associate_form['csrf_token']}
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+                ${panel('form_field', field=associate_form.instance_id)}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Associate with Instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Disassociate IP Address</h3>
+            <p i18n:translate="">If you disassociate an IP address from an instance,
+                you will no longer be able to connect to that instance using that IP address.</p>
+            <p i18n:translate="">Are you sure you want to disassociate <b>{{ publicIP }}</b>
+                from the instance?</p>
+            <form action="${request.route_url('ipaddresses_disassociate')}" method="post">
+                ${structure:disassociate_form['csrf_token']}
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+                <input type="submit" class="button" value="Yes, disassociate" />
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>

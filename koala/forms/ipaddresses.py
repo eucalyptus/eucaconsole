@@ -23,27 +23,31 @@ class AllocateIPsForm(BaseSecureForm):
 
 class AssociateIPForm(BaseSecureForm):
     """Associate an Elastic IP with an instance"""
-    instance_id = wtforms.SelectField(label=_(u'Instance:'))
+    instance_error_msg = _(u'Instance is required')
+    instance_id = wtforms.SelectField(
+        label=_(u'Instance:'),
+        validators=[validators.Required(message=instance_error_msg)],
+    )
 
-    def __init__(self, request, elastic_ip=None, conn=None, **kwargs):
+    def __init__(self, request, conn=None, **kwargs):
         super(AssociateIPForm, self).__init__(request, **kwargs)
-        self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.elastic_ip = elastic_ip
         self.conn = conn
         self.instance_id.choices = self.get_instance_choices()
+        self.instance_id.error_msg = self.instance_error_msg
 
     def get_instance_choices(self):
         choices = [('', _(u'Select instance...'))]
-        if self.conn and self.elastic_ip:
+        assoc_text = _(u'Current IP:')
+        if self.conn:
             for instance in self.conn.get_only_instances():
-                if instance.ip_address != self.elastic_ip.public_ip:
-                    value = instance.id
-                    name_tag = instance.tags.get('Name')
-                    label = '{id}{name}'.format(
-                        id=instance.id,
-                        name=' ({0})'.format(name_tag) if name_tag else ''
-                    )
-                    choices.append((value, label))
+                value = instance.id
+                name_tag = instance.tags.get('Name')
+                label = '{id}{name}{ip}'.format(
+                    id=instance.id,
+                    name=' ({0})'.format(name_tag) if name_tag else '',
+                    ip=', {0} {1}'.format(assoc_text, instance.ip_address) if instance.ip_address else ''
+                )
+                choices.append((value, label))
         return choices
 
 

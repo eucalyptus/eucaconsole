@@ -28,20 +28,12 @@
                     <form action="${request.route_url('ipaddress_associate', public_ip=eip.public_ip)}"
                           method="post" data-abide="abide">
                         ${structure:associate_form['csrf_token']}
-                        <div tal:define="instance_field associate_form['instance_id']"
-                             class="row inline controls-wrapper controls_${instance_field.name}">
-                            <div class="small-4 columns">
-                                <label class="right">${instance_field.label.text}</label>
-                            </div>
-                            <div class="small-8 columns field">
-                                ${structure:instance_field(required='required')}
-                                <small class="error" i18n:translate="">Instance is required</small>
-                            </div>
-                        </div>
+                        ${panel('form_field', field=associate_form.instance_id)}
                         <div class="row">
                             <div class="small-4 columns">&nbsp;</div>
                             <div class="small-8 columns field inline">
-                                <input type="submit" class="button" value="Associate with Instance" />
+                                <input type="submit" class="button" value="Associate with Instance"
+                                       i18n:attributes="value" />
                             </div>
                         </div>
                     </form>

@@ -38,88 +38,88 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 10px;
     padding-bottom: $tile-row-height;
     word-wrap: break-word;
-}
-
-.tile .header {
-    position: relative;
-    border-bottom: 1px solid $tile-border-color;
-    height: $tile-row-height;
-    color: white;
-    background-color: $euca-darkgrey;
-    a {
-        display: block;
-        padding: 6px 30px 4px 10px;
+    .header {
+        position: relative;
+        border-bottom: 1px solid $tile-border-color;
+        height: $tile-row-height;
         color: white;
-        &:hover {
-            color: $euca-green;
-        }
-    }
-    strong {
-        font-weight: normal;
-    }
-    .button.dropdown {
-        position: absolute;
-        width: 30px; height: $tile-row-height;
-        top: 0; right: 0;
-        color: black;
-        font-size: 1rem;
-        padding: 0 0 0 0;
-        border: 1px solid $tile-border-color;
-        border-top: none;
-        border-right: none;
-        &:hover {
-            color: $euca-green;
-        }
-        i {
-            position: relative;
-            top: 2px;
-        }
-    }
-    .button.dropdown::before {
-        border: none;
-    }
-    // CSS workaround for broken dropdown buttons in Foundation 5
-    .f-dropdown::before, .f-dropdown::after {
-        left: $tile-dropdown-width - 22px;
-    }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        width: $tile-dropdown-width;
-        display: block;
-        box-shadow: 3px 3px 5px $euca-grey;
-        top: 20px; left: $tile-width - $tile-dropdown-width;
-        li {
-            a {
+        background-color: $euca-darkgrey;
+        a {
+            display: block;
+            padding: 6px 30px 4px 10px;
+            color: white;
+            &:hover {
                 color: $euca-green;
             }
         }
+        strong {
+            font-weight: normal;
+        }
+    }
+    .content {
+        padding: 8px;
+        font-size: 0.9em;
+        div {
+            margin-bottom: 2px;
+            margin-left: $tile-label-padding;
+        }
+        .label {
+            padding: 1px 3px;
+            margin-left: -$tile-label-padding;
+            background-color: $euca-grey;
+            margin-right: 0.2rem;
+            font-family: Verdana, sans-serif;
+            min-width: 22px;
+            text-align: center;
+        }
+    }
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0; right: 0;
+        height: $tile-row-height;
+        padding: 4px 4px 4px 10px;
+        color: white;
     }
 }
 
-.tile .content {
-    padding: 8px;
-    font-size: 0.9em;
-    div {
-        margin-bottom: 2px;
-        margin-left: $tile-label-padding;
-    }
-    .label {
-        padding: 1px 3px;
-        margin-left: -$tile-label-padding;
-        background-color: $euca-grey;
-        margin-right: 0.2rem;
-        font-family: Verdana, sans-serif;
-        min-width: 22px;
-        text-align: center;
-    }
-}
-
-.tile .footer {
+// Dropdown buttons on landing page tile/table view
+.dropdown.button.tiny {
     position: absolute;
-    bottom: 0;
-    left: 0; right: 0;
-    height: $tile-row-height;
-    padding: 4px 4px 4px 10px;
-    color: white;
+    width: 30px; height: $tile-row-height;
+    top: 0; right: 0;
+    color: black;
+    font-size: 1rem;
+    padding: 0 0 0 0;
+    border: 1px solid $tile-border-color;
+    border-top: none;
+    border-right: none;
+    &:hover {
+        color: $euca-green;
+    }
+    &::before {
+        border: none;
+    }
+    i {
+        position: relative;
+        top: 2px;
+    }
+}
+
+// CSS workaround for broken dropdown buttons in Foundation 5
+.f-dropdown::before, .f-dropdown::after {
+    left: $tile-dropdown-width - 22px;
+}
+.button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+    width: $tile-dropdown-width;
+    display: block;
+    box-shadow: 3px 3px 5px $euca-grey;
+    top: 20px; left: $tile-width - $tile-dropdown-width;
+    li {
+        a {
+            color: $euca-green;
+        }
+    }
 }
 
 .sort-search {
@@ -135,7 +135,6 @@ $gridwrapper-table-width: 98%;
     }
 }
 
-
 .match-condition {
     font-size: $euca-font-size;
     margin-bottom: 4px;
@@ -143,29 +142,26 @@ $gridwrapper-table-width: 98%;
 
 .displayicons {
     font-size: 2rem;
-}
-
-.displayicons a {
-    float: right;
-    border-bottom: none;
-    color: black;
-}
-.displayicons a:hover {
-    border-bottom: none;
-    color: $euca-green;
-}
-
-.displayicons .selected {
-    background-color: $euca-extralightgrey;
-    :hover {
+    a {
+        float: right;
+        border-bottom: none;
         color: black;
-        cursor: default;
+        &:hover {
+            border-bottom: none;
+            color: $euca-green;
+        }
     }
-}
-
-.displayicons i {
-    display: inline-block;
-    padding: 4px 12px;
+    .selected {
+        background-color: $euca-extralightgrey;
+        :hover {
+            color: black;
+            cursor: default;
+        }
+    }
+    i {
+        display: inline-block;
+        padding: 4px 12px;
+    }
 }
 
 .gridwrapper .table {
