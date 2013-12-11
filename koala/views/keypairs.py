@@ -95,15 +95,15 @@ class KeyPairView(BaseView):
     @view_config(route_name='keypair_download', request_method='POST', renderer=TEMPLATE)
     def keypair_download(self):
         session = self.request.session
-        if 'new_keypair_name' in session and session['new_keypair_name'] is not '':
+        if session.get('new_keypair_name'):
             name = session['new_keypair_name']
             material = session['material']
             # Clean the session information regrading the new keypair
-            session['new_keypair_name'] = ''
-            session['material'] = ''
+            del session['new_keypair_name']
+            del session['material']
             response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
             response.body=str(material)
-            response.content_disposition=("attachment; filename=\"{name}.pem\"").format(name=name)
+            response.content_disposition='attachment; filename="{name}.pem"'.format(name=name)
             return response
 
         return dict(
