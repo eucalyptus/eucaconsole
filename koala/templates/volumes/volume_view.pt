@@ -11,7 +11,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" tal:define="volume_name volume.tags.get('Name', volume.id) if volume else ''"
+    <div class="row" id="contentwrap"
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_url(
                  'volume_state_json', id=volume.id) if volume else ''}',
@@ -79,7 +79,7 @@
                          tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_url('instance_view', id=instance_id)}">${instance_id}</a>
+                            <a href="${request.route_url('instance_view', id=instance_id)}">${instance_name}</a>
                         </div>
                     </div>
                     ${panel('form_field', field=volume_form['name'], **html_attrs)}
@@ -196,7 +196,10 @@
         </div>
         <div id="detach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
             <h3 i18n:translate="">Detach volume</h3>
-            <p><span i18n:translate="">Are you sure you want to detach the volume from the instance</span>?</p>
+            <p>
+              <span i18n:translate="">Are you sure you want to detach the volume from the instance</span><br/>
+              <strong>${instance_name}</strong>?
+            </p>
             <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">
                 ${structure:detach_form['csrf_token']}
                 <div>&nbsp;</div>

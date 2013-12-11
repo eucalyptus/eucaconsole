@@ -6,7 +6,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="InstanceVolumes" tal:define="instance_name instance.tags.get('Name', instance.id)"
+    <div class="row" id="contentwrap" ng-app="InstanceVolumes"
          ng-controller="InstanceVolumesCtrl"
          ng-init="initController('${request.route_url('instance_volumes_json', id=instance.id)}')">
         <h3 class="header" id="pagetitle">
@@ -115,7 +115,7 @@
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to detach the volume from instance</span>
+                    <span i18n:translate="">Are you sure you want to detach the volume from instance</span><br/>
                     <strong>${instance_name}</strong>?
                 </p>
                 <form method="post" id="detach-form" data-abide="" action="{{ detachFormAction }}">

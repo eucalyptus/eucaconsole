@@ -3,9 +3,12 @@
 Pyramid views for Eucalyptus and AWS key pairs
 
 """
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
+from pyramid.response import Response
 
+from ..forms.keypairs import KeyPairForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
@@ -60,6 +63,7 @@ class KeyPairView(BaseView):
         super(KeyPairView, self).__init__(request)
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
+        self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
@@ -70,8 +74,94 @@ class KeyPairView(BaseView):
 
     @view_config(route_name='keypair_view', renderer=TEMPLATE)
     def keypair_view(self):
+        session = self.request.session
+        new_keypair_created = False
+        # Check if the session contains the new keypair material information
+        if 'new_keypair_name' in session and session['new_keypair_name'] is not '':
+            new_keypair_created = True
+
         return dict(
             keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            keypair_created=new_keypair_created,
         )
 
+    def get_keypair_names(self):
+        keypairs = []
+        if self.conn:
+            keypairs = [k.name for k in self.conn.get_all_key_pairs()]
+        return sorted(set(keypairs))
+
+    @view_config(route_name='keypair_download', request_method='POST', renderer=TEMPLATE)
+    def keypair_download(self):
+        session = self.request.session
+        if session.get('new_keypair_name'):
+            name = session['new_keypair_name']
+            material = session['material']
+            # Clean the session information regrading the new keypair
+            del session['new_keypair_name']
+            del session['material']
+            response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
+            response.body=str(material)
+            response.content_disposition='attachment; filename="{name}.pem"'.format(name=name)
+            return response
+
+        return dict(
+            keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            keypair_names=self.get_keypair_names()
+        )
+
+    @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
+    def keypair_create(self):
+        if self.keypair_form.validate():
+            name = self.request.params.get('name')
+            session = self.request.session
+            msg = ""
+            try:
+                new_keypair = self.conn.create_key_pair(name)
+                # Store the new keypair material information in the session            
+                session['new_keypair_name'] = new_keypair.name 
+                session['material'] = new_keypair.material
+                msg_template = _(u'Successfully created key pair {keypair}')
+                msg = msg_template.format(keypair=name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('keypair_view', id=name)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+
+        return dict(
+            keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            keypair_names=self.get_keypair_names()
+        )
+
+    @view_config(route_name='keypair_import', request_method='POST', renderer=TEMPLATE)
+    def keypair_import(self):
+        if self.keypair_form.validate():
+            name = self.request.params.get('name')
+            key_material = self.request.params.get('key_material')
+            msg = ""
+            material = ""
+            try:
+                new_keypair = self.conn.import_key_pair(name, key_material)
+                material = new_keypair.material
+                msg_template = _(u'Successfully imported key pair {keypair}')
+                msg = msg_template.format(keypair=name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('keypair_view', id=name)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+
+        return dict(
+            keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            keypair_names=self.get_keypair_names()
+        )
 

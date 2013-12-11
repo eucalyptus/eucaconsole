@@ -25,7 +25,6 @@ class SnapshotForm(BaseSecureForm):
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
-            validators.Required(message=desc_error_msg),
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
