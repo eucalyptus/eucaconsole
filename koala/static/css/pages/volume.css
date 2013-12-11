@@ -11,7 +11,8 @@
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
 .tile .header .f-dropdown { width: 120px; }
-.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+.tile .header .button.dropdown:hover { color: #76b800; }
 .tile .header .button.dropdown i { position: relative; top: 2px; }
 .tile .header .button.dropdown::before { border: none; }
 

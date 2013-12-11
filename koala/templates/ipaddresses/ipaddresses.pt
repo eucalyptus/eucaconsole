@@ -26,22 +26,29 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
+                    <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">IN</span>
                     <span ng-show="item.instance_id" i18n:translate="">Associated with
                         <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></b>
                     </span>
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
             </div>
-            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"
+                      data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown" data-dropdown-content="">
+                    <li><a href="#">This is a link</a></li>
+                    <li><a href="#">This is another</a></li>
+                    <li><a href="#">Yet another</a></li>
+                </ul>
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP Address</th>
                 <th i18n:translate="">Assigned to Instance</th>
-                <th i18n:translate="">Scope</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
-                <td>{{ item.instance_id }}</td>
-                <td>{{ item.domain }}</td>
+                <td><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></td>
             </metal:block>
         </div>
         <!-- Modal dialog -->

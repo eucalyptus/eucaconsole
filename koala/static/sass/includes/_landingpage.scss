@@ -63,11 +63,15 @@ $gridwrapper-table-width: 98%;
         position: absolute;
         width: 30px; height: $tile-row-height;
         top: 0; right: 0;
+        color: black;
         font-size: 1rem;
         padding: 0 0 0 0;
         border: 1px solid $tile-border-color;
         border-top: none;
         border-right: none;
+        &:hover {
+            color: $euca-green;
+        }
         i {
             position: relative;
             top: 2px;
