@@ -19,9 +19,9 @@
 .dropdown.button.tiny::before { border: none; }
 .dropdown.button.tiny i { position: relative; top: 2px; }
 
-.f-dropdown::before, .f-dropdown::after { left: 118px; }
+.f-dropdown::before, .f-dropdown::after { left: 168px; }
 
-.button.dropdown:hover + .f-dropdown, .f-dropdown:hover { width: 140px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: 60px; }
+.button.dropdown:hover + .f-dropdown, .f-dropdown:hover { width: 190px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: 10px; }
 .button.dropdown:hover + .f-dropdown li a, .f-dropdown:hover li a { color: #76b800; }
 
 .sort-search { font-size: 0.9rem; }

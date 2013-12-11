@@ -44,6 +44,10 @@
                         <a i18n:translate=""
                            ng-click="revealModal('associate', item.public_ip)">Associate with instance</a>
                     </li>
+                    <li ng-show="!item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('release', item.public_ip)">Release to cloud</a>
+                    </li>
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -112,6 +116,21 @@
                 ${structure:disassociate_form['csrf_token']}
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
                 <input type="submit" class="button" value="Yes, disassociate" />
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="release-ip-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Release IP Address to Cloud</h3>
+            <p i18n:translate="">If you release an IP address to the cloud, you can no longer associate
+                that IP address with any of your instances.
+                If the IP address is currently associated with an instance when you release it to the cloud,
+                the instance will get a new IP address as long as you did not
+                specify private addressing when you launched the instance.</p>
+            <p i18n:translate="">Are you sure you want to release {{ publicIP }} to the cloud?</p>
+            <form action="${request.route_url('ipaddresses_release')}" method="post">
+                ${structure:release_form['csrf_token']}
+                <input type="hidden" name="public_ip" value="{{ publicIP }}" />
+                <input type="submit" class="button" value="Yes, release" />
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
