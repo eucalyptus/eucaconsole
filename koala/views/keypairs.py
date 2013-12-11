@@ -103,7 +103,7 @@ class KeyPairView(BaseView):
             session['material'] = ''
             response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
             response.body=str(material)
-            response.content_disposition="attachment; filename=\"" + name + ".pem\""
+            response.content_disposition=("attachment; filename=\"{name}.pem\"").format(name=name)
             return response
 
         return dict(
@@ -148,7 +148,6 @@ class KeyPairView(BaseView):
             material = ""
             try:
                 new_keypair = self.conn.import_key_pair(name, key_material)
-                print "NAME: " , new_keypair.name
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
