@@ -44,7 +44,11 @@ class VolumeForm(BaseSecureForm):
 
         if conn is not None:
             self.set_volume_snapshot_choices()
-            self.set_availability_zone_choices()
+            zones = self.conn.get_all_zones()
+            self.set_availability_zone_choices(zones)
+            # default to first zone if new volume, and at least one zone in list
+            if volume is None and len(zones) > 0:
+                self.zone.data = zones[0].name
 
     def set_volume_snapshot_choices(self):
         choices = [('', _(u'None'))]
@@ -55,9 +59,9 @@ class VolumeForm(BaseSecureForm):
             choices.append((value, label))
         self.snapshot_id.choices = sorted(choices)
 
-    def set_availability_zone_choices(self):
+    def set_availability_zone_choices(self, zones):
         choices = [('', _(u'select...'))]
-        for zone in self.conn.get_all_zones():
+        for zone in zones:
             choices.append((zone.name, zone.name))
         self.zone.choices = sorted(choices)
 
@@ -127,7 +131,6 @@ class AttachForm(BaseSecureForm):
         if len(choices) == 1:
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.instance_id.choices = choices
-
 
 class DetachForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""

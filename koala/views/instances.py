@@ -266,9 +266,13 @@ class InstanceVolumesView(BaseView):
         self.instance = self.get_instance()
         self.attach_form = AttachVolumeForm(
             self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
+        self.inst_name_tag = self.instance.tags.get('Name', '') if self.instance else None
+        self.instance_name = '{}{}'.format(
+            self.instance.id, ' ({})'.format(self.inst_name_tag) if self.inst_name_tag else '') if self.instance else ''
         self.detach_form = DetachVolumeForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             instance=self.instance,
+            instance_name=self.instance_name,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
         )
