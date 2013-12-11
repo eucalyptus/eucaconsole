@@ -44,8 +44,6 @@ class IPAddressesView(LandingPageView):
 
     @view_config(route_name='ipaddresses', renderer='../templates/ipaddresses/ipaddresses.pt')
     def ipaddresses_landing(self):
-        # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['domain', 'instance_id', 'public_ip']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='public_ip', name=_(u'IP Address')),
@@ -66,7 +64,9 @@ class IPAddressesView(LandingPageView):
                 notification_msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
-        return self.render_dict
+        render_dict = self.render_dict
+        render_dict['sort_keys'] = self.sort_keys
+        return render_dict
 
     @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
     def ipaddresses_json(self):
