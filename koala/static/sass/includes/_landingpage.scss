@@ -11,6 +11,7 @@ $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
 $tile-label-padding: 28px;
+$tile-dropdown-width: 140px;
 $gridwrapper-table-width: 98%;
 
 
@@ -77,10 +78,15 @@ $gridwrapper-table-width: 98%;
     .button.dropdown::before {
         border: none;
     }
+    // CSS workaround for broken dropdown buttons in Foundation 5
+    .f-dropdown::before, .f-dropdown::after {
+        left: $tile-dropdown-width - 22px;
+    }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        width: 120px;
+        width: $tile-dropdown-width;
         display: block;
-        top: 20px; left: ($tile-width - 32);
+        box-shadow: 3px 3px 5px $euca-grey;
+        top: 20px; left: $tile-width - $tile-dropdown-width;
         li {
             a {
                 color: $euca-green;

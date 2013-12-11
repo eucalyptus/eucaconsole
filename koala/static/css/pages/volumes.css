@@ -14,7 +14,8 @@
 .tile .header .button.dropdown:hover { color: #76b800; }
 .tile .header .button.dropdown i { position: relative; top: 2px; }
 .tile .header .button.dropdown::before { border: none; }
-.tile .header .button.dropdown:hover + .f-dropdown, .tile .header .f-dropdown:hover { width: 120px; display: block; top: 20px; left: 168px; }
+.tile .header .f-dropdown::before, .tile .header .f-dropdown::after { left: 118px; }
+.tile .header .button.dropdown:hover + .f-dropdown, .tile .header .f-dropdown:hover { width: 140px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: 60px; }
 .tile .header .button.dropdown:hover + .f-dropdown li a, .tile .header .f-dropdown:hover li a { color: #76b800; }
 
 .tile .content { padding: 8px; font-size: 0.9em; }
