@@ -82,6 +82,7 @@ urls = [
     # Landing page
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
+    Route(name='snapshots_delete', pattern='/snapshots/delete'),
     # Detail page
     Route(name='snapshot_create', pattern='/snapshots/create'),
     Route(name='snapshot_view', pattern='/snapshots/{id}'),  # Pass id='new' to render Add Snapshot page

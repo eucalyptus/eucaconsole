@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="SnapshotsPage" ng-controller="SnapshotsCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Snapshots
         </h3>
@@ -18,7 +18,13 @@
             <div metal:fill-slot="new_button">
                 <a href="${request.route_url('snapshot_view', id='new')}" class="button" i18n:translate="">Create snapshot</a>
             </div>
-            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
+                </ul>
+            </div>
             <metal:block metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a>
             </metal:block>
@@ -56,6 +62,7 @@
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Time Started</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
@@ -65,14 +72,24 @@
                 <td>{{ item.description }}</td>
                 <td>{{ item.tags }}</td>
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
+                <td>
+                    <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
+                        <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
+                    </ul>
+                </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('snapshot_dialogs', delete_form=delete_form, landingpage=True)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/snapshots.js')}"></script>
 </div>
 
 </metal:block>

@@ -18,3 +18,14 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
         disassociate_form=disassociate_form,
         release_form=release_form,
     )
+
+
+@panel_config('snapshot_dialogs', renderer='../templates/dialogs/snapshot_dialogs.pt')
+def snapshot_dialogs(context, request, snapshot=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Snapshot landing and detail page."""
+    return dict(
+        snapshot=snapshot,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
