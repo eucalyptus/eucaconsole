@@ -9,12 +9,17 @@
         <h3 class="header" id="pagetitle" i18n:translate="">
             Key Pairs
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create new key pair</a>
+                <a class="button small" i18n:translate=""
+                    href="${request.route_url('keypair_view', id='new')}">Create new key pair</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
