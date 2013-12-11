@@ -5,21 +5,23 @@
 .large-12.columns.datagrid { padding-left: 1rem; }
 
 .tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
-
 .tile .header { position: relative; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
 .tile .header a { display: block; padding: 6px 30px 4px 10px; color: white; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown { width: 120px; }
-.tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
-.tile .header .button.dropdown i { position: relative; top: 2px; }
-.tile .header .button.dropdown::before { border: none; }
-
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
-
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
+.tile .f-dropdown::before, .tile .f-dropdown::after { left: 168px; }
+
+.dropdown.button.tiny { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+.dropdown.button.tiny:hover { color: #76b800; }
+.dropdown.button.tiny::before { border: none; }
+.dropdown.button.tiny i { position: relative; top: 2px; }
+
+.button.dropdown:hover + .f-dropdown, .f-dropdown:hover { width: 190px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: auto; right: 0; }
+.button.dropdown:hover + .f-dropdown li a, .f-dropdown:hover li a { color: #76b800; }
 
 .sort-search { font-size: 0.9rem; }
 .sort-search form { margin-bottom: 0; }
@@ -28,21 +30,20 @@
 .match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
 
 .displayicons { font-size: 2rem; }
-
 .displayicons a { float: right; border-bottom: none; color: black; }
-
 .displayicons a:hover { border-bottom: none; color: #76b800; }
-
 .displayicons .selected { background-color: #eeeeee; }
 .displayicons .selected :hover { color: black; cursor: default; }
-
 .displayicons i { display: inline-block; padding: 4px 12px; }
 
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
-.gridwrapper .table tr td { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
+.gridwrapper .table tr td { position: relative; padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
+.gridwrapper .table .dropdown.button.tiny { top: 4px; right: 20px; padding-left: 10px; padding-right: 24px; }
+.gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 168px; }
+.gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
 #filters { margin-top: 46px; }
 

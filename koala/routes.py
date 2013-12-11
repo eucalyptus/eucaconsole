@@ -19,21 +19,27 @@ from collections import namedtuple
 Route = namedtuple('Route', ['name', 'pattern'])
 
 urls = [
-    # Dashboard
+    # Dashboard #####
     Route(name='dashboard', pattern='/'),
     Route(name='dashboard_json', pattern='/dashboard/json'),
-    # Login/logout
+
+    # Login/logout #####
     Route(name='login', pattern='/login'),
     Route(name='logout', pattern='/logout'),
     Route(name='changepassword', pattern='/changepassword'),
-    # Common
+
+    # Common #####
     Route(name='region_select', pattern='/region/select'),
-    # Images
+
+    # Images #####
     Route(name='images', pattern='/images'),
     Route(name='images_json', pattern='/images/json'),
-    # Instances
+
+    # Instances #####
+    # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    # Detail page
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
@@ -46,15 +52,20 @@ urls = [
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
-    # Scaling Groups
+
+    # Scaling Groups #####
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
-    # Launch Configurations
+
+    # Launch Configurations #####
     Route(name='launchconfigs', pattern='/launchconfigs'),
     Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
-    # Volumes
+
+    # Volumes #####
+    # Landing page
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
     Route(name='volume_update', pattern='/volumes/{id}/update'),
@@ -66,33 +77,48 @@ urls = [
     Route(name='volume_snapshots_json', pattern='/volumes/{id}/snapshots/json'),
     Route(name='volume_snapshot_create', pattern='/volumes/{id}/snapshots/create'),
     Route(name='volume_snapshot_delete', pattern='/volumes/{id}/snapshots/{snapshot_id}/delete'),
-    # Snapshots
+
+    # Snapshots #####
+    # Landing page
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
+    # Detail page
     Route(name='snapshot_create', pattern='/snapshots/create'),
     Route(name='snapshot_view', pattern='/snapshots/{id}'),  # Pass id='new' to render Add Snapshot page
     Route(name='snapshot_update', pattern='/snapshots/{id}/update'),
     Route(name='snapshot_delete', pattern='/snapshots/{id}/delete'),
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
-    # Security Groups
+
+    # Security Groups #####
+    # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    # Detail page
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
     Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
     Route(name='securitygroup_update', pattern='/securitygroups/{id}/update'),
     Route(name='securitygroup_delete', pattern='/securitygroups/{id}/delete'),
-    # Key pairs
+
+    # Key pairs #####
+    # Landing page
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
     Route(name='keypair_download', pattern='/keypairs/download'),
     Route(name='keypair_create', pattern='/keypairs/create'),
     Route(name='keypair_import', pattern='/keypairs/import'),
     Route(name='keypair_view', pattern='/keypairs/{id}'),
-    # IP Addresses
+
+    # IP Addresses #####
+    # Landing page
     Route(name='ipaddresses', pattern='/ipaddresses'),
     Route(name='ipaddresses_json', pattern='/ipaddresses/json'),
+    Route(name='ipaddresses_associate', pattern='/ipaddresses/associate'),
+    Route(name='ipaddresses_disassociate', pattern='/ipaddresses/disassociate'),
+    Route(name='ipaddresses_release', pattern='/ipaddresses/release'),
+    # Detail page
     Route(name='ipaddress_view', pattern='/ipaddresses/{public_ip}'),
     Route(name='ipaddress_associate', pattern='/ipaddresses/{public_ip}/associate'),
     Route(name='ipaddress_disassociate', pattern='/ipaddresses/{public_ip}/disassociate'),
     Route(name='ipaddress_release', pattern='/ipaddresses/{public_ip}/release'),
 ]
+

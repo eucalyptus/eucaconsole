@@ -46,7 +46,7 @@
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items"
-         ng-controller="ItemsCtrl" ng-init="setInitialSort('${initial_sort_key}'); getItems('${json_items_endpoint}')">
+         ng-controller="ItemsCtrl" ng-init="initController('${initial_sort_key}', '${json_items_endpoint}')">
         <div class="row display-switcher">
             <div class="small-6 columns">
                 <metal:block metal:define-slot="new_button"></metal:block>
@@ -66,7 +66,7 @@
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                         <span class="down-caret"></span>
                     </a>
-                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="data-dropdown">
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="">
                         <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
                             <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
                         </li>
@@ -106,8 +106,8 @@
                         </metal:block>
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
-                        <span class="tiny secondary button dropdown right"
-                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></span>
+                        <a href="#" class="tiny secondary button dropdown right"
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                             <metal:block metal:define-slot="tile-dropdown-items">
                                 <li><a href="#">This is a link</a></li>
@@ -117,8 +117,10 @@
                         </ul>
                     </metal:block>
                 </div>
-                <div class="content">
-                    <metal:block metal:define-slot="tile_content"></metal:block>
+                <div class="content off-canvas-wrap">
+                    <section class="inner-wrap">
+                        <metal:block metal:define-slot="tile_content"></metal:block>
+                    </section>
                 </div>
                 <metal:block metal:define-slot="tile_footer">
                     <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
