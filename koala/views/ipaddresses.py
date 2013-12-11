@@ -55,7 +55,8 @@ class IPAddressesView(LandingPageView):
         if self.request.method == 'POST':
             if self.allocate_form.validate():
                 new_ips = []
-                location = '{}?display={}'.format(self.request.route_url('ipaddresses'), self.display_type)
+                display_type = self.request.params.get('display', self.display_type)
+                location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
                 ipcount = int(self.request.params.get('ipcount', 0))
                 for i in xrange(ipcount):
                     new_ip = self.conn.allocate_address()
@@ -85,7 +86,8 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.associate(instance_id)
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), self.display_type)
+            display_type = self.request.params.get('display', self.display_type)
+            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
             msg = _(u'Successfully associated IP {ip} with instance {instance}')
             notification_msg = msg.format(ip=elastic_ip.public_ip, instance=instance_id)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
@@ -98,7 +100,8 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.disassociate()
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), self.display_type)
+            display_type = self.request.params.get('display', self.display_type)
+            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
             msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
             notification_msg = msg.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
@@ -111,7 +114,8 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.release()
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), self.display_type)
+            display_type = self.request.params.get('display', self.display_type)
+            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
             msg = _(u'Successfully released {ip} to the cloud')
             notification_msg = msg.format(ip=elastic_ip.public_ip)
             self.request.session.flash(notification_msg, queue=Notification.SUCCESS)

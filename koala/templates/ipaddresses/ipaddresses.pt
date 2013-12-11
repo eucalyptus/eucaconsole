@@ -65,20 +65,8 @@
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
                 ${structure:allocate_form['csrf_token']}
-                <div class="row inline controls-wrapper controls_${field.name}" tal:define="field allocate_form['ipcount']">
-                    <div class="small-4 columns">
-                        <label for="right-label" class="right">${field.label.text}</label>
-                    </div>
-                    <div class="small-8 columns field inline">
-                        ${structure:field(required='required', pattern='integer')}
-                        <small class="error">${allocate_form.ipcount_error_msg}</small>
-                        <div tal:condition="field.errors" class="server-validation">
-                            <span class="error" tal:repeat="error field.errors">
-                                ${error}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                ${panel('form_field', field=allocate_form.ipcount)}
+                <input type="hidden" name="display" value="{{ displayType }}" />
                 <div class="row">
                     <div class="small-4 columns"></div>
                     <div class="small-8 columns">
@@ -95,6 +83,7 @@
             <p i18n:translate="">Associate <b>{{ publicIP }}</b> with an instance</p>
             <form action="${request.route_url('ipaddresses_associate')}" method="post" data-abide="abide">
                 ${structure:associate_form['csrf_token']}
+                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
                 ${panel('form_field', field=associate_form.instance_id)}
                 <div class="row">
@@ -114,6 +103,7 @@
                 from the instance?</p>
             <form action="${request.route_url('ipaddresses_disassociate')}" method="post">
                 ${structure:disassociate_form['csrf_token']}
+                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
                 <input type="submit" class="button" value="Yes, disassociate" />
             </form>
@@ -129,6 +119,7 @@
             <p i18n:translate="">Are you sure you want to release {{ publicIP }} to the cloud?</p>
             <form action="${request.route_url('ipaddresses_release')}" method="post">
                 ${structure:release_form['csrf_token']}
+                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
                 <input type="submit" class="button" value="Yes, release" />
             </form>

@@ -20,6 +20,10 @@ class AllocateIPsForm(BaseSecureForm):
         widget=widgets.TextInput(),
     )
 
+    def __init__(self, request, **kwargs):
+        super(AllocateIPsForm, self).__init__(request, **kwargs)
+        self.ipcount.error_msg = self.ipcount_error_msg
+
 
 class AssociateIPForm(BaseSecureForm):
     """Associate an Elastic IP with an instance"""
