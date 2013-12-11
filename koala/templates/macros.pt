@@ -117,8 +117,10 @@
                         </ul>
                     </metal:block>
                 </div>
-                <div class="content">
-                    <metal:block metal:define-slot="tile_content"></metal:block>
+                <div class="content off-canvas-wrap">
+                    <section class="inner-wrap">
+                        <metal:block metal:define-slot="tile_content"></metal:block>
+                    </section>
                 </div>
                 <metal:block metal:define-slot="tile_footer">
                     <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">

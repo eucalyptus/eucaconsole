@@ -56,9 +56,6 @@ $gridwrapper-table-width: 98%;
     strong {
         font-weight: normal;
     }
-    .f-dropdown {
-        width: 120px;
-    }
     .button.dropdown {
         position: absolute;
         width: 30px; height: $tile-row-height;
@@ -79,6 +76,16 @@ $gridwrapper-table-width: 98%;
     }
     .button.dropdown::before {
         border: none;
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        width: 120px;
+        display: block;
+        top: 20px; left: ($tile-width - 32);
+        li {
+            a {
+                color: $euca-green;
+            }
+        }
     }
 }
 

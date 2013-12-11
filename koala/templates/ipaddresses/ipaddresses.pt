@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="ElasticIPsPage">
         <h3 class="header" id="pagetitle" i18n:translate="">
             IP Addresses
         </h3>
@@ -34,12 +34,10 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right"
-                      data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown" data-dropdown-content="">
                     <li><a href="#">This is a link</a></li>
                     <li><a href="#">This is another</a></li>
-                    <li><a href="#">Yet another</a></li>
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -88,6 +86,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/ipaddresses.js')}"></script>
 </div>
 
 </metal:block>

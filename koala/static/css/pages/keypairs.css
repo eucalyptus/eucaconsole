@@ -10,11 +10,12 @@
 .tile .header a { display: block; padding: 6px 30px 4px 10px; color: white; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown { width: 120px; }
 .tile .header .button.dropdown { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
 .tile .header .button.dropdown:hover { color: #76b800; }
 .tile .header .button.dropdown i { position: relative; top: 2px; }
 .tile .header .button.dropdown::before { border: none; }
+.tile .header .button.dropdown:hover + .f-dropdown, .tile .header .f-dropdown:hover { width: 120px; display: block; top: 20px; left: 168px; }
+.tile .header .button.dropdown:hover + .f-dropdown li a, .tile .header .f-dropdown:hover li a { color: #76b800; }
 
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; }

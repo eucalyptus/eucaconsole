@@ -10,6 +10,10 @@ angular.module('LandingPage', [])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.urlParams = $.url().param();
+        $scope.initController = function (sortKey, jsonItemsEndpoint) {
+            $scope.setInitialSort(sortKey);
+            $scope.getItems(jsonItemsEndpoint);
+        };
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
         };
@@ -36,10 +40,6 @@ angular.module('LandingPage', [])
                     return item;
                 }
             });
-        };
-        $scope.initController = function (sortKey, jsonItemsEndpoint) {
-            $scope.setInitialSort(sortKey);
-            $scope.getItems(jsonItemsEndpoint);
         };
         $scope.getItems = function (jsonItemsEndpoint) {
             $scope.itemsLoading = true;
