@@ -140,6 +140,7 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 4px;
 }
 
+// tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
     a {
@@ -175,6 +176,9 @@ $gridwrapper-table-width: 98%;
             padding-bottom: 0.5rem;
             text-transform: uppercase;
             white-space: nowrap;
+            &.actions {
+                text-align: right;
+            }
         }
     }
     tr {
@@ -200,8 +204,9 @@ $gridwrapper-table-width: 98%;
     }
 }
 
+
 #filters {
-    margin-top: 46px;
+    margin-top: 70px;
 }
 
 #properties-filter-form {

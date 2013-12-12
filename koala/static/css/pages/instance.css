@@ -39,13 +39,14 @@
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
+.gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
 .gridwrapper .table .dropdown.button.tiny { top: 4px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 168px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
-#filters { margin-top: 46px; }
+#filters { margin-top: 70px; }
 
 #properties-filter-form { font-size: 0.9rem; }
 

@@ -76,7 +76,7 @@
                 </td>
             </metal:block>
         </div>
-        <!-- Modal dialogs -->
+        <!--! Modal dialogs -->
         <div id="allocate-ip-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Allocate IP addresses</h3>
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
@@ -95,7 +95,7 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <!--! Modal dialogs -->
+        <!--! Modal dialogs reused across landing and detail page -->
         ${panel('ipaddress_dialogs', associate_form=associate_form,
                 disassociate_form=disassociate_form, release_form=release_form, landingpage=True)}
     </div>

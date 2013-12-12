@@ -39,13 +39,14 @@
 .gridwrapper .table { border: none; width: 98%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
+.gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; }
 .gridwrapper .table .dropdown.button.tiny { top: 4px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 168px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
-#filters { margin-top: 46px; }
+#filters { margin-top: 70px; }
 
 #properties-filter-form { font-size: 0.9rem; }
 
@@ -71,7 +72,7 @@
 .tile .footer { padding: 0 0 0 0; }
 .tile .footer .completed { padding: 4px 0 4px 8px; height: 24px; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
-.tile .footer .progress .meter { padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
 .tile .footer .progress .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
 
 .status.pending { background-color: #97eb00; }

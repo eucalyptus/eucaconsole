@@ -56,6 +56,8 @@ $volume-status-color-attached: darkorange;
             height: 24px;
             border: none;
             .meter {
+                position: relative;
+                top: -2px; left: -2px;
                 padding: 4px 0 4px 8px;
                 height: 24px;
                 display: inline-block;
