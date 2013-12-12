@@ -9,15 +9,40 @@ $snapshot-status-color-pending: lighten($euca-lightgreen, 20%);
 $snapshot-status-color-completed: $euca-darkgreen;
 $snapshot-status-color-failed: darken(red, 20%);
 
+// Mixin for the "in-progress" dots indicator
+@mixin progress-dots {
+    position: absolute;
+    width: 32px; height: 10px;
+    top: 8px; right: 8px;
+}
+
 
 .tile .status.pending { background-color: $snapshot-status-color-pending; }
 .tile .status.completed { background-color: $snapshot-status-color-completed; }
 .tile .status.failed { background-color: $snapshot-status-color-failed; }
 
 
-table {
+.table {
     td.id, td.volumeid, td.starttime {
         white-space: nowrap;
+    }
+    td.status {
+        position: relative;
+        .progress {
+            position: relative;
+            font-size: 0.825rem;
+            margin-bottom: 0;
+            .meter {
+                padding-left: 4px;
+                color: white;
+                font-weight: bold;
+            }
+            .dots {
+                @include progress-dots;
+                width: 20px;
+                top: 6px; right: 4px;
+            }
+        }
     }
 }
 
@@ -44,9 +69,7 @@ table {
                 font-weight: bold;
             }
             .dots {
-                position: absolute;
-                width: 32px; height: 10px;
-                top: 8px; right: 8px;
+                @include progress-dots;
             }
         }
     }

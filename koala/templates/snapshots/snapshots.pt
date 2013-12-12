@@ -77,7 +77,15 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
-                <td class="status">{{ item.status }}</td>
+                <td class="status">
+                    <div class="progress round" ng-show="item.status !== 'completed'"><span
+                            class="meter" style="width: {{ item.progress }}">{{ item.progress }}</span>
+                        &nbsp;<span class="dots">&nbsp;</span>
+                    </div>
+                    <span ng-show="item.status === 'completed'">
+                        {{ item.status }}
+                    </span>
+                </td>
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>
                 <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
