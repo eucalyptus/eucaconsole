@@ -46,10 +46,7 @@
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items"
-         ng-controller="ItemsCtrl" ng-init="initController('${initial_sort_key}', '${json_items_endpoint}')"
-         tal:define="default_init 'initController(\'{0}\', \'{1}\')'.format(initial_sort_key, json_items_endpoint);"
-         tal:attributes="ng-controller getattr(context, 'ng_controller', 'ItemsCtrl');
-                         ng-init getattr(context, 'ng_init', default_init);">
+         ng-controller="ItemsCtrl" ng-init="initController('${initial_sort_key}', '${json_items_endpoint}')">
         <div class="row display-switcher">
             <div class="small-6 columns">
                 <metal:block metal:define-slot="new_button"></metal:block>

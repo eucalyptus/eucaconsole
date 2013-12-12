@@ -23,7 +23,6 @@ class SnapshotsView(LandingPageView):
         super(SnapshotsView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.items = self.get_items()
         self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
         self.json_items_endpoint = self.request.route_url('snapshots_json')
@@ -39,6 +38,7 @@ class SnapshotsView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
+            ng_controller='SnapshotsCtrl',  # Use custom controller for landing page
         )
 
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
@@ -48,7 +48,7 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
     def snapshots_json(self):
         snapshots = []
-        for snapshot in self.items:
+        for snapshot in self.get_items():
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
@@ -85,6 +85,7 @@ class SnapshotsView(LandingPageView):
             return HTTPFound(location=location)
 
     def get_items(self):
+        # TODO: cache me
         return self.conn.get_all_snapshots(owner='self') if self.conn else []
 
     def get_snapshot(self, snapshot_id):
