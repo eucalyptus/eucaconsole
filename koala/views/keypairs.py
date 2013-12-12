@@ -69,7 +69,7 @@ class KeyPairView(BaseView):
             keypair=self.keypair,
             keypair_form=self.keypair_form,
             delete_form=self.delete_form,
-            keypair_created=new_keypair_created,
+            keypair_names=self.get_keypair_names(),
         )
 
     def get_keypair(self):
@@ -87,6 +87,7 @@ class KeyPairView(BaseView):
         if 'new_keypair_name' in session and session['new_keypair_name'] is not '':
             new_keypair_created = True
 
+        self.render_dict['keypair_created'] = new_keypair_created
         return self.render_dict
 
     def get_keypair_names(self):
@@ -174,4 +175,5 @@ class KeyPairView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
 
