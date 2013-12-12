@@ -53,6 +53,7 @@ class SnapshotsView(LandingPageView):
                 id=snapshot.id,
                 description=snapshot.description,
                 name=snapshot.tags.get('Name', snapshot.id),
+                progress=snapshot.progress,
                 start_time=snapshot.start_time,
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags),
