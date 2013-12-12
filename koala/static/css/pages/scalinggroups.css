@@ -15,13 +15,12 @@
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
 .tile .f-dropdown::before, .tile .f-dropdown::after { left: 168px; }
 
-.dropdown.button.tiny { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
-.dropdown.button.tiny:hover { color: #76b800; }
-.dropdown.button.tiny::before { border: none; }
-.dropdown.button.tiny i { position: relative; top: 2px; }
-
-.button.dropdown:hover + .f-dropdown, .f-dropdown:hover { width: 190px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: auto; right: 0; }
-.button.dropdown:hover + .f-dropdown li a, .f-dropdown:hover li a { color: #76b800; }
+.gridwrapper .dropdown.button.tiny { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
+.gridwrapper .dropdown.button.tiny:hover { color: #76b800; }
+.gridwrapper .dropdown.button.tiny::before { border: none; }
+.gridwrapper .dropdown.button.tiny i { position: relative; top: 2px; }
+.gridwrapper .button.dropdown:hover + .f-dropdown, .gridwrapper .f-dropdown:hover { width: 190px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: auto; right: 0; }
+.gridwrapper .button.dropdown:hover + .f-dropdown li a, .gridwrapper .f-dropdown:hover li a { color: #76b800; }
 
 .sort-search { font-size: 0.9rem; }
 .sort-search form { margin-bottom: 0; }
