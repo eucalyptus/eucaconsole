@@ -82,15 +82,34 @@ class SnapshotView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
+        self.snap_name_tag = self.snapshot.tags.get('Name', '')
+        self.snapshot_name = '{}{}'.format(
+            self.snapshot.id, ' ({})'.format(self.snap_name_tag) if self.snap_name_tag else '')
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.snapshot
+        self.images_registered = self.get_images_registered(self.snapshot.id)
         self.render_dict = dict(
             snapshot=self.snapshot,
+            registered=True if self.images_registered is not None else False,
+            snapshot_name=self.snapshot_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
         )
+
+    def get_root_device_name(self, img):
+        return img.root_device_name.replace('&#x2f;','/').replace('&#x2f;','/') if img.root_device_name is not None else '/dev/sda1'
+
+    def get_images_registered(self, snap_id):
+        ret = []
+        images = self.conn.get_all_images(owners='self')
+        for img in images:
+            if img.block_device_mapping is not None:
+                vol = img.block_device_mapping[self.get_root_device_name(img)]
+                if vol is not None and snap_id == vol.snapshot_id:
+                    ret.append(img)
+        return None if len(ret) == 0 else ret
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def snapshot_view(self):
@@ -143,6 +162,9 @@ class SnapshotView(TaggedItemView):
     def snapshot_delete(self):
         if self.snapshot and self.delete_form.validate():
             try:
+                if self.images_registered is not None:
+                    for img in self.images_registered:
+                        img.deregister()
                 self.snapshot.delete()
                 time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot.')
