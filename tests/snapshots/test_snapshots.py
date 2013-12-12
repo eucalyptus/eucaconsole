@@ -74,10 +74,10 @@ class SnapshotUpdateFormTestCase(BaseFormTestCase):
 
     def test_required_fields(self):
         self.assert_required('volume_id')
-        self.assert_required('description')
 
     def test_optional_fields(self):
         self.assert_not_required('name')
+        self.assert_not_required('description')
 
 
 class SnapshotDeleteFormTestCase(BaseFormTestCase):

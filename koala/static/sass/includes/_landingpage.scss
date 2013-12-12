@@ -87,40 +87,41 @@ $gridwrapper-table-width: 98%;
 }
 
 // Dropdown buttons on landing page tile/table view
-.dropdown.button.tiny {
-    position: absolute;
-    width: 30px; height: $tile-row-height;
-    top: 0; right: 0;
-    color: black;
-    font-size: 1rem;
-    padding: 0 0 0 0;
-    border: 1px solid $tile-border-color;
-    border-top: none;
-    border-right: none;
-    &:hover {
-        color: $euca-green;
-    }
-    &::before {
-        border: none;
-    }
-    i {
-        position: relative;
-        top: 2px;
-    }
-}
-
-
-.button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-    width: $grid-dropdown-width;
-    display: block;
-    box-shadow: 3px 3px 5px $euca-grey;
-    top: 20px; left: auto; right: 0;
-    li {
-        a {
+.gridwrapper {
+    .dropdown.button.tiny {
+        position: absolute;
+        width: 30px; height: $tile-row-height;
+        top: 0; right: 0;
+        color: black;
+        font-size: 1rem;
+        padding: 0 0 0 0;
+        border: 1px solid $tile-border-color;
+        border-top: none;
+        border-right: none;
+        &:hover {
             color: $euca-green;
+        }
+        &::before {
+            border: none;
+        }
+        i {
+            position: relative;
+            top: 2px;
+        }
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        width: $grid-dropdown-width;
+        display: block;
+        box-shadow: 3px 3px 5px $euca-grey;
+        top: 20px; left: auto; right: 0;
+        li {
+            a {
+                color: $euca-green;
+            }
         }
     }
 }
+
 
 .sort-search {
     font-size: 0.9rem;

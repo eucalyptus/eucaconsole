@@ -13,6 +13,9 @@ from ..views import BaseView, LandingPageView
 
 
 class IPAddressesView(LandingPageView):
+    """Views for IP Addresses landing page"""
+    VIEW_TEMPLATE = '../templates/ipaddresses/ipaddresses.pt'
+
     def __init__(self, request):
         super(IPAddressesView, self).__init__(request)
         self.initial_sort_key = 'public_ip'
@@ -25,10 +28,8 @@ class IPAddressesView(LandingPageView):
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.json_items_endpoint = self.request.route_url('ipaddresses_json')
-        self.sort_keys = [
-            dict(key='public_ip', name=_(u'IP Address')),
-            dict(key='instance_id', name=_(u'Instance')),
-        ]
+        self.sort_keys = self.get_sort_keys()
+        self.location = self.get_redirect_location()
         self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
             display_type=self.display_type,
@@ -44,18 +45,13 @@ class IPAddressesView(LandingPageView):
             release_form=self.release_form
         )
 
-    def get_items(self):
-        return self.conn.get_all_addresses() if self.conn else []
-
-    @view_config(route_name='ipaddresses', renderer='../templates/ipaddresses/ipaddresses.pt')
+    @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
     def ipaddresses_landing(self):
         # sort_keys are passed to sorting drop-down
         # Handle Allocate IP addresses form
         if self.request.method == 'POST':
             if self.allocate_form.validate():
                 new_ips = []
-                display_type = self.request.params.get('display', self.display_type)
-                location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
                 ipcount = int(self.request.params.get('ipcount', 0))
                 for i in xrange(ipcount):
                     new_ip = self.conn.allocate_address()
@@ -64,7 +60,7 @@ class IPAddressesView(LandingPageView):
                 ips = ', '.join(new_ips)
                 notification_msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-                return HTTPFound(location=location)
+                return HTTPFound(location=self.location)
         render_dict = self.render_dict
         render_dict['sort_keys'] = self.sort_keys
         return render_dict
@@ -87,13 +83,14 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.associate(instance_id)
-            display_type = self.request.params.get('display', self.display_type)
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
-            msg = _(u'Successfully associated IP {ip} with instance {instance}')
-            notification_msg = msg.format(ip=elastic_ip.public_ip, instance=instance_id)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+            template = _(u'Successfully associated IP {ip} with instance {instance}')
+            msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
+            queue = Notification.SUCCESS
+        else:
+            msg = _(u'Unable to associate IP with instance')
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
 
     @view_config(route_name='ipaddresses_disassociate', request_method="POST")
     def ipaddresses_disassociate(self):
@@ -101,13 +98,14 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.disassociate()
-            display_type = self.request.params.get('display', self.display_type)
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
-            msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
-            notification_msg = msg.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+            template = _(u'Successfully disassociated IP {ip} from instance {instance}')
+            msg = template.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
+            queue = Notification.SUCCESS
+        else:
+            msg = _(u'Unable to disassociate IP from instance')
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
 
     @view_config(route_name='ipaddresses_release', request_method="POST")
     def ipaddresses_release(self):
@@ -115,13 +113,17 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             elastic_ip = self.get_elastic_ip(public_ip)
             elastic_ip.release()
-            display_type = self.request.params.get('display', self.display_type)
-            location = '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
-            msg = _(u'Successfully released {ip} to the cloud')
-            notification_msg = msg.format(ip=elastic_ip.public_ip)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+            template = _(u'Successfully released {ip} to the cloud')
+            msg = template.format(ip=elastic_ip.public_ip)
+            queue = Notification.SUCCESS
+        else:
+            msg = _(u'Unable to release IP address')
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    def get_items(self):
+        return self.conn.get_all_addresses() if self.conn else []
 
     def get_elastic_ip(self, public_ip):
         addresses_param = [public_ip]
@@ -129,9 +131,23 @@ class IPAddressesView(LandingPageView):
         elastic_ip = ip_addresses[0] if ip_addresses else None
         return elastic_ip
 
+    def get_redirect_location(self):
+        display_type = self.request.params.get('display', self.display_type)
+        return '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
+
+    @staticmethod
+    def get_sort_keys():
+        """sort_keys are passed to sorting drop-down on landing page"""
+        return [
+            dict(key='public_ip', name=_(u'IP Address')),
+            dict(key='instance_id', name=_(u'Instance')),
+        ]
+
 
 class IPAddressView(BaseView):
     """Views for actions on single IP Address"""
+    VIEW_TEMPLATE = '../templates/ipaddresses/ipaddress_view.pt'
+
     def __init__(self, request):
         super(IPAddressView, self).__init__(request)
         self.conn = self.get_connection()
@@ -146,7 +162,7 @@ class IPAddressView(BaseView):
             release_form=self.release_form,
         )
 
-    @view_config(route_name='ipaddress_view', renderer='../templates/ipaddresses/ipaddress_view.pt')
+    @view_config(route_name='ipaddress_view', renderer=VIEW_TEMPLATE)
     def ipaddress_view(self):
         return self.render_dict
 
@@ -162,7 +178,7 @@ class IPAddressView(BaseView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    @view_config(route_name='ipaddress_disassociate', request_method="POST")
+    @view_config(route_name='ipaddress_disassociate', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_disassociate(self):
         if self.disassociate_form.validate():
             self.elastic_ip.disassociate()
@@ -173,7 +189,7 @@ class IPAddressView(BaseView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    @view_config(route_name='ipaddress_release', request_method="POST")
+    @view_config(route_name='ipaddress_release', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_release(self):
         if self.release_form.validate():
             self.elastic_ip.release()
