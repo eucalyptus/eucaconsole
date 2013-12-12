@@ -5,7 +5,7 @@
                      detailpage_action request.route_url('snapshot_delete', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete snapshot</h3>
-        <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
+        <p><span i18n:translate="">Are you sure you want to delete the snapshot</span><br />
             <b>${snapshot_name if snapshot else '{{ snapshotID }}'}</b>?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}

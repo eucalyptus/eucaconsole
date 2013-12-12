@@ -72,7 +72,7 @@ class SnapshotsView(LandingPageView):
             try:
                 snapshot.delete()
                 time.sleep(1)
-                prefix = _(u'Successfully deleted snapshot.')
+                prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:

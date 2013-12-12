@@ -101,26 +101,8 @@
                         Delete snapshot
                     </a>
                 </div>
-                <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Delete snapshot</h3>
-                    <p>
-                      <div tal:condition="registered">
-                        <span i18n:translate="">Snapshot registered as an image. When this snapshot is deleted, those image(s) will be deregistered. Are you sure you want to delete the snapshot</span><br/>
-                      </div>
-                      <div tal:condition="not registered">
-                        <span i18n:translate="">Are you sure you want to delete the snapshot</span><br/>
-                    </div>
-                    <strong>${snapshot_name}</strong>?
-                    </p>
-                    <form action="${request.route_url('snapshot_delete', id=snapshot.id)}" method="post">
-                        ${structure:delete_form['csrf_token']}
-                        <div class="large-4 columns">&nbsp;</div>
-                        <div class="large-8 columns">
-                            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                        </div>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
+                <!--! Modal dialogs reused across landing and detail page -->
+                ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form)}
             </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">

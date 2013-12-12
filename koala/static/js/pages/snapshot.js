@@ -11,7 +11,6 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
-        $scope.snapshotId = '';
         $scope.isUpdating = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
