@@ -96,12 +96,8 @@ class VolumeView(TaggedItemView):
             self.request, conn=self.conn, volume=self.volume, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.volume
-        self.attach_data = self.volume.attach_data if hasattr(self.volume, 'attach_data') else None
-        self.vol_name_tag = self.volume.tags.get('Name', '') if hasattr(self.volume, 'tags') else None
-        self.volume_name = ''
-        if self.volume is not None:
-            self.volume_name = '{}{}'.format(
-                self.volume.id, ' ({})'.format(self.vol_name_tag) if self.vol_name_tag else '')
+        self.attach_data = self.volume.attach_data if self.volume else None
+        self.volume_name = self.get_volume_name()
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
@@ -234,6 +230,14 @@ class VolumeView(TaggedItemView):
         if instance_id:
             instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
             return instances_list[0] if instances_list else None
+        return None
+
+    def get_volume_name(self):
+        if self.volume:
+            vol_name_tag = self.volume.tags.get('Name', '')
+            volume_name = '{}{}'.format(
+                self.volume.id, ' ({})'.format(vol_name_tag) if vol_name_tag else '')
+            return volume_name
         return None
 
 

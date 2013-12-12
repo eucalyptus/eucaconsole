@@ -22,7 +22,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
         <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
-            <div class="panel has-title">
+            <div class="panel gridwrapper has-title">
                 <h6 class="title">
                     <span i18n:translate="">Volumes for instance</span>
                     <strong>${instance_name}</strong>
