@@ -65,6 +65,12 @@ class KeyPairView(BaseView):
         self.keypair = self.get_keypair()
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            keypair=self.keypair,
+            keypair_form=self.keypair_form,
+            delete_form=self.delete_form,
+            keypair_created=new_keypair_created,
+        )
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
@@ -81,12 +87,7 @@ class KeyPairView(BaseView):
         if 'new_keypair_name' in session and session['new_keypair_name'] is not '':
             new_keypair_created = True
 
-        return dict(
-            keypair=self.keypair,
-            keypair_form=self.keypair_form,
-            delete_form=self.delete_form,
-            keypair_created=new_keypair_created,
-        )
+        return self.render_dict
 
     def get_keypair_names(self):
         keypairs = []
@@ -108,12 +109,7 @@ class KeyPairView(BaseView):
             response.content_disposition='attachment; filename="{name}.pem"'.format(name=name)
             return response
 
-        return dict(
-            keypair=self.keypair,
-            keypair_form=self.keypair_form,
-            delete_form=self.delete_form,
-            keypair_names=self.get_keypair_names()
-        )
+        return self.render_dict
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
     def keypair_create(self):
@@ -136,12 +132,7 @@ class KeyPairView(BaseView):
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
-        return dict(
-            keypair=self.keypair,
-            keypair_form=self.keypair_form,
-            delete_form=self.delete_form,
-            keypair_names=self.get_keypair_names()
-        )
+        return self.render_dict
 
     @view_config(route_name='keypair_import', request_method='POST', renderer=TEMPLATE)
     def keypair_import(self):
@@ -163,12 +154,7 @@ class KeyPairView(BaseView):
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
-        return dict(
-            keypair=self.keypair,
-            keypair_form=self.keypair_form,
-            delete_form=self.delete_form,
-            keypair_names=self.get_keypair_names()
-        )
+        return self.render_dict
 
     @view_config(route_name='keypair_delete', request_method='POST', renderer=TEMPLATE)
     def keypair_delete(self):
@@ -187,7 +173,5 @@ class KeyPairView(BaseView):
             location = self.request.route_url('keypairs')
             return HTTPFound(location=location)
 
-        #SHOULD NOTIFY FAILURE MESSAGE HERE
-        location = self.request.route_url('keypairs')
-        return HTTPFound(location=location)
+        return self.render_dict
 
