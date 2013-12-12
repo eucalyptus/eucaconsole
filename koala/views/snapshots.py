@@ -12,7 +12,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm
-from ..models import LandingPageFilter, Notification
+from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
 
@@ -27,7 +27,6 @@ class SnapshotsView(LandingPageView):
         self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
         self.json_items_endpoint = self.request.route_url('snapshots_json')
-        self.filter_fields = self.get_filter_fields()
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
@@ -105,17 +104,9 @@ class SnapshotsView(LandingPageView):
             dict(key='volume_id', name=_(u'Volume ID')),
         ]
 
-    def get_filter_fields(self):
-        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
-        status_choices = sorted(set(item.status for item in self.items))
-        return [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-        ]
-
     def get_filter_keys(self):
         """filter_keys are passed to client-side filtering in search box"""
-        more_filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id']
-        return [field.key for field in self.filter_fields] + more_filter_keys
+        return ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
 
 
 class SnapshotView(TaggedItemView):

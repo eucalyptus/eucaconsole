@@ -140,6 +140,7 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 4px;
 }
 
+// tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
     a {
@@ -175,7 +176,7 @@ $gridwrapper-table-width: 98%;
             padding-bottom: 0.5rem;
             text-transform: uppercase;
             white-space: nowrap;
-            .actions {
+            &.actions {
                 text-align: right;
             }
         }

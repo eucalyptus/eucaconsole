@@ -57,7 +57,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Snapshot</th>
                 <th i18n:translate="">Status</th>
-                <th i18n:translate="">Size (GB)</th>
+                <th i18n:translate="">Size</th>
                 <th i18n:translate="">Volume</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Tags</th>
@@ -67,7 +67,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
                 <td class="status">{{ item.status }}</td>
-                <td class="size">{{ item.volume_size }}</td>
+                <td class="size">{{ item.volume_size }} (GB)</td>
                 <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.tags }}</td>
