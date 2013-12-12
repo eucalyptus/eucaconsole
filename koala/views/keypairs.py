@@ -8,7 +8,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from ..forms.keypairs import KeyPairForm
+from ..forms.keypairs import KeyPairForm, KeyPairDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
@@ -64,6 +64,7 @@ class KeyPairView(BaseView):
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
+        self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
@@ -83,6 +84,7 @@ class KeyPairView(BaseView):
         return dict(
             keypair=self.keypair,
             keypair_form=self.keypair_form,
+            delete_form=self.delete_form,
             keypair_created=new_keypair_created,
         )
 
@@ -109,6 +111,7 @@ class KeyPairView(BaseView):
         return dict(
             keypair=self.keypair,
             keypair_form=self.keypair_form,
+            delete_form=self.delete_form,
             keypair_names=self.get_keypair_names()
         )
 
@@ -136,6 +139,7 @@ class KeyPairView(BaseView):
         return dict(
             keypair=self.keypair,
             keypair_form=self.keypair_form,
+            delete_form=self.delete_form,
             keypair_names=self.get_keypair_names()
         )
 
@@ -162,6 +166,28 @@ class KeyPairView(BaseView):
         return dict(
             keypair=self.keypair,
             keypair_form=self.keypair_form,
+            delete_form=self.delete_form,
             keypair_names=self.get_keypair_names()
         )
+
+    @view_config(route_name='keypair_delete', request_method='POST', renderer=TEMPLATE)
+    def keypair_delete(self):
+        if self.delete_form.validate():
+            name = self.request.params.get('name')
+            try:
+                self.conn.delete_key_pair(name)
+                prefix = _(u'Successfully deleted keypair')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            location = self.request.route_url('keypairs')
+            return HTTPFound(location=location)
+
+        #SHOULD NOTIFY FAILURE MESSAGE HERE
+        location = self.request.route_url('keypairs')
+        return HTTPFound(location=location)
 

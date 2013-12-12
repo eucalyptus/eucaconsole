@@ -87,6 +87,28 @@
                     </form>
                 </div>
             </div>
+            <div class="panel has-title" tal:condition="keypair">
+                <h6 class="title" i18n:translate="">Other keypair actions</h6>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary delete" data-reveal-id="delete-keypair-modal" i18n:translate="">
+                            Delete keypair
+                        </a>
+                    </div>
+                </div>
+                <div id="delete-keypair-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Delete keypair</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the keypair</span>
+                    <b>${keypair.name}</b>?</p>
+                    <form action="${request.route_url('keypair_delete', id=keypair.name)}" method="post">
+                        ${structure:delete_form['csrf_token']}
+                        <input type="hidden" name="name" value="${keypair.name}">
+                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
