@@ -30,3 +30,17 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
         delete_form=delete_form,
     )
 
+
+@panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
+def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
+                   attach_form=None, detach_form=None, delete_form=None):
+    """ Modal dialogs for Volume landing and detail page."""
+    return dict(
+        volume=volume,
+        volume_name=volume_name,
+        instance_name=instance_name,
+        landingpage=landingpage,
+        attach_form=attach_form,
+        detach_form=detach_form,
+        delete_form=delete_form,
+    )

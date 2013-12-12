@@ -1,0 +1,56 @@
+<!--! Modal dialogs for Volumes on landing and detail page -->
+<div tal:omit-tag="">
+    <!--! Attach/Detach/Delete modal dialogs -->
+    <div id="attach-modal" class="reveal-modal medium" tal:condition="volume" data-reveal="">
+        <h3 i18n:translate="">Attach volume</h3>
+        <p><span i18n:translate="">Attach a volume to an instance</span></p>
+        <form method="post" action="${request.route_url('volume_attach', id=volume.id)}"
+              id="attach-form" data-abide="">
+            ${structure:attach_form['csrf_token']}
+            ${panel('form_field', field=attach_form.instance_id)}
+            ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+            <div class="row">
+                <div class="small-4 columns">&nbsp;</div>
+                <div class="small-8 columns field inline">
+                    <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+        <hr />
+        <!--! Volume device help -->
+        <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
+    </div>
+    <div id="detach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
+        <h3 i18n:translate="">Detach volume</h3>
+        <p>
+          <span i18n:translate="">
+              Are you sure you want to detach volume <b>${volume_name if volume else '{{ volumeID }}'}</b> from the instance
+          </span>
+          <strong>${instance_name}</strong>?
+        </p>
+        <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">
+            ${structure:detach_form['csrf_token']}
+            <div>&nbsp;</div>
+            <div class="row">
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns field inline">
+                    <input type="submit" class="button" value="Yes, detach volume" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="delete-volume-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Delete volume</h3>
+        <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
+            <b>${volume_name}</b>?</p>
+        <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <!--! /end modal dialogs -->
+</div>
+
