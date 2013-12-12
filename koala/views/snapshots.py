@@ -146,7 +146,7 @@ class SnapshotView(TaggedItemView):
                 vol = img.block_device_mapping[self.get_root_device_name(img)]
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
-        return None if len(ret) == 0 else ret
+        return ret or None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def snapshot_view(self):
