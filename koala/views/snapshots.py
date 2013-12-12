@@ -26,23 +26,23 @@ class SnapshotsView(LandingPageView):
         self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
         self.json_items_endpoint = self.request.route_url('snapshots_json')
-        self.filter_keys = self.get_filter_keys()
-        self.sort_keys = self.get_sort_keys()
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             display_type=self.display_type,
-            filter_fields=self.filter_fields,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
             prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.json_items_endpoint,
             delete_form=self.delete_form,
-            ng_controller='SnapshotsCtrl',  # Use custom controller for landing page
         )
 
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
+        filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
+        self.render_dict.update(dict(
+            filter_keys=filter_keys,
+            filter_fields=self.filter_fields,
+            sort_keys=self.get_sort_keys(),
+            initial_sort_key=self.initial_sort_key,
+            json_items_endpoint=self.json_items_endpoint,
+        ))
         return self.render_dict
 
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
@@ -106,10 +106,6 @@ class SnapshotsView(LandingPageView):
             dict(key='volume_id', name=_(u'Volume ID')),
         ]
 
-    def get_filter_keys(self):
-        """filter_keys are passed to client-side filtering in search box"""
-        return ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
-
 
 class SnapshotView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshot_view.pt'
@@ -119,14 +115,12 @@ class SnapshotView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
-        self.snap_name_tag = self.snapshot.tags.get('Name', '')
-        self.snapshot_name = '{}{}'.format(
-            self.snapshot.id, ' ({})'.format(self.snap_name_tag) if self.snap_name_tag else '')
+        self.snapshot_name = self.get_snapshot_name()
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.snapshot
-        self.images_registered = self.get_images_registered(self.snapshot.id)
+        self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
@@ -136,7 +130,8 @@ class SnapshotView(TaggedItemView):
         )
 
     def get_root_device_name(self, img):
-        return img.root_device_name.replace('&#x2f;','/').replace('&#x2f;','/') if img.root_device_name is not None else '/dev/sda1'
+        return img.root_device_name.replace('&#x2f;', '/').replace(
+            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda1'
 
     def get_images_registered(self, snap_id):
         ret = []
@@ -147,6 +142,12 @@ class SnapshotView(TaggedItemView):
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
         return ret or None
+
+    def get_snapshot_name(self):
+        if self.snapshot:
+            snap_name_tag = self.snapshot.tags.get('Name', '')
+            return '{}{}'.format(self.snapshot.id, ' ({})'.format(snap_name_tag) if snap_name_tag else '')
+        return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
     def snapshot_view(self):
