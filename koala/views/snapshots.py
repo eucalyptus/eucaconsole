@@ -12,59 +12,48 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm
-from ..models import LandingPageFilter, Notification
+from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
 
 class SnapshotsView(LandingPageView):
+    VIEW_TEMPLATE = '../templates/snapshots/snapshots.pt'
+
     def __init__(self, request):
         super(SnapshotsView, self).__init__(request)
-        self.items = self.get_items()
+        self.request = request
+        self.conn = self.get_connection()
         self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
-
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_snapshots(owner='self') if conn else []
-
-    @view_config(route_name='snapshots', renderer='../templates/snapshots/snapshots.pt')
-    def snapshots_landing(self):
-        json_items_endpoint = self.request.route_url('snapshots_json')
-        status_choices = sorted(set(item.status for item in self.items))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        self.filter_fields = [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-        ]
-        more_filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id']
-        # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
-        # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='-start_time', name=_(u'Start time')),
-            dict(key='volume_size', name=_(u'Size')),
-            dict(key='name', name=_(u'Name')),
-            dict(key='status', name=_(u'Status')),
-            dict(key='volume_id', name=_(u'Volume ID')),
-        ]
-
-        return dict(
+        self.json_items_endpoint = self.request.route_url('snapshots_json')
+        self.filter_keys = self.get_filter_keys()
+        self.sort_keys = self.get_sort_keys()
+        self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
             display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
+            json_items_endpoint=self.json_items_endpoint,
+            delete_form=self.delete_form,
+            ng_controller='SnapshotsCtrl',  # Use custom controller for landing page
         )
+
+    @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
+    def snapshots_landing(self):
+        return self.render_dict
 
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
     def snapshots_json(self):
         snapshots = []
-        for snapshot in self.items:
+        for snapshot in self.get_items():
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
                 name=snapshot.tags.get('Name', snapshot.id),
+                progress=snapshot.progress,
                 start_time=snapshot.start_time,
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags),
@@ -72,6 +61,54 @@ class SnapshotsView(LandingPageView):
                 volume_size=snapshot.volume_size,
             ))
         return dict(results=snapshots)
+
+    @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshots_delete(self):
+        snapshot_id = self.request.params.get('snapshot_id')
+        snapshot = self.get_snapshot(snapshot_id)
+        display_type = self.request.params.get('display', self.display_type)
+        location = '{}?display={}'.format(self.request.route_url('snapshots'), display_type)
+        if snapshot and self.delete_form.validate():
+            try:
+                snapshot.delete()
+                time.sleep(1)
+                prefix = _(u'Successfully deleted snapshot.')
+                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            msg = _(u'Unable to delete snapshot')
+            self.request.session.flash(msg, queue=Notification.ERROR)
+            return HTTPFound(location=location)
+
+    def get_items(self):
+        # TODO: cache me
+        return self.conn.get_all_snapshots(owner='self') if self.conn else []
+
+    def get_snapshot(self, snapshot_id):
+        if snapshot_id:
+            snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
+            return snapshots_list[0] if snapshots_list else None
+        return None
+
+    @staticmethod
+    def get_sort_keys():
+        """sort_keys are passed to sorting drop-down on landing page"""
+        return [
+            dict(key='-start_time', name=_(u'Start time')),
+            dict(key='volume_size', name=_(u'Size')),
+            dict(key='name', name=_(u'Name')),
+            dict(key='status', name=_(u'Status')),
+            dict(key='volume_id', name=_(u'Volume ID')),
+        ]
+
+    def get_filter_keys(self):
+        """filter_keys are passed to client-side filtering in search box"""
+        return ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
 
 
 class SnapshotView(TaggedItemView):

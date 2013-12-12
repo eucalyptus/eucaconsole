@@ -236,6 +236,7 @@ class VolumeView(TaggedItemView):
             return instances_list[0] if instances_list else None
         return None
 
+
 class VolumeStateView(BaseView):
     def __init__(self, request):
         super(VolumeStateView, self).__init__(request)

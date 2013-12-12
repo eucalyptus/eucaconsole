@@ -10,10 +10,14 @@ angular.module('LandingPage', [])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.urlParams = $.url().param();
-        $scope.setInitialSort = function(sortKey) {
+        $scope.initController = function (sortKey, jsonItemsEndpoint) {
+            $scope.setInitialSort(sortKey);
+            $scope.getItems(jsonItemsEndpoint);
+        };
+        $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
         };
-        $scope.applyGetRequestFilters = function() {
+        $scope.applyGetRequestFilters = function () {
             // Apply an "all" match of filters based on URL params
             // If item matches all applicable non-empty URL param filters, return the item.
             $scope.items = $scope.items.filter(function(item) {
@@ -37,7 +41,7 @@ angular.module('LandingPage', [])
                 }
             });
         };
-        $scope.getItems = function(jsonItemsEndpoint) {
+        $scope.getItems = function (jsonItemsEndpoint) {
             $scope.itemsLoading = true;
             $http.get(jsonItemsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];

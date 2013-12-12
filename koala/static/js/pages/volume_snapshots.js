@@ -34,7 +34,7 @@ angular.module('VolumeSnapshots', [])
                 });
                 // Auto-refresh snapshots if any of them are in progress
                 if (inProgressCount > 0) {
-                    $timeout(function() {$scope.getVolumeSnapshots()}, 4000);  // Poll every 4 seconds
+                    $timeout(function() { $scope.getVolumeSnapshots(); }, 4000);  // Poll every 4 seconds
                 }
             });
         };
