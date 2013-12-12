@@ -54,7 +54,13 @@
                             <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
                         </div>
                     </div>
-                    ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    <div tal:condition="not snapshot" tal:omit-tag="">
+                        ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns field inline">${snapshot.tags.get('Name')}</div>
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
                         <div class="small-8 columns value">${snapshot.id}</div>
@@ -68,7 +74,13 @@
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}
                     </div>
-                    ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
+                    <div tal:condition="not snapshot" tal:omit-tag="">
+                        ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
+                        <div class="small-4 columns"><label i18n:translate="">Description</label></div>
+                        <div class="small-8 columns field inline">${snapshot.description}</div>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags)}
                     <hr  />
