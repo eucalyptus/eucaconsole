@@ -49,7 +49,9 @@ class SnapshotForm(BaseSecureForm):
         choices = [('', _(u'select...'))]
         for volume in self.conn.get_all_volumes():
             value = volume.id
-            label = '{id} ({size} GB)'.format(id=volume.id, size=volume.size)
+            vol_name_tag = volume.tags.get('Name', '')
+            label = '{}{}'.format(
+                volume.id, ' ({})'.format(vol_name_tag) if vol_name_tag else '')
             choices.append((value, label))
         self.volume_id.choices = sorted(choices)
 
