@@ -58,8 +58,8 @@
                             {{ volume.attach_time | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
-                    <div class="footer status {{ volume.status }}">
-                        {{ volume.status }}
+                    <div class="footer status {{ volume.attach_status }}">
+                        {{ volume.attach_status }}
                         <span class="dots" ng-show="volume.transitional">&nbsp;</span>
                     </div>
                 </div>
