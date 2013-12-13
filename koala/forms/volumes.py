@@ -134,6 +134,8 @@ class AttachForm(BaseSecureForm):
                 choices = [('', _(u'No available volumes in the availability zone'))]
             self.instance_id.choices = choices
         else:
+            # We need to set all instances as choices for the landing page to avoid failed validation of instance field
+            # The landing page JS restricts the choices based on the selected volume's availability zone
             self.instance_id.choices = [(instance.id, instance.id) for instance in instances]
 
 
