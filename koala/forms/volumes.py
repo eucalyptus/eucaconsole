@@ -121,16 +121,20 @@ class AttachForm(BaseSecureForm):
 
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
-        choices = [('', _(u'select...'))]
-        for instance in self.conn.get_only_instances():
-            if self.volume and self.volume.zone == instance.placement:
-                name_tag = instance.tags.get('Name')
-                extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
-                choices.append((instance.id, vol_name))
-        if self.volume and len(choices) == 1:
-            choices = [('', _(u'No available volumes in the availability zone'))]
-        self.instance_id.choices = choices
+        instances = self.conn.get_only_instances()
+        if self.volume:
+            choices = [('', _(u'select...'))]
+            for instance in instances:
+                if self.volume.zone == instance.placement:
+                    name_tag = instance.tags.get('Name')
+                    extra = ' ({name})'.format(name=name_tag) if name_tag else ''
+                    vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    choices.append((instance.id, vol_name))
+            if len(choices) == 1:
+                choices = [('', _(u'No available volumes in the availability zone'))]
+            self.instance_id.choices = choices
+        else:
+            self.instance_id.choices = [(instance.id, instance.id) for instance in instances]
 
 
 class DetachForm(BaseSecureForm):

@@ -54,6 +54,7 @@ class VolumesView(LandingPageView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
+            instances_by_zone=json.dumps(self.get_instances_by_zone()),
         ))
         return self.render_dict
 
@@ -115,6 +116,7 @@ class VolumesView(LandingPageView):
                 msg = err.message
                 queue = Notification.ERROR
         else:
+            import ipdb; ipdb.set_trace()
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
@@ -153,6 +155,14 @@ class VolumesView(LandingPageView):
 
     def get_items(self):
         return self.conn.get_all_volumes() if self.conn else []
+
+    def get_instances_by_zone(self):
+        instances = self.conn.get_only_instances()
+        zones = set(instance.placement for instance in instances)
+        instances_by_zone = {}
+        for zone in zones:
+            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+        return instances_by_zone
 
     def get_filter_fields(self):
         """filter_keys are passed to client-side filtering in search box"""

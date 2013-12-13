@@ -7,20 +7,33 @@
 angular.module('VolumesPage', [])
     .controller('VolumesCtrl', function ($scope) {
         $scope.volumeID = '';
+        $scope.volumeZone = '';
+        $scope.instancesByZone = '';
         $scope.urlParams = $.url().param();
         $scope.displayType = $scope.urlParams['display'] || 'gridview';
-        $scope.revealModal = function (action, volume_id) {
-            var modal = $('#' + action + '-volume-modal');
-            $scope.volumeID = volume_id;
+        $scope.initPage = function (instancesByZone) {
+            $scope.instancesByZone = instancesByZone;
+        };
+        $scope.revealModal = function (action, volume) {
+            var modal = $('#' + action + '-volume-modal'),
+                volumeZone = volume['zone'];
+            $scope.volumeID = volume['id'];
+            if (action === 'attach') {
+                // Set instance choices for attach to instance widget
+                modal.on('open', function() {
+                    var instanceSelect = $('#instance_id'),
+                        instances = $scope.instancesByZone[volumeZone],
+                        options = '';
+                    instances.forEach(function (instanceID) {
+                        options += '<option value="' + instanceID + '">' + instanceID + '</option>';
+                    });
+                    instanceSelect.html(options);
+                    instanceSelect.trigger('chosen:updated');
+                    instanceSelect.chosen({'width': '75%'});
+                });
+            }
             modal.foundation('reveal', 'open');
         };
-        $scope.initChosenSelector = function () {
-            // Instance choices in "Attach to instance" modal dialog
-            $('#attach-volume-modal').on('open', function() {
-                $('#instance_id').chosen({'width': '75%'});
-            });
-        };
-        $scope.initChosenSelector();
     })
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
         $scope.items = [];

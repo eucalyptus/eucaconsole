@@ -6,7 +6,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="VolumesPage" ng-controller="VolumesCtrl">
+    <div class="row" id="contentwrap" ng-app="VolumesPage" ng-controller="VolumesCtrl"
+         ng-init="initPage(${instances_by_zone})">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Volumes
         </h3>
@@ -27,13 +28,13 @@
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
                     </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete volume</a>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                     </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('attach', item.id)">Attach volume</a>
+                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
                     </li>
                     <li ng-show="item.status === 'in-use'">
-                        <a i18n:translate="" ng-click="revealModal('detach', item.id)">Detach volume</a>
+                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
                     </li>
                 </ul>
             </div>
