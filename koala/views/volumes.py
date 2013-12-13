@@ -33,6 +33,7 @@ class VolumesView(LandingPageView):
         self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location()
+        self.filter_fields = self.get_filter_fields()
         self.render_dict = dict(
             display_type=self.display_type,
             prefix=self.prefix,
@@ -173,27 +174,6 @@ class VolumesView(LandingPageView):
             LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
             LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
         ]
-
-    def filter_items(self, items):
-        """Filter items based on filter fields form"""
-        ignored_filters = ['filter', 'display']
-        filtered_params = [param for param in self.request.params.keys() if param not in ignored_filters]
-        if not filtered_params:
-            return items
-        filtered_items = []
-        filters = []
-        for filter_field in self.get_filter_fields():
-            value = self.request.params.get(filter_field.key)
-            if value:
-                filters.append((filter_field.key, value))
-        for item in items:
-            matchedkey_count = 0
-            for fkey, fval in filters:
-                if fval and hasattr(item, fkey) and getattr(item, fkey, None) == fval:
-                    matchedkey_count += 1
-            if matchedkey_count == len(filters):
-                filtered_items.append(item)
-        return filtered_items
 
     def get_redirect_location(self):
         display_type = self.request.params.get('display', self.display_type)
