@@ -1,0 +1,21 @@
+<!--! Modal dialogs for Security groups on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('securitygroups_delete');
+                     detailpage_action request.route_url('securitygroup_delete', id=security_group.id) if security_group else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete security group</h3>
+        <p><span i18n:translate="">Are you sure you want to delete the security group</span>
+            <b>${security_group.name if security_group else '{{ securitygroupName }}'}</b>?</p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="securitygroup_id" value="{{ securitygroupID }}" />
+            </div>
+            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

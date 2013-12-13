@@ -113,14 +113,14 @@
                         Delete snapshot
                     </a>
                 </div>
-                <!--! Modal dialogs reused across landing and detail page -->
-                ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form)}
             </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                 <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form)}
     </div>
 </div>
 

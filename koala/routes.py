@@ -97,6 +97,7 @@ urls = [
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    Route(name='securitygroups_delete', pattern='/securitygroups/delete'),
     # Detail page
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
     Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
