@@ -11,6 +11,8 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+
+from ..forms.images import ImageForm 
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView
@@ -103,20 +105,21 @@ class ImageView(BaseView):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
         self.image = self.get_image()
+        self.image_form = ImageForm(self.request, image=self.image, formdata=self.request.params or None)
+        self.render_dict = dict(
+            image=self.image,
+            image_form=self.image_form,
+        )
 
     def get_image(self):
         image_param = self.request.matchdict.get('id')
         images_param = [image_param]
         images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
-        print "IMAGE: " , image
         return image 
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
 
-        return dict(
-            image=self.image,
-        )
-
+        return self.render_dict
  
