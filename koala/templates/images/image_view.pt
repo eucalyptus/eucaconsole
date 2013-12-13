@@ -1,0 +1,35 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('images')}"
+               data-tooltip="" title="Back to images" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Images</span> ${image.id if image else ''}
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+        <div class="large-7 columns">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span tal:condition="image">
+                        <span i18n:translate="">Properties of image</span>
+                        <strong>${image.id }</strong>
+                    </span>
+                    <span tal:condition="not image" i18n:translate="">
+                        Error 
+                    </span>
+                </h6>
+                <div class="row controls-wrapper readonly" tal:condition="image">
+                    <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                    <div class="small-9 columns value">${image.name if image.name else ''}</div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+</metal:block>
+

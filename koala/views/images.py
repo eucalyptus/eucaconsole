@@ -7,11 +7,13 @@ from collections import namedtuple
 from urllib import urlencode
 
 from beaker.cache import cache_region
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import BaseView, LandingPageView
 
 
 class ImagesView(LandingPageView):
@@ -92,3 +94,29 @@ class ImagesView(LandingPageView):
             ))
         return dict(results=images)
 
+
+class ImageView(BaseView):
+    """Views for single Image"""
+    TEMPLATE = '../templates/images/image_view.pt'
+
+    def __init__(self, request):
+        super(ImageView, self).__init__(request)
+        self.conn = self.get_connection()
+        self.image = self.get_image()
+
+    def get_image(self):
+        image_param = self.request.matchdict.get('id')
+        images_param = [image_param]
+        images = self.conn.get_all_images(image_ids=images_param)
+        image = images[0] if images else None
+        print "IMAGE: " , image
+        return image 
+
+    @view_config(route_name='image_view', renderer=TEMPLATE)
+    def image_view(self):
+
+        return dict(
+            image=self.image,
+        )
+
+ 
