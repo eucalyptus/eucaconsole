@@ -39,13 +39,18 @@ class InstancesView(LandingPageView):
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
-        more_filter_keys = ['id', 'name', 'ip_address', 'key_name', 'security_groups', 'root_device', 'tags']
+        filter_keys = [
+            'id', 'instance_type', 'ip_address', 'key_name', 'placement',
+            'root_device', 'security_groups', 'state', 'tags']
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
+        self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
-            dict(key='name', name=_(u'Instance name')),
+            dict(key='id', name=_(u'Instance ID')),
+            dict(key='placement', name=_(u'Availability zone')),
+            dict(key='root_device', name=_(u'Root device')),
+            dict(key='key_name', name=_(u'Key pair')),
         ]
         self.render_dict.update(dict(
             filter_fields=self.filter_fields,
@@ -66,7 +71,7 @@ class InstancesView(LandingPageView):
                 ip_address=instance.ip_address,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
-                root_device=instance.root_device_name,
+                root_device=instance.root_device_type,
                 security_groups=', '.join(group.name for group in instance.groups),
                 key_name=instance.key_name,
                 status=instance.state,
@@ -146,7 +151,6 @@ class InstanceView(TaggedItemView):
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
-
         return self.render_dict
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')

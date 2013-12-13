@@ -31,6 +31,20 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
     )
 
 
+@panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
+def instance_dialogs(context, request, instance=None, landingpage=False, start_form=None,
+                     stop_form=None, reboot_form=None, terminate_form=None):
+    """ Modal dialogs for Instance landing and detail page."""
+    return dict(
+        instance=instance,
+        landingpage=landingpage,
+        start_form=start_form,
+        stop_form=stop_form,
+        reboot_form=reboot_form,
+        terminate_form=terminate_form,
+    )
+
+
 @panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):

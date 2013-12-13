@@ -1,0 +1,69 @@
+<!--! Modal dialogs for Instances landing and detail page -->
+<div tal:omit-tag="">
+    <div id="change-state-dialogs">
+        <div id="reboot-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Reboot instance</h3>
+            <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
+            <p><span i18n:translate="">Are you sure you want to reboot instance</span> ${instance.id}?</p>
+            <form method="post" action="${request.route_url('instance_reboot', id=instance.id)}" id="reboot-form">
+                ${structure:reboot_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, reboot" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="start-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Start instance</h3>
+            <p><span i18n:translate="">Are you sure you want to start instance</span>
+                <b>${instance.id}?</b>
+            </p>
+            <form method="post" action="${request.route_url('instance_start', id=instance.id)}" id="start-form">
+                ${structure:start_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, start instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="stop-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Stop instance</h3>
+            <p><span i18n:translate="">Are you sure you want to stop instance</span>
+                <b>${instance.id}?</b>
+            </p>
+            <form method="post" action="${request.route_url('instance_stop', id=instance.id)}" id="stop-form">
+                ${structure:stop_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, stop instance" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
+               <b>${instance.id}?</b>
+            </p>
+            <form method="post" action="${request.route_url('instance_terminate', id=instance.id)}" id="terminate-form">
+                ${structure:terminate_form['csrf_token']}
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, terminate" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+

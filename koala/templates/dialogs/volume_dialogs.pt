@@ -1,4 +1,4 @@
-<!--! Modal dialogs for Volumes on landing and detail page -->
+<!--! Modal dialogs for Volumes landing and detail page -->
 <div tal:omit-tag="">
     <!--! Attach/Detach/Delete modal dialogs -->
     <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
