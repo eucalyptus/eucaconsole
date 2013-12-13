@@ -44,3 +44,13 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
         detach_form=detach_form,
         delete_form=delete_form,
     )
+
+
+@panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
+def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Security group landing and detail page."""
+    return dict(
+        security_group=security_group,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )

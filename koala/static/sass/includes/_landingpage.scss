@@ -74,6 +74,9 @@ $gridwrapper-table-width: 98%;
         strong {
             font-weight: normal;
         }
+        .f-dropdown a {
+            overflow: visible;
+        }
     }
     .content {
         padding: 8px;

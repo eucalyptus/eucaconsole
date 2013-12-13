@@ -157,12 +157,13 @@ class VolumesView(LandingPageView):
         return self.conn.get_all_volumes() if self.conn else []
 
     def get_instances_by_zone(self):
-        instances = self.conn.get_only_instances()
-        zones = set(instance.placement for instance in instances)
-        instances_by_zone = {}
-        for zone in zones:
-            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
-        return instances_by_zone
+        if self.conn:
+            instances = self.conn.get_only_instances()
+            zones = set(instance.placement for instance in instances)
+            instances_by_zone = {}
+            for zone in zones:
+                instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+            return instances_by_zone
 
     def get_filter_fields(self):
         """filter_keys are passed to client-side filtering in search box"""

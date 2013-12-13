@@ -5,6 +5,7 @@ Pyramid views for Eucalyptus and AWS security groups
 """
 from boto.exception import EC2ResponseError
 import simplejson as json
+import time
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -16,19 +17,23 @@ from ..views import LandingPageView, TaggedItemView
 
 
 class SecurityGroupsView(LandingPageView):
+    TEMPLATE = '../templates/securitygroups/securitygroups.pt'
+
     def __init__(self, request):
         super(SecurityGroupsView, self).__init__(request)
+        self.conn = self.get_connection()
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
+        self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            delete_form=self.delete_form,
+            display_type=self.display_type,
+            prefix=self.prefix,
+        )
 
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_security_groups() if conn else []
-
-    @view_config(route_name='securitygroups', renderer='../templates/securitygroups/securitygroups.pt')
+    @view_config(route_name='securitygroups', renderer=TEMPLATE)
     def securitygroups_landing(self):
-        json_items_endpoint = self.request.route_url('securitygroups_json')
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['name', 'description', 'tags']
         # sort_keys are passed to sorting drop-down
@@ -36,16 +41,15 @@ class SecurityGroupsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
             dict(key='description', name=_(u'Description')),
         ]
-
-        return dict(
-            display_type=self.display_type,
+        json_items_endpoint = self.request.route_url('securitygroups_json')
+        self.render_dict.update(dict(
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
-            prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
-        )
+        ))
+        return self.render_dict
 
     @view_config(route_name='securitygroups_json', renderer='json', request_method='GET')
     def securitygroups_json(self):
@@ -61,6 +65,44 @@ class SecurityGroupsView(LandingPageView):
                 vpc_id=securitygroup.vpc_id,
             ))
         return dict(results=securitygroups)
+
+    @view_config(route_name='securitygroups_delete', request_method='POST')
+    def securitygroups_delete(self):
+        securitygroup_id = self.request.params.get('securitygroup_id')
+        security_group = self.get_security_group(securitygroup_id)
+        display_type = self.request.params.get('display', self.display_type)
+        location = '{}?display={}'.format(self.request.route_url('securitygroups'), display_type)
+        if security_group and self.delete_form.validate():
+            name = security_group.name
+            try:
+                security_group.delete()
+                time.sleep(1)
+                prefix = _(u'Successfully deleted security group')
+                template = '{0} {1}'.format(prefix, name)
+                msg = template.format(group=name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            msg = _(u'Unable to delete security group')
+            self.request.session.flash(msg, queue=Notification.ERROR)
+            return HTTPFound(location=location)
+
+    def get_items(self):
+        conn = self.get_connection()
+        return conn.get_all_security_groups() if conn else []
+
+    def get_security_group(self, group_id=None):
+        group_param = group_id
+        if group_param is None:
+            return None  # If missing, we're going to return an empty security group form
+        groupids = [group_param]
+        security_groups = self.conn.get_all_security_groups(group_ids=groupids)
+        security_group = security_groups[0] if security_groups else None
+        return security_group
 
     @staticmethod
     def get_rules(rules):
@@ -90,18 +132,20 @@ class SecurityGroupView(TaggedItemView):
             self.request, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
-
-    @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
-    def securitygroup_view(self):
-        return dict(
+        self.render_dict = dict(
             security_group=self.security_group,
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
         )
 
-    @view_config(route_name='securitygroup_delete', request_method='POST')
+    @view_config(route_name='securitygroup_view', renderer=TEMPLATE)
+    def securitygroup_view(self):
+        return self.render_dict
+
+    @view_config(route_name='securitygroup_delete', renderer=TEMPLATE, request_method='POST')
     def securitygroup_delete(self):
+        location = self.request.route_url('securitygroups')
         if self.security_group and self.delete_form.validate():
             name = self.security_group.name
             try:
@@ -112,11 +156,10 @@ class SecurityGroupView(TaggedItemView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-
-            location = self.request.route_url('securitygroups')
             notification_msg = msg.format(group=name)
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
+        return self.render_dict
 
     @view_config(route_name='securitygroup_create', request_method='POST', renderer=TEMPLATE)
     def securitygroup_create(self):
@@ -140,12 +183,7 @@ class SecurityGroupView(TaggedItemView):
                 location = self.request.route_url('securitygroups')
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
-
-        return dict(
-            security_group=self.security_group,
-            securitygroup_form=self.securitygroup_form,
-            security_group_names=self.get_security_group_names(),
-        )
+        return self.render_dict
 
     @view_config(route_name='securitygroup_update', request_method='POST', renderer=TEMPLATE)
     def securitygroup_update(self):
@@ -158,12 +196,7 @@ class SecurityGroupView(TaggedItemView):
             msg = _(u'Successfully modified security group')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
-
-        return dict(
-            security_group=self.security_group,
-            securitygroup_form=self.securitygroup_form,
-            security_group_names=self.get_security_group_names(),
-        )
+        return self.render_dict
 
     def get_security_group(self, group_id=None):
         group_param = group_id or self.request.matchdict.get('id')

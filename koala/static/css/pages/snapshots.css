@@ -13,6 +13,7 @@
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: white; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
+.tile .header .f-dropdown a { overflow: visible; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }

@@ -85,16 +85,6 @@
                         </a>
                     </div>
                 </div>
-                <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Delete security group</h3>
-                    <p><span i18n:translate="">Are you sure you want to delete the security group</span>
-                        <b>${security_group.name}</b>?</p>
-                    <form action="${request.route_url('securitygroup_delete', id=security_group.id)}" method="post">
-                        ${structure:delete_form['csrf_token']}
-                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
             </div>
         </div>
         <div class="large-5 columns">
@@ -140,20 +130,11 @@
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
     </div>
 </div>
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#associate-ip-modal').foundation({
-                'reveal': {
-                    'opened': function() {
-                        $('#instance_id').chosen();
-                    }
-                }
-            });
-        });
-    </script>
 </div>
 </metal:block>
