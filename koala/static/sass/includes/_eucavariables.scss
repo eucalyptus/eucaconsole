@@ -79,3 +79,10 @@ $button-border-style: solid;
 // Tooltips
 $tooltip-padding: rem-calc(5);
 
+// Mixins
+// Text overflow (e.g. for handling long resource names)
+@mixin ellipsis-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

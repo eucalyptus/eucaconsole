@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Volumes on landing and detail page -->
 <div tal:omit-tag="">
     <!--! Attach/Detach/Delete modal dialogs -->
-    <div id="attach-volume-modal" class="reveal-modal medium" data-reveal=""
+    <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_url('volumes_attach');
                      detailpage_action request.route_url('volume_attach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">

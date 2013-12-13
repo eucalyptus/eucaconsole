@@ -5,8 +5,12 @@
 .large-12.columns.datagrid { padding-left: 1rem; }
 
 .tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile.add { text-align: center; text-transform: uppercase; position: relative; }
+.tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.tile.add a:hover { background-color: #d3e9b6; }
+.tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
 .tile .header { position: relative; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
-.tile .header a { display: block; padding: 6px 30px 4px 10px; color: white; }
+.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: white; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
 .tile .content { padding: 8px; font-size: 0.9em; }
