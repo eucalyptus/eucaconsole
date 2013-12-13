@@ -13,6 +13,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
 from ..models.auth import ConnectionManager
+from ..forms.login import EucaLogoutForm
 
 
 class BaseView(object):
@@ -26,6 +27,7 @@ class BaseView(object):
         self.clchost = request.registry.settings.get('clchost') if request.registry.settings else 'localhost'
         self.clcport = int(request.registry.settings.get('clcport', 8773)) if request.registry.settings else 8773
         self.security_token = request.session.get('session_token')
+        self.euca_logout_form = EucaLogoutForm(self.request)
 
     def get_connection(self, conn_type='ec2'):
         conn = None

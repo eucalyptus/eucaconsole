@@ -140,7 +140,7 @@ class LogoutView(BaseView):
         self.request = request
         self.login_url = request.route_url('login')
 
-    @view_config(route_name='logout')
+    @view_config(route_name='logout', request_method='POST')
     def logout(self):
         forget(self.request)
         self.request.session.invalidate()

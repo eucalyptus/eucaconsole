@@ -1,9 +1,6 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
-$euca-login-panel-header-height: 36px;
-
-
 #login-panel {
     background-color: white;
     border-radius: 8px;
@@ -11,22 +8,20 @@ $euca-login-panel-header-height: 36px;
 
 #login-panel {
     position: relative;
-    padding-top: $euca-login-panel-header-height + 44px;
+    padding: 10px;
     box-shadow: 0 3px 6px $euca-grey;
 }
 
-#login-panel .header {
-    position: absolute;
-    top: 20px; left: -8px; right: -8px;
-    height: $euca-login-panel-header-height;
-    border-radius: 4px;
-    box-shadow: 0 1px 6px rgba(0, 65, 94, 0.7);
-    padding: 8px 0 0 20px;
-    color: $euca-darkblue;
-    background-color: $euca-extralightblue;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: bold;
+#eucalyptus {
+    width: 500px;
+    height: 280px;
+    padding: 0;
+}
+
+#aws {
+    width: 500px;
+    height: 280px;
+    padding: 0;
 }
 
 #login-panel label {
@@ -55,11 +50,15 @@ $euca-login-panel-header-height: 36px;
 #euca-login-button.button {
     background-color: $euca-green;
     border-color: darken($euca-green, 20%);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #aws-login-button.button {
     background-color: $aws-orange;
     border-color: darken($aws-orange, 20%);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 
@@ -81,7 +80,7 @@ $euca-login-panel-header-height: 36px;
     #login-panel {
         border-radius: 0;
         box-shadow: none;
-        padding-top: $euca-login-panel-header-height + 10px;
+        padding: 10px;
     }
     #login-panel .header {
         border-radius: 0;
