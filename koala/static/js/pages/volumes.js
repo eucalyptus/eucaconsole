@@ -37,7 +37,7 @@ angular.module('VolumesPage', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
-                results.forEach(function (item) {
+                $scope.items.forEach(function (item) {
                     if (item['transitional']) {
                         transitionalCount += 1;
                     }

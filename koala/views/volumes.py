@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
+from urllib import urlencode
 import time
 
 import simplejson as json
@@ -27,7 +28,7 @@ class VolumesView(LandingPageView):
         self.items = self.get_items()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
-        self.json_items_endpoint = self.request.route_url('snapshots_json')
+        self.json_items_endpoint = self.get_json_endpoint()
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -40,7 +41,6 @@ class VolumesView(LandingPageView):
 
     @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
     def volumes_landing(self):
-        json_items_endpoint = self.request.route_url('volumes_json')
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         more_filter_keys = ['attach_status', 'id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
         # filter_keys are passed to client-side filtering in search box
@@ -49,7 +49,7 @@ class VolumesView(LandingPageView):
             filter_fields=self.get_filter_fields(),
             sort_keys=self.get_sort_keys(),
             filter_keys=filter_keys,
-            json_items_endpoint=json_items_endpoint,
+            json_items_endpoint=self.json_items_endpoint,
         ))
         self.render_dict.update(dict(
             attach_form=self.attach_form,
@@ -62,7 +62,8 @@ class VolumesView(LandingPageView):
     def volumes_json(self):
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
-        for volume in self.items:
+        filtered_items = self.filter_items(self.items)
+        for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
             volumes.append(dict(
@@ -98,7 +99,6 @@ class VolumesView(LandingPageView):
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
-
 
     @view_config(route_name='volumes_attach', request_method='POST')
     def volumes_attach(self):
@@ -146,6 +146,12 @@ class VolumesView(LandingPageView):
             return volumes_list[0] if volumes_list else None
         return None
 
+    def get_json_endpoint(self):
+        return '{0}{1}'.format(
+            self.request.route_url('volumes_json'),
+            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
+        )
+
     def get_items(self):
         return self.conn.get_all_volumes() if self.conn else []
 
@@ -158,6 +164,27 @@ class VolumesView(LandingPageView):
             LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
         ]
 
+    def filter_items(self, items):
+        """Filter items based on filter fields form"""
+        ignored_filters = ['filter', 'display']
+        filtered_params = [param for param in self.request.params.keys() if param not in ignored_filters]
+        if not filtered_params:
+            return items
+        filtered_items = []
+        filters = []
+        for filter_field in self.get_filter_fields():
+            value = self.request.params.get(filter_field.key)
+            if value:
+                filters.append((filter_field.key, value))
+        for item in items:
+            matchedkey_count = 0
+            for fkey, fval in filters:
+                if fval and hasattr(item, fkey) and getattr(item, fkey, None) == fval:
+                    matchedkey_count += 1
+            if matchedkey_count == len(filters):
+                filtered_items.append(item)
+        return filtered_items
+
     def get_redirect_location(self):
         display_type = self.request.params.get('display', self.display_type)
         return '{}?display={}'.format(self.request.route_url('volumes'), display_type)
@@ -169,7 +196,7 @@ class VolumesView(LandingPageView):
             dict(key='-create_time', name=_(u'Create time')),
             dict(key='name', name=_(u'Name')),
             dict(key='status', name=_(u'Status')),
-            dict(key='attach_status', name=_(u'Attach Status')),
+            dict(key='attach_status', name=_(u'Attach status')),
             dict(key='zone', name=_(u'Availability zone')),
         ]
 
