@@ -25,7 +25,6 @@ class SecurityGroupsView(LandingPageView):
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
-        self.json_items_endpoint = self.request.route_url('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             delete_form=self.delete_form,
@@ -42,12 +41,13 @@ class SecurityGroupsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
             dict(key='description', name=_(u'Description')),
         ]
+        json_items_endpoint = self.request.route_url('securitygroups_json')
         self.render_dict.update(dict(
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.json_items_endpoint,
+            json_items_endpoint=json_items_endpoint,
         ))
         return self.render_dict
 
