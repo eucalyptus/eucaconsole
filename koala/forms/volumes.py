@@ -128,9 +128,10 @@ class AttachForm(BaseSecureForm):
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
                 choices.append((instance.id, vol_name))
-        if len(choices) == 1:
+        if self.volume and len(choices) == 1:
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.instance_id.choices = choices
+
 
 class DetachForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""

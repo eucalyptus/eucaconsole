@@ -14,6 +14,13 @@ angular.module('VolumesPage', [])
             $scope.volumeID = volume_id;
             modal.foundation('reveal', 'open');
         };
+        $scope.initChosenSelector = function () {
+            // Instance choices in "Attach to instance" modal dialog
+            $('#attach-volume-modal').on('open', function() {
+                $('#instance_id').chosen({'width': '75%'});
+            });
+        };
+        $scope.initChosenSelector();
     })
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
         $scope.items = [];
