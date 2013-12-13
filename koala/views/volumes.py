@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
+from urllib import urlencode
 import time
 
 import simplejson as json
@@ -19,53 +20,52 @@ from ..views import LandingPageView, TaggedItemView, BaseView
 
 
 class VolumesView(LandingPageView):
+    VIEW_TEMPLATE = '../templates/volumes/volumes.pt'
+
     def __init__(self, request):
         super(VolumesView, self).__init__(request)
+        self.conn = self.get_connection()
         self.items = self.get_items()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
-
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_volumes() if conn else []
-
-    @view_config(route_name='volumes', renderer='../templates/volumes/volumes.pt')
-    def volumes_landing(self):
-        json_items_endpoint = self.request.route_url('volumes_json')
-        status_choices = sorted(set(item.status for item in self.items))
-        zone_choices = sorted(set(item.zone for item in self.items))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        self.filter_fields = [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
-            # LandingPageFilter(key='tags', name='Tags'),
-        ]
-        more_filter_keys = ['attach_status', 'id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
-        # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
-        # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='-create_time', name=_(u'Create time')),
-            dict(key='name', name=_(u'Name')),
-            dict(key='status', name=_(u'Status')),
-            dict(key='attach_status', name=_(u'Attach Status')),
-            dict(key='zone', name=_(u'Availability zone')),
-        ]
-
-        return dict(
+        self.json_items_endpoint = self.get_json_endpoint()
+        self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
+        self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
+        self.location = self.get_redirect_location()
+        self.render_dict = dict(
             display_type=self.display_type,
-            filter_fields=self.filter_fields,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
         )
+
+    @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
+    def volumes_landing(self):
+        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
+        filter_keys = [
+            'attach_status', 'create_time', 'id', 'instance', 'name', 'size', 'snapshot_id', 'status', 'tags', 'zone'
+        ]
+        # filter_keys are passed to client-side filtering in search box
+        self.render_dict.update(dict(
+            filter_fields=self.get_filter_fields(),
+            sort_keys=self.get_sort_keys(),
+            filter_keys=filter_keys,
+            json_items_endpoint=self.json_items_endpoint,
+            attach_form=self.attach_form,
+            detach_form=self.detach_form,
+            delete_form=self.delete_form,
+            instances_by_zone=json.dumps(self.get_instances_by_zone()),
+        ))
+        return self.render_dict
 
     @view_config(route_name='volumes_json', renderer='json', request_method='GET')
     def volumes_json(self):
         volumes = []
-        for volume in self.items:
+        transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
+        filtered_items = self.filter_items(self.items)
+        for volume in filtered_items:
+            status = volume.status
+            attach_status = volume.attach_data.status
             volumes.append(dict(
                 create_time=volume.create_time,
                 id=volume.id,
@@ -73,12 +73,141 @@ class VolumesView(LandingPageView):
                 name=volume.tags.get('Name', volume.id),
                 snapshots=len(volume.snapshots()),
                 size=volume.size,
-                status=volume.status,
+                status=status,
                 attach_status=volume.attach_data.status,
                 zone=volume.zone,
                 tags=TaggedItemView.get_tags_display(volume.tags),
+                transitional=status in transitional_states or attach_status in transitional_states,
             ))
         return dict(results=volumes)
+
+    @view_config(route_name='volumes_delete', request_method='POST')
+    def volumes_delete(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if volume and self.delete_form.validate():
+            try:
+                volume.delete()
+                time.sleep(1)
+                msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message.split('remoteDevice')[0]
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='volumes_attach', request_method='POST')
+    def volumes_attach(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if volume and self.attach_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            device = self.request.params.get('device')
+            try:
+                volume.attach(instance_id, device)
+                time.sleep(1)
+                msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            import ipdb; ipdb.set_trace()
+            msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='volumes_detach', request_method='POST')
+    def volumes_detach(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if self.detach_form.validate():
+            try:
+                volume.detach()
+                time.sleep(1)
+                msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    def get_volume(self, volume_id):
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
+
+    def get_json_endpoint(self):
+        return '{0}{1}'.format(
+            self.request.route_url('volumes_json'),
+            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
+        )
+
+    def get_items(self):
+        return self.conn.get_all_volumes() if self.conn else []
+
+    def get_instances_by_zone(self):
+        instances = self.conn.get_only_instances()
+        zones = set(instance.placement for instance in instances)
+        instances_by_zone = {}
+        for zone in zones:
+            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+        return instances_by_zone
+
+    def get_filter_fields(self):
+        """filter_keys are passed to client-side filtering in search box"""
+        status_choices = sorted(set(item.status for item in self.items))
+        zone_choices = sorted(set(item.zone for item in self.items))
+        return [
+            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
+        ]
+
+    def filter_items(self, items):
+        """Filter items based on filter fields form"""
+        ignored_filters = ['filter', 'display']
+        filtered_params = [param for param in self.request.params.keys() if param not in ignored_filters]
+        if not filtered_params:
+            return items
+        filtered_items = []
+        filters = []
+        for filter_field in self.get_filter_fields():
+            value = self.request.params.get(filter_field.key)
+            if value:
+                filters.append((filter_field.key, value))
+        for item in items:
+            matchedkey_count = 0
+            for fkey, fval in filters:
+                if fval and hasattr(item, fkey) and getattr(item, fkey, None) == fval:
+                    matchedkey_count += 1
+            if matchedkey_count == len(filters):
+                filtered_items.append(item)
+        return filtered_items
+
+    def get_redirect_location(self):
+        display_type = self.request.params.get('display', self.display_type)
+        return '{}?display={}'.format(self.request.route_url('volumes'), display_type)
+
+    @staticmethod
+    def get_sort_keys():
+        """sort_keys are passed to sorting drop-down on landing page"""
+        return [
+            dict(key='-create_time', name=_(u'Create time')),
+            dict(key='name', name=_(u'Name')),
+            dict(key='status', name=_(u'Status')),
+            dict(key='attach_status', name=_(u'Attach status')),
+            dict(key='zone', name=_(u'Availability zone')),
+        ]
 
 
 class VolumeView(TaggedItemView):

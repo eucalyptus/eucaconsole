@@ -288,11 +288,13 @@ class InstanceVolumesView(BaseView):
     @view_config(route_name='instance_volumes_json', renderer='json', request_method='GET')
     def instance_volumes_json(self):
         volumes = []
-        transitional_states = ['attaching', 'detaching'];
+        transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
         for volume in self.get_attached_volumes():
+            status = volume.status
+            attach_status = volume.attach_data.status
+            is_transitional = status in transitional_states or attach_status in transitional_states
             detach_form_action = self.request.route_url(
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
-            status = volume.attach_data.status
             volumes.append(dict(
                 id=volume.id,
                 name=volume.tags.get('Name', ''),
@@ -300,8 +302,9 @@ class InstanceVolumesView(BaseView):
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
                 status=status,
+                attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,
-                transitional=status in transitional_states,
+                transitional=is_transitional,
             ))
         return dict(results=volumes)
 

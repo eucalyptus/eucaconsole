@@ -65,6 +65,9 @@ urls = [
     # Landing page
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    Route(name='volumes_delete', pattern='/volumes/delete'),
+    Route(name='volumes_attach', pattern='/volumes/attach'),
+    Route(name='volumes_detach', pattern='/volumes/detach'),
     # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
