@@ -21,7 +21,7 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
                 </ul>
             </div>

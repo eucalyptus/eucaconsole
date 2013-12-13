@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="VolumesPage">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Volumes
         </h3>
@@ -17,7 +17,13 @@
                 <a class="button" i18n:translate=""
                    href="${request.route_url('volume_view', id='new')}">Create new volume</a>
             </div>
-            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete volume</a></li>
+                </ul>
+            </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
@@ -52,6 +58,7 @@
                 <div ng-show="item.status || item.attach_status"
                      class="footer status {{ item.attach_status || item.status }}">
                     {{ item.attach_status || item.status }}
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
@@ -80,7 +87,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/volumes.js')}"></script>
 </div>
 
 </metal:block>

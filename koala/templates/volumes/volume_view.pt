@@ -65,10 +65,10 @@
                                       data-dropdown="volume-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="volume-state-dropdown" class="f-dropdown">
                                     <li ng-show="volumeStatus == 'available'">
-                                        <a href="#" data-reveal-id="attach-modal" i18n:translate="">Attach to instance</a>
+                                        <a href="#" data-reveal-id="attach-volume-modal" i18n:translate="">Attach to instance</a>
                                     </li>
                                     <li ng-show="volumeStatus == 'in-use'">
-                                        <a href="#" data-reveal-id="detach-modal" i18n:translate="">Detach from instance</a>
+                                        <a href="#" data-reveal-id="detach-volume-modal" i18n:translate="">Detach from instance</a>
                                     </li>
                                 </ul>
                             </span>
@@ -82,10 +82,34 @@
                             <a href="${request.route_url('instance_view', id=instance_id)}">${instance_name}</a>
                         </div>
                     </div>
-                    ${panel('form_field', field=volume_form['name'], **html_attrs)}
-                    ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
-                    ${panel('form_field', field=volume_form['size'], **html_attrs)}
-                    ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns field inline">${volume.tags.get('Name')}</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
+                        <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
+                        <div class="small-8 columns field inline">${volume.snapshot_id}</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Volume size</label></div>
+                        <div class="small-8 columns field inline">${volume.size} GB</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="small-8 columns field inline">${volume.zone}</div>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags)}
                     <hr ng-show="volumeStatus == 'available'" />

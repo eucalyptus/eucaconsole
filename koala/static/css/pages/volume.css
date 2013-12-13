@@ -62,9 +62,11 @@
 
 .status.in-use { color: darkorange; }
 
-#volume-status-label { position: relative; top: 0; }
+#volume-status-label { position: relative; top: 3px; }
 
 .reveal-modal #device { width: 10rem; }
+
+.panel .tiny.secondary.button.dropdown { position: relative; top: -3px; margin-bottom: 10px; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }
