@@ -11,7 +11,7 @@ $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
 $tile-label-padding: 28px;
-$grid-dropdown-width: 190px;
+$grid-dropdown-width: 160px;
 $gridwrapper-table-width: 98%;
 
 
@@ -80,6 +80,11 @@ $gridwrapper-table-width: 98%;
         height: $tile-row-height;
         padding: 4px 4px 4px 10px;
         color: white;
+        .dots {
+            position: absolute;
+            width: 32px; height: 10px;
+            top: 6px; right: 8px;
+        }
     }
     .f-dropdown::before, .f-dropdown::after {
         left: $grid-dropdown-width - 22px;

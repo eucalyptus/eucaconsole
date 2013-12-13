@@ -51,13 +51,20 @@ class VolumesView(LandingPageView):
             filter_keys=filter_keys,
             json_items_endpoint=json_items_endpoint,
         ))
+        self.render_dict.update(dict(
+            attach_form=self.attach_form,
+            detach_form=self.detach_form,
+            delete_form=self.delete_form,
+        ))
         return self.render_dict
 
     @view_config(route_name='volumes_json', renderer='json', request_method='GET')
     def volumes_json(self):
         volumes = []
-        transitional_states = ['attaching', 'detaching']
+        transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
         for volume in self.items:
+            status = volume.status
+            attach_status = volume.attach_data.status
             volumes.append(dict(
                 create_time=volume.create_time,
                 id=volume.id,
@@ -65,11 +72,11 @@ class VolumesView(LandingPageView):
                 name=volume.tags.get('Name', volume.id),
                 snapshots=len(volume.snapshots()),
                 size=volume.size,
-                status=volume.status,
+                status=status,
                 attach_status=volume.attach_data.status,
                 zone=volume.zone,
                 tags=TaggedItemView.get_tags_display(volume.tags),
-                transitional=volume.status in transitional_states,
+                transitional=status in transitional_states or attach_status in transitional_states,
             ))
         return dict(results=volumes)
 

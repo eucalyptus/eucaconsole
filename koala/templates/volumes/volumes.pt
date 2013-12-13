@@ -5,10 +5,12 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="VolumesPage">
+    <div class="row" id="contentwrap" ng-app="VolumesPage" ng-controller="VolumesCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Volumes
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
@@ -20,8 +22,12 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
-                    <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete volume</a></li>
+                    <li ng-show="item.status !== 'deleted'">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
+                    </li>
+                    <li ng-show="item.status === 'available'">
+                        <a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete volume</a>
+                    </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -82,6 +88,9 @@
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('volume_dialogs', landingpage=True,
+                attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
     </div>
 </div>
 

@@ -10,6 +10,10 @@
         <form method="post" action="${action}"
               id="attach-form" data-abide="">
             ${structure:attach_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
             ${panel('form_field', field=attach_form.instance_id)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="row">
@@ -37,6 +41,10 @@
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
             <div>&nbsp;</div>
             <div class="row">
                 <div class="small-3 columns">&nbsp;</div>
@@ -53,9 +61,13 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete volume</h3>
         <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
-            <b>${volume_name}</b>?</p>
+            <b>${volume_name if volume_name else '{{ volumeID }}'}</b>?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
             <button type="submit" class="button" i18n:translate="">Yes, delete</button>
         </form>
         <a class="close-reveal-modal">&#215;</a>
