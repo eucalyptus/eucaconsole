@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="InstancesPage" ng-controller="InstancesCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Instances
         </h3>
@@ -76,7 +76,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/instances.js')}"></script>
 </div>
 
 </metal:block>

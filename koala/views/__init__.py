@@ -4,6 +4,7 @@ Core views
 
 """
 import simplejson as json
+from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError
@@ -132,6 +133,12 @@ class LandingPageView(BaseView):
             if matchedkey_count == len(filters):
                 filtered_items.append(item)
         return filtered_items
+
+    def get_json_endpoint(self, route):
+        return '{0}{1}'.format(
+            self.request.route_url(route),
+            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
+        )
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

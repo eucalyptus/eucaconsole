@@ -28,7 +28,7 @@ class VolumesView(LandingPageView):
         self.items = self.get_items()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
-        self.json_items_endpoint = self.get_json_endpoint()
+        self.json_items_endpoint = self.get_json_endpoint('volumes_json')
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -117,7 +117,6 @@ class VolumesView(LandingPageView):
                 msg = err.message
                 queue = Notification.ERROR
         else:
-            import ipdb; ipdb.set_trace()
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
@@ -148,12 +147,6 @@ class VolumesView(LandingPageView):
             return volumes_list[0] if volumes_list else None
         return None
 
-    def get_json_endpoint(self):
-        return '{0}{1}'.format(
-            self.request.route_url('volumes_json'),
-            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
-        )
-
     def get_items(self):
         return self.conn.get_all_volumes() if self.conn else []
 
@@ -167,7 +160,7 @@ class VolumesView(LandingPageView):
             return instances_by_zone
 
     def get_filter_fields(self):
-        """filter_keys are passed to client-side filtering in search box"""
+        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
         status_choices = sorted(set(item.status for item in self.items))
         zone_choices = sorted(set(item.zone for item in self.items))
         return [

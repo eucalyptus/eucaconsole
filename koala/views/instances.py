@@ -22,26 +22,23 @@ from ..views import BaseView, LandingPageView, TaggedItemView
 class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
+        self.conn = self.get_connection()
         self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
+        self.filter_fields = self.get_filter_fields()
+        self.json_items_endpoint = self.get_json_endpoint('instances_json')
+        self.render_dict = dict(
+            display_type=self.display_type,
+            prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
+        )
 
     def get_items(self):
-        conn = self.get_connection()
-        return conn.get_only_instances() if conn else []
+        return self.conn.get_only_instances() if self.conn else []
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
-        json_items_endpoint = self.request.route_url('instances_json')
-        status_choices = sorted(set(instance.state for instance in self.items))
-        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
-        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        self.filter_fields = [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
-            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
-        ]
         more_filter_keys = ['id', 'name', 'ip_address', 'key_name', 'security_groups', 'root_device', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
@@ -50,21 +47,19 @@ class InstancesView(LandingPageView):
             dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
             dict(key='name', name=_(u'Instance name')),
         ]
-
-        return dict(
-            display_type=self.display_type,
+        self.render_dict.update(dict(
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
-            prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
-        )
+            json_items_endpoint=self.json_items_endpoint,
+        ))
+        return self.render_dict
 
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
         instances = []
-        for instance in self.items:
+        filtered_items = self.filter_items(self.items)
+        for instance in filtered_items:
             instances.append(dict(
                 id=instance.id,
                 instance_type=instance.instance_type,
@@ -78,6 +73,17 @@ class InstancesView(LandingPageView):
                 tags=TaggedItemView.get_tags_display(instance.tags)
             ))
         return dict(results=instances)
+
+    def get_filter_fields(self):
+        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
+        status_choices = sorted(set(instance.state for instance in self.items))
+        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
+        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
+        return [
+            LandingPageFilter(key='state', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
+            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
+        ]
 
 
 class InstanceView(TaggedItemView):
