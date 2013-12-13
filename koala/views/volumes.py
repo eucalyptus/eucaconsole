@@ -42,16 +42,15 @@ class VolumesView(LandingPageView):
     @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
     def volumes_landing(self):
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        more_filter_keys = ['attach_status', 'id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
+        filter_keys = [
+            'attach_status', 'create_time', 'id', 'instance', 'name', 'size', 'snapshot_id', 'status', 'tags', 'zone'
+        ]
         # filter_keys are passed to client-side filtering in search box
-        filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
         self.render_dict.update(dict(
             filter_fields=self.get_filter_fields(),
             sort_keys=self.get_sort_keys(),
             filter_keys=filter_keys,
             json_items_endpoint=self.json_items_endpoint,
-        ))
-        self.render_dict.update(dict(
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
