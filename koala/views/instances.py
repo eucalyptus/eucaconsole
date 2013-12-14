@@ -214,7 +214,6 @@ class InstanceView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.instance = self.get_instance()
-        self.security_groups = self.get_security_groups(self.instance.id) if self.instance else []
         self.image = self.get_image()
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
@@ -234,7 +233,6 @@ class InstanceView(TaggedItemView):
             instance_name=self.instance_name,
             image=self.image,
             scaling_group=self.scaling_group,
-            security_groups=self.security_groups,
             instance_form=self.instance_form,
             instance_launch_time=self.launch_time,
             start_form=self.start_form,
@@ -348,16 +346,12 @@ class InstanceView(TaggedItemView):
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
         if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
-        return None
-
-    def get_security_groups(self, instance_id):
-        if instance_id:
             reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
             reservation = reservations_list[0] if reservations_list else None
             if reservation:
-                return reservation.groups
+                instance = reservation.instances[0]
+                instance.groups = reservation.groups
+                return instance
         return None
 
     def get_launch_time(self):
