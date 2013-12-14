@@ -1,12 +1,21 @@
 <!--! Modal dialogs for Instances landing and detail page -->
 <div tal:omit-tag="">
     <div id="change-state-dialogs">
-        <div id="reboot-instance-modal" class="reveal-modal small" data-reveal="">
+        <div id="reboot-instance-modal" class="reveal-modal small" data-reveal=""
+             tal:define="landingpage_action request.route_url('instances_reboot');
+                         detailpage_action request.route_url('instance_reboot', id=instance.id) if instance else '';
+                         action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Reboot instance</h3>
             <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
-            <p><span i18n:translate="">Are you sure you want to reboot instance</span> ${instance.id}?</p>
-            <form method="post" action="${request.route_url('instance_reboot', id=instance.id)}" id="reboot-form">
+            <p><span i18n:translate="">Are you sure you want to reboot instance</span>
+               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+            </p>
+            <form method="post" action="${action}" id="reboot-form">
                 ${structure:reboot_form['csrf_token']}
+                <div tal:condition="landingpage" tal:omit-tag="">
+                    <input type="hidden" name="display" value="{{ displayType }}" />
+                    <input type="hidden" name="instance_id" value="{{ instanceID }}" />
+                </div>
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
@@ -16,13 +25,20 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="start-instance-modal" class="reveal-modal small" data-reveal="">
+        <div id="start-instance-modal" class="reveal-modal small" data-reveal=""
+             tal:define="landingpage_action request.route_url('instances_start');
+                         detailpage_action request.route_url('instance_start', id=instance.id) if instance else '';
+                         action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Start instance</h3>
             <p><span i18n:translate="">Are you sure you want to start instance</span>
-                <b>${instance.id}?</b>
+               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
             </p>
-            <form method="post" action="${request.route_url('instance_start', id=instance.id)}" id="start-form">
+            <form method="post" action="${action}" id="start-form">
                 ${structure:start_form['csrf_token']}
+                <div tal:condition="landingpage" tal:omit-tag="">
+                    <input type="hidden" name="display" value="{{ displayType }}" />
+                    <input type="hidden" name="instance_id" value="{{ instanceID }}" />
+                </div>
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
@@ -32,13 +48,20 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="stop-instance-modal" class="reveal-modal small" data-reveal="">
+        <div id="stop-instance-modal" class="reveal-modal small" data-reveal=""
+             tal:define="landingpage_action request.route_url('instances_stop');
+                         detailpage_action request.route_url('instance_stop', id=instance.id) if instance else '';
+                         action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Stop instance</h3>
             <p><span i18n:translate="">Are you sure you want to stop instance</span>
-                <b>${instance.id}?</b>
+               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
             </p>
-            <form method="post" action="${request.route_url('instance_stop', id=instance.id)}" id="stop-form">
+            <form method="post" action="${action}" id="stop-form">
                 ${structure:stop_form['csrf_token']}
+                <div tal:condition="landingpage" tal:omit-tag="">
+                    <input type="hidden" name="display" value="{{ displayType }}" />
+                    <input type="hidden" name="instance_id" value="{{ instanceID }}" />
+                </div>
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
@@ -48,13 +71,20 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal=""
+             tal:define="landingpage_action request.route_url('instances_terminate');
+                         detailpage_action request.route_url('instance_terminate', id=instance.id) if instance else '';
+                         action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Terminate instance</h3>
             <p><span i18n:translate="">Are you sure you want to terminate instance</span>
-               <b>${instance.id}?</b>
+               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
             </p>
-            <form method="post" action="${request.route_url('instance_terminate', id=instance.id)}" id="terminate-form">
+            <form method="post" action="${action}" id="terminate-form">
                 ${structure:terminate_form['csrf_token']}
+                <div tal:condition="landingpage" tal:omit-tag="">
+                    <input type="hidden" name="display" value="{{ displayType }}" />
+                    <input type="hidden" name="instance_id" value="{{ instanceID }}" />
+                </div>
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">

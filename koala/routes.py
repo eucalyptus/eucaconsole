@@ -39,13 +39,17 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_start', pattern='/instances/start'),
+    Route(name='instances_stop', pattern='/instances/stop'),
+    Route(name='instances_reboot', pattern='/instances/reboot'),
+    Route(name='instances_terminate', pattern='/instances/terminate'),
     # Detail page
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
-    Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_start', pattern='/instances/{id}/start'),
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
+    Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),

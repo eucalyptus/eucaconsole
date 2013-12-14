@@ -32,7 +32,7 @@ class VolumesView(LandingPageView):
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
-        self.location = self.get_redirect_location()
+        self.location = self.get_redirect_location('volumes')
         self.filter_fields = self.get_filter_fields()
         self.render_dict = dict(
             display_type=self.display_type,
@@ -168,10 +168,6 @@ class VolumesView(LandingPageView):
             LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
         ]
 
-    def get_redirect_location(self):
-        display_type = self.request.params.get('display', self.display_type)
-        return '{}?display={}'.format(self.request.route_url('volumes'), display_type)
-
     @staticmethod
     def get_sort_keys():
         """sort_keys are passed to sorting drop-down on landing page"""
@@ -266,6 +262,8 @@ class VolumeView(TaggedItemView):
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('volumes')
+                return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')

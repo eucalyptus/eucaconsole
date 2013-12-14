@@ -19,7 +19,26 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="">Launch New Instance</a>
             </div>
-            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag=""></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li>
+                        <a href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
+                    </li>
+                    <li ng-show="!item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
+                    </li>
+                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('start', item)">Start instance</a>
+                    </li>
+                    <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop instance</a>
+                    </li>
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate instance</a>
+                    </li>
+                </ul>
+            </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">ID</span>
@@ -54,6 +73,13 @@
                     {{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}
                 </div>
             </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.status"
+                     class="footer status {{ item.status.replace('-', '') }}">
+                    {{ item.status }}
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                </div>
+            </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
                 <th>ID</th>
                 <th i18n:translate="">Root Device</th>
@@ -71,6 +97,9 @@
                 <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form,
+                reboot_form=reboot_form, terminate_form=terminate_form)}
     </div>
 </div>
 

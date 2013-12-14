@@ -70,6 +70,6 @@
 
 .tile .status.stopping { background-color: #ff9999; }
 
-.tile .status.terminated { background-color: #999999; }
+.tile .status.terminated { background-color: gray; }
 
-.tile .status.terminating { background-color: lightgrey; }
+.tile .status.shuttingdown { background-color: lightgrey; }
