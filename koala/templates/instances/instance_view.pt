@@ -102,7 +102,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
-                            <div tal:repeat="group instance.groups">${group.name}</div>
+                            <div tal:repeat="group security_groups">${group.name}</div>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">

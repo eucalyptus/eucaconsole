@@ -62,7 +62,7 @@
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups || 'default' }}
+                    {{ item.security_groups }}
                 </div>
                 <div ng-show="item.key_name">
                     <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
