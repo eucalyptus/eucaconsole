@@ -15,7 +15,7 @@ from pyramid.view import view_config
 from ..forms.images import ImageForm 
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView
+from ..views import LandingPageView,  TaggedItemView
 
 
 class ImagesView(LandingPageView):
@@ -97,7 +97,7 @@ class ImagesView(LandingPageView):
         return dict(results=images)
 
 
-class ImageView(BaseView):
+class ImageView(TaggedItemView):
     """Views for single Image"""
     TEMPLATE = '../templates/images/image_view.pt'
 
@@ -109,6 +109,7 @@ class ImageView(BaseView):
         self.render_dict = dict(
             image=self.image,
             image_form=self.image_form,
+            image_tags=None,
         )
 
     def get_image(self):
@@ -120,6 +121,17 @@ class ImageView(BaseView):
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
-
         return self.render_dict
  
+    @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)
+    def image_update(self):
+        if self.image_form.validate():
+            self.update_tags()
+
+            location = self.request.route_url('image_view', id=self.image.id)
+            msg = _(u'Successfully modified image')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return self.render_dict
+

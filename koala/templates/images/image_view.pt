@@ -23,7 +23,7 @@
                         Error 
                     </span>
                 </h6>
-                <form action="${request.route_url('images')}" method="post" data-abide="abide"> 
+                <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide"> 
                      ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
 		        <div class="row controls-wrapper readonly">
