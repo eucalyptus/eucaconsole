@@ -200,8 +200,8 @@ class VolumeView(TaggedItemView):
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
             self.inst_name_tag = instance.tags.get('Name', '') if instance else None
-            self.instance_name = '{}{}'.format(
-                instance.id, ' ({})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
+            self.instance_name = '{0}{1}'.format(
+                instance.id, ' ({0})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
@@ -335,8 +335,8 @@ class VolumeView(TaggedItemView):
     def get_volume_name(self):
         if self.volume:
             vol_name_tag = self.volume.tags.get('Name', '')
-            volume_name = '{}{}'.format(
-                self.volume.id, ' ({})'.format(vol_name_tag) if vol_name_tag else '')
+            volume_name = '{0}{1}'.format(
+                self.volume.id, ' ({0})'.format(vol_name_tag) if vol_name_tag else '')
             return volume_name
         return None
 

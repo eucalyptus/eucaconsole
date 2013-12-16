@@ -50,8 +50,8 @@ class SnapshotForm(BaseSecureForm):
         for volume in self.conn.get_all_volumes():
             value = volume.id
             vol_name_tag = volume.tags.get('Name', '')
-            label = '{}{}'.format(
-                volume.id, ' ({})'.format(vol_name_tag) if vol_name_tag else '')
+            label = '{0}{1}'.format(
+                volume.id, ' ({0})'.format(vol_name_tag) if vol_name_tag else '')
             choices.append((value, label))
         # Need to insert current choice since the source volume may have been removed after this snapshot was created
         if self.snapshot and self.snapshot.volume_id:
