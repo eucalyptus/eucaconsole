@@ -75,6 +75,7 @@ class InstancesView(LandingPageView):
             is_transitional = instance.state in transitional_states
             instances.append(dict(
                 id=instance.id,
+                name=instance.tags.get('Name', instance.id),
                 instance_type=instance.instance_type,
                 ip_address=instance.ip_address,
                 launch_time=instance.launch_time,

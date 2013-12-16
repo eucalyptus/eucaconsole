@@ -18,7 +18,11 @@
 .tile .content div { margin-bottom: 2px; margin-left: 28px; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
-.tile .footer .dots { position: absolute; width: 32px; height: 10px; top: 6px; right: 8px; }
+.tile .footer.has-progress { padding: 0 0 0 0; }
+.tile .footer .completed { padding: 4px 0 4px 10px; }
+.tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
+.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
 .tile .f-dropdown::before, .tile .f-dropdown::after { left: 138px; }
 
 .gridwrapper .dropdown.button.tiny { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
@@ -73,15 +77,8 @@
 
 .reveal-modal #device { width: 10rem; }
 
-.panel .tiny.secondary.button.dropdown { position: relative; top: -3px; margin-bottom: 10px; }
-
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
 .tile .header .button.dropdown { height: 30px; color: black; }
-.tile .footer { padding: 0 0 0 0; }
-.tile .footer .completed { padding: 4px 0 4px 8px; height: 24px; }
-.tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
-.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
-.tile .footer .progress .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
 
 .status.pending { background-color: #97eb00; }
 
