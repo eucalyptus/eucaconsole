@@ -110,7 +110,6 @@ class ImageView(TaggedItemView):
         self.render_dict = dict(
             image=self.image,
             image_form=self.image_form,
-            image_tags=None,
         )
 
     def get_image(self):
