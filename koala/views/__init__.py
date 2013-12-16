@@ -4,6 +4,7 @@ Core views
 
 """
 import simplejson as json
+from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError
@@ -110,6 +111,38 @@ class LandingPageView(BaseView):
         self.initial_sort_key = ''
         self.items = []
         self.prefix = '/'
+
+    def filter_items(self, items):
+        """Filter items based on filter fields form"""
+        ignored_filters = ['filter', 'display']
+        filtered_params = [param for param in self.request.params.keys() if param not in ignored_filters]
+        if not filtered_params:
+            return items
+        filtered_items = []
+        filters = []
+        for filter_field in self.filter_fields:
+            value = self.request.params.get(filter_field.key)
+            if value:
+                filters.append((filter_field.key, value))
+        for item in items:
+            matchedkey_count = 0
+            for fkey, fval in filters:
+                if fval and hasattr(item, fkey) and getattr(item, fkey, None) == fval:
+                    matchedkey_count += 1
+            # Add to filtered items if *all* conditions match
+            if matchedkey_count == len(filters):
+                filtered_items.append(item)
+        return filtered_items
+
+    def get_json_endpoint(self, route):
+        return '{0}{1}'.format(
+            self.request.route_url(route),
+            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
+        )
+
+    def get_redirect_location(self, route):
+        display_type = self.request.params.get('display', self.display_type)
+        return '{}?display={}'.format(self.request.route_url(route), display_type)
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

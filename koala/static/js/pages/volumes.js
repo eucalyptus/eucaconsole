@@ -1,17 +1,37 @@
 /**
- * @fileOverview Snapshots landing page JS
+ * @fileOverview Volumes landing page JS
  * @requires AngularJS, jQuery
  *
  */
 
-angular.module('SnapshotsPage', [])
-    .controller('SnapshotsCtrl', function ($scope) {
-        $scope.snapshotID = '';
+angular.module('VolumesPage', [])
+    .controller('VolumesCtrl', function ($scope) {
+        $scope.volumeID = '';
+        $scope.volumeZone = '';
+        $scope.instancesByZone = '';
         $scope.urlParams = $.url().param();
         $scope.displayType = $scope.urlParams['display'] || 'gridview';
-        $scope.revealModal = function (action, snapshot_id) {
-            var modal = $('#' + action + '-snapshot-modal');
-            $scope.snapshotID = snapshot_id;
+        $scope.initPage = function (instancesByZone) {
+            $scope.instancesByZone = instancesByZone;
+        };
+        $scope.revealModal = function (action, volume) {
+            var modal = $('#' + action + '-volume-modal'),
+                volumeZone = volume['zone'];
+            $scope.volumeID = volume['id'];
+            if (action === 'attach') {
+                // Set instance choices for attach to instance widget
+                modal.on('open', function() {
+                    var instanceSelect = $('#instance_id'),
+                        instances = $scope.instancesByZone[volumeZone],
+                        options = '';
+                    instances.forEach(function (instanceID) {
+                        options += '<option value="' + instanceID + '">' + instanceID + '</option>';
+                    });
+                    instanceSelect.html(options);
+                    instanceSelect.trigger('chosen:updated');
+                    instanceSelect.chosen({'width': '75%'});
+                });
+            }
             modal.foundation('reveal', 'open');
         };
     })
@@ -33,18 +53,17 @@ angular.module('SnapshotsPage', [])
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
-                var inProgressCount = 0;
+                var transitionalCount = 0;
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
-                results.forEach(function (item) {
-                    var progress = parseInt(item.progress.replace('%', ''), 10);
-                    if (progress < 100) {
-                        inProgressCount += 1;
+                $scope.items.forEach(function (item) {
+                    if (item['transitional']) {
+                        transitionalCount += 1;
                     }
                 });
-                // Auto-refresh snapshots if any of them are in progress
-                if (inProgressCount > 0) {
+                // Auto-refresh volumes if any of them are in progress
+                if (transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             });

@@ -53,6 +53,10 @@ class SnapshotForm(BaseSecureForm):
             label = '{}{}'.format(
                 volume.id, ' ({})'.format(vol_name_tag) if vol_name_tag else '')
             choices.append((value, label))
+        # Need to insert current choice since the source volume may have been removed after this snapshot was created
+        if self.snapshot and self.snapshot.volume_id:
+            vol_id = self.snapshot.volume_id
+            choices.append((vol_id, vol_id))
         self.volume_id.choices = sorted(choices)
 
 

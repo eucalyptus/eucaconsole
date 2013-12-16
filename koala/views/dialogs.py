@@ -21,11 +21,50 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 
 
 @panel_config('snapshot_dialogs', renderer='../templates/dialogs/snapshot_dialogs.pt')
-def snapshot_dialogs(context, request, snapshot=None, landingpage=False, delete_form=None):
+def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, delete_form=None):
     """ Modal dialogs for Snapshot landing and detail page."""
     return dict(
         snapshot=snapshot,
+        snapshot_name=snapshot_name,
         landingpage=landingpage,
         delete_form=delete_form,
     )
 
+
+@panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
+def instance_dialogs(context, request, instance=None, landingpage=False, start_form=None,
+                     stop_form=None, reboot_form=None, terminate_form=None):
+    """ Modal dialogs for Instance landing and detail page."""
+    return dict(
+        instance=instance,
+        landingpage=landingpage,
+        start_form=start_form,
+        stop_form=stop_form,
+        reboot_form=reboot_form,
+        terminate_form=terminate_form,
+    )
+
+
+@panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
+def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
+                   attach_form=None, detach_form=None, delete_form=None):
+    """ Modal dialogs for Volume landing and detail page."""
+    return dict(
+        volume=volume,
+        volume_name=volume_name,
+        instance_name=instance_name,
+        landingpage=landingpage,
+        attach_form=attach_form,
+        detach_form=detach_form,
+        delete_form=delete_form,
+    )
+
+
+@panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
+def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Security group landing and detail page."""
+    return dict(
+        security_group=security_group,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )

@@ -77,5 +77,24 @@ $button-border-width: 1px;
 $button-border-style: solid;
 
 // Tooltips
-$tooltip-padding: rem-calc(8);
+$tooltip-padding: rem-calc(5);
+
+// Mixins
+// Text overflow (e.g. for handling long resource names)
+@mixin ellipsis-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
+@mixin panel-tile-mixin {
+    background-color: white;
+    border: 1px solid $euca-lightgrey;
+    width: 180px; height: 140px;
+    .header .button.dropdown {
+        height: 30px;
+        color: black;
+    }
+}
 

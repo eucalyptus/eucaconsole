@@ -41,13 +41,17 @@ urls = [
     # Landing page
     Route(name='instances', pattern='/instances'),
     Route(name='instances_json', pattern='/instances/json'),
+    Route(name='instances_start', pattern='/instances/start'),
+    Route(name='instances_stop', pattern='/instances/stop'),
+    Route(name='instances_reboot', pattern='/instances/reboot'),
+    Route(name='instances_terminate', pattern='/instances/terminate'),
     # Detail page
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
-    Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_start', pattern='/instances/{id}/start'),
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
+    Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),
@@ -67,6 +71,9 @@ urls = [
     # Landing page
     Route(name='volumes', pattern='/volumes'),
     Route(name='volumes_json', pattern='/volumes/json'),
+    Route(name='volumes_delete', pattern='/volumes/delete'),
+    Route(name='volumes_attach', pattern='/volumes/attach'),
+    Route(name='volumes_detach', pattern='/volumes/detach'),
     # Detail page
     Route(name='volume_create', pattern='/volumes/create'),
     Route(name='volume_view', pattern='/volumes/{id}'),  # Pass id='new' to render Add Volume page
@@ -96,6 +103,7 @@ urls = [
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
     Route(name='securitygroups_json', pattern='/securitygroups/json'),
+    Route(name='securitygroups_delete', pattern='/securitygroups/delete'),
     # Detail page
     Route(name='securitygroup_create', pattern='/securitygroups/create'),
     Route(name='securitygroup_view', pattern='/securitygroups/{id}'),  # Pass id='new' to render Add SG page
@@ -109,6 +117,7 @@ urls = [
     Route(name='keypair_download', pattern='/keypairs/download'),
     Route(name='keypair_create', pattern='/keypairs/create'),
     Route(name='keypair_import', pattern='/keypairs/import'),
+    Route(name='keypair_delete', pattern='/keypairs/delete'),
     Route(name='keypair_view', pattern='/keypairs/{id}'),
 
     # IP Addresses #####

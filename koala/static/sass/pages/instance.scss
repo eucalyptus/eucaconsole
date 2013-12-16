@@ -54,13 +54,7 @@ form .row.controls-wrapper {
 
 // Instance volumes page
 .tile {
-    background-color: white;
-    border: 1px solid $euca-lightgrey;
-    width: 180px; height: 140px;
-    .header .button.dropdown {
-        height: 30px;
-        color: black;
-    }
+    @include panel-tile-mixin;
     .footer {
         &.attached { background-color: $volume-status-color-attached; }
         &.attaching { background-color: $volume-status-color-attaching; }

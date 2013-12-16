@@ -22,62 +22,189 @@ from ..views import BaseView, LandingPageView, TaggedItemView
 class InstancesView(LandingPageView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
+        self.conn = self.get_connection()
         self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
-
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_only_instances() if conn else []
+        self.filter_fields = self.get_filter_fields()
+        self.json_items_endpoint = self.get_json_endpoint('instances_json')
+        self.location = self.get_redirect_location('instances')
+        self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
+        self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
+        self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
+        self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            display_type=self.display_type,
+            prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
+            start_form=self.start_form,
+            stop_form=self.stop_form,
+            reboot_form=self.reboot_form,
+            terminate_form=self.terminate_form,
+        )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
-        json_items_endpoint = self.request.route_url('instances_json')
-        status_choices = sorted(set(instance.state for instance in self.items))
-        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
-        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        self.filter_fields = [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
-            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
-        ]
-        more_filter_keys = ['id', 'name', 'ip_address', 'key_name', 'security_groups', 'root_device', 'tags']
+        filter_keys = [
+            'id', 'instance_type', 'ip_address', 'key_name', 'placement',
+            'root_device', 'security_groups', 'state', 'tags']
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
+        self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
-            dict(key='name', name=_(u'Instance name')),
+            dict(key='id', name=_(u'Instance ID')),
+            dict(key='placement', name=_(u'Availability zone')),
+            dict(key='root_device', name=_(u'Root device')),
+            dict(key='key_name', name=_(u'Key pair')),
         ]
-
-        return dict(
-            display_type=self.display_type,
+        self.render_dict.update(dict(
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
-            prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
-        )
+            json_items_endpoint=self.json_items_endpoint,
+        ))
+        return self.render_dict
 
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
         instances = []
-        for instance in self.items:
+        filtered_items = self.filter_items(self.items)
+        transitional_states = ['pending', 'stopping', 'shutting-down']
+        for instance in filtered_items:
+            is_transitional = instance.state in transitional_states
             instances.append(dict(
                 id=instance.id,
+                name=instance.tags.get('Name', instance.id),
                 instance_type=instance.instance_type,
                 ip_address=instance.ip_address,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
-                root_device=instance.root_device_name,
+                root_device=instance.root_device_type,
                 security_groups=', '.join(group.name for group in instance.groups),
                 key_name=instance.key_name,
                 status=instance.state,
-                tags=TaggedItemView.get_tags_display(instance.tags)
+                tags=TaggedItemView.get_tags_display(instance.tags),
+                transitional=is_transitional,
             ))
         return dict(results=instances)
+
+    @view_config(route_name='instances_start', request_method='POST')
+    def instances_start(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        if instance and self.start_form.validate():
+            try:
+                # Can only start an instance if it has a volume attached
+                instance.start()
+                msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to start instance')  # Prolly due to missing CSRF token here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='instances_stop', request_method='POST')
+    def instances_stop(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        instance_image = self.get_image(instance)
+        if instance and self.stop_form.validate():
+            # Only EBS-backed instances can be stopped
+            if instance_image.root_device_type == 'ebs':
+                try:
+                    instance.stop()
+                    msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                    queue = Notification.SUCCESS
+                except EC2ResponseError as err:
+                    msg = err.message
+                    queue = Notification.ERROR
+            else:
+                msg = _(u'Only EBS-backed instances can be stopped')
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to stop instance')  # Prolly due to missing CSRF token here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='instances_reboot', request_method='POST')
+    def instances_reboot(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        if instance and self.reboot_form.validate():
+            try:
+                rebooted = instance.reboot()
+                time.sleep(1)
+                msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+                queue = Notification.SUCCESS
+                if not rebooted:
+                    msg = _(u'Unable to reboot the instance.')
+                    queue = Notification.ERROR
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to reboot instance')  # Prolly due to missing CSRF token here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='instances_terminate', request_method='POST')
+    def instances_terminate(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        if instance and self.terminate_form.validate():
+            try:
+                instance.terminate()
+                time.sleep(1)
+                msg = _(
+                    u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to terminate instance')  # Prolly due to missing CSRF token here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    def get_items(self):
+        if self.conn:
+            instances = []
+            for reservation in self.conn.get_all_reservations():
+                instance = reservation.instances[0]
+                instance.groups = reservation.groups
+                instances.append(instance)
+            return instances
+        return []
+
+    def get_instance(self, instance_id):
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None
+
+    def get_image(self, instance):
+        if instance:
+            return self.conn.get_image(instance.image_id)
+        return None
+
+    def get_filter_fields(self):
+        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
+        status_choices = sorted(set(instance.state for instance in self.items))
+        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
+        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
+        return [
+            LandingPageFilter(key='state', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
+            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
+        ]
 
 
 class InstanceView(TaggedItemView):
@@ -92,12 +219,13 @@ class InstanceView(TaggedItemView):
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
             self.request, instance=self.instance, conn=self.conn, formdata=self.request.params or None)
-        self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
+        self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
+        self.location = self.get_redirect_location()
         self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
         self.instance_name = '{}{}'.format(
             self.instance.id, ' ({})'.format(self.name_tag) if self.name_tag else '') if self.instance else ''
@@ -108,9 +236,9 @@ class InstanceView(TaggedItemView):
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
             instance_launch_time=self.launch_time,
-            reboot_form=self.reboot_form,
             start_form=self.start_form,
             stop_form=self.stop_form,
+            reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
         )
 
@@ -136,11 +264,9 @@ class InstanceView(TaggedItemView):
             if new_ip == '':
                 self.disassociate_ip_address(ip_address=self.instance.ip_address)
 
-            location = self.request.route_url('instance_view', id=self.instance.id)
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-
+            return HTTPFound(location=self.location)
         return self.render_dict
 
     @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
@@ -152,19 +278,19 @@ class InstanceView(TaggedItemView):
             image=image
         )
 
-    @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE, request_method='POST')
-    def instance_reboot(self):
-        if self.instance and self.reboot_form.validate():
-            rebooted = self.instance.reboot()
-            time.sleep(1)
-            location = self.request.route_url('instance_view', id=self.instance.id)
-            msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-            queue = Notification.SUCCESS
-            if not rebooted:
-                msg = _(u'Unable to reboot the instance.')
+    @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_start(self):
+        if self.instance and self.start_form.validate():
+            try:
+                # Can only start an instance if it has a volume attached
+                self.instance.start()
+                msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
                 queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
         return self.render_dict
 
     @view_config(route_name='instance_stop', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -172,22 +298,32 @@ class InstanceView(TaggedItemView):
         if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
-                self.instance.stop()
-                location = self.request.route_url('instance_view', id=self.instance.id)
-                msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
-                queue = Notification.SUCCESS
+                try:
+                    self.instance.stop()
+                    msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
+                    queue = Notification.SUCCESS
+                except EC2ResponseError as err:
+                    msg = err.message
+                    queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
-                return HTTPFound(location=location)
+                return HTTPFound(location=self.location)
         return self.render_dict
 
-    @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
-    def instance_start(self):
-        if self.instance and self.start_form.validate():
-            # Can only start an instance if it has a volume attached
-            self.instance.start()
-            location = self.request.route_url('instance_view', id=self.instance.id)
-            msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-            queue = Notification.SUCCESS
+    @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_reboot(self):
+        location = self.request.route_url('instance_view', id=self.instance.id)
+        if self.instance and self.reboot_form.validate():
+            try:
+                rebooted = self.instance.reboot()
+                time.sleep(1)
+                msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
+                queue = Notification.SUCCESS
+                if not rebooted:
+                    msg = _(u'Unable to reboot the instance.')
+                    queue = Notification.ERROR
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
@@ -195,20 +331,28 @@ class InstanceView(TaggedItemView):
     @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_terminate(self):
         if self.instance and self.terminate_form.validate():
-            self.instance.terminate()
-            time.sleep(1)
-            location = self.request.route_url('instance_view', id=self.instance.id)
-            msg = _(u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
-            queue = Notification.SUCCESS
+            try:
+                self.instance.terminate()
+                time.sleep(1)
+                msg = _(
+                    u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
         return self.render_dict
 
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
         if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
+            reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+            reservation = reservations_list[0] if reservations_list else None
+            if reservation:
+                instance = reservation.instances[0]
+                instance.groups = reservation.groups
+                return instance
         return None
 
     def get_launch_time(self):
@@ -226,6 +370,9 @@ class InstanceView(TaggedItemView):
         if self.instance:
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
+
+    def get_redirect_location(self):
+        return self.request.route_url('instance_view', id=self.instance.id)
 
     def disassociate_ip_address(self, ip_address=None):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
@@ -288,11 +435,13 @@ class InstanceVolumesView(BaseView):
     @view_config(route_name='instance_volumes_json', renderer='json', request_method='GET')
     def instance_volumes_json(self):
         volumes = []
-        transitional_states = ['attaching', 'detaching'];
+        transitional_states = ['creating', 'deleting', 'attaching', 'detaching']
         for volume in self.get_attached_volumes():
+            status = volume.status
+            attach_status = volume.attach_data.status
+            is_transitional = status in transitional_states or attach_status in transitional_states
             detach_form_action = self.request.route_url(
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
-            status = volume.attach_data.status
             volumes.append(dict(
                 id=volume.id,
                 name=volume.tags.get('Name', ''),
@@ -300,8 +449,9 @@ class InstanceVolumesView(BaseView):
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,
                 status=status,
+                attach_status=volume.attach_data.status,
                 detach_form_action=detach_form_action,
-                transitional=status in transitional_states,
+                transitional=is_transitional,
             ))
         return dict(results=volumes)
 

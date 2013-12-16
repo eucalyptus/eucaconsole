@@ -35,4 +35,10 @@ class KeyPairForm(BaseSecureForm):
             self.name.data = keypair.name
 #            self.key_material.data = keypair.key_material if keypair.key_material else ''
 
+class KeyPairDeleteForm(BaseSecureForm):
+    """KeyPair deletion form.
+       Only need to initialize as a secure form to generate CSRF token
+    """
+    pass
+
 
