@@ -77,9 +77,9 @@ class TaggedItemView(BaseView):
         """Return comma-separated list of tags as a string.
            Skips the 'Name' tag by default"""
         if skip_name:
-            tags_array = ['{}={}'.format(key, val) for key, val in tags.items() if key != 'Name']
+            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items() if key != 'Name']
         else:
-            tags_array = ['{}={}'.format(key, val) for key, val in tags.items()]
+            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items()]
         return ', '.join(tags_array)
 
 
