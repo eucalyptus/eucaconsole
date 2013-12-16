@@ -133,7 +133,7 @@ class IPAddressesView(LandingPageView):
 
     def get_redirect_location(self):
         display_type = self.request.params.get('display', self.display_type)
-        return '{}?display={}'.format(self.request.route_url('ipaddresses'), display_type)
+        return '{0}?display={1}'.format(self.request.route_url('ipaddresses'), display_type)
 
     @staticmethod
     def get_sort_keys():

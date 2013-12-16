@@ -67,7 +67,7 @@ class SnapshotsView(LandingPageView):
         snapshot_id = self.request.params.get('snapshot_id')
         snapshot = self.get_snapshot(snapshot_id)
         display_type = self.request.params.get('display', self.display_type)
-        location = '{}?display={}'.format(self.request.route_url('snapshots'), display_type)
+        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
         if snapshot and self.delete_form.validate():
             try:
                 snapshot.delete()
@@ -146,7 +146,7 @@ class SnapshotView(TaggedItemView):
     def get_snapshot_name(self):
         if self.snapshot:
             snap_name_tag = self.snapshot.tags.get('Name', '')
-            return '{}{}'.format(self.snapshot.id, ' ({})'.format(snap_name_tag) if snap_name_tag else '')
+            return '{0}{1}'.format(self.snapshot.id, ' ({0})'.format(snap_name_tag) if snap_name_tag else '')
         return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')

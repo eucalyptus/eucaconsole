@@ -71,7 +71,7 @@ class SecurityGroupsView(LandingPageView):
         securitygroup_id = self.request.params.get('securitygroup_id')
         security_group = self.get_security_group(securitygroup_id)
         display_type = self.request.params.get('display', self.display_type)
-        location = '{}?display={}'.format(self.request.route_url('securitygroups'), display_type)
+        location = '{0}?display={1}'.format(self.request.route_url('securitygroups'), display_type)
         if security_group and self.delete_form.validate():
             name = security_group.name
             try:
