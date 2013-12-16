@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm
+from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView
@@ -269,15 +269,6 @@ class InstanceView(TaggedItemView):
             return HTTPFound(location=self.location)
         return self.render_dict
 
-    @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
-    def instance_launch(self):
-        # TODO: Implement
-        image_id = self.request.params.get('image_id')
-        image = self.conn.get_image(image_id)
-        return dict(
-            image=image
-        )
-
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
         if self.instance and self.start_form.validate():
@@ -508,3 +499,37 @@ class InstanceVolumesView(BaseView):
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 
+
+class InstanceLaunchView(TaggedItemView):
+    TEMPLATE = '../templates/instances/instance_launch.pt'
+
+    def __init__(self, request):
+        super(InstanceLaunchView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.image = self.get_image()
+        self.launch_form = LaunchInstanceForm(
+            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+        self.render_dict = dict(
+            image=self.image,
+            launch_form=self.launch_form,
+        )
+
+    @view_config(route_name='instance_launch_page', renderer=TEMPLATE, request_method='GET')
+    def instance_launch_page(self):
+        """Displays the Launch Instance wizard"""
+        return self.render_dict
+
+    @view_config(route_name='instance_launch', renderer=TEMPLATE, request_method='POST')
+    def instance_launch(self):
+        """Handles the POST from the Launch instanced wizard"""
+        if self.launch_form.validate():
+            pass
+        return self.render_dict
+
+    def get_image(self):
+        image_id = self.request.params.get('image_id')
+        if self.conn and image_id:
+            image = self.conn.get_image(image_id)
+            return image
+        return None

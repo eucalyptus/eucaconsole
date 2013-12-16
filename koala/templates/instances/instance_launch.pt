@@ -1,15 +1,22 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle" i18n:translate="">
-            Launch new instance
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('instances')}"
+               data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Launch Instances</span>
         </h3>
-        <div class="large-12 columns">
-            <h5>The image id is ${image.id}</h5>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <div class="large-9 columns">
+
+        </div>
+        <div class="large-3 columns">
+            <!--! preview selected choices here -->
         </div>
     </div>
-
 </div>
+
 </metal:block>
 

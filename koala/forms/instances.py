@@ -13,7 +13,8 @@ from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES, EUCA_INSTANCE_TYPE_
 
 
 class InstanceForm(BaseSecureForm):
-    """Instance form
+    """Instance form (to update an existing instance)
+       Form to launch an instance is in LaunchInstanceForm
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     instance_type_error_msg = _(u'Instance type is required')
@@ -59,6 +60,97 @@ class InstanceForm(BaseSecureForm):
         elif self.cloud_type == 'aws':
             choices += AWS_INSTANCE_TYPE_CHOICES
         self.instance_type.choices = choices
+
+
+class LaunchInstanceForm(BaseSecureForm):
+    """Launch instance form
+       Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
+             The block device mappings are also pulled in via a panel
+    """
+    number_error_msg = _(u'Number of instances is required')
+    number = wtforms.TextField(
+        label=_(u'Number of instances'),
+        validators=[validators.Required(message=number_error_msg)],
+    )
+    names = wtforms.TextField(label=_(u'Instance name(s)'))
+    instance_type_error_msg = _(u'Instance type is required')
+    instance_type = wtforms.SelectField(
+        label=_(u'Instance type'),
+        validators=[validators.Required(message=instance_type_error_msg)],
+    )
+    zone_error_msg = _(u'Availability zone is required')
+    zone = wtforms.SelectField(
+        label=_(u'Availability zone'),
+        validators=[validators.Required(message=zone_error_msg)],
+    )
+    keypair_error_msg = _(u'Key pair is required')
+    keypair = wtforms.SelectField(
+        label=_(u'Key name'),
+        validators=[validators.Required(message=keypair_error_msg)],
+    )
+    securitygroup_error_msg = _(u'Security group is required')
+    securitygroup = wtforms.SelectField(
+        label=_(u'Security group'),
+        validators=[validators.Required(message=securitygroup_error_msg)],
+    )
+    userdata = wtforms.TextAreaField(label=_(u'User data'))
+    kernel_error_msg = _(u'Kernel ID is required')
+    kernel = wtforms.SelectField(
+        label=_(u'Kernel ID'),
+        validators=[validators.Required(message=kernel_error_msg)],
+    )
+    ramdisk_error_msg = _(u'RAM disk ID is required')
+    ramdisk = wtforms.SelectField(
+        label=_(u'RAM disk ID (RAMFS)'),
+        validators=[validators.Required(message=ramdisk_error_msg)],
+    )
+    monitored = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+
+    def __init__(self, request, image=None, conn=None, **kwargs):
+        super(LaunchInstanceForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.set_error_messages()
+
+        if conn is not None:
+            self.set_availability_zone_choices()
+            self.set_keypair_choices()
+
+    def set_error_messages(self):
+        self.number.error_msg = self.number_error_msg
+        self.instance_type.error_msg = self.instance_type_error_msg
+        self.zone.error_msg = self.zone_error_msg
+        self.keypair.error_msg = self.keypair_error_msg
+        self.securitygroup.error_msg = self.securitygroup_error_msg
+        self.kernel.error_msg = self.kernel_error_msg
+        self.ramdisk.error_msg = self.ramdisk_error_msg
+
+    def set_instance_type_choices(self):
+        choices = [('', _(u'select...'))]
+        if self.cloud_type == 'euca':
+            # TODO: Pull instance types using DescribeInstanceTypes
+            choices += EUCA_INSTANCE_TYPE_CHOICES
+        elif self.cloud_type == 'aws':
+            choices += AWS_INSTANCE_TYPE_CHOICES
+        self.instance_type.choices = choices
+
+    def set_availability_zone_choices(self):
+        choices = []
+        zones = self.conn.get_all_zones()  # TODO: cache me
+        for zone in zones:
+            choices.append((zone.name, zone.name))
+        if not zones:
+            choices.append(('', _(u'There are no availability zones')))
+        self.zone.choices = sorted(choices)
+
+    def set_keypair_choices(self):
+        choices = []
+        keypairs = self.conn.get_all_key_pairs()  # TODO: cache me
+        for keypair in keypairs:
+            choices.append((keypair.name, keypair.name))
+        if not keypairs:
+            choices.append(('default', 'default'))
+        self.keypair.choices = sorted(choices)
 
 
 class StopInstanceForm(BaseSecureForm):
@@ -122,8 +214,8 @@ class AttachVolumeForm(BaseSecureForm):
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
-    def suggest_next_device_name(self, instanceId):
-        instances = self.conn.get_only_instances([instanceId]);
+    def suggest_next_device_name(self, instance_id):
+        instances = self.conn.get_only_instances([instance_id]);
         if instances is None:
             return 'error'
         mappings = instances[0].block_device_mapping
@@ -134,6 +226,7 @@ class AttachVolumeForm(BaseSecureForm):
             except KeyError:
                 return dev_name
         return 'error'
+
 
 class DetachVolumeForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""

@@ -44,11 +44,7 @@ class VolumeForm(BaseSecureForm):
 
         if conn is not None:
             self.set_volume_snapshot_choices()
-            zones = self.conn.get_all_zones()
-            self.set_availability_zone_choices(zones)
-            # default to first zone if new volume, and at least one zone in list
-            if volume is None and len(zones) > 0:
-                self.zone.data = zones[0].name
+            self.set_availability_zone_choices()
 
     def set_volume_snapshot_choices(self):
         choices = [('', _(u'None'))]
@@ -63,11 +59,15 @@ class VolumeForm(BaseSecureForm):
             choices.append((snap_id, snap_id))
         self.snapshot_id.choices = sorted(choices)
 
-    def set_availability_zone_choices(self, zones):
-        choices = [('', _(u'select...'))]
+    def set_availability_zone_choices(self):
+        choices = []
+        zones = self.conn.get_all_zones()  # TODO: cache me
         for zone in zones:
             choices.append((zone.name, zone.name))
         self.zone.choices = sorted(choices)
+        # default to first zone if new volume, and at least one zone in list
+        if self.volume is None and len(zones) > 0:
+            self.zone.data = zones[0].name
 
 
 class DeleteVolumeForm(BaseSecureForm):

@@ -44,6 +44,7 @@ urls = [
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
     # Detail page
+    Route(name='instance_launch_page', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
