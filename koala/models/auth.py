@@ -48,7 +48,7 @@ class User(object):
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
-    @cache_region('extra_long_term', 'aws_connection_cache')
+    @cache_region('default_term', 'aws_connection_cache')
     def aws_connection(region, access_key, secret_key, token, conn_type):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
@@ -79,7 +79,7 @@ class ConnectionManager(object):
         return conn
 
     @staticmethod
-    @cache_region('extra_long_term', 'euca_connection_cache')
+    @cache_region('default_term', 'euca_connection_cache')
     def euca_connection(clchost, port, access_id, secret_key, token, conn_type):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
