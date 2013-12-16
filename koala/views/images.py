@@ -106,6 +106,7 @@ class ImageView(TaggedItemView):
         self.conn = self.get_connection()
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, image=self.image, formdata=self.request.params or None)
+        self.tagged_obj = self.image
         self.render_dict = dict(
             image=self.image,
             image_form=self.image_form,
