@@ -57,6 +57,10 @@ class VolumeForm(BaseSecureForm):
             value = snapshot.id
             label = '{id} ({size} GB)'.format(id=snapshot.id, size=snapshot.volume_size)
             choices.append((value, label))
+        # Need to insert current choice since the source snapshot may have been removed after this volume was created
+        if self.volume and self.volume.snapshot_id:
+            snap_id = self.volume.snapshot_id
+            choices.append((snap_id, snap_id))
         self.snapshot_id.choices = sorted(choices)
 
     def set_availability_zone_choices(self, zones):

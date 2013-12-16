@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
-from urllib import urlencode
 import time
 
 import simplejson as json

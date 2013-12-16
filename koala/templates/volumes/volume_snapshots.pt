@@ -35,7 +35,7 @@
                 <span class="dots" ng-show="initialLoading">&nbsp;</span>
                 <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
                     <div class="header">
-                        <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.id }}</a></strong>
+                        <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.name || snapshot.id }}</a></strong>
                         <a class="tiny secondary button dropdown right" ng-click="revealDeleteModal(snapshot.delete_form_action)"
                            data-reveal-id="delete-snapshot-modal"><i class="icon fi-minus-circle"></i></a>
                     </div>
@@ -57,7 +57,7 @@
                             {{ snapshot.description | limitTo: 44 }}
                         </div>
                     </div>
-                    <div class="footer status {{ snapshot.status }}">
+                    <div class="footer status has-progress {{ snapshot.status }}">
                         <div class="completed" ng-show="snapshot.status == 'completed'">
                             <span>{{ snapshot.status }}</span>
                         </div>
