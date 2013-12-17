@@ -2,6 +2,7 @@
 .wizard { position: relative; background-color: #eeeeee; }
 .wizard.has-title { position: relative; padding-top: 2.5rem; }
 .wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
 .wizard .tabs.vertical dd.active .cir { background-color: #00415e; color: white; }
 .wizard .tabs.vertical dd.active a { border-top: 1px solid #999999; border-bottom: 1px solid #999999; }
 .wizard .tabs.vertical dd a { white-space: nowrap; padding: 1rem 4px 1rem 16px; }

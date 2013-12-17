@@ -21,6 +21,9 @@
             @include ellipsis-overflow;
         }
     }
+    .row.controls-wrapper.readonly {
+        margin-bottom: 0.5rem;
+    }
     .tabs.vertical {
         dd {
             &.active {

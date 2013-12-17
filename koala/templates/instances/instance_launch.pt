@@ -18,30 +18,61 @@
         <div class="large-8 columns">
             <div class="wizard has-title">
                 <h6 class="title" i18n:translate="">Launch instance</h6>
-                <form action="${request.route_url('instance_launch')}" method="post" data-abide="abide">
+                <form action="${request.route_url('instance_launch')}" id="launch-instance-form"
+                      method="post" data-abide="abide">
                     ${structure:launch_form['csrf_token']}
                     <dl class="tabs vertical" data-tab="">
                         <dd class="${'active' if not image else ''}">
-                            <a href="#step1"><span class="cir">1</span> Image</a>
+                            <a id="tabStep1" href="#step1"><span class="cir">1</span> Image</a>
                         </dd>
-                        <dd class="${'active' if image else ''}">
-                            <a href="#step2"><span class="cir">2</span> Type</a>
+                        <dd class="${'active' if image else ''}" tal:condition="image">
+                            <a id="tabStep2" href="#step2"><span class="cir">2</span> Type</a>
                         </dd>
-                        <dd>
-                            <a href="#step3"><span class="cir">3</span> Security</a>
+                        <dd tal:condition="image">
+                            <a id="tabStep3" href="#step3"><span class="cir">3</span> Security</a>
                         </dd>
-                        <dd>
-                            <a href="#step4"><span class="cir">4</span> Advanced</a>
+                        <dd tal:condition="image">
+                            <a id="tabStep4" href="#step4"><span class="cir">4</span> Advanced</a>
                         </dd>
                     </dl>
                     <div class="tabs-content vertical">
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
                             <div tal:condition="image" tal:omit-tag="">
-
+                                <p class="description" i18n:translate="">
+                                    Machine image for your virtual machine
+                                </p>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
+                                    <div class="small-8 columns value">${image.id}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
+                                    <div class="small-8 columns value">${image.name}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
+                                    <div class="small-8 columns value">${image.location}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
+                                    <div class="small-8 columns value">${image.kernel_id}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">RAM Disk ID</label></div>
+                                    <div class="small-8 columns value">${image.ramdisk_id}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-4 columns">&nbsp;</div>
+                                    <div class="small-8 columns field inline">
+                                        <a id="visit-step-2" class="button small round" ng-click="visitStep(2, $event)">
+                                            <span i18n:translate="">Next step &gt;</span>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                             <div tal:condition="not image" tal:omit-tag="">
-                                <p i18n:translate="">
+                                <p class="description" i18n:translate="">
                                     You will need to first
                                     <a href="${request.route_url('images')}">select an image from the list of images</a>
                                     to launch one or more instances.
@@ -50,7 +81,7 @@
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
-                            <p i18n:translate="">
+                            <p class="description" i18n:translate="">
                                 Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
                             </p>
                             ${panel('form_field', field=launch_form['number'])}
@@ -58,14 +89,36 @@
                             ${panel('form_field', field=launch_form['instance_type'])}
                             ${panel('form_field', field=launch_form['zone'])}
                             ${panel('tag_editor')}
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitStep(3, $event)">
+                                        <span i18n:translate="">Next step &gt;</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
+                            <p class="description" i18n:translate="">
+                                Specify the key pair and security group.
+                            </p>
                             ${panel('form_field', field=launch_form['keypair'])}
                             ${panel('form_field', field=launch_form['securitygroup'])}
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-4" class="button small round" ng-click="visitStep(4, $event)">
+                                        <span i18n:translate="">Next step &gt;</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
+                            <p class="description" i18n:translate="">
+                                User data and other advanced options (optional).
+                            </p>
                             ${panel('form_field', field=launch_form['userdata'])}
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
