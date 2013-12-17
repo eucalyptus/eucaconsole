@@ -13,13 +13,13 @@
           if ($('#aws').is(':visible')) {
             $('#access_key').focus();
           }
-          $('#eucalyptus').on('opened', function (event) {
-              console.log("opened! euca");
-              $('#account').focus();
-          });
-          $('#aws').on('opened', function (event) {
-              console.log("opened! aws");
-              $('#access_key').focus();
+          $('#login-tabs').on('toggled', function (event, tab) {
+              if ($('#eucalyptus').is(':visible')) {
+                $('#account').focus();
+              }
+              if ($('#aws').is(':visible')) {
+                $('#access_key').focus();
+              }
           });
       }
     </script>
@@ -47,8 +47,8 @@
                   </div>
                 </div>
                 <dl class="tabs" id="login-tabs" data-tab>
-                    <dd class="active"><a href="#eucalyptus" i18n:translate="">Log in to Eucalyptus</a></dd>
-                    <dd><a href="#aws" i18n:translate="">Log in to AWS</a></dd>
+                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Log in to Eucalyptus</a></dd>
+                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">Log in to AWS</a></dd>
                 </dl>
                 <div class="tabs-content">
                     <div class="content active" id="eucalyptus">

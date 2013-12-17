@@ -111,6 +111,7 @@
 </footer>
 
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
+<script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.tab.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
     $(document).foundation();

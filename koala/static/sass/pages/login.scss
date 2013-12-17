@@ -18,6 +18,11 @@
     padding: 0;
 }
 
+dd {
+    border-radius: 8px;
+    box-shadow: 0 3px 6px $euca-grey;
+}
+
 #aws {
     width: 500px;
     height: 280px;
