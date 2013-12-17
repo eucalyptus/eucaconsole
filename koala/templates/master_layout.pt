@@ -31,7 +31,7 @@
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
             <li><a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a></li>
             
-            <li><a href="#" onclick="console.log('trying logout'); $('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
+            <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
         </ul>
     </section>
     <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
