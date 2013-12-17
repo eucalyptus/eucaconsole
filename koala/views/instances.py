@@ -5,6 +5,7 @@ Pyramid views for Eucalyptus and AWS instances
 """
 from dateutil import parser
 from operator import attrgetter
+import simplejson as json
 import time
 
 from boto.exception import EC2ResponseError
@@ -515,8 +516,8 @@ class InstanceLaunchView(TaggedItemView):
             launch_form=self.launch_form,
         )
 
-    @view_config(route_name='instance_launch_page', renderer=TEMPLATE, request_method='GET')
-    def instance_launch_page(self):
+    @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
+    def instance_create(self):
         """Displays the Launch Instance wizard"""
         return self.render_dict
 
@@ -524,7 +525,58 @@ class InstanceLaunchView(TaggedItemView):
     def instance_launch(self):
         """Handles the POST from the Launch instanced wizard"""
         if self.launch_form.validate():
-            pass
+            names = self.request.params.get('names')
+            names_array = names.strip().split(',')
+            tags_json = self.request.params.get('tags')
+            image_id = self.image.id
+            key_name = self.request.params.get('keypair')
+            max_count = self.request.params.get('number')
+            securitygroup = self.request.params.get('securitygroup', 'default')
+            security_group_ids = [securitygroup]
+            instance_type = self.request.params.get('instance_type', 'm1.small')
+            availability_zone = self.request.params.get('zone')
+            kernel_id = self.request.params.get('kernel_id')
+            ramdisk_id = self.request.params.get('ramdisk_id')
+            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            try:
+                reservation = self.conn.run_instances(
+                    image_id,
+                    max_count=max_count,
+                    key_name=key_name,
+                    user_data=None,
+                    addressing_type=None,
+                    instance_type=instance_type,
+                    placement=availability_zone,
+                    kernel_id=kernel_id,
+                    ramdisk_id=ramdisk_id,
+                    monitoring_enabled=monitoring_enabled,
+                    block_device_map=None,
+                    security_group_ids=security_group_ids,
+                )
+                instances = reservation.instances
+                # Add tags for newly launched instance(s)
+                for idx, instance in enumerate(instances):
+                    if len(names_array) == len(instances):
+                        # Length of names array should match number of instances to launch for this to work
+                        name = names[idx].strip()
+                        if name:
+                            instance.add_tag('Name', name)
+                    if tags_json:
+                        tags = json.loads(tags_json)
+                        for tagname, tagvalue in tags.items():
+                            instance.add_tag(tagname, tagvalue)
+                # TODO: format msg with instance ids
+                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch the instances.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
         return self.render_dict
 
     def get_image(self):

@@ -58,7 +58,7 @@
             </div>
             <div metal:fill-slot="tile_footer">
                 <div class="footer">
-                    <a href="/instances/launch?image_id={{ item.id }}" class="action"
+                    <a href="/instances/new?image_id={{ item.id }}" class="action"
                             i18n:translate="">Launch instance</a>
                 </div>
             </div>

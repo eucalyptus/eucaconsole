@@ -10,7 +10,31 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
         <div class="large-9 columns">
-
+            <div class="wizard">
+                <form action="${request.route_url('instance_launch')}" method="post" data-abide="abide">
+                    ${structure:launch_form['csrf_token']}
+                    ${panel('form_field', field=launch_form['number'])}
+                    ${panel('form_field', field=launch_form['names'])}
+                    ${panel('form_field', field=launch_form['instance_type'])}
+                    ${panel('form_field', field=launch_form['zone'])}
+                    ${panel('form_field', field=launch_form['keypair'])}
+                    ${panel('form_field', field=launch_form['securitygroup'])}
+                    ${panel('form_field', field=launch_form['userdata'])}
+                    ${panel('form_field', field=launch_form['kernel_id'])}
+                    ${panel('form_field', field=launch_form['ramdisk_id'])}
+                    ${panel('form_field', field=launch_form['monitoring_enabled'])}
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button">
+                                <span tal:condition="image" i18n:translate="">Launch instance</span>
+                            </button>
+                            <a href="${request.route_url('instances')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="large-3 columns">
             <!--! preview selected choices here -->

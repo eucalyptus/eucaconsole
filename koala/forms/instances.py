@@ -95,26 +95,35 @@ class LaunchInstanceForm(BaseSecureForm):
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     kernel_error_msg = _(u'Kernel ID is required')
-    kernel = wtforms.SelectField(
+    kernel_id = wtforms.SelectField(
         label=_(u'Kernel ID'),
         validators=[validators.Required(message=kernel_error_msg)],
     )
     ramdisk_error_msg = _(u'RAM disk ID is required')
-    ramdisk = wtforms.SelectField(
+    ramdisk_id = wtforms.SelectField(
         label=_(u'RAM disk ID (RAMFS)'),
         validators=[validators.Required(message=ramdisk_error_msg)],
     )
-    monitored = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
 
     def __init__(self, request, image=None, conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.image = image
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
 
+        if image is not None:
+            self.kernel_id.data = image.kernel_id
+            self.ramdisk_id.data = image.ramdisk_id
+
         if conn is not None:
+            self.set_instance_type_choices()
             self.set_availability_zone_choices()
             self.set_keypair_choices()
+            self.set_securitygroup_choices()
+            self.set_kernel_choices()
+            self.set_ramdisk_choices()
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -122,8 +131,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
-        self.kernel.error_msg = self.kernel_error_msg
-        self.ramdisk.error_msg = self.ramdisk_error_msg
+        self.kernel_id.error_msg = self.kernel_error_msg
+        self.ramdisk_id.error_msg = self.ramdisk_error_msg
 
     def set_instance_type_choices(self):
         choices = [('', _(u'select...'))]
@@ -141,16 +150,37 @@ class LaunchInstanceForm(BaseSecureForm):
             choices.append((zone.name, zone.name))
         if not zones:
             choices.append(('', _(u'There are no availability zones')))
-        self.zone.choices = sorted(choices)
+        self.zone.choices = sorted(set(choices))
 
     def set_keypair_choices(self):
         choices = []
         keypairs = self.conn.get_all_key_pairs()  # TODO: cache me
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
-        if not keypairs:
-            choices.append(('default', 'default'))
-        self.keypair.choices = sorted(choices)
+        self.keypair.choices = sorted(set(choices))
+
+    def set_securitygroup_choices(self):
+        choices = []
+        security_groups = self.conn.get_all_security_groups()  # TODO: cache me
+        for sgroup in security_groups:
+            choices.append((sgroup.id, sgroup.name))
+        if not security_groups:
+            choices.append(('', 'default'))
+        self.securitygroup.choices = sorted(set(choices))
+
+    def set_kernel_choices(self):
+        choices = []
+        kernel_images = self.conn.get_all_kernels()  # TODO: cache me
+        for image in kernel_images:
+            choices.append((image.kernel_id, image.kernel_id))
+        self.kernel_id.choices = sorted(set(choices))
+
+    def set_ramdisk_choices(self):
+        choices = []
+        ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
+        for image in ramdisk_images:
+            choices.append((image.ramdisk_id, image.ramdisk_id))
+        self.ramdisk_id.choices = sorted(set(choices))
 
 
 class StopInstanceForm(BaseSecureForm):
