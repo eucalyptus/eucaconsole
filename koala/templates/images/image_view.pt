@@ -39,6 +39,22 @@
                             <div class="small-9 columns value">${image.architecture if image.architecture else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Type</label></div>
+                            <div class="small-9 columns value">${image.type if image.type else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Owner Alias</label></div>
+                            <div class="small-9 columns value">${image.owner_alias if image.owner_alias else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Root Device Type</label></div>
+                            <div class="small-9 columns value">${image.root_device_type if image.root_device_type else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Description</label></div>
                             <div class="small-9 columns value">${image.description if image.description else ''}</div>
                         </div>
