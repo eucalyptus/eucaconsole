@@ -1,7 +1,13 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance_launch.css')}" />
+</head>
+
+
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
@@ -10,29 +16,73 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
         <div class="large-9 columns">
-            <div class="wizard">
+            <div class="wizard has-title">
+                <h6 class="title" i18n:translate="">Launch instances</h6>
                 <form action="${request.route_url('instance_launch')}" method="post" data-abide="abide">
                     ${structure:launch_form['csrf_token']}
-                    ${panel('form_field', field=launch_form['number'])}
-                    ${panel('form_field', field=launch_form['names'])}
-                    ${panel('form_field', field=launch_form['instance_type'])}
-                    ${panel('form_field', field=launch_form['zone'])}
-                    ${panel('form_field', field=launch_form['keypair'])}
-                    ${panel('form_field', field=launch_form['securitygroup'])}
-                    ${panel('form_field', field=launch_form['userdata'])}
-                    ${panel('form_field', field=launch_form['kernel_id'])}
-                    ${panel('form_field', field=launch_form['ramdisk_id'])}
-                    ${panel('form_field', field=launch_form['monitoring_enabled'])}
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
+                    <dl class="tabs vertical" data-tab="">
+                        <dd class="${'active' if not image else ''}">
+                            <a href="#step1"><span class="cir">1</span> Image</a>
+                        </dd>
+                        <dd class="${'active' if image else ''}">
+                            <a href="#step2"><span class="cir">2</span> Type</a>
+                        </dd>
+                        <dd>
+                            <a href="#step3"><span class="cir">3</span> Security</a>
+                        </dd>
+                        <dd>
+                            <a href="#step4"><span class="cir">4</span> Advanced</a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content vertical">
+                        <!--! Step 1: Image tab content -->
+                        <div class="content ${'active' if not image else ''}" id="step1">
+                            <div tal:condition="image" tal:omit-tag="">
+
+                            </div>
+                            <div tal:condition="not image" tal:omit-tag="">
+                                <p i18n:translate="">
+                                    You will need to first
+                                    <a href="${request.route_url('images')}">select an image from the list of images</a>
+                                    to launch one or more instances.
+                                </p>
+                            </div>
+                        </div>
+                        <!--! Step 2: Type tab content -->
+                        <div class="content ${'active' if image else ''}" id="step2">
+                            <p i18n:translate="">
+                                Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
+                            </p>
+                            ${panel('form_field', field=launch_form['number'])}
+                            ${panel('form_field', field=launch_form['names'])}
+                            ${panel('form_field', field=launch_form['instance_type'])}
+                            ${panel('form_field', field=launch_form['zone'])}
+                            ${panel('tag_editor')}
+                        </div>
+                        <!--! Step 3: Security tab content -->
+                        <div class="content" id="step3">
+                            ${panel('form_field', field=launch_form['keypair'])}
+                            ${panel('form_field', field=launch_form['securitygroup'])}
+                        </div>
+                        <!--! Step 4: Advanced tab content -->
+                        <div class="content" id="step4">
+                            ${panel('form_field', field=launch_form['userdata'])}
+                            ${panel('form_field', field=launch_form['kernel_id'])}
+                            ${panel('form_field', field=launch_form['ramdisk_id'])}
+                            ${panel('form_field', field=launch_form['monitoring_enabled'])}
+                        </div>
+                    </div>
+                    <div class="row" tal:condition="image">
+                        <div class="small-5 columns">&nbsp;</div>
+                        <div class="small-7 columns field inline">
                             <button type="submit" class="button">
-                                <span tal:condition="image" i18n:translate="">Launch instance</span>
+                                <span i18n:translate="">Launch instance</span>
                             </button>
                             <a href="${request.route_url('instances')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                     </div>
+                    <div class="clearfix">&nbsp;</div>
                 </form>
             </div>
         </div>
@@ -40,6 +90,10 @@
             <!--! preview selected choices here -->
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/instance_launch.js')}"></script>
 </div>
 
 </metal:block>

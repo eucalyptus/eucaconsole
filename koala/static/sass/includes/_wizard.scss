@@ -1,0 +1,61 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+
+/* @section Wizard styles */
+.wizard {
+    background-color: $euca-extralightblue;
+    position: relative;
+    &.has-title {
+        position: relative;
+        padding-top: 60px;
+        h6.title {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            line-height: 2rem;
+            padding-left: 12px;
+            background-color: $euca-darkblue;
+            color: white;
+            @include ellipsis-overflow;
+        }
+    }
+    .tabs.vertical {
+        dd {
+            a {
+                background-color: white;
+            }
+            &.active a {
+                background-color: $euca-extralightblue;
+            }
+            a {
+                padding: 1rem 16px;
+            }
+            .cir {
+                font-size: 0.825rem;
+                font-weight: bold;
+                display: inline-block;
+                border-radius: 60px;
+                width: 20px; height: 20px;
+                padding: 0 0 0 0;
+                text-align: center;
+                vertical-align: middle;
+                background-color: $euca-grey;
+                color: white;
+            }
+            &.active {
+                .cir {
+                    background-color: $euca-darkblue;
+                    color: white;
+                }
+            }
+        }
+    }
+    .tabs-content {
+        padding: 1rem;
+        .content {
+            width: 100%;
+            background-color: $euca-extralightblue;
+        }
+    }
+}
+

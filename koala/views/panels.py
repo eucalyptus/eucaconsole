@@ -58,6 +58,7 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     """ Tag editor panel.
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
+    tags = tags or {}
     tags_json = json.dumps(tags)
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 

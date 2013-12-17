@@ -163,7 +163,8 @@ class LaunchInstanceForm(BaseSecureForm):
         choices = []
         security_groups = self.conn.get_all_security_groups()  # TODO: cache me
         for sgroup in security_groups:
-            choices.append((sgroup.id, sgroup.name))
+            if sgroup.id:
+                choices.append((sgroup.id, sgroup.name))
         if not security_groups:
             choices.append(('', 'default'))
         self.securitygroup.choices = sorted(set(choices))
