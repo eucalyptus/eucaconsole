@@ -65,8 +65,8 @@
                                 <div class="row">
                                     <div class="small-4 columns">&nbsp;</div>
                                     <div class="small-8 columns field inline">
-                                        <a id="visit-step-2" class="button small round" ng-click="visitStep(2, $event)">
-                                            <span i18n:translate="">Next step &gt;</span>
+                                        <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                            <span i18n:translate="">Next: Select type</span>
                                         </a>
                                     </div>
                                 </div>
@@ -92,8 +92,8 @@
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitStep(3, $event)">
-                                        <span i18n:translate="">Next step &gt;</span>
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                        <span i18n:translate="">Next: Select security</span>
                                     </a>
                                 </div>
                             </div>
@@ -108,8 +108,12 @@
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <a id="visit-step-4" class="button small round" ng-click="visitStep(4, $event)">
-                                        <span i18n:translate="">Next step &gt;</span>
+                                    <button type="submit" class="button">
+                                        <span i18n:translate="">Launch instance</span>
+                                    </button><br />
+                                    <span class="or">Or:</span>
+                                    <a id="visit-step-4" ng-click="visitNextStep(4, $event)">
+                                        <span i18n:translate="">Select advanced options</span>
                                     </a>
                                 </div>
                             </div>

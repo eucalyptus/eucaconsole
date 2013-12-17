@@ -52,7 +52,7 @@ class ImagesView(LandingPageView):
                 Choice(key='aws-marketplace', label=_(u'AWS Marketplace')),
             )
         self.filter_fields = [
-            LandingPageFilter(key='owner_alias', name='Images', choices=owner_choices),
+            LandingPageFilter(key='owner_alias', name='Images owned by', choices=owner_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']

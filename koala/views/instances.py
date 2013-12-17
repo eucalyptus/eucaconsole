@@ -535,8 +535,8 @@ class InstanceLaunchView(TaggedItemView):
             security_group_ids = [securitygroup]
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone')
-            kernel_id = self.request.params.get('kernel_id')
-            ramdisk_id = self.request.params.get('ramdisk_id')
+            kernel_id = self.request.params.get('kernel_id') or None
+            ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             try:
                 reservation = self.conn.run_instances(

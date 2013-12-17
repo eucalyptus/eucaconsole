@@ -94,16 +94,8 @@ class LaunchInstanceForm(BaseSecureForm):
         validators=[validators.Required(message=securitygroup_error_msg)],
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
-    kernel_error_msg = _(u'Kernel ID is required')
-    kernel_id = wtforms.SelectField(
-        label=_(u'Kernel ID'),
-        validators=[validators.Required(message=kernel_error_msg)],
-    )
-    ramdisk_error_msg = _(u'RAM disk ID is required')
-    ramdisk_id = wtforms.SelectField(
-        label=_(u'RAM disk ID (RAMFS)'),
-        validators=[validators.Required(message=ramdisk_error_msg)],
-    )
+    kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
+    ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
 
     def __init__(self, request, image=None, conn=None, **kwargs):
@@ -114,8 +106,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.set_error_messages()
 
         if image is not None:
-            self.kernel_id.data = image.kernel_id
-            self.ramdisk_id.data = image.ramdisk_id
+            self.kernel_id.data = image.kernel_id or ''
+            self.ramdisk_id.data = image.ramdisk_id or ''
 
         if conn is not None:
             self.set_instance_type_choices()
@@ -131,8 +123,6 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
-        self.kernel_id.error_msg = self.kernel_error_msg
-        self.ramdisk_id.error_msg = self.ramdisk_error_msg
 
     def set_instance_type_choices(self):
         choices = [('', _(u'select...'))]
@@ -170,17 +160,19 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.choices = sorted(set(choices))
 
     def set_kernel_choices(self):
-        choices = []
+        choices = [('', _(u'Use default from image'))]
         kernel_images = self.conn.get_all_kernels()  # TODO: cache me
         for image in kernel_images:
-            choices.append((image.kernel_id, image.kernel_id))
+            if image.kernel_id:
+                choices.append((image.kernel_id, image.kernel_id))
         self.kernel_id.choices = sorted(set(choices))
 
     def set_ramdisk_choices(self):
-        choices = []
+        choices = [('', _(u'Use default from image'))]
         ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
         for image in ramdisk_images:
-            choices.append((image.ramdisk_id, image.ramdisk_id))
+            if image.ramdisk_id:
+                choices.append((image.ramdisk_id, image.ramdisk_id))
         self.ramdisk_id.choices = sorted(set(choices))
 
 
