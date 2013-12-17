@@ -110,14 +110,12 @@
                                 </div>
                             </div>
                             <div class="row">
-                              <div class="small-4 columns"></div>
-                              <div class="small-8 columns">
+                              <div class="small-12 columns">
                                 <a href="#" i18n:translate="">Forgot your password?</a>
                               </div>
                             </div>
                             <div class="row">
-                                <div class="small-4 columns"></div>
-                                <div class="small-8 columns">
+                                <div class="small-12 columns">
                                     <input type="submit" class="submit button radius"
                                            id="euca-login-button" value="Log in to Eucalyptus" />
                                 </div>
@@ -142,15 +140,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                              <div class="small-4 columns"></div>
-                              <div class="small-8 columns">
+                              <div class="small-12 columns">
                                 <span i18n:translate="">Need access to an IAM account? Contact your </span>
                                 <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
                               </div>
                             </div>
                             <div class="row">
-                                <div class="small-4 columns"></div>
-                                <div class="small-8 columns">
+                                <div class="small-12 columns">
                                     <input type="submit" class="submit button radius"
                                            id="aws-login-button" value="Log in to AWS" />
                                 </div>
