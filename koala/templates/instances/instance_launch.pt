@@ -15,9 +15,9 @@
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
-        <div class="large-9 columns">
+        <div class="large-8 columns">
             <div class="wizard has-title">
-                <h6 class="title" i18n:translate="">Launch instances</h6>
+                <h6 class="title" i18n:translate="">Launch instance</h6>
                 <form action="${request.route_url('instance_launch')}" method="post" data-abide="abide">
                     ${structure:launch_form['csrf_token']}
                     <dl class="tabs vertical" data-tab="">
@@ -70,23 +70,23 @@
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
-                        </div>
-                    </div>
-                    <div class="row" tal:condition="image">
-                        <div class="small-5 columns">&nbsp;</div>
-                        <div class="small-7 columns field inline">
-                            <button type="submit" class="button">
-                                <span i18n:translate="">Launch instance</span>
-                            </button>
-                            <a href="${request.route_url('instances')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                            <div class="row" tal:condition="image">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button">
+                                        <span i18n:translate="">Launch instance</span>
+                                    </button>
+                                    <a href="${request.route_url('instances')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="clearfix">&nbsp;</div>
                 </form>
             </div>
         </div>
-        <div class="large-3 columns">
+        <div class="large-4 columns">
             <!--! preview selected choices here -->
         </div>
     </div>

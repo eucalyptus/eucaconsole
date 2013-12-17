@@ -4,15 +4,17 @@
 
 /* @section Wizard styles */
 .wizard {
-    background-color: $euca-extralightblue;
     position: relative;
+    background-color: $euca-extralightgrey;
     &.has-title {
         position: relative;
-        padding-top: 60px;
+        padding-top: 2.5rem;
         h6.title {
             position: absolute;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             top: 0; left: 0; right: 0;
-            line-height: 2rem;
+            line-height: 2.5rem;
             padding-left: 12px;
             background-color: $euca-darkblue;
             color: white;
@@ -21,18 +23,24 @@
     }
     .tabs.vertical {
         dd {
-            a {
-                background-color: white;
+            &.active {
+                .cir {
+                    background-color: $euca-darkblue;
+                    color: white;
+                }
+                a {
+                    border-top: 1px solid $euca-grey;
+                    border-bottom: 1px solid $euca-grey;
+                }
             }
-            &.active a {
-                background-color: $euca-extralightblue;
-            }
             a {
-                padding: 1rem 16px;
+                white-space: nowrap;
+                padding: 1rem 4px 1rem 16px;
             }
             .cir {
+                position: relative;
+                top: -2px;
                 font-size: 0.825rem;
-                font-weight: bold;
                 display: inline-block;
                 border-radius: 60px;
                 width: 20px; height: 20px;
@@ -42,19 +50,16 @@
                 background-color: $euca-grey;
                 color: white;
             }
-            &.active {
-                .cir {
-                    background-color: $euca-darkblue;
-                    color: white;
-                }
-            }
         }
     }
     .tabs-content {
+        min-height: 400px;
+        margin: 0 0 0 0;
         padding: 1rem;
+        background-color: white;
+        border-right: 16px solid $euca-extralightgrey;
         .content {
             width: 100%;
-            background-color: $euca-extralightblue;
         }
     }
 }

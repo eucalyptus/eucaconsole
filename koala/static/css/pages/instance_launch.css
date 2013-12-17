@@ -1,13 +1,12 @@
 /* @section Wizard styles */
-.wizard { background-color: #ecf4f7; position: relative; }
-.wizard.has-title { position: relative; padding-top: 60px; }
-.wizard.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.wizard .tabs.vertical dd a { background-color: white; }
-.wizard .tabs.vertical dd.active a { background-color: #ecf4f7; }
-.wizard .tabs.vertical dd a { padding: 1rem 16px; }
-.wizard .tabs.vertical dd .cir { font-size: 0.825rem; font-weight: bold; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #999999; color: white; }
+.wizard { position: relative; background-color: #eeeeee; }
+.wizard.has-title { position: relative; padding-top: 2.5rem; }
+.wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .tabs.vertical dd.active .cir { background-color: #00415e; color: white; }
-.wizard .tabs-content { padding: 1rem; }
-.wizard .tabs-content .content { width: 100%; background-color: #ecf4f7; }
+.wizard .tabs.vertical dd.active a { border-top: 1px solid #999999; border-bottom: 1px solid #999999; }
+.wizard .tabs.vertical dd a { white-space: nowrap; padding: 1rem 4px 1rem 16px; }
+.wizard .tabs.vertical dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #999999; color: white; }
+.wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; border-right: 16px solid #eeeeee; }
+.wizard .tabs-content .content { width: 100%; }
 
 /* @section Launch Instance page styles */
