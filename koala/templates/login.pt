@@ -6,20 +6,60 @@
 
 <div metal:fill-slot="head_js">
     <script type="text/javascript">
+      function set_focus() {
+        if ($('#eucalyptus').is(':visible')) {
+          var inputs = $('#euca-login-form input').filter(function() { return !this.value; });
+          if (inputs.length > 0) inputs[0].focus();
+        }
+        if ($('#aws').is(':visible')) {
+          var inputs = $('#aws-login-form input').filter(function() { return !this.value; });
+          if (inputs.length > 0) inputs[0].focus();
+        }
+      }
       function page_loaded() {
-          if ($('#eucalyptus').is(':visible')) {
-            $('#account').focus();
-          }
-          if ($('#aws').is(':visible')) {
-            $('#access_key').focus();
-          }
+          // pre-fill if cookies are present
+          var account = $.cookie('account');
+          var username = $.cookie('username');
+          var remember = $.cookie('remember');
+          var accessid = $.cookie('accessid');
+          var remember_aws = $.cookie('remember_aws');
+          if (account !== undefined) $('#account').val(account);
+          if (username !== undefined) $('#username').val(username);
+          if (remember !== undefined) $('#remember').prop('checked', true);
+          if (accessid !== undefined) $('#access_key').val(accessid);
+          if (remember_aws !== undefined) $('#remember_aws').prop('checked', true);
+
+          // this code assures the forms have focus.
+          set_focus();
           $('#login-tabs').on('toggled', function (event, tab) {
-              if ($('#eucalyptus').is(':visible')) {
-                $('#account').focus();
-              }
-              if ($('#aws').is(':visible')) {
-                $('#access_key').focus();
-              }
+            set_focus();
+          });
+
+          // set up listener to capture and save values if remember checked
+          var expiration = 180;
+          $('#euca-login-form').submit(function (event) {
+            var remember = $('#remember').prop('checked');
+            if (remember == true) {
+              $.cookie('account', $('#account').val(), {expires: expiration});
+              $.cookie('username', $('#username').val(), {expires: expiration});
+              $.cookie('remember', 'true', {expires: expiration});
+            }
+            else {
+              $.removeCookie('account');
+              $.removeCookie('username');
+              $.removeCookie('remember');
+            }
+          });
+          $('#aws-login-form').submit(function (event) {
+            var remember = $('#remember_aws').prop('checked');
+            if (remember == true) {
+              $.cookie('accessid', $('#access_key').val(), {expires: expiration});
+              $.cookie('remember_aws', 'true', {expires: expiration});
+            }
+            else {
+              $.removeCookie('accessid');
+              $.removeCookie('remember_aws');
+            }
           });
       }
     </script>
@@ -57,10 +97,8 @@
                               action="${request.route_url('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
-                                <div class="small-4 columns">
-                                    <label for="right-label" class="right">${field.label.text}</label>
-                                </div>
-                                <div class="small-8 columns field">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     ${structure:field}
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors">
@@ -91,10 +129,8 @@
                               action="${request.route_url('login')}?login_type=AWS">
                             <input type="hidden" name="came_from" value="${came_from}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
-                                <div class="small-4 columns">
-                                    <label for="right-label" class="right">${field.label.text}</label>
-                                </div>
-                                <div class="small-8 columns field">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     ${structure:field}
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors">

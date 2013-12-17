@@ -15,6 +15,7 @@
     <meta metal:define-slot="head_css" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.4.min.js')}"></script>
     <meta metal:define-slot="head_js" />
 </head>

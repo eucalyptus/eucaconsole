@@ -18,6 +18,7 @@ class EucaLoginForm(BaseSecureForm):
         _(u'Username'), validators=[validators.Required(message=_(u'Username is required'))])
     password = wtforms.PasswordField(
         _(u'Password'), validators=[validators.Required(message=_(u'Password is required'))])
+    remember = wtforms.BooleanField(_(u'Remember me'));
 
 
 class AWSLoginForm(BaseSecureForm):
@@ -25,6 +26,7 @@ class AWSLoginForm(BaseSecureForm):
         _(u'Access key ID'), validators=[validators.Required(message=_(u'Access key is required'))])
     secret_key = wtforms.PasswordField(
         _(u'Secret key'), validators=[validators.Required(message=_(u'Secret key is required'))])
+    remember_aws = wtforms.BooleanField(_(u'Remember my keys'));
 
 class EucaChangePasswordForm(BaseSecureForm):
     password = wtforms.PasswordField(
