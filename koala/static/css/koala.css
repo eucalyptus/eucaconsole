@@ -1565,8 +1565,8 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel.has-title { position: relative; padding-top: 60px; }
-.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.panel.has-title { position: relative; padding-top: 60px; border: none; }
+.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.other-actions { background-color: white; }
 
 .reveal-modal h3 { font-weight: bold; }

@@ -9,6 +9,16 @@
         <h3 class="header" id="pagetitle" i18n:translate="">
             Images
         </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+        <!--! Notification to select image for Launch Instance wizard, (step 1).  Append ?launch=1 to url to display -->
+        <div id="notifications" tal:condition="request.params.get('launch')">
+            <div data-alert="alert" class="alert-box">
+                <span i18n:translate="">Select the image to launch your instance from below</span>
+                <a href="#" class="close">&times;</a>
+            </div>
+        </div>
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']">
                 <metal:block metal:fill-slot="filter_form_fields">
@@ -70,7 +80,7 @@
                 <th>&nbsp;</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>

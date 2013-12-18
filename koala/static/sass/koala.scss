@@ -437,14 +437,14 @@ textarea.hidden {
     &.has-title {
         position: relative;
         padding-top: 60px;
+        border: none;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $euca-extralightblue;
-            border-top: 2px solid $euca-darkblue;
-            border-bottom: 1px solid $euca-lightgrey;
+            background-color: $euca-darkblue;
+            color: white;
             font-weight: normal;
             @include ellipsis-overflow;
         }

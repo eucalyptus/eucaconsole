@@ -64,6 +64,8 @@ class MasterLayout(object):
             return HTTPNotFound()
         parsed_url = urlparse(current_url)
         otherview = 'gridview' if display == 'tableview' else 'tableview'
+        if 'launch' in parsed_url.query:
+            current_url = current_url.replace('?launch=1', '')
         if 'display' in parsed_url.query:
             return current_url.replace(otherview, display)
         else:
