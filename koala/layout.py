@@ -69,7 +69,8 @@ class MasterLayout(object):
         if 'display' in parsed_url.query:
             return current_url.replace(otherview, display)
         else:
-            return '{url}?display={view}'.format(url=current_url, view=display)
+            ampersand = '&' if '?' in current_url else '?'
+            return '{url}{amp}display={view}'.format(url=current_url, amp=ampersand, view=display)
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')
