@@ -77,9 +77,9 @@ class TaggedItemView(BaseView):
         """Return comma-separated list of tags as a string.
            Skips the 'Name' tag by default"""
         if skip_name:
-            tags_array = ['{}={}'.format(key, val) for key, val in tags.items() if key != 'Name']
+            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items() if key != 'Name']
         else:
-            tags_array = ['{}={}'.format(key, val) for key, val in tags.items()]
+            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items()]
         return ', '.join(tags_array)
 
 
@@ -137,12 +137,12 @@ class LandingPageView(BaseView):
     def get_json_endpoint(self, route):
         return '{0}{1}'.format(
             self.request.route_url(route),
-            '?{}'.format(urlencode(self.request.params)) if self.request.params else ''
+            '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
     def get_redirect_location(self, route):
         display_type = self.request.params.get('display', self.display_type)
-        return '{}?display={}'.format(self.request.route_url(route), display_type)
+        return '{0}?display={1}'.format(self.request.route_url(route), display_type)
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

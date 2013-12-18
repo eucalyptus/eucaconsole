@@ -7,11 +7,15 @@ from collections import namedtuple
 from urllib import urlencode
 
 from beaker.cache import cache_region
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+
+from ..forms.images import ImageForm 
+from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import LandingPageView,  TaggedItemView
 
 
 class ImagesView(LandingPageView):
@@ -91,4 +95,43 @@ class ImagesView(LandingPageView):
                 type=image.type,
             ))
         return dict(results=images)
+
+
+class ImageView(TaggedItemView):
+    """Views for single Image"""
+    TEMPLATE = '../templates/images/image_view.pt'
+
+    def __init__(self, request):
+        super(ImageView, self).__init__(request)
+        self.conn = self.get_connection()
+        self.image = self.get_image()
+        self.image_form = ImageForm(self.request, image=self.image, formdata=self.request.params or None)
+        self.tagged_obj = self.image
+        self.render_dict = dict(
+            image=self.image,
+            image_form=self.image_form,
+        )
+
+    def get_image(self):
+        image_param = self.request.matchdict.get('id')
+        images_param = [image_param]
+        images = self.conn.get_all_images(image_ids=images_param)
+        image = images[0] if images else None
+        return image 
+
+    @view_config(route_name='image_view', renderer=TEMPLATE)
+    def image_view(self):
+        return self.render_dict
+ 
+    @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)
+    def image_update(self):
+        if self.image_form.validate():
+            self.update_tags()
+
+            location = self.request.route_url('image_view', id=self.image.id)
+            msg = _(u'Successfully modified image')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+
+        return self.render_dict
 
