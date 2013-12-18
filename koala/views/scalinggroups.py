@@ -3,11 +3,13 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import LandingPageView, BaseView 
 
 
 class ScalingGroupsView(LandingPageView):
@@ -62,4 +64,28 @@ class ScalingGroupsView(LandingPageView):
                 termination_policies=', '.join(group.termination_policies),
             ))
         return dict(results=scalinggroups)
+
+
+class ScalingGroupView(BaseView):
+    """Views for single ScalingGroup"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_view.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='autoscale')
+        self.scalinggroup = self.get_scalinggroup()
+        self.render_dict = dict(
+            scalinggroup=self.scalinggroup,
+        )
+
+    def get_scalinggroup(self):
+        scalinggroup_param = self.request.matchdict.get('id')
+        scalinggroups_param = [scalinggroup_param]
+        scalinggroups = self.conn.get_all_groups(names=scalinggroups_param)
+        scalinggroups = scalinggroups[0] if scalinggroups else None
+        return scalinggroups 
+
+    @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
+    def scalinggroup_view(self):
+        return self.render_dict
 

@@ -76,7 +76,6 @@ class LaunchConfigView(BaseView):
         super(LaunchConfigView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
         self.launchconfig = self.get_launchconfig()
-        self.tagged_obj = self.launchconfig
         self.render_dict = dict(
             launchconfig=self.launchconfig,
         )

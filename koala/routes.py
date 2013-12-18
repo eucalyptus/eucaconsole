@@ -62,6 +62,7 @@ urls = [
     # Scaling Groups #####
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
 
     # Launch Configurations #####
     Route(name='launchconfigs', pattern='/launchconfigs'),

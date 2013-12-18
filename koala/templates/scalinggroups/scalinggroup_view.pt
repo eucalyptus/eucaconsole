@@ -1,0 +1,73 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('scalinggroups')}"
+               data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Scaling Group</span> ${scalinggroup.name if scalinggroup else ''}
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+
+        <div class="large-7 columns"
+            tal:define="readonly True if scalinggroup else False;">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span tal:condition="scalinggroup">
+                        <span i18n:translate="">Properties of scaling group</span>
+                        <strong>${scalinggroup.name }</strong>
+                    </span>
+                    <span tal:condition="not scalinggroup" i18n:translate="">
+                        Error 
+                    </span>
+                </h6>
+                <form action="${request.route_url('scalinggroups')}" method="post" data-abide="abide"> 
+                    <div tal:condition="scalinggroup">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                            <div class="small-9 columns value">${scalinggroup.name if scalinggroup.name else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Availability Zones</label></div>
+                            <div class="small-9 columns value">${scalinggroup.availability_zones if scalinggroup.availability_zones else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Desired Capacity</label></div>
+                            <div class="small-9 columns value">${scalinggroup.desired_capacity if scalinggroup.desired_capacity else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Max Size</label></div>
+                            <div class="small-9 columns value">${scalinggroup.max_size if scalinggroup.max_size else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Min Size</label></div>
+                            <div class="small-9 columns value">${scalinggroup.min_size if scalinggroup.min_size else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Placement Group</label></div>
+                            <div class="small-9 columns value">${scalinggroup.placement_group if scalinggroup.placement_group else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Termination Policies</label></div>
+                            <div class="small-9 columns value">${scalinggroup.termination_policies if scalinggroup.termination_policies else ''}</div>
+                        </div>
+                    <hr>
+                    <div class="row">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns field inline">
+                            <button type="submit" class="button">
+                                <span tal:condition="scalinggroup" i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('scalinggroups')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</metal:block>
+
