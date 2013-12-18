@@ -7,7 +7,8 @@
 
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl">
+    <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
+         ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('instances')}"
                data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
@@ -51,6 +52,10 @@
                                     <div class="small-8 columns value">${image.name}</div>
                                 </div>
                                 <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
+                                    <div class="small-8 columns value">${image.root_device_type}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
                                     <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
                                     <div class="small-8 columns value">${image.location}</div>
                                 </div>
@@ -84,10 +89,10 @@
                             <p class="description" i18n:translate="">
                                 Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'])}
+                            ${panel('form_field', field=launch_form['number'], ng_attrs={'model': 'instanceNumber'})}
                             ${panel('form_field', field=launch_form['names'])}
-                            ${panel('form_field', field=launch_form['instance_type'])}
-                            ${panel('form_field', field=launch_form['zone'])}
+                            ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
                             ${panel('tag_editor')}
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -103,8 +108,8 @@
                             <p class="description" i18n:translate="">
                                 Specify the key pair and security group.
                             </p>
-                            ${panel('form_field', field=launch_form['keypair'])}
-                            ${panel('form_field', field=launch_form['securitygroup'])}
+                            ${panel('form_field', field=launch_form['keypair'], ng_attrs={'model': 'keyPair'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], ng_attrs={'model': 'securityGroup'})}
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
@@ -127,6 +132,10 @@
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
+                            ${panel('form_field', field=launch_form['private_addressing'])}
+                            <div tal:condition="image.root_device_type == 'ebs'">
+                                <!--! Block device mapping editor here -->
+                            </div>
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
@@ -143,8 +152,48 @@
                 </form>
             </div>
         </div>
-        <div class="large-4 columns">
-            <!--! preview selected choices here -->
+        <div class="large-4 columns summary" ng-cloak="">
+            <h5 i18n:translate="" class="title">Summary</h5>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Image:</label></div>
+                    <div class="small-8 columns value">${image.id}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
+                    <div class="small-8 columns value"><!--! TODO: image.platform here --></div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
+                    <div class="small-8 columns value">{{ instanceNumber }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
+                    <div class="small-8 columns value">{{ instanceType }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Zone:</label></div>
+                    <div class="small-8 columns value">{{ instanceZone }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Tags:</label></div>
+                    <div class="small-8 columns value">
+                        <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Key pair:</label></div>
+                    <div class="small-8 columns value">{{ keyPair }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
+                    <div class="small-8 columns value">{{ securityGroup }}</div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

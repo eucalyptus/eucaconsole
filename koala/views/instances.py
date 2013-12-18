@@ -538,13 +538,15 @@ class InstanceLaunchView(TaggedItemView):
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            private_addressing = self.request.params.get('private_addressing', False)
+            addressing_type = 'private' if private_addressing else 'public'
             try:
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=max_count,
                     key_name=key_name,
                     user_data=None,
-                    addressing_type=None,
+                    addressing_type=addressing_type,
                     instance_type=instance_type,
                     placement=availability_zone,
                     kernel_id=kernel_id,

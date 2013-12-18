@@ -8,6 +8,7 @@ from operator import itemgetter
 
 import simplejson as json
 
+from wtforms.fields import IntegerField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
@@ -29,11 +30,16 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
     if field.flags.required:
         html_attrs['required'] = 'required'
 
-    # Add maxlength="..." HTML attribute to form field if any length validators
+    # Add appropriate HTML attributes based on validators
     for validator in field.validators:
+        # Add maxlength="..." HTML attribute to form field if any length validators
         # If we have multiple Length validators, the last one wins
         if isinstance(validator, Length):
             html_attrs['maxlength'] = validator.max
+
+    # Add HTML attributes based on field type (e.g. IntegerField)
+    if isinstance(field, IntegerField):
+        html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():

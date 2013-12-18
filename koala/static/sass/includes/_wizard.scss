@@ -67,3 +67,25 @@
     }
 }
 
+.summary {
+    position: relative;
+    padding-bottom: 2rem;
+    top: 2px;
+    background-color: $euca-extralightgrey;
+    border-top: 8px solid $euca-darkblue;
+    word-break: break-all;
+    .title {
+        font-weight: bold;
+        border-bottom: 1px solid $euca-darkblue;
+        margin-top: 7px;
+        margin-bottom: 1rem;
+    }
+    .section {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid $euca-lightgrey;
+    }
+    label {
+        color: $euca-darkblue;
+        font-weight: bold;
+    }
+}

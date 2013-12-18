@@ -68,9 +68,12 @@ class LaunchInstanceForm(BaseSecureForm):
              The block device mappings are also pulled in via a panel
     """
     number_error_msg = _(u'Number of instances is required')
-    number = wtforms.TextField(
+    number = wtforms.IntegerField(
         label=_(u'Number of instances'),
-        validators=[validators.Required(message=number_error_msg)],
+        validators=[
+            validators.Required(message=number_error_msg),
+            validators.NumberRange(min=1, max=99),  # Restrict num instances that can be launched in one go
+        ],
     )
     names = wtforms.TextField(label=_(u'Instance name(s)'))
     instance_type_error_msg = _(u'Instance type is required')
@@ -97,6 +100,7 @@ class LaunchInstanceForm(BaseSecureForm):
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
@@ -104,6 +108,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.image = image
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
+        self.monitoring_enabled.data = True
 
         if image is not None:
             self.kernel_id.data = image.kernel_id or ''
@@ -134,7 +139,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = choices
 
     def set_availability_zone_choices(self):
-        choices = []
+        choices = [('', _(u'select...'))]
         zones = self.conn.get_all_zones()  # TODO: cache me
         for zone in zones:
             choices.append((zone.name, zone.name))
