@@ -3,23 +3,29 @@
 
 @import "../includes/landingpage";
 
-.tile .label.has-tip {
-    background: white;
-    color: $euca-darkblue;
-    font-weight: bold;
-    border-bottom: 1px solid $euca-darkgrey;
+
+.tile {
+    .header a {
+        padding-right: 4px;
+    }
+    .label.has-tip {
+        background: white;
+        color: $euca-darkblue;
+        font-weight: bold;
+        border-bottom: 1px solid $euca-darkgrey;
+    }
+    .footer .action {
+        display: block;
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        line-height: 1.5rem;
+        text-align: center;
+        background-color: $euca-lightgreen;
+        color: white;
+    }
 }
 
-.tile .footer .action {
-    display: block;
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    line-height: 1.5rem;
-    text-align: center;
-    background-color: $euca-lightgreen;
-    color: white;
-}
-
+// Adjustment for Images landing page not having an "Add Image" button.
 .row.sort-search {
     margin-top: 20px;
 }

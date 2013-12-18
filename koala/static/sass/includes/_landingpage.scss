@@ -93,6 +93,9 @@ $gridwrapper-table-width: 98%;
             font-family: Verdana, sans-serif;
             min-width: 22px;
             text-align: center;
+            &.ellipsis {
+                margin-left: 0;
+            }
         }
     }
     .footer {

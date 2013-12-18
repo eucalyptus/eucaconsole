@@ -56,7 +56,7 @@ class MasterLayout(object):
         return notifications
 
     def get_datagridview_url(self, display):
-        """Convience property to get tableview or gridview URL for landing pages"""
+        """Convenience property to get tableview or gridview URL for landing pages"""
         try:
             current_url = self.request.current_route_url()
         except ValueError:

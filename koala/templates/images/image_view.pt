@@ -75,6 +75,20 @@
                 </form>
             </div>
         </div>
+        <div class="large-5 columns">
+            <div class="panel has-title" tal:condition="image">
+                <h6 class="title" i18n:translate="">Other image actions</h6>
+                <div class="row">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
+                        <a href="${request.route_url('instance_create')}?image_id=${image.id}"
+                           class="button secondary" i18n:translate="">
+                            Launch Instance from this Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

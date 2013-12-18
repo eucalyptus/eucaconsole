@@ -133,7 +133,7 @@
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
                             ${panel('form_field', field=launch_form['private_addressing'])}
-                            <div tal:condition="image.root_device_type == 'ebs'">
+                            <div tal:condition="image and image.root_device_type == 'ebs'">
                                 <!--! Block device mapping editor here -->
                             </div>
                             <div class="row" tal:condition="image">
@@ -152,7 +152,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-4 columns summary" ng-cloak="">
+        <div class="large-4 columns summary" ng-cloak="" tal:condition="image">
             <h5 i18n:translate="" class="title">Summary</h5>
             <div class="section">
                 <div class="row">

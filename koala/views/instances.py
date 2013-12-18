@@ -561,11 +561,11 @@ class InstanceLaunchView(TaggedItemView):
                     # Try adding name tag (from comma-separated list of names)
                     try:
                         if len(names_array) > 1:
-                            name = names[idx]
+                            name = names[idx].strip()
                         else:
-                            name = names_array
+                            name = ''.join(names_array).strip()
                         if name:
-                            instance.add_tag('Name', name.strip())
+                            instance.add_tag('Name', name)
                     except IndexError:
                         # Don't blow up if the names array doesn't match number of instances
                         # since the instance's 'Name' tag can be edited later
