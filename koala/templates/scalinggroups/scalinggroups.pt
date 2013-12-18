@@ -17,8 +17,38 @@
                 <a class="button" i18n:translate="">Create new scaling group</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>{{ item.launch_config }}</div>
-                <div>{{ item.availability_zones }}</div>
+                <div ng-show="item.launch_config">
+                    <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
+                    {{ item.launch_config }}
+                </div>
+                <div ng-show="item.name">
+                    <span class="label" title="Scaling Group Name" i18n:attributes="title" data-tooltip="">SC</span>
+                    {{ item.name }}
+                </div>
+                <div ng-show="item.availability_zones">
+                    <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.availability_zones }}
+                </div>
+                <div ng-show="item.desired_capacity">
+                    <span class="label" title="Desired Capacity" i18n:attributes="title" data-tooltip="">DC</span>
+                    {{ item.desired_capacity }}
+                </div>
+                <div ng-show="item.max_size">
+                    <span class="label" title="Max Size" i18n:attributes="title" data-tooltip="">MX</span>
+                    {{ item.max_size }}
+                </div>
+                <div ng-show="item.min_size">
+                    <span class="label" title="Min Size" i18n:attributes="title" data-tooltip="">MN</span>
+                    {{ item.min_size }}
+                </div>
+                <div ng-show="item.placement_group">
+                    <span class="label" title="Placement Group" i18n:attributes="title" data-tooltip="">PC</span>
+                    {{ item.placement_group }}
+                </div>
+                <div ng-show="item.termination_policies">
+                    <span class="label" title="Termination Policies" i18n:attributes="title" data-tooltip="">TP</span>
+                    {{ item.termination_policies }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
