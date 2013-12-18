@@ -95,7 +95,6 @@ class LoginView(BaseView):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
-                print "http error = "+str(err.__dict__)
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_url('changepassword')
                     return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s"%(account, username)))
