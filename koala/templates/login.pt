@@ -23,6 +23,15 @@
           var account = $.cookie('account');
           if (account !== undefined) $('#account').val(account);
 
+          var last_login = $.cookie('login-form');
+          if (last_login == 'aws') {  // select that tab
+            // all this mimics what happens in the tab code itself... no other way I found worked.
+            var tab = $('#aws-tab');
+            tab.addClass('active').trigger('opened');
+            tab.siblings().removeClass('active');
+            var target = $('#aws');
+            target.siblings().removeClass('active').end().addClass('active');
+          }
           // this code assures the forms have focus.
           set_focus();
           $('#login-tabs').on('toggled', function (event, tab) {
@@ -32,6 +41,10 @@
           // set up listener to capture and save values if remember checked
           $('#euca-login-form').submit(function (event) {
             $.cookie('account', $('#account').val(), {expires: 180});
+            $.cookie('login-form', 'eucalyptus', {expires: 180});
+          });
+          $('#aws-login-form').submit(function (event) {
+            $.cookie('login-form', 'aws', {expires: 180});
           });
       }
     </script>
