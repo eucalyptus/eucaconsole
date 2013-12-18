@@ -95,7 +95,10 @@ class LoginView(BaseView):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
-                if err.msg == u'Unauthorized':
+                if err.code == 403:  # password expired
+                    changepwd_url = self.request.route_url('changepassword')
+                    return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s"%(account, username)))
+                elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
             except URLError, err:
