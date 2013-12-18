@@ -21,10 +21,6 @@
                     <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
                     {{ item.launch_config }}
                 </div>
-                <div ng-show="item.name">
-                    <span class="label" title="Scaling Group Name" i18n:attributes="title" data-tooltip="">SC</span>
-                    {{ item.name }}
-                </div>
                 <div ng-show="item.availability_zones">
                     <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.availability_zones }}
