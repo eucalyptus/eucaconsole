@@ -45,3 +45,5 @@ class EucaChangePasswordForm(BaseSecureForm):
         ],
         widget=widgets.PasswordInput())
         
+class EucaLogoutForm(BaseSecureForm):
+    pass

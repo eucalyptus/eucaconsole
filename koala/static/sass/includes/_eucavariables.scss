@@ -76,6 +76,10 @@ $button-lrg: rem-calc(12);
 $button-border-width: 1px;
 $button-border-style: solid;
 
+// Tabs
+$tabs-navigation-padding: rem-calc(4) !default;
+$tabs-content-margin-bottom: rem-calc(1) !default;
+
 // Tooltips
 $tooltip-padding: rem-calc(5);
 
