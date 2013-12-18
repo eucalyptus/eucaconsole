@@ -66,6 +66,7 @@ urls = [
     # Launch Configurations #####
     Route(name='launchconfigs', pattern='/launchconfigs'),
     Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
+    Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 
     # Volumes #####
     # Landing page

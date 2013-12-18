@@ -3,11 +3,13 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import LandingPageView, BaseView 
 
 
 class LaunchConfigsView(LandingPageView):
@@ -64,4 +66,30 @@ class LaunchConfigsView(LandingPageView):
                 user_data=launchconfig.user_data,
             ))
         return dict(results=launchconfigs)
+
+
+class LaunchConfigView(BaseView):
+    """Views for single LaunchConfig"""
+    TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
+
+    def __init__(self, request):
+        super(LaunchConfigView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='autoscale')
+        self.launchconfig = self.get_launchconfig()
+        self.tagged_obj = self.launchconfig
+        self.render_dict = dict(
+            launchconfig=self.launchconfig,
+        )
+
+    def get_launchconfig(self):
+        launchconfig_param = self.request.matchdict.get('id')
+        launchconfigs_param = [launchconfig_param]
+        launchconfigs = self.conn.get_all_launch_configurations(names=launchconfigs_param)
+        launchconfigs = launchconfigs[0] if launchconfigs else None
+        return launchconfigs 
+
+    @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
+    def launchconfig_view(self):
+        return self.render_dict
+ 
 
