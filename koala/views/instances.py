@@ -532,7 +532,7 @@ class InstanceLaunchView(TaggedItemView):
             key_name = self.request.params.get('keypair')
             max_count = self.request.params.get('number')
             securitygroup = self.request.params.get('securitygroup', 'default')
-            security_group_ids = [securitygroup]
+            security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone')
             kernel_id = self.request.params.get('kernel_id') or None
@@ -553,22 +553,29 @@ class InstanceLaunchView(TaggedItemView):
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=None,
-                    security_group_ids=security_group_ids,
+                    security_group_ids=security_groups,
                 )
                 instances = reservation.instances
                 # Add tags for newly launched instance(s)
                 for idx, instance in enumerate(instances):
-                    if len(names_array) == len(instances):
-                        # Length of names array should match number of instances to launch for this to work
-                        name = names[idx].strip()
+                    # Try adding name tag (from comma-separated list of names)
+                    try:
+                        if len(names_array) > 1:
+                            name = names[idx]
+                        else:
+                            name = names_array
                         if name:
-                            instance.add_tag('Name', name)
+                            instance.add_tag('Name', name.strip())
+                    except IndexError:
+                        # Don't blow up if the names array doesn't match number of instances
+                        # since the instance's 'Name' tag can be edited later
+                        pass
                     if tags_json:
                         tags = json.loads(tags_json)
                         for tagname, tagvalue in tags.items():
                             instance.add_tag(tagname, tagvalue)
-                # TODO: format msg with instance ids
-                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch the instances.')
+                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
+                msg += ', '.join(instance.id for instance in instances)
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_url('instances')

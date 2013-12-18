@@ -5,7 +5,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance_launch.css')}" />
 </head>
 
-
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
          ng-init="initController()">
@@ -22,6 +21,7 @@
                 <form action="${request.route_url('instance_launch')}" id="launch-instance-form"
                       method="post" data-abide="abide">
                     ${structure:launch_form['csrf_token']}
+                    ${structure:launch_form['image_id']}
                     <dl class="tabs vertical" data-tab="">
                         <dd class="${'active' if not image else ''}">
                             <a id="tabStep1" href="#step1"><span class="cir">1</span> Image</a>
@@ -89,7 +89,7 @@
                             <p class="description" i18n:translate="">
                                 Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], ng_attrs={'model': 'instanceNumber'})}
+                            ${panel('form_field', field=launch_form['number'], maxlength=2, ng_attrs={'model': 'instanceNumber'})}
                             ${panel('form_field', field=launch_form['names'])}
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
@@ -179,7 +179,7 @@
                 </div>
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Tags:</label></div>
-                    <div class="small-8 columns value">
+                    <div class="small-8 columns value" id="tag-preview">
                         <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                 </div>
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                    <div class="small-8 columns value">{{ securityGroup }}</div>
+                    <div class="small-8 columns value">{{ securityGroup.label }}</div>
                 </div>
             </div>
         </div>

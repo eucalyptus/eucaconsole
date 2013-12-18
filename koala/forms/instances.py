@@ -67,6 +67,7 @@ class LaunchInstanceForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
              The block device mappings are also pulled in via a panel
     """
+    image_id = wtforms.HiddenField(label=_(u'Image'))
     number_error_msg = _(u'Number of instances is required')
     number = wtforms.IntegerField(
         label=_(u'Number of instances'),
@@ -111,6 +112,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.monitoring_enabled.data = True
 
         if image is not None:
+            self.image_id.data = self.image.id
             self.kernel_id.data = image.kernel_id or ''
             self.ramdisk_id.data = image.ramdisk_id or ''
 
@@ -159,7 +161,7 @@ class LaunchInstanceForm(BaseSecureForm):
         security_groups = self.conn.get_all_security_groups()  # TODO: cache me
         for sgroup in security_groups:
             if sgroup.id:
-                choices.append((sgroup.id, sgroup.name))
+                choices.append((sgroup.name, sgroup.name))
         if not security_groups:
             choices.append(('', 'default'))
         self.securitygroup.choices = sorted(set(choices))
