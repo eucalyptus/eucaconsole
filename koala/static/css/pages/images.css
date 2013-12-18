@@ -70,6 +70,7 @@
   .sort-search .go { min-width: 32px; } }
 .tile .header a { padding-right: 4px; }
 .tile .label.has-tip { background: white; color: #00415e; font-weight: bold; border-bottom: 1px solid #444444; }
-.tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #8dc640; color: white; }
+.tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #76b800; color: white; }
+.tile .footer .action:hover { background-color: #558500; }
 
 .row.sort-search { margin-top: 20px; }

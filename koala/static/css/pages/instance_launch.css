@@ -11,9 +11,10 @@
 .wizard .tabs-content .content { width: 100%; }
 
 .summary { position: relative; padding-bottom: 2rem; top: 2px; background-color: #eeeeee; border-top: 8px solid #00415e; }
+.summary label { position: relative; right: -1rem; color: #00415e; font-weight: bold; }
+.summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #00415e; margin-top: 7px; margin-bottom: 1rem; }
 .summary .section { padding: 0.5rem 0; border-bottom: 1px solid #cccccc; }
-.summary label { color: #00415e; font-weight: bold; }
 .summary #tag-preview { word-break: break-all; }
 
 /* @section Launch Instance page styles */

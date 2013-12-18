@@ -1492,7 +1492,7 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 
 a.has-tip { border-bottom: none !important; }
 
-.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
+.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; max-width: 260px; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }

@@ -73,6 +73,15 @@
     top: 2px;
     background-color: $euca-extralightgrey;
     border-top: 8px solid $euca-darkblue;
+    label {
+        position: relative;
+        right: -1rem;
+        color: $euca-darkblue;
+        font-weight: bold;
+    }
+    .row {
+        margin-bottom: 5px;
+    }
     .title {
         font-weight: bold;
         border-bottom: 1px solid $euca-darkblue;
@@ -82,10 +91,6 @@
     .section {
         padding: 0.5rem 0;
         border-bottom: 1px solid $euca-lightgrey;
-    }
-    label {
-        color: $euca-darkblue;
-        font-weight: bold;
     }
     #tag-preview {
         word-break: break-all;
