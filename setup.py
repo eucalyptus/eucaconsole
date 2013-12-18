@@ -11,7 +11,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     'Babel == 1.3',
     'beaker == 1.6.4',
-    'boto == 2.13.3',
+    'boto == 2.20.1',
     'chameleon == 2.13-1',
     'gevent == 0.13.8',  # Requires libevent
     'greenlet == 0.4.1',

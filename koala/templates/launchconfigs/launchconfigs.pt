@@ -17,10 +17,22 @@
                 <a class="button" i18n:translate="">Create new launch configuration</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>{{ item.image_id }}</div>
-                <div>{{ item.key_name }}</div>
-                <div>{{ item.security_groups }}</div>
-                <div>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</div>
+                <div ng-show="item.image_id">
+                    <span class="label" title="Image ID" i18n:attributes="title" data-tooltip="">IM</span>
+                    {{ item.image_id }}
+                </div>
+                <div ng-show="item.key_name">
+                    <span class="label" title="Key Name" i18n:attributes="title" data-tooltip="">KN</span>
+                    {{ item.key_name }}
+                </div>
+                <div ng-show="item.security_groups">
+                    <span class="label" title="Security Groups" i18n:attributes="title" data-tooltip="">SG</span>
+                    {{ item.security_groups }}
+                </div>
+                <div ng-show="item.created_time">
+                    <span class="label" title="Created Time" i18n:attributes="title" data-tooltip="">CT</span>
+                    {{ item.created_time | date:'yyyy/MM/dd h:mm a' }}
+                </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
