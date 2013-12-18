@@ -21,15 +21,7 @@
       function page_loaded() {
           // pre-fill if cookies are present
           var account = $.cookie('account');
-          var username = $.cookie('username');
-          var remember = $.cookie('remember');
-          var accessid = $.cookie('accessid');
-          var remember_aws = $.cookie('remember_aws');
           if (account !== undefined) $('#account').val(account);
-          if (username !== undefined) $('#username').val(username);
-          if (remember !== undefined) $('#remember').prop('checked', true);
-          if (accessid !== undefined) $('#access_key').val(accessid);
-          if (remember_aws !== undefined) $('#remember_aws').prop('checked', true);
 
           // this code assures the forms have focus.
           set_focus();
@@ -38,30 +30,8 @@
           });
 
           // set up listener to capture and save values if remember checked
-          var expiration = 180;
           $('#euca-login-form').submit(function (event) {
-            var remember = $('#remember').prop('checked');
-            if (remember == true) {
-              $.cookie('account', $('#account').val(), {expires: expiration});
-              $.cookie('username', $('#username').val(), {expires: expiration});
-              $.cookie('remember', 'true', {expires: expiration});
-            }
-            else {
-              $.removeCookie('account');
-              $.removeCookie('username');
-              $.removeCookie('remember');
-            }
-          });
-          $('#aws-login-form').submit(function (event) {
-            var remember = $('#remember_aws').prop('checked');
-            if (remember == true) {
-              $.cookie('accessid', $('#access_key').val(), {expires: expiration});
-              $.cookie('remember_aws', 'true', {expires: expiration});
-            }
-            else {
-              $.removeCookie('accessid');
-              $.removeCookie('remember_aws');
-            }
+            $.cookie('account', $('#account').val(), {expires: 180});
           });
       }
     </script>
