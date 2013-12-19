@@ -87,5 +87,7 @@ class ScalingGroupView(BaseView):
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
+        self.scalinggroup.availability_zones_str = ', '.join(self.scalinggroup.availability_zones)
+        self.scalinggroup.termination_policies_str = ', '.join(self.scalinggroup.termination_policies)
         return self.render_dict
 

@@ -30,7 +30,7 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Availability Zones</label></div>
-                            <div class="small-9 columns value">${scalinggroup.availability_zones if scalinggroup.availability_zones else ''}</div>
+                            <div class="small-9 columns value">${scalinggroup.availability_zones_str if scalinggroup.availability_zones_str else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Desired Capacity</label></div>
@@ -50,7 +50,7 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Termination Policies</label></div>
-                            <div class="small-9 columns value">${scalinggroup.termination_policies if scalinggroup.termination_policies else ''}</div>
+                            <div class="small-9 columns value">${scalinggroup.termination_policies_str if scalinggroup.termination_policies_str else ''}</div>
                         </div>
                     <hr>
                     <div class="row">
