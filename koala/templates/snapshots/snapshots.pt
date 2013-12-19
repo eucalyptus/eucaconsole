@@ -23,6 +23,7 @@
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -93,12 +94,13 @@
                     <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                         <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
                         <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
+                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
                     </ul>
                 </td>
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('snapshot_dialogs', delete_form=delete_form, landingpage=True)}
+        ${panel('snapshot_dialogs', delete_form=delete_form, register_form=register_form, landingpage=True)}
     </div>
 </div>
 
