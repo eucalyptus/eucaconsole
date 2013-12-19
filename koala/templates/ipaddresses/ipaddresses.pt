@@ -103,7 +103,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/custom_filter.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/ipaddresses.js')}"></script>
 </div>

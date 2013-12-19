@@ -3,7 +3,7 @@
    * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
 **/
 
-angular.module('CustomFilter', []).filter('escapeURL', function() {
+angular.module('CustomFilters', []).filter('escapeURL', function() {
   return function(input) {
     return encodeURIComponent(input);
   };
