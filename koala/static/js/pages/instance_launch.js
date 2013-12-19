@@ -4,9 +4,11 @@
  *
  */
 
-// Launch Instance page includes the tag editor, so pull in that module as well.
-angular.module('LaunchInstance', ['TagEditor'])
+// Launch Instance page includes the tag editor and Block Device Mapping editor, so pull in those modules
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor'])
     .controller('LaunchInstanceCtrl', function ($scope, $timeout) {
+        $scope.instanceType = 'm1.small';
+        $scope.instanceNumber = '1';
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.urlParams = $.url().param();

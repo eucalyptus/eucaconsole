@@ -1,0 +1,55 @@
+<!--! Block Device Mapping editor -->
+<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
+     ng-controller="BlockDeviceMappingEditorCtrl">
+    <label i18n:translate="" class="storage-label">Storage</label>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th i18n:translate="">Volume</th>
+                    <th i18n:translate="">Mapping</th>
+                    <th i18n:translate="">Snapshot</th>
+                    <th i18n:translate="">Size (GB)</th>
+                    <th i18n:translate="">Delete on Terminate</th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Root</td>
+                    <td>/dev/sda</td>
+                    <td></td>
+                    <td>
+                        <input type="number" name="size" pattern="integer" />
+                    </td>
+                    <td>
+                        <input type="checkbox" checked="checked" />
+                    </td>
+                    <td></td>
+                </tr>
+                <tr ng-repeat="item in [1, 2, 3]" class="new-entry">
+                    <td></td>
+                    <td>
+                        <input type="text" name="path" />
+                    </td>
+                    <td>
+                        <select name="snapshot_id">
+                            <option value="">None</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" pattern="integer" />
+                    </td>
+                    <td>
+                        <input type="checkbox" name="delete_on_termination"  checked="checked" />
+                    </td>
+                    <td>
+                        <i class="circle">+</i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <textarea id="bdmapping-editor" name="block_device_mapping"></textarea>
+    </div>
+    <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
+</div>

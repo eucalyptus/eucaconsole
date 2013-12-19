@@ -9,6 +9,7 @@ import re
 import simplejson as json
 import time
 
+from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -542,6 +543,8 @@ class InstanceLaunchView(TaggedItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             private_addressing = self.request.params.get('private_addressing', False)
             addressing_type = 'private' if private_addressing else 'public'
+            bdmapping_json = self.request.params.get('bdmapping_json')
+            block_device_map = self.get_block_device_map(bdmapping_json)
             try:
                 reservation = self.conn.run_instances(
                     image_id,
@@ -554,7 +557,7 @@ class InstanceLaunchView(TaggedItemView):
                     kernel_id=kernel_id,
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
-                    block_device_map=None,
+                    block_device_map=block_device_map,
                     security_group_ids=security_groups,
                 )
                 instances = reservation.instances
@@ -599,14 +602,33 @@ class InstanceLaunchView(TaggedItemView):
         return None
 
     @staticmethod
+    def get_block_device_map(bdmapping_json):
+        """Parse block_device_mapping JSON received from form and return a configured BlockDeviceMapping object"""
+        # mappings should be an array of dicts, with each dict as follows:
+        #   dict(volume_type=..., path=..., snapshot_id=..., size=..., delete_on_termination=...)
+        mappings = json.loads(bdmapping_json)
+        if mappings:
+            bdm = BlockDeviceMapping()
+            for mapping in mappings:
+                device = BlockDeviceType()
+                device.volume_type = mapping.get('volume_type')  # 'EBS' or 'ephemeral'
+                device.snapshot_id = mapping.get('snapshot_id') or None
+                device.size = mapping.get('size')
+                device.delete_on_termination = mapping.get('delete_on_termination', False)
+                path = mapping.get('path')  # e.g. '/dev/sdb'
+                bdm[path] = device
+            return bdm
+        return None
+
+    @staticmethod
     def get_platform(image):
-        """Give me a boto.ec2.image.Image object and I'll give try to give you the platform"""
-        platform = 'unknown'
-        # Try lookup using description
+        """Give me a boto.ec2.image.Image object and I'll give you the platform"""
+        # Use platform if exists (e.g. 'windows')
         if image.platform:
             return image.platform
+        # Try lookup using description
         if image.description:
             for choice in PLATFORM_CHOICES:
                 if re.match(choice.pattern, image.description, re.IGNORECASE):
-                    platform = choice.name
-        return platform
+                    return choice.name
+        return 'unknown'

@@ -137,7 +137,7 @@
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
                             ${panel('form_field', field=launch_form['private_addressing'])}
                             <div tal:condition="image and image.root_device_type == 'ebs'">
-                                <!--! Block device mapping editor here -->
+                                ${panel('bdmapping_editor')}
                             </div>
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>

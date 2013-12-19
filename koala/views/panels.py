@@ -101,3 +101,12 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
+
+
+@panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
+def bdmapping_editor(context, request, image=None, leftcol_width=0, rightcol_width=12):
+    """ Block device mapping editor (e.g. for Launch Instance page).
+        Usage example (in Chameleon template): ${panel('bdmapping_editor')}
+    """
+    return dict(image=image, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+
