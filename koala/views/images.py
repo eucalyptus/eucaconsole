@@ -31,13 +31,17 @@ class ImagesView(LandingPageView):
             owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
         conn = self.get_connection()
-        return self.get_cached_items(conn, owners)
+        region = self.request.session.get('region')
+        return self.get_images(conn, owners, region)
 
     @staticmethod
-    @cache_region('long_term', 'images_cache')
-    def get_cached_items(conn, owners):
+    def get_images(conn, owners, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        return conn.get_all_images(owners=owners) if conn else []
+
+        @cache_region('long_term', 'images_cache')
+        def _get_images_cache(_owners, _region):
+            return conn.get_all_images(owners=_owners) if conn else []
+        return _get_images_cache(owners, region)
 
     @view_config(route_name='images', renderer='../templates/images/images.pt')
     def images_landing(self):
@@ -52,7 +56,7 @@ class ImagesView(LandingPageView):
         if self.cloud_type == 'aws':
             owner_choices = (
                 Choice(key='self', label=_(u'Owned by me')),
-                Choice(key='amazon', label='Amazon AMIs'),
+                Choice(key='amazon', label=_(u'Amazon AMIs')),
                 Choice(key='aws-marketplace', label=_(u'AWS Marketplace')),
             )
         self.filter_fields = [

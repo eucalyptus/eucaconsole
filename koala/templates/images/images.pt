@@ -44,7 +44,7 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button"></div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a>
+                <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -57,8 +57,8 @@
                 </div>
                <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
-                    {{ item.description | limitTo: 96 }}
-                    <span ng-show="item.description.length > 96"
+                    {{ item.description | limitTo: 64 }}
+                    <span ng-show="item.description.length > 64"
                             data-tooltip="tooltip" class="label round has-tip ellipsis"
                             title="{{item.description}}">...</span>
                 </div>
