@@ -37,8 +37,9 @@ class ImagesView(LandingPageView):
     @staticmethod
     def get_images(conn, owners, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
+        cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
 
-        @cache_region('long_term', 'images_cache')
+        @cache_region('long_term', cache_key)
         def _get_images_cache(_owners, _region):
             return conn.get_all_images(owners=_owners) if conn else []
         return _get_images_cache(owners, region)
