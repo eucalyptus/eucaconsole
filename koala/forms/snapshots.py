@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Forms for Snapshots
 
@@ -63,4 +62,17 @@ class SnapshotForm(BaseSecureForm):
 class DeleteSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
     pass
+
+class RegisterSnapshotForm(BaseSecureForm):
+    """CSRF-protected form to delete a snapshot"""
+    name = wtforms.TextField(label=_(u'Name'),
+        validators=[validators.Required(message=_(u'Image name is required'))])
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
+        ],
+    )
+    dot = wtforms.BooleanField(label=_(u'Delete on terminate'))
+    reg_as_windows = wtforms.BooleanField(label=_(u'Register as Windows OS image'))
 

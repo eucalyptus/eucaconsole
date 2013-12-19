@@ -92,11 +92,13 @@ urls = [
     Route(name='snapshots', pattern='/snapshots'),
     Route(name='snapshots_json', pattern='/snapshots/json'),
     Route(name='snapshots_delete', pattern='/snapshots/delete'),
+    Route(name='snapshots_register', pattern='/snapshots/register'),
     # Detail page
     Route(name='snapshot_create', pattern='/snapshots/create'),
     Route(name='snapshot_view', pattern='/snapshots/{id}'),  # Pass id='new' to render Add Snapshot page
     Route(name='snapshot_update', pattern='/snapshots/{id}/update'),
     Route(name='snapshot_delete', pattern='/snapshots/{id}/delete'),
+    Route(name='snapshot_register', pattern='/snapshots/{id}/register'),
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
 
     # Security Groups #####
