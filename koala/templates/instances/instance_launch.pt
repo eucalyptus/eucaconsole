@@ -137,7 +137,7 @@
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
                             ${panel('form_field', field=launch_form['private_addressing'])}
                             <div tal:condition="image and image.root_device_type == 'ebs'">
-                                ${panel('bdmapping_editor')}
+                                ${panel('bdmapping_editor', image=image)}
                             </div>
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>

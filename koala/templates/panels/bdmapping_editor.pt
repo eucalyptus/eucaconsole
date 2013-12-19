@@ -1,6 +1,6 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
-     ng-controller="BlockDeviceMappingEditorCtrl">
+     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
     <label i18n:translate="" class="storage-label">Storage</label>
     <div>
         <table class="table">
@@ -15,19 +15,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Root</td>
-                    <td>/dev/sda</td>
-                    <td></td>
+                <tr ng-repeat="(key, val) in bdMapping">
                     <td>
-                        <input type="number" name="size" pattern="integer" />
+                        <span ng-show="key === '/dev/sda'">Root</span>
+                        <span ng-show="key !== '/dev/sda'">{{ val.volume_type }}</span>
                     </td>
+                    <td>{{ key }}</td>
+                    <td>{{ val.snapshot_id }}</td>
+                    <td>{{ val.size }} GB</td>
                     <td>
-                        <input type="checkbox" checked="checked" />
+                        <input type="checkbox" ng-checked="val.delete_on_termination" />
                     </td>
                     <td></td>
                 </tr>
-                <tr ng-repeat="item in [1, 2, 3]" class="new-entry">
+                <tr class="new-entry">
                     <td></td>
                     <td>
                         <input type="text" name="path" />
@@ -49,7 +50,7 @@
                 </tr>
             </tbody>
         </table>
-        <textarea id="bdmapping-editor" name="block_device_mapping"></textarea>
+        <textarea id="bdmapping" name="block_device_mapping"></textarea>
     </div>
     <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
 </div>

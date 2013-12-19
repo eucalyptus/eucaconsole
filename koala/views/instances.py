@@ -603,20 +603,22 @@ class InstanceLaunchView(TaggedItemView):
 
     @staticmethod
     def get_block_device_map(bdmapping_json):
-        """Parse block_device_mapping JSON received from form and return a configured BlockDeviceMapping object"""
-        # mappings should be an array of dicts, with each dict as follows:
-        #   dict(volume_type=..., path=..., snapshot_id=..., size=..., delete_on_termination=...)
-        mappings = json.loads(bdmapping_json)
-        if mappings:
+        """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
+        Mapping JSON structure...
+            {"/dev/sda":
+                {"snapshot_id": "snap-23E93E09", "volume_type": null,"volume_id": null,
+                "ebs": "", "delete_on_termination": true, "size": 1}  }
+        """
+        mapping = json.loads(bdmapping_json)
+        if mapping:
             bdm = BlockDeviceMapping()
-            for mapping in mappings:
+            for key, val in mapping.items():
                 device = BlockDeviceType()
-                device.volume_type = mapping.get('volume_type')  # 'EBS' or 'ephemeral'
-                device.snapshot_id = mapping.get('snapshot_id') or None
-                device.size = mapping.get('size')
-                device.delete_on_termination = mapping.get('delete_on_termination', False)
-                path = mapping.get('path')  # e.g. '/dev/sdb'
-                bdm[path] = device
+                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                device.snapshot_id = val.get('snapshot_id') or None
+                device.size = val.get('size')
+                device.delete_on_termination = val.get('delete_on_termination', False)
+                bdm[key] = device
             return bdm
         return None
 

@@ -108,5 +108,15 @@ def bdmapping_editor(context, request, image=None, leftcol_width=0, rightcol_wid
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor')}
     """
-    return dict(image=image, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+    bdm_object = image.block_device_mapping
+    bdm_dict = {}
+    for key, device in bdm_object.items():
+        bdm_dict[key] = dict(
+            volume_type=device.volume_type,
+            snapshot_id=device.snapshot_id,
+            size=device.size,
+            delete_on_termination=device.delete_on_termination,
+        )
+    bdm_json = json.dumps(bdm_dict)
+    return dict(image=image, bdm_json=bdm_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
