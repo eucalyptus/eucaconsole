@@ -102,7 +102,7 @@
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
-                            <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
+                             <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name || item.id }}</a>
                         </metal:block>
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
