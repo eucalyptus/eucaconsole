@@ -597,7 +597,8 @@ class InstanceLaunchView(TaggedItemView):
         image_id = self.request.params.get('image_id')
         if self.conn and image_id:
             image = self.conn.get_image(image_id)
-            image.platform = self.get_platform(image)
+            if image:
+                image.platform = self.get_platform(image)
             return image
         return None
 
@@ -626,11 +627,13 @@ class InstanceLaunchView(TaggedItemView):
     def get_platform(image):
         """Give me a boto.ec2.image.Image object and I'll give you the platform"""
         # Use platform if exists (e.g. 'windows')
-        if image.platform:
-            return image.platform
-        # Try lookup using description
-        if image.description:
-            for choice in PLATFORM_CHOICES:
-                if re.match(choice.pattern, image.description, re.IGNORECASE):
-                    return choice.name
-        return 'unknown'
+        if image:
+            if image.platform:
+                return image.platform
+            # Try lookup using description
+            if image.description:
+                for choice in PLATFORM_CHOICES:
+                    if re.match(choice.pattern, image.description, re.IGNORECASE):
+                        return choice.name
+            return 'unknown'
+        return ''

@@ -1,13 +1,13 @@
 /* @section Wizard styles */
 .wizard { position: relative; background-color: #eeeeee; }
-.wizard.has-title { position: relative; padding-top: 2.5rem; }
+.wizard.has-title { position: relative; padding-top: 42px; }
 .wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
-.wizard .tabs.vertical dd.active .cir { background-color: #00415e; color: white; }
-.wizard .tabs.vertical dd.active a { border-top: 1px solid #999999; border-bottom: 1px solid #999999; }
-.wizard .tabs.vertical dd a { white-space: nowrap; padding: 1rem 4px 1rem 16px; }
-.wizard .tabs.vertical dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #999999; color: white; }
-.wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; border-right: 16px solid #eeeeee; }
+.wizard .tabs { margin-left: 16px; }
+.wizard .tabs dd.active .cir { background-color: #00415e; color: white; }
+.wizard .tabs dd a { white-space: nowrap; padding: 1rem 16px; }
+.wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #999999; color: white; }
+.wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; border-right: 16px solid #eeeeee; border-left: 16px solid #eeeeee; }
 .wizard .tabs-content .content { width: 100%; }
 
 .summary { position: relative; padding-bottom: 2rem; top: 2px; background-color: #eeeeee; border-top: 8px solid #00415e; }
@@ -17,7 +17,12 @@
 .summary .section { padding: 0.5rem 0; border-bottom: 1px solid #cccccc; }
 .summary #tag-preview { word-break: break-all; }
 
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+/* Extra small screen (< 481px) */
+@media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Launch Instance page styles */
 #launch-instance-form #number { width: 3rem; }
 
 #bdmapping-editor .storage-label { text-align: left; }
+#bdmapping-editor .table th { font-size: 0.825rem; }

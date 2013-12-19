@@ -29,7 +29,12 @@
                     <td></td>
                 </tr>
                 <tr class="new-entry">
-                    <td></td>
+                    <td>
+                        <select name="volume_type">
+                            <option value="EBS">EBS</option>
+                            <option value="ephemeral">Ephemeral</option>
+                        </select>
+                    </td>
                     <td>
                         <input type="text" name="path" />
                     </td>

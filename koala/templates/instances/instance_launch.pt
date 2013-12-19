@@ -22,21 +22,29 @@
                       method="post" data-abide="abide">
                     ${structure:launch_form['csrf_token']}
                     ${structure:launch_form['image_id']}
-                    <dl class="tabs vertical" data-tab="">
+                    <dl class="tabs" data-tab="">
                         <dd class="${'active' if not image else ''}">
-                            <a id="tabStep1" href="#step1"><span class="cir">1</span> Image</a>
+                            <a id="tabStep1" href="#step1">
+                                <span class="cir">1</span> <b>Image</b>
+                            </a>
                         </dd>
                         <dd class="${'active' if image else ''}" tal:condition="image">
-                            <a id="tabStep2" href="#step2"><span class="cir">2</span> Type</a>
+                            <a id="tabStep2" href="#step2">
+                                <span class="cir">2</span> <b>Type</b>
+                            </a>
                         </dd>
                         <dd tal:condition="image">
-                            <a id="tabStep3" href="#step3"><span class="cir">3</span> Security</a>
+                            <a id="tabStep3" href="#step3">
+                                <span class="cir">3</span> <b>Security</b>
+                            </a>
                         </dd>
                         <dd tal:condition="image">
-                            <a id="tabStep4" href="#step4"><span class="cir">4</span> Advanced</a>
+                            <a id="tabStep4" href="#step4">
+                                <span class="cir">4</span> <b>Advanced</b>
+                            </a>
                         </dd>
                     </dl>
-                    <div class="tabs-content vertical">
+                    <div class="tabs-content">
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
                             <div tal:condition="image" tal:omit-tag="">
@@ -136,9 +144,7 @@
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
                             ${panel('form_field', field=launch_form['private_addressing'])}
-                            <div tal:condition="image and image.root_device_type == 'ebs'">
-                                ${panel('bdmapping_editor', image=image)}
-                            </div>
+                            ${panel('bdmapping_editor', image=image)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">

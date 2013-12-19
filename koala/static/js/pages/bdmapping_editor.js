@@ -8,6 +8,7 @@ angular.module('BlockDeviceMappingEditor', [])
         $scope.bdmTextarea = $('#bdmapping');
         $scope.bdMapping = {};
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
+            bdmJson = bdmJson || "{}";
             $scope.bdMapping = JSON.parse(bdmJson);
             $scope.bdmTextarea.val(bdmJson);
         };
