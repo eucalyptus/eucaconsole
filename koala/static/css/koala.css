@@ -1476,7 +1476,9 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .dropdown li a { line-height: 1.2rem; }
 
+#pagetitle { position: relative; }
 #pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
+#pagetitle .help-icon { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; padding: 8px 16px; text-align: center; vertical-align: middle; border-left: 1px solid #80b6ca; font-weight: bold; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */

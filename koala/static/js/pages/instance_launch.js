@@ -9,6 +9,7 @@ angular.module('LaunchInstance', ['TagEditor'])
     .controller('LaunchInstanceCtrl', function ($scope, $timeout) {
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
+        $scope.urlParams = $.url().param();
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
             $timeout(function() {
@@ -27,8 +28,15 @@ angular.module('LaunchInstance', ['TagEditor'])
                 $scope.updateTagsPreview();
             });
         };
+        $scope.focusEnterImageID = function () {
+            // Focus on "Enter Image ID" field if passed appropriate URL param
+            if ($scope.urlParams['input_image_id']) {
+                $('#image-id-input').focus();
+            }
+        };
         $scope.initController = function () {
             $scope.watchTags();
+            $scope.focusEnterImageID();
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step

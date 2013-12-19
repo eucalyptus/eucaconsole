@@ -206,7 +206,7 @@
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Image ID:</label></div>
                         <div class="small-8 columns value">
-                            <input type="text" name="image_id" />
+                            <input type="text" name="image_id" id="image-id-input" />
                         </div>
                     </div>
                     <div class="row">
@@ -222,6 +222,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance_launch.js')}"></script>
 </div>
 
