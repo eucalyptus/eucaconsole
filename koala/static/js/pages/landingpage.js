@@ -4,14 +4,7 @@
  *
  */
 
-angular.module('LandingPageFilter', []).filter('escapeURL', function() {
-  return function(input) {
-    return encodeURIComponent(input);
-  };
-});
-
-
-angular.module('LandingPage', ['LandingPageFilter'])
+angular.module('LandingPage', ['CustomFilter'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
         $scope.unfilteredItems = [];

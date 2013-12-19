@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('InstancesPage', [])
+angular.module('InstancesPage', ['CustomFilter'])
     .controller('InstancesCtrl', function ($scope) {
         $scope.instanceID = '';
         $scope.urlParams = $.url().param();

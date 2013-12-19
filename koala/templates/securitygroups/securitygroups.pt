@@ -49,7 +49,7 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
                 <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block></td>
                 <td>{{ item.tags }}</td>
@@ -69,6 +69,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filter.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/securitygroups.js')}"></script>
 </div>

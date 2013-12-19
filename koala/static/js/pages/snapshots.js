@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('SnapshotsPage', [])
+angular.module('SnapshotsPage', ['CustomFilter'])
     .controller('SnapshotsCtrl', function ($scope) {
         $scope.snapshotID = '';
         $scope.urlParams = $.url().param();
