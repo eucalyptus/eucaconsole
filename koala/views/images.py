@@ -20,34 +20,14 @@ from ..views import BaseView, LandingPageView,  TaggedItemView
 
 
 class ImagesView(LandingPageView):
+    TEMPLATE = '../templates/images/images.pt'
+
     def __init__(self, request):
         super(ImagesView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/images'
 
-    def get_items(self):
-        owner_alias = self.request.params.get('owner_alias')
-        if owner_alias is None and self.cloud_type == 'aws':
-            # Set default alias to 'amazon' for AWS
-            owner_alias = 'amazon'
-        owners = [owner_alias] if owner_alias else []
-        conn = self.get_connection()
-        region = self.request.session.get('region')
-        return self.get_images(conn, owners, region)
-
-    def get_images(self, conn, owners, region):
-        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
-
-        @cache_region('long_term', cache_key)
-        def _get_images_cache(_owners, _region):
-            try:
-                return conn.get_all_images(owners=_owners) if conn else []
-            except EC2ResponseError as exc:
-                return BaseView.handle_403_error(exc, request=self.request)
-        return _get_images_cache(owners, region)
-
-    @view_config(route_name='images', renderer='../templates/images/images.pt')
+    @view_config(route_name='images', renderer=TEMPLATE)
     def images_landing(self):
         json_items_endpoint = self.request.route_url('images_json')
         if self.request.GET:
@@ -87,6 +67,9 @@ class ImagesView(LandingPageView):
             json_items_endpoint=json_items_endpoint,
         )
 
+
+class ImagesJsonView(BaseView):
+    """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
         images = []
@@ -103,6 +86,28 @@ class ImagesView(LandingPageView):
                 type=image.type,
             ))
         return dict(results=images)
+
+    def get_items(self):
+        owner_alias = self.request.params.get('owner_alias')
+        if owner_alias is None and self.cloud_type == 'aws':
+            # Set default alias to 'amazon' for AWS
+            owner_alias = 'amazon'
+        owners = [owner_alias] if owner_alias else []
+        conn = self.get_connection()
+        region = self.request.session.get('region')
+        return self.get_images(conn, owners, region)
+
+    def get_images(self, conn, owners, region):
+        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
+        cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
+
+        @cache_region('long_term', cache_key)
+        def _get_images_cache(_owners, _region):
+            try:
+                return conn.get_all_images(owners=_owners) if conn else []
+            except EC2ResponseError as exc:
+                return BaseView.handle_403_error(exc, request=self.request)
+        return _get_images_cache(owners, region)
 
 
 class ImageView(TaggedItemView):
