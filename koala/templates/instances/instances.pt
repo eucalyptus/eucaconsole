@@ -98,25 +98,27 @@
                 <td>{{ item.instance_type }}</td>
                 <td>{{ item.security_groups }}</td>
                 <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
-                <td class="actions">
-                    <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <li>
-                            <a href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
-                        </li>
-                        <li ng-show="!item.transitional">
-                            <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
-                        </li>
-                        <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
-                            <a i18n:translate="" ng-click="revealModal('start', item)">Start instance</a>
-                        </li>
-                        <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
-                            <a i18n:translate="" ng-click="revealModal('stop', item)">Stop instance</a>
-                        </li>
-                        <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                            <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate instance</a>
-                        </li>
-                    </ul>
+                <td>
+                   <span class="actions">
+                        <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li>
+                                <a href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
+                            </li>
+                            <li ng-show="!item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
+                            </li>
+                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('start', item)">Start instance</a>
+                            </li>
+                            <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                                <a i18n:translate="" ng-click="revealModal('stop', item)">Stop instance</a>
+                            </li>
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate instance</a>
+                            </li>
+                        </ul>
+                   </span>
                 </td>
             </metal:block>
         </div>
