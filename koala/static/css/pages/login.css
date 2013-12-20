@@ -1,11 +1,15 @@
 /* @fileOverview Login page CSS */
 #login-panel { background-color: white; border-radius: 8px; }
 
-#login-panel { position: relative; padding-top: 80px; box-shadow: 0 3px 6px #999999; }
+#login-panel { position: relative; padding: 10px; box-shadow: 0 3px 6px #999999; }
 
-#login-panel .header { position: absolute; top: 20px; left: -8px; right: -8px; height: 36px; border-radius: 4px; box-shadow: 0 1px 6px rgba(0, 65, 94, 0.7); padding: 8px 0 0 20px; color: #00415e; background-color: #ecf4f7; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+#eucalyptus { width: 500px; height: 280px; padding: 0; }
 
-#login-panel label { font-weight: bold; white-space: nowrap; vertical-align: middle; position: relative; top: 8px; left: 16px; }
+dd { border-radius: 8px; box-shadow: 0 3px 6px #999999; }
+
+#aws { width: 500px; height: 280px; padding: 0; }
+
+#login-panel label { font-weight: bold; white-space: nowrap; vertical-align: middle; position: relative; top: 0px; left: 0px; bottom: 10px; right: 10px; }
 
 #login-panel input { background-color: #eeeeee; }
 
@@ -13,14 +17,14 @@
 
 #login-panel.hide-aws { max-width: 480px; margin: 0 auto; }
 
-#euca-login-button.button { background-color: #76b800; border-color: #355200; }
+#euca-login-button.button { background-color: #76b800; border-color: #355200; margin-top: 10px; margin-bottom: 10px; }
 
-#aws-login-button.button { background-color: #ff9900; border-color: #995c00; }
+#aws-login-button.button { background-color: #ff9900; border-color: #995c00; margin-top: 10px; margin-bottom: 10px; }
 
 /* Medium/large screen */
 @media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 768px) { #login-panel-wrapper { margin-top: 1rem; }
-  #login-panel { border-radius: 0; box-shadow: none; padding-top: 46px; }
+  #login-panel { border-radius: 0; box-shadow: none; padding: 10px; }
   #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

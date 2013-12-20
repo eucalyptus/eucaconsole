@@ -7,11 +7,12 @@ import simplejson as json
 import time
 
 from boto.exception import EC2ResponseError
+from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm
+from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -27,10 +28,12 @@ class SnapshotsView(LandingPageView):
         self.prefix = '/snapshots'
         self.json_items_endpoint = self.request.route_url('snapshots_json')
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             display_type=self.display_type,
             prefix=self.prefix,
             delete_form=self.delete_form,
+            register_form=self.register_form,
         )
 
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
@@ -85,6 +88,39 @@ class SnapshotsView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
 
+    @view_config(route_name='snapshots_register', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshots_register(self):
+        snapshot_id = self.request.params.get('snapshot_id')
+        snapshot = self.get_snapshot(snapshot_id)
+        name = self.request.params.get('name')
+        description = self.request.params.get('description')
+        dot = self.request.params.get('dot')
+        reg_as_windows = self.request.params.get('reg_as_windows')
+        root_vol = BlockDeviceType(snapshot_id=snapshot_id)
+        root_vol.delete_on_termination = dot
+        bdm = BlockDeviceMapping()
+        bdm['/dev/sda'] = root_vol
+        display_type = self.request.params.get('display', self.display_type)
+        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
+        if snapshot and self.register_form.validate():
+            try:
+                snapshot.connection.register_image(name=name, description=description,
+                        kernel_id=('windows' if reg_as_windows else None),
+                        block_device_map=bdm)
+                time.sleep(1)
+                prefix = _(u'Successfully registered snapshot')
+                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            msg = _(u'Unable to register snapshot')
+            self.request.session.flash(msg, queue=Notification.ERROR)
+            return HTTPFound(location=location)
+
     def get_items(self):
         # TODO: cache me
         return self.conn.get_all_snapshots(owner='self') if self.conn else []
@@ -119,6 +155,7 @@ class SnapshotView(TaggedItemView):
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.snapshot
         self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
@@ -127,6 +164,7 @@ class SnapshotView(TaggedItemView):
             snapshot_name=self.snapshot_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
+            register_form=self.register_form,
         )
 
     def get_root_device_name(self, img):
@@ -207,6 +245,34 @@ class SnapshotView(TaggedItemView):
                 time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot.')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('snapshots')
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @view_config(route_name='snapshot_register', renderer=VIEW_TEMPLATE, request_method='POST')
+    def snapshot_register(self):
+        snapshot_id = self.snapshot.id
+        name = self.request.params.get('name')
+        description = self.request.params.get('description')
+        dot = self.request.params.get('dot')
+        reg_as_windows = self.request.params.get('reg_as_windows')
+        root_vol = BlockDeviceType(snapshot_id=snapshot_id)
+        root_vol.delete_on_termination = dot
+        bdm = BlockDeviceMapping()
+        bdm['/dev/sda'] = root_vol
+        if self.snapshot and self.register_form.validate():
+            try:
+                self.snapshot.connection.register_image(name=name, description=description,
+                        kernel_id=('windows' if reg_as_windows else None),
+                        block_device_map=bdm)
+                time.sleep(1)
+                prefix = _(u'Successfully registered snapshot')
+                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:
                 msg = err.message
