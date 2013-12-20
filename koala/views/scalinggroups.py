@@ -7,6 +7,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.scalinggroups import ScalingGroupDeleteForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import LandingPageView, BaseView 
@@ -74,8 +75,10 @@ class ScalingGroupView(BaseView):
         super(ScalingGroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
         self.scalinggroup = self.get_scalinggroup()
+        self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scalinggroup=self.scalinggroup,
+            delete_form=self.delete_form,
         )
 
     def get_scalinggroup(self):
@@ -89,5 +92,24 @@ class ScalingGroupView(BaseView):
     def scalinggroup_view(self):
         self.scalinggroup.availability_zones_str = ', '.join(self.scalinggroup.availability_zones)
         self.scalinggroup.termination_policies_str = ', '.join(self.scalinggroup.termination_policies)
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
+    def scalinggroup_delete(self):
+        if self.delete_form.validate():
+            name = self.request.params.get('name')
+            try:
+                #self.conn.delete_key_pair(name)
+                prefix = _(u'Successfully deleted scalinggroup')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            location = self.request.route_url('scalinggroups')
+            return HTTPFound(location=location)
+
         return self.render_dict
 

@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.launchconfigs import LaunchConfigDeleteForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import LandingPageView, BaseView 
@@ -78,8 +79,10 @@ class LaunchConfigView(BaseView):
         super(LaunchConfigView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
         self.launchconfig = self.get_launchconfig()
+        self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launchconfig=self.launchconfig,
+            delete_form=self.delete_form,
         )
 
     def get_launchconfig(self):
@@ -95,4 +98,24 @@ class LaunchConfigView(BaseView):
         self.launchconfig.security_groups_str = ', '.join(self.launchconfig.security_groups)
         return self.render_dict
  
+    @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
+    def launchconfig_delete(self):
+        if self.delete_form.validate():
+            name = self.request.params.get('name')
+            try:
+                #self.conn.delete_key_pair(name)
+                prefix = _(u'Successfully deleted launchconfig')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            location = self.request.route_url('launchconfigs')
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
+
 

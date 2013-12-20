@@ -81,6 +81,7 @@
                 <p><span i18n:translate="">Are you sure you want to delete the launchconfig</span>
                 <b>${launchconfig.name}</b>?</p>
                 <form action="${request.route_url('launchconfig_delete', id=launchconfig.name)}" method="post">
+                    ${structure:delete_form['csrf_token']}
                     <input type="hidden" name="name" value="${launchconfig.name}">
                     <button type="submit" class="button" i18n:translate="">Yes, delete</button>
                 </form>

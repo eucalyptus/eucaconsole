@@ -81,6 +81,7 @@
                 <p><span i18n:translate="">Are you sure you want to delete the scalinggroup</span>
                 <b>${scalinggroup.name}</b>?</p>
                 <form action="${request.route_url('scalinggroup_delete', id=scalinggroup.name)}" method="post">
+                     ${structure:delete_form['csrf_token']}
                     <input type="hidden" name="name" value="${scalinggroup.name}">
                     <button type="submit" class="button" i18n:translate="">Yes, delete</button>
                 </form>
