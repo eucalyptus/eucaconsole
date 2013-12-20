@@ -7,7 +7,8 @@ from collections import namedtuple
 from urllib import urlencode
 
 from beaker.cache import cache_region
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
@@ -15,7 +16,7 @@ from pyramid.view import view_config
 from ..forms.images import ImageForm 
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView,  TaggedItemView
+from ..views import BaseView, LandingPageView,  TaggedItemView
 
 
 class ImagesView(LandingPageView):
@@ -34,14 +35,16 @@ class ImagesView(LandingPageView):
         region = self.request.session.get('region')
         return self.get_images(conn, owners, region)
 
-    @staticmethod
-    def get_images(conn, owners, region):
+    def get_images(self, conn, owners, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
         cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
 
         @cache_region('long_term', cache_key)
         def _get_images_cache(_owners, _region):
-            return conn.get_all_images(owners=_owners) if conn else []
+            try:
+                return conn.get_all_images(owners=_owners) if conn else []
+            except EC2ResponseError as exc:
+                return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)
 
     @view_config(route_name='images', renderer='../templates/images/images.pt')
