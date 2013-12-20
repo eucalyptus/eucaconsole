@@ -83,7 +83,7 @@
                     <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">AWS</a></dd>
                 </dl>
                 <div class="tabs-content">
-                    <div class="content active large-8 columns large-centered" id="eucalyptus">
+                    <div class="content active large-8 medium-8 columns large-centered medium-centered" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_url('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -98,10 +98,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>&nbsp;</div>
                             <div class="row">
-                              <div class="small-12 columns">
-                                <a href="#" i18n:translate="">Forgot your password?</a>
-                              </div>
+                                <div class="small-12 columns">
+                                    <a href="#" i18n:translate="">Forgot your password?</a>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
@@ -111,7 +112,8 @@
                             </div>
                         </form>
                     </div>
-                    <div class="content large-8 columns large-centered" tal:condition="layout.aws_enabled" id="aws">
+                    <div class="content large-8 medium-8 columns large-centered medium-centered"
+                         tal:condition="layout.aws_enabled" id="aws">
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_url('login')}?login_type=AWS">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -126,11 +128,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>&nbsp;</div>
                             <div class="row">
-                              <div class="small-12 columns">
-                                <span i18n:translate="">Need access to an IAM account? Contact your </span>
-                                <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
-                              </div>
+                                <div class="small-12 columns">
+                                    <span i18n:translate="">Need access to an IAM account?</span><br />
+                                    <span i18n:translate="">Contact your</span>
+                                    <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
