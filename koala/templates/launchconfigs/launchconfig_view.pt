@@ -71,10 +71,27 @@
             <div class="row">
                 <div class="large-3 columns">&nbsp;</div>
                 <div class="large-9 columns">
+                    <a class="button secondary" data-reveal-id="use-launchconfig-modal" i18n:translate="">
+                        Use launchconfig to create scalinggroup
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-3 columns">&nbsp;</div>
+                <div class="large-9 columns">
                     <a class="button secondary delete" data-reveal-id="delete-launchconfig-modal" i18n:translate="">
                         Delete launchconfig
                     </a>
                 </div>
+            </div>
+            <div id="use-launchconfig-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Use launchconfig to create scalinggroup</h3>
+                <p><span i18n:translate="">Placeholder</span>
+                <b>${launchconfig.name}</b>?</p>
+                <form action="${request.route_url('launchconfig_view', id=launchconfig.name)}" method="post">
+                    <button type="submit" class="button" i18n:translate="">Yes</button>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
             </div>
             <div id="delete-launchconfig-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete launchconfig</h3>
