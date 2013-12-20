@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('LandingPage', [])
+angular.module('LandingPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
         $scope.unfilteredItems = [];

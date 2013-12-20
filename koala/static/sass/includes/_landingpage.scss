@@ -235,6 +235,7 @@ $gridwrapper-table-width: 98%;
         }
     }
     tr {
+        position: relative;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
@@ -245,6 +246,10 @@ $gridwrapper-table-width: 98%;
             &.id {
                 @include ellipsis-overflow;
                 max-width: 120px;
+            }
+            span.actions {
+                position: relative;
+                left: 80px;
             }
         }
     }

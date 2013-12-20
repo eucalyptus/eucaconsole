@@ -100,22 +100,24 @@
                 <td>{{ item.zone }}</td>
                 <td>{{ item.tags }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
-                <td class="actions">
-                    <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <li ng-show="item.status !== 'deleted'">
-                            <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
-                        </li>
-                        <li ng-show="item.status === 'available'">
-                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
-                        </li>
-                        <li ng-show="item.status === 'available'">
-                            <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
-                        </li>
-                        <li ng-show="item.status === 'in-use'">
-                            <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
-                        </li>
-                    </ul>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li ng-show="item.status !== 'deleted'">
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
+                            </li>
+                            <li ng-show="item.status === 'available'">
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                            </li>
+                            <li ng-show="item.status === 'available'">
+                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
+                            </li>
+                            <li ng-show="item.status === 'in-use'">
+                                <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                            </li>
+                        </ul>
+                    </span>
                 </td>
             </metal:block>
         </div>
@@ -128,6 +130,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/volumes.js')}"></script>
 </div>
 
