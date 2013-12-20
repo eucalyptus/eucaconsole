@@ -108,7 +108,7 @@
                                 <div class="small-8 columns field inline">
                                     <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
                                            name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" required="required" />
-                                    <small class="error">Names for each instance are required</small>
+                                    <small class="error" id="names-error">Names for each instance are required</small>
                                 </div>
                             </div>
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}

@@ -535,6 +535,7 @@ class InstanceLaunchView(TaggedItemView):
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone')
+            user_data = self.request.params.get('user_data')
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
@@ -548,7 +549,7 @@ class InstanceLaunchView(TaggedItemView):
                     reservation = self.conn.run_instances(
                         image_id,
                         key_name=key_name,
-                        user_data=None,
+                        user_data=user_data,
                         addressing_type=addressing_type,
                         instance_type=instance_type,
                         placement=availability_zone,
