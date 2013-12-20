@@ -84,19 +84,21 @@
                 <th>ID</th>
                 <th>Status</th>
                 <th i18n:translate="">Root Device</th>
-                <th i18n:translate="">Avail Zone</th>
+                <th i18n:translate="">Zone</th>
                 <th i18n:translate="">Type</th>
                 <th i18n:translate="">Sec Group</th>
-                <th i18n:translate="">Launch Time</th>
+                <th i18n:translate="">Tags</th>
+                <th i18n:translate="">Launched</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>{{ item.status }} <span class="dots" ng-show="item.transitional">&nbsp;</span></td>
                 <td>{{ item.root_device }}</td>
                 <td>{{ item.placement }}</td>
                 <td>{{ item.instance_type }}</td>
                 <td>{{ item.security_groups }}</td>
+                <td>{{ item.tags }}</td>
                 <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
                 <td class="actions">
                     <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>

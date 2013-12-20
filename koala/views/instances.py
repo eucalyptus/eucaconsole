@@ -527,8 +527,6 @@ class InstanceLaunchView(TaggedItemView):
     def instance_launch(self):
         """Handles the POST from the Launch instanced wizard"""
         if self.launch_form.validate():
-            names = self.request.params.get('names')
-            names_array = names.strip().split(',')
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
             key_name = self.request.params.get('keypair')

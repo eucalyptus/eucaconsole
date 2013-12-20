@@ -52,7 +52,7 @@
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
-.gridwrapper .table tr td.id { white-space: nowrap; }
+.gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
