@@ -52,32 +52,38 @@
 
 <div metal:fill-slot="main_content">
 
-    <div class="row" id="login-panel-wrapper">
-        <!-- Notifications -->
+    <!-- Notifications -->
+    <div id="notifications-wrapper">
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
-        <div data-alert="alert" class="alert-box alert" tal:condition="https_required and request.scheme != 'https'">
+        <div data-alert="alert" class="alert-box alert large-10 columns large-centered" tal:condition="https_required and request.scheme != 'https'">
             <span i18n:translate="">
                 HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
                 in the configuration file.
             </span>
             <a href="#" class="close">&times;</a>
         </div>
-        <div class="large-6 large-centered medium-8 medium-centered columns">
-            <div class="row">
-                <div tal:condition="login_form_errors">
-                  <div data-alert="alert" class="alert-box alert large-10 large-centered columns"
-                          tal:repeat="login_error login_form_errors">
-                      ${ login_error }
-                      <a href="#" class="close">&times;</a>
-                  </div>
-                </div>
+        <div tal:condition="login_form_errors">
+          <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
+                  tal:repeat="login_error login_form_errors">
+              ${ login_error }
+              <a href="#" class="close">&times;</a>
+          </div>
+        </div>
+    </div>
+
+    <div class="row panel has-title large-8 columns large-centered" id="login-wrapper">
+        <h6 class="title" i18n:translate="">
+            <span i18n:translate="">Log in to Eucalyptus</span>
+            <span tal:condition="layout.aws_enabled" i18n:translate="">or AWS</span>
+        </h6>
+        <div class="large-12 large-centered columns">
+            <div class="row" id="login-forms">
                 <dl class="tabs" id="login-tabs" data-tab>
-                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Log in to Eucalyptus</a></dd>
-                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">Log in to AWS</a></dd>
+                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Eucalyptus</a></dd>
+                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">AWS</a></dd>
                 </dl>
                 <div class="tabs-content">
-                    <div class="content active" id="eucalyptus">
-                      <div id="login-panel">
+                    <div class="content active large-8 medium-8 columns large-centered medium-centered" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_url('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -92,10 +98,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>&nbsp;</div>
                             <div class="row">
-                              <div class="small-12 columns">
-                                <a href="#" i18n:translate="">Forgot your password?</a>
-                              </div>
+                                <div class="small-12 columns">
+                                    <a href="#" i18n:translate="">Forgot your password?</a>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
@@ -104,10 +111,9 @@
                                 </div>
                             </div>
                         </form>
-                      </div>
                     </div>
-                    <div class="content" tal:condition="layout.aws_enabled" id="aws">
-                      <div id="login-panel">
+                    <div class="content large-8 medium-8 columns large-centered medium-centered"
+                         tal:condition="layout.aws_enabled" id="aws">
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_url('login')}?login_type=AWS">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -122,11 +128,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div>&nbsp;</div>
                             <div class="row">
-                              <div class="small-12 columns">
-                                <span i18n:translate="">Need access to an IAM account? Contact your </span>
-                                <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
-                              </div>
+                                <div class="small-12 columns">
+                                    <span i18n:translate="">Need access to an IAM account?</span><br />
+                                    <span i18n:translate="">Contact your</span>
+                                    <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
@@ -135,12 +143,12 @@
                                 </div>
                             </div>
                         </form>
-                      </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="clearfix">&nbsp;</div>
 </div>
 
 </metal:block>
