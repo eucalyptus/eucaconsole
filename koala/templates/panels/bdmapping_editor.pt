@@ -27,40 +27,48 @@
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>
-                        <input type="checkbox" ng-checked="val.delete_on_termination" />
+                        <input type="checkbox" ng-checked="val.delete_on_termination === true" />
                     </td>
-                    <td></td>
+                    <td>
+                        <a ng-show="key !== '/dev/sda'" class="circle remove has-tip" ng-click="removeDevice(key)"
+                           title="Remove device" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
+                    </td>
                 </tr>
             </tbody>
         </table>
         <div class="row" id="new-blockdevice-entry">
             <div class="small-2 columns">
                 <label i18n:translate="">Volume:</label>
-                <select name="volume_type">
+                <select name="volume_type" ng-model="newVolumeType">
                     <option value="EBS">EBS</option>
                     <option value="ephemeral">Ephemeral</option>
                 </select>
             </div>
             <div class="small-2 columns">
                 <label i18n:translate="">Mapping:</label>
-                <input type="text" name="path" />
+                <input type="text" name="path" id="new-mapping-path" ng-model="newMappingPath" />
             </div>
             <div class="small-2 columns">
                 <label i18n:translate="">Snapshot:</label>
-                <select name="snapshot_id">
+                <select name="snapshot_id" ng-model="newSnapshotID">
                     <option value="">None</option>
                 </select>
             </div>
             <div class="small-2 columns">
                 <label i18n:translate="">Size (GB):</label>
-                <input class="number" pattern="integer" />
+                <input class="number" id="new-size" ng-model="newSize" />
             </div>
             <div class="small-4 columns">
                 <label i18n:translate="">Delete on terminate:</label>
-                <input type="checkbox" name="delete_on_termination"  checked="checked" />
+                <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
             </div>
         </div>
-        <textarea id="bdmapping" name="block_device_mapping"></textarea>
+        <div>
+            <a class="button secondary round tiny" ng-click="addDevice()" i18n:translate="">
+                Add device
+            </a>
+        </div>
+        <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
     </div>
     <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
 </div>

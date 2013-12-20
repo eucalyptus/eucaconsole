@@ -76,7 +76,7 @@
             <metal:block metal:fill-slot="tile_footer">
                 <div ng-show="item.status"
                      class="footer status {{ item.status.replace('-', '') }}">
-                    {{ item.status }}
+                    {{ item.status.replace('-', ' ') }}
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </div>
             </metal:block>

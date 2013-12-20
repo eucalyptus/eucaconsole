@@ -559,11 +559,11 @@ class InstanceLaunchView(TaggedItemView):
                         security_group_ids=security_groups,
                     )
                     instance = reservation.instances[0]
-                    new_instance_ids.append(instance.id)
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
                     input_field_name = 'name_{0}'.format(idx)
                     name = self.request.params.get(input_field_name, '').strip()
+                    new_instance_ids.append(name or instance.id)
                     if name:
                         instance.add_tag('Name', name)
                     if tags_json:
@@ -599,8 +599,7 @@ class InstanceLaunchView(TaggedItemView):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
         Mapping JSON structure...
             {"/dev/sda":
-                {"snapshot_id": "snap-23E93E09", "volume_type": null,"volume_id": null,
-                "ebs": "", "delete_on_termination": true, "size": 1}  }
+                {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
         """
         mapping = json.loads(bdmapping_json)
         if mapping:
