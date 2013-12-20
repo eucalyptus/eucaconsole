@@ -8,12 +8,18 @@
 /* @section Launch Instance page styles */
 
 #launch-instance-form {
-    #number {
-        width: 3rem;
-    }
     input.name {
         width: 100px;
         margin-right: 8px;
+        margin-bottom: 4px;
+    }
+    #number {
+        width: 3rem;
+    }
+    #instance_type {
+        option {
+            font-size: 0.825rem;
+        }
     }
 }
 

@@ -1560,7 +1560,7 @@ form .row.controls-wrapper.inline label { right: -6px; }
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
 [data-abide] .controls-wrapper .error input, [data-abide] .controls-wrapper .error select { border: 1px solid darkred; background-color: #ffe9ec; }
-[data-abide] .controls-wrapper .error small.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
+[data-abide] .controls-wrapper .error small.error, [data-abide] .controls-wrapper .error span.error { margin-bottom: 6px; background-color: transparent; color: darkred; font-weight: bold; padding-left: 0; font-style: normal; padding-bottom: 4px; }
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }

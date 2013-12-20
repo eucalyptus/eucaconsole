@@ -73,7 +73,7 @@ class LaunchInstanceForm(BaseSecureForm):
         label=_(u'Number of instances'),
         validators=[
             validators.Required(message=number_error_msg),
-            validators.NumberRange(min=1, max=99),  # Restrict num instances that can be launched in one go
+            validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go
         ],
     )
     instance_type_error_msg = _(u'Instance type is required')

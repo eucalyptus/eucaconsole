@@ -22,8 +22,9 @@
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Launch Instance page styles */
+#launch-instance-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; }
 #launch-instance-form #number { width: 3rem; }
-#launch-instance-form input.name { width: 100px; margin-right: 8px; }
+#launch-instance-form #instance_type option { font-size: 0.825rem; }
 
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor .table { width: 100%; }
