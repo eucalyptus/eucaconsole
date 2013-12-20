@@ -66,6 +66,27 @@
                 </form>
             </div>
         </div>
+        <div class="panel has-title" tal:condition="scalinggroup">
+            <h6 class="title" i18n:translate="">Other scalinggroup actions</h6>
+            <div class="row">
+                <div class="large-3 columns">&nbsp;</div>
+                <div class="large-9 columns">
+                    <a class="button secondary delete" data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
+                        Delete scalinggroup
+                    </a>
+                </div>
+            </div>
+            <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete scalinggroup</h3>
+                <p><span i18n:translate="">Are you sure you want to delete the scalinggroup</span>
+                <b>${scalinggroup.name}</b>?</p>
+                <form action="${request.route_url('scalinggroup_delete', id=scalinggroup.name)}" method="post">
+                    <input type="hidden" name="name" value="${scalinggroup.name}">
+                    <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
 </div>
 
