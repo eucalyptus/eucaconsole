@@ -90,12 +90,14 @@
                 <td>{{ item.tags }}</td>
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
-                    <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
-                        <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
-                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
-                    </ul>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="/snapshots/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
+                        </ul>
+                    </span>
                 </td>
             </metal:block>
         </div>
