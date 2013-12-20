@@ -231,8 +231,7 @@ class InstanceView(TaggedItemView):
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
-        self.instance_name = '{0}{1}'.format(
-            self.instance.id, ' ({0})'.format(self.name_tag) if self.name_tag else '') if self.instance else ''
+        self.instance_name = self.name_tag or self.instance.id
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
