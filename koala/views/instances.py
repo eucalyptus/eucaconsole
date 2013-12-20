@@ -532,7 +532,7 @@ class InstanceLaunchView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
             key_name = self.request.params.get('keypair')
-            max_count = self.request.params.get('number')
+            num_instances = int(self.request.params.get('number', 1))
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
@@ -544,24 +544,25 @@ class InstanceLaunchView(TaggedItemView):
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
+            new_instance_ids = []
             try:
-                reservation = self.conn.run_instances(
-                    image_id,
-                    max_count=max_count,
-                    key_name=key_name,
-                    user_data=None,
-                    addressing_type=addressing_type,
-                    instance_type=instance_type,
-                    placement=availability_zone,
-                    kernel_id=kernel_id,
-                    ramdisk_id=ramdisk_id,
-                    monitoring_enabled=monitoring_enabled,
-                    block_device_map=block_device_map,
-                    security_group_ids=security_groups,
-                )
-                instances = reservation.instances
-                # Add tags for newly launched instance(s)
-                for idx, instance in enumerate(instances):
+                for idx in range(num_instances):
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        key_name=key_name,
+                        user_data=None,
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        security_group_ids=security_groups,
+                    )
+                    instance = reservation.instances[0]
+                    new_instance_ids.append(instance.id)
+                    # Add tags for newly launched instance(s)
                     # Try adding name tag (from comma-separated list of names)
                     try:
                         if len(names_array) > 1:
@@ -578,8 +579,9 @@ class InstanceLaunchView(TaggedItemView):
                         tags = json.loads(tags_json)
                         for tagname, tagvalue in tags.items():
                             instance.add_tag(tagname, tagvalue)
+                time.sleep(2)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
-                msg += ', '.join(instance.id for instance in instances)
+                msg += ', '.join(new_instance_ids)
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_url('instances')
