@@ -103,10 +103,11 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, conn=None, formdata=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.image = image
+        self.formdata = formdata
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -147,24 +148,33 @@ class LaunchInstanceForm(BaseSecureForm):
             choices.append((zone.name, zone.name))
         if not zones:
             choices.append(('', _(u'There are no availability zones')))
-        self.zone.choices = sorted(set(choices))
+        choices = sorted(set(choices))
+        self.zone.choices = choices
+        if len(choices) > 1 and self.formdata.get('zone') is None:
+            self.zone.data = choices[1][0]  # Default to first non-blank choice
 
     def set_keypair_choices(self):
-        choices = []
+        choices = [('', _(u'select...'))]
         keypairs = self.conn.get_all_key_pairs()  # TODO: cache me
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
-        self.keypair.choices = sorted(set(choices))
+        choices = sorted(set(choices))
+        self.keypair.choices = choices
+        if len(choices) > 1 and self.formdata.get('keypair') is None:
+            self.keypair.data = choices[1][0]  # Default to first non-blank choice
 
     def set_securitygroup_choices(self):
-        choices = []
+        choices = [('', _(u'select...'))]
         security_groups = self.conn.get_all_security_groups()  # TODO: cache me
         for sgroup in security_groups:
             if sgroup.id:
                 choices.append((sgroup.name, sgroup.name))
         if not security_groups:
             choices.append(('', 'default'))
-        self.securitygroup.choices = sorted(set(choices))
+        choices = sorted(set(choices))
+        self.securitygroup.choices = choices
+        if len(choices) > 1 and self.formdata.get('securitygroup') is None:
+            self.securitygroup.data = choices[1][0]  # Default to first non-blank choice
 
     def set_kernel_choices(self):
         choices = [('', _(u'Use default from image'))]
@@ -172,7 +182,8 @@ class LaunchInstanceForm(BaseSecureForm):
         for image in kernel_images:
             if image.kernel_id:
                 choices.append((image.kernel_id, image.kernel_id))
-        self.kernel_id.choices = sorted(set(choices))
+        choices = sorted(set(choices))
+        self.kernel_id.choices = choices
 
     def set_ramdisk_choices(self):
         choices = [('', _(u'Use default from image'))]
@@ -180,7 +191,8 @@ class LaunchInstanceForm(BaseSecureForm):
         for image in ramdisk_images:
             if image.ramdisk_id:
                 choices.append((image.ramdisk_id, image.ramdisk_id))
-        self.ramdisk_id.choices = sorted(set(choices))
+        choices = sorted(set(choices))
+        self.ramdisk_id.choices = choices
 
 
 class StopInstanceForm(BaseSecureForm):

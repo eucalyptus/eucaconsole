@@ -637,3 +637,4 @@ class InstanceLaunchView(TaggedItemView):
                         return choice.name
             return 'unknown'
         return ''
+

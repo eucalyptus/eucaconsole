@@ -201,7 +201,7 @@
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                        <div class="small-8 columns value">{{ securityGroup.label }}</div>
+                        <div class="small-8 columns value">{{ securityGroup }}</div>
                     </div>
                 </div>
             </div>
