@@ -101,7 +101,16 @@
                                 Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
                             </p>
                             ${panel('form_field', field=launch_form['number'], maxlength=2, ng_attrs={'model': 'instanceNumber'})}
-                            ${panel('form_field', field=launch_form['names'], placeholder=_('name1, name2, ...'))}
+                            <div class="row controls-wrapper" ng-cloak="">
+                                <div class="small-4 columns">
+                                    <label i18n:translate="">Names<span class="req">*</span></label>
+                                </div>
+                                <div class="small-8 columns field inline">
+                                    <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
+                                           name="name_{{ $index }}" placeholder="instance{{ $index+1 }}" required="required" />
+                                    <small class="error">Names for each instance are required</small>
+                                </div>
+                            </div>
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
                             ${panel('tag_editor')}

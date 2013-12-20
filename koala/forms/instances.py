@@ -76,11 +76,6 @@ class LaunchInstanceForm(BaseSecureForm):
             validators.NumberRange(min=1, max=99),  # Restrict num instances that can be launched in one go
         ],
     )
-    names_error_msg = _(u'Instance name(s) required, specified as comma-separated values.')
-    names = wtforms.TextField(
-        label=_(u'Instance name(s)'),
-        validators=[validators.Required(message=names_error_msg)],
-    )
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
         label=_(u'Instance type'),
@@ -130,7 +125,6 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
-        self.names.error_msg = self.names_error_msg
         self.instance_type.error_msg = self.instance_type_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg

@@ -17,7 +17,7 @@
                         </a>
                     </div>
                     <div class="footer">
-                        <a class="button" href="${request.route_url('images')}?launch=1" i18n:translate="">Launch Instance</a>
+                        <a class="button" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
                     </div>
                 </div>
                 <div class="tile" id="stopped">

@@ -60,6 +60,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor'])
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
         };
+        $scope.buildNumberList = function (limit) {
+            // Return a 1-based list of integers of a given size ([1, 2, ... limit])
+            limit = parseInt(limit, 10);
+            var result = [];
+            for (var i = 1; i <= limit; i++) {
+                result.push(i);
+            }
+            return result;
+        };
     })
 ;
 

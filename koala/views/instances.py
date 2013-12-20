@@ -563,18 +563,11 @@ class InstanceLaunchView(TaggedItemView):
                     instance = reservation.instances[0]
                     new_instance_ids.append(instance.id)
                     # Add tags for newly launched instance(s)
-                    # Try adding name tag (from comma-separated list of names)
-                    try:
-                        if len(names_array) > 1:
-                            name = names[idx].strip()
-                        else:
-                            name = ''.join(names_array).strip()
-                        if name:
-                            instance.add_tag('Name', name)
-                    except IndexError:
-                        # Don't blow up if the names array doesn't match number of instances
-                        # since the instance's 'Name' tag can be edited later
-                        pass
+                    # Try adding name tag (from collection of name input fields)
+                    input_field_name = 'name_{0}'.format(idx)
+                    name = self.request.params.get(input_field_name, '').strip()
+                    if name:
+                        instance.add_tag('Name', name)
                     if tags_json:
                         tags = json.loads(tags_json)
                         for tagname, tagvalue in tags.items():
