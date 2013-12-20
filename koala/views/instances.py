@@ -543,7 +543,7 @@ class InstanceLaunchView(TaggedItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             private_addressing = self.request.params.get('private_addressing', False)
             addressing_type = 'private' if private_addressing else 'public'
-            bdmapping_json = self.request.params.get('bdmapping_json')
+            bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             try:
                 reservation = self.conn.run_instances(

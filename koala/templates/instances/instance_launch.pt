@@ -15,7 +15,7 @@
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
-        <div class="large-8 columns">
+        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard has-title">
                 <h6 class="title" i18n:translate="">Launch instance</h6>
                 <form action="${request.route_url('instance_launch')}" id="launch-instance-form"
@@ -101,7 +101,7 @@
                                 Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
                             </p>
                             ${panel('form_field', field=launch_form['number'], maxlength=2, ng_attrs={'model': 'instanceNumber'})}
-                            ${panel('form_field', field=launch_form['names'])}
+                            ${panel('form_field', field=launch_form['names'], placeholder=_('name1, name2, ...'))}
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
                             ${panel('tag_editor')}

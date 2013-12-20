@@ -76,7 +76,11 @@ class LaunchInstanceForm(BaseSecureForm):
             validators.NumberRange(min=1, max=99),  # Restrict num instances that can be launched in one go
         ],
     )
-    names = wtforms.TextField(label=_(u'Instance name(s)'))
+    names_error_msg = _(u'Instance name(s) required, specified as comma-separated values.')
+    names = wtforms.TextField(
+        label=_(u'Instance name(s)'),
+        validators=[validators.Required(message=names_error_msg)],
+    )
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
         label=_(u'Instance type'),
@@ -103,11 +107,10 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, conn=None, formdata=None, **kwargs):
+    def __init__(self, request, image=None, conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.image = image
-        self.formdata = formdata
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -127,6 +130,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
+        self.names.error_msg = self.names_error_msg
         self.instance_type.error_msg = self.instance_type_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
@@ -150,7 +154,7 @@ class LaunchInstanceForm(BaseSecureForm):
             choices.append(('', _(u'There are no availability zones')))
         choices = sorted(set(choices))
         self.zone.choices = choices
-        if len(choices) > 1 and self.formdata.get('zone') is None:
+        if len(choices) > 1:
             self.zone.data = choices[1][0]  # Default to first non-blank choice
 
     def set_keypair_choices(self):
@@ -160,7 +164,7 @@ class LaunchInstanceForm(BaseSecureForm):
             choices.append((keypair.name, keypair.name))
         choices = sorted(set(choices))
         self.keypair.choices = choices
-        if len(choices) > 1 and self.formdata.get('keypair') is None:
+        if len(choices) > 1:
             self.keypair.data = choices[1][0]  # Default to first non-blank choice
 
     def set_securitygroup_choices(self):
@@ -173,7 +177,7 @@ class LaunchInstanceForm(BaseSecureForm):
             choices.append(('', 'default'))
         choices = sorted(set(choices))
         self.securitygroup.choices = choices
-        if len(choices) > 1 and self.formdata.get('securitygroup') is None:
+        if len(choices) > 1:
             self.securitygroup.data = choices[1][0]  # Default to first non-blank choice
 
     def set_kernel_choices(self):

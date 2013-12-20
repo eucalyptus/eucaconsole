@@ -18,9 +18,23 @@
         text-align: left;
     }
     .table {
+        width: 100%;
         th {
             font-size: 0.825rem;
         }
+        td {
+            line-height: 1rem;
+            padding: 4px 8px;
+            vertical-align: middle;
+        }
+    }
+    #new-blockdevice-entry {
+        label {
+            text-align: left;
+        }
+    }
+    input.number {
+        width: 2rem;
     }
 }
 

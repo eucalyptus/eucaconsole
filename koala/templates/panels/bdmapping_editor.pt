@@ -1,16 +1,16 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
-    <label i18n:translate="" class="storage-label">Storage</label>
-    <div>
+    <div class="columns">
+        <label i18n:translate="" class="storage-label">Storage</label>
         <table class="table">
             <thead>
                 <tr>
-                    <th i18n:translate="">Volume</th>
-                    <th i18n:translate="">Mapping</th>
-                    <th i18n:translate="">Snapshot</th>
-                    <th i18n:translate="">Size (GB)</th>
-                    <th i18n:translate="">Delete on Terminate</th>
+                    <th i18n:translate="" class="volume">Volume</th>
+                    <th i18n:translate="" class="mapping">Mapping</th>
+                    <th i18n:translate="" class="snapshot">Snapshot</th>
+                    <th i18n:translate="" class="size">Size (GB)</th>
+                    <th i18n:translate="" class="delete-on-terminate">Delete on Terminate</th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -22,39 +22,44 @@
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
-                    <td>{{ val.size }} GB</td>
+                    <td>
+                        <input class="number" value="{{ val.size }}" required="required" pattern="integer">
+                        <small class="error" i18n:translate="">Size is required</small>
+                    </td>
                     <td>
                         <input type="checkbox" ng-checked="val.delete_on_termination" />
                     </td>
                     <td></td>
                 </tr>
-                <tr class="new-entry">
-                    <td>
-                        <select name="volume_type">
-                            <option value="EBS">EBS</option>
-                            <option value="ephemeral">Ephemeral</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" name="path" />
-                    </td>
-                    <td>
-                        <select name="snapshot_id">
-                            <option value="">None</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" pattern="integer" />
-                    </td>
-                    <td>
-                        <input type="checkbox" name="delete_on_termination"  checked="checked" />
-                    </td>
-                    <td>
-                        <i class="circle">+</i>
-                    </td>
-                </tr>
             </tbody>
         </table>
+        <div class="row" id="new-blockdevice-entry">
+            <div class="small-2 columns">
+                <label i18n:translate="">Volume:</label>
+                <select name="volume_type">
+                    <option value="EBS">EBS</option>
+                    <option value="ephemeral">Ephemeral</option>
+                </select>
+            </div>
+            <div class="small-2 columns">
+                <label i18n:translate="">Mapping:</label>
+                <input type="text" name="path" />
+            </div>
+            <div class="small-2 columns">
+                <label i18n:translate="">Snapshot:</label>
+                <select name="snapshot_id">
+                    <option value="">None</option>
+                </select>
+            </div>
+            <div class="small-2 columns">
+                <label i18n:translate="">Size (GB):</label>
+                <input class="number" pattern="integer" />
+            </div>
+            <div class="small-4 columns">
+                <label i18n:translate="">Delete on terminate:</label>
+                <input type="checkbox" name="delete_on_termination"  checked="checked" />
+            </div>
+        </div>
         <textarea id="bdmapping" name="block_device_mapping"></textarea>
     </div>
     <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
