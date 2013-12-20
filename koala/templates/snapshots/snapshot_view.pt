@@ -109,11 +109,11 @@
                     <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
                         Create volume from snapshot
                     </a>
-                    <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
-                        Delete snapshot
-                    </a>
                     <a class="button secondary register" data-reveal-id="register-snapshot-modal" i18n:translate="">
                         Register snapshot
+                    </a>
+                    <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
+                        Delete snapshot
                     </a>
                 </div>
             </div>
