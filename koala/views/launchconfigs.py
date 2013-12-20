@@ -103,7 +103,7 @@ class LaunchConfigView(BaseView):
         if self.delete_form.validate():
             name = self.request.params.get('name')
             try:
-                #self.conn.delete_key_pair(name)
+                self.conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launchconfig')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS

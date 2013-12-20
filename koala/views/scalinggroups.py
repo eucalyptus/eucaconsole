@@ -99,7 +99,7 @@ class ScalingGroupView(BaseView):
         if self.delete_form.validate():
             name = self.request.params.get('name')
             try:
-                #self.conn.delete_key_pair(name)
+                self.conn.delete_auto_scaling_group(name, force_delete=True)
                 prefix = _(u'Successfully deleted scalinggroup')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
