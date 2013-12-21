@@ -4,11 +4,12 @@
  *
  */
 
-// Launch Instance page includes the tag editor and Block Device Mapping editor, so pull in those modules
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor'])
+// Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker'])
     .controller('LaunchInstanceCtrl', function ($scope, $timeout) {
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
+        $scope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -16,6 +17,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor'])
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
+            $scope.imageID = $scope.urlParams['image_id'] || '';
         };
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea

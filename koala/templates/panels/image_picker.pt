@@ -1,0 +1,34 @@
+
+<!--! Image Picker widget (Used in Launch Instance wizard) -->
+<link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/widgets/image_picker.css')}" />
+<div id="image-picker" ng-app="ImagePicker"
+     ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}')">
+    <!--! Image picker widget -->
+    <table class="table" ng-cloak="">
+        <thead>
+            <tr>
+                <th colspan="2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in items | limitTo: batchSize">
+                <td class="icon"><!--! icon here --></td>
+                <td>
+                    <div class="name">
+                        <a href="${request.route_url('instance_create')}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                    </div>
+                    <div>
+                        {{ item.id }}
+                        <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
+                    </div>
+                    <div ng-show="item.description">
+                        {{ item.description }}
+                    </div>
+                    <div class="clearfix"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="${request.static_url('koala:static/js/widgets/image_picker.js')}"></script>
+</div>
+

@@ -81,7 +81,7 @@ class ImagesJsonView(BaseView):
                 kernel_id=image.kernel_id,
                 name=image.name,
                 owner_alias=image.owner_alias,
-                platform=image.platform,
+                platform=image.platform,  # TODO: get platform via util method
                 root_device_type=image.root_device_type,
                 type=image.type,
             ))
@@ -89,7 +89,7 @@ class ImagesJsonView(BaseView):
 
     def get_items(self):
         owner_alias = self.request.params.get('owner_alias')
-        if owner_alias is None and self.cloud_type == 'aws':
+        if not owner_alias and self.cloud_type == 'aws':
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
@@ -118,7 +118,7 @@ class ImageView(TaggedItemView):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
         self.image = self.get_image()
-        self.image_form = ImageForm(self.request, image=self.image, formdata=self.request.params or None)
+        self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.render_dict = dict(
             image=self.image,

@@ -513,9 +513,11 @@ class InstanceLaunchView(TaggedItemView):
         self.image = self.get_image()
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+        self.images_json_endpoint = self.request.route_url('images_json')
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
+            images_json_endpoint=self.images_json_endpoint,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')

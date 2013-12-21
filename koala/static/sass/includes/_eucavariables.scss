@@ -33,7 +33,7 @@ $body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helveti
 $euca-header-font: "Trebuchet MS", "Droid Sans", "OpenSans", "Helvetica Nueue", Helvetica, sans-serif;
 $euca-font-size: 0.8125rem;
 $euca-text-color: #333;
-$euca-link-color: $euca-darkgreen;
+$euca-link-color: darken($euca-darkgreen, 10%);
 
 // Dimensions
 $euca-footer-height: 80px;

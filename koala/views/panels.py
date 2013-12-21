@@ -121,3 +121,11 @@ def bdmapping_editor(context, request, image=None):
     bdm_json = json.dumps(bdm_dict)
     return dict(image=image, bdm_json=bdm_json)
 
+
+@panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
+def image_picker(context, request, image=None, images_json_endpoint=None):
+    """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
+        Usage example (in Chameleon template): ${panel('image_picker')}
+    """
+    return dict(image=image, images_json_endpoint=images_json_endpoint)
+
