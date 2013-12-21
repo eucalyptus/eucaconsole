@@ -16,7 +16,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..constants.images import PLATFORM_CHOICES
+from ..constants.images import PLATFORM_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
@@ -514,10 +514,12 @@ class InstanceLaunchView(TaggedItemView):
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.images_json_endpoint = self.request.route_url('images_json')
+        self.owner_choices = self.get_owner_choices()
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
             images_json_endpoint=self.images_json_endpoint,
+            owner_choices=self.owner_choices,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -596,6 +598,11 @@ class InstanceLaunchView(TaggedItemView):
                 image.platform = self.get_platform(image)
             return image
         return None
+
+    def get_owner_choices(self):
+        if self.cloud_type == 'aws':
+            return AWS_IMAGE_OWNER_ALIAS_CHOICES
+        return EUCA_IMAGE_OWNER_ALIAS_CHOICES
 
     @staticmethod
     def get_block_device_map(bdmapping_json):

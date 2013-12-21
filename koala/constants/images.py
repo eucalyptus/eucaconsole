@@ -5,6 +5,8 @@ Constants for Images
 """
 from collections import namedtuple
 
+from pyramid.i18n import TranslationString as _
+
 
 Choice = namedtuple('Choice', ['key', 'pattern', 'name'])
 
@@ -27,3 +29,19 @@ PLATFORM_CHOICES = [
     Choice('linux',  r'linux', 'Linux'),
     Choice('windows', r'windows', 'Windows'),
 ]
+
+
+# Choices for Images Landing Page and Image Picker widget
+OwnerChoice = namedtuple('OwnerChoice', ['key', 'label'])
+
+EUCA_IMAGE_OWNER_ALIAS_CHOICES = (
+    OwnerChoice(key='', label='Anyone'),
+    OwnerChoice(key='self', label='Me')
+)
+
+AWS_IMAGE_OWNER_ALIAS_CHOICES = (
+    OwnerChoice(key='self', label=_(u'Owned by me')),
+    OwnerChoice(key='amazon', label=_(u'Amazon AMIs')),
+    OwnerChoice(key='aws-marketplace', label=_(u'AWS Marketplace')),
+)
+

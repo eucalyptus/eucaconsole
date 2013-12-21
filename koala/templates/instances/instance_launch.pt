@@ -52,7 +52,7 @@
                             </p>
                             <h6 i18n:translate="" class="title">Enter Image ID</h6>
                             <!--! OK to use GET request here, since we're just looking up the image -->
-                            <form action="${request.route_url('instance_create')}" method="get">
+                            <form action="${request.route_url('instance_create')}" method="get" id="image-id-form">
                                 <div class="row">
                                     <div class="small-4 columns">
                                         <label i18n:translate="" class="right">Enter an Image ID:</label>
@@ -65,7 +65,8 @@
                                 </div>
                             </form>
                             <p>OR select an image below</p>
-                            ${panel('image_picker', image=image, images_json_endpoint=images_json_endpoint)}
+                            ${panel('image_picker', image=image, owner_choices=owner_choices,
+                                    images_json_endpoint=images_json_endpoint)}
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">

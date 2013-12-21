@@ -7,7 +7,18 @@
     <table class="table" ng-cloak="">
         <thead>
             <tr>
-                <th colspan="2"></th>
+                <th colspan="2">
+                    <div class="row">
+                        <div class="small-5 columns">
+                            <select name="owner_alias" ng-model="ownerAlias">
+                                <option tal:repeat="alias owner_choices" value="${alias.key}">${alias.label}</option>
+                            </select>
+                        </div>
+                        <div class="small-7 columns">
+                            <!--! text input filter here -->
+                        </div>
+                    </div>
+                </th>
             </tr>
         </thead>
         <tbody style="max-height: ${maxheight}">
@@ -18,7 +29,7 @@
                         <a href="${request.route_url('instance_create')}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
                     </div>
                     <div>
-                        {{ item.id }}
+                        <b>{{ item.id }}</b>
                         <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                     </div>
                     <div ng-show="item.description">
