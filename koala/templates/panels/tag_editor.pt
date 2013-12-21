@@ -45,5 +45,5 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('koala:static/js/pages/tageditor.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/tageditor.js')}"></script>
 </div>
