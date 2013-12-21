@@ -10,7 +10,7 @@
                 <th colspan="2"></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="max-height: ${maxheight}">
             <tr ng-repeat="item in items | limitTo: batchSize">
                 <td class="icon"><!--! icon here --></td>
                 <td>

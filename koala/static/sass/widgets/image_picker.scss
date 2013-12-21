@@ -6,6 +6,10 @@
 
 #image-picker {
     .table {
+        tbody {
+            display: block;
+            overflow-y: scroll;
+        }
         .icon {
             width: 80px;
             height: 80px;
