@@ -5,7 +5,6 @@ Pyramid views for Eucalyptus and AWS instances
 """
 from dateutil import parser
 from operator import attrgetter
-import re
 import simplejson as json
 import time
 
@@ -16,11 +15,12 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..constants.images import PLATFORM_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
+from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views.images import ImageView
 
 
 class InstancesView(LandingPageView):
@@ -595,7 +595,8 @@ class InstanceLaunchView(TaggedItemView):
         if self.conn and image_id:
             image = self.conn.get_image(image_id)
             if image:
-                image.platform = self.get_platform(image)
+                platform = ImageView.get_platform(image)
+                image.platform_name = ImageView.get_platform_name(platform)
             return image
         return None
 
@@ -623,19 +624,4 @@ class InstanceLaunchView(TaggedItemView):
                 bdm[key] = device
             return bdm
         return None
-
-    @staticmethod
-    def get_platform(image):
-        """Give me a boto.ec2.image.Image object and I'll give you the platform"""
-        # Use platform if exists (e.g. 'windows')
-        if image:
-            if image.platform:
-                return image.platform
-            # Try lookup using description
-            if image.description:
-                for choice in PLATFORM_CHOICES:
-                    if re.match(choice.pattern, image.description, re.IGNORECASE):
-                        return choice.name
-            return 'unknown'
-        return ''
 

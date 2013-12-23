@@ -46,13 +46,16 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-show="!itemsLoading" ng-repeat="item in items | limitTo: 500"><!--! Don't show more than 500 items -->
-                <td class="icon"><!--! icon here --></td>
+            <tr ng-show="!itemsLoading" ng-repeat="item in items">
+                <td class="icon">
+                    <span class="image {{ item.platform_key }}"></span>
+                </td>
                 <td>
                     <div class="name">
                         <a href="${request.route_url('instance_create')}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                        <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                     </div>
-                    <div>
+                    <div ng-show="item.name">
                         <b>{{ item.id }}</b>
                         <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                     </div>

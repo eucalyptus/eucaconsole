@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS images
 
 """
+import re
 from urllib import urlencode
 
 from beaker.cache import cache_region
@@ -12,7 +13,8 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 
-from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
+from ..constants.images import (
+    PLATFORM_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES, PlatformChoice)
 from ..forms.images import ImageForm
 from ..models import Notification
 from ..models import LandingPageFilter
@@ -67,6 +69,7 @@ class ImagesJsonView(BaseView):
     def images_json(self):
         images = []
         for image in self.get_items():
+            platform = ImageView.get_platform(image)
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
@@ -74,7 +77,8 @@ class ImagesJsonView(BaseView):
                 kernel_id=image.kernel_id,
                 name=image.name,
                 owner_alias=image.owner_alias,
-                platform=image.platform,  # TODO: get platform via util method
+                platform_name=ImageView.get_platform_name(platform),
+                platform_key=ImageView.get_platform_key(platform),
                 root_device_type=image.root_device_type,
                 type=image.type,
             ))
@@ -141,3 +145,38 @@ class ImageView(TaggedItemView):
 
         return self.render_dict
 
+    @staticmethod
+    def get_platform(image):
+        """Give me a boto.ec2.image.Image object and I'll give you the platform"""
+        unknown = PlatformChoice(key='unknown', pattern=r'unknown', name='unknown')
+        # Use platform if exists (e.g. 'windows')
+        lookup_attrs = ['name', 'description']
+        if image:
+            if image.platform:
+                return image.platform
+            # Try lookup using lookup attributes
+            for lookup in lookup_attrs:
+                attr_value = getattr(image, lookup, '')
+                if attr_value:
+                    for choice in PLATFORM_CHOICES:
+                        if re.match(choice.pattern, attr_value, re.IGNORECASE):
+                            return choice
+            return unknown
+
+    @staticmethod
+    def get_platform_name(platform):
+        """platform could be either a unicde object (e.g. 'windows')
+           or a koala.constants.images.PlatformChoice object
+        """
+        if isinstance(platform, unicode):
+            return platform
+        return platform.name
+
+    @staticmethod
+    def get_platform_key(platform):
+        """platform could be either a unicde object (e.g. 'windows')
+           or a koala.constants.images.PlatformChoice object
+        """
+        if isinstance(platform, unicode):
+            return platform
+        return platform.key

@@ -79,6 +79,9 @@ $wizard-border-width: 16px;
         color: $euca-darkblue;
         font-weight: bold;
     }
+    .value {
+        word-break: break-all;
+    }
     .row {
         margin-bottom: 5px;
     }

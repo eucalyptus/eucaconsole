@@ -26,6 +26,7 @@ angular.module('ImagePicker', [])
             $scope.getItems();
         };
         $scope.getItems = function () {
+            $scope.searchFilter = '';
             $scope.itemsLoading = true;
             var jsonURL = $scope.jsonEndpoint;
             if ($scope.ownerAlias) {

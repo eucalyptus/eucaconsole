@@ -67,6 +67,14 @@
                             <p>OR select an image below</p>
                             ${panel('image_picker', image=image, owner_choices=owner_choices,
                                     images_json_endpoint=images_json_endpoint)}
+                            <div class="row" tal:condition="image">
+                                <div class="small-6 columns">&nbsp;</div>
+                                <div class="small-6 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                        <span i18n:translate="">Next: Select type</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
@@ -152,7 +160,7 @@
                 </div>
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
-                    <div class="small-8 columns value">${image.platform}</div>
+                    <div class="small-8 columns value">${image.platform_name}</div>
                 </div>
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Root device:</label></div>

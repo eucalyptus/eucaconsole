@@ -12,8 +12,23 @@
             overflow-y: scroll;
         }
         .icon {
-            width: 80px;
-            height: 80px;
+            padding: 15px;
+            .image {
+                display: inline-block;
+                width: 50px;
+                height: 50px;
+                background: url(/static/img/image-platform-icons.png) no-repeat top left;
+                &.unknown { background-position: 0 -900px; }
+                &.redhat { background-position: 0 0; }
+                &.fedora { background-position: 0 -51px; }
+                &.gentoo { background-position: 0 -101px; }
+                &.ubuntu { background-position: 0 -151px; }
+                &.centos { background-position: 0 -201px; }
+                &.suse { background-position: 0 -251px; }
+                &.debian { background-position: 0 -301px; }
+                &.linux { background-position: 0 -351px; }
+                &.windows { background-position: 0 -401px; }
+            }
         }
         .name a {
             line-height: 1rem;
