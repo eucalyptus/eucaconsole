@@ -2,7 +2,7 @@
 <!--! Image Picker widget (Used in Launch Instance wizard) -->
 <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/widgets/image_picker.css')}" />
 <div id="image-picker" ng-app="ImagePicker"
-     ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}')">
+     ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
     <!--! Image picker widget -->
     <table class="table" ng-cloak="">
         <thead>
@@ -10,7 +10,7 @@
                 <th colspan="2">
                     <div class="row">
                         <div class="small-5 columns">
-                            <select name="owner_alias" ng-model="ownerAlias">
+                            <select name="owner_alias" ng-model="ownerAlias" ng-change="getItems()">
                                 <option tal:repeat="alias owner_choices" value="${alias.key}">${alias.label}</option>
                             </select>
                         </div>
@@ -22,7 +22,15 @@
             </tr>
         </thead>
         <tbody style="max-height: ${maxheight}">
-            <tr ng-repeat="item in items | limitTo: batchSize">
+            <tr>
+                <td colspan="2">
+                    <div i18n:translate="" ng-show="itemsLoading">Loading...</div>
+                    <div ng-show="!itemsLoading &amp;&amp; items.length == 0">
+                        <span i18n:translate="">No images were found matching the criteria.</span>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="!itemsLoading" ng-repeat="item in items | limitTo: batchSize">
                 <td class="icon"><!--! icon here --></td>
                 <td>
                     <div class="name">

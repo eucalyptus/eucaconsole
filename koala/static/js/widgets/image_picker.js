@@ -8,19 +8,29 @@ angular.module('ImagePicker', [])
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
         $scope.ownerAlias = '';
-        $scope.jsonURL = '';
-        $scope.initImagePicker = function (jsonEndpoint) {
-            $scope.jsonURL = jsonEndpoint;
-            if ($scope.jsonURL) {
-                $scope.getItems();
+        $scope.jsonEndpoint = '';
+        $scope.itemsLoading = false;
+        $scope.cloudType = 'euca';
+        $scope.setInitialOwnerChoice = function () {
+            if ($scope.cloudType == 'euca') {
+                $scope.ownerAlias = ''
+            } else {
+                $scope.ownerAlias = 'amazon'
             }
         };
+        $scope.initImagePicker = function (jsonEndpoint, cloudType) {
+            $scope.jsonEndpoint = jsonEndpoint;
+            $scope.cloudType = cloudType;
+            $scope.setInitialOwnerChoice();
+            $scope.getItems();
+        };
         $scope.getItems = function () {
-            if ($scope.ownerAlias) {
-                $scope.jsonURL += '?owner_alias=' + $scope.ownerAlias;
-            }
             $scope.itemsLoading = true;
-            $http.get($scope.jsonURL).success(function(oData) {
+            var jsonURL = $scope.jsonEndpoint;
+            if ($scope.ownerAlias) {
+               jsonURL += '?owner_alias=' + $scope.ownerAlias;
+            }
+            $http.get(jsonURL).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
                 $scope.items = results;
