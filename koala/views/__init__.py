@@ -53,8 +53,9 @@ class BaseView(object):
         """Handle session timeout by redirecting to login page with notice.
            exc is usually a boto.exception.EC2ResponseError exception
         """
-        msg = exc.args[0] if exc.args else ""
-        if isinstance(msg, int) and msg == 403:
+        status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
+        timeout_statuses = [400, 403]
+        if isinstance(status, int) and status in timeout_statuses:
             notice = _(u'Your session has timed out.')
             request.session.flash(notice, queue='warning')
             # Empty Beaker cache to clear connection objects

@@ -15,7 +15,23 @@
                             </select>
                         </div>
                         <div class="small-7 columns">
-                            <!--! text input filter here -->
+                            <div class="row sort-search" ng-cloak="cloak">
+                                <div class="small-9 columns search-filter">
+                                    <form ng-submit="searchImages()">
+                                        <div class="row collapse">
+                                            <div class="small-10 columns">
+                                                <input type="search" ng-model="searchFilter" id="search-filter" />
+                                            </div>
+                                            <div class="small-2 columns">
+                                                <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading">
+                                    {{ items.length }} <span class="hide-for-small" i18n:translate="">images</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </th>
@@ -30,7 +46,7 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-show="!itemsLoading" ng-repeat="item in items | limitTo: batchSize">
+            <tr ng-show="!itemsLoading" ng-repeat="item in items | limitTo: 500"><!--! Don't show more than 500 items -->
                 <td class="icon"><!--! icon here --></td>
                 <td>
                     <div class="name">
