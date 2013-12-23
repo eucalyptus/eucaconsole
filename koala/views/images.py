@@ -159,7 +159,7 @@ class ImageView(TaggedItemView):
                 attr_value = getattr(image, lookup, '')
                 if attr_value:
                     for choice in PLATFORM_CHOICES:
-                        if re.match(choice.pattern, attr_value, re.IGNORECASE):
+                        if re.findall(choice.pattern, attr_value, re.IGNORECASE):
                             return choice
             return unknown
 
