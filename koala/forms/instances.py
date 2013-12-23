@@ -8,7 +8,7 @@ from wtforms import validators
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm
+from . import BaseSecureForm, ChoicesManager
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES, EUCA_INSTANCE_TYPE_CHOICES
 
 
@@ -31,17 +31,19 @@ class InstanceForm(BaseSecureForm):
         self.instance = instance
         self.conn = conn
         self.instance_type.error_msg = self.instance_type_error_msg
+        self.choices_manager = ChoicesManager(conn=self.conn)
+        self.set_choices()
 
         if instance is not None:
             self.instance_type.data = instance.instance_type
             self.ip_address.data = instance.ip_address or ''
             self.monitored.data = instance.monitored
 
-            if conn is not None:
-                self.set_ipaddress_choices()
-                self.set_instance_type_choices()
+    def set_choices(self):
+        self.ip_address.choices = self.get_ipaddress_choices()
+        self.instance_type.choices = ChoicesManager.instance_types(cloud_type=self.cloud_type)
 
-    def set_ipaddress_choices(self):
+    def get_ipaddress_choices(self):
         """Set IP address choices
            Note: we're adding the instances' current address to the choices list,
                as it may not be in the get_all_addresses fetch.
@@ -51,15 +53,7 @@ class InstanceForm(BaseSecureForm):
         existing_ip_choices = [(eip.public_ip, eip.public_ip) for eip in self.conn.get_all_addresses()]
         ipaddress_choices += existing_ip_choices
         ipaddress_choices += [(self.instance.ip_address, self.instance.ip_address)]
-        self.ip_address.choices = sorted(set(ipaddress_choices))
-
-    def set_instance_type_choices(self):
-        choices = [('', _(u'select...'))]
-        if self.cloud_type == 'euca':
-            choices += EUCA_INSTANCE_TYPE_CHOICES
-        elif self.cloud_type == 'aws':
-            choices += AWS_INSTANCE_TYPE_CHOICES
-        self.instance_type.choices = choices
+        return sorted(set(ipaddress_choices))
 
 
 class LaunchInstanceForm(BaseSecureForm):
@@ -109,19 +103,29 @@ class LaunchInstanceForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.set_choices()
 
         if image is not None:
             self.image_id.data = self.image.id
             self.kernel_id.data = image.kernel_id or ''
             self.ramdisk_id.data = image.ramdisk_id or ''
 
-        if conn is not None:
-            self.set_instance_type_choices()
-            self.set_availability_zone_choices()
-            self.set_keypair_choices()
-            self.set_securitygroup_choices()
-            self.set_kernel_choices()
-            self.set_ramdisk_choices()
+    def set_choices(self):
+        self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
+        self.zone.choices = self.choices_manager.availability_zones()
+        self.keypair.choices = self.choices_manager.keypairs()
+        self.securitygroup.choices = self.choices_manager.security_groups()
+        self.kernel_id.choices = self.choices_manager.kernels()
+        self.ramdisk_id.choices = self.choices_manager.ramdisks()
+
+        # Set default choices where applicable, defaulting to first non-blank choice
+        if len(self.zone.choices) > 1:
+            self.zone.data = self.zone.choices[1][0]
+        if len(self.securitygroup.choices) > 1:
+            self.securitygroup.data = self.securitygroup.choices[1][0]
+        if len(self.keypair.choices) > 1:
+            self.keypair.data = self.keypair.choices[1][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -129,68 +133,6 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
-
-    def set_instance_type_choices(self):
-        choices = [('', _(u'select...'))]
-        if self.cloud_type == 'euca':
-            # TODO: Pull instance types using DescribeInstanceTypes
-            choices += EUCA_INSTANCE_TYPE_CHOICES
-        elif self.cloud_type == 'aws':
-            choices += AWS_INSTANCE_TYPE_CHOICES
-        self.instance_type.choices = choices
-
-    def set_availability_zone_choices(self):
-        choices = [('', _(u'select...'))]
-        zones = self.conn.get_all_zones()  # TODO: cache me
-        for zone in zones:
-            choices.append((zone.name, zone.name))
-        if not zones:
-            choices.append(('', _(u'There are no availability zones')))
-        choices = sorted(set(choices))
-        self.zone.choices = choices
-        if len(choices) > 1:
-            self.zone.data = choices[1][0]  # Default to first non-blank choice
-
-    def set_keypair_choices(self):
-        choices = [('', _(u'select...'))]
-        keypairs = self.conn.get_all_key_pairs()  # TODO: cache me
-        for keypair in keypairs:
-            choices.append((keypair.name, keypair.name))
-        choices = sorted(set(choices))
-        self.keypair.choices = choices
-        if len(choices) > 1:
-            self.keypair.data = choices[1][0]  # Default to first non-blank choice
-
-    def set_securitygroup_choices(self):
-        choices = [('', _(u'select...'))]
-        security_groups = self.conn.get_all_security_groups()  # TODO: cache me
-        for sgroup in security_groups:
-            if sgroup.id:
-                choices.append((sgroup.name, sgroup.name))
-        if not security_groups:
-            choices.append(('', 'default'))
-        choices = sorted(set(choices))
-        self.securitygroup.choices = choices
-        if len(choices) > 1:
-            self.securitygroup.data = choices[1][0]  # Default to first non-blank choice
-
-    def set_kernel_choices(self):
-        choices = [('', _(u'Use default from image'))]
-        kernel_images = self.conn.get_all_kernels()  # TODO: cache me
-        for image in kernel_images:
-            if image.kernel_id:
-                choices.append((image.kernel_id, image.kernel_id))
-        choices = sorted(set(choices))
-        self.kernel_id.choices = choices
-
-    def set_ramdisk_choices(self):
-        choices = [('', _(u'Use default from image'))]
-        ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
-        for image in ramdisk_images:
-            if image.ramdisk_id:
-                choices.append((image.ramdisk_id, image.ramdisk_id))
-        choices = sorted(set(choices))
-        self.ramdisk_id.choices = choices
 
 
 class StopInstanceForm(BaseSecureForm):
