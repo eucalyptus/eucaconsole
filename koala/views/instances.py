@@ -231,7 +231,7 @@ class InstanceView(TaggedItemView):
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
-        self.instance_name = self.name_tag or self.instance.id
+        self.instance_name = self.name_tag or self.instance.id if self.instance else ''
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -366,7 +366,9 @@ class InstanceView(TaggedItemView):
         return None
 
     def get_redirect_location(self):
-        return self.request.route_url('instance_view', id=self.instance.id)
+        if self.instance:
+            return self.request.route_url('instance_view', id=self.instance.id)
+        return ''
 
     def disassociate_ip_address(self, ip_address=None):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
