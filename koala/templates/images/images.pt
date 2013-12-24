@@ -59,10 +59,6 @@
                     <span class="label" title="kernel id" i18n:attributes="title" data-tooltip="">KN</span>
                     {{ item.kernel_id }}
                 </div>
-                <div ng-show="item.type">
-                    <span class="label" title="Type" i18n:attributes="title" data-tooltip="">TP</span>
-                    {{ item.type }}
-                </div>
                 <div ng-show="item.owner_alias">
                     <span class="label" title="Owner Alias" i18n:attributes="title" data-tooltip="">OW</span>
                     {{ item.owner_alias }}
