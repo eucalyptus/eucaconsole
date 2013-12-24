@@ -84,12 +84,11 @@
                             ${panel('form_field', field=launch_form['number'], maxlength=2, ng_attrs={'model': 'instanceNumber'})}
                             <div class="row controls-wrapper" ng-cloak="">
                                 <div class="small-4 columns">
-                                    <label i18n:translate="">Names<span class="req">*</span></label>
+                                    <label i18n:translate="">Names</label>
                                 </div>
                                 <div class="small-8 columns field inline">
                                     <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
-                                           name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" required="required" />
-                                    <small class="error" id="names-error">Names for each instance are required</small>
+                                           name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" />
                                 </div>
                             </div>
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}

@@ -75,21 +75,25 @@ class ChoicesManager(object):
             choices.append((keypair.name, keypair.name))
         return sorted(set(choices))
 
-    def kernels(self):
+    def kernels(self, image=None):
         """Get kernel id choices"""
         choices = [('', _(u'Use default from image'))]
         kernel_images = self.conn.get_all_kernels()  # TODO: cache me
-        for image in kernel_images:
-            if image.kernel_id:
-                choices.append((image.kernel_id, image.kernel_id))
+        for kernel_image in kernel_images:
+            if kernel_image.kernel_id:
+                choices.append((kernel_image.kernel_id, kernel_image.kernel_id))
+        if image:
+            choices.append((image.kernel_id, image.kernel_id))
         return sorted(set(choices))
 
-    def ramdisks(self):
+    def ramdisks(self, image=None):
         """Get ramdisk id choices"""
         choices = [('', _(u'Use default from image'))]
         ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
-        for image in ramdisk_images:
-            if image.ramdisk_id:
-                choices.append((image.ramdisk_id, image.ramdisk_id))
+        for ramdisk_image in ramdisk_images:
+            if ramdisk_image.ramdisk_id:
+                choices.append((ramdisk_image.ramdisk_id, ramdisk_image.ramdisk_id))
+        if image:
+            choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))
 

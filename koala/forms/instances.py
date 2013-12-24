@@ -9,7 +9,6 @@ from wtforms import validators
 from pyramid.i18n import TranslationString as _
 
 from . import BaseSecureForm, ChoicesManager
-from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES, EUCA_INSTANCE_TYPE_CHOICES
 
 
 class InstanceForm(BaseSecureForm):
@@ -118,8 +117,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.choices = self.choices_manager.availability_zones()
         self.keypair.choices = self.choices_manager.keypairs()
         self.securitygroup.choices = self.choices_manager.security_groups()
-        self.kernel_id.choices = self.choices_manager.kernels()
-        self.ramdisk_id.choices = self.choices_manager.ramdisks()
+        self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
+        self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if len(self.zone.choices) > 1:

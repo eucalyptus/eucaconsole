@@ -62,7 +62,7 @@
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups }}
+                    {{ item.security_groups || 'default' }}
                 </div>
                 <div ng-show="item.key_name">
                     <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
@@ -97,7 +97,7 @@
                 <td>{{ item.root_device }}</td>
                 <td>{{ item.placement }}</td>
                 <td>{{ item.instance_type }}</td>
-                <td>{{ item.security_groups }}</td>
+                <td>{{ item.security_groups || 'default' }}</td>
                 <td>{{ item.tags }}</td>
                 <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
                 <td>
