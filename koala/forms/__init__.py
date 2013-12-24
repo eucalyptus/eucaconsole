@@ -36,8 +36,8 @@ class ChoicesManager(object):
         zones = zones or []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        if zones is None and self.conn is not None:
-            zones = self.conn.get_all_zones() if self.conn else []  # TODO: cache me
+        if not zones and self.conn is not None:
+            zones = self.conn.get_all_zones()
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
@@ -69,11 +69,13 @@ class ChoicesManager(object):
             choices.append(('', 'default'))
         return sorted(set(choices))
 
-    def keypairs(self, add_blank=True):
+    def keypairs(self, keypairs=None, add_blank=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        keypairs = self.conn.get_all_key_pairs()
+        keypairs = keypairs or []
+        if not keypairs and self.conn is not None:
+            keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
         return sorted(set(choices))
@@ -81,7 +83,7 @@ class ChoicesManager(object):
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
         choices = [('', _(u'None assigned'))]
         ipaddresses = ipaddresses or []
-        if ipaddresses is None and self.conn is not None:
+        if not ipaddresses and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()
         for eip in ipaddresses:
             choices.append((eip.public_ip, eip.public_ip))
@@ -89,10 +91,12 @@ class ChoicesManager(object):
             choices.append((instance.ip_address, instance.ip_address))
         return sorted(set(choices))
 
-    def kernels(self, image=None):
+    def kernels(self, kernel_images=None, image=None):
         """Get kernel id choices"""
         choices = [('', _(u'Use default from image'))]
-        kernel_images = self.conn.get_all_kernels()  # TODO: cache me
+        kernel_images = kernel_images or []
+        if not kernel_images and self.conn is not None:
+            kernel_images = self.conn.get_all_kernels()  # TODO: cache me
         for kernel_image in kernel_images:
             if kernel_image.kernel_id:
                 choices.append((kernel_image.kernel_id, kernel_image.kernel_id))
@@ -100,10 +104,12 @@ class ChoicesManager(object):
             choices.append((image.kernel_id, image.kernel_id))
         return sorted(set(choices))
 
-    def ramdisks(self, image=None):
+    def ramdisks(self, ramdisk_images=None, image=None):
         """Get ramdisk id choices"""
         choices = [('', _(u'Use default from image'))]
-        ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
+        ramdisk_images = ramdisk_images or []
+        if not ramdisk_images and self.conn is not None:
+            ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
         for ramdisk_image in ramdisk_images:
             if ramdisk_image.ramdisk_id:
                 choices.append((ramdisk_image.ramdisk_id, ramdisk_image.ramdisk_id))
