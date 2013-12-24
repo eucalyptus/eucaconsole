@@ -28,8 +28,9 @@ class VolumesView(LandingPageView):
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
         self.json_items_endpoint = self.get_json_endpoint('volumes_json')
+        self.instances = self.conn.get_only_instances()
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
-        self.attach_form = AttachForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('volumes')
         self.filter_fields = self.get_filter_fields()
@@ -54,7 +55,7 @@ class VolumesView(LandingPageView):
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
-            instances_by_zone=json.dumps(self.get_instances_by_zone()),
+            instances_by_zone=json.dumps(self.get_instances_by_zone(self.instances)),
         ))
         return self.render_dict
 
@@ -63,6 +64,7 @@ class VolumesView(LandingPageView):
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
         filtered_items = self.filter_items(self.items)
+        snapshots = self.conn.get_all_snapshots()
         for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
@@ -71,7 +73,9 @@ class VolumesView(LandingPageView):
                 id=volume.id,
                 instance=volume.attach_data.instance_id,
                 name=volume.tags.get('Name', volume.id),
-                snapshots=len(volume.snapshots()),
+                # super inefficient! Caused all snapshots to be fetch for *every* volume
+                #snapshots=len(volume.snapshots()),
+                snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                 size=volume.size,
                 status=status,
                 attach_status=volume.attach_data.status,
@@ -149,14 +153,12 @@ class VolumesView(LandingPageView):
     def get_items(self):
         return self.conn.get_all_volumes() if self.conn else []
 
-    def get_instances_by_zone(self):
-        if self.conn:
-            instances = self.conn.get_only_instances()
-            zones = set(instance.placement for instance in instances)
-            instances_by_zone = {}
-            for zone in zones:
-                instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
-            return instances_by_zone
+    def get_instances_by_zone(self, instances):
+        zones = set(instance.placement for instance in instances)
+        instances_by_zone = {}
+        for zone in zones:
+            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+        return instances_by_zone
 
     def get_filter_fields(self):
         """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
@@ -187,11 +189,14 @@ class VolumeView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.volume = self.get_volume()
+        snapshots = self.conn.get_all_snapshots()
+        zones = self.conn.get_all_zones()
+        instances = self.conn.get_only_instances()
         self.volume_form = VolumeForm(
-            self.request, volume=self.volume, conn=self.conn, formdata=self.request.params or None)
+            self.request, volume=self.volume, snapshots=snapshots, zones=zones, formdata=self.request.params or None)
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(
-            self.request, conn=self.conn, volume=self.volume, formdata=self.request.params or None)
+            self.request, instances=instances, volume=self.volume, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.volume
         self.attach_data = self.volume.attach_data if self.volume else None

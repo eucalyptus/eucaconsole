@@ -97,22 +97,20 @@ class AttachVolumeForm(BaseSecureForm):
         validators=[validators.Required(message=device_error_msg)],
     )
 
-    def __init__(self, request, instance=None, conn=None, **kwargs):
+    def __init__(self, request, volumes=None, instance=None, **kwargs):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = conn
         self.instance = instance
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
-        if conn is not None:
-            self.set_volume_choices()
-            if self.instance is not None:
-                self.device.data = self.suggest_next_device_name(self.instance.id)
+        self.set_volume_choices(volumes)
+        if self.instance is not None:
+            self.device.data = self.suggest_next_device_name(instance)
 
-    def set_volume_choices(self):
+    def set_volume_choices(self, volumes):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
-        for volume in self.conn.get_all_volumes():
+        for volume in volumes:
             if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
@@ -122,11 +120,8 @@ class AttachVolumeForm(BaseSecureForm):
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
-    def suggest_next_device_name(self, instanceId):
-        instances = self.conn.get_only_instances([instanceId]);
-        if instances is None:
-            return 'error'
-        mappings = instances[0].block_device_mapping
+    def suggest_next_device_name(self, instance):
+        mappings = instance.block_device_mapping
         for i in range(0, 10):   # Test names with char 'f' to 'p'
             dev_name = '/dev/sd'+str(unichr(102+i))
             try:
