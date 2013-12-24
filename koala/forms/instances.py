@@ -161,17 +161,18 @@ class AttachVolumeForm(BaseSecureForm):
     def __init__(self, request, volumes=None, instance=None, **kwargs):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
+        self.volumes = volumes or []
         self.instance = instance
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
-        self.set_volume_choices(volumes)
+        self.set_volume_choices()
         if self.instance is not None:
             self.device.data = self.suggest_next_device_name()
 
-    def set_volume_choices(self, volumes):
+    def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
-        for volume in volumes:
+        for volume in self.volumes:
             if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''

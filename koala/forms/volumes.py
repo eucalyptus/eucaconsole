@@ -38,8 +38,8 @@ class VolumeForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.conn = conn
         self.volume = volume
-        self.snapshots = snapshots
-        self.zones = zones
+        self.snapshots = snapshots or []
+        self.zones = zones or []
         self.size.error_msg = self.size_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.choices_manager = ChoicesManager(conn=conn)
@@ -121,7 +121,7 @@ class AttachForm(BaseSecureForm):
         super(AttachForm, self).__init__(request, **kwargs)
         self.request = request
         self.volume = volume
-        self.instances = instances
+        self.instances = instances or []
         self.instance_id.error_msg = self.instance_error_msg
         self.device.error_msg = self.device_error_msg
         self.set_instance_choices()

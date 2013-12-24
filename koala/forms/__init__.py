@@ -33,9 +33,10 @@ class ChoicesManager(object):
         """Returns a list of availability zone choices
            Will fetch zones if not passed"""
         choices = []
+        zones = zones or []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        if zones is None:
+        if zones is None and self.conn is not None:
             zones = self.conn.get_all_zones() if self.conn else []  # TODO: cache me
         for zone in zones:
             choices.append((zone.name, zone.name))
@@ -79,7 +80,8 @@ class ChoicesManager(object):
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
         choices = [('', _(u'None assigned'))]
-        if ipaddresses is None:
+        ipaddresses = ipaddresses or []
+        if ipaddresses is None and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()
         for eip in ipaddresses:
             choices.append((eip.public_ip, eip.public_ip))
