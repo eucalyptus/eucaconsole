@@ -39,22 +39,8 @@ class InstanceForm(BaseSecureForm):
             self.monitored.data = instance.monitored
 
     def set_choices(self):
-        self.ip_address.choices = self.get_ipaddress_choices()
-        self.instance_type.choices = ChoicesManager.instance_types(cloud_type=self.cloud_type)
-
-    def get_ipaddress_choices(self):
-        """Set IP address choices
-           Note: we're adding the instances' current address to the choices list,
-               as it may not be in the get_all_addresses fetch.
-        """
-        empty_choice = ('', _(u'Unassign address...'))
-        if self.instance:
-            ipaddress_choices = [empty_choice] if self.instance.ip_address else []
-            existing_ip_choices = [(eip.public_ip, eip.public_ip) for eip in self.conn.get_all_addresses()]
-            ipaddress_choices += existing_ip_choices
-            ipaddress_choices += [(self.instance.ip_address, self.instance.ip_address)]
-            return sorted(set(ipaddress_choices))
-        return []
+        self.ip_address.choices = self.choices_manager.elastic_ips(instance=self.instance)
+        self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
 
 
 class LaunchInstanceForm(BaseSecureForm):
@@ -172,22 +158,20 @@ class AttachVolumeForm(BaseSecureForm):
         validators=[validators.Required(message=device_error_msg)],
     )
 
-    def __init__(self, request, instance=None, conn=None, **kwargs):
+    def __init__(self, request, volumes=None, instance=None, **kwargs):
         super(AttachVolumeForm, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = conn
         self.instance = instance
         self.volume_id.error_msg = self.volume_error_msg
         self.device.error_msg = self.device_error_msg
-        if conn is not None:
-            self.set_volume_choices()
-            if self.instance is not None:
-                self.device.data = self.suggest_next_device_name(self.instance.id)
+        self.set_volume_choices(volumes)
+        if self.instance is not None:
+            self.device.data = self.suggest_next_device_name()
 
-    def set_volume_choices(self):
+    def set_volume_choices(self, volumes):
         """Populate volume field with volumes available to attach"""
         choices = [('', _(u'select...'))]
-        for volume in self.conn.get_all_volumes():
+        for volume in volumes:
             if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
@@ -197,11 +181,8 @@ class AttachVolumeForm(BaseSecureForm):
             choices = [('', _(u'No available volumes in the availability zone'))]
         self.volume_id.choices = choices
 
-    def suggest_next_device_name(self, instance_id):
-        instances = self.conn.get_only_instances([instance_id]);
-        if instances is None:
-            return 'error'
-        mappings = instances[0].block_device_mapping
+    def suggest_next_device_name(self):
+        mappings = self.instance.block_device_mapping
         for i in range(0, 10):   # Test names with char 'f' to 'p'
             dev_name = '/dev/sd'+str(unichr(102+i))
             try:

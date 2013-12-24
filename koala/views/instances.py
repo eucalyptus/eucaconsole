@@ -406,9 +406,10 @@ class InstanceVolumesView(BaseView):
         super(InstanceVolumesView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
+        self.volumes = self.conn.get_all_volumes()
         self.instance = self.get_instance()
         self.attach_form = AttachVolumeForm(
-            self.request, conn=self.conn, instance=self.instance, formdata=self.request.params or None)
+            self.request, volumes=self.volumes, instance=self.instance, formdata=self.request.params or None)
         self.inst_name_tag = self.instance.tags.get('Name', '') if self.instance else None
         self.instance_name = '{0}{1}'.format(
             self.instance.id, ' ({0})'.format(self.inst_name_tag) if self.inst_name_tag else '') if self.instance else ''
@@ -500,7 +501,7 @@ class InstanceVolumesView(BaseView):
         return None
 
     def get_attached_volumes(self):
-        volumes = [vol for vol in self.conn.get_all_volumes() if vol.attach_data.instance_id == self.instance.id]
+        volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 

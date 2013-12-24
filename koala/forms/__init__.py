@@ -29,12 +29,14 @@ class ChoicesManager(object):
     def __init__(self, conn=None):
         self.conn = conn
 
-    def availability_zones(self, add_blank=True):
-        """Returns a list of availability zone choices"""
+    def availability_zones(self, zones=None, add_blank=True):
+        """Returns a list of availability zone choices
+           Will fetch zones if not passed"""
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        zones = self.conn.get_all_zones() if self.conn else []  # TODO: cache me
+        if zones is None:
+            zones = self.conn.get_all_zones() if self.conn else []  # TODO: cache me
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
@@ -73,6 +75,16 @@ class ChoicesManager(object):
         keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
+        return sorted(set(choices))
+
+    def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
+        choices = [('', _(u'None assigned'))]
+        if ipaddresses is None:
+            ipaddresses = self.conn.get_all_addresses()
+        for eip in ipaddresses:
+            choices.append((eip.public_ip, eip.public_ip))
+        if instance and instance.ip_address:
+            choices.append((instance.ip_address, instance.ip_address))
         return sorted(set(choices))
 
     def kernels(self, image=None):
