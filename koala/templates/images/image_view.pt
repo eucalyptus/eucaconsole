@@ -26,33 +26,53 @@
                 <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide"> 
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${image.name if image.name else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Machine</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                                <div class="small-9 columns value">${image.name if image.name else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Owner Alias</label></div>
+                                <div class="small-9 columns value">${image.owner_alias if image.owner_alias else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
+                                <div class="small-9 columns value">${image.platform if image.platform else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
+                                <div class="small-9 columns value">${image.architecture if image.architecture else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Root Device Type</label></div>
+                                <div class="small-9 columns value">${image.root_device_type if image.root_device_type else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Description</label></div>
+                                <div class="small-9 columns value">${image.description if image.description else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                            <div class="small-9 columns value">${image.platform if image.platform else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Kernel</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Kernel id</label></div>
+                                <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
-                            <div class="small-9 columns value">${image.architecture if image.architecture else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">RAM disk</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Ramdisk id</label></div>
+                                <div class="small-9 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Owner Alias</label></div>
-                            <div class="small-9 columns value">${image.owner_alias if image.owner_alias else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Root Device Type</label></div>
-                            <div class="small-9 columns value">${image.root_device_type if image.root_device_type else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                            <div class="small-9 columns value">${image.description if image.description else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Block device mappings</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Block device map</label></div>
+                                <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
+                            </div>
                         </div>
                     </div>
                     <hr>
