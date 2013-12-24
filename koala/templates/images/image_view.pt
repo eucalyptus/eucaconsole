@@ -71,6 +71,28 @@
                 </form>
             </div>
         </div>
+        <div class="large-5 columns">
+            <div class="panel has-title" tal:condition="image">
+                <h6 class="title" i18n:translate="">Other image actions</h6>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" data-reveal-id="create-launchconfig-modal" i18n:translate="">
+                            Create scaling group launch configuration 
+                        </a>
+                    </div>
+                </div>
+                <div id="create-launchconfig-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Use this image to create scaling group launch configuration</h3>
+                    <p><span i18n:translate="">Placeholder</span>
+                    <b>${image.id}</b>?</p>
+                    <form action="${request.route_url('image_view', id=image.id)}" method="post">
+                        <button type="submit" class="button" i18n:translate="">Yes</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
