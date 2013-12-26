@@ -63,23 +63,64 @@
                         </div>
                         <div class="panel has-title">
                             <h6 class="title" i18n:translate="">Kernel</h6>
-                            <div class="row controls-wrapper readonly">
+                            <div class="row controls-wrapper readonly" tal:condition="image.kernel_id">
                                 <div class="small-3 columns"><label i18n:translate="">Kernel id</label></div>
                                 <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
                             </div>
                         </div>
                         <div class="panel has-title">
                             <h6 class="title" i18n:translate="">RAM disk</h6>
-                            <div class="row controls-wrapper readonly">
+                            <div class="row controls-wrapper readonly" tal:condition="image.ramdisk_id">
                                 <div class="small-3 columns"><label i18n:translate="">Ramdisk id</label></div>
                                 <div class="small-9 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
                             </div>
                         </div>
                         <div class="panel has-title">
                             <h6 class="title" i18n:translate="">Block device mappings</h6>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label i18n:translate="">Block device map</label></div>
-                                <div class="small-9 columns value">${image.block_device_mapping if image.block_device_mapping else ''}</div>
+                            <div tal:repeat="row image.block_device_names">
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-1"><label i18n:translate="">${row.name if row.name else ''}</label></div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Status</label></div>
+                                    <div class="small-9 columns value">${row.value.status if row.value.status else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Attach time</label></div>
+                                    <div class="small-9 columns value">${row.value.attach_time if row.value.attach_time else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">No device</label></div>
+                                    <div class="small-9 columns value">${row.value.no_device if row.value.no_device else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Volume id</label></div>
+                                    <div class="small-9 columns value">${row.value.volume_id if row.value.volume_id else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Volume type</label></div>
+                                    <div class="small-9 columns value">${row.value.volume_type if row.value.volume_type else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Iops</label></div>
+                                    <div class="small-9 columns value">${row.value.iops if row.value.iops else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">snapshot_id</label></div>
+                                    <div class="small-9 columns value">${row.value.snapshot_id if row.value.snapshot_id else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Size</label></div>
+                                    <div class="small-9 columns value">${row.value.size if row.value.size else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Delete on termination</label></div>
+                                    <div class="small-9 columns value">${row.value.delete_on_termination if row.value.delete_on_termination else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Ephemeral name</label></div>
+                                    <div class="small-9 columns value">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
+                                </div>
                             </div>
                         </div>
                     </div>

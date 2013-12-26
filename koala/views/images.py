@@ -120,10 +120,10 @@ class ImageView(TaggedItemView):
         images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
         attrs = image.__dict__
-        print "ATTRS: " , attrs
+        image.block_device_names = []
         if attrs['block_device_mapping'] is not None:
            for attr in attrs['block_device_mapping']:
-               print attrs['block_device_mapping'][attr].__dict__
+               image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
         if image.platform is None:
             image.platform = "linux"
         return image 
