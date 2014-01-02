@@ -21,7 +21,7 @@ angular.module('InstanceVolumes', [])
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
                 $('#attach-volume-modal').on('open', function() {
-                    $('#volume_id').chosen({'width': '100%'});
+                    $('#volume_id').chosen({'width': '100%', search_contains: true});
                 });
             });
         };
