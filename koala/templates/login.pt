@@ -78,7 +78,7 @@
         </h6>
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
-                <dl class="tabs" id="login-tabs" data-tab>
+                <dl class="tabs" id="login-tabs" data-tab="">
                     <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Eucalyptus</a></dd>
                     <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">AWS</a></dd>
                 </dl>
