@@ -100,6 +100,7 @@ urls = [
     Route(name='snapshot_update', pattern='/snapshots/{id}/update'),
     Route(name='snapshot_delete', pattern='/snapshots/{id}/delete'),
     Route(name='snapshot_register', pattern='/snapshots/{id}/register'),
+    Route(name='snapshot_size_json', pattern='/snapshots/{id}/size/json'),
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
 
     # Security Groups #####

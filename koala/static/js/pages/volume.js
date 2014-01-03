@@ -19,12 +19,12 @@ angular.module('VolumePage', ['TagEditor'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
-            var snapshotOptionText = $('#snapshot_id').find('option[value="' + $scope.snapshotId + '"]').text(),
-                snapshotSize = '';
-            if (snapshotOptionText !== 'None') {
-                snapshotSize = /(?:\(\d+\sGB\))/.exec(snapshotOptionText)[0].replace(/[^\d]/g, '');
-                $('input#size').val(snapshotSize);
-            }
+            $http.get("/snapshots/"+$scope.snapshotId+"/size/json").success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $('input#size').val(results);
+                }
+            });
         };
         $scope.initChosenSelectors = function () {
             var urlParams = $.url().param(),

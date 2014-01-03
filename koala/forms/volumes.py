@@ -54,7 +54,11 @@ class VolumeForm(BaseSecureForm):
         # TODO: May need to filter get_all_snapshots() call for AWS?
         for snapshot in snapshots:
             value = snapshot.id
-            label = '{id} ({size} GB)'.format(id=snapshot.id, size=snapshot.volume_size)
+            name = snapshot.tags.get('Name', None)
+            if name is not None:
+                label = '{name} ({id})'.format(name=name, id=value)
+            else:
+                label = str(value)
             choices.append((value, label))
         # Need to insert current choice since the source snapshot may have been removed after this volume was created
         if self.volume and self.volume.snapshot_id:
