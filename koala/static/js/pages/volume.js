@@ -12,6 +12,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeStatus = '';
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
+        $scope.instanceId = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.isTransitional = function (state) {
@@ -62,6 +63,14 @@ angular.module('VolumePage', ['TagEditor'])
                     } else {
                         $scope.isUpdating = false;
                     }
+                }
+            });
+        };
+        $scope.getDeviceSuggestion = function () {
+            $http.get("/instances/"+$scope.instanceId+"/nextdevice/json").success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $('input#device').val(results);
                 }
             });
         };

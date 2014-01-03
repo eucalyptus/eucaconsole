@@ -395,6 +395,11 @@ class InstanceStateView(BaseView):
         """Return current instance state"""
         return dict(results=self.instance.state)
 
+    @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
+    def instance_nextdevice_json(self):
+        """Return current instance state"""
+        return dict(results=self.suggest_next_device_name(self.instance))
+
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
         if instance_id:
@@ -402,6 +407,16 @@ class InstanceStateView(BaseView):
             return instances_list[0] if instances_list else None
         return None
 
+    # TODO: also in forms/instances.py, let's consolidate
+    def suggest_next_device_name(self, instance):
+        mappings = instance.block_device_mapping
+        for i in range(0, 10):   # Test names with char 'f' to 'p'
+            dev_name = '/dev/sd'+str(unichr(102+i))
+            try:
+                mappings[dev_name]
+            except KeyError:
+                return dev_name
+        return 'error'
 
 class InstanceVolumesView(BaseView):
     VIEW_TEMPLATE = '../templates/instances/instance_volumes.pt'
