@@ -34,6 +34,10 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Detach volume</h3>
         <p>
+          <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.
+          </span>
+        </p>
+        <p>
           <span i18n:translate="">
               Are you sure you want to detach volume <b>${volume_name if volume else '{{ volumeID }}'}</b> from the instance
           </span>
