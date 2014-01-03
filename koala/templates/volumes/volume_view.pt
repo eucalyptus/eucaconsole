@@ -104,6 +104,8 @@
                         <div class="small-8 columns field inline">${volume.size} GB</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
+                        <p><span i18n:translate="">You should create your volume in the same availability zone as the instance with which you want to use it.</span>
+                        </p>
                         ${panel('form_field', field=volume_form['zone'], **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
