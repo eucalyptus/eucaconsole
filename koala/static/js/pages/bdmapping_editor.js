@@ -48,6 +48,17 @@ angular.module('BlockDeviceMappingEditor', [])
             var bdMapping = $scope.bdMapping;
             delete bdMapping[key];
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
-        }
+        };
+        $scope.updateRootDevice = function (key, $event) {
+            var bdMappingText = $scope.bdmTextarea.val();
+            if (bdMappingText && key == '/dev/sda1') {
+                var bdMapping = JSON.parse(bdMappingText);
+                var rootDevice = bdMapping['/dev/sda1'] || '';
+                if (rootDevice) {
+                    bdMapping[key]['size'] = parseInt($($event.target).val(), 10);
+                    $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+                }
+            }
+        };
     })
 ;
