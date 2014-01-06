@@ -9,7 +9,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from koala.forms import BaseSecureForm
 from koala.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
-from koala.forms.instances import AttachVolumeForm, DetachVolumeForm
+from koala.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from koala.views import TaggedItemView
 from koala.views.instances import InstancesView, InstanceView
 
@@ -121,3 +121,21 @@ class InstanceDetachVolumeFormTestCase(BaseFormTestCase):
     def test_secure_form(self):
         self.has_field('csrf_token')
         self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+
+
+class InstanceLaunchFormTestCase(BaseFormTestCase):
+    form_class = LaunchInstanceForm
+    request = testing.DummyRequest()
+    form = form_class(request)
+
+    def test_secure_form(self):
+        self.has_field('csrf_token')
+        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+
+    def test_required_fields(self):
+        self.assert_required('number')
+        self.assert_required('instance_type')
+        self.assert_required('zone')
+        self.assert_required('keypair')
+        self.assert_required('securitygroup')
+

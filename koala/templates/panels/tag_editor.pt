@@ -37,7 +37,7 @@
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addTag($event)" class="button round secondary small" id="add-tag-btn"
+                    <a href="#" ng-click="addTag($event)" class="button round secondary tiny" id="add-tag-btn"
                        title="Add tag">Add tag</a>
                 </div>
             </div>
@@ -45,5 +45,5 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('koala:static/js/pages/tageditor.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/tag_editor.js')}"></script>
 </div>

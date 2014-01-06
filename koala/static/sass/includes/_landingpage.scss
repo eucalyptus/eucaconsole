@@ -84,6 +84,7 @@ $gridwrapper-table-width: 98%;
         div {
             margin-bottom: 2px;
             margin-left: $tile-label-padding;
+            word-break: break-all;
         }
         .label {
             padding: 1px 3px;
@@ -93,6 +94,9 @@ $gridwrapper-table-width: 98%;
             font-family: Verdana, sans-serif;
             min-width: 22px;
             text-align: center;
+            &.ellipsis {
+                margin-left: 0;
+            }
         }
     }
     .footer {
@@ -240,7 +244,8 @@ $gridwrapper-table-width: 98%;
             padding-bottom: 12px;
             vertical-align: top;
             &.id {
-                white-space: nowrap;
+                @include ellipsis-overflow;
+                max-width: 120px;
             }
             span.actions {
                 position: relative;

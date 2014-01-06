@@ -74,7 +74,6 @@
                     </div>
                 </form>
             </div>
-
             <div class="panel has-title" tal:condition="security_group">
                 <h6 class="title" i18n:translate="">Other security group actions</h6>
                 <div class="row">

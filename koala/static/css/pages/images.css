@@ -15,8 +15,9 @@
 .tile .header strong { font-weight: normal; }
 .tile .header .f-dropdown a { overflow: visible; }
 .tile .content { padding: 8px; font-size: 0.9em; }
-.tile .content div { margin-bottom: 2px; margin-left: 28px; }
+.tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
+.tile .content .label.ellipsis { margin-left: 0; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; }
 .tile .footer.has-progress { padding: 0 0 0 0; }
 .tile .footer .completed { padding: 4px 0 4px 10px; }
@@ -51,7 +52,7 @@
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { position: relative; width: 98%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
-.gridwrapper .table tr td.id { white-space: nowrap; }
+.gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; left: 80px; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
@@ -68,6 +69,9 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
+.tile .header a { padding-right: 4px; }
 .tile .label.has-tip { background: white; color: #00415e; font-weight: bold; border-bottom: 1px solid #444444; }
+.tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #76b800; color: white; }
+.tile .footer .action:hover { background-color: #558500; }
 
-.tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #8dc640; color: white; }
+.row.sort-search { margin-top: 20px; }

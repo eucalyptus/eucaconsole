@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+/* @fileOverview Image picker widget Sass CSS styles */
+
+@import "../includes/eucavariables";
+
+#image-picker {
+    .table {
+        width: 100%;
+        tbody {
+            display: block;
+            overflow-y: scroll;
+        }
+        .icon {
+            padding: 15px;
+            .image {
+                display: inline-block;
+                width: 50px;
+                height: 50px;
+                background: url(/static/img/image-platform-icons.png) no-repeat top left;
+                &.unknown { background-position: 0 -900px; }
+                &.redhat { background-position: 0 0; }
+                &.fedora { background-position: 0 -51px; }
+                &.gentoo { background-position: 0 -101px; }
+                &.ubuntu { background-position: 0 -151px; }
+                &.centos { background-position: 0 -201px; }
+                &.suse { background-position: 0 -251px; }
+                &.debian { background-position: 0 -301px; }
+                &.linux { background-position: 0 -351px; }
+                &.windows { background-position: 0 -401px; }
+            }
+        }
+        .name a {
+            line-height: 1rem;
+            font-size: 1.1rem;
+        }
+        .label {
+            padding: 3px 4px;
+            &.i386 {
+                background-color: lighten($euca-darkgrey, 15%);
+            }
+            &.x86_64 {
+                background-color: $euca-notificationblue;
+            }
+        }
+    }
+}

@@ -63,7 +63,7 @@ class ConnectionManager(object):
         :param secret_key: AWS secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2' or 'autoscale')
+        :param conn_type: Connection type ('ec2', 'autoscale', or 'cloudwatch')
 
         """
         conn = None
@@ -97,7 +97,7 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2' or 'autoscale')
+        :param conn_type: Connection type ('ec2', 'autoscale', or 'cloudwatch')
 
         """
         region = RegionInfo(name='eucalyptus', endpoint=clchost)

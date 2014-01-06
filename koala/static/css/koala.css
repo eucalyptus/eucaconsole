@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
+/* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
 /* ========================================================================== HTML5 display definitions ========================================================================== */
@@ -1476,7 +1477,9 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
 #navbar .dropdown li a { line-height: 1.2rem; }
 
+#pagetitle { position: relative; }
 #pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
+#pagetitle .help-icon { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; padding: 8px 16px; text-align: center; vertical-align: middle; border-left: 1px solid #80b6ca; font-weight: bold; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
@@ -1492,7 +1495,7 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 
 a.has-tip { border-bottom: none !important; }
 
-.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; }
+.tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; max-width: 260px; }
 
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
@@ -1565,8 +1568,8 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel.has-title { position: relative; padding-top: 60px; }
-.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.panel.has-title { position: relative; padding-top: 60px; border: none; }
+.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.other-actions { background-color: white; }
 
 .reveal-modal h3 { font-weight: bold; }

@@ -57,7 +57,7 @@ class MasterLayout(object):
         return notifications
 
     def get_datagridview_url(self, display):
-        """Convience property to get tableview or gridview URL for landing pages"""
+        """Convenience property to get tableview or gridview URL for landing pages"""
         try:
             current_url = self.request.current_route_url()
         except ValueError:
@@ -65,10 +65,13 @@ class MasterLayout(object):
             return HTTPNotFound()
         parsed_url = urlparse(current_url)
         otherview = 'gridview' if display == 'tableview' else 'tableview'
+        if 'launch' in parsed_url.query:
+            current_url = current_url.replace('?launch=1', '')
         if 'display' in parsed_url.query:
             return current_url.replace(otherview, display)
         else:
-            return '{url}?display={view}'.format(url=current_url, view=display)
+            ampersand = '&' if '?' in current_url else '?'
+            return '{url}{amp}display={view}'.format(url=current_url, amp=ampersand, view=display)
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

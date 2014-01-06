@@ -8,7 +8,7 @@ from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.exception import EC2ResponseError
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
@@ -48,6 +48,22 @@ class BaseView(object):
         for _cache in cache_managers.values():
             _cache.clear()
 
+    @classmethod
+    def handle_403_error(cls, exc, request=None):
+        """Handle session timeout by redirecting to login page with notice.
+           exc is usually a boto.exception.EC2ResponseError exception
+        """
+        status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
+        timeout_statuses = [400, 403]
+        if isinstance(status, int) and status in timeout_statuses:
+            notice = _(u'Your session has timed out.')
+            request.session.flash(notice, queue='warning')
+            # Empty Beaker cache to clear connection objects
+            cls.invalidate_cache()
+            location = request.route_url('login')
+            return HTTPFound(location=location)
+        return HTTPForbidden()
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -78,10 +94,14 @@ class TaggedItemView(BaseView):
     def get_tags_display(tags, skip_name=True):
         """Return comma-separated list of tags as a string.
            Skips the 'Name' tag by default"""
-        if skip_name:
-            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items() if key != 'Name']
-        else:
-            tags_array = ['{0}={1}'.format(key, val) for key, val in tags.items()]
+        tags_array = []
+        for key, val in tags.items():
+            if not key.startswith('aws:'):
+                template = '{0}={1}'
+                if skip_name and key == 'Name':
+                    continue
+                else:
+                    tags_array.append(template.format(key, val))
         return ', '.join(tags_array)
 
 
@@ -156,11 +176,5 @@ def notfound_view(request):
 @view_config(context=EC2ResponseError, permission=NO_PERMISSION_REQUIRED)
 def ec2conn_error(exc, request):
     """Handle session timeout by redirecting to login page with notice."""
-    msg = exc.args[0] if exc.args else ""
-    if isinstance(msg, int) and msg == 403:
-        notice = _(u'Your session has timed out.')
-        request.session.flash(notice, queue='warning')
-        # Empty Beaker cache to clear connection objects
-        BaseView.invalidate_cache()
-        location = request.route_url('login')
-        return HTTPFound(location=location)
+    return BaseView.handle_403_error(exc, request=request)
+

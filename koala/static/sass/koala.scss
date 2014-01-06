@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
-/* Sass Imports */
+/* @fileOverview Koala application-wide Sass CSS styles */
 
+/* Sass Imports */
 // Normalize/reset CSS styles
 @import "includes/normalize";
 
@@ -132,17 +133,30 @@ body {
 
 
 // Page title
-#pagetitle.header {
-    margin-top: 0;
-    margin-bottom: 2.5rem;
-    padding-left: 14px;
-    padding-top: 10px;
-    color: $euca-darkgrey;
-    background-color: $euca-extralightblue;
-    letter-spacing: 1px;
-    font-weight: normal;
-    font-size: 1.3rem;
-    border-bottom: 1px solid darken($euca-extralightblue, 30%);
+#pagetitle {
+    position: relative;
+    &.header {
+        margin-top: 0;
+        margin-bottom: 2.5rem;
+        padding-left: 14px;
+        padding-top: 10px;
+        color: $euca-darkgrey;
+        background-color: $euca-extralightblue;
+        letter-spacing: 1px;
+        font-weight: normal;
+        font-size: 1.3rem;
+        border-bottom: 1px solid darken($euca-extralightblue, 30%);
+    }
+    .help-icon {
+        display: inline-block;
+        position: absolute;
+        top: 0; bottom: 0; right: 0;
+        padding: 8px 16px;
+        text-align: center;
+        vertical-align: middle;
+        border-left: 1px solid darken($euca-extralightblue, 30%);
+        font-weight: bold;
+    }
 }
 
 
@@ -183,6 +197,7 @@ a.has-tip {
     font-weight: normal;
     font-size: 0.825rem;
     font-family: Verdana, Geneva, Helvetica, sans-serif;
+    max-width: 260px;
 }
 
 .sub-nav {
@@ -437,14 +452,14 @@ textarea.hidden {
     &.has-title {
         position: relative;
         padding-top: 60px;
+        border: none;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
             line-height: 2rem;
             padding-left: 8px;
-            background-color: $euca-extralightblue;
-            border-top: 2px solid $euca-darkblue;
-            border-bottom: 1px solid $euca-lightgrey;
+            background-color: $euca-darkblue;
+            color: white;
             font-weight: normal;
             @include ellipsis-overflow;
         }

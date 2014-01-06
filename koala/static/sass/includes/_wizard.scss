@@ -1,0 +1,116 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+
+$wizard-border-width: 16px;
+
+/* @section Wizard styles */
+.wizard {
+    position: relative;
+    background-color: $euca-extralightgrey;
+    &.has-title {
+        position: relative;
+        padding-top: 42px;
+        h6.title {
+            position: absolute;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            top: 0; left: 0; right: 0;
+            line-height: 2.5rem;
+            padding-left: 12px;
+            background-color: $euca-darkblue;
+            color: white;
+            @include ellipsis-overflow;
+        }
+    }
+    .row.controls-wrapper.readonly {
+        margin-bottom: 0.5rem;
+    }
+    .tabs {
+        margin-left: $wizard-border-width;
+        dd {
+            &.active {
+                .cir {
+                    background-color: $euca-darkblue;
+                    color: white;
+                }
+            }
+            a {
+                white-space: nowrap;
+                padding: 1rem 16px;
+            }
+            .cir {
+                position: relative;
+                top: -2px;
+                font-size: 0.825rem;
+                display: inline-block;
+                border-radius: 60px;
+                width: 20px; height: 20px;
+                padding: 0 0 0 0;
+                text-align: center;
+                vertical-align: middle;
+                background-color: $euca-grey;
+                color: white;
+            }
+        }
+    }
+    .tabs-content {
+        min-height: 400px;
+        margin: 0 0 0 0;
+        padding: 1rem;
+        background-color: white;
+        border-right: $wizard-border-width solid $euca-extralightgrey;
+        border-left: $wizard-border-width solid  $euca-extralightgrey;
+        .content {
+            width: 100%;
+        }
+    }
+}
+
+.summary {
+    position: relative;
+    padding-bottom: 2rem;
+    top: 2px;
+    background-color: $euca-extralightgrey;
+    border-top: 8px solid $euca-darkblue;
+    label {
+        position: relative;
+        right: -1rem;
+        color: $euca-darkblue;
+        font-weight: bold;
+    }
+    .value {
+        word-break: break-all;
+    }
+    .row {
+        margin-bottom: 5px;
+    }
+    .title {
+        font-weight: bold;
+        border-bottom: 1px solid $euca-darkblue;
+        margin-top: 7px;
+        margin-bottom: 1rem;
+    }
+    .section {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid $euca-lightgrey;
+    }
+    #tag-preview {
+        word-break: break-all;
+    }
+}
+
+
+/* -----------------------------------------
+   Media Queries
+----------------------------------------- */
+
+/* Extra small screen (< 481px) */
+@media screen and (max-width: 560px) {
+    dl.tabs {
+        a {
+            b { display: none; }
+        }
+    }
+}
+

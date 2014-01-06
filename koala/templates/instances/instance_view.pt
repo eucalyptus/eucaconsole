@@ -62,10 +62,6 @@
                         <div class="small-8 columns value">${image.platform}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Root device name</label></div>
-                        <div class="small-8 columns value">${instance.root_device_name}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
                         <div class="small-8 columns value">${instance.root_device_type}</div>
                     </div>
@@ -102,7 +98,9 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
-                            <div tal:repeat="group instance.groups">${group.name}</div>
+                            <div tal:repeat="group instance.groups">
+                                <a href="/securitygroups/${group.id}">${group.name}</a>
+                            </div>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">

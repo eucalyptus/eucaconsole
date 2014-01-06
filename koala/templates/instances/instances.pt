@@ -17,7 +17,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Launch New Instance</a>
+                <a class="button" i18n:translate="" href="${request.route_url('instance_create')}">Launch Instance</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
@@ -62,7 +62,7 @@
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups }}
+                    {{ item.security_groups || 'default' }}
                 </div>
                 <div ng-show="item.key_name">
                     <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
@@ -76,7 +76,7 @@
             <metal:block metal:fill-slot="tile_footer">
                 <div ng-show="item.status"
                      class="footer status {{ item.status.replace('-', '') }}">
-                    {{ item.status }}
+                    {{ item.status.replace('-', ' ') }}
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </div>
             </metal:block>
@@ -84,19 +84,21 @@
                 <th>ID</th>
                 <th>Status</th>
                 <th i18n:translate="">Root Device</th>
-                <th i18n:translate="">Avail Zone</th>
+                <th i18n:translate="">Zone</th>
                 <th i18n:translate="">Type</th>
                 <th i18n:translate="">Sec Group</th>
-                <th i18n:translate="">Launch Time</th>
+                <th i18n:translate="">Tags</th>
+                <th i18n:translate="">Launched</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>{{ item.status }} <span class="dots" ng-show="item.transitional">&nbsp;</span></td>
                 <td>{{ item.root_device }}</td>
                 <td>{{ item.placement }}</td>
                 <td>{{ item.instance_type }}</td>
-                <td>{{ item.security_groups }}</td>
+                <td>{{ item.security_groups || 'default' }}</td>
+                <td>{{ item.tags }}</td>
                 <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
                 <td>
                    <span class="actions">

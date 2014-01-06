@@ -3,60 +3,43 @@
 Pyramid views for Eucalyptus and AWS images
 
 """
-from collections import namedtuple
+import re
 from urllib import urlencode
 
 from beaker.cache import cache_region
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 
-from ..forms.images import ImageForm 
+from ..constants.images import (
+    PLATFORM_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES, PlatformChoice)
+from ..forms.images import ImageForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView,  TaggedItemView
+from ..views import BaseView, LandingPageView,  TaggedItemView
 
 
 class ImagesView(LandingPageView):
+    TEMPLATE = '../templates/images/images.pt'
+
     def __init__(self, request):
         super(ImagesView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/images'
 
-    def get_items(self):
-        owner_alias = self.request.params.get('owner_alias')
-        if owner_alias is None and self.cloud_type == 'aws':
-            # Set default alias to 'amazon' for AWS
-            owner_alias = 'amazon'
-        owners = [owner_alias] if owner_alias else []
-        conn = self.get_connection()
-        return self.get_cached_items(conn, owners)
-
-    @staticmethod
-    @cache_region('long_term', 'images_cache')
-    def get_cached_items(conn, owners):
-        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        return conn.get_all_images(owners=owners) if conn else []
-
-    @view_config(route_name='images', renderer='../templates/images/images.pt')
+    @view_config(route_name='images', renderer=TEMPLATE)
     def images_landing(self):
         json_items_endpoint = self.request.route_url('images_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        Choice = namedtuple('FilterChoice', ['key', 'label'])
-        owner_choices = (
-            Choice(key='', label='Anyone'), Choice(key='self', label='Me')
-        )
+        owner_choices = EUCA_IMAGE_OWNER_ALIAS_CHOICES
         if self.cloud_type == 'aws':
-            owner_choices = (
-                Choice(key='self', label=_(u'Owned by me')),
-                Choice(key='amazon', label='Amazon AMIs'),
-                Choice(key='aws-marketplace', label=_(u'AWS Marketplace')),
-            )
+            owner_choices = AWS_IMAGE_OWNER_ALIAS_CHOICES
         self.filter_fields = [
-            LandingPageFilter(key='owner_alias', name='Images', choices=owner_choices),
+            LandingPageFilter(key='owner_alias', name='Images owned by', choices=owner_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']
@@ -79,12 +62,14 @@ class ImagesView(LandingPageView):
             json_items_endpoint=json_items_endpoint,
         )
 
+
+class ImagesJsonView(BaseView):
+    """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
         images = []
         for image in self.get_items():
-            if image.platform is None:
-                image.platform = "linux"
+            platform = ImageView.get_platform(image)
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
@@ -92,11 +77,34 @@ class ImagesView(LandingPageView):
                 kernel_id=image.kernel_id,
                 name=image.name,
                 owner_alias=image.owner_alias,
-                platform=image.platform,
+                platform_name=ImageView.get_platform_name(platform),
+                platform_key=ImageView.get_platform_key(platform),
                 root_device_type=image.root_device_type,
                 ramdisk_id=image.ramdisk_id,
             ))
         return dict(results=images)
+
+    def get_items(self):
+        owner_alias = self.request.params.get('owner_alias')
+        if not owner_alias and self.cloud_type == 'aws':
+            # Set default alias to 'amazon' for AWS
+            owner_alias = 'amazon'
+        owners = [owner_alias] if owner_alias else []
+        conn = self.get_connection()
+        region = self.request.session.get('region')
+        return self.get_images(conn, owners, region)
+
+    def get_images(self, conn, owners, region):
+        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
+        cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
+
+        @cache_region('long_term', cache_key)
+        def _get_images_cache(_owners, _region):
+            try:
+                return conn.get_all_images(owners=_owners) if conn else []
+            except EC2ResponseError as exc:
+                return BaseView.handle_403_error(exc, request=self.request)
+        return _get_images_cache(owners, region)
 
 
 class ImageView(TaggedItemView):
@@ -107,7 +115,7 @@ class ImageView(TaggedItemView):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
         self.image = self.get_image()
-        self.image_form = ImageForm(self.request, image=self.image, formdata=self.request.params or None)
+        self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.render_dict = dict(
             image=self.image,
@@ -122,11 +130,10 @@ class ImageView(TaggedItemView):
         attrs = image.__dict__
         image.block_device_names = []
         if attrs['block_device_mapping'] is not None:
-           for attr in attrs['block_device_mapping']:
-               image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
-        if image.platform is None:
-            image.platform = "linux"
-        return image 
+            for attr in attrs['block_device_mapping']:
+                image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+        image.platform = self.get_platform(image)
+        return image
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
@@ -144,3 +151,38 @@ class ImageView(TaggedItemView):
 
         return self.render_dict
 
+    @staticmethod
+    def get_platform(image):
+        """Give me a boto.ec2.image.Image object and I'll give you the platform"""
+        unknown = PlatformChoice(key='unknown', pattern=r'unknown', name='unknown')
+        # Use platform if exists (e.g. 'windows')
+        lookup_attrs = ['name', 'description']
+        if image:
+            if image.platform:
+                return image.platform
+            # Try lookup using lookup attributes
+            for lookup in lookup_attrs:
+                attr_value = getattr(image, lookup, '')
+                if attr_value:
+                    for choice in PLATFORM_CHOICES:
+                        if re.findall(choice.pattern, attr_value, re.IGNORECASE):
+                            return choice
+            return unknown
+
+    @staticmethod
+    def get_platform_name(platform):
+        """platform could be either a unicode object (e.g. 'windows')
+           or a koala.constants.images.PlatformChoice object
+        """
+        if isinstance(platform, unicode):
+            return platform
+        return platform.name
+
+    @staticmethod
+    def get_platform_key(platform):
+        """platform could be either a unicode object (e.g. 'windows')
+           or a koala.constants.images.PlatformChoice object
+        """
+        if isinstance(platform, unicode):
+            return platform
+        return platform.key

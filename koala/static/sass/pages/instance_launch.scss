@@ -1,0 +1,55 @@
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+/* @section Launch Instance page styles */
+
+#launch-instance-form {
+    input.name {
+        width: 100px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        padding: 4px;
+    }
+    #number {
+        width: 3rem;
+    }
+    #instance_type {
+        option {
+            font-size: 0.825rem;
+        }
+    }
+    #image-id-input {
+        width: 10rem;
+        display: inline;
+    }
+}
+
+#bdmapping-editor {
+    .storage-label {
+        text-align: left;
+    }
+    .table {
+        width: 100%;
+        th {
+            font-size: 0.825rem;
+        }
+        td {
+            line-height: 1rem;
+            padding: 4px 8px;
+            vertical-align: middle;
+        }
+    }
+    #new-blockdevice-entry {
+        label {
+            text-align: left;
+        }
+    }
+    input.number {
+        width: 2rem;
+    }
+}
+

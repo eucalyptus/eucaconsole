@@ -110,5 +110,5 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
     </div>
-    <script src="${request.static_url('koala:static/js/pages/securitygroup_rules.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/securitygroup_rules.js')}"></script>
 </div>

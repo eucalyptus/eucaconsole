@@ -8,6 +8,7 @@ from operator import itemgetter
 
 import simplejson as json
 
+from wtforms.fields import IntegerField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
@@ -29,11 +30,16 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
     if field.flags.required:
         html_attrs['required'] = 'required'
 
-    # Add maxlength="..." HTML attribute to form field if any length validators
+    # Add appropriate HTML attributes based on validators
     for validator in field.validators:
+        # Add maxlength="..." HTML attribute to form field if any length validators
         # If we have multiple Length validators, the last one wins
         if isinstance(validator, Length):
             html_attrs['maxlength'] = validator.max
+
+    # Add HTML attributes based on field type (e.g. IntegerField)
+    if isinstance(field, IntegerField):
+        html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():
@@ -58,6 +64,7 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     """ Tag editor panel.
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
+    tags = tags or {}
     tags_json = json.dumps(tags)
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
@@ -94,3 +101,39 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
+
+
+@panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
+def bdmapping_editor(context, request, image=None, snapshot_choices=None):
+    """ Block device mapping editor (e.g. for Launch Instance page).
+        Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
+    """
+    snapshot_choices = snapshot_choices or []
+    bdm_dict = {}
+    if image:
+        bdm_object = image.block_device_mapping
+        for key, device in bdm_object.items():
+            bdm_dict[key] = dict(
+                volume_type=device.volume_type,
+                snapshot_id=device.snapshot_id,
+                size=device.size,
+                delete_on_termination=device.delete_on_termination,
+            )
+    bdm_json = json.dumps(bdm_dict)
+    return dict(image=image, snapshot_choices=snapshot_choices,bdm_json=bdm_json)
+
+
+@panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
+def image_picker(context, request, image=None, images_json_endpoint=None,
+                 maxheight='800px', owner_choices=None):
+    """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
+        Usage example (in Chameleon template): ${panel('image_picker')}
+    """
+    return dict(
+        image=image,
+        images_json_endpoint=images_json_endpoint,
+        maxheight=maxheight,
+        owner_choices=owner_choices,
+    )
+
+

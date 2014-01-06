@@ -1,0 +1,20 @@
+@charset "UTF-8";
+/* @fileOverview Image picker widget Sass CSS styles */
+#image-picker .table { width: 100%; }
+#image-picker .table tbody { display: block; overflow-y: scroll; }
+#image-picker .table .icon { padding: 15px; }
+#image-picker .table .icon .image { display: inline-block; width: 50px; height: 50px; background: url(/static/img/image-platform-icons.png) no-repeat top left; }
+#image-picker .table .icon .image.unknown { background-position: 0 -900px; }
+#image-picker .table .icon .image.redhat { background-position: 0 0; }
+#image-picker .table .icon .image.fedora { background-position: 0 -51px; }
+#image-picker .table .icon .image.gentoo { background-position: 0 -101px; }
+#image-picker .table .icon .image.ubuntu { background-position: 0 -151px; }
+#image-picker .table .icon .image.centos { background-position: 0 -201px; }
+#image-picker .table .icon .image.suse { background-position: 0 -251px; }
+#image-picker .table .icon .image.debian { background-position: 0 -301px; }
+#image-picker .table .icon .image.linux { background-position: 0 -351px; }
+#image-picker .table .icon .image.windows { background-position: 0 -401px; }
+#image-picker .table .name a { line-height: 1rem; font-size: 1.1rem; }
+#image-picker .table .label { padding: 3px 4px; }
+#image-picker .table .label.i386 { background-color: #6a6a6a; }
+#image-picker .table .label.x86_64 { background-color: #40a8c6; }

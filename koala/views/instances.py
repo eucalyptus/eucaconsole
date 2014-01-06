@@ -5,18 +5,22 @@ Pyramid views for Eucalyptus and AWS instances
 """
 from dateutil import parser
 from operator import attrgetter
+import simplejson as json
 import time
 
+from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm
+from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
+from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views.images import ImageView
 
 
 class InstancesView(LandingPageView):
@@ -227,8 +231,7 @@ class InstanceView(TaggedItemView):
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
-        self.instance_name = '{0}{1}'.format(
-            self.instance.id, ' ({0})'.format(self.name_tag) if self.name_tag else '') if self.instance else ''
+        self.instance_name = self.name_tag or self.instance.id if self.instance else ''
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -268,15 +271,6 @@ class InstanceView(TaggedItemView):
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
-
-    @view_config(route_name='instance_launch', renderer='../templates/instances/instance_launch.pt')
-    def instance_launch(self):
-        # TODO: Implement
-        image_id = self.request.params.get('image_id')
-        image = self.conn.get_image(image_id)
-        return dict(
-            image=image
-        )
 
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
@@ -372,7 +366,9 @@ class InstanceView(TaggedItemView):
         return None
 
     def get_redirect_location(self):
-        return self.request.route_url('instance_view', id=self.instance.id)
+        if self.instance:
+            return self.request.route_url('instance_view', id=self.instance.id)
+        return ''
 
     def disassociate_ip_address(self, ip_address=None):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
@@ -499,10 +495,8 @@ class InstanceVolumesView(BaseView):
 
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
-        print "********** calling get_instance()"
         if instance_id:
             instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            #instances_list = [instance for instance in instances if instance.id == instance_id]
             return instances_list[0] if instances_list else None
         return None
 
@@ -510,4 +504,141 @@ class InstanceVolumesView(BaseView):
         volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
         # Sort by most recently attached first
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
+
+
+class InstanceLaunchView(TaggedItemView):
+    TEMPLATE = '../templates/instances/instance_launch.pt'
+
+    def __init__(self, request):
+        super(InstanceLaunchView, self).__init__(request)
+        self.request = request
+        self.conn = self.get_connection()
+        self.image = self.get_image()
+        self.launch_form = LaunchInstanceForm(
+            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+        self.images_json_endpoint = self.request.route_url('images_json')
+        self.owner_choices = self.get_owner_choices()
+        self.render_dict = dict(
+            image=self.image,
+            launch_form=self.launch_form,
+            images_json_endpoint=self.images_json_endpoint,
+            owner_choices=self.owner_choices,
+            snapshot_choices=self.get_snapshot_choices(),
+        )
+
+    @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
+    def instance_create(self):
+        """Displays the Launch Instance wizard"""
+        return self.render_dict
+
+    @view_config(route_name='instance_launch', renderer=TEMPLATE, request_method='POST')
+    def instance_launch(self):
+        """Handles the POST from the Launch instanced wizard"""
+        if self.launch_form.validate():
+            tags_json = self.request.params.get('tags')
+            image_id = self.image.id
+            key_name = self.request.params.get('keypair')
+            num_instances = int(self.request.params.get('number', 1))
+            securitygroup = self.request.params.get('securitygroup', 'default')
+            security_groups = [securitygroup]  # Security group names
+            instance_type = self.request.params.get('instance_type', 'm1.small')
+            availability_zone = self.request.params.get('zone')
+            user_data = self.request.params.get('user_data')
+            kernel_id = self.request.params.get('kernel_id') or None
+            ramdisk_id = self.request.params.get('ramdisk_id') or None
+            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            private_addressing = self.request.params.get('private_addressing', False)
+            addressing_type = 'private' if private_addressing else 'public'
+            bdmapping_json = self.request.params.get('block_device_mapping')
+            block_device_map = self.get_block_device_map(bdmapping_json)
+            new_instance_ids = []
+            try:
+                for idx in range(num_instances):
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        key_name=key_name,
+                        user_data=user_data,
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        security_group_ids=security_groups,
+                    )
+                    instance = reservation.instances[0]
+                    # Add tags for newly launched instance(s)
+                    # Try adding name tag (from collection of name input fields)
+                    input_field_name = 'name_{0}'.format(idx)
+                    name = self.request.params.get(input_field_name, '').strip()
+                    new_instance_ids.append(name or instance.id)
+                    if name:
+                        instance.add_tag('Name', name)
+                    if tags_json:
+                        tags = json.loads(tags_json)
+                        for tagname, tagvalue in tags.items():
+                            instance.add_tag(tagname, tagvalue)
+                time.sleep(2)
+                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
+                msg += ', '.join(new_instance_ids)
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+        return self.render_dict
+
+    def get_image(self):
+        image_id = self.request.params.get('image_id')
+        if self.conn and image_id:
+            image = self.conn.get_image(image_id)
+            if image:
+                platform = ImageView.get_platform(image)
+                image.platform_name = ImageView.get_platform_name(platform)
+            return image
+        return None
+
+    def get_owner_choices(self):
+        if self.cloud_type == 'aws':
+            return AWS_IMAGE_OWNER_ALIAS_CHOICES
+        return EUCA_IMAGE_OWNER_ALIAS_CHOICES
+
+    def get_snapshot_choices(self):
+        choices = [('', _(u'None'))]
+        for snapshot in self.conn.get_all_snapshots():
+            value = snapshot.id
+            snapshot_name = snapshot.tags.get('Name')
+            label = '{id}{name} ({size} GB)'.format(
+                id=snapshot.id,
+                name=' - {0}'.format(snapshot_name) if snapshot_name else '',
+                size=snapshot.volume_size
+            )
+            choices.append((value, label))
+        return sorted(choices)
+
+    @staticmethod
+    def get_block_device_map(bdmapping_json):
+        """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
+        Mapping JSON structure...
+            {"/dev/sda":
+                {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
+        """
+        mapping = json.loads(bdmapping_json)
+        if mapping:
+            bdm = BlockDeviceMapping()
+            for key, val in mapping.items():
+                device = BlockDeviceType()
+                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                device.snapshot_id = val.get('snapshot_id') or None
+                device.size = val.get('size')
+                device.delete_on_termination = val.get('delete_on_termination', False)
+                bdm[key] = device
+            return bdm
+        return None
 
