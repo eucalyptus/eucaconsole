@@ -1,0 +1,78 @@
+<!--! Modal dialogs for Volumes landing and detail page -->
+<div tal:omit-tag="">
+    <!--! Attach/Detach/Delete modal dialogs -->
+    <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('volumes_attach');
+                     detailpage_action request.route_url('volume_attach', id=volume.id) if volume else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Attach volume</h3>
+        <p><span i18n:translate="">Attach a volume to an instance</span></p>
+        <form method="post" action="${action}"
+              id="attach-form" data-abide="">
+            ${structure:attach_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
+            ${panel('form_field', field=attach_form.instance_id)}
+            ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+            <div class="row">
+                <div class="small-4 columns">&nbsp;</div>
+                <div class="small-8 columns field inline">
+                    <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+        <hr />
+        <!--! Volume device help -->
+        <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
+    </div>
+    <div id="detach-volume-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('volumes_detach');
+                     detailpage_action request.route_url('volume_detach', id=volume.id) if volume else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Detach volume</h3>
+        <p>
+          <span i18n:translate="">
+              Are you sure you want to detach volume <b>${volume_name if volume else '{{ volumeID }}'}</b> from the instance
+          </span>
+          <strong>${instance_name}</strong>?
+        </p>
+        <form method="post" id="detach-form" data-abide="" action="${action}">
+            ${structure:detach_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
+            <div>&nbsp;</div>
+            <div class="row">
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns field inline">
+                    <input type="submit" class="button" value="Yes, detach volume" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('volumes_delete');
+                     detailpage_action request.route_url('volume_delete', id=volume.id) if volume else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete volume</h3>
+        <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
+        <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
+            <b>${volume_name if volume_name else '{{ volumeID }}'}</b>?</p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="volume_id" value="{{ volumeID }}" />
+            </div>
+            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <!--! /end modal dialogs -->
+</div>
+

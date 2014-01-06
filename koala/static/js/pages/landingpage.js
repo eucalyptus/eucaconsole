@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('LandingPage', [])
+angular.module('LandingPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
         $scope.unfilteredItems = [];
@@ -55,8 +55,6 @@ angular.module('LandingPage', [])
         };
         /*  Filter items client side based on search criteria.
          *  @param {array} filterProps Array of properties to filter items on
-         *  Note: We could potentially use Angular's template filter here, but it may be tricky to
-         *        filter by nested properties.
          */
         $scope.searchFilterItems = function(filterProps) {
             $scope.items = $scope.unfilteredItems;  // reset prior to applying filter

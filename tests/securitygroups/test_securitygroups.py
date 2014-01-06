@@ -56,7 +56,7 @@ class SecurityGroupViewTests(BaseViewTestCase):
 
     def test_delete_view(self):
         deleteview = SecurityGroupView(self.request).securitygroup_delete()
-        self.assertEqual(deleteview, None)
+        self.assertIsNotNone(deleteview)
 
 
 class SecurityGroupFormTestCase(BaseFormTestCase):

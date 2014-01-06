@@ -28,8 +28,8 @@ class LoginView(BaseView):
     def __init__(self, request):
         super(LoginView, self).__init__(request)
         self.request = request
-        self.euca_login_form = EucaLoginForm(self.request)
-        self.aws_login_form = AWSLoginForm(self.request)
+        self.euca_login_form = EucaLoginForm(self.request, formdata=self.request.params or None)
+        self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
         referrer = self.request.url
         login_url = self.request.route_url('login')
@@ -71,10 +71,9 @@ class LoginView(BaseView):
         new_passwd = None
         clchost = self.request.registry.settings.get('clchost')
         auth = EucaAuthenticator(host=clchost, duration=self.duration)
-        euca_login_form = EucaLoginForm(self.request, formdata=self.request.params)
         session = self.request.session
 
-        if euca_login_form.validate():
+        if self.euca_login_form.validate():
             account = self.request.params.get('account')
             username = self.request.params.get('username')
             password = self.request.params.get('password')
@@ -95,7 +94,10 @@ class LoginView(BaseView):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
-                if err.msg == u'Unauthorized':
+                if err.code == 403:  # password expired
+                    changepwd_url = self.request.route_url('changepassword')
+                    return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s" % (account, username)))
+                elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
             except URLError, err:
@@ -106,8 +108,7 @@ class LoginView(BaseView):
 
     def handle_aws_login(self):
         session = self.request.session
-        aws_login_form = AWSLoginForm(self.request, formdata=self.request.params)
-        if aws_login_form.validate():
+        if self.aws_login_form.validate():
             aws_access_key = self.request.params.get('access_key')
             aws_secret_key = self.request.params.get('secret_key')
             try:
@@ -140,7 +141,7 @@ class LogoutView(BaseView):
         self.request = request
         self.login_url = request.route_url('login')
 
-    @view_config(route_name='logout')
+    @view_config(route_name='logout', request_method='POST')
     def logout(self):
         forget(self.request)
         self.request.session.invalidate()

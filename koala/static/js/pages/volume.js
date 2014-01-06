@@ -36,8 +36,8 @@ angular.module('VolumePage', ['TagEditor'])
             }
             snapshotField.chosen({'width': '75%'});
             // Instance choices in "Attach to instance" modal dialog
-            $('#attach-modal').on('open', function() {
-                $('#instance_id').chosen({'width': '75%'});
+            $('#attach-volume-modal').on('open', function() {
+                $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
         };
         $scope.initController = function (jsonEndpoint, status, attachStatus) {

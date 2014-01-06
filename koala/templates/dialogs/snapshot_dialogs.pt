@@ -1,0 +1,47 @@
+<!--! Modal dialogs for Snapshots on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('snapshots_delete');
+                     detailpage_action request.route_url('snapshot_delete', id=snapshot.id) if snapshot else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete snapshot</h3>
+        <p><span i18n:translate="">Are you sure you want to delete the snapshot</span><br />
+            <b>${snapshot_name if snapshot else '{{ snapshotID }}'}</b>?</p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
+            </div>
+            <div class="large-4 columns">&nbsp;</div>
+            <div class="large-8 columns">
+                <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="register-snapshot-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('snapshots_register');
+                     detailpage_action request.route_url('snapshot_register', id=snapshot.id) if snapshot else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Register snapshot as image</h3>
+        <p><span i18n:translate="">You can register a snapshot as an image if it was created from a volume containing a root file system. The image can then be used to launch EBS-backed instances.</span></p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+            </div>
+            <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
+            ${panel('form_field', field=register_form['name'])}
+            ${panel('form_field', field=register_form['description'])}
+            ${panel('form_field', field=register_form['dot'])}
+            ${panel('form_field', field=register_form['reg_as_windows'])}
+            <div class="large-4 columns">&nbsp;</div>
+            <div class="large-8 columns">
+                <button type="submit" class="button" i18n:translate="">Register</button>
+            </div>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

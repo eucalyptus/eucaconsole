@@ -4,89 +4,151 @@
     <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/login.css')}" />
 </div>
 
+<div metal:fill-slot="head_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+
+    <script type="text/javascript">
+      function set_focus() {
+        if ($('#eucalyptus').is(':visible')) {
+          var inputs = $('#euca-login-form input').filter(function() { return !this.value; });
+          if (inputs.length > 0) inputs[0].focus();
+        }
+        if ($('#aws').is(':visible')) {
+          var inputs = $('#aws-login-form input').filter(function() { return !this.value; });
+          if (inputs.length > 0) inputs[0].focus();
+        }
+      }
+      function page_loaded() {
+          // pre-fill if cookies are present
+          var account = $.cookie('account');
+          if (account !== undefined) $('#account').val(account);
+
+          var last_login = $.cookie('login-form');
+          if (last_login == 'aws') {  // select that tab
+            // all this mimics what happens in the tab code itself... no other way I found worked.
+            var tab = $('#aws-tab');
+            tab.addClass('active').trigger('opened');
+            tab.siblings().removeClass('active');
+            var target = $('#aws');
+            target.siblings().removeClass('active').end().addClass('active');
+          }
+          // this code assures the forms have focus.
+          set_focus();
+          $('#login-tabs').on('toggled', function (event, tab) {
+            set_focus();
+          });
+
+          // set up listener to capture and save values if remember checked
+          $('#euca-login-form').submit(function (event) {
+            $.cookie('account', $('#account').val(), {expires: 180});
+            $.cookie('login-form', 'eucalyptus', {expires: 180});
+          });
+          $('#aws-login-form').submit(function (event) {
+            $.cookie('login-form', 'aws', {expires: 180});
+          });
+      }
+    </script>
+</div>
+
 <div metal:fill-slot="main_content">
 
-    <div class="row" id="login-panel-wrapper">
-        <!-- Notifications -->
+    <!-- Notifications -->
+    <div id="notifications-wrapper">
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
-        <div data-alert="alert" class="alert-box alert" tal:condition="https_required and request.scheme != 'https'">
+        <div data-alert="alert" class="alert-box alert large-10 columns large-centered" tal:condition="https_required and request.scheme != 'https'">
             <span i18n:translate="">
                 HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
                 in the configuration file.
             </span>
             <a href="#" class="close">&times;</a>
         </div>
-        <div class="panel has-header ${'hide-aws' if not layout.aws_enabled else ''}" id="login-panel">
-            <div class="header" i18n:translate="">Log in to your console</div>
-            <div class="row">
-                <div tal:condition="login_form_errors">
-                <div data-alert="alert" class="alert-box alert large-10 large-centered columns"
-                        tal:repeat="login_error login_form_errors">
-                    ${ login_error }
-                    <a href="#" class="close">&times;</a>
-                </div>
-                </div>
-                <div class="${'large-5' if layout.aws_enabled else 'large-12'} columns">
-                    <h6 i18n:translate="">Log in to Eucalyptus</h6>
-                    <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
-                          action="${request.route_url('login')}?login_type=Eucalyptus">
-                        <input type="hidden" name="came_from" value="${came_from}" />
-                        <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
-                            <div class="small-4 columns">
-                                <label for="right-label" class="right">${field.label.text}</label>
-                            </div>
-                            <div class="small-8 columns field">
-                                ${structure:field}
-                                <div tal:condition="field.errors" class="server-validation">
-                                    <span class="error" tal:repeat="error field.errors">
-                                        ${error}
-                                    </span>
+        <div tal:condition="login_form_errors">
+          <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
+                  tal:repeat="login_error login_form_errors">
+              ${ login_error }
+              <a href="#" class="close">&times;</a>
+          </div>
+        </div>
+    </div>
+
+    <div class="row panel has-title large-8 columns large-centered" id="login-wrapper">
+        <h6 class="title" i18n:translate="">
+            <span i18n:translate="">Log in to Eucalyptus</span>
+            <span tal:condition="layout.aws_enabled" i18n:translate="">or AWS</span>
+        </h6>
+        <div class="large-12 large-centered columns">
+            <div class="row" id="login-forms">
+                <dl class="tabs" id="login-tabs" data-tab="">
+                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Eucalyptus</a></dd>
+                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">AWS</a></dd>
+                </dl>
+                <div class="tabs-content">
+                    <div class="content active large-8 medium-8 columns large-centered medium-centered" id="eucalyptus">
+                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
+                              action="${request.route_url('login')}?login_type=Eucalyptus">
+                            <input type="hidden" name="came_from" value="${came_from}" />
+                            <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    ${structure:field}
+                                    <div tal:condition="field.errors" class="server-validation">
+                                        <span class="error" tal:repeat="error field.errors">
+                                            ${error}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns"></div>
-                            <div class="small-8 columns">
-                                <input type="submit" class="submit button radius"
-                                       id="euca-login-button" value="Log in to Eucalyptus" />
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="large-1 columns" tal:condition="layout.aws_enabled">
-                    <div class="or"></div>
-                </div>
-                <div class="large-6 columns" tal:condition="layout.aws_enabled">
-                    <h6 i18n:translate="">Log in to AWS</h6>
-                    <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
-                          action="${request.route_url('login')}?login_type=AWS">
-                        <input type="hidden" name="came_from" value="${came_from}" />
-                        <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
-                            <div class="small-4 columns">
-                                <label for="right-label" class="right">${field.label.text}</label>
-                            </div>
-                            <div class="small-8 columns field">
-                                ${structure:field}
-                                <div tal:condition="field.errors" class="server-validation">
-                                    <span class="error" tal:repeat="error field.errors">
-                                        ${error}
-                                    </span>
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <a href="#" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns"></div>
-                            <div class="small-8 columns">
-                                <input type="submit" class="submit button radius"
-                                       id="aws-login-button" value="Log in to AWS" />
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <input type="submit" class="submit button radius"
+                                           id="euca-login-button" value="Log in to Eucalyptus" />
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                    <div class="content large-8 medium-8 columns large-centered medium-centered"
+                         tal:condition="layout.aws_enabled" id="aws">
+                        <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
+                              action="${request.route_url('login')}?login_type=AWS">
+                            <input type="hidden" name="came_from" value="${came_from}" />
+                            <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    ${structure:field}
+                                    <div tal:condition="field.errors" class="server-validation">
+                                        <span class="error" tal:repeat="error field.errors">
+                                            ${error}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <span i18n:translate="">Need access to an IAM account?</span><br />
+                                    <span i18n:translate="">Contact your</span>
+                                    <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <input type="submit" class="submit button radius"
+                                           id="aws-login-button" value="Log in to AWS" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="clearfix">&nbsp;</div>
 </div>
 
 </metal:block>

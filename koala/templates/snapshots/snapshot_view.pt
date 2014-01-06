@@ -6,7 +6,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" tal:define="snapshot_name snapshot.tags.get('Name', snapshot.id) if snapshot else ''"
+    <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_url(
                  'snapshot_state_json', id=snapshot.id) if snapshot else ''}',
@@ -54,7 +54,13 @@
                             <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
                         </div>
                     </div>
-                    ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    <div tal:condition="not snapshot" tal:omit-tag="">
+                        ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns field inline">${snapshot.tags.get('Name')}</div>
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
                         <div class="small-8 columns value">${snapshot.id}</div>
@@ -68,7 +74,13 @@
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}
                     </div>
-                    ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
+                    <div tal:condition="not snapshot" tal:omit-tag="">
+                        ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
+                        <div class="small-4 columns"><label i18n:translate="">Description</label></div>
+                        <div class="small-8 columns field inline">${snapshot.description}</div>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags)}
                     <hr  />
@@ -97,22 +109,12 @@
                     <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
                         Create volume from snapshot
                     </a>
+                    <a class="button secondary register" data-reveal-id="register-snapshot-modal" i18n:translate="">
+                        Register snapshot
+                    </a>
                     <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
                         Delete snapshot
                     </a>
-                </div>
-                <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Delete snapshot</h3>
-                    <p><span i18n:translate="">Are you sure you want to delete the snapshot</span>
-                        <b>${snapshot_name}</b>?</p>
-                    <form action="${request.route_url('snapshot_delete', id=snapshot.id)}" method="post">
-                        ${structure:delete_form['csrf_token']}
-                        <div class="large-4 columns">&nbsp;</div>
-                        <div class="large-8 columns">
-                            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                        </div>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
                 </div>
             </div>
             <!--! Tag editor help content -->
@@ -120,6 +122,8 @@
                 <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form, register_form=register_form)}
     </div>
 </div>
 

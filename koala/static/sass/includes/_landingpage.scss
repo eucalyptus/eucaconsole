@@ -11,7 +11,7 @@ $tile-row-height: 24px;
 $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
 $tile-label-padding: 28px;
-$grid-dropdown-width: 190px;
+$grid-dropdown-width: 160px;
 $gridwrapper-table-width: 98%;
 
 
@@ -38,6 +38,24 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 10px;
     padding-bottom: $tile-row-height;
     word-wrap: break-word;
+    // Add tile on instance-volumes page and volume-snapshots page
+    &.add {
+        text-align: center;
+        text-transform: uppercase;
+        position: relative;
+        a {
+            display: block;
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            &:hover {
+                background-color: lighten($euca-lightgreen, 30%);
+            }
+        }
+        .plus {
+            font-size: 5rem;
+            margin-bottom: 0.5rem;
+        }
+    }
     .header {
         position: relative;
         border-bottom: 1px solid $tile-border-color;
@@ -45,6 +63,7 @@ $gridwrapper-table-width: 98%;
         color: white;
         background-color: $euca-darkgrey;
         a {
+            @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
             color: white;
@@ -54,6 +73,9 @@ $gridwrapper-table-width: 98%;
         }
         strong {
             font-weight: normal;
+        }
+        .f-dropdown a {
+            overflow: visible;
         }
     }
     .content {
@@ -80,6 +102,32 @@ $gridwrapper-table-width: 98%;
         height: $tile-row-height;
         padding: 4px 4px 4px 10px;
         color: white;
+        &.has-progress {
+            padding: 0 0 0 0;
+        }
+        .completed {
+            padding: 4px 0 4px 10px;
+        }
+        .progress {
+            position: relative;
+            margin: 0 0 0 0;
+            height: 24px;
+            border: none;
+            .meter {
+                position: relative;
+                top: -2px; left: -2px;
+                padding: 4px 0 4px 8px;
+                height: 24px;
+                display: inline-block;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+        }
+        .dots {
+            position: absolute;
+            width: 32px; height: 10px;
+            top: 8px; right: 8px;
+        }
     }
     .f-dropdown::before, .f-dropdown::after {
         left: $grid-dropdown-width - 22px;
@@ -87,40 +135,41 @@ $gridwrapper-table-width: 98%;
 }
 
 // Dropdown buttons on landing page tile/table view
-.dropdown.button.tiny {
-    position: absolute;
-    width: 30px; height: $tile-row-height;
-    top: 0; right: 0;
-    color: black;
-    font-size: 1rem;
-    padding: 0 0 0 0;
-    border: 1px solid $tile-border-color;
-    border-top: none;
-    border-right: none;
-    &:hover {
-        color: $euca-green;
-    }
-    &::before {
-        border: none;
-    }
-    i {
-        position: relative;
-        top: 2px;
-    }
-}
-
-
-.button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-    width: $grid-dropdown-width;
-    display: block;
-    box-shadow: 3px 3px 5px $euca-grey;
-    top: 20px; left: auto; right: 0;
-    li {
-        a {
+.gridwrapper {
+    .dropdown.button.tiny {
+        position: absolute;
+        width: 30px; height: $tile-row-height;
+        top: 0; right: 0;
+        color: black;
+        font-size: 1rem;
+        padding: 0 0 0 0;
+        border: 1px solid $tile-border-color;
+        border-top: none;
+        border-right: none;
+        &:hover {
             color: $euca-green;
+        }
+        &::before {
+            border: none;
+        }
+        i {
+            position: relative;
+            top: 2px;
+        }
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        width: $grid-dropdown-width;
+        display: block;
+        box-shadow: 3px 3px 5px $euca-grey;
+        top: 20px; left: auto; right: 0;
+        li {
+            a {
+                color: $euca-green;
+            }
         }
     }
 }
+
 
 .sort-search {
     font-size: 0.9rem;
@@ -140,6 +189,7 @@ $gridwrapper-table-width: 98%;
     margin-bottom: 4px;
 }
 
+// tableview/gridview icon switcher
 .displayicons {
     font-size: 2rem;
     a {
@@ -175,20 +225,31 @@ $gridwrapper-table-width: 98%;
             padding-bottom: 0.5rem;
             text-transform: uppercase;
             white-space: nowrap;
+            &.actions {
+                text-align: right;
+            }
         }
     }
     tr {
+        position: relative;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
             position: relative;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
+            padding-top: 12px;
+            padding-bottom: 12px;
             vertical-align: top;
+            &.id {
+                white-space: nowrap;
+            }
+            span.actions {
+                position: relative;
+                left: 80px;
+            }
         }
     }
     .dropdown.button.tiny {
-        top: 4px; right: 20px;
+        top: 8px; right: 20px;
         padding-left: 10px;
         padding-right: 24px;
     }
@@ -200,8 +261,9 @@ $gridwrapper-table-width: 98%;
     }
 }
 
+
 #filters {
-    margin-top: 46px;
+    margin-top: 70px;
 }
 
 #properties-filter-form {

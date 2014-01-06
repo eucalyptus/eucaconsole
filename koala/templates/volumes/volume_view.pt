@@ -65,10 +65,10 @@
                                       data-dropdown="volume-state-dropdown"><i class="fi-widget"></i></span>
                                 <ul id="volume-state-dropdown" class="f-dropdown">
                                     <li ng-show="volumeStatus == 'available'">
-                                        <a href="#" data-reveal-id="attach-modal" i18n:translate="">Attach to instance</a>
+                                        <a href="#" data-reveal-id="attach-volume-modal" i18n:translate="">Attach to instance</a>
                                     </li>
                                     <li ng-show="volumeStatus == 'in-use'">
-                                        <a href="#" data-reveal-id="detach-modal" i18n:translate="">Detach from instance</a>
+                                        <a href="#" data-reveal-id="detach-volume-modal" i18n:translate="">Detach from instance</a>
                                     </li>
                                 </ul>
                             </span>
@@ -82,10 +82,34 @@
                             <a href="${request.route_url('instance_view', id=instance_id)}">${instance_name}</a>
                         </div>
                     </div>
-                    ${panel('form_field', field=volume_form['name'], **html_attrs)}
-                    ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
-                    ${panel('form_field', field=volume_form['size'], **html_attrs)}
-                    ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns field inline">${volume.tags.get('Name')}</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
+                        <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
+                        <div class="small-8 columns field inline">${volume.snapshot_id}</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Volume size</label></div>
+                        <div class="small-8 columns field inline">${volume.size} GB</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="small-8 columns field inline">${volume.zone}</div>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags)}
                     <hr ng-show="volumeStatus == 'available'" />
@@ -98,7 +122,7 @@
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button">
                                 <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save changes</span>
-                                <span tal:condition="not volume" i18n:translate="">Add volume</span>
+                                <span tal:condition="not volume" i18n:translate="">Create volume</span>
                             </button>
                             <a href="${request.route_url('volumes')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
@@ -114,16 +138,6 @@
                     <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
                         Delete volume
                     </a>
-                </div>
-                <div id="delete-volume-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Delete volume</h3>
-                    <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
-                        <b>${volume_name}</b>?</p>
-                    <form action="${request.route_url('volume_delete', id=volume.id)}" method="post">
-                        ${structure:delete_form['csrf_token']}
-                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
                 </div>
             </div>
             <div class="help-content" tal:condition="not volume">
@@ -166,52 +180,16 @@
             <div class="help-content" tal:condition="volume">
                 <h5 class="title">Delete a Volume</h5>
                 <p> To delete a volume, click the "Delete Volume" button.</p>
-                <p><strong>Note:</strong>You may not delete a volume that is attached to an instance.</p>
+                <p><strong>Note:</strong> You may not delete a volume that is attached to an instance.</p>
             </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                 <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
             </metal:block>
         </div>
-        <!--! Attach/Detach modal dialogs -->
-        <div id="attach-modal" class="reveal-modal medium" tal:condition="volume" data-reveal="">
-            <h3 i18n:translate="">Attach volume</h3>
-            <p><span i18n:translate="">Attach a volume to an instance</span></p>
-            <form method="post" action="${request.route_url('volume_attach', id=volume.id)}"
-                  id="attach-form" data-abide="">
-                ${structure:attach_form['csrf_token']}
-                ${panel('form_field', field=attach_form.instance_id)}
-                ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
-                <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Attach volume" i18n:attributes="value" />
-                    </div>
-                </div>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-            <hr />
-            <!--! Volume device help -->
-            <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
-        </div>
-        <div id="detach-modal" class="reveal-modal small" tal:condition="volume" data-reveal="">
-            <h3 i18n:translate="">Detach volume</h3>
-            <p>
-              <span i18n:translate="">Are you sure you want to detach the volume from the instance</span><br/>
-              <strong>${instance_name}</strong>?
-            </p>
-            <form method="post" id="detach-form" data-abide="" action="${request.route_url('volume_detach', id=volume.id)}">
-                ${structure:detach_form['csrf_token']}
-                <div>&nbsp;</div>
-                <div class="row">
-                    <div class="small-3 columns">&nbsp;</div>
-                    <div class="small-9 columns field inline">
-                        <input type="submit" class="button" value="Yes, detach volume" i18n:attributes="value" />
-                    </div>
-                </div>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('volume_dialogs', volume=volume, volume_name=volume_name, instance_name=instance_name,
+                attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
     </div>
 </div>
 

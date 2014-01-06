@@ -28,11 +28,12 @@ class VolumeForm(BaseSecureForm):
         validators=[validators.Required(message=zone_error_msg)],
     )
 
-    def __init__(self, request, volume=None, conn=None, **kwargs):
+    # requires snapshots which comes from: self.conn.get_all_snapshots()
+    # requires zones which comes from: self.conn.get_all_zones()
+    def __init__(self, request, volume=None, snapshots=None, zones=None, **kwargs):
         super(VolumeForm, self).__init__(request, **kwargs)
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.volume = volume
-        self.conn = conn
         self.size.error_msg = self.size_error_msg
         self.zone.error_msg = self.zone_error_msg
 
@@ -42,21 +43,23 @@ class VolumeForm(BaseSecureForm):
             self.snapshot_id.data = volume.snapshot_id if volume.snapshot_id else ''
             self.zone.data = volume.zone
 
-        if conn is not None:
-            self.set_volume_snapshot_choices()
-            zones = self.conn.get_all_zones()
-            self.set_availability_zone_choices(zones)
-            # default to first zone if new volume, and at least one zone in list
-            if volume is None and len(zones) > 0:
-                self.zone.data = zones[0].name
+        self.set_volume_snapshot_choices(snapshots)
+        self.set_availability_zone_choices(zones)
+        # default to first zone if new volume, and at least one zone in list
+        if volume is None and len(zones) > 0:
+            self.zone.data = zones[0].name
 
-    def set_volume_snapshot_choices(self):
+    def set_volume_snapshot_choices(self, snapshots):
         choices = [('', _(u'None'))]
         # TODO: May need to filter get_all_snapshots() call for AWS?
-        for snapshot in self.conn.get_all_snapshots():
+        for snapshot in snapshots:
             value = snapshot.id
             label = '{id} ({size} GB)'.format(id=snapshot.id, size=snapshot.volume_size)
             choices.append((value, label))
+        # Need to insert current choice since the source snapshot may have been removed after this volume was created
+        if self.volume and self.volume.snapshot_id:
+            snap_id = self.volume.snapshot_id
+            choices.append((snap_id, snap_id))
         self.snapshot_id.choices = sorted(choices)
 
     def set_availability_zone_choices(self, zones):
@@ -109,28 +112,33 @@ class AttachForm(BaseSecureForm):
         validators=[validators.Required(message=device_error_msg)],
     )
 
-    def __init__(self, request, volume=None, conn=None, **kwargs):
+    # requires instances which comes from: self.conn.get_only_instances()
+    def __init__(self, request, volume=None, instances=None, **kwargs):
         super(AttachForm, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = conn
         self.volume = volume
         self.instance_id.error_msg = self.instance_error_msg
         self.device.error_msg = self.device_error_msg
-        if conn is not None:
-            self.set_instance_choices()
+        self.set_instance_choices(instances)
 
-    def set_instance_choices(self):
+    def set_instance_choices(self, instances):
         """Populate instance field with instances available to attach volume to"""
-        choices = [('', _(u'select...'))]
-        for instance in self.conn.get_only_instances():
-            if self.volume and self.volume.zone == instance.placement:
-                name_tag = instance.tags.get('Name')
-                extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
-                choices.append((instance.id, vol_name))
-        if len(choices) == 1:
-            choices = [('', _(u'No available volumes in the availability zone'))]
-        self.instance_id.choices = choices
+        if self.volume:
+            choices = [('', _(u'select...'))]
+            for instance in instances:
+                if self.volume.zone == instance.placement:
+                    name_tag = instance.tags.get('Name')
+                    extra = ' ({name})'.format(name=name_tag) if name_tag else ''
+                    vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    choices.append((instance.id, vol_name))
+            if len(choices) == 1:
+                choices = [('', _(u'No available instances in the same availability zone'))]
+            self.instance_id.choices = choices
+        else:
+            # We need to set all instances as choices for the landing page to avoid failed validation of instance field
+            # The landing page JS restricts the choices based on the selected volume's availability zone
+            self.instance_id.choices = [(instance.id, instance.id) for instance in instances]
+
 
 class DetachForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""

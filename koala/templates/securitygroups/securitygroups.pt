@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="SecurityGroupsPage" ng-controller="SecurityGroupsCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             Security Groups
         </h3>
@@ -19,6 +19,13 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate=""
                         href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
+                </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.rules">
@@ -39,20 +46,34 @@
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Rules</th>
                 <th i18n:translate="">Tags</th>
+                <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
                 <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block></td>
                 <td>{{ item.tags }}</td>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
+                        </ul>
+                    </span>
+                </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('securitygroup_dialogs', delete_form=delete_form, landingpage=True)}
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/securitygroups.js')}"></script>
 </div>
 
 </metal:block>

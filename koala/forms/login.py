@@ -26,22 +26,26 @@ class AWSLoginForm(BaseSecureForm):
     secret_key = wtforms.PasswordField(
         _(u'Secret key'), validators=[validators.Required(message=_(u'Secret key is required'))])
 
+
 class EucaChangePasswordForm(BaseSecureForm):
     password = wtforms.PasswordField(
-        _(u'Password'), validators=[validators.Required(message=_(u'Password is required'))],
+        _(u'Current password'), validators=[validators.Required(message=_(u'Password is required'))],
         widget=widgets.PasswordInput())
     new_password = wtforms.PasswordField(
-        _(u'New Password'),
+        _(u'New password'),
         validators=[
             validators.Required(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())
     new_password2 = wtforms.PasswordField(
-        _(u'New Password'),
+        _(u'Confirm new password'),
         validators=[
             validators.Required(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())
-        
+
+
+class EucaLogoutForm(BaseSecureForm):
+    pass

@@ -79,7 +79,7 @@
                             <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
                             <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                         </div>
-                        <hr>
+                        <hr/>
                         <div class="row" tal:condition="not keypair">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field inline">
@@ -113,7 +113,7 @@
                     <b>${keypair.name}</b>?</p>
                     <form action="${request.route_url('keypair_delete', id=keypair.name)}" method="post">
                         ${structure:delete_form['csrf_token']}
-                        <input type="hidden" name="name" value="${keypair.name}">
+                        <input type="hidden" name="name" value="${keypair.name}"/>
                         <button type="submit" class="button" i18n:translate="">Yes, delete</button>
                     </form>
                     <a class="close-reveal-modal">&#215;</a>

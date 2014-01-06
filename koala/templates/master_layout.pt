@@ -31,7 +31,7 @@
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
             <li><a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a></li>
             
-            <li><a href="${request.route_url('logout')}" i18n:translate="">Logout</a></li>
+            <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
         </ul>
     </section>
     <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
@@ -103,9 +103,16 @@
        <h6 class="copyright subheader">
            © 2012-2013 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
     </div>
+    <form id="euca-logout-form" method="post"
+          action="${request.route_url('logout')}">
+        <input type="submit" style="display:none;" id="euca-logout-button"/>
+    </form>
+    
 </footer>
 
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
+<!--! when foundation updates their .min.js version, we can remove this updated tabs version -->
+<script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.tab.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
     $(document).foundation();

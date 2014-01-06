@@ -59,24 +59,26 @@
                 <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_id }}</a></td>
                 <td>
-                    <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
-                        <li ng-show="item.instance_id">
-                            <a i18n:translate=""
-                               ng-click="revealModal('disassociate', item.public_ip, item.instance_id)">Disassociate from instance</a>
-                        </li>
-                        <li ng-show="!item.instance_id">
-                            <a i18n:translate=""
-                               ng-click="revealModal('associate', item.public_ip)">Associate with instance</a>
-                        </li>
-                        <li><a i18n:translate=""
-                               ng-click="revealModal('release', item.public_ip)">Release to cloud</a>
-                        </li>
-                    </ul>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li ng-show="item.instance_id">
+                                <a i18n:translate=""
+                                   ng-click="revealModal('disassociate', item.public_ip, item.instance_id)">Disassociate from instance</a>
+                            </li>
+                            <li ng-show="!item.instance_id">
+                                <a i18n:translate=""
+                                   ng-click="revealModal('associate', item.public_ip)">Associate with instance</a>
+                            </li>
+                            <li><a i18n:translate=""
+                                   ng-click="revealModal('release', item.public_ip)">Release to cloud</a>
+                            </li>
+                        </ul>
+                    </span>
                 </td>
             </metal:block>
         </div>
-        <!-- Modal dialogs -->
+        <!--! Modal dialogs -->
         <div id="allocate-ip-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Allocate IP addresses</h3>
             <p class="lead" i18n:translate="">How may IP addresses would you like to allocate?</p>
@@ -95,7 +97,7 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
-        <!--! Modal dialogs -->
+        <!--! Modal dialogs reused across landing and detail page -->
         ${panel('ipaddress_dialogs', associate_form=associate_form,
                 disassociate_form=disassociate_form, release_form=release_form, landingpage=True)}
     </div>
@@ -103,6 +105,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/ipaddresses.js')}"></script>
 </div>

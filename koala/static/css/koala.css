@@ -1036,14 +1036,14 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
 .tabs:before, .tabs:after { content: " "; display: table; }
 .tabs:after { clear: both; }
 .tabs dd { position: relative; margin-bottom: 0 !important; top: 1px; float: left; }
-.tabs dd > a { display: block; background: #efefef; color: #222222; padding-top: 1rem; padding-right: 2rem; padding-bottom: 1.0625rem; padding-left: 2rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 1rem; }
+.tabs dd > a { display: block; background: #efefef; color: #222222; padding-top: 0.25rem; padding-right: 0.5rem; padding-bottom: 0.3125rem; padding-left: 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 1rem; }
 .tabs dd > a:hover { background: #e2e2e2; }
 .tabs dd.active a { background: #fff; }
 .tabs.radius dd:first-child a { -moz-border-radius-bottomleft: 3px; -moz-border-radius-topleft: 3px; -webkit-border-bottom-left-radius: 3px; -webkit-border-top-left-radius: 3px; border-bottom-left-radius: 3px; border-top-left-radius: 3px; }
 .tabs.radius dd:last-child a { -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 .tabs.vertical dd { position: inherit; float: none; display: block; top: auto; }
 
-.tabs-content { *zoom: 1; margin-bottom: 1.5rem; }
+.tabs-content { *zoom: 1; margin-bottom: 0.0625rem; }
 .tabs-content:before, .tabs-content:after { content: " "; display: table; }
 .tabs-content:after { clear: both; }
 .tabs-content > .content { display: none; float: left; padding: 0.9375rem 0; }
@@ -1066,7 +1066,7 @@ a.th { display: inline-block; max-width: 100%; }
 .has-tip:hover, .has-tip:focus { border-bottom: dotted 1px #355200; color: #76b800; }
 .has-tip.tip-left, .has-tip.tip-right { float: none !important; }
 
-.tooltip { display: none; position: absolute; z-index: 999; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.5rem; max-width: 85%; left: 50%; width: 100%; color: white; background: #333333; -webkit-border-radius: 3px; border-radius: 3px; }
+.tooltip { display: none; position: absolute; z-index: 999; font-weight: normal; font-size: 0.875rem; line-height: 1.3; padding: 0.3125rem; max-width: 85%; left: 50%; width: 100%; color: white; background: #333333; -webkit-border-radius: 3px; border-radius: 3px; }
 .tooltip > .nub { display: block; left: 5px; position: absolute; width: 0; height: 0; border: solid 5px; border-color: transparent transparent #333333 transparent; top: -10px; }
 .tooltip.opened { color: #76b800 !important; border-bottom: dotted 1px #355200 !important; }
 
@@ -1510,11 +1510,6 @@ a.circle { color: black; display: inline-block; }
 
 .down-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-top: 6px solid #76b800; border-left: 6px solid transparent; content: ''; }
 
-.tile.add { text-align: center; text-transform: uppercase; position: relative; }
-.tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-.tile.add a:hover { background-color: #d3e9b6; }
-.tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
-
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .alert-box { background-color: #40a8c6; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
@@ -1571,7 +1566,7 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel.has-title { position: relative; padding-top: 60px; }
-.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; }
+.panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #ecf4f7; border-top: 2px solid #00415e; border-bottom: 1px solid #cccccc; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.other-actions { background-color: white; }
 
 .reveal-modal h3 { font-weight: bold; }

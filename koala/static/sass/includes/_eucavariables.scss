@@ -33,7 +33,7 @@ $body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helveti
 $euca-header-font: "Trebuchet MS", "Droid Sans", "OpenSans", "Helvetica Nueue", Helvetica, sans-serif;
 $euca-font-size: 0.8125rem;
 $euca-text-color: #333;
-$euca-link-color: $euca-green;
+$euca-link-color: $euca-darkgreen;
 
 // Dimensions
 $euca-footer-height: 80px;
@@ -76,6 +76,29 @@ $button-lrg: rem-calc(12);
 $button-border-width: 1px;
 $button-border-style: solid;
 
+// Tabs
+$tabs-navigation-padding: rem-calc(4) !default;
+$tabs-content-margin-bottom: rem-calc(1) !default;
+
 // Tooltips
-$tooltip-padding: rem-calc(8);
+$tooltip-padding: rem-calc(5);
+
+// Mixins
+// Text overflow (e.g. for handling long resource names)
+@mixin ellipsis-overflow {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// Tiles within panels (e.g. instance_volumes.pt and volume_snapshots.pt page)
+@mixin panel-tile-mixin {
+    background-color: white;
+    border: 1px solid $euca-lightgrey;
+    width: 180px; height: 140px;
+    .header .button.dropdown {
+        height: 30px;
+        color: black;
+    }
+}
 

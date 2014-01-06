@@ -22,7 +22,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
         <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
-            <div class="panel has-title">
+            <div class="panel gridwrapper has-title">
                 <h6 class="title">
                     <span i18n:translate="">Volumes for instance</span>
                     <strong>${instance_name}</strong>
@@ -58,8 +58,8 @@
                             {{ volume.attach_time | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
-                    <div class="footer status {{ volume.status }}">
-                        {{ volume.status }}
+                    <div class="footer status {{ volume.attach_status }}">
+                        {{ volume.attach_status }}
                         <span class="dots" ng-show="volume.transitional">&nbsp;</span>
                     </div>
                 </div>

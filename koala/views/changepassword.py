@@ -33,13 +33,19 @@ class ChangePasswordView(object):
     @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
     def changepassword_page(self):
         session = self.request.session
+        try:
+            account=session['account'],
+            username=session['username']
+        except KeyError:
+            account = self.request.params.get('account')
+            username = self.request.params.get('username')
         return dict(
             changepassword_form=self.changepassword_form,
             changepassword_form_errors=self.changepassword_form_errors,
-            password_expired=True,
+            password_expired=True if self.request.params.get('expired') == 'true' else False,
             came_from=self.came_from,
-            account=session['account'],
-            username=session['username']
+            account=account,
+            username=username
         )
 
     @view_config(route_name='changepassword', request_method='POST', renderer=template, permission=NO_PERMISSION_REQUIRED)

@@ -11,7 +11,6 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
-        $scope.snapshotId = '';
         $scope.isUpdating = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
@@ -22,7 +21,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
-                $('#volume_id').chosen({'width': '75%'});
+                $('#volume_id').chosen({'width': '75%', search_contains: true});
             });
         }
         $scope.initController = function (jsonEndpoint, status, progress) {

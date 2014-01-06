@@ -19,66 +19,166 @@ from ..views import LandingPageView, TaggedItemView, BaseView
 
 
 class VolumesView(LandingPageView):
+    VIEW_TEMPLATE = '../templates/volumes/volumes.pt'
+
     def __init__(self, request):
         super(VolumesView, self).__init__(request)
+        self.conn = self.get_connection()
         self.items = self.get_items()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
-
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_volumes() if conn else []
-
-    @view_config(route_name='volumes', renderer='../templates/volumes/volumes.pt')
-    def volumes_landing(self):
-        json_items_endpoint = self.request.route_url('volumes_json')
-        status_choices = sorted(set(item.status for item in self.items))
-        zone_choices = sorted(set(item.zone for item in self.items))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        self.filter_fields = [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
-            # LandingPageFilter(key='tags', name='Tags'),
-        ]
-        more_filter_keys = ['attach_status', 'id', 'instance', 'name', 'size', 'snapshot_id', 'create_time', 'tags']
-        # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [field.key for field in self.filter_fields] + more_filter_keys
-        # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='-create_time', name=_(u'Create time')),
-            dict(key='name', name=_(u'Name')),
-            dict(key='status', name=_(u'Status')),
-            dict(key='attach_status', name=_(u'Attach Status')),
-            dict(key='zone', name=_(u'Availability zone')),
-        ]
-
-        return dict(
+        self.json_items_endpoint = self.get_json_endpoint('volumes_json')
+        self.instances = self.conn.get_only_instances()
+        self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
+        self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
+        self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
+        self.location = self.get_redirect_location('volumes')
+        self.filter_fields = self.get_filter_fields()
+        self.render_dict = dict(
             display_type=self.display_type,
-            filter_fields=self.filter_fields,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
         )
+
+    @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
+    def volumes_landing(self):
+        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
+        filter_keys = [
+            'attach_status', 'create_time', 'id', 'instance', 'name', 'size', 'snapshot_id', 'status', 'tags', 'zone'
+        ]
+        # filter_keys are passed to client-side filtering in search box
+        self.render_dict.update(dict(
+            filter_fields=self.get_filter_fields(),
+            sort_keys=self.get_sort_keys(),
+            filter_keys=filter_keys,
+            json_items_endpoint=self.json_items_endpoint,
+            attach_form=self.attach_form,
+            detach_form=self.detach_form,
+            delete_form=self.delete_form,
+            instances_by_zone=json.dumps(self.get_instances_by_zone(self.instances)),
+        ))
+        return self.render_dict
 
     @view_config(route_name='volumes_json', renderer='json', request_method='GET')
     def volumes_json(self):
         volumes = []
-        for volume in self.items:
+        transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
+        filtered_items = self.filter_items(self.items)
+        snapshots = self.conn.get_all_snapshots()
+        for volume in filtered_items:
+            status = volume.status
+            attach_status = volume.attach_data.status
             volumes.append(dict(
                 create_time=volume.create_time,
                 id=volume.id,
                 instance=volume.attach_data.instance_id,
                 name=volume.tags.get('Name', volume.id),
-                snapshots=len(volume.snapshots()),
+                # super inefficient! Caused all snapshots to be fetch for *every* volume
+                #snapshots=len(volume.snapshots()),
+                snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                 size=volume.size,
-                status=volume.status,
+                status=status,
                 attach_status=volume.attach_data.status,
                 zone=volume.zone,
                 tags=TaggedItemView.get_tags_display(volume.tags),
+                transitional=status in transitional_states or attach_status in transitional_states,
             ))
         return dict(results=volumes)
+
+    @view_config(route_name='volumes_delete', request_method='POST')
+    def volumes_delete(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if volume and self.delete_form.validate():
+            try:
+                volume.delete()
+                time.sleep(1)
+                msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message.split('remoteDevice')[0]
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='volumes_attach', request_method='POST')
+    def volumes_attach(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if volume and self.attach_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            device = self.request.params.get('device')
+            try:
+                volume.attach(instance_id, device)
+                time.sleep(1)
+                msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='volumes_detach', request_method='POST')
+    def volumes_detach(self):
+        volume_id = self.request.params.get('volume_id')
+        volume = self.get_volume(volume_id)
+        if self.detach_form.validate():
+            try:
+                volume.detach()
+                time.sleep(1)
+                msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    def get_volume(self, volume_id):
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
+
+    def get_items(self):
+        return self.conn.get_all_volumes() if self.conn else []
+
+    def get_instances_by_zone(self, instances):
+        zones = set(instance.placement for instance in instances)
+        instances_by_zone = {}
+        for zone in zones:
+            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+        return instances_by_zone
+
+    def get_filter_fields(self):
+        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
+        status_choices = sorted(set(item.status for item in self.items))
+        zone_choices = sorted(set(item.zone for item in self.items))
+        return [
+            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
+            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
+        ]
+
+    @staticmethod
+    def get_sort_keys():
+        """sort_keys are passed to sorting drop-down on landing page"""
+        return [
+            dict(key='-create_time', name=_(u'Create time')),
+            dict(key='name', name=_(u'Name')),
+            dict(key='status', name=_(u'Status')),
+            dict(key='attach_status', name=_(u'Attach status')),
+            dict(key='zone', name=_(u'Availability zone')),
+        ]
 
 
 class VolumeView(TaggedItemView):
@@ -89,23 +189,24 @@ class VolumeView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.volume = self.get_volume()
+        snapshots = self.conn.get_all_snapshots()
+        zones = self.conn.get_all_zones()
+        instances = self.conn.get_only_instances()
         self.volume_form = VolumeForm(
-            self.request, volume=self.volume, conn=self.conn, formdata=self.request.params or None)
+            self.request, volume=self.volume, snapshots=snapshots, zones=zones, formdata=self.request.params or None)
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(
-            self.request, conn=self.conn, volume=self.volume, formdata=self.request.params or None)
+            self.request, instances=instances, volume=self.volume, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.volume
-        self.attach_data = self.volume.attach_data
-        self.vol_name_tag = self.volume.tags.get('Name', '')
-        self.volume_name = '{}{}'.format(
-            self.volume.id, ' ({})'.format(self.vol_name_tag) if self.vol_name_tag else '')
+        self.attach_data = self.volume.attach_data if self.volume else None
+        self.volume_name = self.get_volume_name()
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
             self.inst_name_tag = instance.tags.get('Name', '') if instance else None
-            self.instance_name = '{}{}'.format(
-                instance.id, ' ({})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
+            self.instance_name = '{0}{1}'.format(
+                instance.id, ' ({0})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
@@ -165,6 +266,8 @@ class VolumeView(TaggedItemView):
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('volumes')
+                return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -233,6 +336,15 @@ class VolumeView(TaggedItemView):
             instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
             return instances_list[0] if instances_list else None
         return None
+
+    def get_volume_name(self):
+        if self.volume:
+            vol_name_tag = self.volume.tags.get('Name', '')
+            volume_name = '{0}{1}'.format(
+                self.volume.id, ' ({0})'.format(vol_name_tag) if vol_name_tag else '')
+            return volume_name
+        return None
+
 
 class VolumeStateView(BaseView):
     def __init__(self, request):
