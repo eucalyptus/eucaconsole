@@ -52,6 +52,7 @@
                             <div class="small-3 columns"><label i18n:translate="">Termination Policies</label></div>
                             <div class="small-9 columns value">${scalinggroup.termination_policies_str if scalinggroup.termination_policies_str else ''}</div>
                         </div>
+                    </div>
                     <hr>
                     <div class="row">
                         <div class="small-3 columns">&nbsp;</div>
@@ -66,77 +67,79 @@
                 </form>
             </div>
         </div>
-        <div class="panel has-title" tal:condition="scalinggroup">
-            <h6 class="title" i18n:translate="">Other scalinggroup actions</h6>
-            <div class="row">
-                <div class="large-3 columns">&nbsp;</div>
-                <div class="large-9 columns">
-                    <a class="button secondary" data-reveal-id="quick-scale-scalinggroup-modal" i18n:translate="">
-                        Quick scale
-                    </a>
+        <div class="large-5 columns">
+            <div class="panel has-title" tal:condition="scalinggroup">
+                <h6 class="title" i18n:translate="">Other scalinggroup actions</h6>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" data-reveal-id="quick-scale-scalinggroup-modal" i18n:translate="">
+                            Quick scale
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="large-3 columns">&nbsp;</div>
-                <div class="large-9 columns">
-                    <a class="button secondary" data-reveal-id="edit-properties-scalinggroup-modal" i18n:translate="">
-                       Edit properties
-                    </a>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" data-reveal-id="edit-properties-scalinggroup-modal" i18n:translate="">
+                            Edit properties
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="large-3 columns">&nbsp;</div>
-                <div class="large-9 columns">
-                    <a class="button secondary" data-reveal-id="manage-instances-scalinggroup-modal" i18n:translate="">
-                       Manage instances
-                    </a>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" data-reveal-id="manage-instances-scalinggroup-modal" i18n:translate="">
+                           Manage instances
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="large-3 columns">&nbsp;</div>
-                <div class="large-9 columns">
-                    <a class="button secondary delete" data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
-                        Delete scalinggroup
-                    </a>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary delete" data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
+                            Delete scalinggroup
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div id="quick-scale-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Quick scale</h3>
-                <p><span i18n:translate="">Placeholder</span>
-                <b>${scalinggroup.name}</b>?</p>
-                <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                    <button type="submit" class="button" i18n:translate="">Yes</button>
-                </form>
+                <div id="quick-scale-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Quick scale</h3>
+                    <p><span i18n:translate="">Placeholder</span>
+                    <b>${scalinggroup.name}</b>?</p>
+                    <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
+                        <button type="submit" class="button" i18n:translate="">Yes</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+                <div id="edit-properties-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Edit properties</h3>
+                    <p><span i18n:translate="">Placeholder</span>
+                    <b>${scalinggroup.name}</b>?</p>
+                        <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
+                        <button type="submit" class="button" i18n:translate="">Yes</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
+                <div id="manage-instances-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Manage instances</h3>
+                    <p><span i18n:translate="">Placeholder</span>
+                    <b>${scalinggroup.name}</b>?</p>
+                    <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
+                        <button type="submit" class="button" i18n:translate="">Yes</button>
+                    </form>
                 <a class="close-reveal-modal">&#215;</a>
-            </div>
-            <div id="edit-properties-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Edit properties</h3>
-                <p><span i18n:translate="">Placeholder</span>
-                <b>${scalinggroup.name}</b>?</p>
-                <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                    <button type="submit" class="button" i18n:translate="">Yes</button>
-                </form>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
-            <div id="manage-instances-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Manage instances</h3>
-                <p><span i18n:translate="">Placeholder</span>
-                <b>${scalinggroup.name}</b>?</p>
-                <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                    <button type="submit" class="button" i18n:translate="">Yes</button>
-                </form>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
-            <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete scalinggroup</h3>
-                <p><span i18n:translate="">Are you sure you want to delete the scalinggroup</span>
-                <b>${scalinggroup.name}</b>?</p>
-                <form action="${request.route_url('scalinggroup_delete', id=scalinggroup.name)}" method="post">
-                     ${structure:delete_form['csrf_token']}
-                    <input type="hidden" name="name" value="${scalinggroup.name}">
-                    <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                </form>
-                <a class="close-reveal-modal">&#215;</a>
+                </div>
+                <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Delete scalinggroup</h3>
+                    <p><span i18n:translate="">Are you sure you want to delete the scalinggroup</span>
+                    <b>${scalinggroup.name}</b>?</p>
+                    <form action="${request.route_url('scalinggroup_delete', id=scalinggroup.name)}" method="post">
+                         ${structure:delete_form['csrf_token']}
+                         <input type="hidden" name="name" value="${scalinggroup.name}">
+                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
             </div>
         </div>
     </div>
