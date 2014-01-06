@@ -62,10 +62,14 @@ urls = [
     # Scaling Groups #####
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    Route(name='scalinggroup_delete', pattern='/scalinggroups/delete'),
+    Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
 
     # Launch Configurations #####
     Route(name='launchconfigs', pattern='/launchconfigs'),
     Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
+    Route(name='launchconfig_delete', pattern='/launchconfigs/delete'),
+    Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 
     # Volumes #####
     # Landing page

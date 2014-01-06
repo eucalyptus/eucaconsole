@@ -3,11 +3,16 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
+import re
+
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.launchconfigs import LaunchConfigDeleteForm
+from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import LandingPageView
+from ..views import LandingPageView, BaseView 
 
 
 class LaunchConfigsView(LandingPageView):
@@ -64,4 +69,53 @@ class LaunchConfigsView(LandingPageView):
                 user_data=launchconfig.user_data,
             ))
         return dict(results=launchconfigs)
+
+
+class LaunchConfigView(BaseView):
+    """Views for single LaunchConfig"""
+    TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
+
+    def __init__(self, request):
+        super(LaunchConfigView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='autoscale')
+        self.launchconfig = self.get_launchconfig()
+        self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            launchconfig=self.launchconfig,
+            delete_form=self.delete_form,
+        )
+
+    def get_launchconfig(self):
+        launchconfig_param = self.request.matchdict.get('id')
+        launchconfigs_param = [launchconfig_param]
+        launchconfigs = self.conn.get_all_launch_configurations(names=launchconfigs_param)
+        launchconfigs = launchconfigs[0] if launchconfigs else None
+        return launchconfigs 
+
+    @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
+    def launchconfig_view(self):
+        self.launchconfig.instance_monitoring_boolean = re.match(r'InstanceMonitoring\((\w+)\)', str(self.launchconfig.instance_monitoring)).group(1)
+        self.launchconfig.security_groups_str = ', '.join(self.launchconfig.security_groups)
+        return self.render_dict
+ 
+    @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
+    def launchconfig_delete(self):
+        if self.delete_form.validate():
+            name = self.request.params.get('name')
+            try:
+                self.conn.delete_launch_configuration(name)
+                prefix = _(u'Successfully deleted launchconfig')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            location = self.request.route_url('launchconfigs')
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
+
 

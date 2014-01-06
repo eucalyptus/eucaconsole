@@ -5,8 +5,8 @@
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('images')}"
                data-tooltip="" title="Back to images" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Images</span> ${image.id if image else ''}
-        </h3>
+            <span i18n:translate="">Image</span> ${image.id if image else ''}
+        </h3
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
