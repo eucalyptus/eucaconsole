@@ -231,6 +231,7 @@ $gridwrapper-table-width: 98%;
         }
     }
     tr {
+        position: relative;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
@@ -240,6 +241,10 @@ $gridwrapper-table-width: 98%;
             vertical-align: top;
             &.id {
                 white-space: nowrap;
+            }
+            span.actions {
+                position: relative;
+                left: 80px;
             }
         }
     }

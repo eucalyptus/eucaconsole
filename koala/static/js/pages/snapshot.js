@@ -21,7 +21,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
-                $('#volume_id').chosen({'width': '75%'});
+                $('#volume_id').chosen({'width': '75%', search_contains: true});
             });
         }
         $scope.initController = function (jsonEndpoint, status, progress) {
