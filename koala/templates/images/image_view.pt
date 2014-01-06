@@ -26,37 +26,102 @@
                 <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide"> 
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${image.name if image.name else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Machine</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                                <div class="small-9 columns value">${image.name if image.name else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Owner Alias</label></div>
+                                <div class="small-9 columns value">${image.owner_alias if image.owner_alias else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
+                                <div class="small-9 columns value">${image.platform if image.platform else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
+                                <div class="small-9 columns value">${image.architecture if image.architecture else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Root Device Type</label></div>
+                                <div class="small-9 columns value">${image.root_device_type if image.root_device_type else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Root Device Name</label></div>
+                                <div class="small-9 columns value">${image.root_device_name if image.root_device_name else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Manifest Path</label></div>
+                                <div class="small-9 columns value">${image.location if image.location else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label i18n:translate="">Description</label></div>
+                                <div class="small-9 columns value">${image.description if image.description else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                            <div class="small-9 columns value">${image.platform if image.platform else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Kernel</h6>
+                            <div class="row controls-wrapper readonly" tal:condition="image.kernel_id">
+                                <div class="small-3 columns"><label i18n:translate="">Kernel id</label></div>
+                                <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Architecture</label></div>
-                            <div class="small-9 columns value">${image.architecture if image.architecture else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">RAM disk</h6>
+                            <div class="row controls-wrapper readonly" tal:condition="image.ramdisk_id">
+                                <div class="small-3 columns"><label i18n:translate="">Ramdisk id</label></div>
+                                <div class="small-9 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
+                            </div>
                         </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Type</label></div>
-                            <div class="small-9 columns value">${image.type if image.type else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div class="small-9 columns value">${image.kernel_id if image.kernel_id else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Owner Alias</label></div>
-                            <div class="small-9 columns value">${image.owner_alias if image.owner_alias else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Root Device Type</label></div>
-                            <div class="small-9 columns value">${image.root_device_type if image.root_device_type else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                            <div class="small-9 columns value">${image.description if image.description else ''}</div>
+                        <div class="panel has-title">
+                            <h6 class="title" i18n:translate="">Block device mappings</h6>
+                            <div tal:repeat="row image.block_device_names">
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-1"><label i18n:translate="">${row.name if row.name else ''}</label></div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Status</label></div>
+                                    <div class="small-9 columns value">${row.value.status if row.value.status else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Attach time</label></div>
+                                    <div class="small-9 columns value">${row.value.attach_time if row.value.attach_time else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">No device</label></div>
+                                    <div class="small-9 columns value">${row.value.no_device if row.value.no_device else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Volume id</label></div>
+                                    <div class="small-9 columns value">${row.value.volume_id if row.value.volume_id else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Volume type</label></div>
+                                    <div class="small-9 columns value">${row.value.volume_type if row.value.volume_type else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Iops</label></div>
+                                    <div class="small-9 columns value">${row.value.iops if row.value.iops else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">snapshot_id</label></div>
+                                    <div class="small-9 columns value">${row.value.snapshot_id if row.value.snapshot_id else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Size</label></div>
+                                    <div class="small-9 columns value">${row.value.size if row.value.size else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Delete on termination</label></div>
+                                    <div class="small-9 columns value">${row.value.delete_on_termination if row.value.delete_on_termination else ''}</div>
+                                </div>
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Ephemeral name</label></div>
+                                    <div class="small-9 columns value">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr/>
@@ -73,6 +138,28 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <div class="panel has-title" tal:condition="image">
+                <h6 class="title" i18n:translate="">Other image actions</h6>
+                <div class="row">
+                    <div class="large-3 columns">&nbsp;</div>
+                    <div class="large-9 columns">
+                        <a class="button secondary" data-reveal-id="create-launchconfig-modal" i18n:translate="">
+                            Create scaling group launch configuration 
+                        </a>
+                    </div>
+                </div>
+                <div id="create-launchconfig-modal" class="reveal-modal small" data-reveal="">
+                    <h3 i18n:translate="">Use this image to create scaling group launch configuration</h3>
+                    <p><span i18n:translate="">Placeholder</span>
+                    <b>${image.id}</b>?</p>
+                    <form action="${request.route_url('image_view', id=image.id)}" method="post">
+                        <button type="submit" class="button" i18n:translate="">Yes</button>
+                    </form>
+                    <a class="close-reveal-modal">&#215;</a>
+                </div>
             </div>
         </div>
     </div>

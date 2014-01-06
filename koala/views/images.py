@@ -83,6 +83,8 @@ class ImagesView(LandingPageView):
     def images_json(self):
         images = []
         for image in self.get_items():
+            if image.platform is None:
+                image.platform = "linux"
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
@@ -92,7 +94,7 @@ class ImagesView(LandingPageView):
                 owner_alias=image.owner_alias,
                 platform=image.platform,
                 root_device_type=image.root_device_type,
-                type=image.type,
+                ramdisk_id=image.ramdisk_id,
             ))
         return dict(results=images)
 
@@ -117,6 +119,13 @@ class ImageView(TaggedItemView):
         images_param = [image_param]
         images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
+        attrs = image.__dict__
+        image.block_device_names = []
+        if attrs['block_device_mapping'] is not None:
+           for attr in attrs['block_device_mapping']:
+               image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+        if image.platform is None:
+            image.platform = "linux"
         return image 
 
     @view_config(route_name='image_view', renderer=TEMPLATE)

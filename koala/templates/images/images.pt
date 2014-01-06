@@ -36,7 +36,7 @@
                 <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.id }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
+                <div ng-show="item.name">
                     <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
                     {{ item.name }}
                 </div>
@@ -58,10 +58,6 @@
                 <div ng-show="item.kernel_id">
                     <span class="label" title="kernel id" i18n:attributes="title" data-tooltip="">KN</span>
                     {{ item.kernel_id }}
-                </div>
-                <div ng-show="item.type">
-                    <span class="label" title="Type" i18n:attributes="title" data-tooltip="">TP</span>
-                    {{ item.type }}
                 </div>
                 <div ng-show="item.owner_alias">
                     <span class="label" title="Owner Alias" i18n:attributes="title" data-tooltip="">OW</span>
