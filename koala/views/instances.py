@@ -523,6 +523,7 @@ class InstanceLaunchView(TaggedItemView):
             launch_form=self.launch_form,
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
+            snapshot_choices=self.get_snapshot_choices(),
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -607,6 +608,19 @@ class InstanceLaunchView(TaggedItemView):
         if self.cloud_type == 'aws':
             return AWS_IMAGE_OWNER_ALIAS_CHOICES
         return EUCA_IMAGE_OWNER_ALIAS_CHOICES
+
+    def get_snapshot_choices(self):
+        choices = [('', _(u'None'))]
+        for snapshot in self.conn.get_all_snapshots():
+            value = snapshot.id
+            snapshot_name = snapshot.tags.get('Name')
+            label = '{id}{name} ({size} GB)'.format(
+                id=snapshot.id,
+                name=' - {0}'.format(snapshot_name) if snapshot_name else '',
+                size=snapshot.volume_size
+            )
+            choices.append((value, label))
+        return sorted(choices)
 
     @staticmethod
     def get_block_device_map(bdmapping_json):

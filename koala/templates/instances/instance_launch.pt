@@ -133,7 +133,7 @@
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
                             ${panel('form_field', field=launch_form['private_addressing'])}
-                            ${panel('bdmapping_editor', image=image)}
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
@@ -205,6 +205,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance_launch.js')}"></script>
 </div>

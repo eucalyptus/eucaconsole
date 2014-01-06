@@ -49,14 +49,14 @@
                 <label i18n:translate="">Mapping:</label>
                 <input type="text" name="path" id="new-mapping-path" ng-model="newMappingPath" />
             </div>
-            <div class="small-2 columns">
+            <div class="small-3 columns">
                 <label i18n:translate="">Snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
-                    <option value="">None</option>
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                 </select>
             </div>
-            <div class="small-2 columns">
-                <label i18n:translate="">Size (GB):</label>
+            <div class="small-1 columns">
+                <label i18n:translate="">Size:</label>
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
             <div class="small-4 columns">

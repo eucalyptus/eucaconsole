@@ -14,11 +14,15 @@ angular.module('BlockDeviceMappingEditor', [])
             $scope.newSize = '2';
             $scope.newDOT = true;
         };
+        $scope.initChosenSelector = function () {
+            $('#new-blockdevice-entry').find('select[name="snapshot_id"]').chosen({'width': '100%'});
+        };
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
             bdmJson = bdmJson || "{}";
             $scope.bdMapping = JSON.parse(bdmJson);
             $scope.bdmTextarea.val(bdmJson);
             $scope.setInitialNewValues();
+            $scope.initChosenSelector();
         };
         $scope.addDevice = function () {
             // Validation checks
