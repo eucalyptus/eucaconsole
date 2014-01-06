@@ -137,7 +137,7 @@ class AttachForm(BaseSecureForm):
                     vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
                     choices.append((instance.id, vol_name))
             if len(choices) == 1:
-                choices = [('', _(u'No available volumes in the availability zone'))]
+                choices = [('', _(u'No available instances in the same availability zone'))]
             self.instance_id.choices = choices
         else:
             # We need to set all instances as choices for the landing page to avoid failed validation of instance field

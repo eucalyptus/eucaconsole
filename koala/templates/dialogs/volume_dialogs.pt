@@ -60,6 +60,7 @@
                      detailpage_action request.route_url('volume_delete', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete volume</h3>
+        <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
         <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
             <b>${volume_name if volume_name else '{{ volumeID }}'}</b>?</p>
         <form action="${action}" method="post">

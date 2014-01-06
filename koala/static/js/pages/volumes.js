@@ -29,7 +29,7 @@ angular.module('VolumesPage', ['CustomFilters'])
                     });
                     instanceSelect.html(options);
                     instanceSelect.trigger('chosen:updated');
-                    instanceSelect.chosen({'width': '75%'});
+                    instanceSelect.chosen({'width': '75%', search_contains: true});
                 });
             }
             modal.foundation('reveal', 'open');

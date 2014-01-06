@@ -80,7 +80,7 @@ class ImagesJsonView(BaseView):
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),
                 root_device_type=image.root_device_type,
-                type=image.type,
+                ramdisk_id=image.ramdisk_id,
             ))
         return dict(results=images)
 
@@ -127,7 +127,13 @@ class ImageView(TaggedItemView):
         images_param = [image_param]
         images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
-        return image 
+        attrs = image.__dict__
+        image.block_device_names = []
+        if attrs['block_device_mapping'] is not None:
+            for attr in attrs['block_device_mapping']:
+                image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+        image.platform = self.get_platform(image)
+        return image
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
@@ -165,7 +171,7 @@ class ImageView(TaggedItemView):
 
     @staticmethod
     def get_platform_name(platform):
-        """platform could be either a unicde object (e.g. 'windows')
+        """platform could be either a unicode object (e.g. 'windows')
            or a koala.constants.images.PlatformChoice object
         """
         if isinstance(platform, unicode):
@@ -174,7 +180,7 @@ class ImageView(TaggedItemView):
 
     @staticmethod
     def get_platform_key(platform):
-        """platform could be either a unicde object (e.g. 'windows')
+        """platform could be either a unicode object (e.g. 'windows')
            or a koala.constants.images.PlatformChoice object
         """
         if isinstance(platform, unicode):

@@ -18,7 +18,7 @@ angular.module('SecurityGroupRules', [])
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
-            $('.ip-protocol').chosen({'width': '90%'});
+            $('.ip-protocol').chosen({'width': '90%', search_contains: true});
         };
         $scope.resetValues();
         $scope.syncRules = function () {
@@ -73,7 +73,7 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            $('.groupname').chosen({'width': '50%'});
+            $('.groupname').chosen({'width': '50%', search_contains: true});
         };
     })
 ;
