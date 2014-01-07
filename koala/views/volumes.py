@@ -345,7 +345,6 @@ class VolumeView(TaggedItemView):
             return volume_name
         return None
 
-
 class VolumeStateView(BaseView):
     def __init__(self, request):
         super(VolumeStateView, self).__init__(request)
@@ -378,11 +377,16 @@ class VolumeSnapshotsView(BaseView):
         self.request = request
         self.conn = self.get_connection()
         self.volume = self.get_volume()
+        self.tagged_obj = self.volume
+        vol_name_tag = self.volume.tags.get('Name', '')
+        self.volume_name = '{0}{1}'.format(
+                vol_name_tag, ' ({0})'.format(self.volume.id) if vol_name_tag else '')
         self.add_form = None
         self.create_form = CreateSnapshotForm(self.request, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             volume=self.volume,
+            volume_name=self.volume_name,
             create_form=self.create_form,
             delete_form=self.delete_form,
         )
@@ -414,9 +418,18 @@ class VolumeSnapshotsView(BaseView):
     @view_config(route_name='volume_snapshot_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_snapshot_create(self):
         if self.create_form.validate():
+            name = self.request.params.get('name')
             description = self.request.params.get('description')
+            tags_json = self.request.params.get('tags')
             try:
-                self.volume.create_snapshot(description)
+                snapshot = self.volume.create_snapshot(description)
+                # Add name tag
+                if name:
+                    snapshot.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    for tagname, tagvalue in tags.items():
+                        snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:

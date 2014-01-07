@@ -80,6 +80,7 @@ class DeleteVolumeForm(BaseSecureForm):
 
 class CreateSnapshotForm(BaseSecureForm):
     """CSRF-protected form to create a snapshot from a volume"""
+    name = wtforms.TextField(label=_(u'Name'))
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
         label=_(u'Description'),
