@@ -230,8 +230,7 @@ class InstanceView(TaggedItemView):
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
-        self.name_tag = self.instance.tags.get('Name', '') if self.instance else None
-        self.instance_name = self.name_tag or self.instance.id if self.instance else ''
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -425,9 +424,7 @@ class InstanceVolumesView(BaseView):
         self.instance = self.get_instance()
         self.attach_form = AttachVolumeForm(
             self.request, volumes=self.volumes, instance=self.instance, formdata=self.request.params or None)
-        self.inst_name_tag = self.instance.tags.get('Name', '') if self.instance else None
-        self.instance_name = '{0}{1}'.format(
-            self.instance.id, ' ({0})'.format(self.inst_name_tag) if self.inst_name_tag else '') if self.instance else ''
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.detach_form = DetachVolumeForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             instance=self.instance,

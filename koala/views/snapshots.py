@@ -183,8 +183,7 @@ class SnapshotView(TaggedItemView):
 
     def get_snapshot_name(self):
         if self.snapshot:
-            snap_name_tag = self.snapshot.tags.get('Name', '')
-            return '{0}{1}'.format(self.snapshot.id, ' ({0})'.format(snap_name_tag) if snap_name_tag else '')
+            return TaggedItemView.get_display_name(self.snapshot)
         return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')

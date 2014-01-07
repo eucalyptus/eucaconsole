@@ -206,9 +206,7 @@ class VolumeView(TaggedItemView):
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
-            self.inst_name_tag = instance.tags.get('Name', '') if instance else None
-            self.instance_name = '{0}{1}'.format(
-                self.inst_name_tag, ' ({0})'.format(instance.id) if self.inst_name_tag else '') if instance else ''
+            self.instance_name=TaggedItemView.get_display_name(instance)
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
@@ -341,10 +339,7 @@ class VolumeView(TaggedItemView):
 
     def get_volume_name(self):
         if self.volume:
-            vol_name_tag = self.volume.tags.get('Name', '')
-            volume_name = '{0}{1}'.format(
-                vol_name_tag, ' ({0})'.format(self.volume.id) if vol_name_tag else '')
-            return volume_name
+            return TaggedItemView.get_display_name(self.volume)
         return None
 
 class VolumeStateView(BaseView):
@@ -380,9 +375,7 @@ class VolumeSnapshotsView(BaseView):
         self.conn = self.get_connection()
         self.volume = self.get_volume()
         self.tagged_obj = self.volume
-        vol_name_tag = self.volume.tags.get('Name', '')
-        self.volume_name = '{0}{1}'.format(
-                vol_name_tag, ' ({0})'.format(self.volume.id) if vol_name_tag else '')
+        self.volume_name = TaggedItemView.get_display_name(self.volume)
         self.add_form = None
         self.create_form = CreateSnapshotForm(self.request, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
