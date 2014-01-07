@@ -7,14 +7,19 @@ import simplejson as json
 from urllib import urlencode
 
 from beaker.cache import cache_managers
+from boto.ec2.autoscale.launchconfig import BlockDeviceMapping
+from boto.ec2.blockdevicemapping import BlockDeviceType
 from boto.exception import EC2ResponseError
+
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
-from ..models.auth import ConnectionManager
+from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..models.auth import ConnectionManager
+from ..views.images import ImageView
 
 
 class BaseView(object):
@@ -103,6 +108,60 @@ class TaggedItemView(BaseView):
                 else:
                     tags_array.append(template.format(key, val))
         return ', '.join(tags_array)
+
+
+class BlockDeviceMappingItemView(BaseView):
+    def __init__(self, request):
+        super(BlockDeviceMappingItemView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='autoscale')
+
+    def get_image(self):
+        image_id = self.request.params.get('image_id')
+        if self.conn and image_id:
+            image = self.conn.get_image(image_id)
+            if image:
+                platform = ImageView.get_platform(image)
+                image.platform_name = ImageView.get_platform_name(platform)
+            return image
+        return None
+
+    def get_owner_choices(self):
+        if self.cloud_type == 'aws':
+            return AWS_IMAGE_OWNER_ALIAS_CHOICES
+        return EUCA_IMAGE_OWNER_ALIAS_CHOICES
+
+    def get_snapshot_choices(self):
+        choices = [('', _(u'None'))]
+        for snapshot in self.conn.get_all_snapshots():
+            value = snapshot.id
+            snapshot_name = snapshot.tags.get('Name')
+            label = '{id}{name} ({size} GB)'.format(
+                id=snapshot.id,
+                name=' - {0}'.format(snapshot_name) if snapshot_name else '',
+                size=snapshot.volume_size
+            )
+            choices.append((value, label))
+        return sorted(choices)
+
+    @staticmethod
+    def get_block_device_map(bdmapping_json):
+        """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
+        Mapping JSON structure...
+            {"/dev/sda":
+                {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
+        """
+        mapping = json.loads(bdmapping_json)
+        if mapping:
+            bdm = BlockDeviceMapping()
+            for key, val in mapping.items():
+                device = BlockDeviceType()
+                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                device.snapshot_id = val.get('snapshot_id') or None
+                device.size = val.get('size')
+                device.delete_on_termination = val.get('delete_on_termination', False)
+                bdm[key] = device
+            return bdm
+        return None
 
 
 class LandingPageView(BaseView):

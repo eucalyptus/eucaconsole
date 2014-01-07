@@ -67,8 +67,12 @@ urls = [
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
 
     # Launch Configurations #####
+    # Landing page
     Route(name='launchconfigs', pattern='/launchconfigs'),
     Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
+    # Detail page
+    Route(name='launchconfig_new', pattern='/launchconfigs/new'),
+    Route(name='launchconfig_create', pattern='/launchconfigs/create'),
     Route(name='launchconfig_delete', pattern='/launchconfigs/delete'),
     Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 

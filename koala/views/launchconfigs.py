@@ -4,16 +4,16 @@ Pyramid views for Eucalyptus and AWS launch configurations
 
 """
 import re
-
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
+import time
 
 from ..forms.launchconfigs import LaunchConfigDeleteForm
 from ..models import Notification
-from ..views import LandingPageView, BaseView
+from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 
 
 class LaunchConfigsView(LandingPageView):
@@ -116,5 +116,65 @@ class LaunchConfigView(BaseView):
 
         return self.render_dict
 
+
+class CreateLaunchConfigView(BlockDeviceMappingItemView):
+    TEMPLATE = '../templates/instances/launchconfig_new.pt'
+
+    def __init__(self, request):
+        super(CreateLaunchConfigView, self).__init__(request)
+        self.request = request
+        self.image = self.get_image()
+        self.create_form = CreateLaunchConfigForm(
+            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+        self.images_json_endpoint = self.request.route_url('images_json')
+        self.owner_choices = self.get_owner_choices()
+        self.render_dict = dict(
+            image=self.image,
+            create_form=self.create_form,
+            images_json_endpoint=self.images_json_endpoint,
+            owner_choices=self.owner_choices,
+            snapshot_choices=self.get_snapshot_choices(),
+        )
+
+    @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
+    def launchconfig_new(self):
+        """Displays the Create Launch Configuration wizard"""
+        return self.render_dict
+
+    @view_config(route_name='launchconfig_create', renderer=TEMPLATE, request_method='POST')
+    def launchconfig_create(self):
+        """Handles the POST from the Create Launch Configuration wizard"""
+        if self.create_form.validate():
+            image_id = self.image.id
+            key_name = self.request.params.get('keypair')
+            num_instances = int(self.request.params.get('number', 1))
+            securitygroup = self.request.params.get('securitygroup', 'default')
+            security_groups = [securitygroup]  # Security group names
+            instance_type = self.request.params.get('instance_type', 'm1.small')
+            availability_zone = self.request.params.get('zone')
+            user_data = self.request.params.get('user_data')
+            kernel_id = self.request.params.get('kernel_id') or None
+            ramdisk_id = self.request.params.get('ramdisk_id') or None
+            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            private_addressing = self.request.params.get('private_addressing', False)
+            addressing_type = 'private' if private_addressing else 'public'
+            bdmapping_json = self.request.params.get('block_device_mapping')
+            block_device_map = self.get_block_device_map(bdmapping_json)
+            try:
+                # TODO: Create launch config handler here
+                time.sleep(2)
+                msg = _(u'Successfully sent create launch configuration request. '
+                        u'It may take a moment to create the launch configuration.')
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('launchconfigs')
+                return HTTPFound(location=location)
+        return self.render_dict
 
 
