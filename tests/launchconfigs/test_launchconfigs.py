@@ -6,8 +6,11 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
+from koala.forms import BaseSecureForm
+from koala.forms.launchconfigs import CreateLaunchConfigForm
 from koala.views.launchconfigs import LaunchConfigsView
-from tests import BaseViewTestCase
+
+from tests import BaseViewTestCase, BaseFormTestCase
 
 
 class LaunchConfigViewTests(BaseViewTestCase):
@@ -22,5 +25,21 @@ class LaunchConfigViewTests(BaseViewTestCase):
         request = testing.DummyRequest()
         view = LaunchConfigsView(request)
         self.assertEqual(view.get_connection(), None)
-        self.assertEqual(view.get_items(), [])  # empty since there's no connection
+
+
+class CreateLaunchConfigFormTestCase(BaseFormTestCase):
+    form_class = CreateLaunchConfigForm
+    request = testing.DummyRequest()
+    form = form_class(request)
+
+    def test_secure_form(self):
+        self.has_field('csrf_token')
+        self.assertTrue(issubclass(self.form_class, BaseSecureForm))
+
+    def test_required_fields(self):
+        self.assert_required('name')
+        self.assert_required('instance_type')
+        self.assert_required('keypair')
+        self.assert_required('securitygroup')
+
 
