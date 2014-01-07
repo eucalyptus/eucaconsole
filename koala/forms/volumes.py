@@ -64,7 +64,11 @@ class VolumeForm(BaseSecureForm):
         # TODO: May need to filter get_all_snapshots() call for AWS?
         for snapshot in self.snapshots:
             value = snapshot.id
-            label = '{id} ({size} GB)'.format(id=snapshot.id, size=snapshot.volume_size)
+            name = snapshot.tags.get('Name', None)
+            if name is not None:
+                label = '{name} ({id})'.format(name=name, id=value)
+            else:
+                label = str(value)
             choices.append((value, label))
         # Need to insert current choice since the source snapshot may have been removed after this volume was created
         if self.volume and self.volume.snapshot_id:
@@ -80,11 +84,10 @@ class DeleteVolumeForm(BaseSecureForm):
 
 class CreateSnapshotForm(BaseSecureForm):
     """CSRF-protected form to create a snapshot from a volume"""
-    desc_error_msg = _(u'Description is required')
+    name = wtforms.TextField(label=_(u'Name'))
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
-            validators.Required(message=desc_error_msg),
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
@@ -92,7 +95,6 @@ class CreateSnapshotForm(BaseSecureForm):
     def __init__(self, request, **kwargs):
         super(CreateSnapshotForm, self).__init__(request, **kwargs)
         self.request = request
-        self.description.error_msg = self.desc_error_msg
 
 
 class DeleteSnapshotForm(BaseSecureForm):

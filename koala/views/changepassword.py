@@ -24,9 +24,10 @@ class ChangePasswordView(object):
         self.request = request
         self.changepassword_form = EucaChangePasswordForm(self.request)
         referrer = self.request.url
+        referrer_root = referrer.split('?',1)[0] if referrer.find('?') > -1 else referrer
         changepassword_url = self.request.route_url('changepassword')
-        if referrer in [changepassword_url]:
-            referrer = '/'  # never use the login form (or logout view) itself as came_from
+        if referrer_root in [changepassword_url]:
+            referrer = '/'  # never use the changepassword form itself as came_from
         self.came_from = self.request.params.get('came_from', referrer)
         self.changepassword_form_errors = []
 

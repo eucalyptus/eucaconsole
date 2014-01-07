@@ -8,6 +8,7 @@ import time
 import simplejson as json
 
 from boto.exception import EC2ResponseError
+from boto.ec2.snapshot import Snapshot
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -207,7 +208,7 @@ class VolumeView(TaggedItemView):
             instance = self.get_instance(self.attach_data.instance_id)
             self.inst_name_tag = instance.tags.get('Name', '') if instance else None
             self.instance_name = '{0}{1}'.format(
-                instance.id, ' ({0})'.format(self.inst_name_tag) if self.inst_name_tag else '') if instance else ''
+                self.inst_name_tag, ' ({0})'.format(instance.id) if self.inst_name_tag else '') if instance else ''
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
@@ -342,10 +343,9 @@ class VolumeView(TaggedItemView):
         if self.volume:
             vol_name_tag = self.volume.tags.get('Name', '')
             volume_name = '{0}{1}'.format(
-                self.volume.id, ' ({0})'.format(vol_name_tag) if vol_name_tag else '')
+                vol_name_tag, ' ({0})'.format(self.volume.id) if vol_name_tag else '')
             return volume_name
         return None
-
 
 class VolumeStateView(BaseView):
     def __init__(self, request):
@@ -379,11 +379,16 @@ class VolumeSnapshotsView(BaseView):
         self.request = request
         self.conn = self.get_connection()
         self.volume = self.get_volume()
+        self.tagged_obj = self.volume
+        vol_name_tag = self.volume.tags.get('Name', '')
+        self.volume_name = '{0}{1}'.format(
+                vol_name_tag, ' ({0})'.format(self.volume.id) if vol_name_tag else '')
         self.add_form = None
         self.create_form = CreateSnapshotForm(self.request, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             volume=self.volume,
+            volume_name=self.volume_name,
             create_form=self.create_form,
             delete_form=self.delete_form,
         )
@@ -415,9 +420,22 @@ class VolumeSnapshotsView(BaseView):
     @view_config(route_name='volume_snapshot_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_snapshot_create(self):
         if self.create_form.validate():
+            name = self.request.params.get('name')
             description = self.request.params.get('description')
+            tags_json = self.request.params.get('tags')
             try:
-                self.volume.create_snapshot(description)
+                params = {'VolumeId': self.volume.id}
+                if description:
+                    params['Description'] = description[0:255]
+                snapshot = self.volume.connection.get_object('CreateSnapshot', params, Snapshot, verb='POST')
+                
+                # Add name tag
+                if name:
+                    snapshot.add_tag('Name', name)
+                if tags_json:
+                    tags = json.loads(tags_json)
+                    for tagname, tagvalue in tags.items():
+                        snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:

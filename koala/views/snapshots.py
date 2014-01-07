@@ -301,6 +301,11 @@ class SnapshotStateView(BaseView):
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
 
+    @view_config(route_name='snapshot_size_json', renderer='json', request_method='GET')
+    def snapshot_size_json(self):
+        """Return current snapshot size"""
+        return dict(results=self.snapshot.volume_size)
+
     @view_config(route_name='snapshot_state_json', renderer='json', request_method='GET')
     def snapshot_state_json(self):
         """Return current snapshot state"""

@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('VolumeSnapshots', [])
+angular.module('VolumeSnapshots', ['TagEditor'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout) {
         $scope.loading = false;
         $scope.snapshots = [];

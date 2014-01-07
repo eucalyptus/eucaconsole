@@ -55,6 +55,7 @@ urls = [
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
+    Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
@@ -108,6 +109,7 @@ urls = [
     Route(name='snapshot_update', pattern='/snapshots/{id}/update'),
     Route(name='snapshot_delete', pattern='/snapshots/{id}/delete'),
     Route(name='snapshot_register', pattern='/snapshots/{id}/register'),
+    Route(name='snapshot_size_json', pattern='/snapshots/{id}/size/json'),
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
 
     # Security Groups #####

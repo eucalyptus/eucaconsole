@@ -12,18 +12,19 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeStatus = '';
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
+        $scope.instanceId = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
-            var snapshotOptionText = $('#snapshot_id').find('option[value="' + $scope.snapshotId + '"]').text(),
-                snapshotSize = '';
-            if (snapshotOptionText !== 'None') {
-                snapshotSize = /(?:\(\d+\sGB\))/.exec(snapshotOptionText)[0].replace(/[^\d]/g, '');
-                $('input#size').val(snapshotSize);
-            }
+            $http.get("/snapshots/"+$scope.snapshotId+"/size/json").success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $('input#size').val(results);
+                }
+            });
         };
         $scope.initChosenSelectors = function () {
             var urlParams = $.url().param(),
@@ -62,6 +63,14 @@ angular.module('VolumePage', ['TagEditor'])
                     } else {
                         $scope.isUpdating = false;
                     }
+                }
+            });
+        };
+        $scope.getDeviceSuggestion = function () {
+            $http.get("/instances/"+$scope.instanceId+"/nextdevice/json").success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $('input#device').val(results);
                 }
             });
         };

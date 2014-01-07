@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="VolumeSnapshots" tal:define="volume_name volume.tags.get('Name', volume.id)"
+    <div class="row" id="contentwrap" ng-app="VolumeSnapshots"
          ng-controller="VolumeSnapshotsCtrl"
          ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
         <h3 class="header" id="pagetitle">
@@ -76,13 +76,17 @@
         </div>
         <!--! modal dialogs -->
         <div id="snapshot-dialogs">
-            <div id="create-snapshot-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Add snapshot</h3>
+            <div id="create-snapshot-modal" class="reveal-modal small" data-reveal=""
+                tal:define="snapshot_tags {};">
+                <h3 i18n:translate="">Create snapshot from volume</h3>
                 <p><span i18n:translate="">Add a snapshot for</span> <strong>${volume_name}</strong></p>
                 <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
                       id="create-snapshot-form" data-abide="">
                     ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form.name)}
                     ${panel('form_field', field=create_form.description)}
+                    <hr />
+                    ${panel('tag_editor', tags=snapshot_tags)}
                     <div>&nbsp;</div>
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
