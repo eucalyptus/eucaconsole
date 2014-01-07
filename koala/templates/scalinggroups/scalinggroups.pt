@@ -50,11 +50,17 @@
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch Config</th>
                 <th i18n:translate="">Availability Zones</th>
+                <th i18n:translate="">Desired Capacity</th>
+                <th i18n:translate="">Max</th>
+                <th i18n:translate="">Min</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.launch_config }}</td>
                 <td>{{ item.availability_zones }}</td>
+                <td>{{ item.desired_capacity }}</td>
+                <td>{{ item.max_size }}</td>
+                <td>{{ item.min_size }}</td>
             </metal:block>
         </div>
     </div>
