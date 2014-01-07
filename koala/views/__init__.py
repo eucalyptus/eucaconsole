@@ -8,7 +8,7 @@ from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
-from boto.exception import EC2ResponseError
+from boto.exception import EC2ResponseError, BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.i18n import TranslationString as _
@@ -236,3 +236,8 @@ def ec2conn_error(exc, request):
     """Handle session timeout by redirecting to login page with notice."""
     return BaseView.handle_403_error(exc, request=request)
 
+
+@view_config(context=BotoServerError, permission=NO_PERMISSION_REQUIRED)
+def autoscale_error(exc, request):
+    """Handle autoscale connection session timeout by redirecting to login page with notice."""
+    return BaseView.handle_403_error(exc, request=request)
