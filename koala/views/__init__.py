@@ -19,7 +19,6 @@ from pyramid.view import notfound_view_config, view_config
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
 from ..models.auth import ConnectionManager
-from ..views.images import ImageView
 
 
 class BaseView(object):
@@ -116,6 +115,7 @@ class BlockDeviceMappingItemView(BaseView):
         self.conn = self.get_connection(conn_type='autoscale')
 
     def get_image(self):
+        from koala.views.images import ImageView
         image_id = self.request.params.get('image_id')
         if self.conn and image_id:
             image = self.conn.get_image(image_id)

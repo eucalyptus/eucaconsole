@@ -18,7 +18,7 @@ from ..constants.images import (
 from ..forms.images import ImageForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView,  TaggedItemView
+from ..views import BaseView, LandingPageView, TaggedItemView
 
 
 class ImagesView(LandingPageView):
