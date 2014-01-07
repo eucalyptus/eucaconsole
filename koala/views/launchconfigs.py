@@ -11,7 +11,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 import time
 
-from ..forms.launchconfigs import LaunchConfigDeleteForm
+from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 
@@ -118,7 +118,7 @@ class LaunchConfigView(BaseView):
 
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
-    TEMPLATE = '../templates/instances/launchconfig_new.pt'
+    TEMPLATE = '../templates/launchconfigs/launchconfig_wizard.pt'
 
     def __init__(self, request):
         super(CreateLaunchConfigView, self).__init__(request)

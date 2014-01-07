@@ -14,7 +14,8 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create new launch configuration</a>
+                <a class="button" i18n:translate=""
+                   href="${request.route_url('launchconfig_new')}">Create new launch configuration</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.image_id">

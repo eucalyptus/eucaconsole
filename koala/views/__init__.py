@@ -7,8 +7,7 @@ import simplejson as json
 from urllib import urlencode
 
 from beaker.cache import cache_managers
-from boto.ec2.autoscale.launchconfig import BlockDeviceMapping
-from boto.ec2.blockdevicemapping import BlockDeviceType
+from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -112,7 +111,7 @@ class TaggedItemView(BaseView):
 class BlockDeviceMappingItemView(BaseView):
     def __init__(self, request):
         super(BlockDeviceMappingItemView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='autoscale')
+        self.conn = self.get_connection()
 
     def get_image(self):
         from koala.views.images import ImageView

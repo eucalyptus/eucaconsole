@@ -512,7 +512,6 @@ class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
     def __init__(self, request):
         super(InstanceLaunchView, self).__init__(request)
         self.request = request
-        self.conn = self.get_connection()
         self.image = self.get_image()
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
