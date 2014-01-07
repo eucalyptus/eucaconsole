@@ -8,6 +8,7 @@ import time
 import simplejson as json
 
 from boto.exception import EC2ResponseError
+from boto.ec2.snapshot import Snapshot
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
@@ -422,7 +423,11 @@ class VolumeSnapshotsView(BaseView):
             description = self.request.params.get('description')
             tags_json = self.request.params.get('tags')
             try:
-                snapshot = self.volume.create_snapshot(description)
+                params = {'VolumeId': self.volume.id}
+                if description:
+                    params['Description'] = description[0:255]
+                snapshot = self.volume.connection.get_object('CreateSnapshot', params, Snapshot, verb='POST')
+                
                 # Add name tag
                 if name:
                     snapshot.add_tag('Name', name)
