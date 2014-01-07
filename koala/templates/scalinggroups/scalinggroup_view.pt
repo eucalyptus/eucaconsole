@@ -1,64 +1,63 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        #desired_capacity, #max_size, #min_size { width: 3rem; }
+    </style>
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('scalinggroups')}"
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Scaling Group</span> ${scalinggroup.name if scalinggroup else ''}
+            <span i18n:translate="">Scaling Group</span> ${scaling_group.name if scaling_group else ''}
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns"
-            tal:define="readonly True if scalinggroup else False;">
+            tal:define="readonly True if scaling_group else False;">
             <div class="panel has-title">
                 <h6 class="title">
-                    <span tal:condition="scalinggroup">
+                    <span tal:condition="scaling_group">
                         <span i18n:translate="">Properties of scaling group</span>
-                        <strong>${scalinggroup.name }</strong>
+                        <strong>${scaling_group.name }</strong>
                     </span>
-                    <span tal:condition="not scalinggroup" i18n:translate="">
+                    <span tal:condition="not scaling_group" i18n:translate="">
                         Error 
                     </span>
                 </h6>
-                <form action="${request.route_url('scalinggroups')}" method="post" data-abide="abide"> 
-                    <div tal:condition="scalinggroup">
+                <form action="${request.route_url('scalinggroup_update')}" method="post" data-abide="abide">
+                    ${structure:edit_form['csrf_token']}
+                    <div tal:condition="scaling_group">
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-9 columns value">${scalinggroup.name if scalinggroup.name else ''}</div>
+                            <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                            <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
+                        </div>
+                        ${panel('form_field', field=edit_form['launch_config'])}
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Availability Zones</label></div>
+                            <div class="small-8 columns value">${', '.join(scaling_group.availability_zones)}</div>
+                        </div>
+                        ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
+                        ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
+                        ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Placement Group</label></div>
+                            <div class="small-8 columns value">${scaling_group.placement_group if scaling_group.placement_group else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Availability Zones</label></div>
-                            <div class="small-9 columns value">${scalinggroup.availability_zones_str if scalinggroup.availability_zones_str else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Desired Capacity</label></div>
-                            <div class="small-9 columns value">${scalinggroup.desired_capacity if scalinggroup.desired_capacity else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Max Size</label></div>
-                            <div class="small-9 columns value">${scalinggroup.max_size if scalinggroup.max_size else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Min Size</label></div>
-                            <div class="small-9 columns value">${scalinggroup.min_size if scalinggroup.min_size else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Placement Group</label></div>
-                            <div class="small-9 columns value">${scalinggroup.placement_group if scalinggroup.placement_group else ''}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-3 columns"><label i18n:translate="">Termination Policies</label></div>
-                            <div class="small-9 columns value">${scalinggroup.termination_policies_str if scalinggroup.termination_policies_str else ''}</div>
+                            <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
+                            <div class="small-8 columns value">${', '.join(scaling_group.termination_policies) if scaling_group.termination_policies else ''}</div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
                             <button type="submit" class="button">
-                                <span tal:condition="scalinggroup" i18n:translate="">Save changes</span>
+                                <span tal:condition="scaling_group" i18n:translate="">Save changes</span>
                             </button>
                             <a href="${request.route_url('scalinggroups')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
@@ -68,79 +67,29 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title" tal:condition="scalinggroup">
-                <h6 class="title" i18n:translate="">Other scalinggroup actions</h6>
+            <div class="panel has-title" tal:condition="scaling_group">
+                <h6 class="title" i18n:translate="">Other scaling_group actions</h6>
                 <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
-                        <a class="button secondary" data-reveal-id="quick-scale-scalinggroup-modal" i18n:translate="">
-                            Quick scale
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
-                        <a class="button secondary" data-reveal-id="edit-properties-scalinggroup-modal" i18n:translate="">
-                            Edit properties
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
-                        <a class="button secondary" data-reveal-id="manage-instances-scalinggroup-modal" i18n:translate="">
-                           Manage instances
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
+                    <div class="small-2 columns">&nbsp;</div>
+                    <div class="small-10 columns">
                         <a class="button secondary delete" data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
-                            Delete scalinggroup
+                            Delete scaling group
                         </a>
                     </div>
-                </div>
-                <div id="quick-scale-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Quick scale</h3>
-                    <p><span i18n:translate="">Placeholder</span>
-                    <b>${scalinggroup.name}</b>?</p>
-                    <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                        <button type="submit" class="button" i18n:translate="">Yes</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
-                <div id="edit-properties-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Edit properties</h3>
-                    <p><span i18n:translate="">Placeholder</span>
-                    <b>${scalinggroup.name}</b>?</p>
-                        <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                        <button type="submit" class="button" i18n:translate="">Yes</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
-                </div>
-                <div id="manage-instances-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Manage instances</h3>
-                    <p><span i18n:translate="">Placeholder</span>
-                    <b>${scalinggroup.name}</b>?</p>
-                    <form action="${request.route_url('scalinggroup_view', id=scalinggroup.name)}" method="post">
-                        <button type="submit" class="button" i18n:translate="">Yes</button>
-                    </form>
-                <a class="close-reveal-modal">&#215;</a>
-                </div>
-                <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-                    <h3 i18n:translate="">Delete scalinggroup</h3>
-                    <p><span i18n:translate="">Are you sure you want to delete the scalinggroup</span>
-                    <b>${scalinggroup.name}</b>?</p>
-                    <form action="${request.route_url('scalinggroup_delete', id=scalinggroup.name)}" method="post">
-                         ${structure:delete_form['csrf_token']}
-                         <input type="hidden" name="name" value="${scalinggroup.name}">
-                        <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-                    </form>
-                    <a class="close-reveal-modal">&#215;</a>
                 </div>
             </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete scaling_group</h3>
+            <p><span i18n:translate="">Are you sure you want to delete the scaling_group</span>
+               <b>${scaling_group.name}</b>?</p>
+            <form action="${request.route_url('scalinggroup_delete', id=scaling_group.name)}" method="post">
+                ${structure:delete_form['csrf_token']}
+                <input type="hidden" name="name" value="${scaling_group.name}">
+                <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

@@ -3,14 +3,15 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from boto.exception import EC2ResponseError
+
+from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.scalinggroups import ScalingGroupDeleteForm
+from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm
 from ..models import Notification
-from ..models import LandingPageFilter
-from ..views import LandingPageView, BaseView 
+from ..views import LandingPageView, BaseView
 
 
 class ScalingGroupsView(LandingPageView):
@@ -70,33 +71,46 @@ class ScalingGroupView(BaseView):
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
-        self.scalinggroup = self.get_scalinggroup()
+        self.scaling_group = self.get_scaling_group()
+        self.edit_form = ScalingGroupEditForm(
+            self.request, scaling_group=self.scaling_group, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            scalinggroup=self.scalinggroup,
+            scaling_group=self.scaling_group,
+            edit_form=self.edit_form,
             delete_form=self.delete_form,
         )
 
-    def get_scalinggroup(self):
-        scalinggroup_param = self.request.matchdict.get('id')
-        scalinggroups_param = [scalinggroup_param]
-        scalinggroups = self.conn.get_all_groups(names=scalinggroups_param)
-        scalinggroups = scalinggroups[0] if scalinggroups else None
-        return scalinggroups 
-
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
-        self.scalinggroup.availability_zones_str = ', '.join(self.scalinggroup.availability_zones)
-        self.scalinggroup.termination_policies_str = ', '.join(self.scalinggroup.termination_policies)
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
+    def scalinggroup_update(self):
+        if self.edit_form.validate():
+            location = self.request.route_url('scalinggroup_view', id=self.scaling_group.id)
+            try:
+                desired_capacity = self.request.params.get('desired_capacity', 0)
+                self.scaling_group.set_capacity(desired_capacity)
+                prefix = _(u'Successfully updated scaling group')
+                msg = '{0} {1}'.format(prefix, self.scaling_group.name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_delete(self):
         if self.delete_form.validate():
+            location = self.request.route_url('scalinggroups')
             name = self.request.params.get('name')
             try:
                 self.conn.delete_auto_scaling_group(name, force_delete=True)
-                prefix = _(u'Successfully deleted scalinggroup')
+                prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
             except EC2ResponseError as err:
@@ -104,8 +118,13 @@ class ScalingGroupView(BaseView):
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_url('scalinggroups')
             return HTTPFound(location=location)
-
         return self.render_dict
+
+    def get_scaling_group(self):
+        scalinggroup_param = self.request.matchdict.get('id')
+        scalinggroups_param = [scalinggroup_param]
+        scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
+        return scaling_groups[0] if scaling_groups else None
+
 

@@ -62,9 +62,12 @@ urls = [
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
 
     # Scaling Groups #####
+    # Landing page
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    # Detail page
     Route(name='scalinggroup_delete', pattern='/scalinggroups/delete'),
+    Route(name='scalinggroup_update', pattern='/scalinggroups/update'),
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
 
     # Launch Configurations #####
