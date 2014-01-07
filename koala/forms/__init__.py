@@ -8,8 +8,8 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 
-from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES, EUCA_INSTANCE_TYPE_CHOICES
-
+from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
+from boto.ec2.vmtype import VmType
 
 BLANK_CHOICE = ('', _(u'select...'))
 
@@ -42,8 +42,7 @@ class ChoicesManager(object):
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    @staticmethod
-    def instance_types(cloud_type='euca', add_blank=True):
+    def instance_types(self, cloud_type='euca', add_blank=True):
         """Get instance type (e.g. m1.small) choices
             cloud_type is either 'euca' or 'aws'
         """
@@ -51,8 +50,11 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
-            # TODO: Pull instance types using DescribeInstanceTypes
-            choices.extend(EUCA_INSTANCE_TYPE_CHOICES)
+            types = self.conn.get_list('DescribeInstanceTypes', {}, [('euca:item', VmType)], verb='POST')
+            for vmtype in types:
+                vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                vmtype_tuple = vmtype.name, vmtype_str
+                choices.append(vmtype_tuple)
         elif cloud_type == 'aws':
             choices.extend(AWS_INSTANCE_TYPE_CHOICES)
         return choices

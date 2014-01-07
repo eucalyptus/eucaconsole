@@ -4,9 +4,8 @@ Eucalyptus and AWS Instance constants
 
 """
 
-
-# TODO: Use DescribeInstanceTypes instead of these values
-EUCA_INSTANCE_TYPE_CHOICES = [
+# TODO: Confirm we have the most recent list of choices here
+AWS_INSTANCE_TYPE_CHOICES = [
     ('t1.micro', 't1.micro: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)'),
     ('m1.small', 'm1.small: 1 CPUs, 256 memory (MB), 5 disk (GB,root device)'),
     ('m1.medium', 'm1.medium: 1 CPUs, 512 memory (MB), 10 disk (GB,root device)'),
@@ -26,8 +25,5 @@ EUCA_INSTANCE_TYPE_CHOICES = [
     ('hi1.4xlarge', 'hi1.4xlarge: 8 CPUs, 6144 memory (MB), 120 disk (GB,root device)'),
     ('hs1.8xlarge', 'hs1.8xlarge: 48 CPUs, 119808 memory (MB), 24000 disk (GB,root device)'),
 ]
-
-# TODO: Confirm we have the most recent list of choices here
-AWS_INSTANCE_TYPE_CHOICES = EUCA_INSTANCE_TYPE_CHOICES
 
 
