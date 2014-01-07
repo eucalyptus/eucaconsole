@@ -5,17 +5,14 @@
 @import "../includes/wizard";
 
 
-/* @section Launch Instance page styles */
+/* @section Launch Config Wizard styles */
 
-#launch-instance-form {
+#launch-config-form {
     input.name {
         width: 100px;
         margin-right: 8px;
         margin-bottom: 4px;
         padding: 4px;
-    }
-    #number {
-        width: 3rem;
     }
     #instance_type {
         option {
@@ -27,4 +24,5 @@
         display: inline;
     }
 }
+
 

@@ -52,7 +52,7 @@
                 </td>
                 <td>
                     <div class="name">
-                        <a href="${request.route_url('instance_create')}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                        <a href="${request.route_url(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
                         <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                     </div>
                     <div ng-show="item.name">

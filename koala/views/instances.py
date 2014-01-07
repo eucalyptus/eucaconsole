@@ -19,7 +19,7 @@ from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_A
 from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 
 
@@ -506,13 +506,12 @@ class InstanceVolumesView(BaseView):
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 
 
-class InstanceLaunchView(TaggedItemView):
+class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
     TEMPLATE = '../templates/instances/instance_launch.pt'
 
     def __init__(self, request):
         super(InstanceLaunchView, self).__init__(request)
         self.request = request
-        self.conn = self.get_connection()
         self.image = self.get_image()
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
@@ -593,52 +592,3 @@ class InstanceLaunchView(TaggedItemView):
                 location = self.request.route_url('instances')
                 return HTTPFound(location=location)
         return self.render_dict
-
-    def get_image(self):
-        image_id = self.request.params.get('image_id')
-        if self.conn and image_id:
-            image = self.conn.get_image(image_id)
-            if image:
-                platform = ImageView.get_platform(image)
-                image.platform_name = ImageView.get_platform_name(platform)
-            return image
-        return None
-
-    def get_owner_choices(self):
-        if self.cloud_type == 'aws':
-            return AWS_IMAGE_OWNER_ALIAS_CHOICES
-        return EUCA_IMAGE_OWNER_ALIAS_CHOICES
-
-    def get_snapshot_choices(self):
-        choices = [('', _(u'None'))]
-        for snapshot in self.conn.get_all_snapshots():
-            value = snapshot.id
-            snapshot_name = snapshot.tags.get('Name')
-            label = '{id}{name} ({size} GB)'.format(
-                id=snapshot.id,
-                name=' - {0}'.format(snapshot_name) if snapshot_name else '',
-                size=snapshot.volume_size
-            )
-            choices.append((value, label))
-        return sorted(choices)
-
-    @staticmethod
-    def get_block_device_map(bdmapping_json):
-        """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
-        Mapping JSON structure...
-            {"/dev/sda":
-                {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
-        """
-        mapping = json.loads(bdmapping_json)
-        if mapping:
-            bdm = BlockDeviceMapping()
-            for key, val in mapping.items():
-                device = BlockDeviceType()
-                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
-                device.snapshot_id = val.get('snapshot_id') or None
-                device.size = val.get('size')
-                device.delete_on_termination = val.get('delete_on_termination', False)
-                bdm[key] = device
-            return bdm
-        return None
-

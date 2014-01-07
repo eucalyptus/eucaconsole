@@ -14,7 +14,8 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create new launch configuration</a>
+                <a class="button" i18n:translate=""
+                   href="${request.route_url('launchconfig_new')}">Create new launch configuration</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.image_id">
@@ -22,7 +23,7 @@
                     {{ item.image_id }}
                 </div>
                 <div ng-show="item.key_name">
-                    <span class="label" title="Key Name" i18n:attributes="title" data-tooltip="">KN</span>
+                    <span class="label" title="Key Pair" i18n:attributes="title" data-tooltip="">KP</span>
                     {{ item.key_name }}
                 </div>
                 <div ng-show="item.security_groups">
@@ -30,7 +31,7 @@
                     {{ item.security_groups }}
                 </div>
                 <div ng-show="item.instance_monitoring">
-                    <span class="label" title="Instance Monitoring" i18n:attributes="title" data-tooltip="">IM</span>
+                    <span class="label" title="Instance Monitoring" i18n:attributes="title" data-tooltip="">MO</span>
                     {{ item.instance_monitoring }}
                 </div>
                 <div ng-show="item.kernel_id">
@@ -40,10 +41,6 @@
                 <div ng-show="item.ramdisk_id">
                     <span class="label" title="Ramdisk ID" i18n:attributes="title" data-tooltip="">RM</span>
                     {{ item.ramdisk_id }}
-                </div>
-                <div ng-show="item.user_data">
-                    <span class="label" title="User Data" i18n:attributes="title" data-tooltip="">UD</span>
-                    {{ item.user_data }}
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Created Time" i18n:attributes="title" data-tooltip="">CT</span>
