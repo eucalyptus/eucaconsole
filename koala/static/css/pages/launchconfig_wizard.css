@@ -31,6 +31,5 @@
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
 /* @section Launch Config Wizard styles */
 #launch-config-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
-#launch-config-form #number { width: 3rem; }
 #launch-config-form #instance_type option { font-size: 0.825rem; }
 #launch-config-form #image-id-input { width: 10rem; display: inline; }

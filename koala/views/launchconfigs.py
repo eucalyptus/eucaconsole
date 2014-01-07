@@ -4,6 +4,8 @@ Pyramid views for Eucalyptus and AWS launch configurations
 
 """
 import re
+
+from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPFound
@@ -145,36 +147,38 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
     def launchconfig_create(self):
         """Handles the POST from the Create Launch Configuration wizard"""
         if self.create_form.validate():
+            autoscale_conn = self.get_connection(conn_type='autoscale')
+            location = self.request.route_url('launchconfigs')
             image_id = self.image.id
+            name=self.request.params.get('name')
             key_name = self.request.params.get('keypair')
-            num_instances = int(self.request.params.get('number', 1))
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
-            availability_zone = self.request.params.get('zone')
             user_data = self.request.params.get('user_data')
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
-            private_addressing = self.request.params.get('private_addressing', False)
-            addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
-            block_device_map = self.get_block_device_map(bdmapping_json)
+            block_device_mappings = [self.get_block_device_map(bdmapping_json)]
             try:
-                # TODO: Create launch config handler here
+                launch_config = LaunchConfiguration(
+                    name=name, image_id=image_id, key_name=key_name, security_groups=security_groups,
+                    user_data=user_data, instance_type=instance_type, kernel_id=kernel_id, ramdisk_id=ramdisk_id,
+                    block_device_mappings=block_device_mappings, instance_monitoring=monitoring_enabled
+                )
+                autoscale_conn.create_launch_configuration(launch_config=launch_config)
                 time.sleep(2)
                 msg = _(u'Successfully sent create launch configuration request. '
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('instances')
-                return HTTPFound(location=location)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('launchconfigs')
-                return HTTPFound(location=location)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
         return self.render_dict
 
 

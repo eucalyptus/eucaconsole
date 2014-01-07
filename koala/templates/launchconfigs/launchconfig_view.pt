@@ -71,16 +71,16 @@
             <div class="panel has-title" tal:condition="launchconfig">
                 <h6 class="title" i18n:translate="">Other launchconfig actions</h6>
                 <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
                         <a class="button secondary" data-reveal-id="use-launchconfig-modal" i18n:translate="">
                             Use launchconfig to create scalinggroup
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
                         <a class="button secondary delete" data-reveal-id="delete-launchconfig-modal" i18n:translate="">
                             Delete launchconfig
                         </a>
