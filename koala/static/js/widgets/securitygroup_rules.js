@@ -75,6 +75,9 @@ angular.module('SecurityGroupRules', [])
             }
             $('.groupname').chosen({'width': '50%', search_contains: true});
         };
+        $scope.useMyIP = function (myip) {
+            $scope.cidrIp = myip + "/32";
+        };
     })
 ;
 
