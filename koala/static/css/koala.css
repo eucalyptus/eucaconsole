@@ -1520,6 +1520,7 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.alert { background-color: darkred; }
 
 #tag-editor .tagentry .new { color: #76b800; }
+#tag-editor small { font-size: 0.825rem; }
 
 #pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
 

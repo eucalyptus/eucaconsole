@@ -283,6 +283,9 @@ a.circle {
     .tagentry {
         .new { color: $euca-green; }
     }
+    small {
+        font-size: 0.825rem;
+    }
 }
 
 #pagetitle {

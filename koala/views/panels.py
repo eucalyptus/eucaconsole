@@ -69,6 +69,23 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 
+@panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')
+def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_width=10):
+    """ Tag editor panel for Scaling Groups.
+        Usage example (in Chameleon template): ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
+    """
+    tags = tags or []
+    tags_list = []
+    for tag in tags:
+        tags_list.append(dict(
+            name=tag.key,
+            value=tag.value,
+            propagate_at_launch=tag.propagate_at_launch,
+        ))
+    tags_json = json.dumps(tags_list)
+    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+
+
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
 def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_width=3, rightcol_width=9):
     """ Security group rules panel.

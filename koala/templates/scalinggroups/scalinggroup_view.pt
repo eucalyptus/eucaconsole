@@ -30,25 +30,25 @@
                 </h6>
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide="abide">
                     ${structure:edit_form['csrf_token']}
-                    <div tal:condition="scaling_group">
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                            <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
-                        </div>
-                        ${panel('form_field', field=edit_form['launch_config'])}
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Availability Zones</label></div>
-                            <div class="small-8 columns value">${', '.join(scaling_group.availability_zones)}</div>
-                        </div>
-                        ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
-                        ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
-                        ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
-                            <div class="small-8 columns value">${', '.join(scaling_group.termination_policies) if scaling_group.termination_policies else ''}</div>
-                        </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
                     </div>
-                    <hr>
+                    ${panel('form_field', field=edit_form['launch_config'])}
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Availability Zones</label></div>
+                        <div class="small-8 columns value">${', '.join(scaling_group.availability_zones)}</div>
+                    </div>
+                    ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
+                    ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
+                    ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
+                        <div class="small-8 columns value">${', '.join(scaling_group.termination_policies) if scaling_group.termination_policies else ''}</div>
+                    </div>
+                    <hr />
+                    ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
+                    <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">

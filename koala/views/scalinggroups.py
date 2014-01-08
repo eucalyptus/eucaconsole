@@ -3,6 +3,9 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+import simplejson as json
+
+from boto.ec2.autoscale.tag import Tag
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPFound
@@ -72,11 +75,13 @@ class ScalingGroupView(BaseView):
         super(ScalingGroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
         self.scaling_group = self.get_scaling_group()
+        self.tags_dict = self.get_tags_dict()
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            tags_dict=self.tags_dict,
             edit_form=self.edit_form,
             delete_form=self.delete_form,
         )
@@ -94,10 +99,15 @@ class ScalingGroupView(BaseView):
                 desired_capacity = self.request.params.get('desired_capacity', 1)
                 max_size = self.request.params.get('max_size', 1)
                 min_size = self.request.params.get('min_size', 0)
+                tags_json = self.request.params.get('tags')
+                # TODO: Convert tag key, value, and propagate_at_launch into list of boto.ec2.autoscale.tag.Tag objects
+                # tags_dict = json.loads(tags_json) if tags_json else {}
+                # tags_list = []
                 self.scaling_group.launch_config_name = launch_config
                 self.scaling_group.set_capacity(desired_capacity)
                 self.scaling_group.max_size = max_size
                 self.scaling_group.min_size = min_size
+                # self.scaling_group.tags = tags_list
                 self.scaling_group.update()
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
@@ -134,4 +144,10 @@ class ScalingGroupView(BaseView):
         scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
 
+    def get_tags_dict(self):
+        """Converts a list of boto.ec2.autoscale.tag.Tag objects into a dict"""
+        tags_dict = {}
+        for tag in self.scaling_group.tags:
+            tags_dict[tag.key] = tag.value
+        return tags_dict
 
