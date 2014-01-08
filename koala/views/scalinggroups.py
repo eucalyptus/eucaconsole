@@ -151,13 +151,12 @@ class ScalingGroupView(BaseView):
         self.conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
-        launch_config = self.request.params.get('launch_config')
         desired_capacity = self.request.params.get('desired_capacity', 1)
-        max_size = self.request.params.get('max_size', 1)
-        min_size = self.request.params.get('min_size', 0)
-        self.scaling_group.launch_config_name = launch_config
         self.scaling_group.set_capacity(desired_capacity)
-        self.scaling_group.max_size = max_size
-        self.scaling_group.min_size = min_size
+        self.scaling_group.launch_config_name = self.request.params.get('launch_config')
+        self.scaling_group.max_size = self.request.params.get('max_size', 1)
+        self.scaling_group.min_size = self.request.params.get('min_size', 0)
+        self.scaling_group.health_check_type = self.request.params.get('health_check_type')
+        self.scaling_group.health_check_period = self.request.params.get('health_check_period', 120)
         self.scaling_group.update()
 

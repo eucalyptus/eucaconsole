@@ -2,7 +2,9 @@
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
-        #desired_capacity, #max_size, #min_size { width: 3rem; }
+        input[type="number"] { width: 3rem; }
+        #health_check_period { width: 4rem; }
+        #launch_config, #health_check_type { max-width: 10rem; }
     </style>
 </head>
 
@@ -30,6 +32,7 @@
                 </h6>
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide="abide">
                     ${structure:edit_form['csrf_token']}
+                    <h6 i18n:translate="">General</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
                         <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
@@ -46,6 +49,10 @@
                         <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
                         <div class="small-8 columns value">${', '.join(scaling_group.termination_policies) if scaling_group.termination_policies else ''}</div>
                     </div>
+                    <hr />
+                    <h6 i18n:translate="">Health Check</h6>
+                    ${panel('form_field', field=edit_form['health_check_type'])}
+                    ${panel('form_field', field=edit_form['health_check_period'], step='30')}
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />

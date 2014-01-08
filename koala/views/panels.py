@@ -40,6 +40,7 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
     # Add HTML attributes based on field type (e.g. IntegerField)
     if isinstance(field, IntegerField):
         html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
+        html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():
