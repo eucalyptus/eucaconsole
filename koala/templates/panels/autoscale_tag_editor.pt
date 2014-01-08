@@ -48,7 +48,7 @@
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
-        <textarea id="tags" name="tags" class="hidden debug"></textarea>
+        <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
     <script src="${request.static_url('koala:static/js/widgets/autoscale_tag_editor.js')}"></script>
 </div>

@@ -75,13 +75,11 @@ class ScalingGroupView(BaseView):
         super(ScalingGroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
         self.scaling_group = self.get_scaling_group()
-        self.tags_dict = self.get_tags_dict()
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
-            tags_dict=self.tags_dict,
             edit_form=self.edit_form,
             delete_form=self.delete_form,
         )
@@ -95,20 +93,8 @@ class ScalingGroupView(BaseView):
         if self.edit_form.validate():
             location = self.request.route_url('scalinggroup_view', id=self.scaling_group.name)
             try:
-                launch_config = self.request.params.get('launch_config')
-                desired_capacity = self.request.params.get('desired_capacity', 1)
-                max_size = self.request.params.get('max_size', 1)
-                min_size = self.request.params.get('min_size', 0)
-                tags_json = self.request.params.get('tags')
-                # TODO: Convert tag key, value, and propagate_at_launch into list of boto.ec2.autoscale.tag.Tag objects
-                # tags_dict = json.loads(tags_json) if tags_json else {}
-                # tags_list = []
-                self.scaling_group.launch_config_name = launch_config
-                self.scaling_group.set_capacity(desired_capacity)
-                self.scaling_group.max_size = max_size
-                self.scaling_group.min_size = min_size
-                # self.scaling_group.tags = tags_list
-                self.scaling_group.update()
+                self.update_tags()
+                self.update_properties()
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
                 queue = Notification.SUCCESS
@@ -144,10 +130,34 @@ class ScalingGroupView(BaseView):
         scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
 
-    def get_tags_dict(self):
-        """Converts a list of boto.ec2.autoscale.tag.Tag objects into a dict"""
-        tags_dict = {}
-        for tag in self.scaling_group.tags:
-            tags_dict[tag.key] = tag.value
-        return tags_dict
+    def parse_tags_param(self):
+        tags_json = self.request.params.get('tags')
+        tags_list = json.loads(tags_json) if tags_json else []
+        tags = []
+        for tag in tags_list:
+            tags.append(Tag(
+                resource_id=self.scaling_group.name,
+                key=tag.get('name'),
+                value=tag.get('value'),
+                propagate_at_launch=tag.get('propatage_at_launch', False),
+            ))
+        return tags
+
+    def update_tags(self):
+        updated_tags_list = self.parse_tags_param()
+        # Delete existing tags first
+        if self.scaling_group.tags:
+            self.conn.delete_tags(self.scaling_group.tags)
+        self.conn.create_or_update_tags(updated_tags_list)
+
+    def update_properties(self):
+        launch_config = self.request.params.get('launch_config')
+        desired_capacity = self.request.params.get('desired_capacity', 1)
+        max_size = self.request.params.get('max_size', 1)
+        min_size = self.request.params.get('min_size', 0)
+        self.scaling_group.launch_config_name = launch_config
+        self.scaling_group.set_capacity(desired_capacity)
+        self.scaling_group.max_size = max_size
+        self.scaling_group.min_size = min_size
+        self.scaling_group.update()
 
