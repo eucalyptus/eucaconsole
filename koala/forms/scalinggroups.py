@@ -55,9 +55,9 @@ class ScalingGroupEditForm(BaseSecureForm):
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
-            self.desired_capacity.data = scaling_group.desired_capacity
-            self.max_size.data = scaling_group.max_size
-            self.min_size.data = scaling_group.min_size or 0
+            self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group.desired_capacity else 1
+            self.max_size.data = int(scaling_group.max_size) if scaling_group.max_size else 1
+            self.min_size.data = int(scaling_group.min_size) if scaling_group.min_size else 0
 
     def set_choices(self):
         self.launch_config.choices = self.get_launch_config_choices()

@@ -67,8 +67,8 @@ urls = [
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
     # Detail page
     Route(name='scalinggroup_delete', pattern='/scalinggroups/delete'),
-    Route(name='scalinggroup_update', pattern='/scalinggroups/update'),
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
+    Route(name='scalinggroup_update', pattern='/scalinggroups/{id}/update'),
 
     # Launch Configurations #####
     # Landing page

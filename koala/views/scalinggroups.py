@@ -88,10 +88,17 @@ class ScalingGroupView(BaseView):
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
         if self.edit_form.validate():
-            location = self.request.route_url('scalinggroup_view', id=self.scaling_group.id)
+            location = self.request.route_url('scalinggroup_view', id=self.scaling_group.name)
             try:
-                desired_capacity = self.request.params.get('desired_capacity', 0)
+                launch_config = self.request.params.get('launch_config')
+                desired_capacity = self.request.params.get('desired_capacity', 1)
+                max_size = self.request.params.get('max_size', 1)
+                min_size = self.request.params.get('min_size', 0)
+                self.scaling_group.launch_config_name = launch_config
                 self.scaling_group.set_capacity(desired_capacity)
+                self.scaling_group.max_size = max_size
+                self.scaling_group.min_size = min_size
+                self.scaling_group.update()
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
                 queue = Notification.SUCCESS
@@ -122,7 +129,7 @@ class ScalingGroupView(BaseView):
         return self.render_dict
 
     def get_scaling_group(self):
-        scalinggroup_param = self.request.matchdict.get('id')
+        scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
         scalinggroups_param = [scalinggroup_param]
         scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
