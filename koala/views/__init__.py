@@ -94,6 +94,13 @@ class TaggedItemView(BaseView):
             self.add_tags()
 
     @staticmethod
+    def get_display_name(object):
+        name_tag = object.tags.get('Name', '')
+        name = '{0}{1}'.format(name_tag if name_tag else object.id,
+                               ' ({0})'.format(object.id) if name_tag else '')
+        return name
+
+    @staticmethod
     def get_tags_display(tags, skip_name=True):
         """Return comma-separated list of tags as a string.
            Skips the 'Name' tag by default"""

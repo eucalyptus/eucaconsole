@@ -9,7 +9,7 @@ from pyramid.view import view_config
 
 from ..forms.ipaddresses import AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView
+from ..views import LandingPageView, TaggedItemView, BaseView
 
 
 class IPAddressesView(LandingPageView):
@@ -68,10 +68,13 @@ class IPAddressesView(LandingPageView):
     @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
     def ipaddresses_json(self):
         ipaddresses = []
-        for address in self.get_items():
+        addresses = self.get_items()
+        instances = self.get_instances(addresses)
+        for address in addresses:
             ipaddresses.append(dict(
                 public_ip=address.public_ip,
                 instance_id=address.instance_id,
+                instance_name=TaggedItemView.get_display_name(instances[address.instance_id]) if address.instance_id is not None else address.instance_id,
                 domain=address.domain,
             ))
         return dict(results=ipaddresses)
@@ -124,6 +127,15 @@ class IPAddressesView(LandingPageView):
 
     def get_items(self):
         return self.conn.get_all_addresses() if self.conn else []
+
+    # return dictionary of instances (by their id)
+    def get_instances(self, ipaddresses):
+        ids = [ip.instance_id for ip in ipaddresses if ip.instance_id is not None]
+        instances = self.conn.get_only_instances(ids)
+        ret = {}
+        for inst in instances:
+            ret[inst.id] = inst
+        return ret
 
     def get_elastic_ip(self, public_ip):
         addresses_param = [public_ip]

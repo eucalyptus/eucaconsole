@@ -21,6 +21,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor']
         $scope.initController = function () {
             $scope.setInitialValues();
         };
+        $scope.inputImageID = function (url) {
+            url += '?image_id=' + $scope.imageID;
+            document.location.href = url;
+        };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
             $scope.form.trigger('validate');
