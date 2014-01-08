@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS scaling groups
 import simplejson as json
 
 from boto.ec2.autoscale.tag import Tag
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -74,9 +74,11 @@ class ScalingGroupView(BaseView):
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
+        self.ec2_conn = self.get_connection()
         self.scaling_group = self.get_scaling_group()
         self.edit_form = ScalingGroupEditForm(
-            self.request, scaling_group=self.scaling_group, conn=self.conn, formdata=self.request.params or None)
+            self.request, scaling_group=self.scaling_group, autoscale_conn=self.conn, ec2_conn=self.ec2_conn,
+            formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
@@ -98,7 +100,7 @@ class ScalingGroupView(BaseView):
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
                 queue = Notification.SUCCESS
-            except EC2ResponseError as err:
+            except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
             notification_msg = msg
@@ -116,7 +118,7 @@ class ScalingGroupView(BaseView):
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            except EC2ResponseError as err:
+            except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
             notification_msg = msg
@@ -154,9 +156,11 @@ class ScalingGroupView(BaseView):
         desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.set_capacity(desired_capacity)
         self.scaling_group.launch_config_name = self.request.params.get('launch_config')
+        self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
         self.scaling_group.health_check_type = self.request.params.get('health_check_type')
         self.scaling_group.health_check_period = self.request.params.get('health_check_period', 120)
         self.scaling_group.update()
+
 

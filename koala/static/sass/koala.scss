@@ -381,10 +381,13 @@ form {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
     }
+    .chosen-container-multi .chosen-choices li.search-field input[type=text] {
+        height: auto;
+    }
 }
 
 form .row.controls-wrapper {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     label {
         padding-top: 4px;
         font-weight: bold;
@@ -397,6 +400,10 @@ form .row.controls-wrapper {
     .field {
         input {
             display: inline-block;
+            margin-bottom: 0.3rem;
+        }
+        select {
+            margin-bottom: 0.3rem;
         }
     }
     &.readonly {

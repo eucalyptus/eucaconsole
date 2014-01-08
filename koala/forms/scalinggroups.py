@@ -8,7 +8,7 @@ from wtforms import validators
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm
+from . import BaseSecureForm, ChoicesManager
 
 
 class ScalingGroupEditForm(BaseSecureForm):
@@ -17,7 +17,14 @@ class ScalingGroupEditForm(BaseSecureForm):
     launch_config = wtforms.SelectField(
         label=_(u'Launch configuration'),
         validators=[
-            validators.Required(message=launch_config_error_msg),
+            validators.InputRequired(message=launch_config_error_msg),
+        ],
+    )
+    availability_zones_error_msg = _(u'At least one availability zone is required')
+    availability_zones = wtforms.SelectMultipleField(
+        label=_(u'Availability zones'),
+        validators=[
+            validators.InputRequired(message=availability_zones_error_msg),
         ],
     )
     desired_capacity_error_msg = _(u'Desired capacity is required')
@@ -48,27 +55,30 @@ class ScalingGroupEditForm(BaseSecureForm):
     health_check_type = wtforms.SelectField(
         label=_(u'Type'),
         validators=[
-            validators.Required(message=health_check_type_error_msg),
+            validators.InputRequired(message=health_check_type_error_msg),
         ],
     )
     health_check_period_error_msg = _(u'Health check grace period is required')
     health_check_period = wtforms.IntegerField(
         label=_(u'Grace period (seconds)'),
         validators=[
-            validators.Required(message=health_check_period_error_msg),
+            validators.InputRequired(message=health_check_period_error_msg),
         ],
     )
 
-    def __init__(self, request, scaling_group=None, conn=None, launch_configs=None, **kwargs):
+    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupEditForm, self).__init__(request, **kwargs)
         self.scaling_group = scaling_group
-        self.conn = conn
+        self.autoscale_conn = autoscale_conn
+        self.ec2_conn = ec2_conn
         self.launch_configs = launch_configs
+        self.choices_manager = ChoicesManager(conn=ec2_conn)
         self.set_error_messages()
         self.set_choices()
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
+            self.availability_zones.data = scaling_group.availability_zones
             self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group.desired_capacity else 1
             self.max_size.data = int(scaling_group.max_size) if scaling_group.max_size else 1
             self.min_size.data = int(scaling_group.min_size) if scaling_group.min_size else 0
@@ -78,9 +88,11 @@ class ScalingGroupEditForm(BaseSecureForm):
     def set_choices(self):
         self.launch_config.choices = self.get_launch_config_choices()
         self.health_check_type.choices = self.get_healthcheck_type_choices()
+        self.availability_zones.choices = self.get_availability_zone_choices()
 
     def set_error_messages(self):
         self.launch_config.error_msg = self.launch_config_error_msg
+        self.availability_zones.error_msg = self.availability_zones_error_msg
         self.desired_capacity.error_msg = self.desired_capacity_error_msg
         self.max_size.error_msg = self.max_size_error_msg
         self.min_size.error_msg = self.min_size_error_msg
@@ -91,13 +103,16 @@ class ScalingGroupEditForm(BaseSecureForm):
         choices = []
         launch_configs = self.launch_configs
         if launch_configs is None:
-            launch_configs = self.conn.get_all_launch_configurations()
+            launch_configs = self.autoscale_conn.get_all_launch_configurations()
         for launch_config in launch_configs:
             choices.append((launch_config.name, launch_config.name))
         if self.scaling_group:
             launch_config_name = self.scaling_group.launch_config_name
             choices.append((launch_config_name, launch_config_name))
         return sorted(set(choices))
+
+    def get_availability_zone_choices(self):
+        return self.choices_manager.availability_zones()
 
     @staticmethod
     def get_healthcheck_type_choices():

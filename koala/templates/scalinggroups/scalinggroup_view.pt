@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <style type="text/css">
         input[type="number"] { width: 3rem; }
         #health_check_period { width: 4rem; }
@@ -9,7 +10,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupPage" ng-controller="ScalingGroupPageCtrl"
+         ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('scalinggroups')}"
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
@@ -38,10 +40,7 @@
                         <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
                     </div>
                     ${panel('form_field', field=edit_form['launch_config'])}
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Availability Zones</label></div>
-                        <div class="small-8 columns value">${', '.join(scaling_group.availability_zones)}</div>
-                    </div>
+                    ${panel('form_field', field=edit_form['availability_zones'])}
                     ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
                     ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
                     ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
@@ -95,6 +94,11 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/scalinggroup.js')}"></script>
 </div>
 
 </metal:block>

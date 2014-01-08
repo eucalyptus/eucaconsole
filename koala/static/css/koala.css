@@ -1549,11 +1549,13 @@ form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; }
 form .chosen-drop .chosen-results { font-size: 0.825rem; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
+form .chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
 
-form .row.controls-wrapper { margin-bottom: 1rem; }
+form .row.controls-wrapper { margin-bottom: 0.5rem; }
 form .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 form .row.controls-wrapper label select, form .row.controls-wrapper label input, form .row.controls-wrapper label .chosen-container { text-align: left; }
-form .row.controls-wrapper .field input { display: inline-block; }
+form .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
+form .row.controls-wrapper .field select { margin-bottom: 0.3rem; }
 form .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 form .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
 form .row.controls-wrapper.inline { margin-bottom: 4px; }
