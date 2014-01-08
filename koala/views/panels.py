@@ -98,6 +98,7 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
         rules_json=json.dumps(rules_list),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
+        remote_addr=request.remote_addr,
         leftcol_width=leftcol_width,
         rightcol_width=rightcol_width,
     )
