@@ -43,6 +43,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $('#image-id-input').focus();
             }
         };
+        $scope.inputImageID = function (url) {
+            url += '?image_id=' + $scope.imageID;
+            document.location.href = url;
+        };
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.watchTags();
