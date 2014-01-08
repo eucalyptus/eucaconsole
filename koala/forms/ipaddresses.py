@@ -41,16 +41,12 @@ class AssociateIPForm(BaseSecureForm):
 
     def get_instance_choices(self):
         choices = [('', _(u'Select instance...'))]
-        assoc_text = _(u'Current IP:')
         if self.conn:
             for instance in self.conn.get_only_instances():
                 value = instance.id
-                name_tag = instance.tags.get('Name')
-                label = '{id}{name}{ip}'.format(
-                    id=instance.id,
-                    name=' ({0})'.format(name_tag) if name_tag else '',
-                    ip=', {0} {1}'.format(assoc_text, instance.ip_address) if instance.ip_address else ''
-                )
+                inst_name_tag = instance.tags.get('Name', '')
+                label = '{0}{1}'.format(
+                    inst_name_tag if inst_name_tag else instance.id, ' ({0})'.format(instance.id) if inst_name_tag else '')
                 choices.append((value, label))
         return choices
 
