@@ -24,7 +24,7 @@ class ScalingGroupEditForm(BaseSecureForm):
     desired_capacity = wtforms.IntegerField(
         label=_(u'Desired capacity'),
         validators=[
-            validators.Required(message=desired_capacity_error_msg),
+            validators.InputRequired(message=desired_capacity_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
@@ -32,7 +32,7 @@ class ScalingGroupEditForm(BaseSecureForm):
     max_size = wtforms.IntegerField(
         label=_(u'Max size'),
         validators=[
-            validators.Required(message=max_size_error_msg),
+            validators.InputRequired(message=max_size_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
@@ -40,7 +40,7 @@ class ScalingGroupEditForm(BaseSecureForm):
     min_size = wtforms.IntegerField(
         label=_(u'Min size'),
         validators=[
-            validators.Required(message=min_size_error_msg),
+            validators.InputRequired(message=min_size_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
