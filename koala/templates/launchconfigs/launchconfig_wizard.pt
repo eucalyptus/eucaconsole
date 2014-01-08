@@ -14,7 +14,7 @@
             <span i18n:translate="">Create Launch Configuration</span>
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard has-title">
                 <h6 class="title" i18n:translate="">Create Launch Configuration</h6>
@@ -51,19 +51,16 @@
                                 Machine image for your virtual machine
                             </p>
                             <h6 i18n:translate="" class="title">Enter Image ID</h6>
-                            <!--! OK to use GET request here, since we're just looking up the image -->
-                            <form action="${request.route_url('launchconfig_new')}" method="get" id="image-id-form">
-                                <div class="row">
-                                    <div class="small-4 columns">
-                                        <label i18n:translate="" class="right">Enter an Image ID:</label>
-                                    </div>
-                                    <div class="small-8 columns value">
-                                        <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
-                                        <button type="submit" class="button secondary small"
-                                                i18n:translate="" id="image-id-btn">GO</button>
-                                    </div>
+                            <div class="row">
+                                <div class="small-4 columns">
+                                    <label i18n:translate="" class="right">Enter an Image ID:</label>
                                 </div>
-                            </form>
+                                <div class="small-8 columns value">
+                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                                    <a class="button secondary small" i18n:translate="" id="image-id-btn"
+                                       ng-click="inputImageID('${request.route_url('launchconfig_new')}')">GO</a>
+                                </div>
+                            </div>
                             <p>OR select an image below</p>
                             ${panel('image_picker', image=image, owner_choices=owner_choices,
                                     images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
