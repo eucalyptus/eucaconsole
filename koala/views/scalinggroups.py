@@ -84,6 +84,7 @@ class ScalingGroupView(BaseView):
             scaling_group=self.scaling_group,
             edit_form=self.edit_form,
             delete_form=self.delete_form,
+            avail_zone_placeholder_text=_(u'Select an availability zone...')
         )
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
