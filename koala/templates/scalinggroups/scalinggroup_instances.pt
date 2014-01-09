@@ -20,32 +20,43 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-12 columns">
-            <div class="panel has-title">
+        <div class="large-8 columns">
+            <div class="panel gridwrapper has-title">
                 <h6 class="title">
                     <span i18n:translate="">Instances in scaling group</span>
                     <strong>${scaling_group.name}</strong>
                 </h6>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th i18n:translate="">ID</th>
-                            <th i18n:translate="">Availability zone</th>
-                            <th i18n:translate="">Launch Configuration</th>
-                            <th i18n:translate="">State</th>
-                            <th i18n:translate="">Health status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr tal:repeat="instance instances">
-                            <td><a href="${request.route_url('instance_view', id=instance.instance_id)}">${instance.instance_id}</a></td>
-                            <td>${instance.availability_zone}</td>
-                            <td>${instance.launch_config_name}</td>
-                            <td>${instance.lifecycle_state}</td>
-                            <td>${instance.health_status}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="tile add" id="add-instances">
+                    <a href="#" data-reveal-id="add-instances-modal">
+                        <div class="plus">+</div>
+                        <div i18n:translate="">Add more instances</div>
+                    </a>
+                </div>
+                <div class="tile item" tal:repeat="instance instances">
+                    <div class="header">
+                        <strong><a href="${request.route_url('instance_view', id=instance.instance_id)}">${instance.instance_id}</a></strong>
+                        <a class="tiny secondary button dropdown right"
+                           data-reveal-id="delete-policy-modal"><i class="icon fi-minus-circle"></i></a>
+                    </div>
+                    <div class="content">
+                        <div>
+                            <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                            ${instance.availability_zone}
+                        </div>
+                        <div>
+                            <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
+                            ${instance.launch_config_name}
+                        </div>
+                        <div>
+                            <span class="label" title="State" i18n:attributes="title" data-tooltip="">ST</span>
+                            ${instance.lifecycle_state}
+                        </div>
+                        <div>
+                            <span class="label" title="Health status" i18n:attributes="title" data-tooltip="">HS</span>
+                            ${instance.health_status}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

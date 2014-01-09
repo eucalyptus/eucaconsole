@@ -228,6 +228,8 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             policies=self.policies,
+            scale_down_text=_(u'Scale down by'),
+            scale_up_text=_(u'Scale up by'),
         )
 
     @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)

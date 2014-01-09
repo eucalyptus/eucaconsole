@@ -1,4 +1,9 @@
 /* @fileOverview Scaling Group detail page CSS */
+@import "../includes/eucavariables";
+
+// Import landing page styles for tile view display on Scaling group policies page
+@import "../includes/landingpage";
+
 
 input[type="number"] {
     width: 3rem;
@@ -35,11 +40,8 @@ input[type="number"] {
 }
 
 
-#contentwrap {
-    table.table {
-        width: 100%;
-        thead th {
-            text-transform: uppercase;
-        }
-    }
+// Scaling group policies page and instances page
+.tile {
+    @include panel-tile-mixin;
 }
+
