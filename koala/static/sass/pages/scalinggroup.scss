@@ -45,3 +45,7 @@ input[type="number"] {
     @include panel-tile-mixin;
 }
 
+// Scaling group instances page
+.tile .footer.healthy {
+    background-color: $euca-green;
+}

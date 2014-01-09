@@ -81,6 +81,7 @@ $gridwrapper-table-width: 98%;
     .content {
         padding: 8px;
         font-size: 0.9em;
+        a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
             margin-left: $tile-label-padding;
@@ -106,6 +107,7 @@ $gridwrapper-table-width: 98%;
         height: $tile-row-height;
         padding: 4px 4px 4px 10px;
         color: white;
+        background-color: $euca-grey;
         &.has-progress {
             padding: 0 0 0 0;
         }

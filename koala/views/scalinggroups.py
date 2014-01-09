@@ -61,6 +61,7 @@ class ScalingGroupsJsonView(BaseView):
                 name=group.name,
                 placement_group=group.placement_group,
                 termination_policies=', '.join(group.termination_policies),
+                instance_ids=[instance.instance_id for instance in group.instances],
             ))
         return dict(results=scalinggroups)
 

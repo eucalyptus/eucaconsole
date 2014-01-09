@@ -51,10 +51,9 @@
                             <span class="label" title="State" i18n:attributes="title" data-tooltip="">ST</span>
                             ${instance.lifecycle_state}
                         </div>
-                        <div>
-                            <span class="label" title="Health status" i18n:attributes="title" data-tooltip="">HS</span>
-                            ${instance.health_status}
-                        </div>
+                    </div>
+                    <div class="footer status ${instance.health_status.lower()}">
+                        ${instance.health_status}
                     </div>
                 </div>
             </div>

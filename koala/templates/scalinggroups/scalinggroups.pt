@@ -21,6 +21,12 @@
                     <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
                     {{ item.launch_config }}
                 </div>
+                <div ng-show="item.instance_ids.length > 0">
+                    <span class="label" title="Instances" i18n:attributes="title" data-tooltip="">IN</span>
+                    <span ng-repeat="instance_id in item.instance_ids">
+                        <a ng-href="/instances/{{ instance_id }}">{{ instance_id }}</a><span ng-show="!$last">,&nbsp;</span>
+                    </span>
+                </div>
                 <div ng-show="item.availability_zones">
                     <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.availability_zones }}
@@ -49,6 +55,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch Config</th>
+                <th i18n:translate="">Instances</th>
                 <th i18n:translate="">Availability Zones</th>
                 <th i18n:translate="">Desired Capacity</th>
                 <th i18n:translate="">Max</th>
@@ -57,6 +64,11 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.launch_config }}</td>
+                <td>
+                    <span ng-repeat="instance_id in item.instance_ids">
+                        <a ng-href="/instances/{{ instance_id }}">{{ instance_id }}</a><span ng-show="!$last">, </span>
+                    </span>
+                </td>
                 <td>{{ item.availability_zones }}</td>
                 <td>{{ item.desired_capacity }}</td>
                 <td>{{ item.max_size }}</td>
