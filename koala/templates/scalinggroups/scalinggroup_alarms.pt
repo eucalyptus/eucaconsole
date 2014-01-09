@@ -1,0 +1,35 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row instances" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('scalinggroups')}"
+               data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Scaling Group</span> ${scaling_group.name if scaling_group else ''}
+        </h3>
+        <dl class="sub-nav" id="scalinggroup-subnav">
+            <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">Scaling Group</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
+            <dd class="active"><a href="#" i18n:translate="">Alarms</a></dd>
+            <dd><a href="#" i18n:translate="">Policies</a></dd>
+        </dl>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-12 columns">
+            <div class="panel has-title">
+                <h6 class="title">
+                    <span i18n:translate="">Alarms for scaling group</span>
+                    <strong>${scaling_group.name}</strong>
+                </h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+</metal:block>
+

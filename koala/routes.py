@@ -70,6 +70,7 @@ urls = [
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
     Route(name='scalinggroup_update', pattern='/scalinggroups/{id}/update'),
     Route(name='scalinggroup_instances', pattern='/scalinggroups/{id}/instances'),
+    Route(name='scalinggroup_alarms', pattern='/scalinggroups/{id}/alarms'),
 
     # Launch Configurations #####
     # Landing page

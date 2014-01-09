@@ -3,6 +3,8 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
+from operator import attrgetter
+
 import simplejson as json
 
 from boto.ec2.autoscale.tag import Tag
@@ -173,17 +175,44 @@ class ScalingGroupView(BaseScalingGroupView):
 
 
 class ScalingGroupInstancesView(BaseScalingGroupView):
-    """Views for Scaling Group Manage Instances page"""
+    """View for Scaling Group Manage Instances page"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_instances.pt'
 
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
+        self.instances = self.get_instances()
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            instances=self.instances,
         )
 
     @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE)
     def scalinggroup_instances(self):
         return self.render_dict
+
+    def get_instances(self):
+        return sorted(self.scaling_group.instances, key=attrgetter('instance_id'))
+
+
+class ScalingGroupAlarmsView(BaseScalingGroupView):
+    """View for Scaling Group Alarms page"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_alarms.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupAlarmsView, self).__init__(request)
+        self.scaling_group = self.get_scaling_group()
+        self.alarms = self.get_alarms()
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+            alarms=self.alarms,
+        )
+
+    @view_config(route_name='scalinggroup_alarms', renderer=TEMPLATE)
+    def scalinggroup_alarms(self):
+        return self.render_dict
+
+    def get_alarms(self):
+        # TODO: Implement
+        return []
 

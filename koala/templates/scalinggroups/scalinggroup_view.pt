@@ -16,8 +16,7 @@
         <dl class="sub-nav" id="scalinggroup-subnav">
             <dd class="active"><a href="#" i18n:translate="">Scaling Group</a></dd>
             <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
-            <dd><a href="#" i18n:translate="">Metrics</a></dd>
-            <dd><a href="#" i18n:translate="">Alarms</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_alarms', id=scaling_group.name)}" i18n:translate="">Alarms</a></dd>
             <dd><a href="#" i18n:translate="">Policies</a></dd>
         </dl>
         <!-- Notifications -->

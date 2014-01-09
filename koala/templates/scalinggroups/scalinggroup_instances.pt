@@ -14,8 +14,7 @@
         <dl class="sub-nav" id="scalinggroup-subnav">
             <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">Scaling Group</a></dd>
             <dd class="active"><a href="#">Instances</a></dd>
-            <dd><a href="#" i18n:translate="">Metrics</a></dd>
-            <dd><a href="#" i18n:translate="">Alarms</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_alarms', id=scaling_group.name)}" i18n:translate="">Alarms</a></dd>
             <dd><a href="#" i18n:translate="">Policies</a></dd>
         </dl>
         <!-- Notifications -->
@@ -27,12 +26,13 @@
                     <span i18n:translate="">Instances in scaling group</span>
                     <strong>${scaling_group.name}</strong>
                 </h6>
-                <table class="table" tal:define="instances scaling_group.instances">
+                <table class="table">
                     <thead>
                         <tr>
                             <th i18n:translate="">ID</th>
                             <th i18n:translate="">Availability zone</th>
                             <th i18n:translate="">Launch Configuration</th>
+                            <th i18n:translate="">State</th>
                             <th i18n:translate="">Health status</th>
                         </tr>
                     </thead>
@@ -41,6 +41,7 @@
                             <td><a href="${request.route_url('instance_view', id=instance.instance_id)}">${instance.instance_id}</a></td>
                             <td>${instance.availability_zone}</td>
                             <td>${instance.launch_config_name}</td>
+                            <td>${instance.lifecycle_state}</td>
                             <td>${instance.health_status}</td>
                         </tr>
                     </tbody>
