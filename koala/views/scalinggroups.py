@@ -142,7 +142,7 @@ class ScalingGroupView(BaseView):
                 resource_id=self.scaling_group.name,
                 key=tag.get('name'),
                 value=tag.get('value'),
-                propagate_at_launch=tag.get('propatage_at_launch', False),
+                propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
 
