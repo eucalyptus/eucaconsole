@@ -16,6 +16,20 @@
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="">Create new scaling group</a>
             </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                    <li>
+                        <a href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                    </li>
+                    <li>
+                        <a href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                    </li>
+                    <li>
+                        <a href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                    </li>
+                </ul>
+            </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.launch_config">
                     <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
@@ -31,17 +45,11 @@
                     <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.availability_zones }}
                 </div>
-                <div ng-show="item.desired_capacity">
-                    <span class="label" title="Desired Capacity" i18n:attributes="title" data-tooltip="">DC</span>
-                    {{ item.desired_capacity }}
-                </div>
-                <div ng-show="item.max_size">
-                    <span class="label" title="Max Size" i18n:attributes="title" data-tooltip="">MX</span>
-                    {{ item.max_size }}
-                </div>
-                <div ng-show="item.min_size">
-                    <span class="label" title="Min Size" i18n:attributes="title" data-tooltip="">MN</span>
-                    {{ item.min_size }}
+                <div>
+                    <span class="label" title="Capacity" i18n:attributes="title" data-tooltip="">CA</span>
+                    <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
+                    <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
+                    <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
                 </div>
                 <div ng-show="item.placement_group">
                     <span class="label" title="Placement Group" i18n:attributes="title" data-tooltip="">PC</span>
@@ -57,9 +65,8 @@
                 <th i18n:translate="">Launch Config</th>
                 <th i18n:translate="">Instances</th>
                 <th i18n:translate="">Availability Zones</th>
-                <th i18n:translate="">Desired Capacity</th>
-                <th i18n:translate="">Max</th>
-                <th i18n:translate="">Min</th>
+                <th i18n:translate="">Capacity</th>
+                <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
@@ -70,9 +77,27 @@
                     </span>
                 </td>
                 <td>{{ item.availability_zones }}</td>
-                <td>{{ item.desired_capacity }}</td>
-                <td>{{ item.max_size }}</td>
-                <td>{{ item.min_size }}</td>
+                <td>
+                    <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
+                    <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
+                    <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
+                </td>
+                <td>
+                    <span class="actions">
+                        <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li>
+                                <a href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                            </li>
+                            <li>
+                                <a href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                            </li>
+                            <li>
+                                <a href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
             </metal:block>
         </div>
     </div>
