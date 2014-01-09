@@ -13,5 +13,5 @@ input[type="number"] { width: 3rem; }
 
 #availability_zones, #termination_policies { visibility: hidden; }
 
-#contentwrap.instances table.table { width: 100%; }
-#contentwrap.instances table.table thead th { text-transform: uppercase; }
+#contentwrap table.table { width: 100%; }
+#contentwrap table.table thead th { text-transform: uppercase; }

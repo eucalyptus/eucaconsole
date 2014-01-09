@@ -216,3 +216,25 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
         # TODO: Implement
         return []
 
+
+class ScalingGroupPoliciesView(BaseScalingGroupView):
+    """View for Scaling Group Policies page"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_policies.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupPoliciesView, self).__init__(request)
+        self.scaling_group = self.get_scaling_group()
+        self.policies = self.get_policies()
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+            policies=self.policies,
+        )
+
+    @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)
+    def scalinggroup_policies(self):
+        return self.render_dict
+
+    def get_policies(self):
+        policies = self.conn.get_all_policies(as_group=self.scaling_group.name)
+        return sorted(policies)
+

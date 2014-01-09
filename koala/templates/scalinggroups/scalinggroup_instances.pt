@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row instances" id="contentwrap">
+    <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('scalinggroups')}"
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
@@ -15,7 +15,7 @@
             <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">Scaling Group</a></dd>
             <dd class="active"><a href="#">Instances</a></dd>
             <dd><a href="${request.route_url('scalinggroup_alarms', id=scaling_group.name)}" i18n:translate="">Alarms</a></dd>
-            <dd><a href="#" i18n:translate="">Policies</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
         </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
