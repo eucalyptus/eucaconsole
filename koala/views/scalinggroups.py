@@ -84,7 +84,8 @@ class ScalingGroupView(BaseView):
             scaling_group=self.scaling_group,
             edit_form=self.edit_form,
             delete_form=self.delete_form,
-            avail_zone_placeholder_text=_(u'Select an availability zone...')
+            avail_zone_placeholder_text=_(u'Select one or more availability zones...'),
+            termination_policies_placeholder_text=_(u'Select one or more termination policies...')
         )
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
@@ -157,6 +158,7 @@ class ScalingGroupView(BaseView):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.request.params.get('launch_config')
         self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
+        self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
         self.scaling_group.health_check_type = self.request.params.get('health_check_type')

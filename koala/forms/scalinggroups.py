@@ -72,6 +72,13 @@ class ScalingGroupEditForm(BaseSecureForm):
             validators.InputRequired(message=default_cooldown_error_msg),
         ],
     )
+    termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies = wtforms.SelectMultipleField(
+        label=_(u'Termination policies'),
+        validators=[
+            validators.InputRequired(message=termination_policies_error_msg),
+        ],
+    )
 
     def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupEditForm, self).__init__(request, **kwargs)
@@ -92,11 +99,13 @@ class ScalingGroupEditForm(BaseSecureForm):
             self.health_check_type.data = scaling_group.health_check_type
             self.health_check_period.data = scaling_group.health_check_period
             self.default_cooldown.data = scaling_group.default_cooldown
+            self.termination_policies.data = scaling_group.termination_policies
 
     def set_choices(self):
         self.launch_config.choices = self.get_launch_config_choices()
         self.health_check_type.choices = self.get_healthcheck_type_choices()
         self.availability_zones.choices = self.get_availability_zone_choices()
+        self.termination_policies.choices = self.get_termination_policy_choices()
 
     def set_error_messages(self):
         self.launch_config.error_msg = self.launch_config_error_msg
@@ -107,6 +116,7 @@ class ScalingGroupEditForm(BaseSecureForm):
         self.health_check_type.error_msg = self.health_check_type_error_msg
         self.health_check_period.error_msg = self.health_check_period_error_msg
         self.default_cooldown.error_msg = self.default_cooldown_error_msg
+        self.termination_policies.error_msg = self.termination_policies_error_msg
 
     def get_launch_config_choices(self):
         choices = []
@@ -126,6 +136,16 @@ class ScalingGroupEditForm(BaseSecureForm):
     @staticmethod
     def get_healthcheck_type_choices():
         return [(u'EC2', u'EC2'), (u'ELB', _(u'Load Balancer'))]
+
+    @staticmethod
+    def get_termination_policy_choices():
+        return (
+            (u'Default', _(u'Default')),
+            (u'OldestInstance', _(u'Oldest instance')),
+            (u'NewestInstance', _(u'Newest instance')),
+            (u'OldestLaunchConfiguration', _(u'Oldest launch configuration')),
+            (u'ClosestToNextInstanceHour', _(u'Closest to next instance hour')),
+        )
 
 
 class ScalingGroupDeleteForm(BaseSecureForm):

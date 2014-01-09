@@ -29,7 +29,8 @@
                     </span>
                 </h6>
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
-                      tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text}">
+                      tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
+                                  term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text}">
                     ${structure:edit_form['csrf_token']}
                     <h6 i18n:translate="">General</h6>
                     <div class="row controls-wrapper readonly">
@@ -38,10 +39,7 @@
                     </div>
                     ${panel('form_field', field=edit_form['launch_config'])}
                     ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
-                    <div class="row controls-wrapper readonly" tal:condition="scaling_group.termination_policies">
-                        <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
-                        <div class="small-8 columns value">${', '.join(scaling_group.termination_policies)}</div>
-                    </div>
+                    ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
                     <hr />
                     <div class="row controls-wrapper" id="capacity-section">
                         <div class="small-2 columns">
