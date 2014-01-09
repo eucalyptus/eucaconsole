@@ -8,7 +8,7 @@
             <span i18n:translate="">Launch Config</span> ${launchconfig.name if launchconfig else ''}
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns"
             tal:define="readonly True if launchconfig else False;">
@@ -46,7 +46,11 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Security Groups</label></div>
-                            <div class="small-9 columns value">${launchconfig.security_groups_str if launchconfig.security_groups_str else ''}</div>
+                            <div class="small-9 columns value">
+                                <span tal:repeat="security_group launchconfig.security_groups">
+                                    <a href="${request.route_url('securitygroup_view', id=security_group)}">${security_group}</a>
+                                </span>
+                            </div>
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">User Data</label></div>

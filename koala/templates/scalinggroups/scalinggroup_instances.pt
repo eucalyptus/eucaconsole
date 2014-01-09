@@ -45,7 +45,7 @@
                         </div>
                         <div>
                             <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
-                            ${instance.launch_config_name}
+                            <a href="${request.route_url('launchconfig_view', id=instance.launch_config_name)}">${instance.launch_config_name}</a>
                         </div>
                         <div>
                             <span class="label" title="State" i18n:attributes="title" data-tooltip="">ST</span>

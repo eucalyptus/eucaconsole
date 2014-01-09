@@ -96,7 +96,6 @@ class LaunchConfigView(BaseView):
     def launchconfig_view(self):
         self.launchconfig.instance_monitoring_boolean = re.match(
             r'InstanceMonitoring\((\w+)\)', str(self.launchconfig.instance_monitoring)).group(1)
-        self.launchconfig.security_groups_str = ', '.join(self.launchconfig.security_groups)
         return self.render_dict
  
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
