@@ -59,6 +59,10 @@ class ScalingGroupEditForm(BaseSecureForm):
         ],
     )
     health_check_period_error_msg = _(u'Health check grace period is required')
+    health_check_period_help_text = _(
+        u'Length of time in seconds after a new EC2 instance comes into service that '
+        u'Auto Scaling starts checking its health'
+    )
     health_check_period = wtforms.IntegerField(
         label=_(u'Grace period (seconds)'),
         validators=[
@@ -66,6 +70,8 @@ class ScalingGroupEditForm(BaseSecureForm):
         ],
     )
     default_cooldown_error_msg = _(u'Default cooldown period is required')
+    default_cooldown_help_text = _(
+        u'Number of seconds after a Scaling Activity completes before any further scaling activities can start')
     default_cooldown = wtforms.IntegerField(
         label=_(u'Default cooldown period (seconds)'),
         validators=[
@@ -89,6 +95,7 @@ class ScalingGroupEditForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=ec2_conn)
         self.set_error_messages()
         self.set_choices()
+        self.set_help_text()
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
@@ -117,6 +124,10 @@ class ScalingGroupEditForm(BaseSecureForm):
         self.health_check_period.error_msg = self.health_check_period_error_msg
         self.default_cooldown.error_msg = self.default_cooldown_error_msg
         self.termination_policies.error_msg = self.termination_policies_error_msg
+
+    def set_help_text(self):
+        self.default_cooldown.help_text = self.default_cooldown_help_text
+        self.health_check_period.help_text = self.health_check_period_help_text
 
     def get_launch_config_choices(self):
         choices = []

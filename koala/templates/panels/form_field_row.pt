@@ -8,6 +8,8 @@
     </div>
     <div class="small-${rightcol_width} columns field">
         ${structure:field(**html_attrs)}
+        <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
+              data-tooltip="" title="${field.help_text}">?</span>
         <small class="error" tal:condition="error_msg">${error_msg}</small>
         <div tal:condition="field.errors" class="server-validation">
             <span class="error" tal:repeat="error field.errors">${error}</span>

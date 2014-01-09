@@ -1569,6 +1569,8 @@ form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-to
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
+.helptext-icon { display: inline-block; margin-left: 5px; width: 20px; height: 20px; border-radius: 32px; border: 1px solid #999999; background-color: #cccccc; color: white; text-align: center; padding-top: 3px; font-size: 0.825rem; }
+
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel.has-title { position: relative; padding-top: 60px; border: none; }
