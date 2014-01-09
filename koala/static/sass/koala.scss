@@ -280,6 +280,9 @@ a.circle {
 }
 
 #tag-editor {
+    #add-tag-btn {
+        margin-bottom: 0;
+    }
     .tagentry {
         .new { color: $euca-green; }
     }

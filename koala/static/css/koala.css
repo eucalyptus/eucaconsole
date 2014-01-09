@@ -1519,6 +1519,7 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
 
+#tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor .tagentry .new { color: #76b800; }
 #tag-editor small { font-size: 0.825rem; }
 
