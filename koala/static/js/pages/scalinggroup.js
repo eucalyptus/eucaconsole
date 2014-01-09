@@ -13,7 +13,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '60%'});
             $('#availability_zones').chosen({'width': '80%'});
-            $('#termination_policies').chosen({'width': '100%'});
+            $('#termination_policies').chosen({'width': '80%'});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);

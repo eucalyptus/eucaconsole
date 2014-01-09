@@ -7,8 +7,11 @@ input[type="number"] { width: 3rem; }
 
 #controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
 
-#controls_max_size { position: relative; right: 2rem; }
+#controls_max_size { margin-left: -1rem; }
 
 [data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }
 
-#availability_zones { visibility: hidden; }
+#availability_zones, #termination_policies { visibility: hidden; }
+
+#contentwrap.instances table.table { width: 100%; }
+#contentwrap.instances table.table thead th { text-transform: uppercase; }

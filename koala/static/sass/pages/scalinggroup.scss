@@ -17,8 +17,7 @@ input[type="number"] {
 }
 
 #controls_max_size {
-    position: relative;
-    right: 2rem;
+    margin-left: -1rem;
 }
 
 [data-abide] #capacity-section .error {
@@ -29,10 +28,19 @@ input[type="number"] {
     }
 }
 
-// Avoid flash of unstyled content for availibility zones multi-select widget
-// Note: Chosen selector will allow widget to display
-#availability_zones {
+// Avoid flash of unstyled content for multi-select widgets
+// Note: Chosen selector will allow widgets to display
+#availability_zones, #termination_policies {
     visibility: hidden;
 }
 
 
+// Manage Instances page
+#contentwrap.instances {
+    table.table {
+        width: 100%;
+        thead th {
+            text-transform: uppercase;
+        }
+    }
+}

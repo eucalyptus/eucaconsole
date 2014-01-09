@@ -13,20 +13,21 @@
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
             <span i18n:translate="">Scaling Group</span> ${scaling_group.name if scaling_group else ''}
         </h3>
+        <dl class="sub-nav" id="scalinggroup-subnav">
+            <dd class="active"><a href="#" i18n:translate="">Scaling Group</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
+            <dd><a href="#" i18n:translate="">Metrics</a></dd>
+            <dd><a href="#" i18n:translate="">Alarms</a></dd>
+            <dd><a href="#" i18n:translate="">Policies</a></dd>
+        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns"
-            tal:define="readonly True if scaling_group else False;">
+        <div class="large-7 columns">
             <div class="panel has-title">
                 <h6 class="title">
-                    <span tal:condition="scaling_group">
-                        <span i18n:translate="">Properties of scaling group</span>
-                        <strong>${scaling_group.name }</strong>
-                    </span>
-                    <span tal:condition="not scaling_group" i18n:translate="">
-                        Error 
-                    </span>
+                    <span i18n:translate="">Properties of scaling group</span>
+                    <strong>${scaling_group.name}</strong>
                 </h6>
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
@@ -42,10 +43,10 @@
                     ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
                     <hr />
                     <div class="row controls-wrapper" id="capacity-section">
-                        <div class="small-2 columns">
+                        <div class="medium-2 columns">
                             <h6 i18n:translate="">Capacity</h6>
                         </div>
-                        <div class="small-10 columns">
+                        <div class="medium-10 columns">
                             ${panel('form_field', field=edit_form['min_size'], maxlength=2,
                                     ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
                             ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2,

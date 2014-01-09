@@ -67,14 +67,25 @@ class ScalingGroupsJsonView(BaseView):
         return conn.get_all_groups() if conn else []
 
 
-class ScalingGroupView(BaseView):
-    """Views for single ScalingGroup"""
+class BaseScalingGroupView(BaseView):
+    def __init__(self, request):
+        super(BaseScalingGroupView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='autoscale')
+        self.ec2_conn = self.get_connection()
+
+    def get_scaling_group(self):
+        scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
+        scalinggroups_param = [scalinggroup_param]
+        scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
+        return scaling_groups[0] if scaling_groups else None
+
+
+class ScalingGroupView(BaseScalingGroupView):
+    """Views for Scaling Group detail page"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_view.pt'
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='autoscale')
-        self.ec2_conn = self.get_connection()
         self.scaling_group = self.get_scaling_group()
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.conn, ec2_conn=self.ec2_conn,
@@ -128,12 +139,6 @@ class ScalingGroupView(BaseView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    def get_scaling_group(self):
-        scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
-        scalinggroups_param = [scalinggroup_param]
-        scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
-        return scaling_groups[0] if scaling_groups else None
-
     def parse_tags_param(self):
         tags_json = self.request.params.get('tags')
         tags_list = json.loads(tags_json) if tags_json else []
@@ -166,4 +171,19 @@ class ScalingGroupView(BaseView):
         self.scaling_group.default_cooldown = self.request.params.get('default_cooldown', 120)
         self.scaling_group.update()
 
+
+class ScalingGroupInstancesView(BaseScalingGroupView):
+    """Views for Scaling Group Manage Instances page"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_instances.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupInstancesView, self).__init__(request)
+        self.scaling_group = self.get_scaling_group()
+        self.render_dict = dict(
+            scaling_group=self.scaling_group,
+        )
+
+    @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE)
+    def scalinggroup_instances(self):
+        return self.render_dict
 
