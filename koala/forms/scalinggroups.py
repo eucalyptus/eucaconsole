@@ -160,9 +160,13 @@ class ScalingGroupEditForm(BaseSecureForm):
 
 
 class ScalingGroupDeleteForm(BaseSecureForm):
-    """ScalingGroup deletion form.
+    """Scaling Group deletion form.
        Only need to initialize as a secure form to generate CSRF token
     """
     pass
 
+
+class ScalingGroupPolicyDeleteForm(BaseSecureForm):
+    """Scaling Group policy deletion form."""
+    pass
 

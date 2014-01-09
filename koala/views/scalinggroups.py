@@ -14,7 +14,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm
+from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupPolicyDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
@@ -226,8 +226,10 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         super(ScalingGroupPoliciesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies()
+        self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            delete_form=self.delete_form,
             policies=self.policies,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
@@ -235,6 +237,24 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)
     def scalinggroup_policies(self):
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE)
+    def scalinggroup_policy_delete(self):
+        if self.delete_form.validate():
+            location = self.request.route_url('scalinggroup_policies')
+            policy_name = self.request.params.get('name')
+            try:
+                self.conn.delete_policiy(policy_name, autoscale_group=self.scaling_group.name)
+                prefix = _(u'Successfully deleted scaling group policy')
+                msg = '{0} {1}'.format(prefix, policy_name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
         return self.render_dict
 
     def get_policies(self):

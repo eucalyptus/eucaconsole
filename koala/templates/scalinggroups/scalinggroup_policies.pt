@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('scalinggroups')}"
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
@@ -20,7 +20,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-8 columns">
+        <div class="large-8 columns" tal:define="delete_action request.route_url('scalinggroup_policy_delete', id=scaling_group.name)">
             <div class="panel gridwrapper has-title">
                 <h6 class="title">
                     <span i18n:translate="">Policies for scaling group</span>
@@ -36,7 +36,7 @@
                     <div class="header">
                         <strong><a href="#">${policy.name}</a></strong>
                         <a class="tiny secondary button dropdown right"
-                           data-reveal-id="delete-policy-modal"><i class="icon fi-minus-circle"></i></a>
+                           ng-click="revealDeleteModal('${delete_action}', '${policy.name}')"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content"
                          tal:define="scale_text scale_down_text if policy.scaling_adjustment < 0 else scale_up_text;
@@ -50,7 +50,23 @@
                 </div>
             </div>
         </div>
+        <!--! Modal dialogs -->
+        <div id="delete-policy-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete policy</h3>
+            <p><span i18n:translate="">Are you sure you want to delete the policy</span>
+               <b>{{ policyName }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
+                ${structure:delete_form['csrf_token']}
+                <input type="hidden" name="name" value="{{ policyName }}">
+                <button type="submit" class="button" i18n:translate="">Yes, delete policy</button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/scalinggroup_policies.js')}"></script>
 </div>
 
 </metal:block>
