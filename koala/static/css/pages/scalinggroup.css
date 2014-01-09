@@ -10,3 +10,5 @@ input[type="number"] { width: 3rem; }
 #controls_max_size { position: relative; right: 2rem; }
 
 [data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }
+
+#availability_zones { visibility: hidden; }
