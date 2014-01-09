@@ -161,6 +161,7 @@ class ScalingGroupView(BaseView):
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
         self.scaling_group.health_check_type = self.request.params.get('health_check_type')
         self.scaling_group.health_check_period = self.request.params.get('health_check_period', 120)
+        self.scaling_group.default_cooldown = self.request.params.get('default_cooldown', 120)
         self.scaling_group.update()
 
 

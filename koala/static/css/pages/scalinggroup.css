@@ -1,7 +1,7 @@
 /* @fileOverview Scaling Group detail page CSS */
 input[type="number"] { width: 3rem; }
 
-#health_check_period { width: 4rem; }
+#health_check_period, #default_cooldown { width: 4rem; }
 
 #launch_config, #health_check_type { max-width: 10rem; }
 

@@ -60,6 +60,7 @@
                     <h6 i18n:translate="">Health Check</h6>
                     ${panel('form_field', field=edit_form['health_check_type'])}
                     ${panel('form_field', field=edit_form['health_check_period'], step='30')}
+                    ${panel('form_field', field=edit_form['default_cooldown'], step='30')}
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />

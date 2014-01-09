@@ -65,6 +65,13 @@ class ScalingGroupEditForm(BaseSecureForm):
             validators.InputRequired(message=health_check_period_error_msg),
         ],
     )
+    default_cooldown_error_msg = _(u'Default cooldown period is required')
+    default_cooldown = wtforms.IntegerField(
+        label=_(u'Default cooldown period (seconds)'),
+        validators=[
+            validators.InputRequired(message=default_cooldown_error_msg),
+        ],
+    )
 
     def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupEditForm, self).__init__(request, **kwargs)
@@ -84,6 +91,7 @@ class ScalingGroupEditForm(BaseSecureForm):
             self.min_size.data = int(scaling_group.min_size) if scaling_group.min_size else 0
             self.health_check_type.data = scaling_group.health_check_type
             self.health_check_period.data = scaling_group.health_check_period
+            self.default_cooldown.data = scaling_group.default_cooldown
 
     def set_choices(self):
         self.launch_config.choices = self.get_launch_config_choices()
@@ -98,6 +106,7 @@ class ScalingGroupEditForm(BaseSecureForm):
         self.min_size.error_msg = self.min_size_error_msg
         self.health_check_type.error_msg = self.health_check_type_error_msg
         self.health_check_period.error_msg = self.health_check_period_error_msg
+        self.default_cooldown.error_msg = self.default_cooldown_error_msg
 
     def get_launch_config_choices(self):
         choices = []
