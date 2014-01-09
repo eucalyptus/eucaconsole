@@ -2,11 +2,7 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
-    <style type="text/css">
-        input[type="number"] { width: 3rem; }
-        #health_check_period { width: 4rem; }
-        #launch_config, #health_check_type { max-width: 10rem; }
-    </style>
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -32,8 +28,7 @@
                         Error 
                     </span>
                 </h6>
-                <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post"
-                      data-abide="abide"
+                <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text}">
                     ${structure:edit_form['csrf_token']}
                     <h6 i18n:translate="">General</h6>
@@ -43,12 +38,20 @@
                     </div>
                     ${panel('form_field', field=edit_form['launch_config'])}
                     ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
-                    ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
-                    ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
-                    ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="scaling_group.termination_policies">
                         <div class="small-4 columns"><label i18n:translate="">Termination Policies</label></div>
-                        <div class="small-8 columns value">${', '.join(scaling_group.termination_policies) if scaling_group.termination_policies else ''}</div>
+                        <div class="small-8 columns value">${', '.join(scaling_group.termination_policies)}</div>
+                    </div>
+                    <hr />
+                    <div class="row controls-wrapper" id="capacity-section">
+                        <div class="small-2 columns">
+                            <h6 i18n:translate="">Capacity</h6>
+                        </div>
+                        <div class="small-10 columns">
+                            ${panel('form_field', field=edit_form['min_size'], maxlength=2)}
+                            ${panel('form_field', field=edit_form['desired_capacity'], maxlength=2)}
+                            ${panel('form_field', field=edit_form['max_size'], maxlength=2)}
+                        </div>
                     </div>
                     <hr />
                     <h6 i18n:translate="">Health Check</h6>
@@ -72,7 +75,7 @@
         </div>
         <div class="large-5 columns">
             <div class="panel has-title" tal:condition="scaling_group">
-                <h6 class="title" i18n:translate="">Other scaling_group actions</h6>
+                <h6 class="title" i18n:translate="">Other scaling group actions</h6>
                 <div class="row">
                     <div class="small-2 columns">&nbsp;</div>
                     <div class="small-10 columns">

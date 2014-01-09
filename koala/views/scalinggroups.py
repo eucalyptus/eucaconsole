@@ -154,8 +154,7 @@ class ScalingGroupView(BaseView):
         self.conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
-        desired_capacity = self.request.params.get('desired_capacity', 1)
-        self.scaling_group.set_capacity(desired_capacity)
+        self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.request.params.get('launch_config')
         self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
