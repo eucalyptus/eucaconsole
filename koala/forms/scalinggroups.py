@@ -206,11 +206,11 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
             validators.InputRequired(message=cooldown_error_msg),
         ],
     )
-    alarm_names_error_msg = _(u'At least one alarm is required')
-    alarm_names = wtforms.SelectMultipleField(
-        label=_(u'Alarms'),
+    alarm_error_msg = _(u'Alarm is required')
+    alarm = wtforms.SelectField(
+        label=_(u'Alarm'),
         validators=[
-            validators.InputRequired(message=alarm_names_error_msg),
+            validators.InputRequired(message=alarm_error_msg),
         ],
     )
 
@@ -223,18 +223,19 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
         self.set_help_text()
 
         if scaling_group is not None:
+            self.adjustment_amount.data = 1
             self.cooldown.data = scaling_group.default_cooldown
 
     def set_choices(self):
         self.adjustment_direction.choices = self.get_adjustment_direction_choices()
         self.adjustment_type.choices = self.get_adjustment_type_choices()
-        self.alarm_names.choices = self.get_alarm_choices()
+        self.alarm.choices = self.get_alarm_choices()
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
         self.adjustment_type.error_msg = self.adjustment_type_error_msg
         self.cooldown.error_msg = self.cooldown_error_msg
-        self.alarm_names.error_msg = self.alarm_names_error_msg
+        self.alarm.error_msg = self.alarm_error_msg
 
     def set_help_text(self):
         self.cooldown.help_text = self.cooldown_help_text

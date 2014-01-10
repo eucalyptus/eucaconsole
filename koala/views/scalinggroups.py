@@ -4,8 +4,8 @@ Pyramid views for Eucalyptus and AWS scaling groups
 
 """
 from operator import attrgetter
-
 import simplejson as json
+import time
 
 from boto.ec2.autoscale import ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
@@ -76,6 +76,7 @@ class BaseScalingGroupView(BaseView):
     def __init__(self, request):
         super(BaseScalingGroupView, self).__init__(request)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.ec2_conn = self.get_connection()
 
     def get_scaling_group(self):
@@ -85,9 +86,8 @@ class BaseScalingGroupView(BaseView):
         return scaling_groups[0] if scaling_groups else None
 
     def get_alarms(self):
-        cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
-        if cloudwatch_conn:
-            return cloudwatch_conn.describe_alarms()
+        if self.cloudwatch_conn:
+            return self.cloudwatch_conn.describe_alarms()
         return []
 
 
@@ -138,7 +138,11 @@ class ScalingGroupView(BaseScalingGroupView):
             location = self.request.route_url('scalinggroups')
             name = self.request.params.get('name')
             try:
-                self.autoscale_conn.delete_auto_scaling_group(name, force_delete=True)
+                # Need to shut down instances prior to scaling group deletion
+                self.scaling_group.shutdown_instances()
+                time.sleep(3)
+                self.autoscale_conn.delete_auto_scaling_group(name)
+                time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -241,7 +245,6 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             policies=self.policies,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
-            alarm_names_placeholder_text=_(u'Select at least one alarm...'),
         )
 
     @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)
@@ -263,10 +266,20 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
                 adjustment_type=self.request.params.get('adjustment_type'),
                 scaling_adjustment=scaling_adjustment,
                 cooldown=self.request.params.get('cooldown'),
-                alarms=self.request.params.getall('alarm_names'),
             )
             try:
+                # Create scaling policy
                 self.autoscale_conn.create_scaling_policy(scaling_policy)
+                created_scaling_policy = self.autoscale_conn.get_all_policies(
+                    as_group=self.scaling_group.name, policy_names=[scaling_policy.name])[0]
+                # Attach policy to alarm
+                alarm_name = self.request.params.get('alarm')
+                alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
+                # FIXME: Properly attach a policy to an alarm
+                # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
+                if created_scaling_policy.policy_arn not in alarm.alarm_actions:
+                    alarm.add_alarm_action(created_scaling_policy.policy_arn)
+                alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
                 msg = '{0} {1}'.format(prefix, scaling_policy.name)
                 queue = Notification.SUCCESS

@@ -54,16 +54,16 @@
         <!--! Modal dialogs -->
         <div id="create-policy-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Create scaling group policy</h3>
-            <p>&nbsp;</p>
-            <form action="${request.route_url('scalinggroup_policy_create', id=scaling_group.name)}" method="post" data-abide=""
-                  tal:define="alarm_names_html_attrs {'data-placeholder': alarm_names_placeholder_text};">
+            <p i18n:translate="">Create a scaling group policy and attach it to an existing alarm.</p>
+            <form action="${request.route_url('scalinggroup_policy_create', id=scaling_group.name)}" method="post" data-abide="">
                 ${structure:create_form['csrf_token']}
                 ${panel('form_field', field=create_form['name'])}
                 ${panel('form_field', field=create_form['adjustment_direction'])}
                 ${panel('form_field', field=create_form['adjustment_amount'])}
                 ${panel('form_field', field=create_form['adjustment_type'])}
                 ${panel('form_field', field=create_form['cooldown'])}
-                ${panel('form_field', field=create_form['alarm_names'], **alarm_names_html_attrs)}
+                ${panel('form_field', field=create_form['alarm'])}
+                <hr />
                 <div class="small-4 columns">&nbsp;</div>
                 <div class="small-8 columns">
                     <button type="submit" class="button" i18n:translate="">Add policy</button>

@@ -11,7 +11,7 @@ angular.module('ScalingGroupPolicies', [])
         $scope.deleteModal = $('#delete-policy-modal');
         $scope.revealCreateModal = function () {
             $scope.createModal.foundation('reveal', 'open');
-            $('#alarm_names').chosen({'width': '80%'});
+            $('#alarm').chosen({'width': '80%'});
         };
         $scope.revealDeleteModal = function (policyName) {
             $scope.policyName = policyName;
