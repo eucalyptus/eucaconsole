@@ -13,14 +13,14 @@ requires = [
     'beaker == 1.6.4',
     'boto == 2.21.0',
     'chameleon == 2.13-1',
-    'gevent == 0.13.8',  # Requires libevent
+    'gevent == 1.0',  # gevent 1.0 no longer requires libevent, it bundles libev instead
     'greenlet == 0.4.1',
     'gunicorn == 18.0',
     'lingua == 1.5',
     'M2Crypto == 0.21.1',
     'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
     'pycrypto == 2.6.1',
-    'pyramid == 1.5a2',
+    'pyramid == 1.5a3',
     'pyramid_beaker == 0.8',
     'pyramid_chameleon == 0.1',
     'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
@@ -60,7 +60,7 @@ setup(
     install_requires=requires,
     tests_require=requires,
     message_extractors=message_extractors,
-    test_suite="koala",
+    test_suite="tests",
     entry_points="""\
     [paste.app_factory]
     main = koala:main
