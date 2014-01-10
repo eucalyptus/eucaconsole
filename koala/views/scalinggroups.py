@@ -250,8 +250,8 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_policy_create', renderer=TEMPLATE)
     def scalinggroup_policy_create(self):
+        location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
         if self.create_form.validate():
-            location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
             adjustment_amount = self.request.params.get('adjustment_amount')
             adjustment_direction = self.request.params.get('adjustment_direction', 'up')
             scaling_adjustment = adjustment_amount
@@ -276,6 +276,8 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE)

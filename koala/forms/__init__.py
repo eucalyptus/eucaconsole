@@ -22,6 +22,14 @@ class BaseSecureForm(SecureForm):
     def generate_csrf_token(self, csrf_context):
         return self.request.session.get_csrf_token()
 
+    def get_errors_list(self):
+        """Convenience method to get all form validation errors as a list of message strings"""
+        error_messages = []
+        for errors in self.errors.values():
+            for error in errors:
+                error_messages.append(error)
+        return error_messages
+
 
 class ChoicesManager(object):
     """Container for form choices reused across the app"""

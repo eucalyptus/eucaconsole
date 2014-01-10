@@ -54,6 +54,13 @@ class MasterLayout(object):
             for notice in self.request.session.pop_flash(queue=queue):
                 notifications.append(
                     notification(message=notice, type=queue, style=Notification.FOUNDATION_STYLES.get(queue)))
+        # Add custom error messages via self.request.error_messages = [message_1, message_2, ...] in the view
+        error_messages = getattr(self.request, 'error_messages', [])
+        for error in error_messages:
+            queue = Notification.ERROR
+            notifications.append(
+                notification(message=error, type=queue, style=Notification.FOUNDATION_STYLES.get(queue))
+            )
         return notifications
 
     def get_datagridview_url(self, display):
