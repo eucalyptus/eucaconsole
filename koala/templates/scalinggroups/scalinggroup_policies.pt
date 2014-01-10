@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup.css')}" />
 </head>
 
@@ -20,14 +21,14 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-8 columns" tal:define="delete_action request.route_url('scalinggroup_policy_delete', id=scaling_group.name)">
+        <div class="large-8 columns">
             <div class="panel gridwrapper has-title">
                 <h6 class="title">
                     <span i18n:translate="">Policies for scaling group</span>
                     <strong>${scaling_group.name}</strong>
                 </h6>
                 <div class="tile add" id="add-policy">
-                    <a href="#" data-reveal-id="add-policy-modal">
+                    <a ng-click="revealCreateModal()">
                         <div class="plus">+</div>
                         <div i18n:translate="">Add a policy</div>
                     </a>
@@ -36,7 +37,7 @@
                     <div class="header">
                         <strong><a href="#">${policy.name}</a></strong>
                         <a class="tiny secondary button dropdown right"
-                           ng-click="revealDeleteModal('${delete_action}', '${policy.name}')"><i class="icon fi-minus-circle"></i></a>
+                           ng-click="revealDeleteModal('${policy.name}')"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content"
                          tal:define="scale_text scale_down_text if policy.scaling_adjustment < 0 else scale_up_text;
@@ -51,8 +52,26 @@
             </div>
         </div>
         <!--! Modal dialogs -->
+        <div id="create-policy-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Create scaling group policy</h3>
+            <p>&nbsp;</p>
+            <form action="${request.route_url('scalinggroup_policy_create', id=scaling_group.name)}" method="post" data-abide=""
+                  tal:define="alarm_names_html_attrs {'data-placeholder': alarm_names_placeholder_text};">
+                ${structure:create_form['csrf_token']}
+                ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=create_form['adjustment_direction'], leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=create_form['adjustment_amount'], leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=create_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=create_form['alarm_names'], leftcol_width=3, rightcol_width=9, **alarm_names_html_attrs)}
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns">
+                    <button type="submit" class="button" i18n:translate="">Add policy</button>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
         <div id="delete-policy-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Delete policy</h3>
+            <h3 i18n:translate="">Delete scaling group policy</h3>
             <p><span i18n:translate="">Are you sure you want to delete the policy</span>
                <b>{{ policyName }}</b>?</p>
             <form action="${request.route_url('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
@@ -62,10 +81,12 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <!--! /end modal dialogs -->
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/scalinggroup_policies.js')}"></script>
 </div>
 

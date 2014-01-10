@@ -166,7 +166,103 @@ class ScalingGroupDeleteForm(BaseSecureForm):
     pass
 
 
+class ScalingGroupPolicyCreateForm(BaseSecureForm):
+    """Form for creating a scaling group policy"""
+    name_error_msg = _(u'Name is required')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[
+            validators.InputRequired(message=name_error_msg),
+        ],
+    )
+    adjustment_direction_error_msg = _(u'Action is required')
+    adjustment_direction = wtforms.SelectField(
+        label=_(u'Action'),
+        validators=[
+            validators.InputRequired(message=adjustment_direction_error_msg),
+        ],
+    )
+    adjustment_amount_error_msg = _(u'Amount is required')
+    adjustment_amount = wtforms.IntegerField(
+        label=_(u'Amount'),
+        validators=[
+            validators.InputRequired(message=adjustment_amount_error_msg),
+        ],
+    )
+    adjustment_type_error_msg = _(u'Measure is required')
+    adjustment_type = wtforms.SelectField(
+        label=_(u'Measure'),
+        validators=[
+            validators.InputRequired(message=adjustment_type_error_msg),
+        ],
+    )
+    cooldown_error_msg = _(u'Cooldown period is required')
+    cooldown_help_text = _(
+        u'Time (in seconds) before Alarm related Scaling Activities can start after the previous Scaling Activity ends.'
+    )
+    cooldown = wtforms.IntegerField(
+        label=_(u'Cooldown period (seconds)'),
+        validators=[
+            validators.InputRequired(message=cooldown_error_msg),
+        ],
+    )
+    alarm_names_error_msg = _(u'At least one alarm is required')
+    alarm_names = wtforms.SelectMultipleField(
+        label=_(u'Alarms'),
+        validators=[
+            validators.InputRequired(message=alarm_names_error_msg),
+        ],
+    )
+
+    def __init__(self, request, scaling_group=None, alarms=None, **kwargs):
+        super(ScalingGroupPolicyCreateForm, self).__init__(request, **kwargs)
+        self.scaling_group = scaling_group
+        self.alarms = alarms or []
+        self.set_error_messages()
+        self.set_choices()
+        self.set_help_text()
+
+        if scaling_group is not None:
+            self.cooldown.data = scaling_group.default_cooldown
+
+    def set_choices(self):
+        self.adjustment_direction.choices = self.get_adjustment_direction_choices()
+        self.adjustment_type.choices = self.get_adjustment_type_choices()
+        self.alarm_names.choices = self.get_alarm_choices()
+
+    def set_error_messages(self):
+        self.name.error_msg = self.name_error_msg
+        self.adjustment_type.error_msg = self.adjustment_type_error_msg
+        self.cooldown.error_msg = self.cooldown_error_msg
+        self.alarm_names.error_msg = self.alarm_names_error_msg
+
+    def set_help_text(self):
+        self.cooldown.help_text = self.cooldown_help_text
+
+    def get_alarm_choices(self):
+        choices = []
+        for alarm in self.alarms:
+            choices.append((alarm.name, alarm.name))
+        if len(choices) == 0:
+            choices = ['', _(u'No alarms are available.')]
+        return sorted(choices)
+
+    @staticmethod
+    def get_adjustment_direction_choices():
+        return (
+            (u'down', _(u'Scale down by')),
+            (u'up', _(u'Scale up by')),
+        )
+
+    @staticmethod
+    def get_adjustment_type_choices():
+        return (
+            (u'ChangeInCapacity', _(u'Instance(s)')),
+            (u'PercentChangeInCapacity', _(u'Percentage')),
+        )
+
+
 class ScalingGroupPolicyDeleteForm(BaseSecureForm):
-    """Scaling Group policy deletion form."""
+    """Scaling Group policy deletion form"""
     pass
 

@@ -7,6 +7,7 @@ from operator import attrgetter
 
 import simplejson as json
 
+from boto.ec2.autoscale import ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
 from boto.exception import BotoServerError
 
@@ -14,7 +15,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupPolicyDeleteForm
+from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm
+from ..forms.scalinggroups import ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
@@ -73,14 +75,20 @@ class ScalingGroupsJsonView(BaseView):
 class BaseScalingGroupView(BaseView):
     def __init__(self, request):
         super(BaseScalingGroupView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='autoscale')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.ec2_conn = self.get_connection()
 
     def get_scaling_group(self):
         scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
         scalinggroups_param = [scalinggroup_param]
-        scaling_groups = self.conn.get_all_groups(names=scalinggroups_param)
+        scaling_groups = self.autoscale_conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
+
+    def get_alarms(self):
+        cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
+        if cloudwatch_conn:
+            return cloudwatch_conn.describe_alarms()
+        return []
 
 
 class ScalingGroupView(BaseScalingGroupView):
@@ -91,7 +99,7 @@ class ScalingGroupView(BaseScalingGroupView):
         super(ScalingGroupView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.edit_form = ScalingGroupEditForm(
-            self.request, scaling_group=self.scaling_group, autoscale_conn=self.conn, ec2_conn=self.ec2_conn,
+            self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -130,7 +138,7 @@ class ScalingGroupView(BaseScalingGroupView):
             location = self.request.route_url('scalinggroups')
             name = self.request.params.get('name')
             try:
-                self.conn.delete_auto_scaling_group(name, force_delete=True)
+                self.autoscale_conn.delete_auto_scaling_group(name, force_delete=True)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -159,8 +167,8 @@ class ScalingGroupView(BaseScalingGroupView):
         updated_tags_list = self.parse_tags_param()
         # Delete existing tags first
         if self.scaling_group.tags:
-            self.conn.delete_tags(self.scaling_group.tags)
-        self.conn.create_or_update_tags(updated_tags_list)
+            self.autoscale_conn.delete_tags(self.scaling_group.tags)
+        self.autoscale_conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
@@ -213,10 +221,6 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
     def scalinggroup_alarms(self):
         return self.render_dict
 
-    def get_alarms(self):
-        # TODO: Implement
-        return []
-
 
 class ScalingGroupPoliciesView(BaseScalingGroupView):
     """View for Scaling Group Policies page"""
@@ -226,26 +230,61 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         super(ScalingGroupPoliciesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies()
+        self.alarms = self.get_alarms()
+        self.create_form = ScalingGroupPolicyCreateForm(
+            self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            create_form=self.create_form,
             delete_form=self.delete_form,
             policies=self.policies,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
+            alarm_names_placeholder_text=_(u'Select at least one alarm...'),
         )
 
     @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)
     def scalinggroup_policies(self):
         return self.render_dict
 
+    @view_config(route_name='scalinggroup_policy_create', renderer=TEMPLATE)
+    def scalinggroup_policy_create(self):
+        if self.create_form.validate():
+            location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
+            adjustment_amount = self.request.params.get('adjustment_amount')
+            adjustment_direction = self.request.params.get('adjustment_direction', 'up')
+            scaling_adjustment = adjustment_amount
+            if adjustment_direction == 'down':
+                scaling_adjustment = -adjustment_direction
+            scaling_policy = ScalingPolicy(
+                name=self.request.params.get('name'),
+                as_name=self.scaling_group.name,
+                adjustment_type=self.request.params.get('adjustment_type'),
+                scaling_adjustment=scaling_adjustment,
+                cooldown=self.request.params.get('cooldown'),
+                alarms=self.request.params.getall('alarm_names'),
+            )
+            try:
+                self.autoscale_conn.create_scaling_policy(scaling_policy)
+                prefix = _(u'Successfully created scaling group policy')
+                msg = '{0} {1}'.format(prefix, scaling_policy.name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
+
     @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE)
     def scalinggroup_policy_delete(self):
         if self.delete_form.validate():
-            location = self.request.route_url('scalinggroup_policies')
+            location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
             policy_name = self.request.params.get('name')
             try:
-                self.conn.delete_policiy(policy_name, autoscale_group=self.scaling_group.name)
+                self.autoscale_conn.delete_policiy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
                 queue = Notification.SUCCESS
@@ -258,6 +297,6 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         return self.render_dict
 
     def get_policies(self):
-        policies = self.conn.get_all_policies(as_group=self.scaling_group.name)
+        policies = self.autoscale_conn.get_all_policies(as_group=self.scaling_group.name)
         return sorted(policies)
 

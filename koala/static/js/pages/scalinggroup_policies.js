@@ -7,10 +7,14 @@
 angular.module('ScalingGroupPolicies', [])
     .controller('ScalingGroupPoliciesCtrl', function ($scope) {
         $scope.policyName = '';
+        $scope.createModal = $('#create-policy-modal');
         $scope.deleteModal = $('#delete-policy-modal');
+        $scope.revealCreateModal = function () {
+            $scope.createModal.foundation('reveal', 'open');
+            $('#alarm_names').chosen({'width': '80%'});
+        };
         $scope.revealDeleteModal = function (action, policyName) {
             $scope.policyName = policyName;
-            $scope.deleteFormAction = action;
             $scope.deleteModal.foundation('reveal', 'open');
         };
     })
