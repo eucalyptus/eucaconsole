@@ -345,6 +345,13 @@ class InstanceView(TaggedItemView):
             if reservation:
                 instance = reservation.instances[0]
                 instance.groups = reservation.groups
+                instance.reservation_id = reservation.id
+                instance.owner_id = reservation.owner_id
+                if instance.platform is None:
+                    instance.platform = _(u"linux")
+                instance.instance_profile_id = None
+                if len(instance.instance_profile.keys()) > 0:
+                    instance.instance_profile_id = instance.instance_profile.keys()[0]
                 return instance
         return None
 

@@ -13,6 +13,7 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
         $scope.isUpdating = false;
+        $scope.isNotStopped = $scope.instancestate != 'stopped';
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -31,6 +32,11 @@ angular.module('InstancePage', ['TagEditor'])
                     $timeout(function() {$scope.getInstanceState()}, 4000);  // Poll every 4 seconds
                 } else {
                     $scope.isUpdating = false;
+                }
+                if ($scope.instanceState != 'stopped') {
+                    $scope.isNotStopped = true;
+                } else {
+                    $scope.isNotStopped = false;
                 }
             });
         };

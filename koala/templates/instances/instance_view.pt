@@ -21,10 +21,6 @@
         <div class="large-7 columns" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}', '${instance.state}')">
             <div class="panel has-title">
-                <h6 class="title">
-                    <span i18n:translate="">Properties of instance</span>
-                    <strong>${instance_name}</strong>
-                </h6>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
@@ -32,34 +28,35 @@
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="status {{ instanceState }}" id="current-status" ng-bind="instanceState">${instance.state}</span>
+                            <a href="#"  id="current-status" class="small secondary button dropdown" data-dropdown="instance-state-dropdown" ng-disabled="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) > -1">{{instanceState}}</a>
+                            <span ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
+                              <ul id="instance-state-dropdown" class="f-dropdown" data-dropdown-content>
+                                <li ng-show="instanceState == 'running'">
+                                  <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                                </li>
+                                <li ng-show="instanceState == 'stopped'">
+                                  <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                                </li>
+                                <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                                  <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
+                                </li>
+                                <li ng-show="instanceState != 'terminated'">
+                                  <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                                </li>
+                              </ul>
+                            </span>
+                            <!--
                             <div id="change-instance-state"
                                  ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
-                                <span class="tiny secondary button dropdown round"
-                                      data-dropdown="instance-state-dropdown"><i class="fi-widget"></i></span>
-                                <ul id="instance-state-dropdown" class="f-dropdown">
-                                    <li ng-show="instanceState == 'running'">
-                                        <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
-                                    </li>
-                                    <li ng-show="instanceState == 'stopped'">
-                                        <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
-                                    </li>
-                                    <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
-                                        <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
-                                    </li>
-                                    <li ng-show="instanceState != 'terminated'">
-                                        <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
-                                    </li>
-                                </ul>
                             </div>
+                            -->
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    ${panel('form_field', field=instance_form.instance_type, disabled='disabled')}
-                    ${panel('form_field', field=instance_form.ip_address)}
-                    <div class="row controls-wrapper readonly" tal:condition="image.platform">
+                    ${panel('form_field', field=instance_form.instance_type, ng_attrs={'disabled':'isNotStopped'})}
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">OS</label></div>
-                        <div class="small-8 columns value">${image.platform}</div>
+                        <div class="small-8 columns value">${instance.platform}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
@@ -77,14 +74,15 @@
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="small-8 columns value">${instance.placement}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance.private_ip_address">
-                        <div class="small-4 columns"><label i18n:translate="">Private IP address</label></div>
-                        <div class="small-8 columns value">${instance.private_ip_address}</div>
-                    </div>
+                    ${panel('form_field', field=instance_form.ip_address)}
                     <div class="row controls-wrapper readonly"
                          tal:condition="instance.public_dns_name != instance.ip_address">
                         <div class="small-4 columns"><label i18n:translate="">Public hostname</label></div>
                         <div class="small-8 columns value">${instance.public_dns_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance.private_ip_address">
+                        <div class="small-4 columns"><label i18n:translate="">Private IP address</label></div>
+                        <div class="small-8 columns value">${instance.private_ip_address}</div>
                     </div>
                     <div class="row controls-wrapper readonly"
                          tal:condition="instance.private_dns_name != instance.private_ip_address">
@@ -111,12 +109,42 @@
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
                         <div class="small-8 columns value">${scaling_group}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance.instance_profile">
-                        <div class="small-4 columns"><label i18n:translate="">Instance profile</label></div>
-                        <div class="small-8 columns value">${instance.instance_profile}</div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance.owner_id">
+                        <div class="small-4 columns"><label i18n:translate="">Account ID</label></div>
+                        <div class="small-8 columns value">${instance.owner_id}</div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
+                        <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
+                        <div class="small-8 columns value">${instance.reservation_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance.instance_profile_id">
+                        <div class="small-4 columns"><label i18n:translate="">Instance profile</label></div>
+                        <div class="small-8 columns value">${instance.instance_profile_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
+                        <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
+                        <div class="small-8 columns value">${instance.client_token}</div>
+                    </div>
+                    ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
                     ${panel('tag_editor', tags=instance.tags)}
+                    <hr />
+                    <form>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
+                            <div class="small-8 columns value">${image.id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
+                            <div class="small-8 columns value">${image.name}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
+                            <div class="small-8 columns value">${image.location}</div>
+                        </div>
+                        ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
+                        ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
+                    </form>
                     <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
@@ -128,40 +156,17 @@
                     </div>
                 </form>
             </div>
-            <div class="panel has-title">
-                <h6 class="title" i18n:translate="">Image properties</h6>
-                <form>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
-                        <div class="small-8 columns value">${image.id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div class="small-8 columns value">${image.name}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-8 columns value">${image.location}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
-                        <div class="small-8 columns value">${image.kernel_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">RAM Disk ID</label></div>
-                        <div class="small-8 columns value">${image.ramdisk_id}</div>
-                    </div>
-                </form>
-            </div>
         </div>
         <div class="large-5 columns">
             <div class="panel has-title other-actions">
-                <h6 class="title" i18n:translate="">Other actions</h6>
                 <a class="button secondary" i18n:translate="">
                     Launch more like this
                 </a>
                 <a class="button secondary" i18n:translate="">
                     Create scaling group launch configuration like this
+                </a>
+                <a class="button secondary" i18n:translate="">
+                    View console output
                 </a>
             </div>
             <div class="help-content">

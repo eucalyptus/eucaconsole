@@ -37,8 +37,12 @@
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right" ng-click="revealDetachModal(volume.detach_form_action)"
-                           data-reveal-id="detach-volume-modal"><i class="icon fi-minus-circle"></i></a>
+                        <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action)">Detach Volume</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="content">
                         <div>
