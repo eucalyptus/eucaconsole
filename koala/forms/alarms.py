@@ -71,6 +71,13 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=evaluation_periods_error_msg),
         ],
     )
+    unit_error_msg = _(u'Unit is required')
+    unit = wtforms.SelectField(
+        label=_(u'Unit'),
+        validators=[
+            validators.InputRequired(message=unit_error_msg),
+        ],
+    )
 
     def __init__(self, request, metrics=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
@@ -82,6 +89,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.comparison.choices = self.get_comparison_choices()
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
+        self.unit.choices = self.get_unit_choices()
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
@@ -92,6 +100,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.threshold.error_msg = self.threshold_error_msg
         self.period.error_msg = self.period_error_msg
         self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
+        self.unit.error_msg = self.unit_error_msg
 
     def get_metric_choices(self):
         choices = []
@@ -108,6 +117,10 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
     @staticmethod
     def get_statistic_choices():
         return sorted([(choice, choice) for choice in Metric.Statistics])
+
+    @staticmethod
+    def get_unit_choices():
+        return [(choice, choice) for choice in Metric.Units if choice is not None]
 
 
 class CloudWatchAlarmDeleteForm(BaseSecureForm):

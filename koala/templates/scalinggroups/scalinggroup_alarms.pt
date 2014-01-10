@@ -65,14 +65,40 @@
             <p i18n:translate="">&nbsp;</p>
             <form action="${request.route_url('scalinggroup_alarm_create', id=scaling_group.name)}" method="post" data-abide="">
                 ${structure:create_form['csrf_token']}
-                ${panel('form_field', field=create_form['name'])}
-                ${panel('form_field', field=create_form['description'])}
+                ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=create_form['description'], leftcol_width=3, rightcol_width=9)}
                 <hr />
-                ${panel('form_field', field=create_form['metric'])}
+                <div class="row controls-wrapper">
+                    <div class="small-3 columns">
+                        <label class="right">Trigger alarm</label>
+                    </div>
+                    <div class="small-9 columns">
+                        <span i18n:translate="">when the</span>
+                        ${structure:create_form['statistic']}
+                        ${structure:create_form['metric']}
+                        <br />
+                        <span i18n:translate="">is</span>
+                        ${structure:create_form['comparison']}
+                        ${structure:create_form['threshold']}
+                        ${structure:create_form['unit']}
+                    </div>
+                </div>
                 <hr />
-                <div class="small-4 columns">&nbsp;</div>
-                <div class="small-8 columns">
-                    <button type="submit" class="button" i18n:translate="">Add alarm</button>
+                <div class="row controls-wrapper">
+                    <div class="small-3 columns">
+                        <label class="right">Evaluation (seconds)</label>
+                    </div>
+                    <div class="small-9 columns">
+                        ${panel('form_field', field=create_form['evaluation_periods'])}
+                        ${panel('form_field', field=create_form['period'])}
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="small-3 columns">&nbsp;</div>
+                    <div class="small-9 columns">
+                        <button type="submit" class="button" i18n:translate="">Add alarm</button>
+                    </div>
                 </div>
             </form>
             <a class="close-reveal-modal">&#215;</a>

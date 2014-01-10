@@ -49,3 +49,17 @@ input[type="number"] {
 .tile .footer.healthy {
     background-color: $euca-green;
 }
+
+// Scaling group alarms page
+#evaluation_periods, #period {
+    display: inline-block;
+}
+#statistic, #metric, #comparison, #threshold, #unit {
+    display: inline-block;
+}
+
+#statistic { width: 8rem; }
+#metric { width: 8rem; }
+#comparison { width: 3rem; }
+#threshold { width: 3rem; }
+#unit { width: 10rem; }
