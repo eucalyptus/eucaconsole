@@ -9,6 +9,7 @@ import time
 
 from boto.ec2.autoscale import ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
+from boto.ec2.cloudwatch import MetricAlarm
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
@@ -237,6 +238,20 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
         location = self.request.route_url('scalinggroup_alarms', id=self.scaling_group.name)
         if self.create_form.validate():
             try:
+                metric_name = self.request.params.get('metric')
+                metric = self.cloudwatch_conn.list_metrics(metric_name=metric_name)[0]
+                name = self.request.params.get('name')
+                comparison = self.request.params.get('comparison')
+                threshold = self.request.params.get('threshold')
+                period = self.request.params.get('period')
+                evaluation_periods = self.request.params.get('evaluation_periods')
+                statistic = self.request.params.get('statistic')
+                alarm = MetricAlarm(
+                    name, comparison, threshold, period, evaluation_periods, statistic,
+                    description=self.request.params.get('description'),
+                )
+                alarm.metric = metric
+                self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
                 queue = Notification.SUCCESS

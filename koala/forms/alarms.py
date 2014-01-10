@@ -29,6 +29,13 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
+    metric_error_msg = _(u'Metric is required')
+    metric = wtforms.SelectField(
+        label=_(u'Metric'),
+        validators=[
+            validators.InputRequired(message=metric_error_msg),
+        ],
+    )
     comparison_error_msg = _(u'Comparison is required')
     comparison = wtforms.SelectField(
         label=_(u'Comparison'),
@@ -43,11 +50,25 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=statistic_error_msg),
         ],
     )
-    metric_error_msg = _(u'Metric is required')
-    metric = wtforms.SelectField(
-        label=_(u'Metric'),
+    threshold_error_msg = _(u'Trigger threshold is required')
+    threshold = wtforms.IntegerField(
+        label=_(u'Trigger threshold'),
         validators=[
-            validators.InputRequired(message=metric_error_msg),
+            validators.InputRequired(message=threshold_error_msg),
+        ],
+    )
+    period_error_msg = _(u'Period length is required')
+    period = wtforms.IntegerField(
+        label=_(u'Period length'),
+        validators=[
+            validators.InputRequired(message=period_error_msg),
+        ],
+    )
+    evaluation_periods_error_msg = _(u'Measurement periods is required')
+    evaluation_periods = wtforms.IntegerField(
+        label=_(u'Measurement periods'),
+        validators=[
+            validators.InputRequired(message=evaluation_periods_error_msg),
         ],
     )
 
@@ -68,6 +89,9 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.comparison.error_msg = self.comparison_error_msg
         self.statistic.error_msg = self.statistic_error_msg
         self.metric.error_msg = self.metric_error_msg
+        self.threshold.error_msg = self.threshold_error_msg
+        self.period.error_msg = self.period_error_msg
+        self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
 
     def get_metric_choices(self):
         choices = []
