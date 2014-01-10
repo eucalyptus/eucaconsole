@@ -402,6 +402,12 @@ class InstanceStateView(BaseView):
         """Return current instance state"""
         return dict(results=self.suggest_next_device_name(self.instance))
 
+    @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
+    def instance_console_output_json(self):
+        """Return console output for instance"""
+        output = self.conn.get_console_output(instance_id=self.instance.id)
+        return dict(results=output.output)
+
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')
         if instance_id:
