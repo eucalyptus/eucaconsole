@@ -217,7 +217,9 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
         super(ScalingGroupAlarmsView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.alarms = self.get_alarms()
-        self.create_form = CloudWatchAlarmCreateForm(self.request, formdata=self.request.params or None)
+        self.metrics = self.cloudwatch_conn.list_metrics()
+        self.create_form = CloudWatchAlarmCreateForm(
+            self.request, metrics=self.metrics, formdata=self.request.params or None)
         self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,

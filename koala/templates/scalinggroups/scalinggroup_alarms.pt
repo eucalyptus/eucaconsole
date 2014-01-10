@@ -65,6 +65,10 @@
             <p i18n:translate="">&nbsp;</p>
             <form action="${request.route_url('scalinggroup_alarm_create', id=scaling_group.name)}" method="post" data-abide="">
                 ${structure:create_form['csrf_token']}
+                ${panel('form_field', field=create_form['name'])}
+                ${panel('form_field', field=create_form['description'])}
+                <hr />
+                ${panel('form_field', field=create_form['metric'])}
                 <hr />
                 <div class="small-4 columns">&nbsp;</div>
                 <div class="small-8 columns">
