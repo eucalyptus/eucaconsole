@@ -15,6 +15,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm
 from ..forms.scalinggroups import ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm
 from ..models import Notification
@@ -216,13 +217,55 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
         super(ScalingGroupAlarmsView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.alarms = self.get_alarms()
+        self.create_form = CloudWatchAlarmCreateForm(self.request, formdata=self.request.params or None)
+        self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             alarms=self.alarms,
+            create_form=self.create_form,
+            delete_form=self.delete_form,
         )
 
     @view_config(route_name='scalinggroup_alarms', renderer=TEMPLATE)
     def scalinggroup_alarms(self):
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_alarm_create', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_alarm_create(self):
+        location = self.request.route_url('scalinggroup_alarms', id=self.scaling_group.name)
+        if self.create_form.validate():
+            try:
+                prefix = _(u'Successfully created alarm')
+                msg = '{0} {1}'.format(prefix, alarm.name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_alarm_delete', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_alarm_delete(self):
+        if self.delete_form.validate():
+            location = self.request.route_url('scalinggroup_alarms', id=self.scaling_group.name)
+            alarm_name = self.request.params.get('name')
+            try:
+                self.cloudwatch_conn.delete_alarm(alarm_name)
+                prefix = _(u'Successfully deleted alarm')
+                msg = '{0} {1}'.format(prefix, alarm_name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
 
