@@ -60,7 +60,7 @@ setup(
     install_requires=requires,
     tests_require=requires,
     message_extractors=message_extractors,
-    test_suite="koala",
+    test_suite="tests",
     entry_points="""\
     [paste.app_factory]
     main = koala:main
