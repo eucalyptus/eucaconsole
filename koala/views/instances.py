@@ -413,6 +413,7 @@ class InstanceStateView(BaseView):
                 return dev_name
         return 'error'
 
+
 class InstanceVolumesView(BaseView):
     VIEW_TEMPLATE = '../templates/instances/instance_volumes.pt'
 

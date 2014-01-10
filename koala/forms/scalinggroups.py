@@ -11,8 +11,8 @@ from pyramid.i18n import TranslationString as _
 from . import BaseSecureForm, ChoicesManager
 
 
-class ScalingGroupEditForm(BaseSecureForm):
-    """Edit Scaling Group form"""
+class BaseScalingGroupForm(BaseSecureForm):
+    """Base class for Create/Edit Scaling Group forms"""
     launch_config_error_msg = _(u'Launch configuration is required')
     launch_config = wtforms.SelectField(
         label=_(u'Launch configuration'),
@@ -69,33 +69,28 @@ class ScalingGroupEditForm(BaseSecureForm):
             validators.InputRequired(message=health_check_period_error_msg),
         ],
     )
-    default_cooldown_error_msg = _(u'Default cooldown period is required')
-    default_cooldown_help_text = _(
-        u'Number of seconds after a Scaling Activity completes before any further scaling activities can start')
-    default_cooldown = wtforms.IntegerField(
-        label=_(u'Default cooldown period (seconds)'),
-        validators=[
-            validators.InputRequired(message=default_cooldown_error_msg),
-        ],
-    )
-    termination_policies_error_msg = _(u'At least one termination policy is required')
-    termination_policies = wtforms.SelectMultipleField(
-        label=_(u'Termination policies'),
-        validators=[
-            validators.InputRequired(message=termination_policies_error_msg),
-        ],
-    )
 
     def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
-        super(ScalingGroupEditForm, self).__init__(request, **kwargs)
+        super(BaseScalingGroupForm, self).__init__(request, **kwargs)
         self.scaling_group = scaling_group
         self.autoscale_conn = autoscale_conn
         self.ec2_conn = ec2_conn
         self.launch_configs = launch_configs
+
+        # Set choices
         self.choices_manager = ChoicesManager(conn=ec2_conn)
-        self.set_error_messages()
-        self.set_choices()
-        self.set_help_text()
+        self.launch_config.choices = self.get_launch_config_choices()
+        self.health_check_type.choices = self.get_healthcheck_type_choices()
+        self.availability_zones.choices = self.get_availability_zone_choices()
+
+        # Set error messages
+        self.launch_config.error_msg = self.launch_config_error_msg
+        self.availability_zones.error_msg = self.availability_zones_error_msg
+        self.desired_capacity.error_msg = self.desired_capacity_error_msg
+        self.max_size.error_msg = self.max_size_error_msg
+        self.min_size.error_msg = self.min_size_error_msg
+        self.health_check_type.error_msg = self.health_check_type_error_msg
+        self.health_check_period.error_msg = self.health_check_period_error_msg
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
@@ -105,29 +100,6 @@ class ScalingGroupEditForm(BaseSecureForm):
             self.min_size.data = int(scaling_group.min_size) if scaling_group.min_size else 0
             self.health_check_type.data = scaling_group.health_check_type
             self.health_check_period.data = scaling_group.health_check_period
-            self.default_cooldown.data = scaling_group.default_cooldown
-            self.termination_policies.data = scaling_group.termination_policies
-
-    def set_choices(self):
-        self.launch_config.choices = self.get_launch_config_choices()
-        self.health_check_type.choices = self.get_healthcheck_type_choices()
-        self.availability_zones.choices = self.get_availability_zone_choices()
-        self.termination_policies.choices = self.get_termination_policy_choices()
-
-    def set_error_messages(self):
-        self.launch_config.error_msg = self.launch_config_error_msg
-        self.availability_zones.error_msg = self.availability_zones_error_msg
-        self.desired_capacity.error_msg = self.desired_capacity_error_msg
-        self.max_size.error_msg = self.max_size_error_msg
-        self.min_size.error_msg = self.min_size_error_msg
-        self.health_check_type.error_msg = self.health_check_type_error_msg
-        self.health_check_period.error_msg = self.health_check_period_error_msg
-        self.default_cooldown.error_msg = self.default_cooldown_error_msg
-        self.termination_policies.error_msg = self.termination_policies_error_msg
-
-    def set_help_text(self):
-        self.default_cooldown.help_text = self.default_cooldown_help_text
-        self.health_check_period.help_text = self.health_check_period_help_text
 
     def get_launch_config_choices(self):
         choices = []
@@ -157,6 +129,51 @@ class ScalingGroupEditForm(BaseSecureForm):
             (u'OldestLaunchConfiguration', _(u'Oldest launch configuration')),
             (u'ClosestToNextInstanceHour', _(u'Closest to next instance hour')),
         )
+
+
+class ScalingGroupCreateForm(BaseScalingGroupForm):
+    """Create Scaling Group form"""
+    pass
+
+
+class ScalingGroupEditForm(BaseScalingGroupForm):
+    """Edit Scaling Group form"""
+    default_cooldown_error_msg = _(u'Default cooldown period is required')
+    default_cooldown_help_text = _(
+        u'Number of seconds after a Scaling Activity completes before any further scaling activities can start')
+    default_cooldown = wtforms.IntegerField(
+        label=_(u'Default cooldown period (seconds)'),
+        validators=[
+            validators.InputRequired(message=default_cooldown_error_msg),
+        ],
+    )
+    termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies = wtforms.SelectMultipleField(
+        label=_(u'Termination policies'),
+        validators=[
+            validators.InputRequired(message=termination_policies_error_msg),
+        ],
+    )
+
+    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
+        super(ScalingGroupEditForm, self).__init__(
+            request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
+            ec2_conn=ec2_conn, launch_configs=launch_configs, **kwargs)
+
+        # Set choices
+        self.termination_policies.choices = self.get_termination_policy_choices()
+
+        # Set error messages
+        self.default_cooldown.error_msg = self.default_cooldown_error_msg
+        self.termination_policies.error_msg = self.termination_policies_error_msg
+
+        # Set help text
+        self.default_cooldown.help_text = self.default_cooldown_help_text
+        self.health_check_period.help_text = self.health_check_period_help_text
+
+        if scaling_group is not None:
+            self.default_cooldown.data = scaling_group.default_cooldown
+            self.termination_policies.data = scaling_group.termination_policies
 
 
 class ScalingGroupDeleteForm(BaseSecureForm):

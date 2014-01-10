@@ -17,20 +17,22 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
-from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm
+from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm
 from ..forms.scalinggroups import ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
 
 class ScalingGroupsView(LandingPageView):
+    TEMPLATE = '../templates/scalinggroups/scalinggroups.pt'
+
     def __init__(self, request):
         super(ScalingGroupsView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
-    @view_config(route_name='scalinggroups', renderer='../templates/scalinggroups/scalinggroups.pt')
+    @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
         json_items_endpoint = self.request.route_url('scalinggroups_json')
         self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
@@ -202,7 +204,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             instances=self.instances,
         )
 
-    @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_instances(self):
         return self.render_dict
 
@@ -229,7 +231,7 @@ class ScalingGroupAlarmsView(BaseScalingGroupView):
             delete_form=self.delete_form,
         )
 
-    @view_config(route_name='scalinggroup_alarms', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_alarms', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_alarms(self):
         return self.render_dict
 
@@ -307,11 +309,11 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             scale_up_text=_(u'Scale up by'),
         )
 
-    @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_policies', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_policies(self):
         return self.render_dict
 
-    @view_config(route_name='scalinggroup_policy_create', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_policy_create', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_policy_create(self):
         location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
         if self.create_form.validate():
@@ -353,7 +355,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='scalinggroup_policy_delete', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_policy_delete(self):
         if self.delete_form.validate():
             location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
@@ -376,3 +378,39 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
     def get_policies(self):
         policies = self.autoscale_conn.get_all_policies(as_group=self.scaling_group.name)
         return sorted(policies)
+
+
+class ScalingGroupWizardView(BaseScalingGroupView):
+    """View for Create Scaling Group wizard"""
+    TEMPLATE = '../templates/scalinggroups/scalinggroup_wizard.pt'
+
+    def __init__(self, request):
+        super(ScalingGroupWizardView, self).__init__(request)
+        self.request = request
+        self.create_form = ScalingGroupCreateForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            create_form=self.create_form
+        )
+
+    @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
+    def scalinggroup_new(self):
+        """Displays the Launch Instance wizard"""
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_create', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_create(self):
+        """Handles the POST from the Create Scaling Group wizard"""
+        location = self.request.route_url('scalinggroups')
+        if self.create_form.validate():
+            try:
+                msg = _(u'Successfully added scaling group')
+                msg += ' {0}'.format(scaling_group.name)
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+        return self.render_dict
