@@ -250,8 +250,8 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
     @staticmethod
     def get_adjustment_direction_choices():
         return (
-            (u'down', _(u'Scale down by')),
             (u'up', _(u'Scale up by')),
+            (u'down', _(u'Scale down by')),
         )
 
     @staticmethod

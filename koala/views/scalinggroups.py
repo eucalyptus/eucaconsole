@@ -248,7 +248,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
     def scalinggroup_policies(self):
         return self.render_dict
 
-    @view_config(route_name='scalinggroup_policy_create', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_policy_create', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_policy_create(self):
         location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
         if self.create_form.validate():
@@ -280,13 +280,13 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
-    @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE)
+    @view_config(route_name='scalinggroup_policy_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_policy_delete(self):
         if self.delete_form.validate():
             location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
             policy_name = self.request.params.get('name')
             try:
-                self.autoscale_conn.delete_policiy(policy_name, autoscale_group=self.scaling_group.name)
+                self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
                 queue = Notification.SUCCESS
@@ -296,9 +296,10 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
     def get_policies(self):
         policies = self.autoscale_conn.get_all_policies(as_group=self.scaling_group.name)
         return sorted(policies)
-

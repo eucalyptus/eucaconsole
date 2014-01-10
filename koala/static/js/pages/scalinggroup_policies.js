@@ -13,7 +13,7 @@ angular.module('ScalingGroupPolicies', [])
             $scope.createModal.foundation('reveal', 'open');
             $('#alarm_names').chosen({'width': '80%'});
         };
-        $scope.revealDeleteModal = function (action, policyName) {
+        $scope.revealDeleteModal = function (policyName) {
             $scope.policyName = policyName;
             $scope.deleteModal.foundation('reveal', 'open');
         };
