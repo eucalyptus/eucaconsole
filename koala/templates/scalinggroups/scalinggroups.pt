@@ -14,7 +14,8 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create new scaling group</a>
+                <a class="button" i18n:translate=""
+                   href="${request.route_url('scalinggroup_new')}">Create new scaling group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>

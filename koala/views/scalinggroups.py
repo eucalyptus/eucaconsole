@@ -387,7 +387,9 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
         self.request = request
-        self.create_form = ScalingGroupCreateForm(self.request, formdata=self.request.params or None)
+        self.create_form = ScalingGroupCreateForm(
+            self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
+            formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form
         )
@@ -403,8 +405,9 @@ class ScalingGroupWizardView(BaseScalingGroupView):
         location = self.request.route_url('scalinggroups')
         if self.create_form.validate():
             try:
+                # TODO: Create scaling group
                 msg = _(u'Successfully added scaling group')
-                msg += ' {0}'.format(scaling_group.name)
+                # msg += ' {0}'.format(scaling_group.name)
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)

@@ -104,7 +104,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     def get_launch_config_choices(self):
         choices = []
         launch_configs = self.launch_configs
-        if launch_configs is None:
+        if launch_configs is None and self.autoscale_conn is not None:
             launch_configs = self.autoscale_conn.get_all_launch_configurations()
         for launch_config in launch_configs:
             choices.append((launch_config.name, launch_config.name))
@@ -133,7 +133,21 @@ class BaseScalingGroupForm(BaseSecureForm):
 
 class ScalingGroupCreateForm(BaseScalingGroupForm):
     """Create Scaling Group form"""
-    pass
+    name_error_msg = _(u'Name is required')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[
+            validators.InputRequired(message=name_error_msg),
+        ],
+    )
+
+    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
+        super(ScalingGroupCreateForm, self).__init__(
+            request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
+            ec2_conn=ec2_conn, launch_configs=launch_configs, **kwargs)
+
+        # Set error messages
+        self.name.error_msg = self.name_error_msg
 
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
