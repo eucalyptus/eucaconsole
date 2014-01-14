@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup_wizard.css')}" />
 </head>
 
@@ -28,12 +29,12 @@
                         </dd>
                         <dd>
                             <a id="tabStep2" href="#step2">
-                                <span class="cir">2</span> <b>Tags</b>
+                                <span class="cir">2</span> <b>Membership</b>
                             </a>
                         </dd>
                         <dd>
                             <a id="tabStep3" href="#step3">
-                                <span class="cir">3</span> <b>Membership</b>
+                                <span class="cir">3</span> <b>Tags</b>
                             </a>
                         </dd>
                         <dd>
@@ -45,21 +46,48 @@
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1">
-                            ${panel('form_field', field=create_form['name'])}
-                            ${panel('form_field', field=create_form['launch_config'])}
-                            ${panel('form_field', field=create_form['min_size'])}
-                            ${panel('form_field', field=create_form['desired_capacity'])}
-                            ${panel('form_field', field=create_form['max_size'])}
+                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
+                            ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
+                            ${panel('form_field', field=create_form['min_size'], ng_attrs={'model': 'minSize'})}
+                            ${panel('form_field', field=create_form['desired_capacity'], ng_attrs={'model': 'desiredCapacity'})}
+                            ${panel('form_field', field=create_form['max_size'], ng_attrs={'model': 'maxSize'})}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                        <span i18n:translate="">Next: Membership</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <!--! Step 2: Tags tab content -->
+                        <!--! Step 2: Membership tab content -->
                         <div class="content" id="step2">
-                            ${panel('autoscale_tag_editor', tags=[])}
+                            ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
+                            ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'})}
+                            ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'})}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                        <span i18n:translate="">Next: Tags</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <!--! Step 3: Membership tab content -->
+                        <!--! Step 3: Tags tab content -->
                         <div class="content" id="step3">
-                            ${panel('form_field', field=create_form['health_check_type'])}
-                            ${panel('form_field', field=create_form['health_check_period'])}
-                            ${panel('form_field', field=create_form['availability_zones'])}
+                            ${panel('autoscale_tag_editor', tags=[])}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-2 columns">&nbsp;</div>
+                                <div class="small-10 columns field inline">
+                                    <a id="visit-step-4" class="button small round" ng-click="visitNextStep(4, $event)">
+                                        <span i18n:translate="">Next: Policies</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
@@ -73,13 +101,37 @@
         <div class="large-4 columns summary" ng-cloak="">
             <h5 i18n:translate="" class="title">Summary</h5>
             <div class="section">
-                <!--! TODO: Summary here -->
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
+                    <div class="small-8 columns value">{{ scalingGroupName }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Launch configuration:</label></div>
+                    <div class="small-8 columns value">{{ launchConfig }}</div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Health check:</label></div>
+                    <div class="small-8 columns value">{{ healthCheckType }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Grace period:</label></div>
+                    <div class="small-8 columns value">{{ healthCheckPeriod }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Availability zones:</label></div>
+                    <div class="small-8 columns value">
+                        <span ng-repeat="zone in availZones">{{ zone }}<span ng-show="!$last">, </span></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/scalinggroup_wizard.js')}"></script>
 </div>
 

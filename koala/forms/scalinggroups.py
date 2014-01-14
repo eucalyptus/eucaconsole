@@ -102,7 +102,7 @@ class BaseScalingGroupForm(BaseSecureForm):
             self.health_check_period.data = scaling_group.health_check_period
 
     def get_launch_config_choices(self):
-        choices = []
+        choices = [('', _(u'Select a launch configuration...'))]
         launch_configs = self.launch_configs
         if launch_configs is None and self.autoscale_conn is not None:
             launch_configs = self.autoscale_conn.get_all_launch_configurations()
