@@ -29,3 +29,12 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
+input[type="number"] { width: 3rem; }
+
+#controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
+
+#controls_max_size { margin-left: -1rem; }
+
+#health_check_period { width: 4rem; }
+
+[data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }

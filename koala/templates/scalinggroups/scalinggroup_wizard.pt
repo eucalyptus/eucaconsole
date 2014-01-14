@@ -48,9 +48,21 @@
                         <div class="content active" id="step1">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
                             ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
-                            ${panel('form_field', field=create_form['min_size'], ng_attrs={'model': 'minSize'})}
-                            ${panel('form_field', field=create_form['desired_capacity'], ng_attrs={'model': 'desiredCapacity'})}
-                            ${panel('form_field', field=create_form['max_size'], ng_attrs={'model': 'maxSize'})}
+                            <hr />
+                            <div class="row controls-wrapper" id="capacity-section">
+                                <div class="medium-4 columns">
+                                    <h6 class="right" i18n:translate="">Capacity</h6>
+                                </div>
+                                <div class="medium-8 columns">
+                                    ${panel('form_field', field=create_form['min_size'], maxlength=2,
+                                            ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['desired_capacity'], maxlength=2,
+                                            ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['max_size'], maxlength=2,
+                                            ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                                </div>
+                            </div>
+                            <hr />
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -62,10 +74,11 @@
                             </div>
                         </div>
                         <!--! Step 2: Membership tab content -->
-                        <div class="content" id="step2">
+                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
-                            ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'})}
-                            ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'})}
+                            ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
+                            ${panel('form_field', field=create_form['availability_zones'],
+                                    ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -91,7 +104,19 @@
                         </div>
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
+                            <!--! TODO: Insert default cooldown period form field here -->
                             <!--! TODO: Insert policy editor widget here -->
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button">
+                                        <span i18n:translate="">Create scaling group</span>
+                                    </button>
+                                    <a href="${request.route_url('scalinggroups')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="clearfix">&nbsp;</div>
@@ -108,6 +133,12 @@
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Launch configuration:</label></div>
                     <div class="small-8 columns value">{{ launchConfig }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
+                    <div class="small-8 columns value">
+                        Min: {{ minSize }}, Desired: {{ desiredCapacity }}, Max: {{ maxSize }}
+                    </div>
                 </div>
             </div>
             <div class="section">

@@ -7,7 +7,7 @@ from operator import attrgetter
 import simplejson as json
 import time
 
-from boto.ec2.autoscale import ScalingPolicy
+from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
 from boto.ec2.cloudwatch import MetricAlarm
 from boto.exception import BotoServerError
@@ -94,6 +94,19 @@ class BaseScalingGroupView(BaseView):
             return self.cloudwatch_conn.describe_alarms()
         return []
 
+    def parse_tags_param(self, scaling_group_name=None):
+        tags_json = self.request.params.get('tags')
+        tags_list = json.loads(tags_json) if tags_json else []
+        tags = []
+        for tag in tags_list:
+            tags.append(Tag(
+                resource_id=scaling_group_name,
+                key=tag.get('name'),
+                value=tag.get('value'),
+                propagate_at_launch=tag.get('propagate_at_launch', False),
+            ))
+        return tags
+
 
 class ScalingGroupView(BaseScalingGroupView):
     """Views for Scaling Group detail page"""
@@ -158,21 +171,8 @@ class ScalingGroupView(BaseScalingGroupView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    def parse_tags_param(self):
-        tags_json = self.request.params.get('tags')
-        tags_list = json.loads(tags_json) if tags_json else []
-        tags = []
-        for tag in tags_list:
-            tags.append(Tag(
-                resource_id=self.scaling_group.name,
-                key=tag.get('name'),
-                value=tag.get('value'),
-                propagate_at_launch=tag.get('propagate_at_launch', False),
-            ))
-        return tags
-
     def update_tags(self):
-        updated_tags_list = self.parse_tags_param()
+        updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
         # Delete existing tags first
         if self.scaling_group.tags:
             self.autoscale_conn.delete_tags(self.scaling_group.tags)
@@ -391,7 +391,8 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             formdata=self.request.params or None)
         self.render_dict = dict(
-            create_form=self.create_form
+            create_form=self.create_form,
+            avail_zones_placeholder_text=_(u'Select availability zones...')
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
@@ -402,18 +403,34 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_create', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_create(self):
         """Handles the POST from the Create Scaling Group wizard"""
-        location = self.request.route_url('scalinggroups')
         if self.create_form.validate():
             try:
-                # TODO: Create scaling group
-                msg = _(u'Successfully added scaling group')
-                # msg += ' {0}'.format(scaling_group.name)
+                scaling_group_name = self.request.params.get('name')
+                scaling_group = AutoScalingGroup(
+                    name=scaling_group_name,
+                    launch_config=self.request.params.get('launch_config'),
+                    availability_zones=self.request.params.getall('availability_zones'),
+                    # load_balancers=self.request.params.getall('load_balancers'),  # TODO: Implement when ELB in place
+                    # default_cooldown=None,  # TODO: Implement
+                    health_check_type=self.request.params.get('health_check_type'),
+                    health_check_period=self.request.params.get('health_check_period'),
+                    desired_capacity=self.request.params.get('desired_capacity'),
+                    min_size=self.request.params.get('min_size'),
+                    max_size=self.request.params.get('max_size'),
+                    tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
+                    # termination_policies=self.request.params.get('policies'),  # TODO: Implement
+                )
+                self.autoscale_conn.create_auto_scaling_group(scaling_group)
+                msg = _(u'Successfully created scaling group')
+                msg += ' {0}'.format(scaling_group.name)
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('scalinggroup_view', id=scaling_group.name)
                 return HTTPFound(location=location)
             except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('scalinggroups')
                 return HTTPFound(location=location)
         return self.render_dict

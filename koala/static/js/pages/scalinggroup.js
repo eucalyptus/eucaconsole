@@ -32,7 +32,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             if ($scope.maxSize < $scope.desiredCapacity) {
                 $scope.maxSize = $scope.desiredCapacity;
             }
-        }
+        };
     })
 ;
 

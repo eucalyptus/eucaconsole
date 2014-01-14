@@ -34,6 +34,15 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
         };
+        $scope.handleSizeChange = function () {
+            // Adjust desired/max based on min size change
+            if ($scope.desiredCapacity < $scope.minSize) {
+                $scope.desiredCapacity = $scope.minSize;
+            }
+            if ($scope.maxSize < $scope.desiredCapacity) {
+                $scope.maxSize = $scope.desiredCapacity;
+            }
+        };
     })
 ;
 
