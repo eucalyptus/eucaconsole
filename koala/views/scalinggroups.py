@@ -39,6 +39,7 @@ class ScalingGroupsView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name')),
+            dict(key='-status', name=_(u'Health status')),
             dict(key='-current_instances_count', name=_(u'Current instances')),
             dict(key='launch_config', name=_(u'Launch configuration')),
             dict(key='availability_zones', name=_(u'Availability zones')),
@@ -64,8 +65,7 @@ class ScalingGroupsJsonView(BaseView):
             return Response(status=err.status, body=err.message)
         for group in items:
             group_instances = group.instances or []
-            instance_health_statuses = [instance.health_status for instance in group_instances]
-            all_healthy = all(status == 'Healthy' for status in instance_health_statuses)
+            all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
@@ -77,7 +77,7 @@ class ScalingGroupsJsonView(BaseView):
                 placement_group=group.placement_group,
                 termination_policies=', '.join(group.termination_policies),
                 current_instances_count=len(group_instances),
-                all_healthy=all_healthy,
+                status='Healthy' if all_healthy else 'Unhealthy',
             ))
         return dict(results=scalinggroups)
 

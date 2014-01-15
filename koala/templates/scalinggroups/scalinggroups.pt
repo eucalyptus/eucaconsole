@@ -73,7 +73,7 @@
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Load balancers</th>
                 <th i18n:translate="">Capacity</th>
-                <th i18n:translate="">Healthy</th>
+                <th i18n:translate="">Status</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -92,8 +92,10 @@
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
                 </td>
                 <td>
-                    <span class="health {{ item.all_healthy ? 'healthy' : 'unhealthy' }}">
-                        {{ item.all_healthy ? 'Healthy' : 'Unhealthy' }}
+                    <span class="health">
+                        <span ng-show="item.status == 'Healthy'"><i class="fi-check"></i></span>
+                        <span ng-show="item.status == 'Unhealthy'"><i class="fi-alert"></i></span>
+                        {{ item.status }}
                     </span>
                 </td>
                 <td>

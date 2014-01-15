@@ -14,6 +14,6 @@ $status-color-unhealthy: darkred;
 .tile .status.unhealthy { background-color: $status-color-unhealthy; }
 
 // Table view
-.health.healthy { color: $euca-darkgreen; }
-.health.unhealthy { color: $status-color-unhealthy; }
+.fi-check { color: $euca-darkgreen; }
+.fi-alert { color: $status-color-unhealthy; }
 

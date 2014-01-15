@@ -74,6 +74,6 @@
 
 .tile .status.unhealthy { background-color: darkred; }
 
-.health.healthy { color: #468400; }
+.fi-check { color: #468400; }
 
-.health.unhealthy { color: darkred; }
+.fi-alert { color: darkred; }
