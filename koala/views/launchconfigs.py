@@ -78,10 +78,10 @@ class LaunchConfigView(BaseView):
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
-        self.launchconfig = self.get_launchconfig()
+        self.launch_config = self.get_launchconfig()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            launchconfig=self.launchconfig,
+            launch_config=self.launch_config,
             delete_form=self.delete_form,
         )
 
@@ -94,8 +94,8 @@ class LaunchConfigView(BaseView):
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
-        self.launchconfig.instance_monitoring_boolean = re.match(
-            r'InstanceMonitoring\((\w+)\)', str(self.launchconfig.instance_monitoring)).group(1)
+        self.launch_config.instance_monitoring_boolean = re.match(
+            r'InstanceMonitoring\((\w+)\)', str(self.launch_config.instance_monitoring)).group(1)
         return self.render_dict
  
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)

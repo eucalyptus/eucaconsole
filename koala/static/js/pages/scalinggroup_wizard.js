@@ -13,12 +13,18 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.minSize = 0;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 2;
+        $scope.urlParams = $.url().param();
+        $scope.launchConfig = '';
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%'});
             $('#availability_zones').chosen({'width': '100%'});
         };
+        $scope.setLaunchConfig = function () {
+            $scope.launchConfig = $scope.urlParams['launch_config'] || '';
+        };
         $scope.initController = function () {
             $scope.initChosenSelectors();
+            $scope.setLaunchConfig();
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
