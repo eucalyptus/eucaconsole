@@ -14,6 +14,7 @@ from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
+from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
@@ -58,7 +59,12 @@ class ScalingGroupsJsonView(BaseView):
     @view_config(route_name='scalinggroups_json', renderer='json', request_method='GET')
     def scalinggroups_json(self):
         scalinggroups = []
-        for group in self.get_items():
+        try:
+            items = self.get_items()
+        except BotoServerError as err:
+            return Response(status=err.status, body=err.message)
+        for group in items:
+            all_healthy = all(instance.health_status == 'Healthy' for instance in group.instances)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
@@ -70,6 +76,7 @@ class ScalingGroupsJsonView(BaseView):
                 placement_group=group.placement_group,
                 termination_policies=', '.join(group.termination_policies),
                 current_instances_count=len(group.instances),
+                all_healthy=all_healthy,
             ))
         return dict(results=scalinggroups)
 

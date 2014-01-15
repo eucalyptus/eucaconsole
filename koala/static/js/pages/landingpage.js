@@ -51,6 +51,9 @@ angular.module('LandingPage', ['CustomFilters'])
                 if ($.url().param('filter')) {
                     $scope.applyGetRequestFilters();
                 }
+            }).error(function(oData) {
+                alert(oData);  // TODO: Display notification rather than alert box
+                $('#euca-logout-form').submit();
             });
         };
         /*  Filter items client side based on search criteria.

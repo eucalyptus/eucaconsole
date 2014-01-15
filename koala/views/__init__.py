@@ -57,8 +57,12 @@ class BaseView(object):
            exc is usually a boto.exception.EC2ResponseError exception
         """
         status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
-        timeout_statuses = [400, 403]
-        if isinstance(status, int) and status in timeout_statuses:
+        message = exc.message
+        timed_out = all([
+            status in [400, 403],
+            'Invalid access key' in message
+        ])
+        if timed_out:
             notice = _(u'Your session has timed out.')
             request.session.flash(notice, queue='warning')
             # Empty Beaker cache to clear connection objects
