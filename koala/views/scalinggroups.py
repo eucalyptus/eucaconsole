@@ -39,6 +39,7 @@ class ScalingGroupsView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name')),
+            dict(key='-current_instances_count', name=_(u'Current instances')),
             dict(key='launch_config', name=_(u'Launch configuration')),
             dict(key='availability_zones', name=_(u'Availability zones')),
         ]
@@ -67,7 +68,7 @@ class ScalingGroupsJsonView(BaseView):
                 name=group.name,
                 placement_group=group.placement_group,
                 termination_policies=', '.join(group.termination_policies),
-                instance_ids=[instance.instance_id for instance in group.instances],
+                current_instances_count=len(group.instances),
             ))
         return dict(results=scalinggroups)
 

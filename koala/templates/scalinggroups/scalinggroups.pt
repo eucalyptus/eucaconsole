@@ -32,25 +32,26 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div ng-show="item.launch_config">
-                    <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
-                    {{ item.launch_config }}
-                </div>
-                <div ng-show="item.instance_ids.length > 0">
-                    <span class="label" title="Instances" i18n:attributes="title" data-tooltip="">IN</span>
-                    <span ng-repeat="instance_id in item.instance_ids">
-                        <a ng-href="/instances/{{ instance_id }}">{{ instance_id }}</a><span ng-show="!$last">,&nbsp;</span>
-                    </span>
-                </div>
-                <div ng-show="item.availability_zones">
-                    <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
-                    {{ item.availability_zones }}
+                <div>
+                    <span class="label" title="Current instances" data-tooltip="">IN</span>
+                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">
+                        <b>{{ item.current_instances_count }}</b>
+                        <span i18n:translate="">instance</span><span ng-show="item.current_instances_count > 1">s</span>
+                    </a>
                 </div>
                 <div>
                     <span class="label" title="Capacity" i18n:attributes="title" data-tooltip="">CA</span>
                     <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
+                </div>
+                <div ng-show="item.launch_config">
+                    <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
+                    {{ item.launch_config }}
+                </div>
+                <div ng-show="item.availability_zones">
+                    <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.availability_zones }}
                 </div>
                 <div ng-show="item.placement_group">
                     <span class="label" title="Placement Group" i18n:attributes="title" data-tooltip="">PC</span>
@@ -64,8 +65,8 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch Config</th>
-                <th i18n:translate="">Instances</th>
-                <th i18n:translate="">Availability Zones</th>
+                <th i18n:translate="">Current Instances</th>
+                <th i18n:translate="">Avail Zones</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -73,9 +74,9 @@
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.launch_config }}</td>
                 <td>
-                    <span ng-repeat="instance_id in item.instance_ids">
-                        <a ng-href="/instances/{{ instance_id }}">{{ instance_id }}</a><span ng-show="!$last">, </span>
-                    </span>
+                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">
+                        &nbsp;{{ item.current_instances_count }}&nbsp;
+                    </a>
                 </td>
                 <td>{{ item.availability_zones }}</td>
                 <td>
