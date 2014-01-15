@@ -27,6 +27,9 @@ class BaseScalingGroupForm(BaseSecureForm):
             validators.InputRequired(message=availability_zones_error_msg),
         ],
     )
+    load_balancers = wtforms.SelectMultipleField(
+        label=_(u'Load balancers'),
+    )
     desired_capacity_error_msg = _(u'Field is required')
     desired_capacity = wtforms.IntegerField(
         label=_(u'Desired'),
@@ -70,18 +73,22 @@ class BaseScalingGroupForm(BaseSecureForm):
         ],
     )
 
-    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
+    def __init__(self, request, scaling_group=None, launch_configs=None,
+                 autoscale_conn=None, ec2_conn=None, elb_conn=None, **kwargs):
         super(BaseScalingGroupForm, self).__init__(request, **kwargs)
         self.scaling_group = scaling_group
+        self.launch_configs = launch_configs
         self.autoscale_conn = autoscale_conn
         self.ec2_conn = ec2_conn
-        self.launch_configs = launch_configs
+        self.elb_conn = elb_conn
 
         # Set choices
-        self.choices_manager = ChoicesManager(conn=ec2_conn)
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         self.launch_config.choices = self.get_launch_config_choices()
         self.health_check_type.choices = self.get_healthcheck_type_choices()
         self.availability_zones.choices = self.get_availability_zone_choices()
+        self.load_balancers.choices = self.get_load_balancer_choices()
 
         # Set error messages
         self.launch_config.error_msg = self.launch_config_error_msg
@@ -114,7 +121,16 @@ class BaseScalingGroupForm(BaseSecureForm):
         return sorted(set(choices))
 
     def get_availability_zone_choices(self):
-        return self.choices_manager.availability_zones()
+        return self.ec2_choices_manager.availability_zones()
+
+    def get_load_balancer_choices(self):
+        choices = []
+        if self.elb_choices_manager is not None:
+            choices.extend(self.elb_choices_manager.load_balancers())
+        if self.scaling_group and self.scaling_group.load_balancers:
+            for load_balancer_name in self.scaling_group.load_balancers:
+                choices.append((load_balancer_name, load_balancer_name))
+        return sorted(set(choices))
 
     @staticmethod
     def get_healthcheck_type_choices():

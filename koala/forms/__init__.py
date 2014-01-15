@@ -35,6 +35,7 @@ class ChoicesManager(object):
     """Container for form choices reused across the app"""
 
     def __init__(self, conn=None):
+        """"Note: conn param could be a connection object of any type, based on the choices required"""
         self.conn = conn
 
     def availability_zones(self, zones=None, add_blank=True):
@@ -130,3 +131,17 @@ class ChoicesManager(object):
             choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))
 
+    # ELB connection choices
+    def load_balancers(self, load_balancers=None, add_blank=True):
+        """Returns a list of load balancer choices
+           Will fetch zones if not passed"""
+        choices = []
+        load_balancers = load_balancers or []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        # Note: self.conn is an ELBConnection
+        if not load_balancers and self.conn is not None:
+            load_balancers = self.conn.get_all_load_balancers()
+        for load_balancer in load_balancers:
+            choices.append((load_balancer.name, load_balancer.name))
+        return sorted(choices)

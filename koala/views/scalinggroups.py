@@ -81,6 +81,7 @@ class BaseScalingGroupView(BaseView):
         super(BaseScalingGroupView, self).__init__(request)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
+        self.elb_conn = self.get_connection(conn_type='elb')
         self.ec2_conn = self.get_connection()
 
     def get_scaling_group(self):
@@ -117,7 +118,7 @@ class ScalingGroupView(BaseScalingGroupView):
         self.scaling_group = self.get_scaling_group()
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-            formdata=self.request.params or None)
+            elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
@@ -389,7 +390,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
         self.request = request
         self.create_form = ScalingGroupCreateForm(
             self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-            formdata=self.request.params or None)
+            elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
             avail_zones_placeholder_text=_(u'Select availability zones...')
@@ -410,7 +411,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     name=scaling_group_name,
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
-                    # load_balancers=self.request.params.getall('load_balancers'),  # TODO: Implement when ELB in place
+                    load_balancers=self.request.params.getall('load_balancers'),
                     # default_cooldown=None,  # TODO: Implement
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
