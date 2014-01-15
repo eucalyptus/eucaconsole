@@ -19,6 +19,7 @@ from boto import ec2
 from boto.ec2.connection import EC2Connection
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
+import boto.ec2.elb
 from boto.handler import XmlHandler as BotoXmlHandler
 from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
@@ -63,7 +64,7 @@ class ConnectionManager(object):
         :param secret_key: AWS secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', or 'cloudwatch')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
 
         """
         conn = None
@@ -72,10 +73,13 @@ class ConnectionManager(object):
                 region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'autoscale':
             conn = ec2.autoscale.connect_to_region(
-                region, aws_access_key_id=access_key, security_token=token, aws_secret_access_key=secret_key)
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         elif conn_type == 'cloudwatch':
             conn = ec2.cloudwatch.connect_to_region(
-                region, aws_access_key_id=access_key, security_token=token, aws_secret_access_key=secret_key)
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
+        if conn_type == 'elb':
+            conn = ec2.elb.connect_to_region(
+                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
         return conn
 
     @staticmethod
@@ -97,7 +101,7 @@ class ConnectionManager(object):
         :param secret_key: Eucalyptus secret key
 
         :type conn_type: string
-        :param conn_type: Connection type ('ec2', 'autoscale', or 'cloudwatch')
+        :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
 
         """
         region = RegionInfo(name='eucalyptus', endpoint=clchost)
@@ -113,6 +117,9 @@ class ConnectionManager(object):
         if conn_type == 'cloudwatch':
             path = '/services/CloudWatch'
             conn_class = boto.ec2.cloudwatch.CloudWatchConnection
+        if conn_type == 'elb':
+            path = '/services/LoadBalancing'
+            conn_class = boto.ec2.elb.ELBConnection
 
         conn = conn_class(
             access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
