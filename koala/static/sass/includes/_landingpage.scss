@@ -251,7 +251,8 @@ $gridwrapper-table-width: 98%;
             }
             span.actions {
                 position: relative;
-                left: 80px;
+                float: right;
+                top: -10px;
             }
         }
     }
