@@ -12,6 +12,7 @@ from boto.exception import EC2ResponseError, BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.i18n import TranslationString as _
+from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
@@ -58,8 +59,10 @@ class BaseView(object):
         """
         status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
         message = exc.message
+        if request.is_xhr:
+            return Response(status=status, body=message)
         timed_out = all([
-            status in [400, 403],
+            status in [403],
             'Invalid access key' in message
         ])
         if timed_out:
