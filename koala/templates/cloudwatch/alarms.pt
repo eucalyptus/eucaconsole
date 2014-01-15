@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="AlarmsPage" ng-controller="AlarmsCtrl">
         <h3 class="header" id="pagetitle" i18n:translate="">
             CloudWatch Alarms
         </h3>
@@ -29,14 +29,14 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Trigger" i18n:translate="">Trigger</span>
+                    <span class="label" title="Trigger" i18n:translate="">TR</span>
                     <span i18n:translate="">When the</span>
                     {{ item.statistic }}
                     {{ item.metric }}
                     <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
-                    {{ item.unit }}
+                    {{ item.unit || 'instances' }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">

@@ -7,7 +7,6 @@
 angular.module('AlarmsPage', ['CustomFilters'])
     .controller('AlarmsCtrl', function ($scope) {
         $scope.alarmID = '';
-        $scope.displayType = $scope.urlParams['display'] || 'gridview';
         $scope.revealModal = function (action, item) {
             var modal = $('#' + action + '-alarm-modal');
             $scope.alarmID = item['id'];

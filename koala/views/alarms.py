@@ -112,6 +112,7 @@ class CloudWatchAlarmsJsonView(BaseView):
             return Response(status=err.status, body=err.message)
         for alarm in items:
             alarms.append(dict(
+                name=alarm.name,
                 statistic=alarm.statistic,
                 metric=alarm.metric,
                 period=alarm.period,
@@ -123,5 +124,5 @@ class CloudWatchAlarmsJsonView(BaseView):
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')
-        return conn.list_alarms() if conn else []
+        return conn.describe_alarms() if conn else []
 
