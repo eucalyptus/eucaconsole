@@ -5,10 +5,15 @@
 
 
 // Status colors
-$status-color-allhealthy: $euca-green;
+$status-color-healthy: $euca-green;
 $status-color-unhealthy: darkred;
 
 
-.tile .status.allhealthy { background-color: $status-color-allhealthy; }
+// Tile view
+.tile .status.healthy { background-color: $status-color-healthy; }
 .tile .status.unhealthy { background-color: $status-color-unhealthy; }
+
+// Table view
+.health.healthy { color: $euca-darkgreen; }
+.health.unhealthy { color: $status-color-unhealthy; }
 

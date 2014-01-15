@@ -70,6 +70,10 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
-.tile .status.allhealthy { background-color: #76b800; }
+.tile .status.healthy { background-color: #76b800; }
 
 .tile .status.unhealthy { background-color: darkred; }
+
+.health.healthy { color: #468400; }
+
+.health.unhealthy { color: darkred; }

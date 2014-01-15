@@ -69,10 +69,11 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch Config</th>
-                <th i18n:translate="">Current instances</th>
+                <th i18n:translate="">Instances</th>
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Load balancers</th>
                 <th i18n:translate="">Capacity</th>
+                <th i18n:translate="">Healthy</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -89,6 +90,11 @@
                     <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
+                </td>
+                <td>
+                    <span class="health {{ item.all_healthy ? 'healthy' : 'unhealthy' }}">
+                        {{ item.all_healthy ? 'Healthy' : 'Unhealthy' }}
+                    </span>
                 </td>
                 <td>
                     <span class="actions">
