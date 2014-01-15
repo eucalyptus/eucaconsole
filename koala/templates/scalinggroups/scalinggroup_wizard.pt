@@ -37,11 +37,6 @@
                                 <span class="cir">3</span> <b>Tags</b>
                             </a>
                         </dd>
-                        <dd>
-                            <a id="tabStep4" href="#step4">
-                                <span class="cir">4</span> <b>Policies</b>
-                            </a>
-                        </dd>
                     </dl>
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
@@ -96,20 +91,6 @@
                             <div class="row">
                                 <div class="small-2 columns">&nbsp;</div>
                                 <div class="small-10 columns field inline">
-                                    <a id="visit-step-4" class="button small round" ng-click="visitNextStep(4, $event)">
-                                        <span i18n:translate="">Next: Policies</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <!--! Step 4: Advanced tab content -->
-                        <div class="content" id="step4">
-                            <!--! TODO: Insert default cooldown period form field here -->
-                            <!--! TODO: Insert policy editor widget here -->
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
                                     <button type="submit" class="button">
                                         <span i18n:translate="">Create scaling group</span>
                                     </button>
