@@ -2,6 +2,9 @@
 <!--! Tag editor for Scaling Groups -->
 <div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor"
      ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
+    <style type="text/css">
+        #tag-editor .label.secondary { background-color: transparent; }
+    </style>
     <div class="small-${leftcol_width} columns">
         <h6 i18n:translate="">Tags</h6>
     </div>
