@@ -33,16 +33,6 @@
                                   load_balancers_html_attrs {'data-placeholder': ' '};
                                   term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text};">
                     ${structure:edit_form['csrf_token']}
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns value">${scaling_group.name if scaling_group.name else ''}</div>
-                    </div>
-                    ${panel('form_field', field=edit_form['launch_config'])}
-                    ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
-                    ${panel('form_field', field=edit_form['load_balancers'], **load_balancers_html_attrs)}
-                    ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
-                    ${panel('form_field', field=edit_form['default_cooldown'], step='30')}
-                    <hr />
                     <div class="row controls-wrapper" id="capacity-section">
                         <div class="medium-2 columns">
                             <h6 i18n:translate="">Capacity</h6>
@@ -56,6 +46,12 @@
                                     ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                         </div>
                     </div>
+                    <hr />
+                    ${panel('form_field', field=edit_form['launch_config'])}
+                    ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
+                    ${panel('form_field', field=edit_form['load_balancers'], **load_balancers_html_attrs)}
+                    ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
+                    ${panel('form_field', field=edit_form['default_cooldown'], step='30')}
                     <hr />
                     <h6 i18n:translate="">Health Check</h6>
                     ${panel('form_field', field=edit_form['health_check_type'])}
