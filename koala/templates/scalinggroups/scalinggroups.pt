@@ -46,27 +46,32 @@
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>
                 </div>
                 <div ng-show="item.launch_config">
-                    <span class="label" title="Launch Config" i18n:attributes="title" data-tooltip="">LC</span>
+                    <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
                     {{ item.launch_config }}
                 </div>
                 <div ng-show="item.availability_zones">
-                    <span class="label" title="Availability Zones" i18n:attributes="title" data-tooltip="">AZ</span>
+                    <span class="label" title="Availability zones" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.availability_zones }}
                 </div>
+                <div ng-show="item.load_balancers">
+                    <span class="label" title="Load balancers" i18n:attributes="title" data-tooltip="">LB</span>
+                    {{ item.load_balancers }}
+                </div>
                 <div ng-show="item.placement_group">
-                    <span class="label" title="Placement Group" i18n:attributes="title" data-tooltip="">PC</span>
+                    <span class="label" title="Placement group" i18n:attributes="title" data-tooltip="">PG</span>
                     {{ item.placement_group }}
                 </div>
                 <div ng-show="item.termination_policies">
-                    <span class="label" title="Termination Policies" i18n:attributes="title" data-tooltip="">TP</span>
+                    <span class="label" title="Termination policies" i18n:attributes="title" data-tooltip="">TP</span>
                     {{ item.termination_policies }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Launch Config</th>
-                <th i18n:translate="">Current Instances</th>
-                <th i18n:translate="">Avail Zones</th>
+                <th i18n:translate="">Current instances</th>
+                <th i18n:translate="">Avail zones</th>
+                <th i18n:translate="">Load balancers</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -79,7 +84,8 @@
                     </a>
                 </td>
                 <td>{{ item.availability_zones }}</td>
-                <td>
+                <td>{{ item.load_balancers }}</td>
+                <td><!--! Capacity -->
                     <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
                     <span i18n:translate="">Max:</span> <b>{{ item.max_size }}</b>

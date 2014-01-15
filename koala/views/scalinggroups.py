@@ -60,7 +60,8 @@ class ScalingGroupsJsonView(BaseView):
         scalinggroups = []
         for group in self.get_items():
             scalinggroups.append(dict(
-                availability_zones=', '.join(group.availability_zones),
+                availability_zones=', '.join(sorted(group.availability_zones)),
+                load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
                 launch_config=group.launch_config_name,
                 max_size=group.max_size,
