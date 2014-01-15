@@ -9,7 +9,6 @@ import time
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
-from boto.ec2.cloudwatch import MetricAlarm
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
@@ -17,7 +16,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
+from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm
 from ..forms.scalinggroups import ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm
 from ..models import Notification
@@ -64,7 +63,9 @@ class ScalingGroupsJsonView(BaseView):
         except BotoServerError as err:
             return Response(status=err.status, body=err.message)
         for group in items:
-            all_healthy = all(instance.health_status == 'Healthy' for instance in group.instances)
+            group_instances = group.instances or []
+            instance_health_statuses = [instance.health_status for instance in group_instances]
+            all_healthy = all(status == 'Healthy' for status in instance_health_statuses)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
                 load_balancers=', '.join(sorted(group.load_balancers)),
@@ -75,7 +76,7 @@ class ScalingGroupsJsonView(BaseView):
                 name=group.name,
                 placement_group=group.placement_group,
                 termination_policies=', '.join(group.termination_policies),
-                current_instances_count=len(group.instances),
+                current_instances_count=len(group_instances),
                 all_healthy=all_healthy,
             ))
         return dict(results=scalinggroups)
@@ -219,83 +220,9 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         return self.render_dict
 
     def get_instances(self):
+        if self.scaling_group.instances is None:
+            return []
         return sorted(self.scaling_group.instances, key=attrgetter('instance_id'))
-
-
-class ScalingGroupAlarmsView(BaseScalingGroupView):
-    """View for Scaling Group Alarms page"""
-    TEMPLATE = '../templates/scalinggroups/scalinggroup_alarms.pt'
-
-    def __init__(self, request):
-        super(ScalingGroupAlarmsView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.alarms = self.get_alarms()
-        self.metrics = self.cloudwatch_conn.list_metrics()
-        self.create_form = CloudWatchAlarmCreateForm(
-            self.request, metrics=self.metrics, formdata=self.request.params or None)
-        self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
-        self.render_dict = dict(
-            scaling_group=self.scaling_group,
-            alarms=self.alarms,
-            create_form=self.create_form,
-            delete_form=self.delete_form,
-        )
-
-    @view_config(route_name='scalinggroup_alarms', renderer=TEMPLATE, request_method='GET')
-    def scalinggroup_alarms(self):
-        return self.render_dict
-
-    @view_config(route_name='scalinggroup_alarm_create', renderer=TEMPLATE, request_method='POST')
-    def scalinggroup_alarm_create(self):
-        location = self.request.route_url('scalinggroup_alarms', id=self.scaling_group.name)
-        if self.create_form.validate():
-            try:
-                metric_name = self.request.params.get('metric')
-                metric = self.cloudwatch_conn.list_metrics(metric_name=metric_name)[0]
-                name = self.request.params.get('name')
-                comparison = self.request.params.get('comparison')
-                threshold = self.request.params.get('threshold')
-                period = self.request.params.get('period')
-                evaluation_periods = self.request.params.get('evaluation_periods')
-                statistic = self.request.params.get('statistic')
-                alarm = MetricAlarm(
-                    name, comparison, threshold, period, evaluation_periods, statistic,
-                    description=self.request.params.get('description'),
-                )
-                alarm.metric = metric
-                self.cloudwatch_conn.put_metric_alarm(alarm)
-                prefix = _(u'Successfully created alarm')
-                msg = '{0} {1}'.format(prefix, alarm.name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            return HTTPFound(location=location)
-        else:
-            self.request.error_messages = self.create_form.get_errors_list()
-        return self.render_dict
-
-    @view_config(route_name='scalinggroup_alarm_delete', renderer=TEMPLATE, request_method='POST')
-    def scalinggroup_alarm_delete(self):
-        if self.delete_form.validate():
-            location = self.request.route_url('scalinggroup_alarms', id=self.scaling_group.name)
-            alarm_name = self.request.params.get('name')
-            try:
-                self.cloudwatch_conn.delete_alarm(alarm_name)
-                prefix = _(u'Successfully deleted alarm')
-                msg = '{0} {1}'.format(prefix, alarm_name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            return HTTPFound(location=location)
-        else:
-            self.request.error_messages = self.delete_form.get_errors_list()
-        return self.render_dict
 
 
 class ScalingGroupPoliciesView(BaseScalingGroupView):
@@ -307,13 +234,17 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         self.scaling_group = self.get_scaling_group()
         self.policies = self.get_policies()
         self.alarms = self.get_alarms()
+        self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
+        self.alarm_form = CloudWatchAlarmCreateForm(
+            self.request, metrics=self.metrics, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             create_form=self.create_form,
             delete_form=self.delete_form,
+            alarm_form=self.alarm_form,
             policies=self.policies,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),

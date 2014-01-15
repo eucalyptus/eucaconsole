@@ -75,10 +75,6 @@ urls = [
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
-    # TODO: Move alarm routes to outside the scope of a scaling group?
-    Route(name='scalinggroup_alarms', pattern='/scalinggroups/{id}/alarms'),
-    Route(name='scalinggroup_alarm_create', pattern='/scalinggroups/{id}/alarms/create'),
-    Route(name='scalinggroup_alarm_delete', pattern='/scalinggroups/{id}/alarms/delete'),
 
     # Launch Configurations #####
     # Landing page
@@ -158,5 +154,12 @@ urls = [
     Route(name='ipaddress_associate', pattern='/ipaddresses/{public_ip}/associate'),
     Route(name='ipaddress_disassociate', pattern='/ipaddresses/{public_ip}/disassociate'),
     Route(name='ipaddress_release', pattern='/ipaddresses/{public_ip}/release'),
+
+    # CloudWatch Alarms #####
+    # Landing page
+    Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
+    Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
+    Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
+    Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
 ]
 

@@ -1,10 +1,10 @@
 /**
- * @fileOverview Common JS for Landing pages
- * @requires AngularJS, jQuery, and Purl jQuery URL parser plugin
+ * @fileOverview JS for Scaling Groups landing page
+ * @requires AngularJS and jQuery
  *
  */
 
-angular.module('LandingPage', ['CustomFilters'])
+angular.module('ScalingGroupsPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
         $scope.unfilteredItems = [];
@@ -17,30 +17,6 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
         };
-        $scope.applyGetRequestFilters = function () {
-            // Apply an "all" match of filters based on URL params
-            // If item matches all applicable non-empty URL param filters, return the item.
-            $scope.items = $scope.items.filter(function(item) {
-                var urlParams = $scope.urlParams,
-                    matchedKeys = [];
-                delete urlParams['filter'];  // Ignore filter
-                delete urlParams['display'];  // Ignore display = tableview | gridview
-                var urlParamKeys = Object.keys(urlParams);
-                var filteredKeys = [];
-                for (var i=0; i < urlParamKeys.length; i++) {
-                    if (urlParams[urlParamKeys[i]]) {
-                        filteredKeys.push(1);  // Ignore empty URL params
-                    }
-                    if (item[urlParamKeys[i]] === urlParams[urlParamKeys[i]]) {
-                        matchedKeys.push(1)
-                    }
-                }
-                // If all URL param keys match, return item.
-                if (matchedKeys.length === filteredKeys.length) {
-                    return item;
-                }
-            });
-        };
         $scope.getItems = function (jsonItemsEndpoint) {
             $scope.itemsLoading = true;
             $http.get(jsonItemsEndpoint).success(function(oData) {
@@ -52,7 +28,7 @@ angular.module('LandingPage', ['CustomFilters'])
                     $scope.applyGetRequestFilters();
                 }
             }).error(function(oData) {
-                // TODO: handle errors
+                // TODO: Handle errors
             });
         };
         /*  Filter items client side based on search criteria.
