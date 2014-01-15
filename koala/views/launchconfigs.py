@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS launch configurations
 import re
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -78,19 +78,17 @@ class LaunchConfigView(BaseView):
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
         self.conn = self.get_connection(conn_type='autoscale')
-        self.launch_config = self.get_launchconfig()
+        self.launch_config = self.get_launch_config()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
             delete_form=self.delete_form,
         )
 
-    def get_launchconfig(self):
-        launchconfig_param = self.request.matchdict.get('id')
-        launchconfigs_param = [launchconfig_param]
-        launchconfigs = self.conn.get_all_launch_configurations(names=launchconfigs_param)
-        launchconfigs = launchconfigs[0] if launchconfigs else None
-        return launchconfigs 
+    def get_launch_config(self):
+        launch_config_param = self.request.matchdict.get('id')
+        launch_configs = self.conn.get_all_launch_configurations(names=[launch_config_param])
+        return launch_configs[0] if launch_configs else None
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
@@ -107,8 +105,9 @@ class LaunchConfigView(BaseView):
                 prefix = _(u'Successfully deleted launchconfig')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
+            except BotoServerError as err:
+                prefix = _(u'Unable to delete launch configuration')
+                msg = '{0} {1} - {2}'.format(prefix, self.launch_config.name, err.message)
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
