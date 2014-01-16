@@ -23,7 +23,7 @@
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                     <li>
-                        <a href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
+                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
                     </li>
                     <li ng-show="!item.transitional">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>

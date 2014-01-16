@@ -1,47 +1,45 @@
 <!--! Create alarm dialog -->
-<div tal:omit-tag="">
-    <div id="create-alarm-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Create alarm</h3>
-        <p i18n:translate="">&nbsp;</p>
-        <form action="${request.route_url('cloudwatch_alarm_create')}" method="post" data-abide="">
-            ${structure:alarm_form['csrf_token']}
-            ${panel('form_field', field=alarm_form['name'], leftcol_width=3, rightcol_width=9)}
-            ${panel('form_field', field=alarm_form['description'], leftcol_width=3, rightcol_width=9)}
-            <hr />
-            <div class="row controls-wrapper">
-                <div class="small-3 columns">
-                    <label class="right">Trigger alarm</label>
-                </div>
-                <div class="small-9 columns">
-                    <span i18n:translate="">when the</span>
-                    ${structure:alarm_form['statistic']}
-                    ${structure:alarm_form['metric']}
-                    <br />
-                    <span i18n:translate="">is</span>
-                    ${structure:alarm_form['comparison']}
-                    ${structure:alarm_form['threshold']}
-                    ${structure:alarm_form['unit']}
-                </div>
+<div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
+    <h3 i18n:translate="">Create alarm</h3>
+    <p i18n:translate="">&nbsp;</p>
+    <form action="${request.route_url('cloudwatch_alarms_create')}" method="post" data-abide="">
+        ${structure:alarm_form['csrf_token']}
+        ${panel('form_field', field=alarm_form['name'], leftcol_width=3, rightcol_width=9)}
+        ${panel('form_field', field=alarm_form['description'], leftcol_width=3, rightcol_width=9)}
+        <hr />
+        <div class="row controls-wrapper">
+            <div class="small-3 columns">
+                <label class="right">Trigger alarm</label>
             </div>
-            <hr />
-            <div class="row controls-wrapper">
-                <div class="small-3 columns">
-                    <label class="right">Evaluation (seconds)</label>
-                </div>
-                <div class="small-9 columns">
-                    ${panel('form_field', field=alarm_form['evaluation_periods'])}
-                    ${panel('form_field', field=alarm_form['period'])}
-                </div>
+            <div class="small-9 columns">
+                <span i18n:translate="">when the</span>
+                ${structure:alarm_form['statistic']}
+                ${structure:alarm_form['metric']}
+                <br />
+                <span i18n:translate="">is</span>
+                ${structure:alarm_form['comparison']}
+                ${structure:alarm_form['threshold']}
+                ${structure:alarm_form['unit']}
             </div>
-            <hr />
-            <div class="row">
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <button type="submit" class="button" i18n:translate="">Add alarm</button>
-                </div>
+        </div>
+        <hr />
+        <div class="row controls-wrapper">
+            <div class="small-3 columns">
+                <label class="right">Evaluation (seconds)</label>
             </div>
-        </form>
-        <a class="close-reveal-modal">&#215;</a>
-    </div>
+            <div class="small-9 columns">
+                ${panel('form_field', field=alarm_form['evaluation_periods'])}
+                ${panel('form_field', field=alarm_form['period'])}
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="small-3 columns">&nbsp;</div>
+            <div class="small-9 columns">
+                <button type="submit" class="button" i18n:translate="">Add alarm</button>
+            </div>
+        </div>
+    </form>
+    <a class="close-reveal-modal">&#215;</a>
 </div>
 
