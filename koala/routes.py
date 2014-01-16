@@ -72,6 +72,7 @@ urls = [
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
     Route(name='scalinggroup_update', pattern='/scalinggroups/{id}/update'),
     Route(name='scalinggroup_instances', pattern='/scalinggroups/{id}/instances'),
+    Route(name='scalinggroup_instances_json', pattern='/scalinggroups/{id}/instances/json'),
     Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
     Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
     Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),

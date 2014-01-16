@@ -209,15 +209,39 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
-        self.instances = self.get_instances()
         self.render_dict = dict(
             scaling_group=self.scaling_group,
-            instances=self.instances,
+            json_items_endpoint=self.request.route_url('scalinggroup_instances_json', id=self.scaling_group.name),
         )
 
     @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_instances(self):
         return self.render_dict
+
+
+class ScalingGroupInstancesJsonView(BaseScalingGroupView):
+    """JSON response for Scaling Group Manage Instances page"""
+
+    def __init__(self, request):
+        super(ScalingGroupInstancesJsonView, self).__init__(request)
+        self.scaling_group = self.get_scaling_group()
+
+    @view_config(route_name='scalinggroup_instances_json', renderer='json', request_method='GET')
+    def scalinggroup_instances_json(self):
+        instances = []
+        try:
+            items = self.get_instances()
+        except BotoServerError as err:
+            return Response(status=err.status, body=err.message)
+        for instance in items:
+            instances.append(dict(
+                id=instance.instance_id,
+                status=instance.health_status,
+                availability_zone=instance.availability_zone,
+                launch_config=instance.launch_config_name,
+                lifecycle_state=instance.lifecycle_state,
+            ))
+        return dict(results=instances)
 
     def get_instances(self):
         if self.scaling_group.instances is None:

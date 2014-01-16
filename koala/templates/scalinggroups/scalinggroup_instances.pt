@@ -5,7 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupInstances" ng-controller="ScalingGroupInstancesCtrl"
+         ng-init="initController('${json_items_endpoint}')">
         <h3 class="header" id="pagetitle">
             <a class="back-arrow" href="${request.route_url('scalinggroups')}"
                data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
@@ -25,39 +26,42 @@
                     <span i18n:translate="">Instances in scaling group</span>
                     <strong>${scaling_group.name}</strong>
                 </h6>
-                <div class="tile add" id="add-instances">
-                    <a href="#" data-reveal-id="add-instances-modal">
-                        <div class="plus">+</div>
-                        <div i18n:translate="">Add more instances</div>
-                    </a>
+                <div ng-show="initialLoading">
+                    <span class="dots">&nbsp;</span>
                 </div>
-                <div class="tile item" tal:repeat="instance instances">
+                <div class="alert alert-info" ng-show="!initialLoading &amp;&amp; instances.length === 0" ng-cloak="">
+                    There are no instances in this scaling group
+                </div>
+                <div class="tile item" ng-repeat="instance in instances" ng-cloak="">
                     <div class="header">
-                        <strong><a href="${request.route_url('instance_view', id=instance.instance_id)}">${instance.instance_id}</a></strong>
-                        <a class="tiny secondary button dropdown right"
-                           data-reveal-id="delete-policy-modal"><i class="icon fi-minus-circle"></i></a>
+                        <strong><a ng-href="/instances/{{ instance.id }}">{{ instance.id }}</a></strong>
+                        <a class="tiny secondary button dropdown right"><i class="icon fi-minus-circle"></i></a>
                     </div>
                     <div class="content">
                         <div>
                             <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
-                            ${instance.availability_zone}
+                            {{ instance.availability_zone }}
                         </div>
                         <div>
                             <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
-                            <a href="${request.route_url('launchconfig_view', id=instance.launch_config_name)}">${instance.launch_config_name}</a>
+                            <a ng-href="/launchconfigs/{{ instance.launch_config }}">{{ instance.launch_config }}</a>
                         </div>
                         <div>
-                            <span class="label" title="State" i18n:attributes="title" data-tooltip="">ST</span>
-                            ${instance.lifecycle_state}
+                            <span class="label" title="State" i18n:attributes="title" data-tooltip="">LS</span>
+                            {{ instance.lifecycle_state }}
                         </div>
                     </div>
-                    <div class="footer status ${instance.health_status.lower()}">
-                        ${instance.health_status}
+                    <div class="footer status {{ instance.status.toLowerCase() }}">
+                        {{ instance.status }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/scalinggroup_instances.js')}"></script>
 </div>
 
 </metal:block>
