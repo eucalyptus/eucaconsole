@@ -16,46 +16,83 @@
                     <span i18n:translate="">Properties of launch configuration</span>
                     <strong>${launch_config.name }</strong>
                 </h6>
-                <form action="${request.route_url('launchconfigs')}" method="post" data-abide="abide"> 
+                <form>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${launch_config.name if launch_config.name else ''}</div>
+                        <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
+                        <div class="small-9 columns value">
+                            <a href="${request.route_url('keypair_view', id=launch_config.key_name)}">${launch_config.key_name}</a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Instance Monitoring</label></div>
-                        <div class="small-9 columns value">${launch_config.instance_monitoring_boolean if launch_config.instance_monitoring_boolean else ''}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
-                        <div class="small-9 columns value">${launch_config.kernel_id if launch_config.kernel_id else ''}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Key Name</label></div>
-                        <div class="small-9 columns value">${launch_config.key_name if launch_config.key_name else ''}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
-                        <div class="small-9 columns value">${launch_config.ramdisk_id if launch_config.ramdisk_id else ''}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Security Groups</label></div>
+                        <div class="small-3 columns"><label i18n:translate="">Security groups</label></div>
                         <div class="small-9 columns value">
                             <span tal:repeat="security_group launch_config.security_groups">
                                 <a href="${request.route_url('securitygroup_view', id=security_group)}">${security_group}</a>
                             </span>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">User Data</label></div>
-                        <div class="small-9 columns value">${launch_config.user_data if launch_config.user_data else ''}</div>
+                    <div class="row controls-wrapper readonly"
+                         tal:define="monitored launch_config.instance_monitoring_boolean">
+                        <div class="small-3 columns"><label i18n:translate="">Monitored</label></div>
+                        <div class="small-9 columns value">
+                            <span tal:condition="monitored" tal:omit-tag="">
+                                <i class="fi-check"></i>
+                                <span i18n:translate="">Yes</span>
+                            </span>
+                            <span tal:condition="not monitored" tal:omit-tag="">
+                                <i class="fi-x"></i>
+                                <span i18n:translate="">No</span>
+                            </span>
+                        </div>
                     </div>
-                    <hr>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Created</label></div>
+                        <div class="small-9 columns value">${launch_config.created_time.strftime(layout.date_format)}</div>
+                    </div>
+                    <hr />
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
+                        <div class="small-9 columns value">${launch_config.instance_type}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image</label></div>
+                        <div class="small-9 columns value">
+                            <a href="${request.route_url('image_view', id=image.id)}">${image.name or image.id}</a>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
+                        <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-9 columns value">${image.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Root device</label></div>
+                        <div class="small-9 columns value">${image.root_device_type}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
+                        <div class="small-9 columns value">${image.platform.name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
+                        <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                        <div class="small-9 columns value">${launch_config.kernel_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="launch_config.ramdisk_id">
+                        <div class="small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
+                        <div class="small-9 columns value">${launch_config.ramdisk_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div class="small-9 columns value">${image.location}</div>
+                    </div>
+                    <hr />
                     <div class="row">
                         <div class="small-3 columns">&nbsp;</div>
                         <div class="small-9 columns field inline">
-                            <button type="submit" class="button">
-                                <span i18n:translate="">Save changes</span>
-                            </button>
+                            <a class="button"
+                               href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}">
+                                <span>Create scaling group</span><br />
+                                <span>with this launch configuration</span>
+                            </a>
                             <a href="${request.route_url('launchconfigs')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
@@ -66,15 +103,6 @@
         <div class="large-5 columns">
             <div class="panel has-title">
                 <h6 class="title" i18n:translate="">Other launch configuration actions</h6>
-                <div class="row">
-                    <div class="large-1 columns">&nbsp;</div>
-                    <div class="large-11 columns">
-                        <a class="button secondary" i18n:translate=""
-                           href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}">
-                            Use launch configuration to create scaling group
-                        </a>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="large-1 columns">&nbsp;</div>
                     <div class="large-11 columns">
