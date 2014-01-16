@@ -62,6 +62,7 @@
                 ${panel('form_field', field=create_form['adjustment_type'])}
                 ${panel('form_field', field=create_form['cooldown'])}
                 ${panel('form_field', field=create_form['alarm'])}
+                <a ng-click="revealAlarmModal()">Create alarm</a>
                 <hr />
                 <div class="small-4 columns">&nbsp;</div>
                 <div class="small-8 columns">
@@ -81,6 +82,8 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <!--! Create Alarm modal dialog -->
+        ${panel('create_alarm_dialog', alarm_form=alarm_form)}
         <!--! /end modal dialogs -->
     </div>
 </div>

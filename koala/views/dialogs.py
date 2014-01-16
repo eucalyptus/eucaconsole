@@ -10,7 +10,7 @@ from pyramid_layout.panel import panel_config
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
 def ipaddress_dialogs(context, request, eip=None, landingpage=False,
                       associate_form=None, disassociate_form=None, release_form=None):
-    """ Modal dialogs for Elastic IP landing and detail page."""
+    """Modal dialogs for Elastic IP landing and detail page."""
     return dict(
         eip=eip,
         landingpage=landingpage,
@@ -22,7 +22,7 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 
 @panel_config('snapshot_dialogs', renderer='../templates/dialogs/snapshot_dialogs.pt')
 def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, delete_form=None, register_form=None):
-    """ Modal dialogs for Snapshot landing and detail page."""
+    """Modal dialogs for Snapshot landing and detail page."""
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
@@ -35,7 +35,7 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
 @panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
 def instance_dialogs(context, request, instance=None, landingpage=False, start_form=None,
                      stop_form=None, reboot_form=None, terminate_form=None):
-    """ Modal dialogs for Instance landing and detail page."""
+    """Modal dialogs for Instance landing and detail page."""
     return dict(
         instance=instance,
         landingpage=landingpage,
@@ -49,7 +49,7 @@ def instance_dialogs(context, request, instance=None, landingpage=False, start_f
 @panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):
-    """ Modal dialogs for Volume landing and detail page."""
+    """Modal dialogs for Volume landing and detail page."""
     return dict(
         volume=volume,
         volume_name=volume_name,
@@ -63,9 +63,17 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
 
 @panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
 def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):
-    """ Modal dialogs for Security group landing and detail page."""
+    """Modal dialogs for Security group landing and detail page."""
     return dict(
         security_group=security_group,
         landingpage=landingpage,
         delete_form=delete_form,
+    )
+
+
+@panel_config('creat_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
+def create_alarm_dialog(context, request, alarm_form=None):
+    """Create alarm dialog page."""
+    return dict(
+        alarm_form=alarm_form,
     )
