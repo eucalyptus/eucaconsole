@@ -183,6 +183,10 @@ body {
 /* -----------------------------------------
    Misc
 ----------------------------------------- */
+ul.breadcrumbs {
+    margin-bottom: 0;
+}
+
 .dots {
     display: inline-block;
     width: 32px; height: 10px;

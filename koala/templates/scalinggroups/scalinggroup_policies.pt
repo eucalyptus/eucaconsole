@@ -8,9 +8,11 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('scalinggroups')}"
-               data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Scaling Group</span> ${scaling_group.name if scaling_group else ''}
+            <ul class="breadcrumbs">
+                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling Groups</a></li>
+                <li><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">${scaling_group.name}</a></li>
+                <li class="current"><a href="#" i18n:translate="">Policies</a></li>
+            </ul>
         </h3>
         <dl class="sub-nav" id="scalinggroup-subnav">
             <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">Scaling Group</a></dd>
