@@ -5,7 +5,10 @@
 </div>
 
 <div metal:fill-slot="head_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/enc-base64.js')}"></script>
 
     <script type="text/javascript">
       function set_focus() {
@@ -39,12 +42,32 @@
           });
 
           // set up listener to capture and save values if remember checked
-          $('#euca-login-form').submit(function (event) {
+          $('#euca-login-form').submit(function () {
             $.cookie('account', $('#account').val(), {expires: 180});
             $.cookie('login-form', 'eucalyptus', {expires: 180});
           });
-          $('#aws-login-form').submit(function (event) {
+          $('#aws-login-form').submit(function () {
             $.cookie('login-form', 'aws', {expires: 180});
+            // assemble request for aws type login
+            // build params
+            params = "AWSAccessKeyId="+$('#access_key').val();
+            params = params+"&Action=GetSessionToken";
+            params = params+"&DurationSeconds="+$('#duration').val();
+            params = params+"&SignatureMethod=HmacSHA256";
+            params = params+"&SignatureVersion=2";
+            params = params+"&Timestamp="+encodeURIComponent(new Date().toISOString().substring(0, 19)+"Z");
+            //params = params+"&Timestamp="+"2014-01-16T19%3A36%3A32Z";
+            params = params+"&Version=2011-06-15";
+            // sign request
+            var string_to_sign = "POST\nsts.amazonaws.com\n/\n"+params;
+            var hash = CryptoJS.HmacSHA256(string_to_sign, $('#secret_key').val());
+            var signature = hash.toString(CryptoJS.enc.Base64);
+            var encoded = encodeURIComponent(signature);
+            params = params+"&Signature="+encoded;
+            $('#aws_csrf_token').val($('#csrf_token').val());
+            $('#package').val($.base64.encode(params));
+            $('#false-aws-login-form').submit();
+            return false;
           });
       }
     </script>
@@ -117,6 +140,7 @@
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_url('login')}?login_type=AWS">
                             <input type="hidden" name="came_from" value="${came_from}" />
+                            <input type="hidden" id="duration" name="duration" value="${duration}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
@@ -142,6 +166,13 @@
                                            id="aws-login-button" value="Log in to AWS" />
                                 </div>
                             </div>
+                        </form>
+                        <form id="false-aws-login-form" method="post" name="aws_login_form"
+                              action="${request.route_url('login')}?login_type=AWS">
+                            <input type="hidden" id="aws_csrf_token" name="csrf_token"/>
+                            <input type="hidden" name="came_from" value="${came_from}"/>
+                            <input type="hidden" id="package" name="package"/>
+                            <input type="submit" id="false-aws-login-button" style="display:none;"/>
                         </form>
                     </div>
                 </div>
