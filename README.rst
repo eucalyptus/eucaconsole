@@ -95,6 +95,9 @@ The `--reload` flag instructs Pyramid to automatically watch for changes in the 
 
 The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
 
+
+::
+
     [app:main]
     # ...
     pyramid.includes =
