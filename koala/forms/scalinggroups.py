@@ -317,5 +317,6 @@ class ScalingGroupPolicyDeleteForm(BaseSecureForm):
 
 class ScalingGroupInstancesMarkUnhealthyForm(BaseSecureForm):
     """Scaling Group instance mark unhealthy form"""
-    pass
+    respect_grace_period = wtforms.BooleanField(label=_(u'Respect grace period?'))
+
 

@@ -89,6 +89,7 @@ input[type="number"] { width: 3rem; }
 .tile .header .button.dropdown { height: 24px; color: black; }
 
 .tile .footer.healthy { background-color: #76b800; }
+.tile .footer.healthy.pending { background-color: #8dc640; }
 
 #evaluation_periods, #period { display: inline-block; }
 

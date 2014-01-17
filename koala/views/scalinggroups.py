@@ -227,8 +227,11 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
         if self.markunhealthy_form.validate():
             instance_id = self.request.params.get('instance_id')
+            respect_grace_period = self.request.params.get('respect_grace_period') == 'y'
             try:
-                self.autoscale_conn.set_instance_health(instance_id, 'Unhealthy')
+                self.autoscale_conn.set_instance_health(
+                    instance_id, 'Unhealthy', should_respect_grace_period=respect_grace_period)
+                time.sleep(2)
                 prefix = _(u'Successfully marked the following instance as unhealthy:')
                 msg = '{0} {1}'.format(prefix, instance_id)
                 queue = Notification.SUCCESS
@@ -253,17 +256,23 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_instances_json', renderer='json', request_method='GET')
     def scalinggroup_instances_json(self):
         instances = []
+        transitional_states = ['Unhealthy', 'Pending']
         try:
             items = self.get_instances()
         except BotoServerError as err:
             return Response(status=err.status, body=err.message)
         for instance in items:
+            is_transitional = any([
+                instance.lifecycle_state in transitional_states,
+                instance.health_status in transitional_states,
+            ])
             instances.append(dict(
                 id=instance.instance_id,
                 status=instance.health_status,
                 availability_zone=instance.availability_zone,
                 launch_config=instance.launch_config_name,
                 lifecycle_state=instance.lifecycle_state,
+                transitional=is_transitional,
             ))
         return dict(results=instances)
 

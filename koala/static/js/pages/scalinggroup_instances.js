@@ -5,21 +5,31 @@
  */
 
 angular.module('ScalingGroupInstances', [])
-    .controller('ScalingGroupInstancesCtrl', function ($scope, $http) {
+    .controller('ScalingGroupInstancesCtrl', function ($scope, $http, $timeout) {
         $scope.loading = false;
-        $scope.instances = [];
+        $scope.items = [];
         $scope.instanceID = '';
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
         $scope.markUnhealthyModal = $('#mark-unhealthy-modal');
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
-            $scope.getScalingGroupInstances();
+            $scope.getItems();
         };
-        $scope.getScalingGroupInstances = function () {
+        $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
-                $scope.instances = oData ? oData.results : [];
+                var transitionalCount = 0;
+                $scope.items = oData ? oData.results : [];
                 $scope.initialLoading = false;
+                $scope.items.forEach(function (item) {
+                    if (item['transitional']) {
+                        transitionalCount += 1;
+                    }
+                });
+                // Auto-refresh instances if any of them are in transition
+                if (transitionalCount > 0) {
+                    $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
+                }
             });
         };
         $scope.revealUnhealthyModal = function (instance) {

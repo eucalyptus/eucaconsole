@@ -47,8 +47,13 @@ input[type="number"] {
 }
 
 // Scaling group instances page
-.tile .footer.healthy {
-    background-color: $euca-green;
+.tile {
+    .footer {
+        &.healthy {
+            background-color: $euca-green;
+            &.pending { background-color: $euca-lightgreen; }
+        }
+    }
 }
 
 // Scaling group alarms page
