@@ -69,3 +69,13 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
         landingpage=landingpage,
         delete_form=delete_form,
     )
+
+@panel_config('keypair_dialogs', renderer='../templates/dialogs/keypair_dialogs.pt')
+def keypair_dialogs(context, request, keypair=None, landingpage=False,delete_form=None):
+    """ Modal dialogs for Keypair landing and detail page."""
+    return dict(
+        keypair=keypair,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+

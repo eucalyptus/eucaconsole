@@ -1,4 +1,3 @@
-
 // JAVASCRIPT SNIPPET TAKEN FROM 3.4.1 TO ADD A LISTENER TO THE FILE UPLOAD INPUTBOX
 $('html body').find("#key-import-file").on('change', function(evt) {
     var file = evt.target.files[0];
