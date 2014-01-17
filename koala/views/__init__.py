@@ -94,10 +94,14 @@ class TaggedItemView(BaseView):
             self.add_tags()
 
     @staticmethod
-    def get_display_name(object):
-        name_tag = object.tags.get('Name', '')
-        name = '{0}{1}'.format(name_tag if name_tag else object.id,
-                               ' ({0})'.format(object.id) if name_tag else '')
+    def get_display_name(resource):
+        name = ''
+        if resource:
+            name_tag = resource.tags.get('Name', '')
+            name = '{0}{1}'.format(
+                name_tag if name_tag else resource.id,
+                ' ({0})'.format(resource.id) if name_tag else ''
+            )
         return name
 
     @staticmethod
