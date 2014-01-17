@@ -258,7 +258,6 @@ class InstanceView(TaggedItemView):
 
             # Update assigned IP address
             new_ip = self.request.params.get('ip_address')
-            import pdb; pdb.set_trace()
             if new_ip and new_ip != self.instance.ip_address:
                 self.instance.use_ip(new_ip)
                 time.sleep(1)  # Give backend time to allocate IP address

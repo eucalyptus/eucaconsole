@@ -43,8 +43,8 @@ class InstanceForm(BaseSecureForm):
             self.instance_type.data = instance.instance_type
             self.ip_address.data = instance.ip_address or ''
             self.monitored.data = instance.monitored
-            self.kernel.data = instance.kernel
-            self.ramdisk.data = instance.ramdisk
+            self.kernel.data = instance.kernel or ''
+            self.ramdisk.data = instance.ramdisk or ''
             self.userdata.data = ''
 
     def set_choices(self):
