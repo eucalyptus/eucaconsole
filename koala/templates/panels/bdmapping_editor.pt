@@ -78,5 +78,5 @@
         </div>
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/bdmapping_editor.js')}"></script>
 </div>
