@@ -133,6 +133,7 @@ class ImageView(TaggedItemView):
             for attr in attrs['block_device_mapping']:
                 image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
         image.platform = self.get_platform(image)
+        image.platform_name = ImageView.get_platform_name(image.platform)
         return image
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
