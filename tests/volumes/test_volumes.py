@@ -123,8 +123,8 @@ class VolumeCreateSnapshotFormTestCase(BaseFormTestCase):
         self.has_field('csrf_token')
         self.assertTrue(issubclass(self.form_class, BaseSecureForm))
 
-    def test_required_fields(self):
-        self.assert_required('description')
+    def test_optional_fields(self):
+        self.assert_not_required('description')
 
     def test_description_maxlength(self):
         self.assert_max_length('description', 255)
