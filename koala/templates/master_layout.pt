@@ -19,7 +19,7 @@
     <meta metal:define-slot="head_js" />
 </head>
 
-<body onload="if (typeof page_loaded == 'function') { page_loaded(); }">
+<body>
 <nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar" data-topbar="">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
