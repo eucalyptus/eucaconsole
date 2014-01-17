@@ -18,8 +18,7 @@ class InstanceForm(BaseSecureForm):
     """
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
-        label=_(u'Instance type'),
-        validators=[validators.Required(message=instance_type_error_msg)],
+        label=_(u'Instance type')
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))

@@ -15,7 +15,7 @@
             <span i18n:translate="">Instance</span> ${instance_name}
         </h3>
         <dl class="sub-nav" id="instance-subnav">
-            <dd class="active"><a href="#" i18n:translate="">Instance</a></dd>
+            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
             <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
         </dl>
         <!-- Notifications -->
@@ -23,6 +23,9 @@
 
         <div class="large-7 columns">
             <div class="panel has-title">
+                <span tal:condition="image.root_device_type == 'ebs'">
+                Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
+                </span>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
@@ -131,22 +134,20 @@
                     <hr />
                     ${panel('tag_editor', tags=instance.tags)}
                     <hr />
-                    <form>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
-                            <div class="small-8 columns value">${image.id}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                            <div class="small-8 columns value">${image.name}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                            <div class="small-8 columns value">${image.location}</div>
-                        </div>
-                        ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
-                        ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
-                    </form>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-8 columns value">${image.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
+                        <div class="small-8 columns value">${image.name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div class="small-8 columns value">${image.location}</div>
+                    </div>
+                    ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
+                    ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
@@ -164,9 +165,11 @@
                 <a class="button secondary" i18n:translate="">
                     Launch more like this
                 </a>
+                <br/>
                 <a class="button secondary" i18n:translate="">
                     Create scaling group launch configuration like this
                 </a>
+                <br/>
                 <a class="button secondary" i18n:translate="" ng-click="revealConsoleOutputModal()">
                     View console output
                 </a>

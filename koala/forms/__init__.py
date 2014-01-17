@@ -83,12 +83,15 @@ class ChoicesManager(object):
         return sorted(set(choices))
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
-        choices = [('', _(u'None assigned'))]
+        choices = [] #('', _(u'None assigned'))]
         ipaddresses = ipaddresses or []
         if not ipaddresses and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()
         for eip in ipaddresses:
-            choices.append((eip.public_ip, eip.public_ip))
+            if eip.instance_id is None:
+                choices.append((eip.public_ip, eip.public_ip))
+            if eip.instance_id == instance.id:
+                choices.append(('', _(u'Unassign Address')))
         if instance and instance.ip_address:
             choices.append((instance.ip_address, instance.ip_address))
         return sorted(set(choices))
