@@ -382,6 +382,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 # Attach policy to alarm
                 alarm_name = self.request.params.get('alarm')
                 alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
+                alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
+                alarm.comparison = alarm._cmp_map.get(alarm.comparison)  # See https://github.com/boto/boto/issues/1311
                 # FIXME: Properly attach a policy to an alarm
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:
