@@ -387,7 +387,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 # FIXME: Properly attach a policy to an alarm
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:
-                    alarm.add_alarm_action(created_scaling_policy.policy_arn)
+                    # alarm.add_alarm_action(created_scaling_policy.policy_arn)
+                    alarm.alarm_actions.append(created_scaling_policy.policy_arn)
                 alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
                 msg = '{0} {1}'.format(prefix, scaling_policy.name)
