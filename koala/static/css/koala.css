@@ -1523,6 +1523,8 @@ a.circle { color: black; display: inline-block; }
 
 #pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
 
+textarea.console-output { width: 660px; height: 400px; margin: 10px; }
+
 /* ----------------------------------------- Help content
 ----------------------------------------- */
 .help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }

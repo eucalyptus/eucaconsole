@@ -94,6 +94,12 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Console Output for ${instance_name}</h3>
+            <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput">
+            </textarea>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

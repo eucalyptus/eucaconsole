@@ -345,6 +345,13 @@ class InstanceView(TaggedItemView):
             if reservation:
                 instance = reservation.instances[0]
                 instance.groups = reservation.groups
+                instance.reservation_id = reservation.id
+                instance.owner_id = reservation.owner_id
+                if instance.platform is None:
+                    instance.platform = _(u"linux")
+                instance.instance_profile_id = None
+                if len(instance.instance_profile.keys()) > 0:
+                    instance.instance_profile_id = instance.instance_profile.keys()[0]
                 return instance
         return None
 
@@ -394,6 +401,12 @@ class InstanceStateView(BaseView):
     def instance_nextdevice_json(self):
         """Return current instance state"""
         return dict(results=self.suggest_next_device_name(self.instance))
+
+    @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
+    def instance_console_output_json(self):
+        """Return console output for instance"""
+        output = self.conn.get_console_output(instance_id=self.instance.id)
+        return dict(results=output.output)
 
     def get_instance(self):
         instance_id = self.request.matchdict.get('id')

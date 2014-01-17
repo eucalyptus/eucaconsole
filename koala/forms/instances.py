@@ -21,8 +21,15 @@ class InstanceForm(BaseSecureForm):
         label=_(u'Instance type'),
         validators=[validators.Required(message=instance_type_error_msg)],
     )
+    userdata = wtforms.TextAreaField(label=_(u'User data'))
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
+    kernel = wtforms.SelectField(
+        label=_(u'Kernel ID')
+    )
+    ramdisk = wtforms.SelectField(
+        label=_(u'Ramdisk ID')
+    )
 
     def __init__(self, request, instance=None, conn=None, **kwargs):
         super(InstanceForm, self).__init__(request, **kwargs)
@@ -37,10 +44,15 @@ class InstanceForm(BaseSecureForm):
             self.instance_type.data = instance.instance_type
             self.ip_address.data = instance.ip_address or ''
             self.monitored.data = instance.monitored
+            self.kernel.data = instance.kernel
+            self.ramdisk.data = instance.ramdisk
+            self.userdata.data = ''
 
     def set_choices(self):
         self.ip_address.choices = self.choices_manager.elastic_ips(instance=self.instance)
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
+        self.kernel.choices = self.choices_manager.kernels();
+        self.ramdisk.choices = self.choices_manager.ramdisks();
 
 
 class LaunchInstanceForm(BaseSecureForm):

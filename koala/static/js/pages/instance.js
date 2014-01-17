@@ -13,13 +13,25 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
         $scope.isUpdating = false;
+        $scope.isNotStopped = $scope.instancestate != 'stopped';
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, state) {
+        $scope.initController = function (jsonEndpoint, consoleEndpoint, state) {
             $scope.instanceStateEndpoint = jsonEndpoint;
+            $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
             $scope.getInstanceState();
+        };
+        $scope.revealConsoleOutputModal = function() {
+            $http.get($scope.consoleOutputEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $scope.consoleOutput = results;
+                    var modal = $('#console-output-modal');
+                    modal.foundation('reveal', 'open');
+                }
+            });
         };
         $scope.getInstanceState = function () {
             $http.get($scope.instanceStateEndpoint).success(function(oData) {
@@ -31,6 +43,11 @@ angular.module('InstancePage', ['TagEditor'])
                     $timeout(function() {$scope.getInstanceState()}, 4000);  // Poll every 4 seconds
                 } else {
                     $scope.isUpdating = false;
+                }
+                if ($scope.instanceState != 'stopped') {
+                    $scope.isNotStopped = true;
+                } else {
+                    $scope.isNotStopped = false;
                 }
             });
         };
