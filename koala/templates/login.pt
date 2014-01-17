@@ -50,7 +50,7 @@
             $.cookie('login-form', 'aws', {expires: 180});
             // assemble request for aws type login
             // build params
-            params = "AWSAccessKeyId="+$('#access_key').val();
+            var params = "AWSAccessKeyId="+$('#access_key').val();
             params = params+"&Action=GetSessionToken";
             params = params+"&DurationSeconds="+$('#duration').val();
             params = params+"&SignatureMethod=HmacSHA256";
