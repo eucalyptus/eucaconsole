@@ -18,6 +18,8 @@ class KeyPairsView(LandingPageView):
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
+        self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
+
 
     def get_items(self):
         conn = self.get_connection()
@@ -42,6 +44,7 @@ class KeyPairsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
+            delete_form=self.delete_form,
         )
 
     @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
