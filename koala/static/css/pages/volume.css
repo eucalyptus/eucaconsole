@@ -31,6 +31,7 @@
 .gridwrapper .dropdown.button.tiny:hover { color: #76b800; }
 .gridwrapper .dropdown.button.tiny::before { border: none; }
 .gridwrapper .dropdown.button.tiny i { position: relative; top: 2px; }
+.gridwrapper .dropdown.button.tiny i.fi-minus-circle { top: -2px; }
 .gridwrapper .button.dropdown:hover + .f-dropdown, .gridwrapper .f-dropdown:hover { width: 160px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: auto; right: 0; }
 .gridwrapper .button.dropdown:hover + .f-dropdown li a, .gridwrapper .f-dropdown:hover li a { color: #76b800; }
 
@@ -81,7 +82,7 @@
 .reveal-modal #device { width: 10rem; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
-.tile .header .button.dropdown { height: 30px; color: black; }
+.tile .header .button.dropdown { height: 24px; color: black; }
 
 .status.pending { background-color: #97eb00; }
 

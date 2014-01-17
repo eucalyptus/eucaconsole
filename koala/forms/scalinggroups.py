@@ -314,3 +314,8 @@ class ScalingGroupPolicyDeleteForm(BaseSecureForm):
     """Scaling Group policy deletion form"""
     pass
 
+
+class ScalingGroupInstancesMarkUnhealthyForm(BaseSecureForm):
+    """Scaling Group instance mark unhealthy form"""
+    pass
+

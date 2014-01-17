@@ -8,8 +8,10 @@ angular.module('ScalingGroupInstances', [])
     .controller('ScalingGroupInstancesCtrl', function ($scope, $http) {
         $scope.loading = false;
         $scope.instances = [];
+        $scope.instanceID = '';
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
+        $scope.markUnhealthyModal = $('#mark-unhealthy-modal');
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getScalingGroupInstances();
@@ -20,6 +22,10 @@ angular.module('ScalingGroupInstances', [])
                 $scope.initialLoading = false;
             });
         };
+        $scope.revealUnhealthyModal = function (instance) {
+            $scope.instanceID = instance['id'];
+            $scope.markUnhealthyModal.foundation('reveal', 'open');
+        }
     })
 ;
 

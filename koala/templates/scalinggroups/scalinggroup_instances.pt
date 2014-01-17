@@ -37,7 +37,11 @@
                 <div class="tile item" ng-repeat="instance in instances" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/instances/{{ instance.id }}">{{ instance.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right"><i class="icon fi-minus-circle"></i></a>
+                        <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="/instances/{{ instance.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-click="revealUnhealthyModal(instance)">Mark unhealthy</a></li>
+                        </ul>
                     </div>
                     <div class="content">
                         <div>
@@ -58,6 +62,18 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="mark-unhealthy-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Mark instance unhealthy</h3>
+            <p><span i18n:translate="">Are you sure you want to mark the following instance as unhealthy?</span>
+               <b>{{ instanceID }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
+                ${structure:markunhealthy_form['csrf_token']}
+                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                <button type="submit" class="button" i18n:translate="">Yes, mark unhealthy</button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

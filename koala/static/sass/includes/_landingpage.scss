@@ -161,6 +161,9 @@ $gridwrapper-table-width: 98%;
         i {
             position: relative;
             top: 2px;
+            &.fi-minus-circle {
+                top: -2px;
+            }
         }
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {

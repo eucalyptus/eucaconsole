@@ -12,9 +12,12 @@
                 <label class="right">Trigger alarm</label>
             </div>
             <div class="small-9 columns">
-                <span i18n:translate="">when the</span>
+                <span i18n:translate="">When the</span>
                 ${structure:alarm_form['statistic']}
                 ${structure:alarm_form['metric']}
+                <span i18n:translate="">for</span>
+                <!--! dimension field here -->
+                <!--! dimension value here (if required) -->
                 <br />
                 <span i18n:translate="">is</span>
                 ${structure:alarm_form['comparison']}

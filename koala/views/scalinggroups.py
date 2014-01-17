@@ -17,8 +17,9 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..forms.alarms import CloudWatchAlarmCreateForm
-from ..forms.scalinggroups import ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm
-from ..forms.scalinggroups import ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm
+from ..forms.scalinggroups import (
+    ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
+    ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
@@ -209,13 +210,36 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
+        self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
+            self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            markunhealthy_form=self.markunhealthy_form,
             json_items_endpoint=self.request.route_url('scalinggroup_instances_json', id=self.scaling_group.name),
         )
 
     @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE, request_method='GET')
     def scalinggroup_instances(self):
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_instances_markunhealthy', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_instances_markunhealthy(self):
+        location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
+        if self.markunhealthy_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            try:
+                self.autoscale_conn.set_instance_health(instance_id, 'Unhealthy')
+                prefix = _(u'Successfully marked the following instance as unhealthy:')
+                msg = '{0} {1}'.format(prefix, instance_id)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.markunhealthy_form.get_errors_list()
         return self.render_dict
 
 
