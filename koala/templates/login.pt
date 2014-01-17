@@ -4,81 +4,13 @@
     <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/login.css')}" />
 </div>
 
-<div metal:fill-slot="head_js">
-    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/enc-base64.js')}"></script>
-
-    <script type="text/javascript">
-      function set_focus() {
-        if ($('#eucalyptus').is(':visible')) {
-          var inputs = $('#euca-login-form input').filter(function() { return !this.value; });
-          if (inputs.length > 0) inputs[0].focus();
-        }
-        if ($('#aws').is(':visible')) {
-          var inputs = $('#aws-login-form input').filter(function() { return !this.value; });
-          if (inputs.length > 0) inputs[0].focus();
-        }
-      }
-      function page_loaded() {
-          // pre-fill if cookies are present
-          var account = $.cookie('account');
-          if (account !== undefined) $('#account').val(account);
-
-          var last_login = $.cookie('login-form');
-          if (last_login == 'aws') {  // select that tab
-            // all this mimics what happens in the tab code itself... no other way I found worked.
-            var tab = $('#aws-tab');
-            tab.addClass('active').trigger('opened');
-            tab.siblings().removeClass('active');
-            var target = $('#aws');
-            target.siblings().removeClass('active').end().addClass('active');
-          }
-          // this code assures the forms have focus.
-          set_focus();
-          $('#login-tabs').on('toggled', function (event, tab) {
-            set_focus();
-          });
-
-          // set up listener to capture and save values if remember checked
-          $('#euca-login-form').submit(function () {
-            $.cookie('account', $('#account').val(), {expires: 180});
-            $.cookie('login-form', 'eucalyptus', {expires: 180});
-          });
-          $('#aws-login-form').submit(function () {
-            $.cookie('login-form', 'aws', {expires: 180});
-            // assemble request for aws type login
-            // build params
-            var params = "AWSAccessKeyId="+$('#access_key').val();
-            params = params+"&Action=GetSessionToken";
-            params = params+"&DurationSeconds="+$('#duration').val();
-            params = params+"&SignatureMethod=HmacSHA256";
-            params = params+"&SignatureVersion=2";
-            params = params+"&Timestamp="+encodeURIComponent(new Date().toISOString().substring(0, 19)+"Z");
-            //params = params+"&Timestamp="+"2014-01-16T19%3A36%3A32Z";
-            params = params+"&Version=2011-06-15";
-            // sign request
-            var string_to_sign = "POST\nsts.amazonaws.com\n/\n"+params;
-            var hash = CryptoJS.HmacSHA256(string_to_sign, $('#secret_key').val());
-            var signature = hash.toString(CryptoJS.enc.Base64);
-            var encoded = encodeURIComponent(signature);
-            params = params+"&Signature="+encoded;
-            $('#aws_csrf_token').val($('#csrf_token').val());
-            $('#package').val($.base64.encode(params));
-            $('#false-aws-login-form').submit();
-            return false;
-          });
-      }
-    </script>
-</div>
-
 <div metal:fill-slot="main_content">
 
     <!-- Notifications -->
     <div id="notifications-wrapper">
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
-        <div data-alert="alert" class="alert-box alert large-10 columns large-centered" tal:condition="https_required and request.scheme != 'https'">
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
+             tal:condition="https_required and request.scheme != 'https'">
             <span i18n:translate="">
                 HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
                 in the configuration file.
@@ -94,7 +26,8 @@
         </div>
     </div>
 
-    <div class="row panel has-title large-8 columns large-centered" id="login-wrapper">
+    <div class="row panel has-title large-8 columns large-centered" id="login-wrapper"
+         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
         <h6 class="title" i18n:translate="">
             <span i18n:translate="">Log in to Eucalyptus</span>
             <span tal:condition="layout.aws_enabled" i18n:translate="">or AWS</span>
@@ -180,6 +113,14 @@
         </div>
     </div>
     <div class="clearfix">&nbsp;</div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/enc-base64.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/login.js')}"></script>
 </div>
 
 </metal:block>
