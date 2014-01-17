@@ -112,8 +112,8 @@ class ChoicesManager(object):
         if not kernel_images and self.conn is not None:
             kernel_images = self.conn.get_all_kernels()  # TODO: cache me
         for kernel_image in kernel_images:
-            if kernel_image.kernel_id:
-                choices.append((kernel_image.kernel_id, kernel_image.kernel_id))
+            if kernel_image.id:
+                choices.append((kernel_image.id, kernel_image.id))
         if image:
             choices.append((image.kernel_id, image.kernel_id))
         return sorted(set(choices))
@@ -125,8 +125,8 @@ class ChoicesManager(object):
         if not ramdisk_images and self.conn is not None:
             ramdisk_images = self.conn.get_all_ramdisks()  # TODO: cache me
         for ramdisk_image in ramdisk_images:
-            if ramdisk_image.ramdisk_id:
-                choices.append((ramdisk_image.ramdisk_id, ramdisk_image.ramdisk_id))
+            if ramdisk_image.id:
+                choices.append((ramdisk_image.id, ramdisk_image.id))
         if image:
             choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))

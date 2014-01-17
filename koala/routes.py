@@ -56,6 +56,7 @@ urls = [
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
+    Route(name='instance_console_output_json', pattern='/instances/{id}/consoleoutput/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
@@ -138,6 +139,7 @@ urls = [
     # Landing page
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
+    # Detail page
     Route(name='keypair_download', pattern='/keypairs/download'),
     Route(name='keypair_create', pattern='/keypairs/create'),
     Route(name='keypair_import', pattern='/keypairs/import'),

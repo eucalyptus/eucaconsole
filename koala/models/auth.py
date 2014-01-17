@@ -11,6 +11,7 @@ import urllib
 import urllib2
 import urlparse
 import xml
+from urllib2 import HTTPError, URLError
 
 from datetime import datetime
 
@@ -199,16 +200,21 @@ class EucaAuthenticator(object):
         :param duration: Duration of the session token (in seconds)
 
         """
+        self.host = host
+        self.duration = duration
+
+    def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
         template = 'https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}'
+        duration = self.duration
+        if user == 'admin': # admin cannot have more than 1 hour duration
+            duration = 3600
         self.auth_url = template.format(
-            host=host,
+            host=self.host,
             dur=duration,
             service='services/Tokens',
             action='GetSessionToken',
             ver='2011-06-15'
         )
-
-    def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
         req = urllib2.Request(self.auth_url)
         if new_passwd:
             auth_string = "{user}@{account};{pw}@{new_pw}".format(
@@ -236,34 +242,23 @@ class EucaAuthenticator(object):
         return creds
 
 
-class AWSAuthenticator(AWSQuery):
+class AWSAuthenticator(object):
 
-    def __init__(self, key_id, secret_key, duration):
+    def __init__(self, package):
         """
         Configure connection to AWS STS service
 
-        :type key_id: string
-        :param key_id: AWS access key
-
-        :type secret_key: string
-        :param secret_key: AWS secret key
-
-        :type duration: int
-        :param duration: Duration of AWS session token, in seconds
+        :type package: string
+        :param package: a pre-signed request string for the STS GetSessionToken call
 
         """
         self.endpoint = 'https://sts.amazonaws.com'
-        params = dict(
-            Action='GetSessionToken',
-            DurationSeconds=duration,
-            Version='2011-06-15'
-        )
-        super(AWSAuthenticator, self).__init__(self.endpoint, key_id, secret_key, parameters=params)
+        self.package = package
 
     def authenticate(self, timeout=20):
         """ Make authentication request to AWS STS service
             Timeout defaults to 20 seconds"""
-        req = urllib2.Request(self.endpoint, data=self.signed_parameters)
+        req = urllib2.Request(self.endpoint, data=self.package)
         response = urllib2.urlopen(req, timeout=timeout)
         body = response.read()
 

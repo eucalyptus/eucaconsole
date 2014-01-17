@@ -33,11 +33,12 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
 
 
 @panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
-def instance_dialogs(context, request, instance=None, landingpage=False, start_form=None,
+def instance_dialogs(context, request, instance=None, instance_name=None, landingpage=False, start_form=None,
                      stop_form=None, reboot_form=None, terminate_form=None):
     """Modal dialogs for Instance landing and detail page."""
     return dict(
         instance=instance,
+        instance_name=instance_name,
         landingpage=landingpage,
         start_form=start_form,
         stop_form=stop_form,
@@ -77,5 +78,15 @@ def create_alarm_dialog(context, request, alarm_form=None, modal_size='medium'):
     return dict(
         alarm_form=alarm_form,
         modal_size=modal_size,
+    )
+
+
+@panel_config('keypair_dialogs', renderer='../templates/dialogs/keypair_dialogs.pt')
+def keypair_dialogs(context, request, keypair=None, landingpage=False,delete_form=None):
+    """ Modal dialogs for Keypair landing and detail page."""
+    return dict(
+        keypair=keypair,
+        landingpage=landingpage,
+        delete_form=delete_form,
     )
 

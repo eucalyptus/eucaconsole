@@ -1,0 +1,21 @@
+/**
+ * @fileOverview Elastic IPs landing page JS
+ * @requires AngularJS, jQuery
+ *
+ */
+
+// Pull in common landing page module
+angular.module('KeypairsPage', ['LandingPage'])
+    .controller('KeypairsCtrl', function ($scope) {
+        $scope.keypairName= '';
+        $scope.urlParams = $.url().param();
+        $scope.displayType = $scope.urlParams['display'] || 'tableview';
+        $scope.revealModal = function (action, keypair_name) {
+            console.log("hello " + keypair_name)
+            keypair_name = keypair_name || '';
+            var modal = $('#' + action + '-keypair-modal');
+            $scope.keypairName = keypair_name;
+            modal.foundation('reveal', 'open');
+        };
+    });
+

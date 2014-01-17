@@ -6,7 +6,6 @@ python:
 install:
     - sudo apt-get -y install openssl build-essential python-dev swig
     - python setup.py install
-    - pip install nose
 # command to run tests, e.g. python setup.py test
 script:  "python setup.py test"
 
