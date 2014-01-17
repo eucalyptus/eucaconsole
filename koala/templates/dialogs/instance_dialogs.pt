@@ -76,9 +76,19 @@
                          detailpage_action request.route_url('instance_terminate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Terminate instance</h3>
-            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
-               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
-            </p>
+            <div ng-show="rootDevice == 'ebs'">
+                <p>
+                    <span i18n:translate="">
+                        Terminating an EBS-backed instance may also delete the root volume if the volume is set up to do so. Data on that volume will be lost. To keep the volume, you may stop the instance instead.
+                    </span>
+                </p>
+            </div>
+            <div>
+                <p>
+                    <span i18n:translate="">Are you sure you want to terminate instance</span>
+                    <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+                </p>
+            </div>
             <form method="post" action="${action}" id="terminate-form">
                 ${structure:terminate_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">

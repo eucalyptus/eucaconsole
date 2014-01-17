@@ -12,6 +12,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = instance['id'];
+            $scope.rootDevice = instance['root_device'];
             modal.foundation('reveal', 'open');
         };
     })
