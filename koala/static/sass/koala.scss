@@ -457,7 +457,7 @@ textarea.hidden {
 .panel{
     &.has-title {
         position: relative;
-        padding-top: 60px;
+        padding-top: 20px;
         border: none;
         h6.title {
             position: absolute;
@@ -472,6 +472,7 @@ textarea.hidden {
     }
     &.other-actions {
         background-color: white;
+        padding-top: 0px;
     }
 }
 

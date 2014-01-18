@@ -27,8 +27,9 @@ class InstanceForm(BaseSecureForm):
         label=_(u'Kernel ID')
     )
     ramdisk = wtforms.SelectField(
-        label=_(u'Ramdisk ID')
+        label=_(u'RAM disk ID (ramfs)')
     )
+    start_later = wtforms.HiddenField();
 
     def __init__(self, request, instance=None, conn=None, **kwargs):
         super(InstanceForm, self).__init__(request, **kwargs)
@@ -41,7 +42,7 @@ class InstanceForm(BaseSecureForm):
 
         if instance is not None:
             self.instance_type.data = instance.instance_type
-            self.ip_address.data = instance.ip_address or ''
+            self.ip_address.data = instance.ip_address or 'none'
             self.monitored.data = instance.monitored
             self.kernel.data = instance.kernel or ''
             self.ramdisk.data = instance.ramdisk or ''

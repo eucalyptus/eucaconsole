@@ -5,6 +5,7 @@ Base Forms
 IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
+import logging
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 
@@ -94,6 +95,8 @@ class ChoicesManager(object):
                 choices.append(('', _(u'Unassign Address')))
         if instance and instance.ip_address:
             choices.append((instance.ip_address, instance.ip_address))
+        if instance and instance.ip_address is '' and instance.state == 'stopped':
+            choices.append(('none', _(u'no address in stopped state')))
         return sorted(set(choices))
 
     def kernels(self, kernel_images=None, image=None):

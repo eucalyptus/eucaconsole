@@ -23,11 +23,12 @@
 
         <div class="large-7 columns">
             <div class="panel has-title">
-                <span tal:condition="image.root_device_type == 'ebs'">
+                <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
-                </span>
+                </p>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
+                    ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
                     <div class="row controls-wrapper readonly" ng-cloak="">
@@ -152,9 +153,12 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button"><span i18n:translate="">Save changes</span></button>
-                            <a href="${request.route_url('instances')}"
+                            <button type="submit" class="button" data-reveal-id="update-instance-modal">
+                                <span i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('instances')}" id="cancel-update-link"
                                class="cancel-link" i18n:translate="">Cancel</a>
+                            <button type="submit" class="button" style="display:none;" id="save-update-button"/>
                         </div>
                     </div>
                 </form>
@@ -198,11 +202,40 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form,
                 stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
+        <div id="update-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Update instance</h3>
+            <p><span i18n:translate="">Some of the attributes you have changed will not take effect until this instance is started. Would you like to start the instance now?</span>
+            </p>
+            <form method="get" action="#" id="update-form">
+                <div class="row">
+                    <div class="small-6 columns field inline">
+                        <input id="yes-update" type="submit" class="button" value="Yes, start now" i18n:attributes="value" onclick="submit_update_instance()"/>
+                    </div>
+                    <div class="small-6 columns field inline">
+                        <input id="no-update" type="submit" class="button" value="No, I'll start it later" i18n:attributes="value" onclick="cancel_update_instance()"/>
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
+    <script type="text/javascript">
+      function submit_update_instance() {
+        $('a.close-reveal-modal').trigger('click');
+        $('#start_later').val('true');
+        $('#save-update-button').trigger('click');
+        return false;
+      }
+      function cancel_update_instance() {
+        $('a.close-reveal-modal').trigger('click');
+        $('#save-update-button').trigger('click');
+        return false;
+      }
+    </script>
 </div>
 
 </metal:block>
