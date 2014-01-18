@@ -22,7 +22,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
 
         <div class="large-7 columns">
-            <div class="panel has-title">
+            <div class="panel">
                 <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
                 </p>
