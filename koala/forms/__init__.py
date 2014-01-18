@@ -51,11 +51,14 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
-            types = self.conn.get_list('DescribeInstanceTypes', {}, [('euca:item', VmType)], verb='POST')
-            for vmtype in types:
-                vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
-                vmtype_tuple = vmtype.name, vmtype_str
-                choices.append(vmtype_tuple)
+            if self.conn is not None:
+                types = self.conn.get_list('DescribeInstanceTypes', {}, [('euca:item', VmType)], verb='POST')
+                for vmtype in types:
+                    vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                    vmtype_tuple = vmtype.name, vmtype_str
+                    choices.append(vmtype_tuple)
+            else:
+                choices.append(BLANK_CHOICE)
         elif cloud_type == 'aws':
             choices.extend(AWS_INSTANCE_TYPE_CHOICES)
         return choices

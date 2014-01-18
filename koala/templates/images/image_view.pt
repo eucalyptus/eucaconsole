@@ -38,7 +38,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
-                                <div class="small-8 columns value">${image.platform.name if image.platform else ''}</div>
+                                <div class="small-8 columns value">${image.platform_name if image.platform_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Architecture</label></div>
@@ -121,10 +121,10 @@
                                     <div class="small-4 columns"><label i18n:translate="">Ephemeral name</label></div>
                                     <div class="small-8 columns value">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
                                 </div>
-                                <hr />
                             </div>
                         </div>
                     </div>
+                    <hr />
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
                     <div class="row">

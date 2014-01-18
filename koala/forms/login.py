@@ -21,10 +21,8 @@ class EucaLoginForm(BaseSecureForm):
 
 
 class AWSLoginForm(BaseSecureForm):
-    access_key = wtforms.TextField(
-        _(u'Access key ID'), validators=[validators.Required(message=_(u'Access key is required'))])
-    secret_key = wtforms.PasswordField(
-        _(u'Secret key'), validators=[validators.Required(message=_(u'Secret key is required'))])
+    access_key = wtforms.TextField(_(u'Access key ID'))
+    secret_key = wtforms.PasswordField(_(u'Secret key'))
 
 
 class EucaChangePasswordForm(BaseSecureForm):

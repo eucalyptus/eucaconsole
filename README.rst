@@ -25,9 +25,17 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 * openssl (required by M2Crypto)
 * gcc, python development headers, swig (required to install Python libraries)
 
-Ubuntu: `apt-get install libevent-dev openssl build-essential python-dev swig`
-Fedora: `yum install libevent-devel openssl-devel python-devel swig; yum groupinstall 'Development tools'`
-OS X: Install homebrew, then run `brew install libevent openssl swig`
+Ubuntu:
+
+    `apt-get install openssl build-essential python-dev swig`
+
+Fedora:
+
+    `yum install openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+
+OS X:
+
+Install homebrew, then run `brew install libevent openssl swig`
 
 
 Pyramid Setup
@@ -86,6 +94,9 @@ To have Pyramid automatically detect modifications to templates and views,
 The `--reload` flag instructs Pyramid to automatically watch for changes in the view callables.
 
 The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
+
+
+::
 
     [app:main]
     # ...
