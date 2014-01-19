@@ -13,7 +13,7 @@ from boto.ec2.cloudwatch.metric import Metric
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
 from ..constants.cloudwatch import METRIC_TYPES
 
 
@@ -85,7 +85,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=unit_error_msg),
         ],
     )
-    dimension = wtforms.SelectField()
     availability_zone = wtforms.SelectField()
     image_id = wtforms.SelectField()
     instance_id = wtforms.SelectField()
@@ -117,7 +116,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.period.data = 120
 
         if self.scaling_group_name is not None:
-            self.dimension.data = 'scaling_group'
             self.scaling_group_name.data = self.scaling_group.name
 
     def set_choices(self):
@@ -125,7 +123,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
-        self.dimension.choices = self.get_dimension_choices()
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
         self.image_id.choices = self.choices_from_metrics.image_choices
         self.instance_id.choices = self.choices_from_metrics.instance_choices
@@ -175,21 +172,8 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         )
 
     @staticmethod
-    def get_dimension_choices():
-        return [
-            ('', _(u'select...')),
-            ('availability_zone', _(u'Availability zone')),
-            ('image', _(u'Image')),
-            ('instance', _(u'Instance')),
-            ('instance_type', _(u'Instance type')),
-            ('load_balancer', _(u'Load balancer')),
-            ('scaling_group', _(u'Scaling group')),
-            ('volume', _(u'Volume')),
-        ]
-
-    @staticmethod
     def get_metric_choices():
-        choices = []
+        choices = [BLANK_CHOICE]
         for metric in METRIC_TYPES:
             value = metric.get('name')
             label = '{0} - {1}'.format(metric.get('namespace'), metric.get('name'))

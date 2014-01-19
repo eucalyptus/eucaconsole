@@ -5,16 +5,12 @@
  */
 angular.module('CreateAlarm', [])
     .controller('CreateAlarmCtrl', function ($scope) {
-        $scope.dimension = '';
         $scope.alarmDialog = $('#create-alarm-modal');
-        $scope.setInitialValues = function () {
-            $scope.dimension = $('#dimension').find(':selected').val();
-        };
-        $scope.initController = function () {
-            $scope.setInitialValues();
+        $scope.metric = '';
+        $scope.namespace = '';
+        $scope.updateDimensionChoices = function () {
+            var selectedOptionLabel = $('#metric').find('option[value="' + $scope.metric + '"]').text();
+            $scope.namespace = selectedOptionLabel.split(' - ')[0];
         }
-        $scope.alarmDialog.on('opened', function() {
-            $scope.setInitialValues();
-        })
     })
 ;
