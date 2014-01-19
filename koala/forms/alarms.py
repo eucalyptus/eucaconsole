@@ -3,6 +3,8 @@
 Forms for CloudWatch Alarms
 
 """
+from operator import itemgetter
+
 import wtforms
 from wtforms import validators
 
@@ -82,21 +84,24 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=unit_error_msg),
         ],
     )
-    scaling_group = wtforms.SelectField(label=_(u'Scaling group'))
-    availability_zone = wtforms.SelectField(label=_(u'Availability_zone'))
-    load_balancer = wtforms.SelectField(label=_(u'Load balancer'))
-    instance_type = wtforms.SelectField(label=_(u'Instance type'))
+    dimension = wtforms.SelectField()
+    availability_zone = wtforms.SelectField()
+    instance = wtforms.SelectMultipleField()
+    instance_type = wtforms.SelectField()
+    load_balancer = wtforms.SelectField()
+    scaling_group = wtforms.SelectField()
+    volume = wtforms.SelectField()
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
-        self.cloud_type = request.session.get('cloud_type', 'euca')
         self.elb_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
         self.elb_conn = elb_conn
+        self.metrics = metrics
+        self.cloud_type = request.session.get('cloud_type', 'euca')
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
-        self.metrics = metrics
         self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
@@ -111,10 +116,13 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
-        self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups()
+        self.dimension.choices = self.get_dimension_choices()
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
-        self.load_balancer.choices = self.elb_choices_manager.load_balancers()
+        self.instance.choices = self.get_instance_choices()
         self.instance_type.choices = self.get_instance_type_choices()
+        self.load_balancer.choices = self.elb_choices_manager.load_balancers()
+        self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups()
+        self.volume.choices = self.get_volume_choices()
 
     def set_help_text(self):
         self.evaluation_periods.help_text = self.evaluation_periods_help_text
@@ -131,9 +139,28 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
         self.unit.error_msg = self.unit_error_msg
 
+    def get_instance_choices(self):
+        # TODO: implement
+        return []
+
     def get_instance_type_choices(self):
-        # TODO: Pull instance_type choices from metrics list instead of from CLC?
         return self.ec2_choices_manager.instance_types(cloud_type=self.cloud_type)
+
+    def get_volume_choices(self):
+        # TODO: implement
+        return []
+
+    @staticmethod
+    def get_dimension_choices():
+        return [
+            ('availability_zone', _(u'Availability zone')),
+            ('image', _(u'Image')),
+            ('instance', _(u'Instance')),
+            ('instance_type', _(u'Instance type')),
+            ('load_balancer', _(u'Load balancer')),
+            ('scaling_group', _(u'Scaling group')),
+            ('volume', _(u'Volume')),
+        ]
 
     @staticmethod
     def get_metric_choices():
@@ -142,7 +169,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             value = metric.get('name')
             label = '{0} - {1}'.format(metric.get('namespace'), metric.get('name'))
             choices.append((value, label))
-        return sorted(set(choices))
+        return sorted(set(choices), key=itemgetter(1))
 
     @staticmethod
     def get_comparison_choices():

@@ -92,15 +92,3 @@ input[type="number"] { width: 3rem; }
 .tile .footer.healthy.pending { background-color: #8dc640; }
 
 #evaluation_periods, #period { display: inline-block; width: 4rem; }
-
-#statistic, #metric, #comparison, #threshold, #unit { display: inline-block; }
-
-#statistic { width: 8rem; }
-
-#metric { width: 15rem; }
-
-#comparison { width: 3rem; }
-
-#threshold { width: 3rem; }
-
-#unit { width: 10rem; }

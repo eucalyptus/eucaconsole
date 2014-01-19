@@ -364,12 +364,17 @@ form {
             color: darkred;
         }
     }
-    .row input {
-        &[type='text'], &[type='password'] {
-            margin: 0 0 0 0;
-            height: $euca-input-field-height;
-            line-height: $euca-input-field-height;
-        }
+    .row {
+      .inline-label {
+        line-height: 2rem;
+      }
+      input {
+          &[type='text'], &[type='password'] {
+              margin: 0 0 0 0;
+              height: $euca-input-field-height;
+              line-height: $euca-input-field-height;
+          }
+      }
     }
     .columns input {
         max-width: 100%;

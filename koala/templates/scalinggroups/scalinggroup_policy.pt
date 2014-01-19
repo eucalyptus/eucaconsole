@@ -56,7 +56,7 @@
             <!--! Help content goes here -->
         </div>
         <!--! Create Alarm modal dialog -->
-        ${panel('create_alarm_dialog', alarm_form=alarm_form, alarm_metrics=alarm_metrics)}
+        ${panel('create_alarm_dialog', alarm_form=alarm_form)}
         <!--! /end modal dialogs -->
     </div>
 </div>

@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
@@ -1546,6 +1545,7 @@ textarea.console-output { width: 660px; height: 400px; margin: 10px; }
 ----------------------------------------- */
 form label { cursor: default; }
 form label .req { color: darkred; }
+form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }
 form .columns input { max-width: 100%; }
 form a.remove.circle { position: relative; left: 8px; top: -2px; }

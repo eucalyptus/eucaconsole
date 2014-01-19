@@ -74,11 +74,10 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 
 
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
-def create_alarm_dialog(context, request, alarm_form=None, alarm_metrics=None, modal_size='medium'):
+def create_alarm_dialog(context, request, alarm_form=None, modal_size='medium'):
     """Create alarm dialog page."""
     return dict(
         alarm_form=alarm_form,
-        alarm_metrics=alarm_metrics,
         modal_size=modal_size,
     )
 

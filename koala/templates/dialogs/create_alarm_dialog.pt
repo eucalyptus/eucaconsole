@@ -12,18 +12,50 @@
                 <label class="right">Trigger alarm</label>
             </div>
             <div class="small-9 columns">
-                <span i18n:translate="">When the</span>
-                ${structure:alarm_form['statistic']}
-                ${structure:alarm_form['metric']}
-                <br />
-                <span i18n:translate="">for</span>
-                <select name="dimension" id="dimension"></select>
-                <select name="dimension_value" id="dimension_value"></select>
-                <br />
-                <span i18n:translate="">is</span>
-                ${structure:alarm_form['comparison']}
-                ${structure:alarm_form['threshold']}
-                ${structure:alarm_form['unit']}
+                <div class="row">
+                    <div class="large-5 columns">
+                        <div class="row">
+                            <div class="small-5 columns">
+                                <span i18n:translate="" class="inline-label">When the</span>
+                            </div>
+                            <div class="small-7 columns">
+                                ${structure:alarm_form['statistic']}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-7 columns">
+                        ${structure:alarm_form['metric']}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="large-6 columns">
+                        <div class="row">
+                            <div class="small-2 columns">
+                                <span i18n:translate="" class="inline-label">for</span>
+                            </div>
+                            <div class="small-10 columns">
+                                ${structure:alarm_form['dimension']}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-6 columns">
+                        <select name="dimension_value"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-1 columns">
+                        <span i18n:translate="">is</span>
+                    </div>
+                    <div class="small-2 columns">
+                        ${structure:alarm_form['comparison']}
+                    </div>
+                    <div class="small-4 columns">
+                        ${structure:alarm_form['threshold']}
+                    </div>
+                    <div class="small-5 columns">
+                        ${structure:alarm_form['unit']}
+                    </div>
+                </div>
             </div>
         </div>
         <hr />
