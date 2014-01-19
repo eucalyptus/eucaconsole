@@ -83,6 +83,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         ],
     )
     scaling_group = wtforms.SelectField(label=_(u'Scaling group'))
+    availability_zone = wtforms.SelectField(label=_(u'Availability_zone'))
     load_balancer = wtforms.SelectField(label=_(u'Load balancer'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None, **kwargs):
@@ -90,6 +91,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.elb_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
         self.elb_conn = elb_conn
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
         self.metrics = metrics
@@ -108,6 +110,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups()
+        self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
         self.load_balancer.choices = self.elb_choices_manager.load_balancers()
 
     def set_help_text(self):
