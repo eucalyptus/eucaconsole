@@ -10,7 +10,7 @@ from boto.ec2.cloudwatch.metric import Metric
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm
+from . import BaseSecureForm, ChoicesManager
 from ..constants.cloudwatch import METRIC_TYPES
 
 
@@ -82,9 +82,17 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=unit_error_msg),
         ],
     )
+    scaling_group = wtforms.SelectField(label=_(u'Scaling group'))
+    load_balancer = wtforms.SelectField(label=_(u'Load balancer'))
 
-    def __init__(self, request, **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
+        self.elb_conn = ec2_conn
+        self.autoscale_conn = autoscale_conn
+        self.elb_conn = elb_conn
+        self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.elb_choices_manager = ChoicesManager(conn=elb_conn)
+        self.metrics = metrics
         self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
@@ -99,6 +107,8 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
+        self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups()
+        self.load_balancer.choices = self.elb_choices_manager.load_balancers()
 
     def set_help_text(self):
         self.evaluation_periods.help_text = self.evaluation_periods_help_text

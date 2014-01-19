@@ -342,15 +342,15 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         self.scaling_group = self.get_scaling_group()
         self.alarms = self.get_alarms()
         self.metrics = self.get_metrics()
-        self.alarm_metrics = self.get_alarm_metrics()
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
-        self.alarm_form = CloudWatchAlarmCreateForm(self.request, formdata=self.request.params or None)
+        self.alarm_form = CloudWatchAlarmCreateForm(
+            self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, elb_conn=self.elb_conn,
+            metrics=self.metrics, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
-            alarm_metrics=self.alarm_metrics,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -404,10 +404,6 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
 
     def get_metrics(self):
         return self.cloudwatch_conn.list_metrics()
-
-    def get_alarm_metrics(self):
-        """Returns alarm metrics massaged by namespace, dimension, etc."""
-        return sorted(self.metrics, key=attrgetter('namespace', 'name'))
 
 
 class ScalingGroupWizardView(BaseScalingGroupView):
