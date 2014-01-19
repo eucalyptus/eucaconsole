@@ -8,7 +8,7 @@
             ${panel('form_field', field=alarm_form['name'], leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=alarm_form['description'], leftcol_width=3, rightcol_width=9)}
             <hr />
-            <div class="row controls-wrapper" ng-cloak="">
+            <div class="row controls-wrapper">
                 <div class="small-3 columns">
                     <label class="right">Trigger alarm</label>
                 </div>
@@ -35,23 +35,26 @@
                                 <div class="small-2 columns">
                                     <span i18n:translate="" class="inline-label">for</span>
                                 </div>
-                                <div class="small-10 columns" tal:define="dimension_attrs {'ng-model': 'dimension'}">
-                                    <select name="dimension">
+                                <div class="small-10 columns">
+                                    <select name="dimension" ng-model="dimension">
                                         <option value="" i18n:translate="">select...</option>
                                         <option value="" i18n:translate="" value="availability_zone"
-                                                ng-show="namespace === 'AWS/ELB'">Availability zone</option>
+                                                ng-disabled="namespace !== 'AWS/ELB'"
+                                                ng-selected="namespace === 'AWS/ELB'">Availability zone</option>
                                         <option value="" i18n:translate="" value="image"
-                                                ng-show="namespace === 'AWS/EC2' || namespace === 'AWS/AutoScaling'">Image</option>
+                                                ng-disabled="['AWS/EC2', 'AWS/AutoScaling'].indexOf(namespace) === -1">Image</option>
                                         <option value="" i18n:translate="" value="instance"
-                                                ng-show="namespace === 'AWS/EC2' || namespace === 'AWS/AutoScaling'">Instance</option>
+                                                ng-disabled="['AWS/EC2', 'AWS/AutoScaling'].indexOf(namespace) === -1">Instance</option>
                                         <option value="" i18n:translate="" value="instance_type"
-                                                ng-show="namespace === 'AWS/EC2' || namespace === 'AWS/AutoScaling'">Instance type</option>
+                                                ng-disabled="['AWS/EC2', 'AWS/AutoScaling'].indexOf(namespace) === -1">Instance type</option>
                                         <option value="" i18n:translate="" value="load_balancer"
-                                                ng-show="namespace === 'AWS/ELB'">Load balancer</option>
+                                                ng-disabled="namespace !== 'AWS/ELB'">Load balancer</option>
                                         <option value="" i18n:translate="" value="scaling group"
-                                                ng-show="namespace === 'AWS/AutoScaling'">Scaling group</option>
+                                                ng-disabled="namespace !== 'AWS/AutoScaling'"
+                                                ng-selected="namespace === 'AWS/AutoScaling'">Scaling group</option>
                                         <option value="" i18n:translate="" value="volume"
-                                                ng-show="namespace === 'AWS/EBS'">Volume</option>
+                                                ng-disabled="namespace !== 'AWS/EBS'"
+                                                ng-selected="metric.indexOf('Volume') === 0">Volume</option>
                                     </select>
                                 </div>
                             </div>
