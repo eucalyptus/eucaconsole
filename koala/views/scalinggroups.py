@@ -341,7 +341,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         super(ScalingGroupPolicyView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
         self.alarms = self.get_alarms()
-        self.metrics = self.cloudwatch_conn.list_metrics()
+        self.metrics = self.get_metrics()
+        self.alarm_metrics = self.get_alarm_metrics()
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.alarm_form = CloudWatchAlarmCreateForm(
@@ -350,6 +351,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
+            alarm_metrics=self.alarm_metrics,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -384,10 +386,8 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 alarm = self.cloudwatch_conn.describe_alarms(alarm_names=[alarm_name])[0]
                 alarm.dimensions.update({"AutoScalingGroupName": self.scaling_group.name})
                 alarm.comparison = alarm._cmp_map.get(alarm.comparison)  # See https://github.com/boto/boto/issues/1311
-                # FIXME: Properly attach a policy to an alarm
                 # TODO: Detect if an alarm has 5 scaling policies attached to it and abort accordingly
                 if created_scaling_policy.policy_arn not in alarm.alarm_actions:
-                    # alarm.add_alarm_action(created_scaling_policy.policy_arn)
                     alarm.alarm_actions.append(created_scaling_policy.policy_arn)
                 alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
@@ -402,6 +402,13 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         else:
             self.request.error_messages = self.policy_form.get_errors_list()
         return self.render_dict
+
+    def get_metrics(self):
+        return self.cloudwatch_conn.list_metrics()
+
+    def get_alarm_metrics(self):
+        """Returns alarm metrics massaged by namespace, dimension, etc."""
+        return self.metrics
 
 
 class ScalingGroupWizardView(BaseScalingGroupView):

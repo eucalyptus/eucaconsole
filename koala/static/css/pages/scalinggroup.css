@@ -91,7 +91,7 @@ input[type="number"] { width: 3rem; }
 .tile .footer.healthy { background-color: #76b800; }
 .tile .footer.healthy.pending { background-color: #8dc640; }
 
-#evaluation_periods, #period { display: inline-block; }
+#evaluation_periods, #period { display: inline-block; width: 4rem; }
 
 #statistic, #metric, #comparison, #threshold, #unit { display: inline-block; }
 

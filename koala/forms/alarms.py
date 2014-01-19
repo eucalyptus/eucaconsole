@@ -57,6 +57,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=threshold_error_msg),
         ],
     )
+    period_help_text = _(u'Length of measurement period in seconds.')
     period_error_msg = _(u'Period length is required')
     period = wtforms.IntegerField(
         label=_(u'Period length'),
@@ -64,6 +65,8 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=period_error_msg),
         ],
     )
+    evaluation_periods_help_text = _(
+        u'How many consecutive periods the trigger threshold must be breached before the alarm is triggered.')
     evaluation_periods_error_msg = _(u'Measurement periods is required')
     evaluation_periods = wtforms.IntegerField(
         label=_(u'Measurement periods'),
@@ -82,14 +85,24 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
     def __init__(self, request, metrics=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
         self.metrics = metrics or []
+        self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
+        self.set_help_text()
+
+    def set_initial_data(self):
+        self.evaluation_periods.data = 1
+        self.period.data = 120
 
     def set_choices(self):
         self.comparison.choices = self.get_comparison_choices()
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
+
+    def set_help_text(self):
+        self.evaluation_periods.help_text = self.evaluation_periods_help_text
+        self.period.help_text = self.period_help_text
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg

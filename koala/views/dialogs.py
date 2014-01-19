@@ -21,7 +21,8 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 
 
 @panel_config('snapshot_dialogs', renderer='../templates/dialogs/snapshot_dialogs.pt')
-def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, delete_form=None, register_form=None):
+def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False,
+                     delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
     return dict(
         snapshot=snapshot,
@@ -73,16 +74,17 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 
 
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
-def create_alarm_dialog(context, request, alarm_form=None, modal_size='medium'):
+def create_alarm_dialog(context, request, alarm_form=None, alarm_metrics=None, modal_size='medium'):
     """Create alarm dialog page."""
     return dict(
         alarm_form=alarm_form,
+        alarm_metrics=alarm_metrics,
         modal_size=modal_size,
     )
 
 
 @panel_config('keypair_dialogs', renderer='../templates/dialogs/keypair_dialogs.pt')
-def keypair_dialogs(context, request, keypair=None, landingpage=False,delete_form=None):
+def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_form=None):
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,

@@ -59,6 +59,7 @@ input[type="number"] {
 // Scaling group alarms page
 #evaluation_periods, #period {
     display: inline-block;
+    width: 4rem;
 }
 #statistic, #metric, #comparison, #threshold, #unit {
     display: inline-block;
