@@ -17,8 +17,8 @@
                 ${structure:alarm_form['metric']}
                 <br />
                 <span i18n:translate="">for</span>
-                <!--! dimension field here -->
-                <!--! dimension value here (if required) -->
+                <select name="dimension" id="dimension"></select>
+                <select name="dimension_value" id="dimension_value"></select>
                 <br />
                 <span i18n:translate="">is</span>
                 ${structure:alarm_form['comparison']}

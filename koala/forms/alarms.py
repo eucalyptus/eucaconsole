@@ -11,6 +11,7 @@ from boto.ec2.cloudwatch.metric import Metric
 from pyramid.i18n import TranslationString as _
 
 from . import BaseSecureForm
+from ..constants.cloudwatch import METRIC_TYPES
 
 
 class CloudWatchAlarmCreateForm(BaseSecureForm):
@@ -82,9 +83,8 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         ],
     )
 
-    def __init__(self, request, metrics=None, **kwargs):
+    def __init__(self, request, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
-        self.metrics = metrics or []
         self.set_initial_data()
         self.set_error_messages()
         self.set_choices()
@@ -115,10 +115,13 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
         self.unit.error_msg = self.unit_error_msg
 
-    def get_metric_choices(self):
+    @staticmethod
+    def get_metric_choices():
         choices = []
-        for metric in self.metrics:
-            choices.append((metric.name, metric.name))
+        for metric in METRIC_TYPES:
+            value = metric.get('name')
+            label = '{0} - {1}'.format(metric.get('namespace'), metric.get('name'))
+            choices.append((value, label))
         return sorted(set(choices))
 
     @staticmethod
