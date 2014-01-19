@@ -3,6 +3,7 @@
 Forms for CloudWatch Alarms
 
 """
+from collections import namedtuple
 from operator import itemgetter
 
 import wtforms
@@ -86,19 +87,23 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
     )
     dimension = wtforms.SelectField()
     availability_zone = wtforms.SelectField()
-    instance = wtforms.SelectMultipleField()
+    image_id = wtforms.SelectField()
+    instance_id = wtforms.SelectField()
     instance_type = wtforms.SelectField()
-    load_balancer = wtforms.SelectField()
-    scaling_group = wtforms.SelectField()
-    volume = wtforms.SelectField()
+    load_balancer_name = wtforms.SelectField()
+    scaling_group_name = wtforms.SelectField()
+    volume_id = wtforms.SelectField()
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None, **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None,
+                 scaling_group=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
         self.elb_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
         self.elb_conn = elb_conn
-        self.metrics = metrics
+        self.metrics = metrics or []
+        self.scaling_group = scaling_group
         self.cloud_type = request.session.get('cloud_type', 'euca')
+        self.choices_from_metrics = self.get_choices_from_metrics()
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
@@ -111,6 +116,10 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.evaluation_periods.data = 1
         self.period.data = 120
 
+        if self.scaling_group_name is not None:
+            self.dimension.data = 'scaling_group'
+            self.scaling_group_name.data = self.scaling_group.name
+
     def set_choices(self):
         self.comparison.choices = self.get_comparison_choices()
         self.statistic.choices = self.get_statistic_choices()
@@ -118,11 +127,12 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.unit.choices = self.get_unit_choices()
         self.dimension.choices = self.get_dimension_choices()
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
-        self.instance.choices = self.get_instance_choices()
+        self.image_id.choices = self.choices_from_metrics.image_choices
+        self.instance_id.choices = self.choices_from_metrics.instance_choices
         self.instance_type.choices = self.get_instance_type_choices()
-        self.load_balancer.choices = self.elb_choices_manager.load_balancers()
-        self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups()
-        self.volume.choices = self.get_volume_choices()
+        self.load_balancer_name.choices = self.elb_choices_manager.load_balancers()
+        self.scaling_group_name.choices = self.autoscale_choices_manager.scaling_groups()
+        self.volume_id.choices = self.choices_from_metrics.volume_choices
 
     def set_help_text(self):
         self.evaluation_periods.help_text = self.evaluation_periods_help_text
@@ -139,20 +149,35 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
         self.unit.error_msg = self.unit_error_msg
 
-    def get_instance_choices(self):
-        # TODO: implement
-        return []
-
     def get_instance_type_choices(self):
         return self.ec2_choices_manager.instance_types(cloud_type=self.cloud_type)
 
-    def get_volume_choices(self):
-        # TODO: implement
-        return []
+    def get_choices_from_metrics(self):
+        Choices = namedtuple('Choices', ['image_choices', 'instance_choices', 'volume_choices'])
+        image_choices = []
+        instance_choices = []
+        volume_choices = []
+        for metric in self.metrics:
+            if hasattr(metric, 'dimensions'):
+                if metric.dimensions.get('ImageId'):
+                    image_id = metric.dimensions.get('ImageId')[0]
+                    image_choices.append((image_id, image_id))
+                elif metric.dimensions.get('InstanceId'):
+                    instance_id = metric.dimensions.get('InstanceId')[0]
+                    instance_choices.append((instance_id, instance_id))
+                elif metric.dimensions.get('VolumeId'):
+                    volume_id = metric.dimensions.get('VolumeId')[0]
+                    volume_choices.append((volume_id, volume_id))
+        return Choices(
+            image_choices=sorted(set(image_choices)),
+            instance_choices=sorted(set(instance_choices)),
+            volume_choices=sorted(set(volume_choices))
+        )
 
     @staticmethod
     def get_dimension_choices():
         return [
+            ('', _(u'select...')),
             ('availability_zone', _(u'Availability zone')),
             ('image', _(u'Image')),
             ('instance', _(u'Instance')),
