@@ -4,6 +4,7 @@ Tests for login forms
 """
 from urllib2 import HTTPError, URLError
 
+import boto
 from pyramid.security import Authenticated
 from pyramid.testing import DummyRequest
 
@@ -30,8 +31,8 @@ class AWSLoginFormTestCase(BaseFormTestCase):
     request = DummyRequest()
 
     def test_required_fields(self):
-        self.assert_required('access_key')
-        self.assert_required('secret_key')
+        self.has_field('access_key')
+        self.has_field('secret_key')
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -58,21 +59,21 @@ class EucaAuthTestCase(BaseTestCase):
 
 
 class AWSAuthTestCase(BaseTestCase):
-    access_key = 'foo_accesskey'
-    secret_key = 'super-seekrit-key'
     endpoint = 'https://sts.amazonaws.com'
-    auth = AWSAuthenticator(key_id=access_key, secret_key=secret_key, duration=3600)
+    expected_url = ''.join([
+            'Action=GetSessionToken',
+            '&AWSAccessKeyId=12345678901234567890&DurationSeconds=3600&SignatureMethod=HmacSHA256&SignatureVersion=2&Version=2011-06-15',
+            '&Timestamp={now}'.format(now=boto.utils.get_ts()),
+            '&Signature=1234567890123456789012345678901234567890'
+        ])
+    auth = AWSAuthenticator(package=expected_url)
 
     def test_aws_authenticator(self):
         self.assertEqual(self.auth.endpoint, self.endpoint)
-        self.assertEqual(self.auth.host, 'sts.amazonaws.com')
-        self.assertEqual(self.auth.parameters.get('AWSAccessKeyId'), self.access_key)
-        self.assertEqual(self.auth.parameters.get('SignatureVersion'), 2)
-        self.assertEqual(self.auth.parameters.get('SignatureMethod'), 'HmacSHA256')
-        self.assertEqual(self.auth.parameters.get('Action'), 'GetSessionToken')
-        self.assertEqual(self.auth.parameters.get('Version'), '2011-06-15')
+        self.assertEqual(self.auth.package, self.expected_url)
 
     def test_aws_authentication_failure(self):
+        import logging; logging.info("url = "+self.expected_url)
         self.assertRaises(HTTPError, self.auth.authenticate, timeout=1)
 
 

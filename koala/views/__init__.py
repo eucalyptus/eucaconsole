@@ -4,6 +4,7 @@ Core views
 
 """
 import simplejson as json
+import textwrap
 from urllib import urlencode
 
 from beaker.cache import cache_managers
@@ -112,9 +113,9 @@ class TaggedItemView(BaseView):
         return name
 
     @staticmethod
-    def get_tags_display(tags, skip_name=True):
+    def get_tags_display(tags, skip_name=True, wrap_width=0):
         """Return comma-separated list of tags as a string.
-           Skips the 'Name' tag by default"""
+           Skips the 'Name' tag by default. no wrapping by default, otherwise honor wrap_width"""
         tags_array = []
         for key, val in tags.items():
             if not key.startswith('aws:'):
@@ -122,7 +123,14 @@ class TaggedItemView(BaseView):
                 if skip_name and key == 'Name':
                     continue
                 else:
-                    tags_array.append(template.format(key, val))
+                    text = template.format(key, val)
+                    if wrap_width > 0:
+                        if len(text) > wrap_width:
+                            tags_array.append(textwrap.fill(text, wrap_width))
+                        else:
+                            tags_array.append(text)
+                    else:
+                        tags_array.append(text)
         return ', '.join(tags_array)
 
 
@@ -202,7 +210,10 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request):
         super(LandingPageView, self).__init__(request)
-        self.display_type = self.request.params.get('display', 'gridview')
+        # defaulting to table view since most of our users are on a desktop.
+        # TODO: figure out how to default to gridview for small screens. Maybe this can be a client-side
+        # thing vs server-side? That way, switching can be based on media query.
+        self.display_type = self.request.params.get('display', 'tableview')
         self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []
