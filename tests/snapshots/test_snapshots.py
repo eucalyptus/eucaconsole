@@ -26,7 +26,7 @@ class SnapshotsViewTests(BaseViewTestCase):
     def test_snapshots_landing_page(self):
         request = testing.DummyRequest()
         view = SnapshotsView(request).snapshots_landing()
-        self.assertIn('/snapshots/json', view.get('json_items_endpoint'))
+        self.assertTrue('/snapshots/json' in view.get('json_items_endpoint'))
 
     def test_snapshots_landing_page_json(self):
         request = testing.DummyRequest()
@@ -53,13 +53,13 @@ class SnapshotViewTests(BaseViewTestCase):
         """Snapshot view should return 404 for missing snapshot"""
         request = testing.DummyRequest()
         snapshot = SnapshotView(request).get_snapshot()
-        self.assertIsNone(snapshot)
+        self.assertTrue(snapshot is None)
 
     def test_snapshot_update_view(self):
         """Snapshot update should contain the snapshot form"""
         request = testing.DummyRequest(post=True)
         view = SnapshotView(request).snapshot_update()
-        self.assertIsNotNone(view.get('snapshot_form'))
+        self.assertTrue(view.get('snapshot_form') is not None)
 
 
 class SnapshotUpdateFormTestCase(BaseFormTestCase):

@@ -28,12 +28,12 @@ class SecurityGroupsViewTests(BaseViewTestCase):
         lpview = self.view.securitygroups_landing()
         self.assertEqual(lpview.get('prefix'), '/securitygroups')
         self.assertEqual(lpview.get('display_type'), 'tableview')  # Security group defaults to table view
-        self.assertIn('/securitygroups/json', lpview.get('json_items_endpoint'))  # JSON endpoint
+        self.assertTrue('/securitygroups/json' in lpview.get('json_items_endpoint'))  # JSON endpoint
         self.assertEqual(lpview.get('initial_sort_key'), 'name')
         filter_keys = lpview.get('filter_keys')
-        self.assertIn('name', filter_keys)
-        self.assertIn('description', filter_keys)
-        self.assertIn('tags', filter_keys)  # Object has tags
+        self.assertTrue('name' in filter_keys)
+        self.assertTrue('description' in filter_keys)
+        self.assertTrue('tags' in filter_keys)  # Object has tags
 
 
 class SecurityGroupViewTests(BaseViewTestCase):
@@ -47,8 +47,8 @@ class SecurityGroupViewTests(BaseViewTestCase):
     def test_item_view(self):
         itemview = SecurityGroupView(self.request).securitygroup_view()
         self.assertEqual(itemview.get('security_group'), None)
-        self.assertIsNotNone(itemview.get('securitygroup_form'))
-        self.assertIsNotNone(itemview.get('delete_form'))
+        self.assertTrue(itemview.get('securitygroup_form') is not None)
+        self.assertTrue(itemview.get('delete_form') is not None)
 
     def test_update_view(self):
         updateview = SecurityGroupView(self.request).securitygroup_update()
@@ -56,14 +56,14 @@ class SecurityGroupViewTests(BaseViewTestCase):
 
     def test_delete_view(self):
         deleteview = SecurityGroupView(self.request).securitygroup_delete()
-        self.assertIsNotNone(deleteview)
+        self.assertTrue(deleteview is not None)
 
 
 class SecurityGroupFormTestCase(BaseFormTestCase):
     form_class = SecurityGroupForm
     request = testing.DummyRequest()
     security_group = None
-    form = form_class(request, security_group=None)
+    form = form_class(request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -80,21 +80,21 @@ class SecurityGroupFormTestCase(BaseFormTestCase):
         fieldrow = form_field_row(None, self.request, self.form.name)
         self.assertTrue(hasattr(self.form.name.flags, 'required'))
         self.assertTrue('required' in fieldrow.get('html_attrs').keys())
-        self.assertIsNone(fieldrow.get('html_attrs').get('maxlength'))  # Update if we add a maxlength to 'name' field
+        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is None)
 
     def test_description_field_html_attrs(self):
         """Test if required fields pass the proper HTML attributes to the form_field_row panel"""
         fieldrow = form_field_row(None, self.request, self.form.description)
         self.assertTrue(hasattr(self.form.name.flags, 'required'))
         self.assertTrue('required' in fieldrow.get('html_attrs').keys())
-        self.assertIsNotNone(fieldrow.get('html_attrs').get('maxlength'))  # Description has a maxlength="..." HTML attr
+        self.assertTrue(fieldrow.get('html_attrs').get('maxlength') is not None)
 
 
 class SecurityGroupPanelsTestCase(BaseViewTestCase):
     form_class = SecurityGroupForm
     request = testing.DummyRequest()
     security_group = None
-    form = form_class(request, security_group=None)
+    form = form_class(request)
 
     def test_panel_readonly_html_attr(self):
         """Test if we set the proper HTML attr when passing a 'readonly' kwarg to the form_field_row panel"""
@@ -103,8 +103,8 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
 
     def test_add_form(self):
         """Form field data should be empty if new item (i.e. security_group is None)"""
-        self.assertIsNone(self.form.name.data)
-        self.assertIsNone(self.form.description.data)
+        self.assertTrue(self.form.name.data is None)
+        self.assertTrue(self.form.description.data is None)
 
     def test_tag_editor_panel(self):
         tageditor = tag_editor(None, self.request, tags=[])
@@ -126,7 +126,7 @@ class SecurityGroupPanelsTestCase(BaseViewTestCase):
             'from_port': 80
         }]
         self.assertEqual(ruleseditor.get('rules'), rules_output)
-        self.assertIsNotNone(ruleseditor.get('icmp_choices'))
+        self.assertTrue(ruleseditor.get('icmp_choices') is not None)
 
 
 class DeleteFormTestCase(BaseFormTestCase):
