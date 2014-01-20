@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="large-7 columns"
-                             tal:define="metric_attrs {'ng-model': 'metric', 'ng-change': 'updateDimensionChoices()'}">
+                             tal:define="metric_attrs {'ng-model': 'metric', 'ng-change': 'updateMetricNamespace()'}">
                             ${structure:alarm_form.metric(**metric_attrs)}
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                     <span i18n:translate="" class="inline-label">for</span>
                                 </div>
                                 <div class="small-10 columns">
-                                    <select name="dimension" ng-model="dimension">
+                                    <select id="dimension" name="dimension" ng-model="dimension">
                                         <option value="" i18n:translate="">select...</option>
                                         <option value="" i18n:translate="" value="availability_zone"
                                                 ng-disabled="namespace !== 'AWS/ELB'"

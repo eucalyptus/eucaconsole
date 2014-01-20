@@ -6,7 +6,7 @@
 angular.module('CreateAlarm', [])
     .controller('CreateAlarmCtrl', function ($scope) {
         $scope.alarmDialog = $('#create-alarm-modal');
-        $scope.updateDimensionChoices = function () {
+        $scope.updateMetricNamespace = function () {
             var selectedOptionLabel = $('#metric').find('option[value="' + $scope.metric + '"]').text();
             $scope.namespace = selectedOptionLabel.split(' - ')[0];
         };
