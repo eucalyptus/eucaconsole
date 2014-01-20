@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
@@ -611,7 +612,7 @@ select { width: 100%; }
 .breadcrumbs > *.unavailable { color: #999999; }
 .breadcrumbs > *.unavailable a { color: #999999; }
 .breadcrumbs > *.unavailable:hover, .breadcrumbs > *.unavailable:hover a, .breadcrumbs > *.unavailable:focus, .breadcrumbs > *.unavailable a:focus { text-decoration: none; color: #999999; cursor: default; }
-.breadcrumbs > *:before { content: "//"; color: #cccccc; margin: 0 0.625rem; position: relative; top: 1px; }
+.breadcrumbs > *:before { content: "/"; color: #cccccc; margin: 0 0.625rem; position: relative; top: 1px; }
 .breadcrumbs > *:first-child:before { content: " "; margin: 0; }
 
 button, .button { cursor: pointer; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; /*     @else                            { font-size: $padding - rem-calc(2); } */ background-color: #76b800; border-color: #669f00; color: white; -webkit-transition: background-color 300ms ease-out; -moz-transition: background-color 300ms ease-out; transition: background-color 300ms ease-out; padding-top: 0.6875rem; padding-bottom: 0.625rem; -webkit-appearance: none; border: none; font-weight: normal !important; }
@@ -1477,7 +1478,7 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 #navbar .dropdown li a { line-height: 1.2rem; }
 
 #pagetitle { position: relative; }
-#pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #80b6ca; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; padding-bottom: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #c8dfe8; }
 #pagetitle .help-icon { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; padding: 8px 16px; text-align: center; vertical-align: middle; border-left: 1px solid #80b6ca; font-weight: bold; }
 
 /* ----------------------------------------- Main Content

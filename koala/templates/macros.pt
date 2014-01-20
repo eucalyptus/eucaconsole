@@ -143,6 +143,16 @@
     </div>
 </metal:datagrid_macro>
 
+
+<!-- Breadcrumbs ===== -->
+<metal:breadcrumbs metal:define-macro="breadcrumbs">
+    <ul id="breadcrumbs" class="breadcrumbs">
+        <li><a href="${request.route_url('dashboard')}" title="Home"><i class="fi-home"></i></a></li>
+        <metal:block metal:define-slot="crumbs" />
+    </ul>
+</metal:breadcrumbs>
+
+
 <!-- Notifications ===== -->
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
@@ -196,6 +206,7 @@
         </metal:block>
     </div>
 </metal:tageditorhelp>
+
 
 <!-- Volume device help -->
 <metal:volumedevicehelp metal:define-macro="volumedevice_help">
