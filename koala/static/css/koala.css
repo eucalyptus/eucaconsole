@@ -603,11 +603,11 @@ select { width: 100%; }
   .large-block-grid-12 > li:nth-of-type(n) { clear: none; }
   .large-block-grid-12 > li:nth-of-type(12n+1) { clear: both; } }
 .breadcrumbs { display: block; padding: 0 0 0 0; overflow: hidden; margin-left: 0; list-style: none; border-style: solid; border-width: 0; background-color: transparent; border-color: transparent; -webkit-border-radius: 0; border-radius: 0; }
-.breadcrumbs > * { margin: 0; float: left; font-size: 1rem; text-transform: normal; }
+.breadcrumbs > * { margin: 0; float: left; font-size: 1.1rem; text-transform: normal; }
 .breadcrumbs > *:hover a, .breadcrumbs > *:focus a { text-decoration: underline; }
 .breadcrumbs > * a, .breadcrumbs > * span { text-transform: normal; color: #76b800; }
-.breadcrumbs > *.current { cursor: default; color: #999999; }
-.breadcrumbs > *.current a { cursor: default; color: #999999; }
+.breadcrumbs > *.current { cursor: default; color: #333333; }
+.breadcrumbs > *.current a { cursor: default; color: #333333; }
 .breadcrumbs > *.current:hover, .breadcrumbs > *.current:hover a, .breadcrumbs > *.current:focus, .breadcrumbs > *.current:focus a { text-decoration: none; }
 .breadcrumbs > *.unavailable { color: #999999; }
 .breadcrumbs > *.unavailable a { color: #999999; }
