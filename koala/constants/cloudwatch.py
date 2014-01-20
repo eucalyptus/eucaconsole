@@ -38,3 +38,26 @@ METRIC_TYPES = [
     {'namespace': 'AWS/ELB', 'name': 'UnHealthyHostCount', 'unit': 'Count'},
 ]
 
+
+# Maps simplified dimension keys to dimension names (for dict key in MetricAlarm().dimensions attr)
+METRIC_DIMENSION_NAMES = {
+    'availability_zone': 'AvailabilityZone',
+    'image': 'ImageId',
+    'instance': 'InstanceId',
+    'instance_type': 'InstanceType',
+    'load_balancer': 'LoadBalancerName',
+    'scaling_group': 'AutoScalingGroupName',
+    'volume': 'VolumeId',
+}
+
+# Maps simplified dimension keys to dimension input fields (in forms.alarms.CloudWatchAlarmCreateForm)
+METRIC_DIMENSION_INPUTS = {
+    'availability_zone': 'availability_zone',
+    'image': 'image_id',
+    'instance': 'instance_id',
+    'instance_type': 'instance_type',
+    'load_balancer': 'load_balancer_name',
+    'scaling_group': 'scaling_group_name',
+    'volume': 'volume_id',
+}
+

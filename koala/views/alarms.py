@@ -11,6 +11,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import METRIC_DIMENSION_NAMES
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
@@ -50,7 +51,7 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_create(self):
-        location = self.request.route_url('cloudwatch_alarms')
+        location = self.request.params.get('redirect_location') or self.request.route_url('cloudwatch_alarms')
         if self.create_form.validate():
             try:
                 metric_name = self.request.params.get('metric')
@@ -61,9 +62,13 @@ class CloudWatchAlarmsView(LandingPageView):
                 period = self.request.params.get('period')
                 evaluation_periods = self.request.params.get('evaluation_periods')
                 statistic = self.request.params.get('statistic')
+                dimension_param = self.request.params.get('dimension')
+                dimension = self.get_dimension_name(dimension_param)
+                dimension_value = self.get_dimension_value(dimension_param)
+                dimensions = {dimension: dimension_value}
                 alarm = MetricAlarm(
                     name, comparison, threshold, period, evaluation_periods, statistic,
-                    description=self.request.params.get('description'),
+                    description=self.request.params.get('description'), dimensions=dimensions
                 )
                 alarm.metric = metric
                 self.cloudwatch_conn.put_metric_alarm(alarm)
@@ -99,6 +104,14 @@ class CloudWatchAlarmsView(LandingPageView):
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
+
+    def get_dimension_value(self, key=None):
+
+        return [self.request.params.get(key)]
+
+    @staticmethod
+    def get_dimension_name(key=None):
+        return METRIC_DIMENSION_NAMES.get(key)
 
 
 class CloudWatchAlarmsJsonView(BaseView):

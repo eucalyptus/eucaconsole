@@ -74,10 +74,12 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 
 
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
-def create_alarm_dialog(context, request, alarm_form=None, modal_size='medium'):
+def create_alarm_dialog(context, request, alarm_form=None, redirect_location=None, modal_size='medium'):
     """Create alarm dialog page."""
+    redirect_location = redirect_location or request.route_url('cloudwatch_alarms')
     return dict(
         alarm_form=alarm_form,
+        redirect_location=redirect_location,
         modal_size=modal_size,
     )
 

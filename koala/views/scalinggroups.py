@@ -351,6 +351,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
+            create_alarm_redirect=self.request.route_url('scalinggroup_policy_new', id=self.scaling_group.name),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )

@@ -115,7 +115,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.evaluation_periods.data = 1
         self.period.data = 120
 
-        if self.scaling_group_name is not None:
+        if self.scaling_group is not None:
             self.scaling_group_name.data = self.scaling_group.name
 
     def set_choices(self):
