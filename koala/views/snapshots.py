@@ -59,7 +59,7 @@ class SnapshotsView(LandingPageView):
                 progress=snapshot.progress,
                 start_time=snapshot.start_time,
                 status=snapshot.status,
-                tags=TaggedItemView.get_tags_display(snapshot.tags),
+                tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
                 volume_size=snapshot.volume_size,
             ))

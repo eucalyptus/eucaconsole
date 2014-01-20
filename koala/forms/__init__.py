@@ -23,16 +23,27 @@ class BaseSecureForm(SecureForm):
     def generate_csrf_token(self, csrf_context):
         return self.request.session.get_csrf_token()
 
+    def get_errors_list(self):
+        """Convenience method to get all form validation errors as a list of message strings"""
+        error_messages = []
+        for errors in self.errors.values():
+            for error in errors:
+                error_messages.append(error)
+        return error_messages
+
 
 class ChoicesManager(object):
     """Container for form choices reused across the app"""
 
     def __init__(self, conn=None):
+        """"Note: conn param could be a connection object of any type, based on the choices required"""
         self.conn = conn
 
+    #### EC2 connection type choices
+    ##
+
     def availability_zones(self, zones=None, add_blank=True):
-        """Returns a list of availability zone choices
-           Will fetch zones if not passed"""
+        """Returns a list of availability zone choices. Will fetch zones if not passed"""
         choices = []
         zones = zones or []
         if add_blank:
@@ -128,3 +139,34 @@ class ChoicesManager(object):
             choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))
 
+    #### AutoScale connection type choices
+    ##
+
+    def scaling_groups(self, scaling_groups=None, add_blank=True):
+        """Returns a list of scaling group choices"""
+        choices = []
+        scaling_groups = scaling_groups or []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        # Note: self.conn is an ELBConnection
+        if not scaling_groups and self.conn is not None:
+            scaling_groups = self.conn.get_all_groups()
+        for scaling_group in scaling_groups:
+            choices.append((scaling_group.name, scaling_group.name))
+        return sorted(choices)
+
+    #### ELB connection type choices
+    ##
+
+    def load_balancers(self, load_balancers=None, add_blank=True):
+        """Returns a list of load balancer choices.  Will fetch load balancers if not passed"""
+        choices = []
+        load_balancers = load_balancers or []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        # Note: self.conn is an ELBConnection
+        if not load_balancers and self.conn is not None:
+            load_balancers = self.conn.get_all_load_balancers()
+        for load_balancer in load_balancers:
+            choices.append((load_balancer.name, load_balancer.name))
+        return sorted(choices)

@@ -10,6 +10,7 @@ from urlparse import urlparse
 from beaker.cache import cache_region
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.i18n import TranslationString as _
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
@@ -35,8 +36,8 @@ class MasterLayout(object):
         self.username_label = self.request.session.get('username_label')
         self.tableview_url = self.get_datagridview_url('tableview')
         self.gridview_url = self.get_datagridview_url('gridview')
-        self.date_format = '%Y-%m-%d %H:%M %p'
-        self.angular_date_format = 'yyyy-MM-dd h:mm a'
+        self.date_format = _(u'%H:%M:%S %p %b %d %Y')
+        self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
         self.tag_pattern = '^(?!aws:).*'
         self.cidr_pattern = '{0}{1}'.format(
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
@@ -54,6 +55,13 @@ class MasterLayout(object):
             for notice in self.request.session.pop_flash(queue=queue):
                 notifications.append(
                     notification(message=notice, type=queue, style=Notification.FOUNDATION_STYLES.get(queue)))
+        # Add custom error messages via self.request.error_messages = [message_1, message_2, ...] in the view
+        error_messages = getattr(self.request, 'error_messages', [])
+        for error in error_messages:
+            queue = Notification.ERROR
+            notifications.append(
+                notification(message=error, type=queue, style=Notification.FOUNDATION_STYLES.get(queue))
+            )
         return notifications
 
     def get_datagridview_url(self, display):

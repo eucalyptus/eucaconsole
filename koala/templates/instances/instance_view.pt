@@ -19,7 +19,7 @@
             <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
         </dl>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
             <div class="panel">
@@ -113,7 +113,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
-                        <div class="small-8 columns value">${scaling_group}</div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_url('scalinggroup_view', id=scaling_group)}">${scaling_group}</a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.owner_id">
                         <div class="small-4 columns"><label i18n:translate="">Account ID</label></div>

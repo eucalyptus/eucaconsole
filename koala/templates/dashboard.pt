@@ -33,7 +33,7 @@
                     <h5 class="subheader" i18n:translate="">In scaling groups</h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
-                            <i class="fi-cloud icon"><em>0</em></i>
+                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_scaling }}</em></i>
                         </a>
                     </div>
                     <div class="footer"></div>

@@ -1,4 +1,3 @@
-@charset "UTF-8";
 @import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
@@ -602,17 +601,17 @@ select { width: 100%; }
   .large-block-grid-12 > li { width: 8.33333%; padding: 0 0.625rem 1.25rem; }
   .large-block-grid-12 > li:nth-of-type(n) { clear: none; }
   .large-block-grid-12 > li:nth-of-type(12n+1) { clear: both; } }
-.breadcrumbs { display: block; padding: 0.5625rem 0.875rem 0.5625rem; overflow: hidden; margin-left: 0; list-style: none; border-style: solid; border-width: 1px; background-color: #f4f4f4; border-color: #dadada; -webkit-border-radius: 3px; border-radius: 3px; }
-.breadcrumbs > * { margin: 0; float: left; font-size: 0.6875rem; text-transform: uppercase; }
+.breadcrumbs { display: block; padding: 0 0 0 0; overflow: hidden; margin-left: 0; list-style: none; border-style: solid; border-width: 0; background-color: transparent; border-color: transparent; -webkit-border-radius: 0; border-radius: 0; }
+.breadcrumbs > * { margin: 0; float: left; font-size: 1rem; text-transform: normal; }
 .breadcrumbs > *:hover a, .breadcrumbs > *:focus a { text-decoration: underline; }
-.breadcrumbs > * a, .breadcrumbs > * span { text-transform: uppercase; color: #76b800; }
-.breadcrumbs > *.current { cursor: default; color: #333333; }
-.breadcrumbs > *.current a { cursor: default; color: #333333; }
+.breadcrumbs > * a, .breadcrumbs > * span { text-transform: normal; color: #76b800; }
+.breadcrumbs > *.current { cursor: default; color: #999999; }
+.breadcrumbs > *.current a { cursor: default; color: #999999; }
 .breadcrumbs > *.current:hover, .breadcrumbs > *.current:hover a, .breadcrumbs > *.current:focus, .breadcrumbs > *.current:focus a { text-decoration: none; }
 .breadcrumbs > *.unavailable { color: #999999; }
 .breadcrumbs > *.unavailable a { color: #999999; }
 .breadcrumbs > *.unavailable:hover, .breadcrumbs > *.unavailable:hover a, .breadcrumbs > *.unavailable:focus, .breadcrumbs > *.unavailable a:focus { text-decoration: none; color: #999999; cursor: default; }
-.breadcrumbs > *:before { content: "/"; color: #aaaaaa; margin: 0 0.75rem; position: relative; top: 1px; }
+.breadcrumbs > *:before { content: "//"; color: #cccccc; margin: 0 0.625rem; position: relative; top: 1px; }
 .breadcrumbs > *:first-child:before { content: " "; margin: 0; }
 
 button, .button { cursor: pointer; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; /*     @else                            { font-size: $padding - rem-calc(2); } */ background-color: #76b800; border-color: #669f00; color: white; -webkit-transition: background-color 300ms ease-out; -moz-transition: background-color 300ms ease-out; transition: background-color 300ms ease-out; padding-top: 0.6875rem; padding-bottom: 0.625rem; -webkit-appearance: none; border: none; font-weight: normal !important; }
@@ -1491,6 +1490,8 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
+ul.breadcrumbs { margin-bottom: 0; }
+
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
 
 a.has-tip { border-bottom: none !important; }
@@ -1519,7 +1520,9 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
 
+#tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor .tagentry .new { color: #76b800; }
+#tag-editor small { font-size: 0.825rem; }
 
 #pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
 
@@ -1542,6 +1545,7 @@ textarea.console-output { width: 660px; height: 400px; margin: 10px; }
 ----------------------------------------- */
 form label { cursor: default; }
 form label .req { color: darkred; }
+form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }
 form .columns input { max-width: 100%; }
 form a.remove.circle { position: relative; left: 8px; top: -2px; }
@@ -1550,11 +1554,13 @@ form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; }
 form .chosen-drop .chosen-results { font-size: 0.825rem; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
+form .chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
 
-form .row.controls-wrapper { margin-bottom: 1rem; }
+form .row.controls-wrapper { margin-bottom: 0.5rem; }
 form .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 form .row.controls-wrapper label select, form .row.controls-wrapper label input, form .row.controls-wrapper label .chosen-container { text-align: left; }
-form .row.controls-wrapper .field input { display: inline-block; }
+form .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
+form .row.controls-wrapper .field select { margin-bottom: 0.3rem; }
 form .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
 form .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
 form .row.controls-wrapper.inline { margin-bottom: 4px; }
@@ -1567,6 +1573,8 @@ form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-to
 
 textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
+
+.helptext-icon { display: inline-block; margin-left: 5px; width: 20px; height: 20px; border-radius: 32px; border: 1px solid #999999; background-color: #cccccc; color: white; text-align: center; padding-top: 3px; font-size: 0.825rem; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
