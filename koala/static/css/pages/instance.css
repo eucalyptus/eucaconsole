@@ -87,6 +87,8 @@ select { width: 50%; }
 
 form .row.controls-wrapper { margin-bottom: 0; }
 
+#instance_type { width: 100%; }
+
 .dots { margin-left: 1rem; }
 
 #change-instance-state { display: inline-block; margin-left: 1rem; }

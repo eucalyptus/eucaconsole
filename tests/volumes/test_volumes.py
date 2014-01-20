@@ -27,7 +27,7 @@ class VolumesViewTests(BaseViewTestCase):
     def test_volumes_landing_page(self):
         request = testing.DummyRequest()
         view = VolumesView(request).volumes_landing()
-        self.assertIn('/volumes/json', view.get('json_items_endpoint'))
+        self.assertTrue('/volumes/json' in view.get('json_items_endpoint'))
 
     def test_volumes_landing_page_json(self):
         request = testing.DummyRequest()
@@ -54,7 +54,7 @@ class VolumeViewTests(BaseViewTestCase):
         """Volume update should contain the volume form"""
         request = testing.DummyRequest(post=True)
         view = VolumeView(request).volume_update()
-        self.assertIsNotNone(view.get('volume_form'))
+        self.assertTrue(view.get('volume_form') is not None)
 
 
 class VolumeUpdateFormTestCase(BaseFormTestCase):
