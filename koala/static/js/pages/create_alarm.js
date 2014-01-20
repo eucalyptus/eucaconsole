@@ -6,11 +6,13 @@
 angular.module('CreateAlarm', [])
     .controller('CreateAlarmCtrl', function ($scope, $timeout) {
         $scope.alarmDialog = $('#create-alarm-modal');
-        $scope.unit = '';
-        $scope.metric = '';
+        $scope.statisticField = $('#statistic');
+        $scope.metricField = $('#metric');
+        $scope.dimensionField = $('#dimension');
+        $scope.unitField = $('#unit');
         $scope.setInitialValues = function () {
-            $scope.statistic = $('#statistic').find(':selected').val();
-            $scope.metric = $('#metric').find(':selected').val();
+            $scope.metricField.val($scope.metricField.find('option[selected]').val());
+            $scope.metricField.trigger('change');
         };
         $scope.initController = function () {
             $scope.alarmDialog.on('opened', function () {
@@ -18,18 +20,17 @@ angular.module('CreateAlarm', [])
             });
         };
         $scope.updateMetricNamespace = function () {
-            var selectedOptionLabel = $('#metric').find('option[value="' + $scope.metric + '"]').text();
+            var selectedOptionLabel = $scope.metricField.find('option[value="' + $scope.metric + '"]').text();
             $scope.namespace = selectedOptionLabel.split(' - ')[0];
-            $timeout(function () {
-                $('#dimension').trigger('change');
-            }, 50);
             $scope.setUnitChoice();
+            $timeout(function () {
+                $scope.dimensionField.trigger('change');
+            }, 50);
         };
         $scope.setUnitChoice = function () {
             if ($scope.namespace = 'AWS/AutoScaling') {
-                $scope.unit = 'Count';
+                $scope.unitField.val('Count');
             }
-            $('#unit').trigger('change');
         };
     })
 ;
