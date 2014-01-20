@@ -11,7 +11,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.view import view_config
 
-from ..constants.cloudwatch import METRIC_DIMENSION_NAMES
+from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
@@ -26,9 +26,13 @@ class CloudWatchAlarmsView(LandingPageView):
         self.initial_sort_key = 'name'
         self.prefix = '/cloudwatch/alarms'
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
+        self.ec2_conn = self.get_connection()
+        self.elb_conn = self.get_connection(conn_type='elb')
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = CloudWatchAlarmCreateForm(
-            self.request, metrics=self.metrics, formdata=self.request.params or None)
+            self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
+            metrics=self.metrics, formdata=self.request.params or None)
         self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = []
         # sort_keys are passed to sorting drop-down
@@ -54,23 +58,25 @@ class CloudWatchAlarmsView(LandingPageView):
         location = self.request.params.get('redirect_location') or self.request.route_url('cloudwatch_alarms')
         if self.create_form.validate():
             try:
-                metric_name = self.request.params.get('metric')
-                metric = self.cloudwatch_conn.list_metrics(metric_name=metric_name)[0]
+                metric = self.request.params.get('metric')
                 name = self.request.params.get('name')
+                namespace = self.request.params.get('namespace')
+                statistic = self.request.params.get('statistic')
                 comparison = self.request.params.get('comparison')
                 threshold = self.request.params.get('threshold')
                 period = self.request.params.get('period')
                 evaluation_periods = self.request.params.get('evaluation_periods')
-                statistic = self.request.params.get('statistic')
+                unit = self.request.params.get('unit')
+                description = self.request.params.get('description', '')
                 dimension_param = self.request.params.get('dimension')
                 dimension = self.get_dimension_name(dimension_param)
                 dimension_value = self.get_dimension_value(dimension_param)
                 dimensions = {dimension: dimension_value}
                 alarm = MetricAlarm(
-                    name, comparison, threshold, period, evaluation_periods, statistic,
-                    description=self.request.params.get('description'), dimensions=dimensions
+                    name=name, metric=metric, namespace=namespace, statistic=statistic, comparison=comparison,
+                    threshold=threshold, period=period, evaluation_periods=evaluation_periods, unit=unit,
+                    description=description, dimensions=dimensions
                 )
-                alarm.metric = metric
                 self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
@@ -106,8 +112,8 @@ class CloudWatchAlarmsView(LandingPageView):
         return self.render_dict
 
     def get_dimension_value(self, key=None):
-
-        return [self.request.params.get(key)]
+        input_field = METRIC_DIMENSION_INPUTS.get(key)
+        return [self.request.params.get(input_field)]
 
     @staticmethod
     def get_dimension_name(key=None):

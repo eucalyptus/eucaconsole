@@ -73,7 +73,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         u'How many consecutive periods the trigger threshold must be breached before the alarm is triggered.')
     evaluation_periods_error_msg = _(u'Measurement periods is required')
     evaluation_periods = wtforms.IntegerField(
-        label=_(u'Measurement periods'),
+        label=_(u'Periods'),
         validators=[
             validators.InputRequired(message=evaluation_periods_error_msg),
         ],
@@ -96,7 +96,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None,
                  scaling_group=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
-        self.elb_conn = ec2_conn
+        self.ec2_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
         self.elb_conn = elb_conn
         self.metrics = metrics or []
@@ -117,6 +117,9 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
         if self.scaling_group is not None:
             self.scaling_group_name.data = self.scaling_group.name
+            self.statistic.data = 'SampleCount'
+            self.metric.data = 'GroupDesiredCapacity'
+            self.unit.data = 'Count'
 
     def set_choices(self):
         self.comparison.choices = self.get_comparison_choices()
@@ -192,7 +195,11 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
     @staticmethod
     def get_unit_choices():
-        return [(choice, choice) for choice in Metric.Units if choice is not None]
+        choices = [BLANK_CHOICE]
+        for choice in Metric.Units:
+            if choice is not None:
+                choices.append((choice, choice))
+        return choices
 
 
 class CloudWatchAlarmDeleteForm(BaseSecureForm):

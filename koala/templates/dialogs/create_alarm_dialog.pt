@@ -1,11 +1,12 @@
 <!--! Create alarm dialog -->
-<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl">
+<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" ng-init="initController()">
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
         <p i18n:translate="">&nbsp;</p>
         <form action="${request.route_url('cloudwatch_alarms_create')}" method="post" data-abide="">
             ${structure:alarm_form['csrf_token']}
             <input type="hidden" name="redirect_location" value="${redirect_location}" />
+            <input type="hidden" name="namespace" value="{{ namespace }}" />
             ${panel('form_field', field=alarm_form['name'], leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=alarm_form['description'], leftcol_width=3, rightcol_width=9)}
             <hr />
@@ -18,7 +19,9 @@
                         <div class="large-5 columns">
                             <div class="row">
                                 <div class="small-5 columns">
-                                    <span i18n:translate="" class="inline-label">When the</span>
+                                    <span class="inline-label">
+                                        <span i18n:translate="">When</span>&nbsp;<span>the</span>
+                                    </span>
                                 </div>
                                 <div class="small-7 columns">
                                     ${structure:alarm_form['statistic']}
@@ -79,11 +82,11 @@
                         <div class="small-2 columns">
                             ${structure:alarm_form['comparison']}
                         </div>
-                        <div class="small-4 columns">
-                            ${structure:alarm_form['threshold']}
+                        <div class="small-3 columns">
+                            ${structure:alarm_form.threshold(**{'placeholder': 'amount...', 'type': 'number'})}
                         </div>
-                        <div class="small-5 columns">
-                            ${structure:alarm_form['unit']}
+                        <div class="small-6 columns">
+                            ${structure:alarm_form.unit(**{'ng-model': 'unit'})}
                         </div>
                     </div>
                 </div>
