@@ -1,0 +1,89 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupInstances" ng-controller="ScalingGroupInstancesCtrl"
+         ng-init="initController('${json_items_endpoint}')">
+        <h3 class="header" id="pagetitle">
+            <ul class="breadcrumbs">
+                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling Groups</a></li>
+                <li><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">${scaling_group.name}</a></li>
+                <li class="current"><a href="#" i18n:translate="">Instances</a></li>
+            </ul>
+        </h3>
+        <dl class="sub-nav" id="scalinggroup-subnav">
+            <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">Scaling Group</a></dd>
+            <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+            <dd class="active"><a href="#">Instances</a></dd>
+        </dl>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-8 columns">
+            <div class="panel gridwrapper has-title">
+                <h6 class="title">
+                    <span i18n:translate="">Instances in scaling group</span>
+                    <strong>${scaling_group.name}</strong>
+                </h6>
+                <div ng-show="initialLoading">
+                    <span class="dots">&nbsp;</span>
+                </div>
+                <div class="alert alert-info" ng-show="!initialLoading &amp;&amp; instances.length === 0" ng-cloak="">
+                    There are no instances in this scaling group
+                </div>
+                <div class="tile item" ng-repeat="item in items" ng-cloak="">
+                    <div class="header">
+                        <strong><a ng-href="/instances/{{ item.id }}">{{ item.id }}</a></strong>
+                        <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-click="revealUnhealthyModal(item)">Mark unhealthy</a></li>
+                        </ul>
+                    </div>
+                    <div class="content">
+                        <div>
+                            <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                            {{ item.availability_zone }}
+                        </div>
+                        <div>
+                            <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
+                            <a ng-href="/launchconfigs/{{ item.launch_config }}">{{ item.launch_config }}</a>
+                        </div>
+                        <div>
+                            <span class="label" title="State" i18n:attributes="title" data-tooltip="">LS</span>
+                            {{ item.lifecycle_state }}
+                        </div>
+                    </div>
+                    <div class="footer status {{ item.status.toLowerCase() }} {{ item.lifecycle_statue.toLowerCase() }}">
+                        {{ item.status }} ({{ item.lifecycle_state }})
+                        <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="mark-unhealthy-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Mark instance unhealthy</h3>
+            <p><span i18n:translate="">Are you sure you want to mark the following instance as unhealthy?</span>
+               <b>{{ instanceID }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
+                ${structure:markunhealthy_form['csrf_token']}
+                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
+                        leftcol_width=6, rightcol_width=6)}
+                <button type="submit" class="button" i18n:translate="">Yes, mark unhealthy</button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/scalinggroup_instances.js')}"></script>
+</div>
+
+</metal:block>
+

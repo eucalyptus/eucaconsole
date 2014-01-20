@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS launch configurations
 import re
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -16,6 +16,7 @@ import time
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
+from ..views.images import ImageView
 
 
 class LaunchConfigsView(LandingPageView):
@@ -77,26 +78,21 @@ class LaunchConfigView(BaseView):
 
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='autoscale')
-        self.launchconfig = self.get_launchconfig()
+        self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.launch_config = self.get_launch_config()
+        self.image = self.get_image()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            launchconfig=self.launchconfig,
+            launch_config=self.launch_config,
+            image=self.image,
             delete_form=self.delete_form,
         )
 
-    def get_launchconfig(self):
-        launchconfig_param = self.request.matchdict.get('id')
-        launchconfigs_param = [launchconfig_param]
-        launchconfigs = self.conn.get_all_launch_configurations(names=launchconfigs_param)
-        launchconfigs = launchconfigs[0] if launchconfigs else None
-        return launchconfigs 
-
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
-        self.launchconfig.instance_monitoring_boolean = re.match(
-            r'InstanceMonitoring\((\w+)\)', str(self.launchconfig.instance_monitoring)).group(1)
-        self.launchconfig.security_groups_str = ', '.join(self.launchconfig.security_groups)
+        self.launch_config.instance_monitoring_boolean = re.match(
+            r'InstanceMonitoring\((\w+)\)', str(self.launch_config.instance_monitoring)).group(1)
         return self.render_dict
  
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
@@ -104,19 +100,34 @@ class LaunchConfigView(BaseView):
         if self.delete_form.validate():
             name = self.request.params.get('name')
             try:
-                self.conn.delete_launch_configuration(name)
+                self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launchconfig')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
+            except BotoServerError as err:
+                prefix = _(u'Unable to delete launch configuration')
+                msg = '{0} {1} - {2}'.format(prefix, self.launch_config.name, err.message)
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
             location = self.request.route_url('launchconfigs')
             return HTTPFound(location=location)
-
         return self.render_dict
+
+    def get_launch_config(self):
+        if self.autoscale_conn:
+            launch_config_param = self.request.matchdict.get('id')
+            launch_configs = self.autoscale_conn.get_all_launch_configurations(names=[launch_config_param])
+            return launch_configs[0] if launch_configs else None
+        return None
+
+    def get_image(self):
+        if self.ec2_conn:
+            images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
+            image = images[0] if images else None
+            image.platform = ImageView.get_platform(image)
+            return image
+        return None
 
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):

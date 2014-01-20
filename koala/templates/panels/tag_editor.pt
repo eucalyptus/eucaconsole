@@ -38,7 +38,7 @@
             <div>
                 <div class="columns">
                     <a href="#" ng-click="addTag($event)" class="button round secondary tiny" id="add-tag-btn"
-                       title="Add tag">Add tag</a>
+                       title="Add tag" i18n:translate="">Add tag</a>
                 </div>
             </div>
         </div>

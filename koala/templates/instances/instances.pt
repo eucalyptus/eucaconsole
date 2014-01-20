@@ -10,7 +10,7 @@
             Instances
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
@@ -23,7 +23,7 @@
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
                     <li>
-                        <a href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
+                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
                     </li>
                     <li ng-show="!item.transitional">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
@@ -70,7 +70,7 @@
                 </div>
                 <div>
                     <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
-                    {{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}
+                    {{ item.launch_time | date:'${layout.angular_date_format}' }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
@@ -81,8 +81,8 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>ID</th>
-                <th>Status</th>
+                <th i18n:translate="">ID</th>
+                <th i18n:translate="">Status</th>
                 <th i18n:translate="">Root Device</th>
                 <th i18n:translate="">Zone</th>
                 <th i18n:translate="">Type</th>

@@ -22,9 +22,11 @@ class DashboardView(BaseView):
         ec2_conn = self.get_connection()
 
         # Instances counts
-        instances_total_count = instances_running_count = instances_stopped_count = 0
+        instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
         for instance in ec2_conn.get_only_instances():
             instances_total_count += 1
+            if instance.tags.get('aws:autoscaling:groupName'):
+                instances_scaling_count += 1
             if instance.state == u'running':
                 instances_running_count += 1
             elif instance.state == u'stopped':
@@ -43,6 +45,7 @@ class DashboardView(BaseView):
             instance_total=instances_total_count,
             instances_running=instances_running_count,
             instances_stopped=instances_stopped_count,
+            instances_scaling=instances_scaling_count,
             volumes=volumes_count,
             snapshots=snapshots_count,
             securitygroups=securitygroups_count,

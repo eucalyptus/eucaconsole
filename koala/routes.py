@@ -63,10 +63,22 @@ urls = [
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
 
     # Scaling Groups #####
+    # Landing page
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    # Detail page
+    Route(name='scalinggroup_new', pattern='/scalinggroups/new'),
+    Route(name='scalinggroup_create', pattern='/scalinggroups/create'),
     Route(name='scalinggroup_delete', pattern='/scalinggroups/delete'),
     Route(name='scalinggroup_view', pattern='/scalinggroups/{id}'),
+    Route(name='scalinggroup_update', pattern='/scalinggroups/{id}/update'),
+    Route(name='scalinggroup_instances', pattern='/scalinggroups/{id}/instances'),
+    Route(name='scalinggroup_instances_json', pattern='/scalinggroups/{id}/instances/json'),
+    Route(name='scalinggroup_instances_markunhealthy', pattern='/scalinggroups/{id}/instances/markunhealthy'),
+    Route(name='scalinggroup_policies', pattern='/scalinggroups/{id}/policies'),
+    Route(name='scalinggroup_policy_new', pattern='/scalinggroups/{id}/policies/new'),
+    Route(name='scalinggroup_policy_create', pattern='/scalinggroups/{id}/policies/create'),
+    Route(name='scalinggroup_policy_delete', pattern='/scalinggroups/{id}/policies/delete'),
 
     # Launch Configurations #####
     # Landing page
@@ -147,5 +159,12 @@ urls = [
     Route(name='ipaddress_associate', pattern='/ipaddresses/{public_ip}/associate'),
     Route(name='ipaddress_disassociate', pattern='/ipaddresses/{public_ip}/disassociate'),
     Route(name='ipaddress_release', pattern='/ipaddresses/{public_ip}/release'),
+
+    # CloudWatch Alarms #####
+    # Landing page
+    Route(name='cloudwatch_alarms', pattern='/cloudwatch/alarms'),
+    Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
+    Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
+    Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
 ]
 

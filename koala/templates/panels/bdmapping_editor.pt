@@ -9,8 +9,15 @@
                     <th i18n:translate="" class="volume">Volume</th>
                     <th i18n:translate="" class="mapping">Mapping</th>
                     <th i18n:translate="" class="snapshot">Snapshot</th>
-                    <th i18n:translate="" class="size">Size (GB)</th>
-                    <th i18n:translate="" class="delete-on-terminate">Delete on Terminate</th>
+                    <th class="size">
+                        <span i18n:translate="">Size</span>
+                        <span i18n:translate="" class="hide-for-small">(GB)</span>
+                    </th>
+                    <th class="delete-on-terminate">
+                        <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
+                        <span i18n:translate="" class="show-for-small"
+                              title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
+                    </th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -38,28 +45,28 @@
             </tbody>
         </table>
         <div class="row" id="new-blockdevice-entry">
-            <div class="small-2 columns">
+            <div class="medium-2 columns">
                 <label i18n:translate="">Volume:</label>
                 <select name="volume_type" ng-model="newVolumeType">
                     <option value="EBS">EBS</option>
                     <option value="ephemeral">Ephemeral</option>
                 </select>
             </div>
-            <div class="small-2 columns">
+            <div class="medium-2 columns">
                 <label i18n:translate="">Mapping:</label>
                 <input type="text" name="path" id="new-mapping-path" ng-model="newMappingPath" />
             </div>
-            <div class="small-3 columns">
+            <div class="medium-3 columns">
                 <label i18n:translate="">Snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
                     <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                 </select>
             </div>
-            <div class="small-1 columns">
+            <div class="medium-1 columns">
                 <label i18n:translate="">Size:</label>
                 <input class="number" id="new-size" ng-model="newSize" />
             </div>
-            <div class="small-4 columns">
+            <div class="medium-4 columns">
                 <label i18n:translate="">Delete on terminate:</label>
                 <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
             </div>
@@ -71,5 +78,5 @@
         </div>
         <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('koala:static/js/pages/bdmapping_editor.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/bdmapping_editor.js')}"></script>
 </div>

@@ -68,6 +68,24 @@ $topbar-menu-link-color-toggled: white;
 $topbar-menu-icon-color-toggled: white;
 $topbar-breakpoint: 768px !default; // Change to 9999px for always mobile layout
 
+// Breadcrumbs
+$crumb-bg: transparent;
+$crumb-padding: 0 0 0 0;
+$crumb-side-padding: rem-calc(10);
+$crumb-function-factor: -10%;
+$crumb-border-size: 0;
+$crumb-border-style: solid;
+$crumb-border-color: transparent;
+$crumb-radius: 0;
+$crumb-font-size: 1rem;
+$crumb-font-color: $primary-color;
+$crumb-font-color-current: #999;
+$crumb-font-color-unavailable: #999;
+$crumb-font-transform: normal;
+$crumb-link-decor: underline;
+$crumb-slash-color: #ccc;
+$crumb-slash: "//";
+
 // Buttons
 $button-tny: rem-calc(6);
 $button-sml: rem-calc(8);
@@ -97,7 +115,7 @@ $tooltip-padding: rem-calc(5);
     border: 1px solid $euca-lightgrey;
     width: 180px; height: 140px;
     .header .button.dropdown {
-        height: 30px;
+        height: 24px;
         color: black;
     }
 }

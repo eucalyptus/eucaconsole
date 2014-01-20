@@ -40,6 +40,7 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
     # Add HTML attributes based on field type (e.g. IntegerField)
     if isinstance(field, IntegerField):
         html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
+        html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():
@@ -66,6 +67,23 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     """
     tags = tags or {}
     tags_json = json.dumps(tags)
+    return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+
+
+@panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')
+def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_width=10):
+    """ Tag editor panel for Scaling Groups.
+        Usage example (in Chameleon template): ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
+    """
+    tags = tags or []
+    tags_list = []
+    for tag in tags:
+        tags_list.append(dict(
+            name=tag.key,
+            value=tag.value,
+            propagate_at_launch=tag.propagate_at_launch,
+        ))
+    tags_json = json.dumps(tags_list)
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 

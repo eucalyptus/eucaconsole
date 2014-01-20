@@ -1,0 +1,152 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupWizard" ng-controller="ScalingGroupWizardCtrl"
+         ng-init="initController()">
+        <h3 class="header" id="pagetitle">
+            <a class="back-arrow" href="${request.route_url('scalinggroups')}"
+               data-tooltip="" title="Back to scaling groups" i18n:attributes="title">&lt;</a>
+            <span i18n:translate="">Create Scaling Group</span>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
+            <div class="wizard has-title">
+                <h6 class="title" i18n:translate="">Create Scaling Group</h6>
+                <form action="${request.route_url('scalinggroup_create')}" id="scalinggroup-wizard-form"
+                      method="post" data-abide="abide">
+                    ${structure:create_form['csrf_token']}
+                    <dl class="tabs" data-tab="">
+                        <dd class="active">
+                            <a id="tabStep1" href="#step1">
+                                <span class="cir">1</span> <b>General</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep2" href="#step2">
+                                <span class="cir">2</span> <b>Membership</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep3" href="#step3">
+                                <span class="cir">3</span> <b>Tags</b>
+                            </a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: General tab content -->
+                        <div class="content active" id="step1">
+                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
+                            ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
+                            <hr />
+                            <div class="row controls-wrapper" id="capacity-section">
+                                <div class="medium-4 columns">
+                                    <h6 class="right" i18n:translate="">Capacity</h6>
+                                </div>
+                                <div class="medium-8 columns">
+                                    ${panel('form_field', field=create_form['min_size'], maxlength=2,
+                                            ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['desired_capacity'], maxlength=2,
+                                            ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['max_size'], maxlength=2,
+                                            ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                                </div>
+                            </div>
+                            <hr />
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                        <span i18n:translate="">Next: Membership</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 2: Membership tab content -->
+                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text}">
+                            ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
+                            ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
+                            ${panel('form_field', field=create_form['availability_zones'],
+                                    ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                        <span i18n:translate="">Next: Tags</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 3: Tags tab content -->
+                        <div class="content" id="step3">
+                            ${panel('autoscale_tag_editor', tags=[])}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-2 columns">&nbsp;</div>
+                                <div class="small-10 columns field inline">
+                                    <button type="submit" class="button">
+                                        <span i18n:translate="">Create scaling group</span>
+                                    </button>
+                                    <a href="${request.route_url('scalinggroups')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns summary" ng-cloak="">
+            <h5 i18n:translate="" class="title">Summary</h5>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
+                    <div class="small-8 columns value">{{ scalingGroupName }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Launch configuration:</label></div>
+                    <div class="small-8 columns value">{{ launchConfig }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
+                    <div class="small-8 columns value">
+                        Min: {{ minSize }}, Desired: {{ desiredCapacity }}, Max: {{ maxSize }}
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Health check:</label></div>
+                    <div class="small-8 columns value">{{ healthCheckType }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Grace period:</label></div>
+                    <div class="small-8 columns value">{{ healthCheckPeriod }}</div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns"><label i18n:translate="" class="right">Availability zones:</label></div>
+                    <div class="small-8 columns value">
+                        <span ng-repeat="zone in availZones">{{ zone }}<span ng-show="!$last">, </span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/scalinggroup_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

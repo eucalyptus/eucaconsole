@@ -51,6 +51,8 @@ angular.module('LandingPage', ['CustomFilters'])
                 if ($.url().param('filter')) {
                     $scope.applyGetRequestFilters();
                 }
+            }).error(function(oData) {
+                // TODO: handle errors
             });
         };
         /*  Filter items client side based on search criteria.

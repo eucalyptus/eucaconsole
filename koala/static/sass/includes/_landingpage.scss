@@ -81,6 +81,7 @@ $gridwrapper-table-width: 98%;
     .content {
         padding: 8px;
         font-size: 0.9em;
+        a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
             margin-left: $tile-label-padding;
@@ -106,6 +107,7 @@ $gridwrapper-table-width: 98%;
         height: $tile-row-height;
         padding: 4px 4px 4px 10px;
         color: white;
+        background-color: $euca-grey;
         &.has-progress {
             padding: 0 0 0 0;
         }
@@ -159,6 +161,9 @@ $gridwrapper-table-width: 98%;
         i {
             position: relative;
             top: 2px;
+            &.fi-minus-circle {
+                top: -2px;
+            }
         }
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
@@ -249,7 +254,8 @@ $gridwrapper-table-width: 98%;
             }
             span.actions {
                 position: relative;
-                left: 80px;
+                float: right;
+                top: -10px;
             }
         }
     }

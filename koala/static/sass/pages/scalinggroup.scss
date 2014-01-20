@@ -1,0 +1,68 @@
+/* @fileOverview Scaling Group detail page CSS */
+@import "../includes/eucavariables";
+
+// Import landing page styles for tile view display on Scaling group policies page
+@import "../includes/landingpage";
+
+
+input[type="number"] {
+    width: 3rem;
+}
+
+#health_check_period, #default_cooldown, #cooldown {
+    width: 4rem;
+}
+
+#launch_config, #health_check_type {
+    max-width: 10rem;
+}
+
+// Capacity section
+#controls_min_size, #controls_desired_capacity, #controls_max_size {
+    display: inline-block; margin-left: 1rem;
+}
+
+#controls_max_size {
+    margin-left: -1rem;
+}
+
+[data-abide] #capacity-section .error {
+    small.error {
+        position: absolute;
+        width: 15rem;
+        left: 8px; bottom: -1.5rem;
+    }
+}
+
+// Avoid flash of unstyled content for multi-select widgets
+// Note: Chosen selector will allow widgets to display
+#availability_zones, #termination_policies {
+    visibility: hidden;
+}
+
+
+// Scaling group policies page and instances page
+.tile {
+    @include panel-tile-mixin;
+}
+
+// Scaling group instances page
+.tile {
+    .footer {
+        &.healthy {
+            background-color: $euca-green;
+            &.pending { background-color: $euca-lightgreen; }
+        }
+    }
+}
+
+// Scaling group alarms page
+#evaluation_periods, #period {
+    display: inline-block;
+    width: 4rem;
+}
+
+#threshold {
+    width: 100%;
+}
+

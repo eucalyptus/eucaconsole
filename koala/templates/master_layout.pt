@@ -15,7 +15,7 @@
     <meta metal:define-slot="head_css" />
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.4.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.9.min.js')}"></script>
     <meta metal:define-slot="head_js" />
 </head>
 
@@ -102,7 +102,7 @@
 <footer>
     <div class="row">
        <h6 class="copyright subheader">
-           © 2012-2013 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
+           © 2012-2014 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
     </div>
     <form id="euca-logout-form" method="post"
           action="${request.route_url('logout')}">
