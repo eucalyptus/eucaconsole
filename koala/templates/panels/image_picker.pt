@@ -17,16 +17,14 @@
                         <div class="small-7 columns">
                             <div class="row sort-search" ng-cloak="cloak">
                                 <div class="small-9 columns search-filter">
-                                    <form ng-submit="searchImages()">
-                                        <div class="row collapse">
-                                            <div class="small-10 columns">
-                                                <input type="search" ng-model="searchFilter" id="search-filter" />
-                                            </div>
-                                            <div class="small-2 columns">
-                                                <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
-                                            </div>
+                                    <div class="row collapse">
+                                        <div class="small-10 columns">
+                                            <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
                                         </div>
-                                    </form>
+                                        <div class="small-2 columns">
+                                            <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading">
                                     {{ items.length }} <span class="hide-for-small" i18n:translate="">images</span>

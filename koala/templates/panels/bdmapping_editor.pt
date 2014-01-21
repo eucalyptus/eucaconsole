@@ -1,7 +1,7 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
-    <div class="columns">
+    <div class="columns" tal:condition="image.root_device_type == 'ebs'">
         <label i18n:translate="" class="storage-label">Storage</label>
         <table class="table">
             <thead>
