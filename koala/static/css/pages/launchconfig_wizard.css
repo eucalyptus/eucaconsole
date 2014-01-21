@@ -33,3 +33,5 @@
 #launch-config-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
 #launch-config-form #instance_type option { font-size: 0.825rem; }
 #launch-config-form #image-id-input { width: 10rem; display: inline; }
+#launch-config-form #controls_userdata_file { position: relative; top: -0.5rem; }
+#launch-config-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }

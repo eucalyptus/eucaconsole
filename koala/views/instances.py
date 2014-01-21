@@ -8,19 +8,16 @@ from operator import attrgetter
 import simplejson as json
 import time
 
-from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
-from ..views.images import ImageView
 
 
 class InstancesView(LandingPageView):
@@ -584,7 +581,9 @@ class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone')
-            user_data = self.request.params.get('user_data')
+            userdata_input = self.request.params.get('userdata')
+            userdata_file = self.request.POST['userdata_file'].file.read()
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
@@ -598,7 +597,7 @@ class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
                     reservation = self.conn.run_instances(
                         image_id,
                         key_name=key_name,
-                        user_data=user_data,
+                        user_data=userdata,
                         addressing_type=addressing_type,
                         instance_type=instance_type,
                         placement=availability_zone,

@@ -115,6 +115,7 @@
                                 User data and other advanced options (optional).
                             </p>
                             ${panel('form_field', field=create_form['userdata'])}
+                            ${panel('form_field', field=create_form['userdata_file'])}
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
                             ${panel('form_field', field=create_form['monitoring_enabled'])}

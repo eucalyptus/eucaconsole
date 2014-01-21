@@ -26,5 +26,13 @@
         width: 10rem;
         display: inline;
     }
+    #controls_userdata_file {
+        position: relative;
+        top: -0.5rem;
+        #userdata_file {
+            width: 80%;
+            display: inline-block;
+        }
+    }
 }
 

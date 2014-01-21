@@ -48,6 +48,7 @@ class ImagesView(LandingPageView):
             dict(key='id', name='ID'),
             dict(key='name', name=_(u'Image name')),
             dict(key='architecture', name=_(u'Architecture')),
+            dict(key='root_device_type', name=_(u'Root device type')),
             dict(key='platform', name=_(u'Platform')),
             dict(key='description', name=_(u'Description')),
         ]

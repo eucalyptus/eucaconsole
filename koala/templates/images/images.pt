@@ -101,6 +101,7 @@
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
+                <th i18n:translate="">Root Device</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -108,6 +109,7 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
+                <td>{{ item.root_device_type }}</td>
                 <td>
                 <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
