@@ -3,12 +3,15 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('keypairs')}"
-               data-tooltip="" title="Back to keypairs" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Keypair</span> ${keypair.name if keypair else ''}
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
+                    <li class="current"><a href="#">${keypair.name if keypair else 'Create key pair'}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <!-- New Keypair Material Download -->
         <div tal:condition="keypair_created ">

@@ -6,8 +6,12 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
-        <h3 class="header" id="pagetitle" i18n:translate="">
-            Launch Configurations
+        <h3 class="header" id="pagetitle">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li class="current"><a href="#" i18n:translate="">Launch configurations</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />

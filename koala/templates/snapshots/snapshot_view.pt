@@ -14,13 +14,15 @@
                  '${snapshot.progress if snapshot else ''}'
                  )">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('snapshots')}"
-               data-tooltip="" title="Back to snapshots" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Snapshot</span>
-            <span tal:condition="snapshot">${snapshot_name}</span>
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
+                    <li class="current"><a href="#">${snapshot_name or 'Create snapshot'}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-7 columns"
              tal:define="form_action request.route_url('snapshot_update', id=snapshot.id)
                          if snapshot else request.route_url('snapshot_create');

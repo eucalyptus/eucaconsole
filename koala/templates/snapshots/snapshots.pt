@@ -6,11 +6,15 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="SnapshotsPage" ng-controller="SnapshotsCtrl">
-        <h3 class="header" id="pagetitle" i18n:translate="">
-            Snapshots
+        <h3 class="header" id="pagetitle">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li class="current"><a href="#" i18n:translate="">Snapshots</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
