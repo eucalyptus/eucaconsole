@@ -3,9 +3,12 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('launchconfigs')}"
-               data-tooltip="" title="Back to launch configs" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Launch Config</span> ${launch_config.name}
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
+                    <li class="current"><a href="#">${launch_config.name}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />

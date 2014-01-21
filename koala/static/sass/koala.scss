@@ -493,6 +493,7 @@ textarea.hidden {
    Panels and modals
 ----------------------------------------- */
 .panel{
+    word-break: break-all;
     &.has-title {
         position: relative;
         padding-top: 60px;
