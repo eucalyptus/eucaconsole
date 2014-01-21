@@ -158,7 +158,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button" data-reveal-id="update-instance-modal">
+                            <button type="submit" class="button" id="save-changes-btn" data-reveal-id="update-instance-modal">
                                 <span i18n:translate="">Save changes</span>
                             </button>
                             <a href="${request.route_url('instances')}" id="cancel-update-link"
@@ -202,22 +202,26 @@
                 </ol>
             </div>
             <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form,
                 stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
         <div id="update-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Update instance</h3>
-            <p><span i18n:translate="">Some of the attributes you have changed will not take effect until this instance is started. Would you like to start the instance now?</span>
+            <p i18n:translate="">
+                Some of the attributes you have changed will not take effect until this instance is started.
+                Would you like to start the instance now?
             </p>
             <form method="get" action="#" id="update-form">
                 <div class="row">
                     <div class="small-6 columns field inline">
-                        <input id="yes-update" type="submit" class="button" value="Yes, start now" i18n:attributes="value" onclick="submit_update_instance()"/>
+                        <input id="yes-update" type="submit" class="button" value="Yes, start now"
+                               i18n:attributes="value" onclick="submit_update_instance()"/>
                     </div>
                     <div class="small-6 columns field inline">
-                        <input id="no-update" type="submit" class="button" value="No, I'll start it later" i18n:attributes="value" onclick="cancel_update_instance()"/>
+                        <input id="no-update" type="submit" class="button" value="No, I'll start it later"
+                               i18n:attributes="value" onclick="cancel_update_instance()"/>
                     </div>
                 </div>
             </form>
