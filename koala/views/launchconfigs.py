@@ -55,6 +55,9 @@ class LaunchConfigsJsonView(BaseView):
         launchconfigs = []
         for launchconfig in self.get_items():
             security_groups = ', '.join(launchconfig.security_groups)
+            security_group_names = ''
+            for sgroup in launchconfig.security_groups:
+                security_group_names += self.get_security_group(sgroup).name + ", "
             launchconfigs.append(dict(
                 created_time=launchconfig.created_time.isoformat(),
                 image_id=launchconfig.image_id,
@@ -64,6 +67,7 @@ class LaunchConfigsJsonView(BaseView):
                 name=launchconfig.name,
                 ramdisk_id=launchconfig.ramdisk_id,
                 security_groups=security_groups,
+                security_group_names=security_group_names[:-2],
             ))
         return dict(results=launchconfigs)
 
@@ -71,6 +75,16 @@ class LaunchConfigsJsonView(BaseView):
         conn = self.get_connection(conn_type='autoscale')
         return conn.get_all_launch_configurations() if conn else []
 
+    def get_security_group(self, group_id=None):
+        conn = self.get_connection()
+        group_param = group_id
+        if group_param is None:
+            return None  
+        groupids = [group_param]
+        security_groups = conn.get_all_security_groups(group_ids=groupids)
+        security_group = security_groups[0] if security_groups else None
+        return security_group
+ 
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""

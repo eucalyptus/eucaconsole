@@ -35,7 +35,7 @@
                 </div>
                 <div ng-show="item.security_groups">
                     <span class="label" title="Security Groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups }}
+                    {{ item.security_group_names || item.security_groups }}
                 </div>
                 <div ng-show="item.instance_monitoring">
                     <span class="label" title="Instance Monitoring" i18n:attributes="title" data-tooltip="">MO</span>
@@ -65,7 +65,7 @@
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.image_id }}</td>
                 <td>{{ item.key_name }}</td>
-                <td>{{ item.security_groups }}</td>
+                <td>{{ item.security_group_names || item.security_groups }}</td>
                 <td>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</td>
             </metal:block>
         </div>
