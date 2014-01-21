@@ -91,9 +91,9 @@
                     </div>
                     <br>
                     <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide"> 
-                        ${structure:keypair_form['csrf_token']}
-                        ${panel('form_field', field=keypair_form['name'], **html_attrs)}
-                        ${panel('form_field', field=keypair_form['key_material'], **html_attrs)}
+                        ${structure:keypair_import_form['csrf_token']}
+                        ${panel('form_field', field=keypair_import_form['name'], **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['key_material'], **html_attrs)}
                         <div class="row">
                             <div class="small-4 columns">&nbsp;</div>
                             <div class="small-8 columns">
