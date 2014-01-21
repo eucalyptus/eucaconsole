@@ -98,7 +98,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Add snapshot" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Create snapshot" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
