@@ -8,9 +8,8 @@
 #login-wrapper {
     position: relative;
     margin-top: 3rem;
-    background-color: lighten($euca-extralightgrey, 3%);
+    background-color: $euca-extralightgrey;
     padding: 10px;
-    padding-top: 44px;
     box-shadow: 0 3px 6px $euca-grey;
     label {
         font-weight: bold;

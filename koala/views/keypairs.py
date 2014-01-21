@@ -12,6 +12,7 @@ from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
+
 class KeyPairsView(LandingPageView):
     def __init__(self, request):
         super(KeyPairsView, self).__init__(request)
@@ -19,7 +20,6 @@ class KeyPairsView(LandingPageView):
         self.prefix = '/keypairs'
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
-
 
     def get_items(self):
         conn = self.get_connection()

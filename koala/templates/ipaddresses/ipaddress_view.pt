@@ -19,11 +19,7 @@
             </metal:breadcrumbs>
         </h3>
         <div class="large-7 columns">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span i18n:translate="">Elastic IP</span>
-                    ${eip.public_ip}
-                </h6>
+            <div class="no-title">
                 <div tal:condition="not eip.instance_id">
                     <p i18n:translate="">The IP address is not associated with any instances.</p>
                     <a class="button secondary" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">

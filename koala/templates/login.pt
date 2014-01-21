@@ -26,17 +26,13 @@
         </div>
     </div>
 
-    <div class="row panel has-title large-8 columns large-centered" id="login-wrapper"
+    <div class="row panel no-title large-8 columns large-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
-        <h6 class="title" i18n:translate="">
-            <span i18n:translate="">Log in to Eucalyptus</span>
-            <span tal:condition="layout.aws_enabled" i18n:translate="">or AWS</span>
-        </h6>
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
                 <dl class="tabs" id="login-tabs" data-tab="">
-                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Eucalyptus</a></dd>
-                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">AWS</a></dd>
+                    <dd id="euca-tab" class="active"><a href="#eucalyptus" i18n:translate="">Log in to Eucalyptus</a></dd>
+                    <dd id="aws-tab" tal:condition="layout.aws_enabled"><a href="#aws" i18n:translate="">Log in to AWS</a></dd>
                 </dl>
                 <div class="tabs-content">
                     <div class="content active large-8 medium-8 columns large-centered medium-centered" id="eucalyptus">
