@@ -29,7 +29,7 @@ class IPAddressesView(LandingPageView):
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
         self.json_items_endpoint = self.request.route_url('ipaddresses_json')
         self.sort_keys = self.get_sort_keys()
-        self.location = self.get_redirect_location()
+        self.location = self.get_redirect_location('ipaddresses')
         self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
             display_type=self.display_type,
@@ -64,20 +64,6 @@ class IPAddressesView(LandingPageView):
         render_dict = self.render_dict
         render_dict['sort_keys'] = self.sort_keys
         return render_dict
-
-    @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
-    def ipaddresses_json(self):
-        ipaddresses = []
-        addresses = self.get_items()
-        instances = self.get_instances(addresses)
-        for address in addresses:
-            ipaddresses.append(dict(
-                public_ip=address.public_ip,
-                instance_id=address.instance_id,
-                instance_name=TaggedItemView.get_display_name(instances[address.instance_id]) if address.instance_id is not None else address.instance_id,
-                domain=address.domain,
-            ))
-        return dict(results=ipaddresses)
 
     @view_config(route_name='ipaddresses_associate', request_method="POST")
     def ipaddresses_associate(self):
@@ -125,6 +111,41 @@ class IPAddressesView(LandingPageView):
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
+    def get_elastic_ip(self, public_ip):
+        addresses_param = [public_ip]
+        ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
+        elastic_ip = ip_addresses[0] if ip_addresses else None
+        return elastic_ip
+
+    @staticmethod
+    def get_sort_keys():
+        """sort_keys are passed to sorting drop-down on landing page"""
+        return [
+            dict(key='public_ip', name=_(u'IP Address')),
+            dict(key='instance_id', name=_(u'Instance')),
+        ]
+
+
+class IPAddressesJsonView(BaseView):
+    def __init__(self, request):
+        super(IPAddressesJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
+    def ipaddresses_json(self):
+        ipaddresses = []
+        addresses = self.get_items()
+        instances = self.get_instances(addresses)
+        for address in addresses:
+            ipaddresses.append(dict(
+                public_ip=address.public_ip,
+                instance_id=address.instance_id,
+                instance_name=TaggedItemView.get_display_name(
+                    instances[address.instance_id]) if address.instance_id is not None else address.instance_id,
+                domain=address.domain,
+            ))
+        return dict(results=ipaddresses)
+
     def get_items(self):
         return self.conn.get_all_addresses() if self.conn else []
 
@@ -136,24 +157,6 @@ class IPAddressesView(LandingPageView):
         for inst in instances:
             ret[inst.id] = inst
         return ret
-
-    def get_elastic_ip(self, public_ip):
-        addresses_param = [public_ip]
-        ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
-        elastic_ip = ip_addresses[0] if ip_addresses else None
-        return elastic_ip
-
-    def get_redirect_location(self):
-        display_type = self.request.params.get('display', self.display_type)
-        return '{0}?display={1}'.format(self.request.route_url('ipaddresses'), display_type)
-
-    @staticmethod
-    def get_sort_keys():
-        """sort_keys are passed to sorting drop-down on landing page"""
-        return [
-            dict(key='public_ip', name=_(u'IP Address')),
-            dict(key='instance_id', name=_(u'Instance')),
-        ]
 
 
 class IPAddressView(BaseView):

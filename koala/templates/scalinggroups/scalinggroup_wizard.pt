@@ -91,7 +91,7 @@
                             <div class="row">
                                 <div class="small-2 columns">&nbsp;</div>
                                 <div class="small-10 columns field inline">
-                                    <button type="submit" class="button">
+                                    <button type="submit" class="button" id="create-scalinggroup-btn">
                                         <span i18n:translate="">Create scaling group</span>
                                     </button>
                                     <a href="${request.route_url('scalinggroups')}"

@@ -22,12 +22,12 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate=""
+                <a class="button" i18n:translate="" id="create-volume-btn"
                    href="${request.route_url('volume_view', id='new')}">Create new volume</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li ng-show="item.status !== 'deleted'">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
                     </li>
@@ -53,7 +53,7 @@
                 </div>
                 <div>
                     <span class="label" title="Snapshots" i18n:attributes="title" data-tooltip="">SS</span>
-                    <a ng-href="/volumes/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
+                    <a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a>
                 </div>
                 <div>
                     <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -100,14 +100,14 @@
                 </td>
                 <td>{{ item.size }}&nbsp;GB</td>
                 <td class="instance"><a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a></td>
-                <td><a ng-href="/volumes/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
+                <td><a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
                 <td>{{ item.zone }}</td>
                 <td>{{ item.tags }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li ng-show="item.status !== 'deleted'">
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
                             </li>

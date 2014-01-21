@@ -18,27 +18,27 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate=""
+                <a class="button" i18n:translate="" id="create-scalinggroup-btn"
                    href="${request.route_url('scalinggroup_new')}">Create new scaling group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li>
-                        <a href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                        <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
                     </li>
                     <li>
-                        <a href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                        <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
                     </li>
                     <li>
-                        <a href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                        <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
                     </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Current instances" data-tooltip="">IN</span>
-                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">
+                    <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         <b>{{ item.current_instances_count }}</b>
                         <span i18n:translate="">instance</span><span ng-show="item.current_instances_count > 1">s</span>
                     </a>
@@ -81,10 +81,10 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.launch_config }}</td>
                 <td>
-                    <a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}/instances">
+                    <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
                     </a>
                 </td>
@@ -105,15 +105,15 @@
                 <td>
                     <span class="actions">
                         <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li>
-                                <a href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                                <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
                             </li>
                             <li>
-                                <a href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                                <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
                             </li>
                             <li>
-                                <a href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                                <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
                             </li>
                         </ul>
                     </span>
