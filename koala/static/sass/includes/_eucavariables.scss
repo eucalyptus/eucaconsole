@@ -57,7 +57,6 @@ $code-color: darkred;
 $f-dropdown-bg: #fff;
 $f-dropdown-triangle-color: #fff;
 
-
 // Navigation bar settings
 $topbar-bg-color: $euca-green;
 $topbar-bg: $topbar-bg-color;
@@ -67,6 +66,9 @@ $topbar-link-bg-hover: $euca-darkgreen;
 $topbar-menu-link-color-toggled: white;
 $topbar-menu-icon-color-toggled: white;
 $topbar-breakpoint: 768px !default; // Change to 9999px for always mobile layout
+
+// Sub-nav
+$sub-nav-active-bg: $euca-darkblue;
 
 // Breadcrumbs
 $crumb-bg: transparent;
