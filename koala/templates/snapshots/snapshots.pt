@@ -78,7 +78,7 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td class="status">
                     <div class="progress round" ng-show="item.status !== 'completed'"><span
                             class="meter" style="width: {{ item.progress }}">{{ item.progress }}</span>
@@ -89,7 +89,7 @@
                     </span>
                 </td>
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>
-                <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a></td>
+                <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.tags }}</td>
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>

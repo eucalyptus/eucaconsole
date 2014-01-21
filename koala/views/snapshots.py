@@ -52,6 +52,7 @@ class SnapshotsView(LandingPageView):
     def snapshots_json(self):
         snapshots = []
         for snapshot in self.get_items():
+            volume = self.get_volume(snapshot.volume_id)
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
@@ -61,6 +62,7 @@ class SnapshotsView(LandingPageView):
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
+                volume_name=volume.tags.get('Name', volume.id),
                 volume_size=snapshot.volume_size,
             ))
         return dict(results=snapshots)
@@ -129,6 +131,12 @@ class SnapshotsView(LandingPageView):
         if snapshot_id:
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
+        return None
+
+    def get_volume(self, volume_id):
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
         return None
 
     @staticmethod
