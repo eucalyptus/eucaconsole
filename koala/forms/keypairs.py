@@ -16,7 +16,7 @@ class KeyPairForm(BaseSecureForm):
     """
     name_error_msg = _(u'Name is required')
     name = wtforms.TextField(
-        id=(u'key-name'),
+        id=u'key-name',
         label=_(u'Name'),
         validators=[validators.Required(message=name_error_msg), validators.Length(min=1, max=255)],
     )
@@ -28,18 +28,19 @@ class KeyPairForm(BaseSecureForm):
         if keypair is not None:
             self.name.data = keypair.name
 
+
 class KeyPairImportForm(BaseSecureForm):
     """Key Pair Import form
     """
     name_error_msg = _(u'Name is required')
     key_material_error_msg = _(u'Public Key Content is required')
     name = wtforms.TextField(
-        id=(u'key-name'),
+        id=u'key-name',
         label=_(u'Name'),
         validators=[validators.Required(message=name_error_msg), validators.Length(min=1, max=255)],
     )
     key_material = wtforms.TextAreaField(
-        id=(u'key-import-contents'),
+        id=u'key-import-contents',
         label=_(u'Public SSH Key Content'),
         validators=[validators.Required(message=key_material_error_msg), validators.Length(min=1)],
     )
@@ -51,6 +52,7 @@ class KeyPairImportForm(BaseSecureForm):
         self.key_material.error_msg = self.key_material_error_msg
         if keypair is not None:
             self.name.data = keypair.name
+
 
 class KeyPairDeleteForm(BaseSecureForm):
     """KeyPair deletion form.

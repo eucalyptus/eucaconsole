@@ -44,26 +44,9 @@
                     </div>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
-                    <div>
-                        <span i18n:translate="">
-                            You can use this key pair to launch more than one instance.
-                        </span>
-                    </div>
-                    <br>
-                    <div>
-                        <span i18n:translate="">
-                             Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
-                         </span>
-                    </div>
-                    <br>
-                    <form  action="${request.route_url('keypair_create')}" method="post" data-abide="abide"> 
+                    <form  action="${request.route_url('keypair_create')}" method="post" data-abide="abide">
                         ${structure:keypair_form['csrf_token']}
-                        ${panel('form_field', field=keypair_form['name'], leftcol_width=2, rightcol_width=10, **html_attrs)}
-                        <div class="row">
-                            <label>
-                                <span class="req">*</span> Required Fields
-                            </label>
-                        </div>
+                        ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         <hr>
                     <div class="row">
                         <div class="small-3 columns">&nbsp;</div>
@@ -80,27 +63,16 @@
                      </form>
                  </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
-                    <div>
-                        <span i18n:translate="">
-                            Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.
-                         </span>
-                    </div>
-                    <br>
-                    <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide"> 
+                    <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
-                        ${panel('form_field', field=keypair_import_form['name'], **html_attrs)}
-                        ${panel('form_field', field=keypair_import_form['key_material'], **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         <div class="row">
-                            <div class="small-4 columns">&nbsp;</div>
-                            <div class="small-8 columns">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns">
                                 <label for="key-import-file">Or: </label>
                                 <input type="file" id="key-import-file"/>
                             </div>
-                        </div>
-                        <div class="row">
-                            <label>
-                                <span class="req">*</span> Required Fields
-                            </label>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="keypair">
                             <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
@@ -132,6 +104,19 @@
                             Delete keypair
                         </a>
                     </div>
+                </div>
+            </div>
+            <div class="help-content">
+                <div tal:condition="not keypair and keypair_route_id == 'new'" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Create a key pair</h5>
+                    <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
+                    <p i18n:translate="">
+                         Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
+                     </p>
+                </div>
+                <div tal:condition="not keypair and keypair_route_id == 'new2'" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Import a public key</h5>
+                    <p>Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
                 </div>
             </div>
         </div>
