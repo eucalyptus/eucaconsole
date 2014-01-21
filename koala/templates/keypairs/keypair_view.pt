@@ -64,9 +64,11 @@
                     <br>
                     <form  action="${request.route_url('keypair_create')}" method="post" data-abide="abide"> 
                         ${structure:keypair_form['csrf_token']}
-                        ${panel('form_field', field=keypair_form['name'], **html_attrs)}
+                        ${panel('form_field', field=keypair_form['name'], leftcol_width=2, rightcol_width=10, **html_attrs)}
                         <div class="row">
-                            <span class="req">*</span> Required Fields
+                            <label>
+                                <span class="req">*</span> Required Fields
+                            </label>
                         </div>
                         <hr>
                     <div class="row">
@@ -102,7 +104,9 @@
                             </div>
                         </div>
                         <div class="row">
-                            <span class="req">*</span> Required Fields
+                            <label>
+                                <span class="req">*</span> Required Fields
+                            </label>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="keypair">
                             <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
