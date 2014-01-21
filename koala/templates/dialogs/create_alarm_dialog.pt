@@ -56,7 +56,7 @@
                                                 ng-selected="namespace === 'AWS/AutoScaling'">Scaling group</option>
                                         <option i18n:translate="" value="volume"
                                                 ng-disabled="namespace !== 'AWS/EBS'"
-                                                ng-selected="metric.indexOf('Volume') === 0">Volume</option>
+                                                ng-selected="namespace === 'AWS/EBS'">Volume</option>
                                     </select>
                                 </div>
                             </div>

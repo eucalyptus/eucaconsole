@@ -7,11 +7,15 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage">
         <h3 class="header" id="pagetitle">
-            <div i18n:translate="">Images</div>
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li class="current"><a href="#" i18n:translate="">Images</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
             <a class="help-icon" data-reveal-id="help-modal">?</a>
         </h3>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <!--! Notification to select image for Launch Instance wizard, (step 1).  Append ?launch=1 to url to display -->
         <div id="notifications" tal:condition="request.params.get('launch')">

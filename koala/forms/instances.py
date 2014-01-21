@@ -18,8 +18,7 @@ class InstanceForm(BaseSecureForm):
     """
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
-        label=_(u'Instance type'),
-        validators=[validators.Required(message=instance_type_error_msg)],
+        label=_(u'Instance type')
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
@@ -28,8 +27,9 @@ class InstanceForm(BaseSecureForm):
         label=_(u'Kernel ID')
     )
     ramdisk = wtforms.SelectField(
-        label=_(u'Ramdisk ID')
+        label=_(u'RAM disk ID (ramfs)')
     )
+    start_later = wtforms.HiddenField();
 
     def __init__(self, request, instance=None, conn=None, **kwargs):
         super(InstanceForm, self).__init__(request, **kwargs)
@@ -42,10 +42,10 @@ class InstanceForm(BaseSecureForm):
 
         if instance is not None:
             self.instance_type.data = instance.instance_type
-            self.ip_address.data = instance.ip_address or ''
+            self.ip_address.data = instance.ip_address or 'none'
             self.monitored.data = instance.monitored
-            self.kernel.data = instance.kernel
-            self.ramdisk.data = instance.ramdisk
+            self.kernel.data = instance.kernel or ''
+            self.ramdisk.data = instance.ramdisk or ''
             self.userdata.data = ''
 
     def set_choices(self):

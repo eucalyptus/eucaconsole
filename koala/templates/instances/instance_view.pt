@@ -10,21 +10,28 @@
                                      '${request.route_url('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}')">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('instances')}"
-               data-tooltip="" title="Back to instances" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Instance</span> ${instance_name}
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('instances')}" i18n:translate="">Instances</a></li>
+                    <li class="current"><a href="#">${instance_name}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <dl class="sub-nav" id="instance-subnav">
-            <dd class="active"><a href="#" i18n:translate="">Instance</a></dd>
+            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
             <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
         </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
+            <div class="panel">
+                <p tal:condition="image.root_device_type == 'ebs'">
+                Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
+                </p>
                 <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
+                    ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
                     <div class="row controls-wrapper readonly" ng-cloak="">
@@ -133,42 +140,45 @@
                     <hr />
                     ${panel('tag_editor', tags=instance.tags)}
                     <hr />
-                    <form>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
-                            <div class="small-8 columns value">${image.id}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                            <div class="small-8 columns value">${image.name}</div>
-                        </div>
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                            <div class="small-8 columns value">${image.location}</div>
-                        </div>
-                        ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
-                        ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
-                    </form>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-8 columns value">${image.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
+                        <div class="small-8 columns value">${image.name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
+                        <div class="small-8 columns value">${image.location}</div>
+                    </div>
+                    ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
+                    ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button"><span i18n:translate="">Save changes</span></button>
-                            <a href="${request.route_url('instances')}"
+                            <button type="submit" class="button" data-reveal-id="update-instance-modal">
+                                <span i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('instances')}" id="cancel-update-link"
                                class="cancel-link" i18n:translate="">Cancel</a>
+                            <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title other-actions">
+            <div class="panel other-actions">
                 <a class="button secondary" i18n:translate="">
                     Launch more like this
                 </a>
+                <br/>
                 <a class="button secondary" i18n:translate="">
                     Create scaling group launch configuration like this
                 </a>
+                <br/>
                 <a class="button secondary" i18n:translate="" ng-click="revealConsoleOutputModal()">
                     View console output
                 </a>
@@ -197,11 +207,40 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form,
                 stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
+        <div id="update-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Update instance</h3>
+            <p><span i18n:translate="">Some of the attributes you have changed will not take effect until this instance is started. Would you like to start the instance now?</span>
+            </p>
+            <form method="get" action="#" id="update-form">
+                <div class="row">
+                    <div class="small-6 columns field inline">
+                        <input id="yes-update" type="submit" class="button" value="Yes, start now" i18n:attributes="value" onclick="submit_update_instance()"/>
+                    </div>
+                    <div class="small-6 columns field inline">
+                        <input id="no-update" type="submit" class="button" value="No, I'll start it later" i18n:attributes="value" onclick="cancel_update_instance()"/>
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
+    <script type="text/javascript">
+      function submit_update_instance() {
+        $('a.close-reveal-modal').trigger('click');
+        $('#start_later').val('true');
+        $('#save-update-button').trigger('click');
+        return false;
+      }
+      function cancel_update_instance() {
+        $('a.close-reveal-modal').trigger('click');
+        $('#save-update-button').trigger('click');
+        return false;
+      }
+    </script>
 </div>
 
 </metal:block>

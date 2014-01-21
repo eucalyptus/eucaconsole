@@ -258,13 +258,29 @@ class InstanceView(TaggedItemView):
 
             # Update assigned IP address
             new_ip = self.request.params.get('ip_address')
-            if new_ip and new_ip != self.instance.ip_address:
+            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none':
                 self.instance.use_ip(new_ip)
                 time.sleep(1)  # Give backend time to allocate IP address
 
             # Disassociate IP address
             if new_ip == '':
                 self.disassociate_ip_address(ip_address=self.instance.ip_address)
+
+            # Update stopped instance
+            if self.instance.state == 'stopped':
+                instance_type = self.request.params.get('instance_type')
+                user_data = self.request.params.get('userdata')
+                kernel = self.request.params.get('kernel')
+                ramdisk = self.request.params.get('ramdisk')
+                self.instance.instance_type = instance_type
+                self.instance.user_data = user_data
+                self.instance.kernel = kernel
+                self.instance.ramdisk = ramdisk
+                self.instance.update()
+
+            # Start instance if desired
+            if self.request.params.get('start_later'):
+                self.instance.start();
 
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)

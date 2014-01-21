@@ -28,7 +28,7 @@ angular.module('CreateAlarm', [])
             }, 50);
         };
         $scope.setUnitChoice = function () {
-            if ($scope.namespace = 'AWS/AutoScaling') {
+            if ($scope.namespace === 'AWS/AutoScaling') {
                 $scope.unitField.val('Count');
             }
         };

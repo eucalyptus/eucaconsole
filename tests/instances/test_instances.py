@@ -27,7 +27,7 @@ class InstancesViewTests(BaseViewTestCase):
     def test_instances_landing_page(self):
         request = testing.DummyRequest()
         view = InstancesView(request).instances_landing()
-        self.assertIn('/instances/json', view.get('json_items_endpoint'))
+        self.assertTrue('/instances/json' in view.get('json_items_endpoint'))
 
     def test_instances_landing_page_json(self):
         request = testing.DummyRequest()
@@ -54,7 +54,7 @@ class InstanceViewTests(BaseViewTestCase):
         """Instance update should contain the instance form"""
         request = testing.DummyRequest(post=True)
         view = InstanceView(request).instance_update()
-        self.assertIsNotNone(view.get('instance_form'))
+        self.assertTrue(view.get('instance_form') is not None)
 
 
 class InstanceStartFormTestCase(BaseFormTestCase):

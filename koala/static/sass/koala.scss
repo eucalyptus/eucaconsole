@@ -140,12 +140,13 @@ body {
         margin-bottom: 2.5rem;
         padding-left: 14px;
         padding-top: 10px;
+        padding-bottom: 6px;
         color: $euca-darkgrey;
         background-color: $euca-extralightblue;
         letter-spacing: 1px;
         font-weight: normal;
         font-size: 1.3rem;
-        border-bottom: 1px solid darken($euca-extralightblue, 30%);
+        border-bottom: 1px solid darken($euca-extralightblue, 10%);
     }
     .help-icon {
         display: inline-block;
@@ -509,6 +510,7 @@ textarea.hidden {
     }
     &.other-actions {
         background-color: white;
+        border: none;
     }
 }
 
