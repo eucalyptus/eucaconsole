@@ -21,7 +21,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate=""
+                <a class="button small" i18n:translate="" id="create-keypair-btn"
                     href="${request.route_url('keypair_view', id='new')}">Create new key pair</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">

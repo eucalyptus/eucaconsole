@@ -20,7 +20,8 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a href="${request.route_url('snapshot_view', id='new')}" class="button" i18n:translate="">Create snapshot</a>
+                <a href="${request.route_url('snapshot_view', id='new')}" id="create-snapshot-btn"
+                   class="button" i18n:translate="">Create snapshot</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
