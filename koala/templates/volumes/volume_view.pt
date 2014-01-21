@@ -19,17 +19,19 @@
                  '${volume.attach_data.status if volume else ''}'
                  )">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('volumes')}"
-               data-tooltip="" title="Back to volumes" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Volume</span>
-            <span tal:condition="volume">${volume_name}</span>
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                    <li class="current"><a href="#">${volume_name}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <dl class="sub-nav" id="volume-subnav" tal:condition="volume">
             <dd class="active"><a href="#" i18n:translate="">Volume</a></dd>
             <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
         </dl>
         <!-- Notifications -->
-        <metal:block metal:use-macro="layout.global_macros['notifications']"></metal:block>
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-7 columns"
              tal:define="form_action request.route_url('volume_update', id=volume.id)
                          if volume else request.route_url('volume_create');
