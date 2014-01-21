@@ -19,7 +19,7 @@
             <div class="wizard has-title">
                 <h6 class="title" i18n:translate="">Create Launch Configuration</h6>
                 <form action="${request.route_url('launchconfig_create')}" id="launch-config-form"
-                      method="post" data-abide="abide">
+                      method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
                     ${structure:create_form['image_id']}
                     <dl class="tabs" data-tab="">
