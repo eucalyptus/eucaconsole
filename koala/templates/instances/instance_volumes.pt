@@ -42,7 +42,7 @@
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
                         <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action)">Detach Volume</a>
                             </li>
@@ -118,7 +118,7 @@
                 <a class="close-reveal-modal">&#215;</a>
                 <hr />
                 <!--! Volume device help -->
-                <metal:block metal:use-macro="layout.global_macros['volumedevice_help']"></metal:block>
+                <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
             </div>
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
