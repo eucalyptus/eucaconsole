@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">VO</span>
-                    <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_id }}</a>
+                    <a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a>
                 </div>
                 <div>
                     <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>

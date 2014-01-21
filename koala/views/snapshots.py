@@ -53,6 +53,7 @@ class SnapshotsView(LandingPageView):
         snapshots = []
         for snapshot in self.get_items():
             volume = self.get_volume(snapshot.volume_id)
+            volume_name = TaggedItemView.get_display_name(volume)
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
@@ -62,7 +63,7 @@ class SnapshotsView(LandingPageView):
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
-                volume_name=volume.tags.get('Name', volume.id),
+                volume_name=volume_name,
                 volume_size=snapshot.volume_size,
             ))
         return dict(results=snapshots)
