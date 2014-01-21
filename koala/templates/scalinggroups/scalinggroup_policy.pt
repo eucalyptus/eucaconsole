@@ -48,7 +48,9 @@
                     <div class="row controls-wrapper">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns">
-                            <button type="submit" class="button" i18n:translate="">Add policy</button>
+                            <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
+                                Add policy
+                            </button>
                         </div>
                     </div>
                 </form>

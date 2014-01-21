@@ -423,6 +423,10 @@ form .row.controls-wrapper {
         }
         select {
             margin-bottom: 0.3rem;
+            margin-top: 0.3rem;
+        }
+        textarea {
+            margin-top: 0.3rem;
         }
     }
     &.readonly {
