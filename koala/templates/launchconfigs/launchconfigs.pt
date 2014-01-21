@@ -72,7 +72,10 @@
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.image_id }}</td>
                 <td>{{ item.key_name }}</td>
-                <td>{{ item.security_groups }}</td>
+                <td>
+                    <a ng-repeat="sgroup_id in item.security_groups"
+                       ng-href="/securitygroups/{{ sgroup_id }}">{{ sgroup_id }}</a>
+                </td>
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
