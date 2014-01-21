@@ -150,7 +150,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-8 columns value">${image.location}</div>
+                        <div class="small-8 columns value breakword">${image.location}</div>
                     </div>
                     ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
                     ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}

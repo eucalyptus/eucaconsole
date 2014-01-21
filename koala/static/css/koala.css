@@ -1499,6 +1499,8 @@ a.has-tip { border-bottom: none !important; }
 
 .tooltip { font-weight: normal; font-size: 0.825rem; font-family: Verdana, Geneva, Helvetica, sans-serif; max-width: 260px; }
 
+.breakword { word-wrap: break-word; }
+
 .sub-nav { position: relative; top: -1.5rem; left: 1rem; margin-bottom: -1rem; }
 .sub-nav dd a { font-weight: bold; margin-right: 0.5rem; }
 .sub-nav dd a:hover { color: #76b800; text-decoration: underline; }
@@ -1524,8 +1526,6 @@ a.circle { color: black; display: inline-block; }
 #tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor .tagentry .new { color: #76b800; }
 #tag-editor small { font-size: 0.825rem; }
-
-#pagetitle .back-arrow { display: inline-block; font-family: Verdana, Helvetica, sans-serif; font-weight: bold; font-size: 1.5rem; padding-right: 0.8rem; border-right: 1px solid #80b6ca; margin-right: 0.8rem; }
 
 textarea.console-output { width: 660px; height: 400px; margin: 10px; }
 
@@ -1580,7 +1580,7 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel.has-title { word-break: break-all; position: relative; padding-top: 60px; border: none; }
+.panel.has-title { position: relative; padding-top: 60px; border: none; }
 .panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.other-actions { word-break: normal; background-color: white; border: none; }
 
