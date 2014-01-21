@@ -3,9 +3,12 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('images')}"
-               data-tooltip="" title="Back to images" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Image</span> ${image.id if image else ''}
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('images')}" i18n:translate="">Images</a></li>
+                    <li class="current"><a href="#">${image.id}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
@@ -13,17 +16,8 @@
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
                         readonly True if image else False;">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span tal:condition="image">
-                        <span i18n:translate="">Properties of image</span>
-                        <strong>${image.id }</strong>
-                    </span>
-                    <span tal:condition="not image" i18n:translate="">
-                        Error 
-                    </span>
-                </h6>
-                <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide"> 
+            <div class="panel no-title">
+                <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
@@ -141,8 +135,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title" tal:condition="image">
-                <h6 class="title" i18n:translate="">Other image actions</h6>
+            <div class="panel no-title" tal:condition="image">
                 <div class="row">
                     <div class="large-12 columns">
                         <a href="${request.route_url('instance_create')}?image_id=${image.id}"

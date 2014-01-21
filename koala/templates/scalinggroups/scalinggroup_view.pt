@@ -17,7 +17,7 @@
             </metal:breadcrumbs>
         </h3>
         <dl class="sub-nav" id="scalinggroup-subnav">
-            <dd class="active"><a href="#" i18n:translate="">Scaling Group</a></dd>
+            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
             <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
             <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
         </dl>
@@ -25,11 +25,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span i18n:translate="">Properties of scaling group</span>
-                    <strong>${scaling_group.name}</strong>
-                </h6>
+            <div class="panel no-title">
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
@@ -76,8 +72,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title" tal:condition="scaling_group">
-                <h6 class="title" i18n:translate="">Other scaling group actions</h6>
+            <div class="panel no-title" tal:condition="scaling_group">
                 <div class="row">
                     <div class="small-2 columns">&nbsp;</div>
                     <div class="small-10 columns">

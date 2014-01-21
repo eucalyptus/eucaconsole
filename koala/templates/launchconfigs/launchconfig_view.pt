@@ -105,8 +105,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title">
-                <h6 class="title" i18n:translate="">Other launch configuration actions</h6>
+            <div class="panel no-title">
                 <div class="row">
                     <div class="large-1 columns">&nbsp;</div>
                     <div class="large-11 columns">

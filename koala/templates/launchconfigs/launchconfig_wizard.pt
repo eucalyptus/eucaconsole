@@ -20,8 +20,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
-            <div class="wizard has-title">
-                <h6 class="title" i18n:translate="">Create Launch Configuration</h6>
+            <div class="wizard no-title">
                 <form action="${request.route_url('launchconfig_create')}" id="launch-config-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}

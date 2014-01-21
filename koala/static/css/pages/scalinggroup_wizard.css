@@ -1,5 +1,5 @@
 /* @section Wizard styles */
-.wizard { position: relative; background-color: #eeeeee; }
+.wizard { position: relative; background-color: #eeeeee; padding-top: 16px; }
 .wizard.has-title { position: relative; padding-top: 42px; }
 .wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
@@ -10,7 +10,7 @@
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; border-right: 16px solid #eeeeee; border-left: 16px solid #eeeeee; }
 .wizard .tabs-content .content { width: 100%; }
 
-.summary { position: relative; padding-bottom: 2rem; top: 2px; background-color: #eeeeee; border-top: 8px solid #00415e; }
+.summary { position: relative; top: 2px; padding-top: 8px; padding-bottom: 2rem; background-color: #eeeeee; }
 .summary label { position: relative; right: -1rem; color: #00415e; font-weight: bold; }
 .summary .value { word-break: break-all; }
 .summary .row { margin-bottom: 5px; }

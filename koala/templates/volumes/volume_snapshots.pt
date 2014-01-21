@@ -25,11 +25,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
-            <div class="panel gridwrapper has-title">
-                <h6 class="title">
-                    <span i18n:translate="">Snapshots for volume</span>
-                    <strong>${volume_name}</strong>
-                </h6>
+            <div class="panel gridwrapper no-title">
                 <div class="tile add" id="create-snapshot">
                     <a href="#" data-reveal-id="create-snapshot-modal">
                         <div class="plus">+</div>

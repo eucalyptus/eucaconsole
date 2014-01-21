@@ -1,12 +1,17 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap"
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
-                    <li class="current"><a href="#">${keypair.name if keypair else 'Create key pair'}</a></li>
+                    <li class="current">
+                        <a tal:condition="keypair">${keypair.name }</a>
+                        <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create new keypair</a>
+                        <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import public key</a>
+                    </li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
@@ -26,22 +31,8 @@
            </script>
         </div>
 
-        <div class="large-7 columns"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
-                        route_id keypair_route_id if keypair_route_id else '';">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span tal:condition="keypair">
-                        <span i18n:translate="">Properties of keypair</span>
-                        <strong>${keypair.name }</strong>
-                    </span>
-                    <span tal:condition="not keypair and route_id == 'new'" i18n:translate="">
-                        Create new keypair 
-                    </span>
-                    <span tal:condition="not keypair and route_id == 'new2'" i18n:translate="">
-                        Import public key 
-                    </span>
-                </h6>
+        <div class="large-7 columns">
+            <div class="panel no-title">
                 <div tal:condition="keypair">
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
@@ -52,7 +43,7 @@
                         <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
                 </div>
-                <div tal:condition="not keypair and route_id == 'new'" i18n:translate="">
+                <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
                     <div>
                         <span i18n:translate="">
                             You can use this key pair to launch more than one instance.
@@ -88,7 +79,7 @@
                     </div>
                      </form>
                  </div>
-                <div tal:condition="not keypair and route_id == 'new2'" i18n:translate="">
+                <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
                     <div>
                         <span i18n:translate="">
                             Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.
@@ -133,8 +124,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title" tal:condition="keypair">
-                <h6 class="title" i18n:translate="">Other keypair actions</h6>
+            <div class="panel no-title" tal:condition="keypair">
                 <div class="row">
                     <div class="large-3 columns">&nbsp;</div>
                     <div class="large-9 columns">
