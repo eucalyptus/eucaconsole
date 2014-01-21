@@ -11,6 +11,12 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.instanceID = '';
         $scope.urlParams = $.url().param();
         $scope.displayType = $scope.urlParams['display'] || 'tableview';
+        $scope.initChosenSelectors = function () {
+            $('#instance_id').chosen({'width': '80%', 'search_contains': true});
+        };
+        $scope.initController = function () {
+            $scope.initChosenSelectors();
+        };
         $scope.revealModal = function (action, eip, instance_id) {
             instance_id = instance_id || '';
             var modal = $('#' + action + '-ip-modal');

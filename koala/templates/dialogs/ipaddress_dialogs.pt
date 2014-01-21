@@ -4,7 +4,7 @@
          tal:define="landingpage_action request.route_url('ipaddresses_associate');
                      detailpage_action request.route_url('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Associate IP Address</h3>
+        <h3 i18n:translate="">Associate IP Address to instance</h3>
         <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
         <form action="${action}"
               method="post" data-abide="abide">
@@ -17,8 +17,7 @@
             <div class="row">
                 <div class="small-4 columns">&nbsp;</div>
                 <div class="small-8 columns field inline">
-                    <input type="submit" class="button" value="Associate with Instance"
-                           i18n:attributes="value" />
+                    <input type="submit" class="button" value="Associate address" i18n:attributes="value" />
                 </div>
             </div>
         </form>

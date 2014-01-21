@@ -385,15 +385,30 @@ form {
     .server-validation span.error {
         display: block !important;
     }
-    .chosen-drop .chosen-results {
-        font-size: 0.825rem;
-    }
     .error .chosen-container .chosen-single {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
     }
-    .chosen-container-multi .chosen-choices li.search-field input[type=text] {
+}
+
+.chosen-container {
+    &.chosen-container-multi .chosen-choices li.search-field input[type=text] {
         height: auto;
+    }
+    &.chosen-container-single {
+        .chosen-single {
+            border-radius: 0;
+            height: 2rem;
+            line-height: 2rem;
+            font-size: 0.875rem;
+            b {
+                position: relative;
+                top: 4px;
+            }
+        }
+    }
+    .chosen-drop .chosen-results {
+        font-size: 0.875rem;
     }
 }
 
