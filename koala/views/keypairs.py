@@ -66,10 +66,12 @@ class KeyPairView(BaseView):
         super(KeyPairView, self).__init__(request)
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
+        self.keypair_route_id = self.request.matchdict.get('id')
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,
+            keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             delete_form=self.delete_form,
             keypair_names=self.get_keypair_names(),

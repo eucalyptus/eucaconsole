@@ -20,6 +20,8 @@
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate=""
                     href="${request.route_url('keypair_view', id='new')}">Create new key pair</a>
+                <a class="button small" i18n:translate=""
+                    href="${request.route_url('keypair_view', id='new2')}">Import public key</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>

@@ -24,7 +24,7 @@ class KeyPairForm(BaseSecureForm):
         id=(u'key-import-contents'),
         label=_(u'Public SSH Key Content'),
         # NEED A WAY TO SELECTIVELY VALIDATE DEPENDING WHICH FORM WAS CHOSEN, CREATE VS. IMPORT
-        #validators=[validators.Length(min=1)],
+        #validators=[validators.Required(message=name_error_msg)],
     )
 
     def __init__(self, request, keypair=None, **kwargs):
