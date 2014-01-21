@@ -9,9 +9,13 @@
     <div class="row" id="contentwrap" ng-app="LaunchConfigWizard" ng-controller="LaunchConfigWizardCtrl"
          ng-init="initController()">
         <h3 class="header" id="pagetitle">
-            <a class="back-arrow" href="${request.route_url('launchconfigs')}"
-               data-tooltip="" title="Back to Launch Configurations" i18n:attributes="title">&lt;</a>
-            <span i18n:translate="">Create Launch Configuration</span>
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                    <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
+                    <li class="current"><a href="#" i18n:translate="">Create Launch configuration</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />

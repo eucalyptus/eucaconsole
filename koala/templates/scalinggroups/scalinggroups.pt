@@ -9,10 +9,17 @@
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
-                    <li class="current"><a href="#" i18n:translate="">Scaling Groups</a></li>
+                    <li class="current"><a href="#" i18n:translate="">Scaling groups</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
+        <dl class="sub-nav" id="subnav">
+            <dd class="active"><a href="#" i18n:translate="">Scaling groups</a></dd>
+            <dd><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></dd>
+        </dl>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
         <div class="large-2 columns" id="landing-page-filters">
             <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
         </div>
@@ -51,7 +58,7 @@
                 </div>
                 <div ng-show="item.launch_config">
                     <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
-                    {{ item.launch_config }}
+                    <a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config }}</a>
                 </div>
                 <div ng-show="item.availability_zones">
                     <span class="label" title="Availability zones" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -82,7 +89,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name }}</a></td>
-                <td>{{ item.launch_config }}</td>
+                <td><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config }}</a></td>
                 <td>
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
