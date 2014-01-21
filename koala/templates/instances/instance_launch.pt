@@ -19,7 +19,7 @@
             <div class="wizard has-title">
                 <h6 class="title" i18n:translate="">Launch instance</h6>
                 <form action="${request.route_url('instance_launch')}" id="launch-instance-form"
-                      method="post" data-abide="abide">
+                      method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:launch_form['csrf_token']}
                     ${structure:launch_form['image_id']}
                     <dl class="tabs" data-tab="">
@@ -126,6 +126,7 @@
                                 User data and other advanced options (optional).
                             </p>
                             ${panel('form_field', field=launch_form['userdata'])}
+                            ${panel('form_field', field=launch_form['userdata_file'])}
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             ${panel('form_field', field=launch_form['monitoring_enabled'])}
