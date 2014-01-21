@@ -17,7 +17,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
-                    <li class="current"><a href="#">${snapshot_name}</a></li>
+                    <li class="current"><a href="#">${snapshot_name or 'Create snapshot'}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>

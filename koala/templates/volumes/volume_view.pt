@@ -22,7 +22,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
-                    <li class="current"><a href="#">${volume_name}</a></li>
+                    <li class="current"><a href="#">${volume_name or 'Create volume'}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
