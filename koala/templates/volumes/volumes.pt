@@ -65,7 +65,7 @@
                 </div>
                 <div ng-show="item.instance">
                     <span class="label" title="Attached to instance" i18n:attributes="title" data-tooltip="">IN</span>
-                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a>
+                    <a ng-href="/instances/{{ item.instance }}">{{ item.instance_name || item.instance }}</a>
                 </div>
                 <div ng-show="item.tags">
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
@@ -99,7 +99,7 @@
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td>{{ item.size }}&nbsp;GB</td>
-                <td class="instance"><a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">{{ item.instance }}</a></td>
+                <td class="instance"><a ng-show="item.instance" ng-href="/instances/{{ item.instance }}">{{ item.instance_name || item.instance }}</a></td>
                 <td><a ng-href="/volumes/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
                 <td>{{ item.zone }}</td>
                 <td>{{ item.tags }}</td>
