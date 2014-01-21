@@ -35,17 +35,7 @@
                          if volume else request.route_url('volume_create');
                          volume_tags volume.tags if volume else {};
                          html_attrs {'disabled': 'disabled'} if volume else {};">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span tal:condition="volume">
-                        <span i18n:translate="">Settings for volume</span>
-                        <strong>${volume_name}</strong>
-                    </span>
-                    <span tal:condition="not volume" i18n:translate="">
-                        Create new volume
-                        <span ng-show="snapshotId">from {{ snapshotId }}</span>
-                    </span>
-                </h6>
+            <div class="panel">
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:volume_form['csrf_token']}
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
@@ -135,8 +125,7 @@
         </div>
         <div class="large-5 columns">
             <div tal:condition="volume" tal:omit-tag="">
-                <div class="panel has-title other-actions" ng-show="volumeStatus == 'available'">
-                    <h6 class="title" i18n:translate="">Other volume actions</h6>
+                <div class="panel other-actions" ng-show="volumeStatus == 'available'">
                     <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
                         Delete volume
                     </a>
