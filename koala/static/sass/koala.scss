@@ -423,6 +423,10 @@ form .row.controls-wrapper {
         }
         select {
             margin-bottom: 0.3rem;
+            margin-top: 0.3rem;
+        }
+        textarea {
+            margin-top: 0.3rem;
         }
     }
     &.readonly {
@@ -494,6 +498,7 @@ textarea.hidden {
 ----------------------------------------- */
 .panel{
     &.has-title {
+        word-break: break-all;
         position: relative;
         padding-top: 60px;
         border: none;
@@ -509,6 +514,7 @@ textarea.hidden {
         }
     }
     &.other-actions {
+        word-break: normal;
         background-color: white;
         border: none;
     }

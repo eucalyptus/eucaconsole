@@ -40,7 +40,7 @@
                     <div class="header">
                         <strong><a href="#">${policy.name}</a></strong>
                         <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_${policy.name}" class="f-dropdown">
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
                         </ul>
                     </div>
@@ -59,12 +59,16 @@
         <!--! Modal dialogs -->
         <div id="delete-policy-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Delete scaling group policy</h3>
-            <p><span i18n:translate="">Are you sure you want to delete the policy</span>
-               <b>{{ policyName }}</b>?</p>
+            <p>
+                <span i18n:translate="">Are you sure you want to delete the policy</span>
+                <b>{{ policyName }}</b>?
+            </p>
             <form action="${request.route_url('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
-                <input type="hidden" name="name" value="{{ policyName }}">
-                <button type="submit" class="button" i18n:translate="">Yes, delete policy</button>
+                <input type="hidden" name="name" value="{{ policyName }}" />
+                <button type="submit" class="button" i18n:translate="" id="delete-policy-dialog-btn">
+                    Yes, delete policy
+                </button>
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>

@@ -21,7 +21,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" i18n:translate=""
+                <a class="button small" i18n:translate="" id="create-keypair-btn"
                     href="${request.route_url('keypair_view', id='new')}">Create new key pair</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -36,7 +36,7 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li ng-show="item.name">
                         <a i18n:translate=""
                            ng-click="revealModal('delete', item.name)">Delete</a>
@@ -54,7 +54,7 @@
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li ng-show="item.name">
                                 <a i18n:translate=""
                                    ng-click="revealModal('delete', item.name)">Delete</a>

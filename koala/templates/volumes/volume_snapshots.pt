@@ -40,8 +40,11 @@
                 <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.name || snapshot.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right" ng-click="revealDeleteModal(snapshot.delete_form_action)"
-                           data-reveal-id="delete-snapshot-modal"><i class="icon fi-minus-circle"></i></a>
+                        <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown">
+                            <li><a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View properties</a></li>
+                            <li><a ng-click="revealDeleteModal()" i18n:translate="">Delete snapshot</a></li>
+                        </ul>
                     </div>
                     <div class="content">
                         <div>
@@ -95,7 +98,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Add snapshot" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Create snapshot" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>

@@ -21,12 +21,12 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate=""
-                        href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
+                <a class="button" i18n:translate="" id="create-securitygroup-btn"
+                   href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
                 </ul>
@@ -34,7 +34,7 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.rules">
                     <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
-                    <metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block>
+                    <metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']" />
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
@@ -55,12 +55,12 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
-                <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']"></metal:block></td>
+                <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']" /></td>
                 <td>{{ item.tags }}</td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
                         </ul>

@@ -21,7 +21,8 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" data-reveal-id="allocate-ip-modal" i18n:translate="">
+                <a class="button" id="allocate-ipaddresses-btn"
+                   data-reveal-id="allocate-ip-modal" i18n:translate="">
                     Allocate IP address
                 </a>
             </div>
@@ -39,7 +40,7 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.public_ip }}" class="f-dropdown">
                     <li ng-show="item.instance_id">
                         <a i18n:translate=""
                            ng-click="revealModal('disassociate', item.public_ip)">Disassociate from instance</a>
@@ -60,12 +61,12 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.public_ip }}">{{ item.public_ip }}</a></td>
+                <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
                 <td><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name }}</a></td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.public_ip }}" class="f-dropdown">
                             <li ng-show="item.instance_id">
                                 <a i18n:translate=""
                                    ng-click="revealModal('disassociate', item.public_ip, item.instance_id)">Disassociate from instance</a>
@@ -93,7 +94,8 @@
                 <div class="row">
                     <div class="small-4 columns"></div>
                     <div class="small-8 columns">
-                        <button type="submit" class="button radius" i18n:translate="">
+                        <button type="submit" class="button radius" id="allocate-ipaddresses-dialog-btn"
+                                i18n:translate="">
                             Allocate addresses from cloud
                         </button>
                     </div>

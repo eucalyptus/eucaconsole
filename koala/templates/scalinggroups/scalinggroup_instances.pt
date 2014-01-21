@@ -40,7 +40,7 @@
                     <div class="header">
                         <strong><a ng-href="/instances/{{ item.id }}">{{ item.id }}</a></strong>
                         <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View properties</a></li>
                             <li><a i18n:translate="" ng-click="revealUnhealthyModal(item)">Mark unhealthy</a></li>
                         </ul>
@@ -76,7 +76,9 @@
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
                         leftcol_width=6, rightcol_width=6)}
-                <button type="submit" class="button" i18n:translate="">Yes, mark unhealthy</button>
+                <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                    Yes, mark unhealthy
+                </button>
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>

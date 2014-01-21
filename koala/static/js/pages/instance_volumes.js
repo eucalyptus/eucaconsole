@@ -25,9 +25,10 @@ angular.module('InstanceVolumes', [])
                 });
             });
         };
-        $scope.revealDetachModal = function (action) {
+        $scope.revealDetachModal = function (action, name) {
             var modal = $('#detach-volume-modal');
             $scope.detachFormAction = action;
+            $scope.detachVolumeName = name;
             modal.foundation('reveal', 'open');
         };
         $scope.getInstanceVolumes = function () {

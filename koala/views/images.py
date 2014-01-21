@@ -160,7 +160,7 @@ class ImageView(TaggedItemView):
         lookup_attrs = ['name', 'description']
         if image:
             if image.platform:
-                return image.platform
+                return PlatformChoice(key=image.platform, pattern='', name=image.platform)
             # Try lookup using lookup attributes
             for lookup in lookup_attrs:
                 attr_value = getattr(image, lookup, '')

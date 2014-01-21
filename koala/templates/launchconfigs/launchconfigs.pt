@@ -21,8 +21,14 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate=""
+                <a class="button" i18n:translate="" id="create-launchconfig-btn"
                    href="${request.route_url('launchconfig_new')}">Create new launch configuration</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.image_id">
@@ -51,7 +57,7 @@
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Created Time" i18n:attributes="title" data-tooltip="">CT</span>
-                    {{ item.created_time | date:'yyyy/MM/dd h:mm a' }}
+                    {{ item.created_time | date:'${layout.angular_date_format}' }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
@@ -60,13 +66,22 @@
                 <th i18n:translate="">Key</th>
                 <th i18n:translate="">Security Group</th>
                 <th i18n:translate="">Create time</th>
+                <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.image_id }}</td>
                 <td>{{ item.key_name }}</td>
                 <td>{{ item.security_group_names || item.security_groups }}</td>
-                <td>{{ item.created_time | date:'yyyy/MM/dd h:mm a' }}</td>
+                <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                        </ul>
+                    </span>
+                </td>
             </metal:block>
         </div>
     </div>
