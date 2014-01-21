@@ -166,7 +166,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
-            user_data = self.request.params.get('user_data')
+            userdata_input = self.request.params.get('userdata')
+            userdata_file = self.request.POST['userdata_file'].file.read()
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
@@ -175,7 +177,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             try:
                 launch_config = LaunchConfiguration(
                     name=name, image_id=image_id, key_name=key_name, security_groups=security_groups,
-                    user_data=user_data, instance_type=instance_type, kernel_id=kernel_id, ramdisk_id=ramdisk_id,
+                    user_data=userdata, instance_type=instance_type, kernel_id=kernel_id, ramdisk_id=ramdisk_id,
                     block_device_mappings=block_device_mappings, instance_monitoring=monitoring_enabled
                 )
                 autoscale_conn.create_launch_configuration(launch_config=launch_config)
@@ -184,7 +186,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-            except EC2ResponseError as err:
+            except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)

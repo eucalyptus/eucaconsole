@@ -42,6 +42,8 @@ class CreateLaunchConfigForm(BaseSecureForm):
         validators=[validators.Required(message=securitygroup_error_msg)],
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label=_(u''))
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
@@ -54,12 +56,16 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
+        self.set_help_text()
         self.set_choices()
 
         if image is not None:
             self.image_id.data = self.image.id
             self.kernel_id.data = image.kernel_id or ''
             self.ramdisk_id.data = image.ramdisk_id or ''
+
+    def set_help_text(self):
+        self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)

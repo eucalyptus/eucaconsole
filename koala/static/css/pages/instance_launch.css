@@ -35,4 +35,4 @@
 #launch-instance-form #instance_type option { font-size: 0.825rem; }
 #launch-instance-form #image-id-input { width: 10rem; display: inline; }
 #launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
-#launch-instance-form #userdata_file { width: 80%; display: inline-block; }
+#launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
