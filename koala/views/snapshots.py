@@ -52,6 +52,8 @@ class SnapshotsView(LandingPageView):
     def snapshots_json(self):
         snapshots = []
         for snapshot in self.get_items():
+            volume = self.get_volume(snapshot.volume_id)
+            volume_name = TaggedItemView.get_display_name(volume)
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
@@ -61,6 +63,7 @@ class SnapshotsView(LandingPageView):
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
                 volume_id=snapshot.volume_id,
+                volume_name=volume_name,
                 volume_size=snapshot.volume_size,
             ))
         return dict(results=snapshots)
@@ -131,6 +134,12 @@ class SnapshotsView(LandingPageView):
             return snapshots_list[0] if snapshots_list else None
         return None
 
+    def get_volume(self, volume_id):
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
+
     @staticmethod
     def get_sort_keys():
         """sort_keys are passed to sorting drop-down on landing page"""
@@ -152,6 +161,7 @@ class SnapshotView(TaggedItemView):
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
+        self.volume_name = TaggedItemView.get_display_name(self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
@@ -162,6 +172,7 @@ class SnapshotView(TaggedItemView):
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
+            volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,

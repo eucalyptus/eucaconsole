@@ -28,20 +28,23 @@
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                    <li><a i18n:translate=""
+                           ng-href="/scalinggroups/new?launch_config={{ item.name }}">Create scaling group</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.image_id">
                     <span class="label" title="Image ID" i18n:attributes="title" data-tooltip="">IM</span>
-                    {{ item.image_id }}
+                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a>
                 </div>
                 <div ng-show="item.key_name">
                     <span class="label" title="Key Pair" i18n:attributes="title" data-tooltip="">KP</span>
-                    {{ item.key_name }}
+                    <a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
                 </div>
                 <div ng-show="item.security_groups">
                     <span class="label" title="Security Groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups }}
+                    <a ng-repeat="sgroup_id in item.security_groups"
+                       ng-href="/securitygroups/{{ sgroup_id }}">{{ sgroup_id }}</a>
                 </div>
                 <div ng-show="item.instance_monitoring">
                     <span class="label" title="Instance Monitoring" i18n:attributes="title" data-tooltip="">MO</span>
@@ -70,15 +73,20 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
-                <td>{{ item.image_id }}</td>
-                <td>{{ item.key_name }}</td>
-                <td>{{ item.security_groups }}</td>
+                <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
+                <td><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a></td>
+                <td>
+                    <a ng-repeat="sgroup_id in item.security_groups"
+                       ng-href="/securitygroups/{{ sgroup_id }}">{{ sgroup_id }}</a>
+                </td>
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                            <li><a i18n:translate=""
+                                   ng-href="/scalinggroups/new?launch_config={{ item.name }}">Create scaling group</a></li>
                         </ul>
                     </span>
                 </td>

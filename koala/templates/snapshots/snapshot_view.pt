@@ -61,7 +61,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}">${snapshot.volume_id}</a>
+                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
                         </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">

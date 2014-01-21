@@ -69,13 +69,16 @@ class VolumesView(LandingPageView):
         for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
+            instance_name = None
+            if volume.attach_data is not None and volume.attach_data.instance_id is not None:
+                instance = self.get_instance(volume.attach_data.instance_id)
+                instance_name=TaggedItemView.get_display_name(instance)
             volumes.append(dict(
                 create_time=volume.create_time,
                 id=volume.id,
                 instance=volume.attach_data.instance_id,
+                instance_name=instance_name,
                 name=volume.tags.get('Name', volume.id),
-                # super inefficient! Caused all snapshots to be fetch for *every* volume
-                #snapshots=len(volume.snapshots()),
                 snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                 size=volume.size,
                 status=status,
@@ -181,6 +184,11 @@ class VolumesView(LandingPageView):
             dict(key='zone', name=_(u'Availability zone')),
         ]
 
+    def get_instance(self, instance_id):
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None
 
 class VolumeView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'

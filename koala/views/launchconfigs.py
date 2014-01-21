@@ -54,7 +54,7 @@ class LaunchConfigsJsonView(BaseView):
     def launchconfigs_json(self):
         launchconfigs = []
         for launchconfig in self.get_items():
-            security_groups = ', '.join(launchconfig.security_groups)
+            security_groups = launchconfig.security_groups
             launchconfigs.append(dict(
                 created_time=launchconfig.created_time.isoformat(),
                 image_id=launchconfig.image_id,
