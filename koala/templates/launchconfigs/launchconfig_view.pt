@@ -5,7 +5,7 @@
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling Groups</a></li>
+                    <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                     <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
                     <li class="current"><a href="#">${launch_config.name}</a></li>
                 </metal:crumbs>
