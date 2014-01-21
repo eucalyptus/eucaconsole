@@ -170,7 +170,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel has-title other-actions">
+            <div class="panel other-actions">
                 <a class="button secondary" i18n:translate="">
                     Launch more like this
                 </a>
