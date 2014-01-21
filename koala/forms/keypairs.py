@@ -48,7 +48,7 @@ class KeyPairImportForm(BaseSecureForm):
         super(KeyPairImportForm, self).__init__(request, **kwargs)
         self.request = request
         self.name.error_msg = self.name_error_msg  # Used for Foundation Abide error message
-        self.key_material_error_msg = self.key_material_error_msg
+        self.key_material.error_msg = self.key_material_error_msg
         if keypair is not None:
             self.name.data = keypair.name
 
