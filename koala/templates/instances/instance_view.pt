@@ -163,7 +163,7 @@
                             </button>
                             <a href="${request.route_url('instances')}" id="cancel-update-link"
                                class="cancel-link" i18n:translate="">Cancel</a>
-                            <button type="submit" class="button" style="display:none;" id="save-update-button"/>
+                            <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
                         </div>
                     </div>
                 </form>
