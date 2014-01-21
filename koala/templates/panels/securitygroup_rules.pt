@@ -8,7 +8,7 @@
          form .ip-label, form .sg-label { margin-right: 1rem; }
          form label.ipaddress, form label.securitygroupname { text-align: left !important; }
          form .cidr-ip, form .groupname { display: inline; width: 50%; }
-         form .fi-burst-new { color: darkgreen; font-size: 1.4rem; }
+         form .rule.new { color: darkgreen; }
          form label.protocol { margin-bottom: 1.5rem; }
     </style>
     <div class="small-${leftcol_width} columns">
@@ -21,7 +21,7 @@
                 <a href="#"  class="circle remove has-tip" ng-click="removeRule($index, $event)"
                         title="Remove rule"><i class="fi-minus-circle"></i></a>
             </div>
-            <div class="small-11 columns">
+            <div class="small-11 columns rule {{ rule.fresh }}">
                 <strong i18n:translate="">Rule</strong>:
                 {{ rule.ip_protocol.toUpperCase() }}
                 ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
@@ -29,7 +29,6 @@
                     <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
                     <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
                 </span>
-                <span ng-show="rule.fresh"><i class="fi-burst-new"></i></span>
             </div>
         </div>
         <div class="row rulesentry inline controls-wrapper">
