@@ -30,7 +30,7 @@
                     <div tal:repeat="field filter_fields">
                         <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
                         <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
-                                placeholder="${field.name}" name="${field.key}">
+                                name="${field.key}">
                             <option value="">${field.name}...</option>
                             <option tal:repeat="choice field.choices" value="${choice.key}"
                                     tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice.key">${choice.label}</option>
@@ -47,7 +47,13 @@
             <div metal:fill-slot="new_button">
                 &nbsp;
             </div>
-            <div metal:fill-slot="tile_dropdown_button"></div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" href="/instances/new?image_id={{ item.id }}">Launch instance</a></li>
+                </ul>
+            </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
             </div>
@@ -95,15 +101,20 @@
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
-                <th>&nbsp;</th>
+                <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
-                <td><a href="/instances/new?image_id={{ item.id }}" class="button small" style="white-space: nowrap"
-                        i18n:translate="">Launch instance</a></td>
+                <td>
+                <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" href="/instances/new?image_id={{ item.id }}">Launch instance</a></li>
+                </ul>
+                </td>
             </metal:block>
         </div>
         <div id="help-modal" class="reveal-modal medium" data-reveal="">
