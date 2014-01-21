@@ -14,7 +14,7 @@
                 <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion($event)'})}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()'})}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="row">
                 <div class="small-4 columns">&nbsp;</div>

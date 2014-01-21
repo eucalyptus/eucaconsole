@@ -483,7 +483,7 @@ class InstanceVolumesView(BaseView):
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
             volumes.append(dict(
                 id=volume.id,
-                name=volume.tags.get('Name', ''),
+                name=TaggedItemView.get_display_name(volume),
                 size=volume.size,
                 device=volume.attach_data.device,
                 attach_time=volume.attach_data.attach_time,

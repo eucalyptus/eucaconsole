@@ -28,16 +28,7 @@
                          if snapshot else request.route_url('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
                          html_attrs {'disabled': 'disabled'} if snapshot else {};">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span tal:condition="snapshot">
-                        <span i18n:translate="">Settings for snapshot</span>
-                        <strong>${snapshot_name}</strong>
-                    </span>
-                    <span tal:condition="not snapshot" i18n:translate="">
-                        Create new snapshot
-                    </span>
-                </h6>
+            <div class="panel">
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
@@ -106,14 +97,15 @@
         </div>
         <div class="large-5 columns">
             <div tal:condition="snapshot" tal:omit-tag="">
-                <div class="panel has-title other-actions">
-                    <h6 class="title" i18n:translate="">Other snapshot actions</h6>
+                <div class="panel other-actions">
                     <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
                         Create volume from snapshot
                     </a>
+                    <br/>
                     <a class="button secondary register" data-reveal-id="register-snapshot-modal" i18n:translate="">
                         Register snapshot
                     </a>
+                    <br/>
                     <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
                         Delete snapshot
                     </a>

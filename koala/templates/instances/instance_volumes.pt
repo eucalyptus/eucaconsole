@@ -44,7 +44,7 @@
                         <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action)">Detach Volume</a>
+                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action, volume.name)">Detach Volume</a>
                             </li>
                         </ul>
                     </div>
@@ -123,8 +123,14 @@
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to detach the volume from instance</span><br/>
-                    <strong>${instance_name}</strong>?
+                  <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.
+                  </span>
+                </p>
+                <p>
+                  <span i18n:translate="">
+                      Are you sure you want to detach volume <b>{{ detachVolumeName }}</b> from the instance
+                  </span>
+                  <strong>${instance_name}</strong>?
                 </p>
                 <form method="post" id="detach-form" data-abide="" action="{{ detachFormAction }}">
                     ${structure:detach_form['csrf_token']}
