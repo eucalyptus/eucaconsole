@@ -160,6 +160,7 @@ class SnapshotView(TaggedItemView):
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
+        self.volume_name = TaggedItemView.get_display_name(self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
@@ -170,6 +171,7 @@ class SnapshotView(TaggedItemView):
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
+            volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
