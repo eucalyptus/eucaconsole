@@ -36,7 +36,7 @@
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li ng-show="item.name">
                         <a i18n:translate=""
                            ng-click="revealModal('delete', item.name)">Delete</a>
@@ -54,7 +54,7 @@
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li ng-show="item.name">
                                 <a i18n:translate=""
                                    ng-click="revealModal('delete', item.name)">Delete</a>
