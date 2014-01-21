@@ -8,7 +8,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from ..forms.keypairs import KeyPairForm, KeyPairDeleteForm
+from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView
 
@@ -66,11 +66,15 @@ class KeyPairView(BaseView):
         super(KeyPairView, self).__init__(request)
         self.conn = self.get_connection()
         self.keypair = self.get_keypair()
+        self.keypair_route_id = self.request.matchdict.get('id')
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
+        self.keypair_import_form = KeyPairImportForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,
+            keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
+            keypair_import_form=self.keypair_import_form,
             delete_form=self.delete_form,
             keypair_names=self.get_keypair_names(),
         )
