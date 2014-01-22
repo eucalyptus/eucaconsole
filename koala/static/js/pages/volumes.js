@@ -28,8 +28,8 @@ angular.module('VolumesPage', ['CustomFilters'])
                         options = "<option value=''>No available instances in the same availability zone</option>";
                     }
                     else {
-                      instances.forEach(function (instanceID) {
-                          options += '<option value="' + instanceID + '">' + instanceID + '</option>';
+                      instances.forEach(function (instance) {
+                          options += '<option value="' + instance['id'] + '">' + instance['name'] + '</option>';
                       });
                     }
                     instanceSelect.html(options);
