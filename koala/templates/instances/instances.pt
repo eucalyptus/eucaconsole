@@ -22,25 +22,25 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="launch-instance-btn"
-                   href="${request.route_url('instance_create')}">Launch Instance</a>
+                   href="${request.route_url('instance_create')}">Launch New Instance</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li>
-                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
-                    </li>
-                    <li ng-show="!item.transitional">
-                        <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
-                    </li>
-                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
-                        <a i18n:translate="" ng-click="revealModal('start', item)">Start instance</a>
+                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
                     </li>
                     <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
-                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop instance</a>
+                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
+                    </li>
+                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
+                    </li>
+                    <li ng-show="!item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                        <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate instance</a>
+                        <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                     </li>
                 </ul>
             </div>
@@ -50,28 +50,31 @@
                     {{ item.id }}
                 </div>
                 <div>
-                    <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
-                    {{ item.ip_address }}
+                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">IM</span>
+                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a>
                 </div>
                 <div>
-                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
-                    {{ item.root_device }}
+                    <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
+                    <a ng-href="/keypairs/{{ item.ip_address }}">{{ item.ip_address }}</a>
                 </div>
                 <div>
                     <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.placement }}
                 </div>
                 <div>
-                    <span class="label" title="Instance type" i18n:attributes="title" data-tooltip="">IT</span>
-                    {{ item.instance_type }}
+                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
+                    {{ item.root_device }}
+                </div>
+                <div>
+                    <span class="label" title="Key name" i18n:attributes="title" data-tooltip="">KN</span>
+                    <a ng-show="item.key_name" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
+                    <span ng-show="!item.key_name">None</span>
                 </div>
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
-                    {{ item.security_groups || 'default' }}
-                </div>
-                <div ng-show="item.key_name">
-                    <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
-                    {{ item.key_name }}
+                    <span ng-repeat="security_group in item.security_groups">
+                        <a ng-href="/securitygroups/{{ security_group }}">{{ security_group }}</a><span ng-show="!$last">, </span>
+                    </span>
                 </div>
                 <div>
                     <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
@@ -86,43 +89,47 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">ID</th>
+                <th i18n:translate="">Name (ID)</th>
                 <th i18n:translate="">Status</th>
-                <th i18n:translate="">Root Device</th>
+                <th i18n:translate="">Image ID</th>
                 <th i18n:translate="">Zone</th>
-                <th i18n:translate="">Type</th>
+                <th i18n:translate="">Public IP</th>
+                <th i18n:translate="">Key Name</th>
                 <th i18n:translate="">Sec Group</th>
-                <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Launched</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>{{ item.status }} <span class="dots" ng-show="item.transitional">&nbsp;</span></td>
-                <td>{{ item.root_device }}</td>
+                <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
-                <td>{{ item.instance_type }}</td>
-                <td>{{ item.security_groups || 'default' }}</td>
-                <td>{{ item.tags }}</td>
-                <td>{{ item.launch_time | date:'yyyy-MM-dd h:mm a' }}</td>
+                <td><a ng-href="/keypairs/{{ item.ip_address }}">{{ item.ip_address }}</a></td>
+                <td><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a></td>
+                <td>
+                    <div ng-repeat="security_group in item.security_groups">
+                        <a ng-href="/securitygroups/{{ security_group }}">{{ security_group }}</a>
+                    </div>
+                </td>
+                <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                    <span class="actions">
                         <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li>
-                                <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View properties</a>
-                            </li>
-                            <li ng-show="!item.transitional">
-                                <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot instance</a>
-                            </li>
-                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealModal('start', item)">Start instance</a>
+                                <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
                             </li>
                             <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
-                                <a i18n:translate="" ng-click="revealModal('stop', item)">Stop instance</a>
+                                <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
+                            </li>
+                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
+                            </li>
+                            <li ng-show="!item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate instance</a>
+                                <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                             </li>
                         </ul>
                    </span>
