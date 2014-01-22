@@ -26,9 +26,9 @@ class BaseSecureForm(SecureForm):
     def get_errors_list(self):
         """Convenience method to get all form validation errors as a list of message strings"""
         error_messages = []
-        for errors in self.errors.values():
-            for error in errors:
-                error_messages.append(error)
+        for field, errors in self.errors.items():
+            msg = '{0}: {1}'.format(field, ', '.join(errors))
+            error_messages.append(msg)
         return error_messages
 
 
@@ -98,7 +98,7 @@ class ChoicesManager(object):
         return sorted(set(choices))
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
-        choices = [] #('', _(u'None assigned'))]
+        choices = []  # ('', _(u'None assigned'))]
         ipaddresses = ipaddresses or []
         if not ipaddresses and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()

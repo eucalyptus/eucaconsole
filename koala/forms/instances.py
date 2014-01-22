@@ -140,6 +140,49 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
 
+class LaunchMoreInstancesForm(BaseSecureForm):
+    """Form class for launch more instances like this one"""
+    number_error_msg = _(u'Number of instances is required')
+    number = wtforms.IntegerField(
+        label=_(u'Number of instances'),
+        validators=[
+            validators.Required(message=number_error_msg),
+            validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go
+        ],
+    )
+    userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label=_(u''))
+    kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
+    ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
+
+    def __init__(self, request, image=None, conn=None, **kwargs):
+        super(LaunchMoreInstancesForm, self).__init__(request, **kwargs)
+        self.image = image
+        self.conn = conn
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.set_error_messages()
+        self.set_help_text()
+        self.set_choices()
+        self.set_initial_data()
+
+    def set_error_messages(self):
+        self.number.error_msg = self.number_error_msg
+
+    def set_help_text(self):
+        self.userdata_file.help_text = self.userdata_file_helptext
+
+    def set_choices(self):
+        self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
+        self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+
+    def set_initial_data(self):
+        self.monitoring_enabled.data = True
+        self.number.data = 1
+
+
 class StopInstanceForm(BaseSecureForm):
     """CSRF-protected form to stop an instance"""
     pass

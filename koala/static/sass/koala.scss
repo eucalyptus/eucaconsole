@@ -367,6 +367,9 @@ form {
               height: $euca-input-field-height;
               line-height: $euca-input-field-height;
           }
+          &[type='number'] {
+              width: 4rem;
+          }
       }
     }
     .columns input {

@@ -41,6 +41,7 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
     if isinstance(field, IntegerField):
         html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
         html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
+        html_attrs['min'] = kwargs.get('min', 0)
 
     # Add any passed kwargs to field's HTML attributes
     for key, value in kwargs.items():

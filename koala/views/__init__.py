@@ -168,24 +168,33 @@ class BlockDeviceMappingItemView(BaseView):
             choices.append((value, label))
         return sorted(choices)
 
+    def get_user_data(self):
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if userdata_file_param else None
+        userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
     @staticmethod
-    def get_block_device_map(bdmapping_json):
+    def get_block_device_map(bdmapping_json=None):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
         Mapping JSON structure...
             {"/dev/sda":
                 {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
         """
-        mapping = json.loads(bdmapping_json)
-        if mapping:
-            bdm = BlockDeviceMapping()
-            for key, val in mapping.items():
-                device = BlockDeviceType()
-                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
-                device.snapshot_id = val.get('snapshot_id') or None
-                device.size = val.get('size')
-                device.delete_on_termination = val.get('delete_on_termination', False)
-                bdm[key] = device
-            return bdm
+        if bdmapping_json:
+            mapping = json.loads(bdmapping_json)
+            if mapping:
+                bdm = BlockDeviceMapping()
+                for key, val in mapping.items():
+                    device = BlockDeviceType()
+                    device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                    device.snapshot_id = val.get('snapshot_id') or None
+                    device.size = val.get('size')
+                    device.delete_on_termination = val.get('delete_on_termination', False)
+                    bdm[key] = device
+                return bdm
+            return None
         return None
 
 
