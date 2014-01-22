@@ -5,6 +5,7 @@ Pyramid views for Eucalyptus and AWS volumes
 """
 import time
 
+from dateutil import parser
 import simplejson as json
 
 from boto.exception import EC2ResponseError
@@ -217,6 +218,7 @@ class VolumeView(TaggedItemView):
         self.tagged_obj = self.volume
         self.attach_data = self.volume.attach_data if self.volume else None
         self.volume_name = self.get_volume_name()
+        self.create_time = self.get_create_time()
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
@@ -224,6 +226,7 @@ class VolumeView(TaggedItemView):
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
+            volume_create_time=self.create_time,
             instance_name=self.instance_name,
             volume_form=self.volume_form,
             delete_form=self.delete_form,
@@ -236,6 +239,12 @@ class VolumeView(TaggedItemView):
         if self.volume is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
         return self.render_dict
+
+    def get_create_time(self):
+        """Returns instance launch time as a python datetime.datetime object"""
+        if self.volume and self.volume.create_time:
+            return parser.parse(self.volume.create_time)
+        return None
 
     @view_config(route_name='volume_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_update(self):
