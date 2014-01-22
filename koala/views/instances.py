@@ -542,6 +542,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         super(InstanceLaunchView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
+        self.location = self.request.route_url('instances')
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.images_json_endpoint = self.request.route_url('images_json')
@@ -610,15 +611,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('instances')
-                return HTTPFound(location=location)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('instances')
-                return HTTPFound(location=location)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=self.location)
         return self.render_dict
 
 
@@ -630,20 +627,29 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
         self.instance = self.get_instance()
-        self.image = self.get_image()  # From BaseInstanceView
-        self.launch_more_form = LaunchMoreInstancesForm(self.request, formdata=self.request.params or None)
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
+        self.location = self.request.route_url('instances')
+        self.launch_more_form = LaunchMoreInstancesForm(
+            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.render_dict = dict(
             image=self.image,
+            instance=self.instance,
+            instance_name=self.instance_name,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
         )
 
-    @view_config(route_name='instance_launch_more', renderer=TEMPLATE, request_method='POST')
-    def instance_launch_more(self):
+    @view_config(route_name='instance_more', renderer=TEMPLATE, request_method='GET')
+    def instance_more(self):
+        return self.render_dict
+
+    @view_config(route_name='instance_more_launch', renderer=TEMPLATE, request_method='POST')
+    def instance_more_launch(self):
         """Handles the POST from the Launch more instances like this form"""
         if self.launch_more_form.validate():
-            tags_json = self.request.params.get('tags')
             image_id = self.image.id
+            source_instance_tags = self.instance.tags
             key_name = self.instance.key_pair
             num_instances = int(self.request.params.get('number', 1))
             security_groups = [group.name for group in self.instance.groups]
@@ -680,21 +686,20 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     new_instance_ids.append(name or instance.id)
                     if name:
                         instance.add_tag('Name', name)
-                    if tags_json:
-                        tags = json.loads(tags_json)
-                        for tagname, tagvalue in tags.items():
-                            instance.add_tag(tagname, tagvalue)
+                    if source_instance_tags:
+                        for tagname, tagvalue in source_instance_tags.items():
+                            # Don't copy 'Name' tag, and avoid tags that start with 'aws:'
+                            if all([tagname != 'Name', not tagname.startswith('aws:')]):
+                                instance.add_tag(tagname, tagvalue)
                 time.sleep(2)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('instances')
-                return HTTPFound(location=location)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('instances')
-                return HTTPFound(location=location)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.launch_more_form.get_errors_list()
         return self.render_dict

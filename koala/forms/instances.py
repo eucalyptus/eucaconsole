@@ -166,6 +166,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.set_error_messages()
         self.set_help_text()
         self.set_choices()
+        self.set_initial_data()
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -176,6 +177,10 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     def set_choices(self):
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+
+    def set_initial_data(self):
+        self.monitoring_enabled.data = True
+        self.number.data = 1
 
 
 class StopInstanceForm(BaseSecureForm):
