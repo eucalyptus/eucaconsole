@@ -99,6 +99,19 @@
                 </div>
             </div>
             <div class="help-content">
+                <div tal:condition="keypair" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Delete Key Pair</h5>
+                    <p i18n:translate="">This dialog box allows you to confirm or cancel a key pair delete operation.</p>
+                    <h5 class="title" i18n:translate="">Verify Key Pair Deletion</h5>
+                    <ol>
+                        <li>
+                            <span>To verify that you wish to delete the selected key pair(s), click the <strong>Yes, delete</strong> button.</span>
+                        </li>
+                        <li>
+                            <span>To cancel the delete operation, click the <strong>Cancel</strong> button.</span>
+                        </li>
+                    </ol>
+                </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Create a key pair</h5>
                     <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
