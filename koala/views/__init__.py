@@ -176,23 +176,25 @@ class BlockDeviceMappingItemView(BaseView):
         return userdata
 
     @staticmethod
-    def get_block_device_map(bdmapping_json):
+    def get_block_device_map(bdmapping_json=None):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
         Mapping JSON structure...
             {"/dev/sda":
                 {"snapshot_id": "snap-23E93E09", "volume_type": null, "delete_on_termination": true, "size": 1}  }
         """
-        mapping = json.loads(bdmapping_json)
-        if mapping:
-            bdm = BlockDeviceMapping()
-            for key, val in mapping.items():
-                device = BlockDeviceType()
-                device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
-                device.snapshot_id = val.get('snapshot_id') or None
-                device.size = val.get('size')
-                device.delete_on_termination = val.get('delete_on_termination', False)
-                bdm[key] = device
-            return bdm
+        if bdmapping_json:
+            mapping = json.loads(bdmapping_json)
+            if mapping:
+                bdm = BlockDeviceMapping()
+                for key, val in mapping.items():
+                    device = BlockDeviceType()
+                    device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                    device.snapshot_id = val.get('snapshot_id') or None
+                    device.size = val.get('size')
+                    device.delete_on_termination = val.get('delete_on_termination', False)
+                    bdm[key] = device
+                return bdm
+            return None
         return None
 
 
