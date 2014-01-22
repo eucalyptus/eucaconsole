@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS snapshots
 
 """
+from dateutil import parser
 import simplejson as json
 import time
 
@@ -166,12 +167,14 @@ class SnapshotView(TaggedItemView):
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
+        self.start_time = self.get_start_time()
         self.tagged_obj = self.snapshot
         self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
+            snapshot_start_time=self.start_time,
             volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
@@ -195,6 +198,12 @@ class SnapshotView(TaggedItemView):
     def get_snapshot_name(self):
         if self.snapshot:
             return TaggedItemView.get_display_name(self.snapshot)
+        return None
+
+    def get_start_time(self):
+        """Returns instance launch time as a python datetime.datetime object"""
+        if self.snapshot and self.snapshot.start_time:
+            return parser.parse(self.snapshot.start_time)
         return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
