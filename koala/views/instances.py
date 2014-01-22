@@ -86,7 +86,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups', 'state', 'tags']
+            'root_device', 'security_groups_string', 'state', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -94,7 +94,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
             dict(key='id', name=_(u'Instance ID')),
             dict(key='placement', name=_(u'Availability zone')),
-            dict(key='root_device', name=_(u'Root device')),
             dict(key='key_name', name=_(u'Key pair')),
         ]
         self.render_dict.update(dict(
@@ -112,15 +111,18 @@ class InstancesView(LandingPageView, BaseInstanceView):
         transitional_states = ['pending', 'stopping', 'shutting-down']
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
+            security_groups_array = sorted(group.name for group in instance.groups)
             instances.append(dict(
                 id=instance.id,
-                name=instance.tags.get('Name', instance.id),
+                name=TaggedItemView.get_display_name(instance),
                 instance_type=instance.instance_type,
+                image_id=instance.image_id,
                 ip_address=instance.ip_address,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
                 root_device=instance.root_device_type,
-                security_groups=', '.join(group.name for group in instance.groups),
+                security_groups=security_groups_array,
+                security_groups_string=' '.join(security_groups_array),
                 key_name=instance.key_name,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
