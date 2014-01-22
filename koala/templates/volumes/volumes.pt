@@ -32,13 +32,13 @@
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
                     </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
-                    </li>
-                    <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
                     </li>
                     <li ng-show="item.status === 'in-use'">
                         <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                    </li>
+                    <li ng-show="item.status === 'available'">
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                     </li>
                 </ul>
             </div>
@@ -112,13 +112,13 @@
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
                             </li>
                             <li ng-show="item.status === 'available'">
-                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
-                            </li>
-                            <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
                             </li>
                             <li ng-show="item.status === 'in-use'">
                                 <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                            </li>
+                            <li ng-show="item.status === 'available'">
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                             </li>
                         </ul>
                     </span>
