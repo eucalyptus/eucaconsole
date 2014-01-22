@@ -111,6 +111,34 @@
                     </a>
                 </div>
             </div>
+            <div class="help-content">
+                <div tal:condition="snapshot" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Register a Snapshot as an Image</h5> 
+                    <p i18n:translate="">A snapshot is a block level storage volume that is created by copying an existing volume and is backed by persistent storage. You can register a snapshot as an image if it the snapshot was created from a volume containing a root file system. Once registered, this image can then be used to launch EBS-backed instances. </p>
+                    <ol>
+                        <li>
+                            <span>Enter a name for the image in the <strong>Name</strong> text box.</span>
+                        </li>
+                        <li>
+                            <span>Enter a description for the image in the <strong>Description</strong> text box.</span>
+                        </li>
+                        <li>
+                            <span>Click the <strong>Register</strong> button.</span>
+                        </li>
+                    </ol>
+                    <h5 class="title" i18n:translate="">Delete Snapshot</h5> 
+                    <p i18n:translate="">This dialog box allows you to confirm or cancel a snapshot delete operation.</p>
+                    <h5 class="title" i18n:translate="">Verify Snapshot Deletion</h5>
+                    <ol>
+                        <li>
+                            <span>To verify that you wish to delete the selected snapshot(s), click the <strong>Yes, delete</strong> button.</span>
+                        </li>
+                        <li>
+                            <span>To cancel the delete operation, click the <strong>Cancel</strong> button.</span>
+                        </li>
+                    </ol> 
+                </div>
+            </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                 <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
