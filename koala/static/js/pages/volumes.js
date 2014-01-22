@@ -24,9 +24,14 @@ angular.module('VolumesPage', ['CustomFilters'])
                     var instanceSelect = $('#instance_id'),
                         instances = $scope.instancesByZone[volumeZone],
                         options = '';
-                    instances.forEach(function (instanceID) {
-                        options += '<option value="' + instanceID + '">' + instanceID + '</option>';
-                    });
+                    if (instances === undefined) {
+                        options = "<option value=''>No available instances in the same availability zone</option>";
+                    }
+                    else {
+                      instances.forEach(function (instanceID) {
+                          options += '<option value="' + instanceID + '">' + instanceID + '</option>';
+                      });
+                    }
                     instanceSelect.html(options);
                     instanceSelect.trigger('chosen:updated');
                     instanceSelect.chosen({'width': '75%', search_contains: true});
