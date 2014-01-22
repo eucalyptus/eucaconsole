@@ -43,28 +43,18 @@
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="status {{ volumeStatus }}" id="current-status" ng-bind="volumeStatus">
-                                ${volume.status}
+                            <a href="#"  id="current-status" class="small secondary button dropdown" data-dropdown="volume-status-dropdown" ng-disabled="['attaching', 'detaching', 'deleting', 'deleted'].indexOf(volumeStatus) > -1">{{volumeStatus}}</a>
+                            <span ng-show="['attaching', 'detaching', 'deleting', 'deleted'].indexOf(volumeStatus) === -1">
+                              <ul id="volume-status-dropdown" class="f-dropdown" data-dropdown-content>
+                                <li ng-show="volumeStatus == 'available'">
+                                  <a href="#" data-reveal-id="attach-volume-modal" i18n:translate="">Attach to instance</a>
+                                </li>
+                                <li ng-show="volumeStatus == 'in-use'">
+                                  <a href="#" data-reveal-id="detach-volume-modal" i18n:translate="">Detach from instance</a>
+                                </li>
+                              </ul>
                             </span>
-                            <span ng-show="volumeAttachStatus">
-                                (<span class="status {{ volumeAttachStatus }}"
-                                       ng-bind="volumeAttachStatus">${volume.attach_data.status}</span>)
-                            </span>
-                            &nbsp;
-                            <span id="change-volume-attachment"
-                                 ng-show="['available', 'in-use'].indexOf(volumeStatus) !== -1">
-                                <span class="tiny secondary button dropdown round"
-                                      data-dropdown="volume-state-dropdown"><i class="fi-widget"></i></span>
-                                <ul id="volume-state-dropdown" class="f-dropdown">
-                                    <li ng-show="volumeStatus == 'available'">
-                                        <a href="#" data-reveal-id="attach-volume-modal" i18n:translate="">Attach to instance</a>
-                                    </li>
-                                    <li ng-show="volumeStatus == 'in-use'">
-                                        <a href="#" data-reveal-id="detach-volume-modal" i18n:translate="">Detach from instance</a>
-                                    </li>
-                                </ul>
-                            </span>
-                            <span ng-show="isUpdating">&nbsp;<span class="dots">&nbsp;</span></span>
+                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
