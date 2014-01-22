@@ -165,9 +165,8 @@ class VolumesView(LandingPageView):
             zone_instances = []
             for instance in instances:
                 if instance.placement == zone:
-                    instance_id = instance.id
                     instance_name = TaggedItemView.get_display_name(instance)
-                    zone_instances.append({'id': instance_id, 'name': instance_name})
+                    zone_instances.append({'id': instance.id, 'name': instance_name})
             instances_by_zone[zone] = zone_instances
         return instances_by_zone
 
