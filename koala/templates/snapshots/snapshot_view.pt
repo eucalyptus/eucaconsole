@@ -111,7 +111,7 @@
                     </a>
                     <br/>
                     <a class="button secondary register" data-reveal-id="register-snapshot-modal" i18n:translate="">
-                        Register snapshot
+                        Register as image
                     </a>
                     <br/>
                     <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
