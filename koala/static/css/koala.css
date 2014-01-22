@@ -1561,16 +1561,16 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
 .chosen-container .chosen-drop .chosen-results { font-size: 0.875rem; }
 
-form .row.controls-wrapper { margin-bottom: 0.5rem; }
-form .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
-form .row.controls-wrapper label select, form .row.controls-wrapper label input, form .row.controls-wrapper label .chosen-container { text-align: left; }
-form .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
-form .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; }
-form .row.controls-wrapper .field textarea { margin-top: 0.3rem; }
-form .row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
-form .row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
-form .row.controls-wrapper.inline { margin-bottom: 4px; }
-form .row.controls-wrapper.inline label { right: -6px; }
+.row.controls-wrapper { margin-bottom: 0.5rem; }
+.row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
+.row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
+.row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
+.row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; }
+.row.controls-wrapper .field textarea { margin-top: 0.3rem; }
+.row.controls-wrapper.readonly { margin-top: 0; margin-bottom: 0; }
+.row.controls-wrapper.readonly label { padding-top: 0; position: relative; right: -12px; }
+.row.controls-wrapper.inline { margin-bottom: 4px; }
+.row.controls-wrapper.inline label { right: -6px; }
 
 form .controls-wrapper > [class*='small-'] label { font-weight: bold; padding-top: 0.3rem; position: relative; right: -1rem; }
 
