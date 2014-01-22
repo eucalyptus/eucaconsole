@@ -650,7 +650,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         if self.launch_more_form.validate():
             image_id = self.image.id
             source_instance_tags = self.instance.tags
-            key_name = self.instance.key_pair
+            key_name = self.instance.key_name
             num_instances = int(self.request.params.get('number', 1))
             security_groups = [group.name for group in self.instance.groups]
             instance_type = self.instance.instance_type

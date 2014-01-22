@@ -79,6 +79,13 @@
                             </div>
                         </div>
                     </div>
+                    <hr />
+                    ${panel('form_field', field=launch_more_form['userdata'])}
+                    ${panel('form_field', field=launch_more_form['userdata_file'])}
+                    ${panel('form_field', field=launch_more_form['kernel_id'])}
+                    ${panel('form_field', field=launch_more_form['ramdisk_id'])}
+                    ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
+                    ${panel('form_field', field=launch_more_form['private_addressing'])}
                     ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                     <hr />
                     <div class="row">
