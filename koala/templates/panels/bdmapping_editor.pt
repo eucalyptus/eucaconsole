@@ -1,7 +1,7 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
-    <div class="columns" tal:condition="image.root_device_type == 'ebs'">
+    <div class="columns" tal:condition="image and image.root_device_type == 'ebs'">
         <label i18n:translate="" class="storage-label">Storage</label>
         <table class="table">
             <thead>
@@ -31,7 +31,7 @@
                     <td>{{ val.snapshot_id }}</td>
                     <td>
                         <input class="number" value="{{ val.size }}" required="required" pattern="integer"
-                                ng-keyup="updateRootDevice(key, $event)">
+                               ng-keyup="updateRootDevice(key, $event)">
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>
