@@ -139,7 +139,8 @@
                         </li>
                         <li>
                             <span>Change file permissions to enable access to the private key file in the local directory. For example, on a Linux or Mac OS X system:</span>
-                            <pre>chmod 0600 &lt;keypair_name&gt;.private</pre>
+                            <br>
+                            <code>chmod 0600 &lt;keypair_name&gt;.private</code>
                         </li>
                     </ol>
                 </div>
