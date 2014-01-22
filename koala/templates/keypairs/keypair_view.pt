@@ -88,15 +88,10 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel no-title" tal:condition="keypair">
-                <div class="row">
-                    <div class="large-3 columns">&nbsp;</div>
-                    <div class="large-9 columns">
-                        <a class="button secondary delete" data-reveal-id="delete-keypair-modal" i18n:translate="">
-                            Delete keypair
-                        </a>
-                    </div>
-                </div>
+            <div class="panel other-actions" tal:condition="keypair">
+                <a class="button secondary delete" data-reveal-id="delete-keypair-modal" i18n:translate="">
+                    Delete keypair
+                </a>
             </div>
             <div class="help-content">
                 <div tal:condition="keypair" tal:omit-tag="">
