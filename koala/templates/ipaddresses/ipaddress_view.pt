@@ -42,16 +42,30 @@
         </div>
         <div class="large-5 columns">
             <div class="help-content">
-                <h5 class="title" i18n:translate="">Disassociate an Elastic IP Address from an Instance</h5>
-                <p i18n:translate="">This dialog box lets you verify that you wish to disassociate one or more elastic IP addresses from running instance(s).</p>
-                <ol>
-                    <li>
-                        <span>Verify that you want to disassociate the listed IP addresses.</span>
-                    </li>
-                    <li>
-                        <span>Click the <strong>Yes, disassociate</strong> button.</span>
-                    </li>
-                </ol>
+                <div tal:condition="not eip.instance_id">
+                    <h5 class="title" i18n:translate="">Associate an Elastic IP Address with an Instance</h5>
+                    <p i18n:translate="">This dialog box lets you associate an elastic IP address with a running instance.</p>
+                    <ol>
+                        <li>
+                            <span>Start typing the ID of an instance and then select the instance from the drop-down list box.</span>
+                        </li>
+                        <li>
+                            <span>Click the <strong>Associate Address</strong> button.</span>
+                        </li>
+                    </ol>
+                </div>
+                <div tal:condition="eip.instance_id">
+                    <h5 class="title" i18n:translate="">Disassociate an Elastic IP Address from an Instance</h5>
+                    <p i18n:translate="">This dialog box lets you verify that you wish to disassociate one or more elastic IP addresses from running instance(s).</p>
+                    <ol>
+                        <li>
+                            <span>Verify that you want to disassociate the listed IP addresses.</span>
+                        </li>
+                        <li>
+                            <span>Click the <strong>Yes, disassociate</strong> button.</span>
+                        </li>
+                    </ol>
+                </div>
                 <h5 class="title" i18n:translate="">Release IP Addresses</h5>
                 <p i18n:translate="">This dialog box allows you to confirm or cancel an IP address release operation. </p> 
                 <ol>
