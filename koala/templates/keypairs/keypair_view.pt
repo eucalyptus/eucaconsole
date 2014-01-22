@@ -103,8 +103,37 @@
                     <h5 class="title" i18n:translate="">Create a key pair</h5>
                     <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
                     <p i18n:translate="">
-                         Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
-                     </p>
+                        Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
+                    </p>
+                    <hr>
+                    <h5 class="title" i18n:translate="">Create a Key Pair</h5>
+                    <p i18n:translate="">
+                        Eucalyptus uses cryptographic key pairs to verify access to instances. Before you can run an instance, you must create a key pair. Creating a key pair generates two keys: a public key (saved within Eucalyptus) and a corresponding private key (output to the user as a character string). To enable this private key you must save it to a file and set appropriate access permissions (using the chmod command), as shown in the example below. 
+                    </p>
+                    <p i18n:translate="">
+                        When you create a VM instance, the public key is then injected into the VM. Later, when attempting to login to the VM instance using SSH, the public key is checked against your private key to verify access. Note that the private key becomes obsolete when the public key is deleted.
+                    </p> 
+                    <h5 class="title" i18n:translate="">Create Key Pairs with the Console</h5>
+                    <ol>
+                        <li> 
+                            <span>From the main dashboard screen, click the <strong>Key Pairs</strong> link in the <strong>Network and Security</strong> section, or select the Network and Security submenu from the Manage Resources navigation menu. The <strong>Manage Keypairs</strong> screen will appear.</span>
+                        </li>
+                        <li>
+                            <span>On the <strong>Manage Key Pairs</strong> screen, click the <strong>Create new key pair</strong> link. The <strong>Create New Key Pair</strong> dialog will appear.</span>
+                        </li>
+                        <li>
+                            <span>Type a name for the new key pair into the <strong>Name</strong> text box.</span>
+                        </li>
+                        <li>
+                            <span>Click the <strong>Create and Download</strong> button. The private half of the key pair is saved to the default download location for your browser.</span>
+                            <br>
+                            <span>Note: Keep your private key file in a safe place. If you lose it, you will be unable to access instances created with the key pair.</span>
+                        </li>
+                        <li>
+                            <span>Change file permissions to enable access to the private key file in the local directory. For example, on a Linux or Mac OS X system:</span>
+                            <pre>chmod 0600 &lt;keypair_name&gt;.private</pre>
+                        </li>
+                    </ol>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Import a public key</h5>
