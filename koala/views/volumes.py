@@ -157,11 +157,18 @@ class VolumesView(LandingPageView):
     def get_items(self):
         return self.conn.get_all_volumes() if self.conn else []
 
-    def get_instances_by_zone(self, instances):
+    @staticmethod
+    def get_instances_by_zone(instances):
         zones = set(instance.placement for instance in instances)
         instances_by_zone = {}
         for zone in zones:
-            instances_by_zone[zone] = [inst.id for inst in instances if inst.placement == zone]
+            zone_instances = []
+            for instance in instances:
+                if instance.placement == zone:
+                    instance_id = instance.id
+                    instance_name = TaggedItemView.get_display_name(instance)
+                    zone_instances.append({'id': instance_id, 'name': instance_name})
+            instances_by_zone[zone] = zone_instances
         return instances_by_zone
 
     def get_filter_fields(self):
