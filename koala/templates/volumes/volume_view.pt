@@ -69,7 +69,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns field inline">${volume.tags.get('Name')}</div>
+                        <div class="small-8 columns field inline">${volume_name}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
@@ -95,7 +95,7 @@
                         <div class="small-8 columns field inline">${volume.zone}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
-                        <div class="small-4 columns"><label i18n:translate="">Create time</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
                         <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
                     </div>
                     <hr />
