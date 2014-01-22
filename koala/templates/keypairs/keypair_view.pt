@@ -138,6 +138,22 @@
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Import a public key</h5>
                     <p>Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
+                    <hr>
+                    <h5 class="title" i18n:translate="">Import a Key Pair</h5>
+                    <p i18n:translate="">
+                        This dialog box allows you import an existing key pair.
+                    </p>
+                    <ol>
+                        <li>
+                            <span>Enter a name for the key pair in the <strong>Name</strong> text box.</span>
+                        </li>
+                        <li>
+                            <span>Paste the contents of your SSH key into the <strong>SSH key contents</strong> text box, or click on the <strong>Browse to file</strong> link to read the contents of an existing SSH key file.</span>
+                        </li>
+                        <li>
+                            <span>Click the <strong>Import</strong> button.</span>
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>
