@@ -18,12 +18,49 @@ from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, 
 from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
+from ..views.images import ImageView
 
 
-class InstancesView(LandingPageView):
+class BaseInstanceView(BaseView):
+    """Base class for instance-related views"""
+    def __init__(self, request):
+        super(BaseInstanceView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    def get_instance(self, instance_id=None):
+        instance_id = instance_id or self.request.matchdict.get('id')
+        if instance_id:
+            reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+            reservation = reservations_list[0] if reservations_list else None
+            if reservation:
+                instance = reservation.instances[0]
+                instance.groups = reservation.groups
+                instance.reservation_id = reservation.id
+                instance.owner_id = reservation.owner_id
+                if instance.platform is None:
+                    instance.platform = _(u"linux")
+                instance.instance_profile_id = None
+                if len(instance.instance_profile.keys()) > 0:
+                    instance.instance_profile_id = instance.instance_profile.keys()[0]
+                return instance
+        return None
+
+    def get_image(self, instance=None, image_id=None):
+        image_id = instance.image_id if instance else image_id
+        if image_id is None:
+            image_id = self.request.matchdict.get('image_id') or self.request.params.get('image_id')
+        if self.conn and image_id:
+            image = self.conn.get_image(image_id)
+            if image:
+                platform = ImageView.get_platform(image)
+                image.platform_name = ImageView.get_platform_name(platform)
+            return image
+        return None
+
+
+class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
-        self.conn = self.get_connection()
         self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
@@ -185,17 +222,6 @@ class InstancesView(LandingPageView):
             return instances
         return []
 
-    def get_instance(self, instance_id):
-        if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
-        return None
-
-    def get_image(self, instance):
-        if instance:
-            return self.conn.get_image(instance.image_id)
-        return None
-
     def get_filter_fields(self):
         """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
         status_choices = sorted(set(instance.state for instance in self.items))
@@ -208,7 +234,7 @@ class InstancesView(LandingPageView):
         ]
 
 
-class InstanceView(TaggedItemView):
+class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
     def __init__(self, request):
@@ -216,7 +242,7 @@ class InstanceView(TaggedItemView):
         self.request = request
         self.conn = self.get_connection()
         self.instance = self.get_instance()
-        self.image = self.get_image()
+        self.image = self.get_image(self.instance)
         self.scaling_group = self.get_scaling_group()
         self.instance_form = InstanceForm(
             self.request, instance=self.instance, conn=self.conn, formdata=self.request.params or None)
@@ -277,7 +303,7 @@ class InstanceView(TaggedItemView):
 
             # Start instance if desired
             if self.request.params.get('start_later'):
-                self.instance.start();
+                self.instance.start()
 
             msg = _(u'Successfully modified instance')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -350,33 +376,10 @@ class InstanceView(TaggedItemView):
             return HTTPFound(location=self.location)
         return self.render_dict
 
-    def get_instance(self):
-        instance_id = self.request.matchdict.get('id')
-        if instance_id:
-            reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
-            reservation = reservations_list[0] if reservations_list else None
-            if reservation:
-                instance = reservation.instances[0]
-                instance.groups = reservation.groups
-                instance.reservation_id = reservation.id
-                instance.owner_id = reservation.owner_id
-                if instance.platform is None:
-                    instance.platform = _(u"linux")
-                instance.instance_profile_id = None
-                if len(instance.instance_profile.keys()) > 0:
-                    instance.instance_profile_id = instance.instance_profile.keys()[0]
-                return instance
-        return None
-
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
         if self.instance and self.instance.launch_time:
             return parser.parse(self.instance.launch_time)
-        return None
-
-    def get_image(self):
-        if self.instance:
-            return self.conn.get_image(self.instance.image_id)
         return None
 
     def get_scaling_group(self):
@@ -398,7 +401,7 @@ class InstanceView(TaggedItemView):
                 time.sleep(1)  # Give backend time to disassociate IP address
 
 
-class InstanceStateView(BaseView):
+class InstanceStateView(BaseInstanceView):
     def __init__(self, request):
         super(InstanceStateView, self).__init__(request)
         self.request = request
@@ -421,13 +424,6 @@ class InstanceStateView(BaseView):
         output = self.conn.get_console_output(instance_id=self.instance.id)
         return dict(results=output.output)
 
-    def get_instance(self):
-        instance_id = self.request.matchdict.get('id')
-        if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
-        return None
-
     # TODO: also in forms/instances.py, let's consolidate
     def suggest_next_device_name(self, instance):
         mappings = instance.block_device_mapping
@@ -440,7 +436,7 @@ class InstanceStateView(BaseView):
         return 'error'
 
 
-class InstanceVolumesView(BaseView):
+class InstanceVolumesView(BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_volumes.pt'
 
     def __init__(self, request):
@@ -531,13 +527,6 @@ class InstanceVolumesView(BaseView):
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
-
-    def get_instance(self):
-        instance_id = self.request.matchdict.get('id')
-        if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
-        return None
 
     def get_attached_volumes(self):
         volumes = [vol for vol in self.volumes if vol.attach_data.instance_id == self.instance.id]
