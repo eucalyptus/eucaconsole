@@ -153,6 +153,9 @@
                     </div>
                 </div>
             </div>
+            <!--! Tag editor help content -->
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+            </metal:block>
         </div>
     </div>
 </div>
