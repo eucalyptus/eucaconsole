@@ -47,10 +47,10 @@
                     <p i18n:translate="">This dialog box lets you associate an elastic IP address with a running instance.</p>
                     <ol>
                         <li>
-                            <span>Start typing the ID of an instance and then select the instance from the drop-down list box.</span>
+                            Start typing the ID of an instance and then select the instance from the drop-down list box.
                         </li>
                         <li>
-                            <span>Click the <strong>Associate Address</strong> button.</span>
+                            Click the <strong>Associate Address</strong> button.
                         </li>
                     </ol>
                 </div>
@@ -59,10 +59,10 @@
                     <p i18n:translate="">This dialog box lets you verify that you wish to disassociate one or more elastic IP addresses from running instance(s).</p>
                     <ol>
                         <li>
-                            <span>Verify that you want to disassociate the listed IP addresses.</span>
+                            Verify that you want to disassociate the listed IP addresses.
                         </li>
                         <li>
-                            <span>Click the <strong>Yes, disassociate</strong> button.</span>
+                            Click the <strong>Yes, disassociate</strong> button.
                         </li>
                     </ol>
                 </div>
@@ -70,10 +70,10 @@
                 <p i18n:translate="">This dialog box allows you to confirm or cancel an IP address release operation. </p> 
                 <ol>
                     <li>
-                        <span>To verify that you wish to release the selected IP address(es), click the <strong>Yes, release</strong> button.</span>
+                        To verify that you wish to release the selected IP address(es), click the <strong>Yes, release</strong> button.
                     </li>
                     <li>
-                        <span>To cancel the delete operation, click the <strong>Cancel</strong> button.</span>
+                        To cancel the delete operation, click the <strong>Cancel</strong> button.
                     </li>
                 </ol>
             </div>
