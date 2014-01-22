@@ -40,6 +40,30 @@
                 </div>
             </div>
         </div>
+        <div class="large-5 columns">
+            <div class="help-content">
+                <h5 class="title" i18n:translate="">Disassociate an Elastic IP Address from an Instance</h5>
+                <p i18n:translate="">This dialog box lets you verify that you wish to disassociate one or more elastic IP addresses from running instance(s).</p>
+                <ol>
+                    <li>
+                        <span>Verify that you want to disassociate the listed IP addresses.</span>
+                    </li>
+                    <li>
+                        <span>Click the <strong>Yes, disassociate</strong> button.</span>
+                    </li>
+                </ol>
+                <h5 class="title" i18n:translate="">Release IP Addresses</h5>
+                <p i18n:translate="">This dialog box allows you to confirm or cancel an IP address release operation. </p> 
+                <ol>
+                    <li>
+                        <span>To verify that you wish to release the selected IP address(es), click the <strong>Yes, release</strong> button.</span>
+                    </li>
+                    <li>
+                        <span>To cancel the delete operation, click the <strong>Cancel</strong> button.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
         <!--! Modal dialogs -->
         ${panel('ipaddress_dialogs', eip=eip, associate_form=associate_form,
                 disassociate_form=disassociate_form, release_form=release_form)}
