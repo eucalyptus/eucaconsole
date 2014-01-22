@@ -8,7 +8,7 @@ from wtforms import validators, widgets
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm
+from . import BaseSecureForm, ChoicesManager
 
 
 class AllocateIPsForm(BaseSecureForm):
@@ -36,19 +36,9 @@ class AssociateIPForm(BaseSecureForm):
     def __init__(self, request, conn=None, **kwargs):
         super(AssociateIPForm, self).__init__(request, **kwargs)
         self.conn = conn
-        self.instance_id.choices = self.get_instance_choices()
+        self.choices_manager = ChoicesManager(conn=self.conn)
+        self.instance_id.choices = self.choices_manager.instances()
         self.instance_id.error_msg = self.instance_error_msg
-
-    def get_instance_choices(self):
-        choices = [('', _(u'Select instance...'))]
-        if self.conn:
-            for instance in self.conn.get_only_instances():
-                value = instance.id
-                inst_name_tag = instance.tags.get('Name', '')
-                label = '{0}{1}'.format(
-                    inst_name_tag if inst_name_tag else instance.id, ' ({0})'.format(instance.id) if inst_name_tag else '')
-                choices.append((value, label))
-        return choices
 
 
 class DisassociateIPForm(BaseSecureForm):

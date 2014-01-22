@@ -5,12 +5,11 @@ Base Forms
 IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
-import logging
+from boto.ec2.vmtype import VmType
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
-from boto.ec2.vmtype import VmType
 
 BLANK_CHOICE = ('', _(u'select...'))
 
@@ -53,6 +52,19 @@ class ChoicesManager(object):
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
+
+    def instances(self, instances=None):
+        from ..views import TaggedItemView
+        choices = [('', _(u'Select instance...'))]
+        instances = instances or []
+        if not instances and self.conn is not None:
+            instances = self.conn.get_only_instances()
+            if self.conn:
+                for instance in instances:
+                    value = instance.id
+                    label = TaggedItemView.get_display_name(instance)
+                    choices.append((value, label))
+        return choices
 
     def instance_types(self, cloud_type='euca', add_blank=True):
         """Get instance type (e.g. m1.small) choices
