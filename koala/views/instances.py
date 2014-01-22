@@ -14,8 +14,9 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.instances import InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
-from ..forms.instances import RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm
+from ..forms.instances import (
+    InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm)
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
@@ -534,7 +535,7 @@ class InstanceVolumesView(BaseInstanceView):
         return sorted(volumes, key=attrgetter('attach_data.attach_time'), reverse=True) if volumes else []
 
 
-class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
+class InstanceLaunchView(BlockDeviceMappingItemView):
     TEMPLATE = '../templates/instances/instance_launch.pt'
 
     def __init__(self, request):
@@ -570,9 +571,6 @@ class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone')
-            userdata_input = self.request.params.get('userdata')
-            userdata_file = self.request.POST['userdata_file'].file.read()
-            userdata = userdata_file or userdata_input or None  # Look up file upload first
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
@@ -586,7 +584,85 @@ class InstanceLaunchView(TaggedItemView, BlockDeviceMappingItemView):
                     reservation = self.conn.run_instances(
                         image_id,
                         key_name=key_name,
-                        user_data=userdata,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        security_group_ids=security_groups,
+                    )
+                    instance = reservation.instances[0]
+                    # Add tags for newly launched instance(s)
+                    # Try adding name tag (from collection of name input fields)
+                    input_field_name = 'name_{0}'.format(idx)
+                    name = self.request.params.get(input_field_name, '').strip()
+                    new_instance_ids.append(name or instance.id)
+                    if name:
+                        instance.add_tag('Name', name)
+                    if tags_json:
+                        tags = json.loads(tags_json)
+                        for tagname, tagvalue in tags.items():
+                            instance.add_tag(tagname, tagvalue)
+                time.sleep(2)
+                msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
+                msg += ', '.join(new_instance_ids)
+                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
+                location = self.request.route_url('instances')
+                return HTTPFound(location=location)
+        return self.render_dict
+
+
+class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
+    """Launch more like this instance view"""
+    TEMPLATE = '../templates/instances/instance_launch_more.pt'
+
+    def __init__(self, request):
+        super(InstanceLaunchMoreView, self).__init__(request)
+        self.request = request
+        self.instance = self.get_instance()
+        self.image = self.get_image()  # From BaseInstanceView
+        self.launch_more_form = LaunchMoreInstancesForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
+            image=self.image,
+            launch_more_form=self.launch_more_form,
+            snapshot_choices=self.get_snapshot_choices(),
+        )
+
+    @view_config(route_name='instance_launch_more', renderer=TEMPLATE, request_method='POST')
+    def instance_launch_more(self):
+        """Handles the POST from the Launch more instances like this form"""
+        if self.launch_more_form.validate():
+            tags_json = self.request.params.get('tags')
+            image_id = self.image.id
+            key_name = self.instance.key_pair
+            num_instances = int(self.request.params.get('number', 1))
+            security_groups = [group.name for group in self.instance.groups]
+            instance_type = self.instance.instance_type
+            availability_zone = self.instance.placement
+            kernel_id = self.request.params.get('kernel_id') or None
+            ramdisk_id = self.request.params.get('ramdisk_id') or None
+            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            private_addressing = self.request.params.get('private_addressing', False)
+            addressing_type = 'private' if private_addressing else 'public'
+            bdmapping_json = self.request.params.get('block_device_mapping')
+            block_device_map = self.get_block_device_map(bdmapping_json)
+            new_instance_ids = []
+            try:
+                for idx in range(num_instances):
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
                         addressing_type=addressing_type,
                         instance_type=instance_type,
                         placement=availability_zone,

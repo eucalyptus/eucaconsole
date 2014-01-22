@@ -168,6 +168,13 @@ class BlockDeviceMappingItemView(BaseView):
             choices.append((value, label))
         return sorted(choices)
 
+    def get_user_data(self):
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if userdata_file_param else None
+        userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
     @staticmethod
     def get_block_device_map(bdmapping_json):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
