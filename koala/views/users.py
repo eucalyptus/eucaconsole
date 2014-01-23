@@ -38,7 +38,7 @@ class UsersView(LandingPageView):
             LandingPageFilter(key='group', name='Groups', choices=group_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']
+        self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='user_id', name='ID'),
