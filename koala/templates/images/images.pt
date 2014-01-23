@@ -62,9 +62,9 @@
                     <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
                 </div>
-                <div ng-show="item.platform">
+                <div ng-show="item.platform_name">
                     <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
-                    {{ item.platform }}
+                    {{ item.platform_name }}
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
@@ -102,6 +102,7 @@
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
                 <th i18n:translate="">Root Device</th>
+                <th i18n:translate="">Platform</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -110,6 +111,7 @@
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
                 <td>{{ item.root_device_type }}</td>
+                <td>{{ item.platform_name }}</td>
                 <td>
                 <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
