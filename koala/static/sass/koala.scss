@@ -301,9 +301,12 @@ a.circle {
 }
 
 textarea.console-output {
-    width: 660px;
-    height: 400px;
-    margin: 10px;
+    width: 100%;
+    min-height: 30rem;
+    background-color: black;
+    color: white;
+    font-family: Courier, "courier new", monospace;
+    font-weight: bold;
 }
 
 .expando {
