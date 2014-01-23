@@ -13,7 +13,8 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
         $scope.isUpdating = false;
-        $scope.isNotStopped = $scope.instancestate != 'stopped';
+        $scope.isNotStopped = $scope.instanceState != 'stopped';
+        $scope.instanceForm = $('#instance-form');
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -44,12 +45,19 @@ angular.module('InstancePage', ['TagEditor'])
                 } else {
                     $scope.isUpdating = false;
                 }
-                if ($scope.instanceState != 'stopped') {
-                    $scope.isNotStopped = true;
-                } else {
-                    $scope.isNotStopped = false;
-                }
+                $scope.isNotStopped = $scope.instanceState != 'stopped';
             });
+        };
+        $scope.submitUpdateInstance = function ($event) {
+            $event.preventDefault();
+            $('a.close-reveal-modal').trigger('click');
+            $('#start_later').val('true');
+            $scope.instanceForm.submit();
+        };
+        $scope.cancelUpdateInstance = function ($event) {
+            $event.preventDefault();
+            $('a.close-reveal-modal').trigger('click');
+            $scope.instanceForm.submit();
         };
     })
 ;

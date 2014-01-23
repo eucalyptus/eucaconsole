@@ -29,7 +29,8 @@
                 <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
                 </p>
-                <form action="${request.route_url('instance_update', id=instance.id)}" method="post" data-abide="abide">
+                <form action="${request.route_url('instance_update', id=instance.id)}" id="instance-form"
+                      method="post" data-abide="abide">
                     ${structure:instance_form['csrf_token']}
                     ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
@@ -217,11 +218,11 @@
                 <div class="row">
                     <div class="small-6 columns field inline">
                         <input id="yes-update" type="submit" class="button" value="Yes, start now"
-                               i18n:attributes="value" onclick="submit_update_instance()"/>
+                               i18n:attributes="value" ng-click="submitUpdateInstance($event)" />
                     </div>
                     <div class="small-6 columns field inline">
                         <input id="no-update" type="submit" class="button" value="No, I'll start it later"
-                               i18n:attributes="value" onclick="cancel_update_instance()"/>
+                               i18n:attributes="value" ng-click="cancelUpdateInstance($event)" />
                     </div>
                 </div>
             </form>
@@ -232,19 +233,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
-    <script type="text/javascript">
-      function submit_update_instance() {
-        $('a.close-reveal-modal').trigger('click');
-        $('#start_later').val('true');
-        $('#save-update-button').trigger('click');
-        return false;
-      }
-      function cancel_update_instance() {
-        $('a.close-reveal-modal').trigger('click');
-        $('#save-update-button').trigger('click');
-        return false;
-      }
-    </script>
 </div>
 
 </metal:block>
