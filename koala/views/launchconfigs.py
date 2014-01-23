@@ -246,11 +246,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 msg = _(u'Successfully sent create launch configuration request. '
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
             except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict

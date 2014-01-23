@@ -292,7 +292,7 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
         for alarm in self.alarms:
             choices.append((alarm.name, alarm.name))
         if len(choices) == 0:
-            choices = ['', _(u'No alarms are available.')]
+            choices = [('', _(u'No alarms are available.'))]
         return sorted(choices)
 
     @staticmethod

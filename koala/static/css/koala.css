@@ -1551,7 +1551,7 @@ form label { cursor: default; }
 form label .req { color: darkred; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }
-form .row input[type='number'] { width: 4rem; }
+form .row input[type='number'] { width: 3rem; }
 form .columns input { max-width: 100%; }
 form a.remove.circle { position: relative; left: 8px; top: -2px; }
 form .cancel-link { margin-left: 2rem; }

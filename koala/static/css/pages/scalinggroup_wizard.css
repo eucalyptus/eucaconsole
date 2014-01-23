@@ -29,7 +29,7 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-input[type="number"] { width: 3rem; }
+form .row input[type="number"] { width: 3rem; }
 
 #controls_min_size, #controls_desired_capacity, #controls_max_size { display: inline-block; margin-left: 1rem; }
 
