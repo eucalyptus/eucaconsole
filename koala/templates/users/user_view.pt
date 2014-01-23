@@ -20,7 +20,6 @@
                     ${structure:user_form['csrf_token']}
                     <div tal:condition="user">
                         <div class="section">
-                            <h6 i18n:translate="">Machine</h6>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">User name</label></div>
                                 <div class="small-8 columns value">${user.user_name if user.user_name else ''}</div>
@@ -40,7 +39,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <div class="row">
+                    <div class="row hide">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button" id="save-changes-btn">

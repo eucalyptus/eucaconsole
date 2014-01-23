@@ -54,37 +54,27 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="NM" i18n:attributes="title" data-tooltip="">NM</span>
+                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
                     {{ item.user_name }}
                 </div>
                 <div>
-                    <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
-                    {{ item.user_id }}
-                </div>
-                <div>
-                    <span class="label" title="PA" i18n:attributes="title" data-tooltip="">PA</span>
+                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PA</span>
                     {{ item.path }}
                 </div>
                 <div>
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">ARN</span>
+                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AR</span>
                     {{ item.arn }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer">
-                <div class="footer">
-                     <span i18n:translate="">Launch instance</span>
-                </div>
-            </div>
+            <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">User name</th>
-                <th i18n:translate="">ID</th>
                 <th i18n:translate="">Path</th>
                 <th i18n:translate="">ARN</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
-                <td>{{ item.user_id }}</td>
                 <td>{{ item.path }}</td>
                 <td>{{ item.arn }}</td>
                 <td>

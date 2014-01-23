@@ -92,6 +92,7 @@
                             ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
                             ${panel('tag_editor')}
+                            <hr />
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">

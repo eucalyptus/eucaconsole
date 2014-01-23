@@ -11,7 +11,6 @@ import urllib
 import urllib2
 import urlparse
 import xml
-from urllib2 import HTTPError, URLError
 
 from datetime import datetime
 
@@ -127,11 +126,11 @@ class ConnectionManager(object):
             conn_class = boto.iam.IAMConnection
 
         if conn_type != 'iam':
-            conn = conn_class(access_id, secret_key,
-                    region=region, port=port, path=path, is_secure=True, security_token=token)
+            conn = conn_class(
+                access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
         else:
-            conn = conn_class(access_id, secret_key,
-                    host=clchost, port=port, path=path, is_secure=True, security_token=token)
+            conn = conn_class(
+                access_id, secret_key, host=clchost, port=port, path=path, is_secure=True, security_token=token)
 
         # AutoScaling service needs additional auth info
         if conn_type == 'autoscale':
@@ -214,7 +213,7 @@ class EucaAuthenticator(object):
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
         template = 'https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}'
         duration = self.duration
-        if user == 'admin': # admin cannot have more than 1 hour duration
+        if user == 'admin':  # admin cannot have more than 1 hour duration
             duration = 3600
         auth_url = template.format(
             host=self.host,
@@ -257,7 +256,7 @@ class EucaAuthenticator(object):
         body = response.read()
 
         # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials(None)
+        creds = Credentials()
         h = BotoXmlHandler(creds, None)
         xml.sax.parseString(body, h)
         logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
@@ -285,7 +284,7 @@ class AWSAuthenticator(object):
         body = response.read()
 
         # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials(None)
+        creds = Credentials()
         h = BotoXmlHandler(creds, None)
         xml.sax.parseString(body, h)
         logging.info("Authenticated AWS user")
