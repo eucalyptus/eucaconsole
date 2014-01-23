@@ -33,6 +33,12 @@ angular.module('InstancePage', ['TagEditor'])
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
                 }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
             });
         };
         $scope.getInstanceState = function () {

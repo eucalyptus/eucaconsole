@@ -47,6 +47,12 @@ angular.module('InstanceVolumes', [])
                 if (transitionalCount > 0) {
                     $timeout(function() {$scope.getInstanceVolumes()}, 4000);  // Poll every 4 seconds
                 }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
             });
         };
     })

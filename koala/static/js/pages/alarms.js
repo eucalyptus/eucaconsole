@@ -35,6 +35,12 @@ angular.module('AlarmsPage', ['CustomFilters'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
             });
         };
         /*  Filter items client side based on search criteria.

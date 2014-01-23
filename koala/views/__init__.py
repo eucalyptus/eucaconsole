@@ -61,7 +61,8 @@ class BaseView(object):
         status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
         message = exc.message
         if request.is_xhr:
-            return Response(status=status, body=dict(error=message))
+            resp_body = json.dumps(dict(error=message))
+            return Response(status=status, body=resp_body)
         timed_out = all([
             status in [403],
             'Invalid access key' in message

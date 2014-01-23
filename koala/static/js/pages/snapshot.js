@@ -52,6 +52,12 @@ angular.module('SnapshotPage', ['TagEditor'])
                         $scope.isUpdating = false;
                     }
                 }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
             });
         };
     })
