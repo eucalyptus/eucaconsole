@@ -11,7 +11,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor']
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.setInitialValues = function () {
-            $scope.instanceType = 'm1.small';
+            $scope.instanceType = $scope.urlParams['instance_type'] || 'm1.small';
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();

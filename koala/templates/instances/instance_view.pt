@@ -177,7 +177,8 @@
                     Launch more like this
                 </a>
                 <br/>
-                <a class="button secondary" i18n:translate="">
+                <a class="button secondary" i18n:translate=""
+                   href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
                     Create scaling group launch configuration like this
                 </a>
                 <br/>
