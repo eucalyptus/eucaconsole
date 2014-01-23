@@ -216,13 +216,12 @@
             </p>
             <form method="get" action="#" id="update-form">
                 <div class="row">
-                    <div class="small-6 columns field inline">
+                    <div class="small-12 columns field inline">
                         <input id="yes-update" type="submit" class="button" value="Yes, start now"
                                i18n:attributes="value" ng-click="submitUpdateInstance($event)" />
-                    </div>
-                    <div class="small-6 columns field inline">
-                        <input id="no-update" type="submit" class="button" value="No, I'll start it later"
-                               i18n:attributes="value" ng-click="cancelUpdateInstance($event)" />
+                        <a ng-click="cancelUpdateInstance($event)" i18n:translate="" class="cancel-link">
+                            No, I'll start it later
+                        </a>
                     </div>
                 </div>
             </form>
