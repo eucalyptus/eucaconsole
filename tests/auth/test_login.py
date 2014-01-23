@@ -48,7 +48,7 @@ class EucaAuthTestCase(BaseTestCase):
 
     def test_euca_authenticator(self):
         expected_url = ''.join([
-            'https://{host}:8773/services/Tokens?Action=GetSessionToken'.format(host=self.host),
+            'https://{host}:8773/services/Tokens?Action=GetAccessToken'.format(host=self.host),
             '&DurationSeconds=3600&Version=2011-06-15'
         ])
         self.assertEqual(self.auth.auth_url, expected_url)
@@ -61,11 +61,12 @@ class EucaAuthTestCase(BaseTestCase):
 class AWSAuthTestCase(BaseTestCase):
     endpoint = 'https://sts.amazonaws.com'
     expected_url = ''.join([
-            'Action=GetSessionToken',
-            '&AWSAccessKeyId=12345678901234567890&DurationSeconds=3600&SignatureMethod=HmacSHA256&SignatureVersion=2&Version=2011-06-15',
-            '&Timestamp={now}'.format(now=boto.utils.get_ts()),
-            '&Signature=1234567890123456789012345678901234567890'
-        ])
+        'Action=GetSessionToken',
+        '&AWSAccessKeyId=12345678901234567890&DurationSeconds=3600',
+        '&SignatureMethod=HmacSHA256&SignatureVersion=2&Version=2011-06-15',
+        '&Timestamp={now}'.format(now=boto.utils.get_ts()),
+        '&Signature=1234567890123456789012345678901234567890'
+    ])
     auth = AWSAuthenticator(package=expected_url)
 
     def test_aws_authenticator(self):
