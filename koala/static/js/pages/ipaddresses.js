@@ -17,12 +17,10 @@ angular.module('ElasticIPsPage', ['LandingPage'])
         $scope.initController = function () {
             $scope.initChosenSelectors();
         };
-        $scope.revealModal = function (action, eip, instance_id) {
-            instance_id = instance_id || '';
-            var modal = $('#' + action + '-ip-modal');
-            $scope.publicIP = eip;
-            $scope.instanceID = instance_id;
-            modal.foundation('reveal', 'open');
+        $scope.revealModal = function (action, eip) {
+            $scope.instanceID = eip['instance_name'] || '';
+            $scope.publicIP = eip['public_ip'];
+            $('#' + action + '-ip-modal').foundation('reveal', 'open');
         };
     });
 
