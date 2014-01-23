@@ -96,6 +96,7 @@
                     </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags)}
+                    <hr />
                     <hr ng-show="volumeStatus == 'available'" />
                     <div ng-show="volumeStatus == 'deleted'">
                         <span i18n:translate="">Volume was successfully deleted.</span>

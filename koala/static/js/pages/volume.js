@@ -35,7 +35,7 @@ angular.module('VolumePage', ['TagEditor'])
                 $scope.snapshotId = urlParams['from_snapshot'];
                 $scope.populateVolumeSize();
             }
-            snapshotField.chosen({'width': '75%'});
+            snapshotField.chosen({'width': '75%', 'search_contains': true});
             // Instance choices in "Attach to instance" modal dialog
             $('#attach-volume-modal').on('open', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
