@@ -13,6 +13,7 @@ $instance-status-color-terminated: darken($euca-grey, 10%);
 $instance-status-color-terminating: lightgrey;
 
 
+// Tile view
 .tile .status.running { background-color: $instance-status-color-running; }
 .tile .status.pending { background-color: $instance-status-color-pending; }
 .tile .status.stopped { background-color: $instance-status-color-stopped; }
@@ -22,3 +23,18 @@ $instance-status-color-terminating: lightgrey;
 
 
 
+// Table view
+.table {
+    th, td {
+        padding: 4px 7px;
+    }
+    .label {
+        margin: 0 0 0 0;
+        &.running { background-color: $euca-darkgreen; }
+        &.pending { background-color: $instance-status-color-pending; }
+        &.stopped { background-color: $instance-status-color-stopped; }
+        &.stopping { background-color: $instance-status-color-stopping; }
+        &.terminated { background-color: $instance-status-color-terminated; }
+        &.shutting-down { background-color: $instance-status-color-terminating; }
+    }
+}
