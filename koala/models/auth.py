@@ -21,6 +21,7 @@ from boto.ec2.connection import EC2Connection
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
 import boto.ec2.elb
+import boto.iam
 from boto.handler import XmlHandler as BotoXmlHandler
 from boto.regioninfo import RegionInfo
 from boto.sts.credentials import Credentials
@@ -121,9 +122,16 @@ class ConnectionManager(object):
         if conn_type == 'elb':
             path = '/services/LoadBalancing'
             conn_class = boto.ec2.elb.ELBConnection
+        if conn_type == 'iam':
+            path = '/services/Euare'
+            conn_class = boto.iam.IAMConnection
 
-        conn = conn_class(
-            access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
+        if conn_type != 'iam':
+            conn = conn_class(access_id, secret_key,
+                    region=region, port=port, path=path, is_secure=True, security_token=token)
+        else:
+            conn = conn_class(access_id, secret_key,
+                    host=clchost, port=port, path=path, is_secure=True, security_token=token)
 
         # AutoScaling service needs additional auth info
         if conn_type == 'autoscale':
@@ -212,7 +220,7 @@ class EucaAuthenticator(object):
             host=self.host,
             dur=duration,
             service='services/Tokens',
-            action='GetSessionToken',
+            action='GetAccessToken',
             ver='2011-06-15'
         )
         req = urllib2.Request(self.auth_url)
