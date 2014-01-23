@@ -169,5 +169,11 @@ urls = [
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
     Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
+
+    # Users #####
+    Route(name='users', pattern='/users'),
+    Route(name='users_json', pattern='/users/json'),
+    Route(name='user_view', pattern='/users/{name}'),
+    Route(name='user_update', pattern='/users/{name}/update'),
 ]
 

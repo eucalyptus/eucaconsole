@@ -1,0 +1,67 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <h3 class="header" id="pagetitle">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
+                    <li class="current"><a href="#">${user.user_name}</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-7 columns"
+            tal:define="readonly True if user else False;">
+            <div class="panel no-title">
+                <form action="${request.route_url('user_update', name=user.user_name)}" method="post" data-abide="abide">
+                    ${structure:user_form['csrf_token']}
+                    <div tal:condition="user">
+                        <div class="section">
+                            <h6 i18n:translate="">Machine</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">User name</label></div>
+                                <div class="small-8 columns value">${user.user_name if user.user_name else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
+                                <div class="small-8 columns value">${user.user_id if user.user_id else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Path</label></div>
+                                <div class="small-8 columns value">${user.path if user.path else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
+                                <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" id="save-changes-btn">
+                                <span tal:condition="user" i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('users')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <div class="panel other-actions" tal:condition="user">
+                <a class="button secondary delete" data-reveal-id="delete-user-modal" i18n:translate="">
+                    Delete user
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</metal:block>
+

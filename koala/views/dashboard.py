@@ -41,6 +41,10 @@ class DashboardView(BaseView):
         keypairs_count = len(ec2_conn.get_all_key_pairs())
         elasticips_count = len(ec2_conn.get_all_addresses())
 
+        # IAM counts
+        iam_conn = self.get_connection(conn_type="iam")
+        users_count = len(iam_conn.get_all_users().users)
+
         return dict(
             instance_total=instances_total_count,
             instances_running=instances_running_count,
@@ -51,4 +55,5 @@ class DashboardView(BaseView):
             securitygroups=securitygroups_count,
             keypairs=keypairs_count,
             eips=elasticips_count,
+            users=users_count,
         )
