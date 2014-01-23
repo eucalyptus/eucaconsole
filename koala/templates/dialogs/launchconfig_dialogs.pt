@@ -1,0 +1,34 @@
+<!--! Modal dialogs for Launch configurations on landing and detail page -->
+<div tal:omit-tag="" xmlns="http://www.w3.org/1999/html">
+    <div id="delete-launchconfig-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_url('launchconfigs_delete');
+                     detailpage_action request.route_url('launchconfig_delete', id=launch_config.name) if launch_config else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete launch configuration</h3>
+        <div ng-show="!!launchConfigInUse" tal:condition="in_use if launch_config else True">
+            <p>
+                <span i18n:translate="">Launch configuration</span>
+                <b>${launch_config.name if launch_config else '{{ launchConfigName }}'}</b>
+                <span i18n:translate="">is in use and may not be deleted.</span>
+            </p>
+            <p i18n:translate="">
+                Change the launch configuration from each scaling group's detail page,
+                and then try to delete this launch configuration again.
+            </p>
+        </div>
+        <p ng-show="!launchConfigInUse" tal:condition="not in_use if launch_config else True">
+            <span i18n:translate="">Are you sure you want to delete the launch configuration</span>
+            <b>${launch_config.name if launch_config else '{{ launchConfigName }}'}</b>?
+        </p>
+        <form action="${action}" method="post" ng-show="!launchConfigInUse"
+              tal:condition="not in_use if launch_config else True">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="display" value="{{ displayType }}" />
+                <input type="hidden" name="name" value="{{ launchConfigName }}">
+            </div>
+            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

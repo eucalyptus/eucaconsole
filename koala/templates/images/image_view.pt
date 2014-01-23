@@ -48,7 +48,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Manifest Path</label></div>
-                                <div class="small-8 columns value">${image.location if image.location else ''}</div>
+                                <div class="small-8 columns value breakword">${image.location if image.location else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Description</label></div>
