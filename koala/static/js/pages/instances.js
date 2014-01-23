@@ -25,6 +25,12 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.itemsLoading = true;
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
+            $scope.$watch('sortBy',  function () { 
+                if ($('#sorting-dropdown').hasClass('open')) { 
+                    $('#sorting-dropdown').removeClass('open'); 
+                    $('#sorting-dropdown').removeAttr('style'); 
+                } 
+            });
         };
         $scope.initController = function (sortKey, jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;

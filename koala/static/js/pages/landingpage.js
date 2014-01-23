@@ -4,6 +4,7 @@
  *
  */
 
+
 angular.module('LandingPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $scope.items = [];
@@ -16,6 +17,12 @@ angular.module('LandingPage', ['CustomFilters'])
         };
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
+            $scope.$watch('sortBy',  function () {
+                if ($('#sorting-dropdown').hasClass('open')) {
+                    $('#sorting-dropdown').removeClass('open');
+                    $('#sorting-dropdown').removeAttr('style');
+                }
+            });
         };
         $scope.applyGetRequestFilters = function () {
             // Apply an "all" match of filters based on URL params
