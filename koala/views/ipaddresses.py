@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS Elastic IP Addresses
 
 """
+from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -53,17 +54,20 @@ class IPAddressesView(LandingPageView):
             if self.allocate_form.validate():
                 new_ips = []
                 ipcount = int(self.request.params.get('ipcount', 0))
-                for i in xrange(ipcount):
-                    new_ip = self.conn.allocate_address()
-                    new_ips.append(new_ip.public_ip)
-                prefix = _(u'Successfully allocated IPs')
-                ips = ', '.join(new_ips)
-                notification_msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
-                self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+                try:
+                    for i in xrange(ipcount):
+                        new_ip = self.conn.allocate_address()
+                        new_ips.append(new_ip.public_ip)
+                    prefix = _(u'Successfully allocated IPs')
+                    ips = ', '.join(new_ips)
+                    msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
+                    queue = Notification.SUCCESS
+                except EC2ResponseError as err:
+                    msg = err.message
+                    queue = Notification.ERROR
+                self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=self.location)
-        render_dict = self.render_dict
-        render_dict['sort_keys'] = self.sort_keys
-        return render_dict
+        return self.render_dict
 
     @view_config(route_name='ipaddresses_associate', request_method="POST")
     def ipaddresses_associate(self):
