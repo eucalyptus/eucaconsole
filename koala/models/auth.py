@@ -219,7 +219,6 @@ class EucaAuthenticator(object):
         )
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
-        template = 'https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}'
         duration = self.duration
         if user == 'admin':  # admin cannot have more than 1 hour duration
             duration = 3600
@@ -243,7 +242,7 @@ class EucaAuthenticator(object):
         try:
             response = urllib2.urlopen(req, timeout=timeout)
         except Exception:
-            auth_url = template.format(
+            auth_url = self.TEMPLATE.format(
                 host=self.host,
                 dur=duration,
                 service='services/Tokens',
