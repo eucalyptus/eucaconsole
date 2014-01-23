@@ -33,7 +33,7 @@ class KeyPairImportForm(BaseSecureForm):
     """Key Pair Import form
     """
     name_error_msg = _(u'Name is required')
-    key_material_error_msg = _(u'Public Key Content is required')
+    key_material_error_msg = _(u'Public Key Contents are required')
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),
@@ -41,7 +41,7 @@ class KeyPairImportForm(BaseSecureForm):
     )
     key_material = wtforms.TextAreaField(
         id=u'key-import-contents',
-        label=_(u'Public SSH Key Content'),
+        label=_(u'Public SSH Key Contents'),
         validators=[validators.Required(message=key_material_error_msg), validators.Length(min=1)],
     )
 
