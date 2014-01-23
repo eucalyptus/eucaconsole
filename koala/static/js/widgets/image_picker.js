@@ -5,6 +5,7 @@
  */
 angular.module('ImagePicker', [])
     .controller('ImagePickerCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
         $scope.ownerAlias = '';

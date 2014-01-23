@@ -6,6 +6,7 @@
 
 angular.module('InstanceVolumes', [])
     .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         // Volume states are: "attached", "attaching", "detaching"
         // 'detached' state doesn't apply here since it won't be attached to the instance
         $scope.loading = false;

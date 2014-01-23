@@ -6,6 +6,7 @@
 
 angular.module('Dashboard', [])
     .controller('DashboardCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.getItemCounts = function(jsonEndpoint) {
             $scope.itemsLoading = true;
             $http.get(jsonEndpoint).success(function(oData) {

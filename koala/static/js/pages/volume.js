@@ -7,6 +7,7 @@
 // Volume page includes the tag editor, so pull in that module as well.
 angular.module('VolumePage', ['TagEditor'])
     .controller('VolumePageCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting', 'attaching', 'detaching'];
         $scope.volumeStatus = '';

@@ -7,6 +7,7 @@
 // Instance page includes the tag editor, so pull in that module as well.
 angular.module('InstancePage', ['TagEditor'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
         // Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped"
         // 'shutting-down' = terminating state

@@ -6,6 +6,7 @@
 
 angular.module('VolumeSnapshots', ['TagEditor'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
         $scope.snapshots = [];
         $scope.jsonEndpoint = '';

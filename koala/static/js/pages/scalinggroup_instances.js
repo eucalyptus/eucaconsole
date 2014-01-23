@@ -6,6 +6,7 @@
 
 angular.module('ScalingGroupInstances', [])
     .controller('ScalingGroupInstancesCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
         $scope.items = [];
         $scope.instanceID = '';

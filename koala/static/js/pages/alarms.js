@@ -14,6 +14,7 @@ angular.module('AlarmsPage', ['CustomFilters'])
         };
     })
     .controller('ItemsCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';

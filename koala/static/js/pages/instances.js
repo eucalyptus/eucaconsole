@@ -17,6 +17,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         };
     })
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
