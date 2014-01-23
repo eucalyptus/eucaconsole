@@ -114,11 +114,11 @@ class ChoicesManager(object):
         ipaddresses = ipaddresses or []
         if not ipaddresses and self.conn is not None:
             ipaddresses = self.conn.get_all_addresses()
+        if instance and instance.state == 'running':
+            choices.append(('', _(u'Unassign Address')))
         for eip in ipaddresses:
             if eip.instance_id is None:
                 choices.append((eip.public_ip, eip.public_ip))
-            if eip.instance_id == instance.id:
-                choices.append(('', _(u'Unassign Address')))
         if instance and instance.ip_address:
             choices.append((instance.ip_address, instance.ip_address))
         if instance and instance.ip_address is '' and instance.state == 'stopped':
