@@ -24,7 +24,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns">
+        <div class="large-8 columns">
             <div class="panel">
                 <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
@@ -159,7 +159,8 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn" data-reveal-id="update-instance-modal">
+                            <button type="submit" class="button" id="save-changes-btn"
+                                    tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
                                 <span i18n:translate="">Save changes</span>
                             </button>
                             <a href="${request.route_url('instances')}" id="cancel-update-link"
@@ -170,7 +171,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-4 columns">
             <div class="panel other-actions">
                 <a href="${request.route_url('instance_more', id=instance.id)}" class="button secondary" i18n:translate="">
                     Launch more like this
