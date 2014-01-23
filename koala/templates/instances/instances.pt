@@ -101,7 +101,10 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
-                <td>{{ item.status }} <span class="dots" ng-show="item.transitional">&nbsp;</span></td>
+                <td>
+                    <span class="label radius {{ item.status }}">{{ item.status }}</span>
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
                 <td><a ng-href="/keypairs/{{ item.ip_address }}">{{ item.ip_address }}</a></td>

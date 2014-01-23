@@ -1527,7 +1527,7 @@ a.circle { color: black; display: inline-block; }
 #tag-editor .tagentry .new { color: #76b800; }
 #tag-editor small { font-size: 0.825rem; }
 
-textarea.console-output { width: 660px; height: 400px; margin: 10px; }
+textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
 .expando .title a { color: #333; }
 .expando .title a:hover { color: #76b800; border-bottom: 1px solid #76b800; }

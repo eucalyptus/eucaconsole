@@ -82,3 +82,12 @@
 .tile .status.terminated { background-color: gray; }
 
 .tile .status.shuttingdown { background-color: lightgrey; }
+
+.table th, .table td { padding: 4px 7px; }
+.table .label { margin: 0 0 0 0; }
+.table .label.running { background-color: #468400; }
+.table .label.pending { background-color: #bcdd8f; }
+.table .label.stopped { background-color: #990000; }
+.table .label.stopping { background-color: #ff9999; }
+.table .label.terminated { background-color: gray; }
+.table .label.shutting-down { background-color: lightgrey; }
