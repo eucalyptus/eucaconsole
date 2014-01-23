@@ -17,6 +17,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         };
     })
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
@@ -52,6 +53,12 @@ angular.module('InstancesPage', ['CustomFilters'])
                 // Auto-refresh instances if any of them are in progress
                 if (transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
                 }
             });
         };

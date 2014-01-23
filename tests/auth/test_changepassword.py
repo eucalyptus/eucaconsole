@@ -2,13 +2,12 @@
 Tests for change password forms
 
 """
-from urllib2 import HTTPError, URLError
+from urllib2 import URLError
 
-from pyramid.security import Authenticated
 from pyramid.testing import DummyRequest
 
 from koala.forms.login import EucaChangePasswordForm
-from koala.models.auth import EucaAuthenticator, User, groupfinder
+from koala.models.auth import EucaAuthenticator
 from tests import BaseTestCase, BaseFormTestCase
 
 
@@ -36,7 +35,7 @@ class EucaChangePasswordTestCase(BaseTestCase):
 
     def test_euca_authenticator(self):
         expected_url = ''.join([
-            'https://{host}:8773/services/Tokens?Action=GetSessionToken'.format(host=self.host),
+            'https://{host}:8773/services/Tokens?Action=GetAccessToken'.format(host=self.host),
             '&DurationSeconds=3600&Version=2011-06-15'
         ])
         self.assertEqual(self.auth.auth_url, expected_url)

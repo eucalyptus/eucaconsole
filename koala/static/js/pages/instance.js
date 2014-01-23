@@ -7,6 +7,7 @@
 // Instance page includes the tag editor, so pull in that module as well.
 angular.module('InstancePage', ['TagEditor'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
         // Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped"
         // 'shutting-down' = terminating state
@@ -31,6 +32,12 @@ angular.module('InstancePage', ['TagEditor'])
                     $scope.consoleOutput = results;
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
                 }
             });
         };
