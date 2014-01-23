@@ -33,7 +33,7 @@ class UsersView(LandingPageView):
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         conn = self.get_connection(conn_type="iam")
-        group_choices = sorted(set(conn.get_all_groups().groups))
+        group_choices = [] #sorted(set(conn.get_all_groups().groups))
         self.filter_fields = [
             LandingPageFilter(key='group', name='Groups', choices=group_choices),
         ]
