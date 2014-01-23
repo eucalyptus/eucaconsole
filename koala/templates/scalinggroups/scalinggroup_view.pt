@@ -86,9 +86,12 @@
         </div>
         <!--! Modal dialogs -->
         <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Delete scaling_group</h3>
+            <h3 i18n:translate="">Delete scaling group</h3>
+            <p tal:condition="scaling_group.instances">
+                Deleting a scaling group also terminates all instances within that scaling group.
+            </p>
             <p><span i18n:translate="">Are you sure you want to delete the scaling_group</span>
-               <b>${scaling_group.name}</b>?</p>
+               <b>${scaling_group.name}</b><span tal:condition="scaling_group.instances"> and terminate its instances</span>?</p>
             <form action="${request.route_url('scalinggroup_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="${scaling_group.name}">
