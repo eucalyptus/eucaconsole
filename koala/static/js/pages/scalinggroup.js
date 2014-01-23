@@ -11,10 +11,10 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
         $scope.initChosenSelectors = function () {
-            $('#launch_config').chosen({'width': '60%'});
-            $('#availability_zones').chosen({'width': '80%'});
-            $('#load_balancers').chosen({'width': '80%'});
-            $('#termination_policies').chosen({'width': '80%'});
+            $('#launch_config').chosen({'width': '60%', search_contains: true});
+            $('#availability_zones').chosen({'width': '80%', search_contains: true});
+            $('#load_balancers').chosen({'width': '80%', search_contains: true});
+            $('#termination_policies').chosen({'width': '80%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.minSize = parseInt($('#min_size').val(), 10);
