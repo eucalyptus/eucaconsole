@@ -3,7 +3,8 @@
 Pyramid views for Eucalyptus and AWS key pairs
 
 """
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from boto.exception import EC2ResponseError
+from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -124,7 +125,6 @@ class KeyPairView(BaseView):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
             session = self.request.session
-            msg = ""
             try:
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session            

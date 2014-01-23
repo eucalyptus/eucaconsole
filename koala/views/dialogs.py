@@ -93,3 +93,14 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
         delete_form=delete_form,
     )
 
+
+@panel_config('launchconfig_dialogs', renderer='../templates/dialogs/launchconfig_dialogs.pt')
+def launchconfig_dialogs(context, request, launch_config=None, in_use=False, landingpage=False, delete_form=None):
+    """ Modal dialogs for Launch configurations landing and detail page."""
+    return dict(
+        launch_config=launch_config,
+        in_use=in_use,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+

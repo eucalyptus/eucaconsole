@@ -167,7 +167,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('keypair_dialogs', keypair=keypair, delete_form=delete_form, landingpage=False)}
+        ${panel('keypair_dialogs', keypair=keypair, delete_form=delete_form)}
     </div>
 </div>
 

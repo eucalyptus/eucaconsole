@@ -1,5 +1,5 @@
 /**
- * @fileOverview Elastic IPs landing page JS
+ * @fileOverview Key pairs landing page JS
  * @requires AngularJS, jQuery
  *
  */
@@ -11,7 +11,6 @@ angular.module('KeypairsPage', ['LandingPage'])
         $scope.urlParams = $.url().param();
         $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.revealModal = function (action, keypair_name) {
-            console.log("hello " + keypair_name)
             keypair_name = keypair_name || '';
             var modal = $('#' + action + '-keypair-modal');
             $scope.keypairName = keypair_name;

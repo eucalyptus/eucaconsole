@@ -86,6 +86,7 @@ urls = [
     # Landing page
     Route(name='launchconfigs', pattern='/launchconfigs'),
     Route(name='launchconfigs_json', pattern='/launchconfigs/json'),
+    Route(name='launchconfigs_delete', pattern='/launchconfigs/delete'),
     # Detail page
     Route(name='launchconfig_new', pattern='/launchconfigs/new'),
     Route(name='launchconfig_create', pattern='/launchconfigs/create'),

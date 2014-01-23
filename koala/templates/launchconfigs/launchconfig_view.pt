@@ -22,6 +22,10 @@
                 </h6>
                 <form>
                     <div class="row controls-wrapper readonly">
+                        <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
+                        <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
                             <a href="${request.route_url('keypair_view', id=launch_config.key_name)}">${launch_config.key_name}</a>
@@ -86,7 +90,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-9 columns value">${image.location}</div>
+                        <div class="small-9 columns value breakword">${image.location}</div>
                     </div>
                     <hr />
                     <div class="row">
@@ -117,17 +121,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        <div id="delete-launchconfig-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Delete launchconfig</h3>
-            <p><span i18n:translate="">Are you sure you want to delete the launch configuration</span>
-            <b>${launch_config.name}</b>?</p>
-            <form action="${request.route_url('launchconfig_delete', id=launch_config.name)}" method="post">
-                ${structure:delete_form['csrf_token']}
-                <input type="hidden" name="name" value="${launch_config.name}">
-                <button type="submit" class="button" i18n:translate="">Yes, delete</button>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        ${panel('launchconfig_dialogs', launch_config=launch_config, in_use=in_use, delete_form=delete_form)}
     </div>
 </div>
 

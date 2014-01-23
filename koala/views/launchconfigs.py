@@ -22,54 +22,101 @@ from ..views.images import ImageView
 class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
+        self.request = request
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.initial_sort_key = 'name'
         self.prefix = '/launchconfigs'
-
-    @view_config(route_name='launchconfigs', renderer='../templates/launchconfigs/launchconfigs.pt')
-    def launchconfigs_landing(self):
-        json_items_endpoint = self.request.route_url('launchconfigs_json')
-        self.filter_keys = ['image_id', 'key_name', 'kernel_id', 'name', 'ramdisk_id', 'security_groups']
-        # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='name', name='Name'),
-            dict(key='-created_time', name='Created time (recent first)'),
-            dict(key='image_id', name='Image ID'),
-            dict(key='key_name', name='Key pair'),
-            dict(key='instance_monitoring', name='Instance monitoring'),
-        ]
-        return dict(
+        self.filter_keys = ['image_id', 'image_name', 'key_name', 'name', 'security_groups']
+        self.sort_keys = self.get_sort_keys()
+        self.json_items_endpoint = self.request.route_url('launchconfigs_json')
+        self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
+        self.render_dict = dict(
             display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
+            json_items_endpoint=self.json_items_endpoint,
+            delete_form=self.delete_form,
         )
+
+    @view_config(route_name='launchconfigs', renderer='../templates/launchconfigs/launchconfigs.pt')
+    def launchconfigs_landing(self):
+        # sort_keys are passed to sorting drop-down
+        return self.render_dict
+
+    @view_config(route_name='launchconfigs_delete', request_method='POST')
+    def launchconfigs_delete(self):
+        if self.delete_form.validate():
+            name = self.request.params.get('name')
+            try:
+                self.autoscale_conn.delete_launch_configuration(name)
+                prefix = _(u'Successfully deleted launch configuration.')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                prefix = _(u'Unable to delete launch configuration')
+                msg = '{0} {1} - {2}'.format(prefix, name, err.message)
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            location = self.request.route_url('launchconfigs')
+            return HTTPFound(location=location)
+        return self.render_dict
+
+    @staticmethod
+    def get_sort_keys():
+        return [
+            dict(key='name', name='Name'),
+            dict(key='-created_time', name='Created time (recent first)'),
+            dict(key='image_name', name='Image Name'),
+            dict(key='key_name', name='Key pair'),
+            dict(key='instance_monitoring', name='Instance monitoring'),
+        ]
 
 
 class LaunchConfigsJsonView(BaseView):
     """JSON response view for Launch Configurations landing page"""
+    def __init__(self, request):
+        super(LaunchConfigsJsonView, self).__init__(request)
+        self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
-        launchconfigs = []
-        for launchconfig in self.get_items():
+        launchconfigs_array = []
+        launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
+        scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+        for launchconfig in self.launch_configs:
             security_groups = launchconfig.security_groups
-            launchconfigs.append(dict(
+            image_id = launchconfig.image_id
+            name=launchconfig.name
+            launchconfigs_array.append(dict(
                 created_time=launchconfig.created_time.isoformat(),
-                image_id=launchconfig.image_id,
+                image_id=image_id,
+                image_name=launchconfigs_image_mapping.get(image_id),
                 instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
-                kernel_id=launchconfig.kernel_id,
                 key_name=launchconfig.key_name,
-                name=launchconfig.name,
-                ramdisk_id=launchconfig.ramdisk_id,
+                name=name,
                 security_groups=security_groups,
+                in_use=name in scalinggroup_launchconfig_names,
             ))
-        return dict(results=launchconfigs)
+        return dict(results=launchconfigs_array)
 
-    def get_items(self):
-        conn = self.get_connection(conn_type='autoscale')
-        return conn.get_all_launch_configurations() if conn else []
+    def get_launchconfigs_image_mapping(self):
+        launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.launch_configs]
+        launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
+        launchconfigs_image_mapping = dict()
+        for image in launchconfigs_images:
+            launchconfigs_image_mapping[image.id] = image.name or image.id
+        return launchconfigs_image_mapping
+
+    def get_scalinggroups_launchconfig_names(self):
+        if self.autoscale_conn:
+            return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
+        return []
 
 
 class LaunchConfigView(BaseView):
@@ -85,6 +132,7 @@ class LaunchConfigView(BaseView):
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
+            in_use=self.is_in_use(),
             image=self.image,
             delete_form=self.delete_form,
         )
@@ -101,7 +149,7 @@ class LaunchConfigView(BaseView):
             name = self.request.params.get('name')
             try:
                 self.autoscale_conn.delete_launch_configuration(name)
-                prefix = _(u'Successfully deleted launchconfig')
+                prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
             except BotoServerError as err:
@@ -128,6 +176,15 @@ class LaunchConfigView(BaseView):
             image.platform = ImageView.get_platform(image)
             return image
         return None
+
+    def is_in_use(self):
+        """Returns whether or not the launch config is in use (i.e. in any scaling group).
+        :rtype: Boolean
+        """
+        launch_configs = []
+        if self.autoscale_conn:
+            launch_configs = [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
+        return self.launch_config.name in launch_configs
 
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
