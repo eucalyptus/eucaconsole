@@ -44,6 +44,10 @@
                     </div>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
+                    <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
+                    <p i18n:translate="">
+                        Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
+                    </p>
                     <form  action="${request.route_url('keypair_create')}" method="post" data-abide="abide">
                         ${structure:keypair_form['csrf_token']}
                         ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
@@ -59,6 +63,7 @@
                      </form>
                  </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
+                    <p i18n:translate="">Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
                     <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
                         ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
@@ -108,12 +113,6 @@
                     </ol>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" tal:omit-tag="">
-                    <h5 class="title" i18n:translate="">Create a key pair</h5>
-                    <p i18n:translate="">You can use this key pair to launch more than one instance.</p>
-                    <p i18n:translate="">
-                        Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
-                    </p>
-                    <hr>
                     <h5 class="title" i18n:translate="">Create a Key Pair</h5>
                     <p i18n:translate="">
                         Eucalyptus uses cryptographic key pairs to verify access to instances. Before you can run an instance, you must create a key pair. Creating a key pair generates two keys: a public key (saved within Eucalyptus) and a corresponding private key (output to the user as a character string). To enable this private key you must save it to a file and set appropriate access permissions (using the chmod command), as shown in the example below. 
@@ -145,9 +144,6 @@
                     </ol>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" tal:omit-tag="">
-                    <h5 class="title" i18n:translate="">Import a public key</h5>
-                    <p>Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
-                    <hr>
                     <h5 class="title" i18n:translate="">Import a Key Pair</h5>
                     <p i18n:translate="">
                         This dialog box allows you import an existing key pair.
