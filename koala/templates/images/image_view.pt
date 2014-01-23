@@ -135,24 +135,17 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel no-title" tal:condition="image">
-                <div class="row">
-                    <div class="large-12 columns">
-                        <a href="${request.route_url('instance_create')}?image_id=${image.id}"
-                           class="button secondary" i18n:translate="">
-                            Launch Instance from this Image
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-12 columns">
-                        <a class="button secondary"
-                           href="${request.route_url('launchconfig_new')}?image_id=${image.id}" i18n:translate="">
-                            Create scaling group launch configuration from this Image
-                        </a>
-                    </div>
-                </div>
+            <div class="panel other-actions" tal:condition="image">
+                <a class="button secondary" href="${request.route_url('instance_create')}?image_id=${image.id}" i18n:translate="">
+                    Launch Instance from this Image
+                </a>
+                <a class="button secondary" href="${request.route_url('launchconfig_new')}?image_id=${image.id}" i18n:translate="">
+                    Create scaling group launch configuration from this Image
+                </a>
             </div>
+            <!--! Tag editor help content -->
+            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+            </metal:block>
         </div>
     </div>
 </div>

@@ -119,6 +119,52 @@
                     </a>
                 </div>
             </div>
+            <div class="help-content">
+                <div tal:condition="not snapshot" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Create a Snapshot</h5> 
+                    <p i18n:translate="">A snapshot is a block level storage volume that is created by copying an existing volume and is backed by persistent storage. You can use snapshots to create new volumes to be used with your instances.</p>
+                    <ol>
+                        <li>
+                            Enter a name for the volume in the <strong>Name</strong> text box.
+                        </li>
+                        <li>
+                            Start typing a volume ID (they usually start with "vol-") in the <strong>Volume</strong> text field, and then select a volume name from the drop-down list.
+                        </li>
+                        <li>
+                            Enter a description for the volume in the <strong>Description</strong> text box.
+                        </li>
+                        <li>
+                            Click the <strong>Create</strong> button to create your new snapshot, or click the <strong>Cancel</strong> button to cancel the operation.
+                        </li>
+                    </ol>
+                </div>
+                <div tal:condition="snapshot" tal:omit-tag="">
+                    <h5 class="title" i18n:translate="">Register a Snapshot as an Image</h5> 
+                    <p i18n:translate="">A snapshot is a block level storage volume that is created by copying an existing volume and is backed by persistent storage. You can register a snapshot as an image if it the snapshot was created from a volume containing a root file system. Once registered, this image can then be used to launch EBS-backed instances. </p>
+                    <ol>
+                        <li>
+                            Enter a name for the image in the <strong>Name</strong> text box.
+                        </li>
+                        <li>
+                            Enter a description for the image in the <strong>Description</strong> text box.
+                        </li>
+                        <li>
+                            Click the <strong>Register</strong> button.
+                        </li>
+                    </ol>
+                    <h5 class="title" i18n:translate="">Delete Snapshot</h5> 
+                    <p i18n:translate="">This dialog box allows you to confirm or cancel a snapshot delete operation.</p>
+                    <h5 class="title" i18n:translate="">Verify Snapshot Deletion</h5>
+                    <ol>
+                        <li>
+                            To verify that you wish to delete the selected snapshot(s), click the <strong>Yes, delete</strong> button.
+                        </li>
+                        <li>
+                            To cancel the delete operation, click the <strong>Cancel</strong> button.
+                        </li>
+                    </ol> 
+                </div>
+            </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                 <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
