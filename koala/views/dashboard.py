@@ -42,8 +42,19 @@ class DashboardView(BaseView):
         elasticips_count = len(ec2_conn.get_all_addresses())
 
         # IAM counts
-        iam_conn = self.get_connection(conn_type="iam")
-        users_count = len(iam_conn.get_all_users().users)
+        session = self.request.session
+        try:
+            username=session['username']
+            if username == 'admin':
+                iam_conn = self.get_connection(conn_type="iam")
+                users_count = len(iam_conn.get_all_users().users)
+                groups_count = len(iam_conn.get_all_groups().groups)
+            else:
+                users_count = 0
+                groups_count = 0
+        except KeyError:
+            users_count = 0
+            groups_count = 0
 
         return dict(
             instance_total=instances_total_count,
@@ -56,4 +67,5 @@ class DashboardView(BaseView):
             keypairs=keypairs_count,
             eips=elasticips_count,
             users=users_count,
+            groups=groups_count,
         )

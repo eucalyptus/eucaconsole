@@ -216,14 +216,15 @@ class EucaAuthenticator(object):
         duration = self.duration
         if user == 'admin': # admin cannot have more than 1 hour duration
             duration = 3600
-        self.auth_url = template.format(
+        auth_url = template.format(
             host=self.host,
             dur=duration,
             service='services/Tokens',
             action='GetAccessToken',
             ver='2011-06-15'
         )
-        req = urllib2.Request(self.auth_url)
+        req = urllib2.Request(auth_url)
+
         if new_passwd:
             auth_string = "{user}@{account};{pw}@{new_pw}".format(
                 user=base64.b64encode(user),
@@ -239,7 +240,20 @@ class EucaAuthenticator(object):
             )
         encoded_auth = base64.b64encode(auth_string)
         req.add_header('Authorization', "Basic %s" % encoded_auth)
-        response = urllib2.urlopen(req, timeout=timeout)
+        try:
+            response = urllib2.urlopen(req, timeout=timeout)
+        except Exception:
+            auth_url = template.format(
+                host=self.host,
+                dur=duration,
+                service='services/Tokens',
+                action='GetSessionToken',
+                ver='2011-06-15'
+            )
+            req = urllib2.Request(auth_url)
+            req.add_header('Authorization', "Basic %s" % encoded_auth)
+            response = urllib2.urlopen(req, timeout=timeout)
+
         body = response.read()
 
         # parse AccessKeyId, SecretAccessKey and SessionToken
