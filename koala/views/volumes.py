@@ -35,7 +35,8 @@ class VolumesView(LandingPageView):
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('volumes')
-        self.filter_fields = self.get_filter_fields()
+        # seems redundant
+        #self.filter_fields = self.get_filter_fields()
         self.render_dict = dict(
             display_type=self.display_type,
             prefix=self.prefix,

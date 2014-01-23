@@ -80,12 +80,12 @@
                 <div class="tile small-6 columns" id="users">
                     <h5 class="subheader" i18n:translate="">Users</h5>
                     <div class="content">
-                        <a href="#">
-                            <i class="fi-torso icon"><em>0</em></i>
+                        <a href="${request.route_url('users')}">
+                            <i class="fi-torso icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.users }}</em></i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="#" i18n:translate="">Add user</a>
+                        <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Add user</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,119 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/users.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LandingPage">
+        <h3 class="header" id="pagetitle">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li class="current"><a href="#" i18n:translate="">IAM Users</a></li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+            <a class="help-icon" data-reveal-id="help-modal">?</a>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-2 columns" id="landing-page-filters">
+            <div metal:use-macro="layout.global_macros['properties_filter_form']">
+                <metal:block metal:fill-slot="filter_form_fields">
+                    <div tal:repeat="field filter_fields">
+                        <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
+                        <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
+                                name="${field.key}">
+                            <option value="">${field.name}...</option>
+                            <option tal:repeat="choice field.choices" value="${choice.key}"
+                                    tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice.key">${choice.label}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="secondary small button">Apply</button>
+                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+                    </div>
+                </metal:block>
+            </div>
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="add-user-btn"
+                   href="${request.route_url('user_view', name='new')}">Add user</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
+                    <li><a i18n:translate="" href="">Disable</a></li>
+                    <li><a i18n:translate="" href="">Delete</a></li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{item.user_name }}">{{ item.user_name }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="NM" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.user_name }}
+                </div>
+                <div>
+                    <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.user_id }}
+                </div>
+                <div>
+                    <span class="label" title="PA" i18n:attributes="title" data-tooltip="">PA</span>
+                    {{ item.path }}
+                </div>
+                <div>
+                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">ARN</span>
+                    {{ item.arn }}
+                </div>
+            </div>
+            <div metal:fill-slot="tile_footer">
+                <div class="footer">
+                     <span i18n:translate="">Launch instance</span>
+                </div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">User name</th>
+                <th i18n:translate="">ID</th>
+                <th i18n:translate="">Path</th>
+                <th i18n:translate="">ARN</th>
+                <th i18n:translate="">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
+                <td>{{ item.user_id }}</td>
+                <td>{{ item.path }}</td>
+                <td>{{ item.arn }}</td>
+                <td>
+                  <span class="actions">
+                    <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
+                        <li><a i18n:translate="" href="">Disable</a></li>
+                        <li><a i18n:translate="" href="">Delete</a></li>
+                    </ul>
+                  </span>
+                </td>
+            </metal:block>
+        </div>
+        <div id="help-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Help</h3>
+            <p>
+                Need some content
+            </p>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+</div>
+
+</metal:block>
+
