@@ -306,6 +306,18 @@ textarea.console-output {
     margin: 10px;
 }
 
+.expando {
+    .title {
+        a {
+            color: #333;
+            &:hover {
+                color: $euca-green;
+                border-bottom: 1px solid $euca-green;
+            }
+        }
+    }
+}
+
 /* -----------------------------------------
    Help content
 ----------------------------------------- */

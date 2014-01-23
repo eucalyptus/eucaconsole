@@ -20,7 +20,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns">
+        <div class="large-8 columns">
             <div class="panel">
                 <form action="${request.route_url('instance_more_launch', id=instance.id)}" method="post"
                       data-abide="abide" enctype="multipart/form-data" id="launch-more-form">
@@ -80,13 +80,27 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('form_field', field=launch_more_form['userdata'])}
-                    ${panel('form_field', field=launch_more_form['userdata_file'])}
-                    ${panel('form_field', field=launch_more_form['kernel_id'])}
-                    ${panel('form_field', field=launch_more_form['ramdisk_id'])}
-                    ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
-                    ${panel('form_field', field=launch_more_form['private_addressing'])}
-                    ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                    <div class="expando" id="advanced-section" ng-cloak="">
+                        <h6 class="title" >
+                            <a ng-click="toggleContent()">
+                                <i class="fi-plus" ng-show="!expanded"></i>
+                                <i class="fi-minus" ng-show="expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </h6>
+                        <div class="content" ng-show="expanded">
+                            ${panel('form_field', field=launch_more_form['userdata'])}
+                            ${panel('form_field', field=launch_more_form['userdata_file'])}
+                            ${panel('form_field', field=launch_more_form['kernel_id'])}
+                            ${panel('form_field', field=launch_more_form['ramdisk_id'])}
+                            ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
+                            ${panel('form_field', field=launch_more_form['private_addressing'])}
+                            <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
+                                Storage
+                            </h6>
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                        </div>
+                    </div>
                     <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
@@ -101,7 +115,7 @@
                 </form>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-4 columns">
             <!--! help content goes here -->
         </div>
     </div>

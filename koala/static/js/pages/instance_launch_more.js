@@ -9,6 +9,10 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
     .controller('LaunchMoreInstancesCtrl', function ($scope) {
         $scope.form = $('#launch-more-form');
         $scope.instanceNumber = 1;
+        $scope.expanded = false;
+        $scope.toggleContent = function () {
+            $scope.expanded = !$scope.expanded;
+        };
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
         };
