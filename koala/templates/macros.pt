@@ -99,7 +99,7 @@
                 </div>
             </div>
             <!-- Begin grid view -->
-            <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
+            <div class="tile item" ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
