@@ -33,7 +33,7 @@ class UsersView(LandingPageView):
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         conn = self.get_connection(conn_type="iam")
-        group_choices = sorted(set(conn.get_all_groups().groups))
+        group_choices = [] #sorted(set(conn.get_all_groups().groups))
         self.filter_fields = [
             LandingPageFilter(key='group', name='Groups', choices=group_choices),
         ]
@@ -79,16 +79,16 @@ class UsersJsonView(BaseView):
         except EC2ResponseError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
 
-class UserView(TaggedItemView):
+class UserView(BaseView):
     """Views for single User"""
     TEMPLATE = '../templates/users/user_view.pt'
+    NEW_TEMPLATE = '../templates/users/user_new.pt'
 
     def __init__(self, request):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
-        self.user = self.get_user()
+        self.user = None #self.get_user()
         self.user_form = UserForm(self.request, formdata=self.request.params or None)
-        self.tagged_obj = self.user
         self.render_dict = dict(
             user=self.user,
             user_form=self.user_form,
@@ -96,10 +96,17 @@ class UserView(TaggedItemView):
 
     def get_user(self):
         user_param = self.request.matchdict.get('name')
-        user = self.conn.get_user(user_name=user_param)
-        return user
+        if user_param:
+            user = self.conn.get_user(user_name=user_param)
+            return user
+        else:
+            return None
 
     @view_config(route_name='user_view', renderer=TEMPLATE)
+    def user_view(self):
+        return self.render_dict
+ 
+    @view_config(route_name='user_create', renderer=NEW_TEMPLATE)
     def user_view(self):
         return self.render_dict
  

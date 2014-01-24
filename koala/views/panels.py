@@ -158,3 +158,10 @@ def image_picker(context, request, image=None, images_json_endpoint=None,
     )
 
 
+@panel_config('quotas_panel', renderer='../templates/users/quotas.pt')
+def quotas_panel(context, request, quota_form=None):
+    """quota form for 2 different user pages."""
+    return dict(
+        quota_form=quota_form,
+    )
+

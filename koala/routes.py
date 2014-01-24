@@ -173,6 +173,7 @@ urls = [
     # Users #####
     Route(name='users', pattern='/users'),
     Route(name='users_json', pattern='/users/json'),
+    Route(name='user_create', pattern='/users/create'),
     Route(name='user_view', pattern='/users/{name}'),
     Route(name='user_update', pattern='/users/{name}/update'),
 ]
