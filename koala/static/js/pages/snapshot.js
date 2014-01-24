@@ -7,6 +7,7 @@
 // Snapshot page includes the tag editor, so pull in that module as well.
 angular.module('SnapshotPage', ['TagEditor'])
     .controller('SnapshotPageCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.snapshotStatusEndpoint = '';
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
@@ -50,6 +51,12 @@ angular.module('SnapshotPage', ['TagEditor'])
                     } else {
                         $scope.isUpdating = false;
                     }
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
                 }
             });
         };

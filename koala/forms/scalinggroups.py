@@ -121,7 +121,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         return sorted(set(choices))
 
     def get_availability_zone_choices(self):
-        return self.ec2_choices_manager.availability_zones()
+        return self.ec2_choices_manager.availability_zones(add_blank=False)
 
     def get_load_balancer_choices(self):
         choices = []

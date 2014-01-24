@@ -6,6 +6,7 @@
 
 angular.module('ScalingGroupsPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
@@ -27,8 +28,12 @@ angular.module('ScalingGroupsPage', ['CustomFilters'])
                 if ($.url().param('filter')) {
                     $scope.applyGetRequestFilters();
                 }
-            }).error(function(oData) {
-                // TODO: Handle errors
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
             });
         };
         /*  Filter items client side based on search criteria.

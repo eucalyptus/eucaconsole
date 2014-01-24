@@ -16,8 +16,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
         $scope.initChosenSelectors = function () {
-            $('#launch_config').chosen({'width': '80%'});
-            $('#availability_zones').chosen({'width': '100%'});
+            $('#launch_config').chosen({'width': '80%', search_contains: true});
+            $('#availability_zones').chosen({'width': '100%', search_contains: true});
         };
         $scope.setLaunchConfig = function () {
             $scope.launchConfig = $scope.urlParams['launch_config'] || '';

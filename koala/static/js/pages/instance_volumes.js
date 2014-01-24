@@ -6,6 +6,7 @@
 
 angular.module('InstanceVolumes', [])
     .controller('InstanceVolumesCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         // Volume states are: "attached", "attaching", "detaching"
         // 'detached' state doesn't apply here since it won't be attached to the instance
         $scope.loading = false;
@@ -45,6 +46,12 @@ angular.module('InstanceVolumes', [])
                 // Auto-refresh volumes if any of them are transitional
                 if (transitionalCount > 0) {
                     $timeout(function() {$scope.getInstanceVolumes()}, 4000);  // Poll every 4 seconds
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
                 }
             });
         };

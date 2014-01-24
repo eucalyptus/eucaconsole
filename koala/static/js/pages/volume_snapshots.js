@@ -6,6 +6,7 @@
 
 angular.module('VolumeSnapshots', ['TagEditor'])
     .controller('VolumeSnapshotsCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.loading = false;
         $scope.snapshots = [];
         $scope.jsonEndpoint = '';
@@ -35,6 +36,12 @@ angular.module('VolumeSnapshots', ['TagEditor'])
                 // Auto-refresh snapshots if any of them are in progress
                 if (inProgressCount > 0) {
                     $timeout(function() { $scope.getVolumeSnapshots(); }, 4000);  // Poll every 4 seconds
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
                 }
             });
         };
