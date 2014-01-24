@@ -144,7 +144,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     """Form class for launch more instances like this one"""
     number_error_msg = _(u'Number of instances is required')
     number = wtforms.IntegerField(
-        label=_(u'Number of instances'),
+        label=_(u'How many instances would you like to launch?'),
         validators=[
             validators.Required(message=number_error_msg),
             validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go
