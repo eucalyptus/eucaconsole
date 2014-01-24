@@ -10,6 +10,7 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
+        $scope.sortReverse = false;
         $scope.urlParams = $.url().param();
         $scope.initController = function (sortKey, jsonItemsEndpoint) {
             $scope.setInitialSort(sortKey);
@@ -22,6 +23,15 @@ angular.module('LandingPage', ['CustomFilters'])
                     $('#sorting-dropdown').removeClass('open');
                     $('#sorting-dropdown').removeAttr('style');
                 }
+            });
+            $scope.$watch('sortReverse', function(){
+                if( $scope.sortReverse == true ){
+                    $('#sorting-reverse').removeClass('down-caret');
+                    $('#sorting-reverse').addClass('up-caret');
+                }else{
+                    $('#sorting-reverse').removeClass('up-caret');
+                    $('#sorting-reverse').addClass('down-caret');
+                } 
             });
         };
         $scope.applyGetRequestFilters = function () {
@@ -79,6 +89,9 @@ angular.module('LandingPage', ['CustomFilters'])
                 }
             });
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
+        };
+        $scope.reverseSort = function(){
+           $scope.sortReverse = !$scope.sortReverse
         };
     })
 ;
