@@ -55,7 +55,7 @@
                 </div>
                 <div>
                     <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
-                    <a ng-href="/keypairs/{{ item.ip_address }}">{{ item.ip_address }}</a>
+                    <a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a>
                 </div>
                 <div>
                     <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -107,7 +107,7 @@
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
-                <td><a ng-href="/keypairs/{{ item.ip_address }}">{{ item.ip_address }}</a></td>
+                <td><a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a></td>
                 <td><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a></td>
                 <td>
                     <div ng-repeat="security_group in item.security_groups">
