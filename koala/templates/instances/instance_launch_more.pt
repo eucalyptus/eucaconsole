@@ -12,8 +12,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('instances')}" i18n:translate="">Instances</a></li>
-                    <li><a href="${request.route_url('instance_view', id=instance.id)}">${instance_name}</a></li>
-                    <li class="current"><a i18n:translate="">Launch more</a></li>
+                    <li class="current"><a i18n:translate="">Launch more instances like ${instance_name}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
