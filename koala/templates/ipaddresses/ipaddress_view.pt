@@ -29,7 +29,7 @@
                 <div tal:condition="eip.instance_id">
                     <p>
                         <span i18n:translate="">The IP address is associated with instance</span>
-                        <a href="/instances/${eip.instance_id}">${instance_name}</a>.
+                        <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>.
                     </p>
                     <a class="button secondary" data-reveal-id="disassociate-ip-modal" i18n:translate="">
                         Disassociate from instance

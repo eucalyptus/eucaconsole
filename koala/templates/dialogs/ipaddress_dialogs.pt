@@ -31,7 +31,7 @@
         <p i18n:translate="">If you disassociate an IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
         <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b><br />
-            from instance <b>${eip.instance_id if eip else '{{ instanceID }}'}</b>?</p>
+            from instance <b>${eip.instance_name if eip else '{{ instanceID }}'}</b>?</p>
         <form action="${action}" method="post">
             ${structure:disassociate_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
