@@ -12,13 +12,17 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
+        $scope.landingPageView = "gridview";
         $scope.urlParams = $.url().param();
         $scope.initController = function (sortKey, jsonItemsEndpoint) {
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
+            $scope.setWatch();
         };
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
+        };
+        $scope.setWatch = function(){
             $scope.$watch('sortBy',  function () {
                 if ($('#sorting-dropdown').hasClass('open')) {
                     $('#sorting-dropdown').removeClass('open');
@@ -34,6 +38,16 @@ angular.module('LandingPage', ['CustomFilters'])
                     $('#sorting-reverse').addClass('down-caret');
                 } 
             });
+            $scope.$watch('landingPageView', function(){
+               if( $scope.landingPageView == 'gridview' ){
+                   $('#gridview-button').addClass("selected");
+                   $('#tableview-button').removeClass("selected");
+               }else{
+                   $('#tableview-button').addClass("selected");
+                   $('#gridview-button').removeClass("selected");
+
+               }
+            }); 
         };
         $scope.applyGetRequestFilters = function () {
             // Apply an "all" match of filters based on URL params
@@ -96,7 +110,10 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
         $scope.reverseSort = function(){
-           $scope.sortReverse = !$scope.sortReverse
+            $scope.sortReverse = !$scope.sortReverse
+        };
+        $scope.switchView = function(view){
+            $scope.landingPageView = view;
         };
     })
 ;
