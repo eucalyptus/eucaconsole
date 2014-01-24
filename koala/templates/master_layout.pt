@@ -86,6 +86,14 @@
                     <li><a id="resource-menuitem-eip" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
                 </ul>
             </li>
+            <li class="has-dropdown" tal:condition="layout.username == 'admin'">
+                <a id="resource-menu-iam" class="lnk-iam" href="#">IAM</a>
+                <ul class="dropdown">
+                    <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
+                    <li class="divider"></li>
+                    <li><a id="resource-menuitem-groups" href="${request.route_url('groups')}">IAM Groups</a></li>
+                </ul>
+            </li>
         </ul>
     </section>
 </nav>

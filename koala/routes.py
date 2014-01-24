@@ -175,5 +175,11 @@ urls = [
     Route(name='users_json', pattern='/users/json'),
     Route(name='user_view', pattern='/users/{name}'),
     Route(name='user_update', pattern='/users/{name}/update'),
+
+    # Groups #####
+    Route(name='groups', pattern='/groups'),
+    Route(name='groups_json', pattern='/groups/json'),
+    Route(name='group_view', pattern='/groups/{name}'),
+    Route(name='group_update', pattern='/groups/{name}/update'),
 ]
 
