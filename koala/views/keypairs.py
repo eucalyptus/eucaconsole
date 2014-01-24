@@ -22,10 +22,6 @@ class KeyPairsView(LandingPageView):
         self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
 
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_key_pairs() if conn else []
-
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):
         json_items_endpoint = self.request.route_url('keypairs_json')
@@ -48,6 +44,12 @@ class KeyPairsView(LandingPageView):
             delete_form=self.delete_form,
         )
 
+
+class KeyPairsJsonView(BaseView):
+    def __init__(self, request):
+        super(KeyPairsJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
     @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
     def keypairs_json(self):
         keypairs = []
@@ -57,6 +59,9 @@ class KeyPairsView(LandingPageView):
                 fingerprint=keypair.fingerprint,
             ))
         return dict(results=keypairs)
+
+    def get_items(self):
+        return self.conn.get_all_key_pairs() if self.conn else []
 
 
 class KeyPairView(BaseView):
