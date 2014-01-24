@@ -15,6 +15,12 @@ from pyramid_layout.panel import panel_config
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
+@panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
+def top_nav(context, request):
+    """ Top nav bar panel"""
+    return dict()
+
+
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
