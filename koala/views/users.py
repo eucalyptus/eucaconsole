@@ -3,10 +3,8 @@
 Pyramid views for Eucalyptus and AWS Users
 
 """
-import re
 from urllib import urlencode
 
-from beaker.cache import cache_region
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -32,8 +30,7 @@ class UsersView(LandingPageView):
         json_items_endpoint = self.request.route_url('users_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
-        conn = self.get_connection(conn_type="iam")
-        group_choices = [] #sorted(set(conn.get_all_groups().groups))
+        group_choices = []  # sorted(set(conn.get_all_groups().groups))
         self.filter_fields = [
             LandingPageFilter(key='group', name='Groups', choices=group_choices),
         ]
@@ -78,6 +75,7 @@ class UsersJsonView(BaseView):
             return conn.get_all_users().users
         except EC2ResponseError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
+
 
 class UserView(TaggedItemView):
     """Views for single User"""

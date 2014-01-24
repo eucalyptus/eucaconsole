@@ -3,15 +3,12 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
-import re
 from urllib import urlencode
 
-from beaker.cache import cache_region
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-
 
 from ..forms.groups import GroupForm
 from ..models import Notification
@@ -32,13 +29,12 @@ class GroupsView(LandingPageView):
         json_items_endpoint = self.request.route_url('groups_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
-        conn = self.get_connection(conn_type="iam")
-        user_choices = [] #sorted(set(item.user_name for item in conn.get_all_users().users))
+        user_choices = []  # sorted(set(item.user_name for item in conn.get_all_users().users))
         self.filter_fields = [
             LandingPageFilter(key='user', name='Users', choices=user_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['name', 'path']
+        self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Group name')),
@@ -77,6 +73,7 @@ class GroupsJsonView(BaseView):
             return conn.get_all_groups().groups
         except EC2ResponseError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
+
 
 class GroupView(TaggedItemView):
     """Views for single Group"""

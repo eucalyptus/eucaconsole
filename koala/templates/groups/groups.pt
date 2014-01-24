@@ -66,11 +66,7 @@
                     {{ item.arn }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer">
-                <div class="footer">
-                     <span i18n:translate="">Launch instance</span>
-                </div>
-            </div>
+            <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Group name</th>
                 <th i18n:translate="">Path</th>
