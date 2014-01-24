@@ -64,8 +64,8 @@
                     Sort by
                     <a href="#" data-dropdown="sorting-dropdown">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
-                        <span class="down-caret"></span>
                     </a>
+                    <a ng-click="reverseSort()"><span id="sorting-reverse" class="down-caret"></span></a>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="">
                         <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
                             <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
@@ -99,7 +99,7 @@
                 </div>
             </div>
             <!-- Begin grid view -->
-            <div class="tile item" ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
+            <div class="tile item" ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
@@ -135,7 +135,7 @@
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
                 <tbody>
-                    <tr ng-repeat="item in items | orderBy: sortBy" ng-cloak="true">
+                    <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
                         <metal:block metal:define-slot="tableview_columns"></metal:block>
                     </tr>
                 </tbody>

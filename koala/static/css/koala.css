@@ -1516,6 +1516,8 @@ a.button.secondary.delete:hover { color: white; background-color: darkred; }
 a.circle { color: black; display: inline-block; }
 
 .down-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-top: 6px solid #76b800; border-left: 6px solid transparent; content: ''; }
+.up-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-bottom: 6px solid #76b800; border-left: 6px solid transparent; content: ''; }
+
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
 #notifications .alert-box { background-color: #40a8c6; }

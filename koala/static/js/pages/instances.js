@@ -21,6 +21,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.items = [];
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
+        $scope.sortReverse = false;
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
@@ -30,6 +31,15 @@ angular.module('InstancesPage', ['CustomFilters'])
                 if ($('#sorting-dropdown').hasClass('open')) { 
                     $('#sorting-dropdown').removeClass('open'); 
                     $('#sorting-dropdown').removeAttr('style'); 
+                } 
+            });
+            $scope.$watch('sortReverse', function(){
+                if( $scope.sortReverse == true ){
+                    $('#sorting-reverse').removeClass('down-caret');
+                    $('#sorting-reverse').addClass('up-caret');
+                }else{
+                    $('#sorting-reverse').removeClass('up-caret');
+                    $('#sorting-reverse').addClass('down-caret');
                 } 
             });
         };
@@ -79,6 +89,9 @@ angular.module('InstancesPage', ['CustomFilters'])
                 }
             });
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
+        };
+        $scope.reverseSort = function(){
+           $scope.sortReverse = !$scope.sortReverse
         };
     })
 ;

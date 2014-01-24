@@ -266,6 +266,16 @@ a.circle {
     content: '';
 }
 
+.up-caret {
+    position: relative;
+    top: -1px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid $euca-green;
+    border-left: 6px solid transparent;
+    content: '';
+}
+
 #notifications {
     margin-left: 1rem;
     margin-right: 1rem;
