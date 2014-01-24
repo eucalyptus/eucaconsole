@@ -11,7 +11,6 @@
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                     <li><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">${scaling_group.name}</a></li>
-                    <li><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></li>
                     <li class="current"><a href="#">Create policy</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
