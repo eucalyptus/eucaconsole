@@ -46,16 +46,25 @@ angular.module('VolumesPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
+        $scope.landingPageView = "gridview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
         $scope.setInitialSort = function (sortKey) {
             $scope.sortBy = sortKey;
-            $scope.$watch('sortBy',  function () { 
-                if ($('#sorting-dropdown').hasClass('open')) { 
-                    $('#sorting-dropdown').removeClass('open'); 
-                    $('#sorting-dropdown').removeAttr('style'); 
-                } 
+        };
+        $scope.initController = function (sortKey, jsonItemsEndpoint) {
+            $scope.jsonEndpoint = jsonItemsEndpoint;
+            $scope.setInitialSort(sortKey);
+            $scope.setWatch();
+            $scope.getItems();
+        };
+        $scope.setWatch = function(){
+            $scope.$watch('sortBy',  function () {
+                if ($('#sorting-dropdown').hasClass('open')) {
+                    $('#sorting-dropdown').removeClass('open');
+                    $('#sorting-dropdown').removeAttr('style');
+                }
             });
             $scope.$watch('sortReverse', function(){
                 if( $scope.sortReverse == true ){
@@ -66,11 +75,16 @@ angular.module('VolumesPage', ['CustomFilters'])
                     $('#sorting-reverse').addClass('down-caret');
                 } 
             });
-        };
-        $scope.initController = function (sortKey, jsonItemsEndpoint) {
-            $scope.jsonEndpoint = jsonItemsEndpoint;
-            $scope.setInitialSort(sortKey);
-            $scope.getItems();
+            $scope.$watch('landingPageView', function(){
+               if( $scope.landingPageView == 'gridview' ){
+                   $('#gridview-button').addClass("selected");
+                   $('#tableview-button').removeClass("selected");
+               }else{
+                   $('#tableview-button').addClass("selected");
+                   $('#gridview-button').removeClass("selected");
+
+               }
+            }); 
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -116,6 +130,9 @@ angular.module('VolumesPage', ['CustomFilters'])
         };
         $scope.reverseSort = function(){
            $scope.sortReverse = !$scope.sortReverse
+        };
+        $scope.switchView = function(view){
+            $scope.landingPageView = view;
         };
     })
 ;
