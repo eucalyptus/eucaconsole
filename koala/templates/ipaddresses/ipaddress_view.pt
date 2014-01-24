@@ -27,15 +27,18 @@
                     </a>
                 </div>
                 <div tal:condition="eip.instance_id">
-                    <p i18n:translate="">The IP address is associated with instance ${eip.instance_id}.</p>
+                    <p>
+                        <span i18n:translate="">The IP address is associated with instance</span>
+                        <a href="/instances/${eip.instance_id}">${instance_name}</a>.
+                    </p>
                     <a class="button secondary" data-reveal-id="disassociate-ip-modal" i18n:translate="">
                         Disassociate from instance
                     </a>
                 </div>
                 <div>
                     <p i18n:translate="">If you no longer need this IP address you can...</p>
-                    <a class="button secondary" data-reveal-id="release-ip-modal" i18n:translate=""
-                            >Release IP address to cloud
+                    <a class="button secondary" data-reveal-id="release-ip-modal"
+                       i18n:translate="">Release IP address to cloud
                     </a>
                 </div>
             </div>

@@ -171,11 +171,13 @@ class IPAddressView(BaseView):
         super(IPAddressView, self).__init__(request)
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
+        self.instance = self.get_instance()
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
         self.render_dict = dict(
             eip=self.elastic_ip,
+            instance_name=TaggedItemView.get_display_name(self.instance),
             associate_form=self.associate_form,
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
@@ -225,4 +227,10 @@ class IPAddressView(BaseView):
         ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
         elastic_ip = ip_addresses[0] if ip_addresses else None
         return elastic_ip
+
+    def get_instance(self):
+        if self.elastic_ip and self.elastic_ip.instance_id:
+            instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
+            return instances[0] if instances else None
+        return None
 
