@@ -148,7 +148,7 @@
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
     <ul id="breadcrumbs" class="breadcrumbs">
-        <li><a href="${request.route_url('dashboard')}" title="Home"><i class="fi-home"></i></a></li>
+        <li><a href="${request.route_url('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
         <metal:block metal:define-slot="crumbs" />
     </ul>
 </metal:breadcrumbs>

@@ -9,7 +9,7 @@
             <li><a id="resource-menu-images" href="${request.route_url('images')}">Images</a></li>
             <li><a id="resource-menu-instances" href="${request.route_url('instances')}">Instances</a></li>
             <li class="has-dropdown">
-                <a id="resource-menu-autoscaling" href="#">Auto Scaling</a>
+                <a id="resource-menu-autoscaling">Auto Scaling</a>
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-scalinggroups" href="${request.route_url('scalinggroups')}">Scaling Groups</a></li>
                     <li class="divider"></li>
@@ -17,7 +17,7 @@
                 </ul>
             </li>
             <li class="has-dropdown">
-                <a id="resource-menu-storage" href="#">Storage</a>
+                <a id="resource-menu-storage">Storage</a>
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-volumes" href="${request.route_url('volumes')}">Volumes</a></li>
                     <li class="divider"></li>
@@ -35,7 +35,7 @@
                 </ul>
             </li>
             <li class="has-dropdown" tal:condition="layout.username == 'admin'">
-                <a id="resource-menu-iam" href="#">IAM</a>
+                <a id="resource-menu-iam">IAM</a>
                 <ul class="dropdown">
                     <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
                     <li class="divider"></li>
