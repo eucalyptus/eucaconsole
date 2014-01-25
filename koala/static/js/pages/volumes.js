@@ -73,6 +73,7 @@ angular.module('VolumesPage', ['CustomFilters'])
             $scope.getItems();
         };
         $scope.getItems = function () {
+            $scope.itemsLoading = true;
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 var transitionalCount = 0;
