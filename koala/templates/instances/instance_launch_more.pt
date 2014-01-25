@@ -118,6 +118,52 @@
         </div>
         <div class="large-4 columns">
             <!--! help content goes here -->
+            <div class="help-content">
+                <h5 class="title">Launch More Instances Like This</h5>
+                <p>This dialog box allows you create one or more new instances that have the same characteristics as an instance you've already created.</p>
+                <h5 class="title">Specify the Number of Instances</h5>
+                <p>This panel allows you to specify the number of new instances to launch.</p>
+                <ol>
+                    <li>
+                        Enter the number of instances you'd like to launch into the <strong>Instances</strong> text box.
+                    </li>
+                    <li>
+                        You can optionally specify advanced options by clicking the <strong>Select advanced options</strong> link.
+                    <li>
+                    <li>
+                        Click the <strong>Launch Instance(s)</strong> button to launch your new instances.
+                    </li>
+                </ol>
+            </div>
+            <div class="help-content" ng-show="expanded">
+                <h5 class="title">Specify Advanced Options</h5>
+                <p>This panel allows you to specify advanced options for your new instance(s). You can add user data, override the kernal and RAM disk IDs, specify private networking, and add additional storage.</p>
+                <ol>
+                   <li>
+                      Specify custom user data by typing it into the <strong>User data</strong> text box or by attaching a file using the <strong>Attach file</strong> link.
+                   </li>
+                   <li>
+                       You can override the kernel ID in the selected image with the <strong>Kernel ID</strong> drop-down list box.
+                   </li>
+                   <li>
+                       You can override the RAM disk ID in the selected image with the <strong>RAM disk ID</strong> drop-down list box.
+                   </li>
+                   <li>
+                       Click the <strong>Network</strong> check box to specify that your new instance should use private addressing only. Private addresses cannot connect directly to the Internet and must go through a NAT (Network Address Translation) device or an elastic IP address mapped to the instance.
+                   </li>
+                   <li>
+                       For EBS-backed instances, you can configure the root volume of your instance:
+                       <ol>
+                           <li>
+                               Type the size of the attached storage in gigabytes into the <strong>Size (GB) </strong>text box.
+                           </li>
+                           <li>
+                               Select the <strong>Delete on termination</strong> check box if you would like the attached storage to be deleted when the instance is terminated.
+                           </li>
+                       </ol>
+                   </li>
+                </ol>
+            </div>
         </div>
     </div>
 </div>
