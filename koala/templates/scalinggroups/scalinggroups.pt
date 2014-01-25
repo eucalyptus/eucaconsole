@@ -12,8 +12,10 @@
                     <li class="current"><a href="#" i18n:translate="">Scaling groups</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
-            <a class="refresh-icon" ng-click="getItems('${json_items_endpoint}')">R</a>
-            <a class="help-icon" data-reveal-id="help-modal">?</a>
+            <span class="icon-block">
+                <a class="refresh-icon fi-refresh" ng-click="getItems('${json_items_endpoint}')"></a>
+                <a class="help-icon" data-reveal-id="help-modal">?</a>
+            </span>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
