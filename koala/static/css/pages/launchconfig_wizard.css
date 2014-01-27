@@ -5,6 +5,7 @@
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
 .wizard .tabs { margin-left: 16px; }
 .wizard .tabs dd.active .cir { background-color: #00415e; color: white; }
+.wizard .tabs dd.disabled { padding: 1rem 16px; }
 .wizard .tabs dd a { white-space: nowrap; padding: 1rem 16px; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #999999; color: white; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; border-right: 16px solid #eeeeee; border-left: 16px solid #eeeeee; }
