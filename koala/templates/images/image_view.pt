@@ -6,7 +6,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('images')}" i18n:translate="">Images</a></li>
-                    <li class="current"><a href="#">${image.id}</a></li>
+                    <li class="current"><a href="#">${image_display_name}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>

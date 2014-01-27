@@ -71,12 +71,14 @@ class ImagesJsonView(BaseView):
         images = []
         for image in self.get_items():
             platform = ImageView.get_platform(image)
+            tagged_name = image.tags.get('Name', '') if image.tags.get('Name', '') else ''
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
                 kernel_id=image.kernel_id,
                 name=image.name,
+                tagged_name=tagged_name,
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),
@@ -118,8 +120,11 @@ class ImageView(TaggedItemView):
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
+        self.image_display_name=self.get_display_name()
+        print "Image Display Name: " , self.image_display_name
         self.render_dict = dict(
             image=self.image,
+            image_display_name=self.image_display_name,
             image_form=self.image_form,
         )
 
@@ -171,6 +176,11 @@ class ImageView(TaggedItemView):
                             return choice
             return unknown
 
+    def get_display_name(self):
+        if self.image:
+            return TaggedItemView.get_display_name(self.image)
+        return None
+
     @staticmethod
     def get_platform_name(platform):
         """platform could be either a unicode object (e.g. 'windows')
@@ -188,3 +198,4 @@ class ImageView(TaggedItemView):
         if isinstance(platform, unicode):
             return platform
         return platform.key
+
