@@ -7,6 +7,7 @@ angular.module('BlockDeviceMappingEditor', [])
     .controller('BlockDeviceMappingEditorCtrl', function ($scope) {
         $scope.bdmTextarea = $('#bdmapping');
         $scope.bdMapping = {};
+        $scope.ephemeralCount = 0;
         $scope.setInitialNewValues = function () {
             $scope.newVolumeType = 'EBS';
             $scope.newSnapshotID = '';
@@ -46,7 +47,11 @@ angular.module('BlockDeviceMappingEditor', [])
                 'delete_on_termination': $scope.newDOT
             };
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
+            if ($scope.newVolumeType === 'ephemeral') {
+                $scope.ephemeralCount += 1;
+            }
             $scope.setInitialNewValues();  // Reset values
+            newMappingEntry.focus();
         };
         $scope.removeDevice = function (key) {
             var bdMapping = $scope.bdMapping;
