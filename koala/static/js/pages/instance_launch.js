@@ -12,6 +12,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.instanceNumber = 1;
+        $scope.instanceNames = [];
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
             $scope.instanceType = 'm1.small';

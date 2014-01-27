@@ -94,7 +94,7 @@ class LaunchInstanceForm(BaseSecureForm):
     userdata_file = wtforms.FileField(label=_(u''))
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
-    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
     def __init__(self, request, image=None, conn=None, **kwargs):
