@@ -99,6 +99,9 @@ $wizard-border-width: 16px;
     .section {
         padding: 0.5rem 0;
         border-bottom: 1px solid $euca-lightgrey;
+        &:last-child {
+            border-bottom: none;
+        }
     }
     #tag-preview {
         word-break: break-all;
