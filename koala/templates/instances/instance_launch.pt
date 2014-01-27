@@ -54,12 +54,12 @@
                             </p>
                             <div class="row">
                                 <div class="small-4 columns">
-                                    <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
+                                    <label i18n:translate="" class="right inline-label">Enter an Image ID</label>
                                 </div>
                                 <div class="small-8 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
                                     <a class="button secondary small" i18n:translate="" id="image-id-btn"
-                                       ng-click="inputImageID('${request.route_url('instance_create')}')">GO</a>
+                                       ng-click="inputImageID('${request.route_url('instance_create')}')">Next</a>
                                 </div>
                             </div>
                             <p>OR select an image below</p>
