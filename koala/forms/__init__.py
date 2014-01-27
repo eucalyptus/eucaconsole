@@ -86,11 +86,13 @@ class ChoicesManager(object):
             choices.extend(AWS_INSTANCE_TYPE_CHOICES)
         return choices
 
-    def security_groups(self, add_blank=True):
+    def security_groups(self, securitygroups=None, add_blank=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        security_groups = self.conn.get_all_security_groups() if self.conn else []
+        security_groups = securitygroups or []
+        if security_groups is None and self.conn is not None:
+            security_groups = self.conn.get_all_security_groups()
         for sgroup in security_groups:
             if sgroup.id:
                 choices.append((sgroup.name, sgroup.name))

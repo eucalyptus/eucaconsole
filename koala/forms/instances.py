@@ -97,10 +97,11 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.image = image
+        self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -120,7 +121,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.zone.choices = self.choices_manager.availability_zones()
         self.keypair.choices = self.choices_manager.keypairs()
-        self.securitygroup.choices = self.choices_manager.security_groups()
+        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 

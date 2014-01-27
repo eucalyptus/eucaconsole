@@ -20,6 +20,7 @@ from ..forms.instances import (
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
+from ..views.securitygroups import SecurityGroupsView
 
 
 class BaseInstanceView(BaseView):
@@ -545,8 +546,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.request = request
         self.image = self.get_image()
         self.location = self.request.route_url('instances')
+        self.securitygroups = self.get_security_groups()
         self.launch_form = LaunchInstanceForm(
-            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+            self.request, image=self.image, securitygroups=self.securitygroups,
+            conn=self.conn, formdata=self.request.params or None)
+        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_url('images_json')
         self.owner_choices = self.get_owner_choices()
         self.render_dict = dict(
@@ -555,6 +559,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
+            securitygroups_rules_json=self.securitygroups_rules_json,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -619,6 +624,17 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=self.location)
         return self.render_dict
+
+    def get_security_groups(self):
+        if self.conn:
+            return self.conn.get_all_security_groups()
+        return []
+
+    def get_securitygroups_rules(self):
+        rules_dict = {}
+        for security_group in self.securitygroups:
+            rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+        return rules_dict
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
