@@ -121,7 +121,6 @@ class ImageView(TaggedItemView):
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name=self.get_display_name()
-        print "Image Display Name: " , self.image_display_name
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
