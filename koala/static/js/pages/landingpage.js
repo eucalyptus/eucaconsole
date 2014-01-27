@@ -12,7 +12,7 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
-        $scope.landingPageView = "gridview";
+        $scope.landingPageView = "tableview";
         $scope.urlParams = $.url().param();
         $scope.initController = function (sortKey, jsonItemsEndpoint) {
             $scope.setInitialSort(sortKey);

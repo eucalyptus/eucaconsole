@@ -8,7 +8,7 @@ angular.module('InstancesPage', ['CustomFilters'])
     .controller('InstancesCtrl', function ($scope) {
         $scope.instanceID = '';
         $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'gridview';
+        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = instance['id'];
@@ -22,7 +22,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
-        $scope.landingPageView = "gridview";
+        $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;

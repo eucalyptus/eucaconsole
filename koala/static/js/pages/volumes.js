@@ -10,7 +10,7 @@ angular.module('VolumesPage', ['CustomFilters'])
         $scope.volumeZone = '';
         $scope.instancesByZone = '';
         $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'gridview';
+        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.initPage = function (instancesByZone) {
             $scope.instancesByZone = instancesByZone;
         };
@@ -46,7 +46,7 @@ angular.module('VolumesPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
-        $scope.landingPageView = "gridview";
+        $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
