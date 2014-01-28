@@ -12,7 +12,6 @@ angular.module('ScalingGroupInstances', [])
         $scope.instanceID = '';
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
-        $scope.markUnhealthyModal = $('#mark-unhealthy-modal');
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getItems();
@@ -39,10 +38,11 @@ angular.module('ScalingGroupInstances', [])
                 }
             });
         };
-        $scope.revealUnhealthyModal = function (instance) {
-            $scope.instanceID = instance['id'];
-            $scope.markUnhealthyModal.foundation('reveal', 'open');
-        }
+        $scope.revealModal = function (action, item) {
+            var modal = $('#' + action + '-instance-modal');
+            $scope.instanceID = item['id'];
+            modal.foundation('reveal', 'open');
+        };
     })
 ;
 

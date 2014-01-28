@@ -25,6 +25,10 @@
 
         <div class="large-8 columns">
             <div class="panel gridwrapper no-title">
+                <p tal:condition="not policies">
+                    <span i18n:translate="">To automatically scale your group up or down, please</span>
+                    <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
+                </p>
                 <div ng-show="initialLoading">
                     <span class="dots">&nbsp;</span>
                 </div>
@@ -37,7 +41,8 @@
                         <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View properties</a></li>
-                            <li><a i18n:translate="" ng-click="revealUnhealthyModal(item)">Mark unhealthy</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('markunhealthy', item)">Mark unhealthy</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a></li>
                         </ul>
                     </div>
                     <div class="content">
@@ -62,7 +67,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        <div id="mark-unhealthy-modal" class="reveal-modal small" data-reveal="">
+        <div id="markunhealthy-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Mark instance unhealthy</h3>
             <p><span i18n:translate="">Are you sure you want to mark the following instance as unhealthy?</span>
                <b>{{ instanceID }}</b>?</p>
@@ -71,9 +76,30 @@
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
                         leftcol_width=6, rightcol_width=6)}
-                <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
-                    Yes, mark unhealthy
-                </button>
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns">
+                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                        Yes, mark unhealthy
+                    </button>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p><span i18n:translate="">Are you sure you want to terminate the following instance?</span>
+               <b>{{ instanceID }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
+                ${structure:terminate_form['csrf_token']}
+                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                ${panel('form_field', field=terminate_form['decrement_capacity'],
+                        leftcol_width=8, rightcol_width=4)}
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns">
+                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                        Yes, terminate
+                    </button>
+                </div>
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
