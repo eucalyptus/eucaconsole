@@ -13,7 +13,7 @@
 #image-picker .table .icon .image.suse { background-position: 0 -251px; }
 #image-picker .table .icon .image.debian { background-position: 0 -301px; }
 #image-picker .table .icon .image.linux { background-position: 0 -351px; }
-#image-picker .table .icon .image.windows { background-position: 0 -401px; }
+#image-picker .table .icon .image.windows { background-position: 0 50px; }
 #image-picker .table .name a { line-height: 1rem; font-size: 1.1rem; }
 #image-picker .table .label { padding: 3px 4px; }
 #image-picker .table .label.i386 { background-color: #6a6a6a; }

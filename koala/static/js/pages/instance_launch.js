@@ -12,6 +12,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.instanceNumber = 1;
+        $scope.instanceNames = [];
+        $scope.securityGroupsRules = {};
+        $scope.selectedGroupRules = [];
+        $scope.updateSelectedSecurityGroupRules = function () {
+            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
             $scope.instanceType = 'm1.small';
@@ -48,8 +54,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.initController = function () {
+        $scope.initController = function (securityGroupsRulesJson) {
+            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.setInitialValues();
+            $scope.updateSelectedSecurityGroupRules();
             $scope.watchTags();
             $scope.focusEnterImageID();
         };

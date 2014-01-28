@@ -101,10 +101,12 @@ class ImagesJsonView(BaseView):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
         cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
 
+        # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
         def _get_images_cache(_owners, _region):
             try:
-                return conn.get_all_images(owners=_owners) if conn else []
+                filters = {'image-type': 'machine'}
+                return conn.get_all_images(owners=_owners, filters=filters) if conn else []
             except EC2ResponseError as exc:
                 return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)

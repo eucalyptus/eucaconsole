@@ -3,6 +3,7 @@
 Core views
 
 """
+from operator import itemgetter
 import simplejson as json
 import textwrap
 from urllib import urlencode

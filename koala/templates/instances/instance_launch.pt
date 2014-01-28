@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
-         ng-init="initController()">
+         ng-init="initController('${securitygroups_rules_json}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -30,18 +30,18 @@
                                 <span class="cir">1</span> <b>Image</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image" class="active">
-                            <a id="tabStep2" href="#step2">
-                                <span class="cir">2</span> <b>Type</b>
+                        <dd class="${'active' if image else 'disabled'}">
+                            <a id="tabStep2" tal:attributes="href '#step2' if image else None" tal:omit-tag="not image">
+                                <span class="cir">2</span> <b>Details</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image">
-                            <a id="tabStep3" href="#step3">
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep3"  tal:attributes="href '#step3' if image else None" tal:omit-tag="not image">
                                 <span class="cir">3</span> <b>Security</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image">
-                            <a id="tabStep4" href="#step4">
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep4" tal:attributes="href '#step4' if image else None" tal:omit-tag="not image">
                                 <span class="cir">4</span> <b>Advanced</b>
                             </a>
                         </dd>
@@ -50,26 +50,26 @@
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
                             <p class="description" i18n:translate="">
-                                Machine image for your virtual machine
+                                Specify a machine image for your virtual machine instance
                             </p>
                             <div class="row">
                                 <div class="small-4 columns">
-                                    <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
+                                    <label i18n:translate="" class="right inline-label">Enter an Image ID</label>
                                 </div>
                                 <div class="small-8 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
                                     <a class="button secondary small" i18n:translate="" id="image-id-btn"
-                                       ng-click="inputImageID('${request.route_url('instance_create')}')">GO</a>
+                                       ng-click="inputImageID('${request.route_url('instance_create')}')">Next</a>
                                 </div>
                             </div>
                             <p>OR select an image below</p>
                             ${panel('image_picker', image=image, owner_choices=owner_choices,
                                     images_json_endpoint=images_json_endpoint)}
                             <div class="row" tal:condition="image">
-                                <div class="small-6 columns">&nbsp;</div>
-                                <div class="small-6 columns field inline">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
-                                        <span i18n:translate="">Next: Select type</span>
+                                        <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
                             </div>
@@ -77,27 +77,34 @@
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
                             <p class="description" i18n:translate="">
-                                Specify the number of instances, their name(s), the instance size/type, the availability zone, and tags.
+                                Specify the number, name(s), size, availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], maxlength=2, ng_attrs={'model': 'instanceNumber'})}
+                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9,
+                                    min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'})}
                             <div class="row controls-wrapper" ng-cloak="">
-                                <div class="small-4 columns">
-                                    <label i18n:translate="">Names</label>
+                                <div class="small-3 columns">
+                                    <label>
+                                        <span i18n:translate="">Name</span><span ng-show="instanceNumber > 1">s</span>
+                                    </label>
                                 </div>
-                                <div class="small-8 columns field inline">
-                                    <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
-                                           name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" />
+                                <div class="small-9 columns field inline">
+                                    <span ng-repeat="name in buildNumberList(instanceNumber)">
+                                        <input class="name" placeholder="instance{{ $index + 1 }}"
+                                               name="name_{{ $index }}" ng-model="instanceNames[$index]" />
+                                    </span>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['instance_type'], ng_attrs={'model': 'instanceType'})}
-                            ${panel('form_field', field=launch_form['zone'], ng_attrs={'model': 'instanceZone'})}
-                            ${panel('tag_editor')}
+                            ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'instanceZone'})}
+                            ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                             <hr />
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
-                                        <span i18n:translate="">Next: Select security</span>
+                                        <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
                             </div>
@@ -105,13 +112,45 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">
-                                Specify the key pair and security group.
+                                Specify key pair and security group.
                             </p>
-                            ${panel('form_field', field=launch_form['keypair'], ng_attrs={'model': 'keyPair'})}
-                            ${panel('form_field', field=launch_form['securitygroup'], ng_attrs={'model': 'securityGroup'})}
+                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'keyPair'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9,
+                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()'})}
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns rules-title" ng-show="selectedGroupRules.length > 0">
+                                    <span i18n:translate="">Incoming rules for security group</span>
+                                    <b>{{ securityGroup }}</b>:
+                                </div>
+                                <div class="small-9 columns rules-title" ng-show="selectedGroupRules.length === 0">
+                                    <p>
+                                        <span i18n:translate="">WARNING, NO RULES DEFINED!</span>
+                                        Your instance(s) will not be accessible until you add rules to this security group
+                                        (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
+                                        You can add rules to security group
+                                        <a ng-href="/securitygroups/{{ securityGroup }}" target="_blank">{{ securityGroup }}</a>
+                                        after you launch the instance(s) if you select security group {{ securityGroup }}.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns">
+                                    <strong i18n:translate="">Rule</strong>:
+                                    {{ rule.ip_protocol.toUpperCase() }}
+                                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                                    <span ng-repeat="grant in rule.grants">
+                                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                                        <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="launch-instance-btn-step3">
                                         <span i18n:translate="">Launch instance<span ng-show="instanceNumber > 1">s</span></span>
                                     </button><br />
@@ -127,12 +166,12 @@
                             <p class="description" i18n:translate="">
                                 User data and other advanced options (optional).
                             </p>
-                            ${panel('form_field', field=launch_form['userdata'])}
-                            ${panel('form_field', field=launch_form['userdata_file'])}
+                            ${panel('form_field', field=launch_form['userdata'], ng_attrs={'model': 'userData'})}
+                            ${panel('form_field', field=launch_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
-                            ${panel('form_field', field=launch_form['monitoring_enabled'])}
-                            ${panel('form_field', field=launch_form['private_addressing'])}
+                            ${panel('form_field', field=launch_form['monitoring_enabled'], ng_attrs={'model': 'monitoringEnabled'})}
+                            ${panel('form_field', field=launch_form['private_addressing'], ng_attrs={'model': 'privateAddressing'})}
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -154,50 +193,71 @@
             <h5 i18n:translate="" class="title">Summary</h5>
             <div class="section">
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Image:</label></div>
-                    <div class="small-8 columns value">${image.name or image.id}</div>
+                    <label i18n:translate="">Image:</label>
+                    <div class="columns value">${image.name or image.id}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
-                    <div class="small-8 columns value">${image.platform_name}</div>
+                    <label i18n:translate="">Platform:</label>
+                    <div class="columns value">${image.platform_name}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Root device:</label></div>
-                    <div class="small-8 columns value">${image.root_device_type}</div>
-                </div>
-                <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Manifest:</label></div>
-                    <div class="small-8 columns value">${image.location}</div>
+                    <label i18n:translate="">Root device:</label>
+                    <div class="columns value">${image.root_device_type}</div>
                 </div>
             </div>
             <div class="section">
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
-                    <div class="small-8 columns value">{{ instanceNumber }}</div>
+                    <label i18n:translate="">Size:</label>
+                    <div class="columns value">{{ instanceType }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
-                    <div class="small-8 columns value">{{ instanceType }}</div>
+                    <label i18n:translate="">Number:</label>
+                    <div class="columns value">{{ instanceNumber }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Zone:</label></div>
-                    <div class="small-8 columns value">{{ instanceZone }}</div>
+                    <label i18n:translate="">Zone:</label>
+                    <div class="columns value">{{ instanceZone }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Tags:</label></div>
-                    <div class="small-8 columns value" id="tag-preview">
+                    <label i18n:translate="">Names:</label>
+                    <div class="columns value">
+                        <span ng-repeat="instanceName in instanceNames">
+                            {{ instanceName }}<span ng-show="!$last">, </span>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <label i18n:translate="">Tags:</label>
+                    <div class="columns value" id="tag-preview">
                         <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
                     </div>
                 </div>
             </div>
             <div class="section">
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Key pair:</label></div>
-                    <div class="small-8 columns value">{{ keyPair }}</div>
+                    <label i18n:translate="">Key:</label>
+                    <div class="columns value">{{ keyPair }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                    <div class="small-8 columns value">{{ securityGroup }}</div>
+                    <label i18n:translate="">Security group:</label>
+                    <div class="columns value">{{ securityGroup }}</div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="columns value" ng-show="userData || userDataFile">
+                        <i class="fi-check"></i> User data added
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns value" ng-show="monitoringEnabled">
+                        <i class="fi-check"></i> Monitoring enabled
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns value" ng-show="privateAddressing">
+                        <i class="fi-check"></i> Uses private addressing
+                    </div>
                 </div>
             </div>
         </div>
