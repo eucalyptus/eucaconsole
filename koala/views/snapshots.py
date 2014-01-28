@@ -48,26 +48,6 @@ class SnapshotsView(LandingPageView):
         ))
         return self.render_dict
 
-    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
-    def snapshots_json(self):
-        snapshots = []
-        for snapshot in self.get_items():
-            volume = self.get_volume(snapshot.volume_id)
-            volume_name = TaggedItemView.get_display_name(volume)
-            snapshots.append(dict(
-                id=snapshot.id,
-                description=snapshot.description,
-                name=snapshot.tags.get('Name', snapshot.id),
-                progress=snapshot.progress,
-                start_time=snapshot.start_time,
-                status=snapshot.status,
-                tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
-                volume_id=snapshot.volume_id,
-                volume_name=volume_name,
-                volume_size=snapshot.volume_size,
-            ))
-        return dict(results=snapshots)
-
     @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_delete(self):
         snapshot_id = self.request.params.get('snapshot_id')
@@ -125,20 +105,10 @@ class SnapshotsView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
 
-    def get_items(self):
-        # TODO: cache me
-        return self.conn.get_all_snapshots(owner='self') if self.conn else []
-
     def get_snapshot(self, snapshot_id):
         if snapshot_id:
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
-        return None
-
-    def get_volume(self, volume_id):
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
         return None
 
     @staticmethod
@@ -151,6 +121,46 @@ class SnapshotsView(LandingPageView):
             dict(key='status', name=_(u'Status')),
             dict(key='volume_id', name=_(u'Volume ID')),
         ]
+
+
+class SnapshotsJsonView(BaseView):
+
+    def __init__(self, request):
+        super(SnapshotsJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+        self.volumes = self.get_volumes()
+
+    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
+    def snapshots_json(self):
+        snapshots = []
+        for snapshot in self.get_items():
+            volume = self.get_volume(snapshot.volume_id)
+            volume_name = TaggedItemView.get_display_name(volume)
+            snapshots.append(dict(
+                id=snapshot.id,
+                description=snapshot.description,
+                name=snapshot.tags.get('Name', snapshot.id),
+                progress=snapshot.progress,
+                start_time=snapshot.start_time,
+                status=snapshot.status,
+                tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
+                volume_id=snapshot.volume_id,
+                volume_name=volume_name,
+                volume_size=snapshot.volume_size,
+            ))
+        return dict(results=snapshots)
+
+    def get_items(self):
+        return self.conn.get_all_snapshots(owner='self') if self.conn else []
+
+    def get_volumes(self):
+        return self.conn.get_all_volumes() if self.conn else []
+
+    def get_volume(self, volume_id):
+        if volume_id and self.volumes:
+            volumes_list = [volume for volume in self.volumes if volume.id == volume_id]
+            return volumes_list[0] if volumes_list else None
+        return None
 
 
 class SnapshotView(TaggedItemView):
