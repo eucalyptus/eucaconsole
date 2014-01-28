@@ -165,6 +165,9 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
         # Set error messages
         self.name.error_msg = self.name_error_msg
 
+        # Set initial data
+        self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
     """Edit Scaling Group form"""

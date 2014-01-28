@@ -30,13 +30,8 @@
                             </a>
                         </dd>
                         <dd>
-                            <a id="tabStep2" href="#step2">
+                            <a id="tabStep2" href="#step2" ng-click="visitNextStep(2, $event)">
                                 <span class="cir">2</span> <b>Membership</b>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a id="tabStep3" href="#step3">
-                                <span class="cir">3</span> <b>Tags</b>
                             </a>
                         </dd>
                     </dl>
@@ -47,10 +42,10 @@
                             ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
-                                <div class="medium-4 columns">
-                                    <h6 class="right" i18n:translate="">Capacity</h6>
+                                <div class="medium-2 columns">
+                                    <h6 i18n:translate="">Capacity</h6>
                                 </div>
-                                <div class="medium-8 columns">
+                                <div class="medium-10 columns">
                                     ${panel('form_field', field=create_form['min_size'], maxlength=2,
                                             ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
                                     ${panel('form_field', field=create_form['desired_capacity'], maxlength=2,
@@ -60,12 +55,14 @@
                                 </div>
                             </div>
                             <hr />
+                            ${panel('autoscale_tag_editor', tags=[])}
+                            <hr />
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
-                                        <span i18n:translate="">Next: Membership</span>
+                                        <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
                             </div>
@@ -77,27 +74,13 @@
                             ${panel('form_field', field=create_form['availability_zones'],
                                     ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             <div>&nbsp;</div>
+                            <hr />
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
-                                        <span i18n:translate="">Next: Tags</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <!--! Step 3: Tags tab content -->
-                        <div class="content" id="step3">
-                            ${panel('autoscale_tag_editor', tags=[])}
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-2 columns">&nbsp;</div>
-                                <div class="small-10 columns field inline">
                                     <button type="submit" class="button" id="create-scalinggroup-btn">
                                         <span i18n:translate="">Create scaling group</span>
                                     </button>
-                                    <a href="${request.route_url('scalinggroups')}"
-                                       class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -108,34 +91,34 @@
         </div>
         <div class="large-4 columns summary" ng-cloak="">
             <h5 i18n:translate="" class="title">Summary</h5>
-            <div class="section">
+            <div class="section step1">
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
-                    <div class="small-8 columns value">{{ scalingGroupName }}</div>
+                    <label i18n:translate="">Name:</label>
+                    <div class="columns value">{{ scalingGroupName }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Launch configuration:</label></div>
-                    <div class="small-8 columns value">{{ launchConfig }}</div>
+                    <label i18n:translate="">Launch configuration:</label>
+                    <div class="columns value">{{ launchConfig }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Instances:</label></div>
-                    <div class="small-8 columns value">
+                    <label i18n:translate="">Instances:</label>
+                    <div class="columns value">
                         Min: {{ minSize }}, Desired: {{ desiredCapacity }}, Max: {{ maxSize }}
                     </div>
                 </div>
             </div>
-            <div class="section">
+            <div class="section step2 hide">
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Health check:</label></div>
-                    <div class="small-8 columns value">{{ healthCheckType }}</div>
+                    <label i18n:translate="">Health check:</label>
+                    <div class="columns value">{{ healthCheckType }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Grace period:</label></div>
-                    <div class="small-8 columns value">{{ healthCheckPeriod }}</div>
+                    <label i18n:translate="">Grace period:</label>
+                    <div class="columns value">{{ healthCheckPeriod }}</div>
                 </div>
                 <div class="row">
-                    <div class="small-4 columns"><label i18n:translate="" class="right">Availability zones:</label></div>
-                    <div class="small-8 columns value">
+                    <label i18n:translate="">Availability zones:</label>
+                    <div class="columns value">
                         <span ng-repeat="zone in availZones">{{ zone }}<span ng-show="!$last">, </span></span>
                     </div>
                 </div>
