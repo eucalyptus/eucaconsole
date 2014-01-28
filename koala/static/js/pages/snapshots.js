@@ -27,14 +27,8 @@ angular.module('SnapshotsPage', ['CustomFilters'])
         $scope.sortByCookie = '';
         $scope.sortReverseCookie = '';
         $scope.landingPageViewCookie = '';
-        $scope.initController = function (sortKey, jsonItemsEndpoint) {
+        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
-
-            // TEMP SOl. to extrac the page resource string. After the merge of GUI-172, this part should be refactored
-            tempArray = jsonItemsEndpoint.split('/');
-            tempArray.pop();
-            var pageResource = tempArray.pop();
-
             $scope.initCookieStrings(pageResource);
             $scope.setInitialSort(sortKey);
             $scope.setWatch();
