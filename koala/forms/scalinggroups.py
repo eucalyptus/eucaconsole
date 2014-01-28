@@ -322,3 +322,7 @@ class ScalingGroupInstancesMarkUnhealthyForm(BaseSecureForm):
     respect_grace_period = wtforms.BooleanField(label=_(u'Respect grace period?'))
 
 
+class ScalingGroupInstancesTerminateForm(BaseSecureForm):
+    """Scaling Group instance terminate form"""
+    decrement_capacity = wtforms.BooleanField(label=_(u'Decrement capacity of scaling group?'))
+

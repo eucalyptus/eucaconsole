@@ -19,7 +19,7 @@ from pyramid.view import view_config
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
-    ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
+    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
@@ -210,9 +210,11 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         self.scaling_group = self.get_scaling_group()
         self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
             self.request, formdata=self.request.params or None)
+        self.terminate_form = ScalingGroupInstancesTerminateForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             markunhealthy_form=self.markunhealthy_form,
+            terminate_form=self.terminate_form,
             json_items_endpoint=self.request.route_url('scalinggroup_instances_json', id=self.scaling_group.name),
         )
 
@@ -241,6 +243,28 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.markunhealthy_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_instances_terminate', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_instances_terminate(self):
+        location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
+        if self.terminate_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
+            try:
+                self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
+                time.sleep(5)
+                prefix = _(u'Successfully sent terminate request for instance')
+                msg = '{0} {1}'.format(prefix, instance_id)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.terminate_form.get_errors_list()
         return self.render_dict
 
 
@@ -436,14 +460,12 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
                     load_balancers=self.request.params.getall('load_balancers'),
-                    # default_cooldown=None,  # TODO: Implement
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),
                     min_size=self.request.params.get('min_size'),
                     max_size=self.request.params.get('max_size'),
                     tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
-                    # termination_policies=self.request.params.get('policies'),  # TODO: Implement
                 )
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
