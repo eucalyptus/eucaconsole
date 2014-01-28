@@ -26,40 +26,29 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.itemsLoading = true;
         $scope.initialLoading = true;
         $scope.pageResource = '';
-        $scope.sortByCookie = '';
-        $scope.sortReverseCookie = '';
-        $scope.landingPageViewCookie = '';
+        $scope.sortByKey = '';
+        $scope.sortReverseKey = '';
+        $scope.landingPageViewKey = '';
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
-            $scope.initCookieStrings(pageResource);
+            $scope.initLocalStorageKeys(pageResource);
             $scope.setInitialSort(sortKey);
             $scope.setWatch();
             $scope.getItems();
         };
-        $scope.initCookieStrings = function (pageResource){
+        $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
-            $scope.sortByCookie = $scope.pageResource + "-sortBy";
-            $scope.sortReverseCookie = $scope.pageResource + "-sortReverse";
-            $scope.landingPageViewCookie = $scope.pageResource + "-landingPageView";
+            $scope.sortByKey = $scope.pageResource + "-sortBy";
+            $scope.sortReverseKey = $scope.pageResource + "-sortReverse";
+            $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
-            if($.cookie($scope.sortByCookie) == null ){
-                $scope.sortBy = sortKey;
-            }else{
-                $scope.sortBy = $.cookie($scope.sortByCookie);
-            }
-
-            if($.cookie($scope.sortReverseCookie) == null ){
-                $scope.sortReverse = false;
-            }else{
-                $scope.sortReverse = ($.cookie($scope.sortReverseCookie) === 'true');
-            }
-
-            if($.cookie($scope.landingPageViewCookie) == null ){
-                $scope.landingPageView = "tableview";
-            }else{
-                $scope.landingPageView = $.cookie($scope.landingPageViewCookie);
-            }
+            var storedSort = localStorage.getItem($scope.sortByKey),
+                storedSortReverse = localStorage.getItem($scope.sortReverseKey),
+                storedLandingPageView = localStorage.getItem($scope.landingPageViewKey);
+            $scope.sortBy = storedSort || sortKey;
+            $scope.sortReverse = storedSortReverse == null ? false : (storedSortReverse === 'true');
+            $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
         };
         $scope.setWatch = function () {
             var sortingDropdown = $('#sorting-dropdown'),
@@ -69,19 +58,19 @@ angular.module('InstancesPage', ['CustomFilters'])
                     sortingDropdown.removeClass('open');
                     sortingDropdown.removeAttr('style');
                 }
-                // Set sortBy Cookie
-                $.cookie($scope.sortByCookie, $scope.sortBy);
+                // Set sortBy in localStorage
+                localStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
             $scope.$watch('sortReverse', function(){
-                if( $scope.sortReverse == true ){
+                if ($scope.sortReverse == true) {
                     sortingReverse.removeClass('down-caret');
                     sortingReverse.addClass('up-caret');
-                }else{
+                } else {
                     sortingReverse.removeClass('up-caret');
                     sortingReverse.addClass('down-caret');
-                } 
-                // Set SortReverse Cookie
-                $.cookie($scope.sortReverseCookie, $scope.sortReverse);
+                }
+                // Set SortReverse in localStorage
+                localStorage.setItem($scope.sortReverseKey, $scope.sortReverse);
             });
             $scope.$watch('landingPageView', function () {
                 var gridviewBtn = $('#gridview-button'),
@@ -93,8 +82,8 @@ angular.module('InstancesPage', ['CustomFilters'])
                    tableviewBtn.addClass("selected");
                    gridviewBtn.removeClass("selected");
                }
-               // Set landingPageView Cookie
-               $.cookie($scope.landingPageViewCookie, $scope.landingPageView);
+               // Set landingPageView in localStorage
+               localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             }); 
         };
         $scope.getItems = function () {
