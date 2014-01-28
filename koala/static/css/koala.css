@@ -1386,7 +1386,6 @@ body { position: relative; color: #333; background: #eaedee url(../img/main-bgfi
 #pagetitle { position: relative; }
 #pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; padding-bottom: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #c8dfe8; }
 #pagetitle .icon-block { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
-#pagetitle .refresh-icon { position: relative; padding: 8px 16px; border-left: 1px solid #80b6ca; }
 #pagetitle .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #80b6ca; font-weight: bold; text-align: center; }
 
 /* ----------------------------------------- Main Content

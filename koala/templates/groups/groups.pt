@@ -12,7 +12,10 @@
                     <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
-            <a class="help-icon" data-reveal-id="help-modal">?</a>
+            <span class="icon-block">
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
+                <a class="help-icon" data-reveal-id="help-modal">?</a>
+            </span>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />

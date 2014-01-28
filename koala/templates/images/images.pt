@@ -13,7 +13,7 @@
                 </metal:crumbs>
             </metal:breadcrumbs>
             <span class="icon-block">
-                <a class="refresh-icon fi-refresh" ng-click="getItems('${json_items_endpoint}')"></a>
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
                 <a class="help-icon" data-reveal-id="help-modal">?</a>
             </span>
         </h3>

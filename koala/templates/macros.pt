@@ -15,6 +15,16 @@
     </a>
 </p>
 
+<!-- Refresh icon for landing pages === -->
+<metal:refresh_icon metal:define-macro="refresh_icon">
+    <span ng-cloak="">
+        <a class="refresh-icon" ng-show="!itemsLoading"
+           ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
+        <a class="refresh-icon" ng-show="itemsLoading"><span class="dots"></span></a>
+    </span>
+</metal:refresh_icon>
+
+
 <!-- Filter form for landing pages =====
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form metal:define-macro="properties_filter_form">
@@ -86,7 +96,7 @@
                 {{ items.length }} <span class="hide-for-small">items</span> found
             </div>
         </div>
-        <div ng-show="itemsLoading">Loading...</div>
+        <div ng-show="itemsLoading"><span class="dots"></span></div>
         <div id="gridview" class="gridwrapper" ng-show="landingPageView == 'gridview'">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">

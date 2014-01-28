@@ -67,6 +67,9 @@
 
 #sorting-controls, #results-count { padding-top: 1rem; }
 
+.refresh-icon { position: relative; padding: 8px 16px; border-left: 1px solid #80b6ca; }
+.refresh-icon .dots { width: 20px; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
