@@ -178,6 +178,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         ],
     )
     termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
     termination_policies = wtforms.SelectMultipleField(
         label=_(u'Termination policies'),
         validators=[
@@ -200,6 +201,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         # Set help text
         self.default_cooldown.help_text = self.default_cooldown_help_text
         self.health_check_period.help_text = self.health_check_period_help_text
+        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown

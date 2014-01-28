@@ -45,11 +45,13 @@
                                     ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                         </div>
                     </div>
+                    <div>&nbsp;</div>
+                    ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
                     <hr />
+                    <h6 i18n:translate="">Details</h6>
                     ${panel('form_field', field=edit_form['launch_config'])}
                     ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
                     ${panel('form_field', field=edit_form['load_balancers'], **load_balancers_html_attrs)}
-                    ${panel('form_field', field=edit_form['termination_policies'], **term_policies_html_attrs)}
                     ${panel('form_field', field=edit_form['default_cooldown'], step='30')}
                     <hr />
                     <h6 i18n:translate="">Health Check</h6>
