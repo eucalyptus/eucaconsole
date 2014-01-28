@@ -15,6 +15,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.maxSize = 2;
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
+        $scope.summarySection = $('.summary');
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
@@ -22,11 +23,19 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.setLaunchConfig = function () {
             $scope.launchConfig = $scope.urlParams['launch_config'] || '';
         };
+        $scope.setInitialValues = function () {
+            $scope.availZones = $('#availability_zones').val();
+        };
         $scope.initController = function () {
             $scope.initChosenSelectors();
             $scope.setLaunchConfig();
+            $scope.setInitialValues();
         };
         $scope.visitNextStep = function (nextStep, $event) {
+            // Unhide step 2 of summary
+            if (nextStep === 2) {
+                $scope.summarySection.find('.step2').removeClass('hide');
+            }
             // Trigger form validation before proceeding to next step
             $scope.form.trigger('validate');
             var currentStep = nextStep - 1,

@@ -32,7 +32,8 @@
                 <div class="small-3 columns">
                     <input id="propagate-checkbox" class="taginput propagate" type="checkbox" ng-model="newTagPropagate" />
                     <span class="label secondary" i18n:translate="" ng-click="togglePropagateCheckbox()"
-                          data-tooltip="" title="Propagate to instances" i18n:attributes="title">Propagate</span>
+                          data-tooltip="" title="Propagate to instances launched by this scaling group"
+                          i18n:attributes="title">Propagate</span>
                 </div>
                 <div class="small-4 columns">
                     <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern}" />
