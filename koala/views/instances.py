@@ -574,6 +574,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
             key_name = self.request.params.get('keypair')
+            if key_name and key_name == 'none':
+                key_name = None  # Handle "None (advanced)" option
             num_instances = int(self.request.params.get('number', 1))
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names

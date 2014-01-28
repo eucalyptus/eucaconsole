@@ -120,7 +120,7 @@ class LaunchInstanceForm(BaseSecureForm):
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.zone.choices = self.choices_manager.availability_zones()
-        self.keypair.choices = self.choices_manager.keypairs()
+        self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
@@ -139,6 +139,11 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
+
+    def get_keypair_choices(self):
+        choices = self.choices_manager.keypairs()
+        choices.append(('none', _(u'None (advanced option)')))
+        return choices
 
 
 class LaunchMoreInstancesForm(BaseSecureForm):
