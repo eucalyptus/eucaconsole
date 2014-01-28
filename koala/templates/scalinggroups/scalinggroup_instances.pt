@@ -25,6 +25,10 @@
 
         <div class="large-8 columns">
             <div class="panel gridwrapper no-title">
+                <p tal:condition="not policies">
+                    <span i18n:translate="">To automatically scale your group up or down, please</span>
+                    <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
+                </p>
                 <div ng-show="initialLoading">
                     <span class="dots">&nbsp;</span>
                 </div>

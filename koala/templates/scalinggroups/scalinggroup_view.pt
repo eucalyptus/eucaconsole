@@ -26,6 +26,10 @@
 
         <div class="large-7 columns">
             <div class="panel no-title">
+                <p tal:condition="not policies">
+                    <span i18n:translate="">To automatically scale your group up or down, please</span>
+                    <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
+                </p>
                 <form action="${request.route_url('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
