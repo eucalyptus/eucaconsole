@@ -19,7 +19,6 @@ class KeyPairsView(LandingPageView):
         super(KeyPairsView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/keypairs'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
@@ -34,7 +33,6 @@ class KeyPairsView(LandingPageView):
         ]
 
         return dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,

@@ -13,7 +13,7 @@
                 </metal:crumbs>
             </metal:breadcrumbs>
             <span class="icon-block">
-                <a class="refresh-icon fi-refresh" ng-click="getItems('${json_items_endpoint}')"></a>
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
                 <a class="help-icon" data-reveal-id="help-modal">?</a>
             </span>
         </h3>
@@ -151,7 +151,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instances.js')}"></script>
 </div>

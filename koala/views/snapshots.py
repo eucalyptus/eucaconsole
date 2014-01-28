@@ -31,7 +31,6 @@ class SnapshotsView(LandingPageView):
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            display_type=self.display_type,
             prefix=self.prefix,
             delete_form=self.delete_form,
             register_form=self.register_form,
@@ -49,32 +48,11 @@ class SnapshotsView(LandingPageView):
         ))
         return self.render_dict
 
-    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
-    def snapshots_json(self):
-        snapshots = []
-        for snapshot in self.get_items():
-            volume = self.get_volume(snapshot.volume_id)
-            volume_name = TaggedItemView.get_display_name(volume)
-            snapshots.append(dict(
-                id=snapshot.id,
-                description=snapshot.description,
-                name=snapshot.tags.get('Name', snapshot.id),
-                progress=snapshot.progress,
-                start_time=snapshot.start_time,
-                status=snapshot.status,
-                tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
-                volume_id=snapshot.volume_id,
-                volume_name=volume_name,
-                volume_size=snapshot.volume_size,
-            ))
-        return dict(results=snapshots)
-
     @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_delete(self):
         snapshot_id = self.request.params.get('snapshot_id')
         snapshot = self.get_snapshot(snapshot_id)
-        display_type = self.request.params.get('display', self.display_type)
-        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
+        location = self.get_redirect_location('snapshots')
         if snapshot and self.delete_form.validate():
             try:
                 snapshot.delete()
@@ -104,13 +82,15 @@ class SnapshotsView(LandingPageView):
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
         bdm['/dev/sda'] = root_vol
-        display_type = self.request.params.get('display', self.display_type)
-        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
+        location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             try:
-                snapshot.connection.register_image(name=name, description=description,
-                        kernel_id=('windows' if reg_as_windows else None),
-                        block_device_map=bdm)
+                snapshot.connection.register_image(
+                    name=name,
+                    description=description,
+                    kernel_id=('windows' if reg_as_windows else None),
+                    block_device_map=bdm
+                )
                 time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
@@ -125,20 +105,10 @@ class SnapshotsView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
 
-    def get_items(self):
-        # TODO: cache me
-        return self.conn.get_all_snapshots(owner='self') if self.conn else []
-
     def get_snapshot(self, snapshot_id):
         if snapshot_id:
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
-        return None
-
-    def get_volume(self, volume_id):
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
         return None
 
     @staticmethod
@@ -153,6 +123,46 @@ class SnapshotsView(LandingPageView):
         ]
 
 
+class SnapshotsJsonView(BaseView):
+
+    def __init__(self, request):
+        super(SnapshotsJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+        self.volumes = self.get_volumes()
+
+    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
+    def snapshots_json(self):
+        snapshots = []
+        for snapshot in self.get_items():
+            volume = self.get_volume(snapshot.volume_id)
+            volume_name = TaggedItemView.get_display_name(volume)
+            snapshots.append(dict(
+                id=snapshot.id,
+                description=snapshot.description,
+                name=snapshot.tags.get('Name', snapshot.id),
+                progress=snapshot.progress,
+                start_time=snapshot.start_time,
+                status=snapshot.status,
+                tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
+                volume_id=snapshot.volume_id,
+                volume_name=volume_name,
+                volume_size=snapshot.volume_size,
+            ))
+        return dict(results=snapshots)
+
+    def get_items(self):
+        return self.conn.get_all_snapshots(owner='self') if self.conn else []
+
+    def get_volumes(self):
+        return self.conn.get_all_volumes() if self.conn else []
+
+    def get_volume(self, volume_id):
+        if volume_id and self.volumes:
+            volumes_list = [volume for volume in self.volumes if volume.id == volume_id]
+            return volumes_list[0] if volumes_list else None
+        return None
+
+
 class SnapshotView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/snapshots/snapshot_view.pt'
 
@@ -162,7 +172,8 @@ class SnapshotView(TaggedItemView):
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
-        self.volume_name = TaggedItemView.get_display_name(self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
+        self.volume_name = TaggedItemView.get_display_name(
+            self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)

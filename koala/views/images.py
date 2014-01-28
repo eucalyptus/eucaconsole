@@ -54,7 +54,6 @@ class ImagesView(LandingPageView):
         ]
 
         return dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,

@@ -13,7 +13,7 @@
                 </metal:crumbs>
             </metal:breadcrumbs>
             <span class="icon-block">
-                <a class="refresh-icon fi-refresh" ng-click="getItems('${json_items_endpoint}')"></a>
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
                 <a class="help-icon" data-reveal-id="help-modal">?</a>
             </span>
         </h3>
@@ -58,7 +58,7 @@
                 </div>
                 <div ng-show="item.tags">
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
-                    {{ item.tags }}
+                    {{ item.tags | limitTo: 128 }}
                 </div>
             </div>
             <div metal:fill-slot="tile_footer" tal:omit-tag="">
@@ -96,7 +96,7 @@
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>
                 <td class="volumeid"><a ng-href="/volumes/{{ item.volume_id }}">{{ item.volume_name || item.volume_id }}</a></td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.tags }}</td>
+                <td class="tags">{{ item.tags }}</td>
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">

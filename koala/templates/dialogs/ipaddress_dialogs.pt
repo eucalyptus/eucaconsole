@@ -10,7 +10,6 @@
               method="post" data-abide="abide">
             ${structure:associate_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             ${panel('form_field', field=associate_form.instance_id)}
@@ -35,7 +34,6 @@
         <form action="${action}" method="post">
             ${structure:disassociate_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             <input type="submit" class="button" value="Yes, disassociate" />
@@ -56,7 +54,6 @@
         <form action="${action}" method="post">
             ${structure:release_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             <input type="submit" class="button" value="Yes, release" />

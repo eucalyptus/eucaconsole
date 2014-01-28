@@ -31,7 +31,6 @@ class LaunchConfigsView(LandingPageView):
         self.json_items_endpoint = self.request.route_url('launchconfigs_json')
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,

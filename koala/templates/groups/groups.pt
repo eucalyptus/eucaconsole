@@ -12,7 +12,10 @@
                     <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
-            <a class="help-icon" data-reveal-id="help-modal">?</a>
+            <span class="icon-block">
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
+                <a class="help-icon" data-reveal-id="help-modal">?</a>
+            </span>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
@@ -31,7 +34,7 @@
                     </div>
                     <div>
                         <button type="submit" class="secondary small button">Apply</button>
-                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
                     </div>
                 </metal:block>
             </div>

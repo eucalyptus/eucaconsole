@@ -10,7 +10,6 @@
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
             </div>
             <div class="large-4 columns">&nbsp;</div>
@@ -28,9 +27,6 @@
         <p><span i18n:translate="">You can register a snapshot as an image if it was created from a volume containing a root file system. The image can then be used to launch EBS-backed instances.</span></p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
-            <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
-            </div>
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
             ${panel('form_field', field=register_form['name'])}
             ${panel('form_field', field=register_form['description'])}

@@ -22,7 +22,6 @@ class IPAddressesView(LandingPageView):
         self.initial_sort_key = 'public_ip'
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/ipaddresses'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.conn = self.get_connection()
         self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
@@ -33,7 +32,6 @@ class IPAddressesView(LandingPageView):
         self.location = self.get_redirect_location('ipaddresses')
         self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
