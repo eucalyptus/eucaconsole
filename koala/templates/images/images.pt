@@ -58,12 +58,16 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="NAME" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
                 </div>
                 <div ng-show="item.platform_name">
                     <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
@@ -100,7 +104,7 @@
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>ID</th>
+                <th>IMAGE</th>
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
@@ -109,7 +113,7 @@
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a></td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.architecture }}</td>
