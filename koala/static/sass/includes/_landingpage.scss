@@ -293,10 +293,11 @@ $gridwrapper-table-width: 98%;
 
 .refresh-icon {
     position: relative;
-    padding: 8px 16px;
+    padding: 8px 10px 8px 18px;
     border-left: 1px solid darken($euca-extralightblue, 30%);
     .dots {
         width: 20px;
+        position: relative;
     }
 }
 

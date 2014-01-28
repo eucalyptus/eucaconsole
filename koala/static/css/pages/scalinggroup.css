@@ -67,8 +67,8 @@
 
 #sorting-controls, #results-count { padding-top: 1rem; }
 
-.refresh-icon { position: relative; padding: 8px 16px; border-left: 1px solid #80b6ca; }
-.refresh-icon .dots { width: 20px; }
+.refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
+.refresh-icon .dots { width: 20px; position: relative; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

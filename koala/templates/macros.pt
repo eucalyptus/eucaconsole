@@ -17,11 +17,9 @@
 
 <!-- Refresh icon for landing pages === -->
 <metal:refresh_icon metal:define-macro="refresh_icon">
-    <span ng-cloak="">
-        <a class="refresh-icon" ng-show="!itemsLoading"
-           ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
-        <a class="refresh-icon" ng-show="itemsLoading"><span class="dots"></span></a>
-    </span>
+    <a class="refresh-icon" ng-show="!itemsLoading" ng-cloak=""
+       ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
+    <a class="refresh-icon" ng-show="itemsLoading" ng-cloak=""><span class="dots"></span></a>
 </metal:refresh_icon>
 
 
@@ -92,12 +90,13 @@
                     </div>
                 </form>
             </div>
-            <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading" ng-cloak="cloak" metal:define-slot="results_count">
-                {{ items.length }} <span class="hide-for-small">items</span> found
+            <div class="small-3 columns right" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                <span ng-show="!itemsLoading" >{{ items.length }} <span class="hide-for-small">items</span> found</span>
+                <span class="dots" ng-show="itemsLoading"></span>
             </div>
         </div>
         <div ng-show="itemsLoading"><span class="dots"></span></div>
-        <div id="gridview" class="gridwrapper" ng-show="landingPageView == 'gridview'">
+        <div id="gridview" class="gridwrapper" ng-show="landingPageView == 'gridview' &amp;&amp; !itemsLoading">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
                     No items were found
