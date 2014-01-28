@@ -52,10 +52,8 @@
                 <metal:block metal:define-slot="new_button"></metal:block>
             </div>
             <div class="small-6 columns displayicons">
-                <a class="gridview ${'selected' if display_type=='gridview' else ''}" title="Grid view"
-                   href="${layout.gridview_url}"><i class="fi-thumbnails"></i></a>
-                <a class="tableview ${'selected' if display_type=='tableview' else ''}" title="Table view"
-                   href="${layout.tableview_url}"><i class="fi-list"></i></a>
+                <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
+                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list"></i></a>
             </div>
         </div>
         <div class="row sort-search" ng-cloak="cloak">
@@ -91,7 +89,7 @@
             </div>
         </div>
         <div ng-show="itemsLoading">Loading...</div>
-        <div class="gridwrapper" tal:condition="display_type == 'gridview'">
+        <div id="gridview" class="gridwrapper" ng-show="landingPageView == 'gridview'">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
                     No items were found
@@ -130,7 +128,7 @@
                 </metal:block>
             </div>
         </div>
-        <div class="gridwrapper" tal:condition="display_type == 'tableview'">
+        <div id="tableview" class="gridwrapper" ng-show="landingPageView == 'tableview'">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>

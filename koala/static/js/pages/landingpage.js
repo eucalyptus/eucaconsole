@@ -12,18 +12,56 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
+        $scope.landingPageView = "tableview";
         $scope.urlParams = $.url().param();
+        $scope.pageResource = '';
+        $scope.sortByCookie = '';
+        $scope.sortReverseCookie = '';
+        $scope.landingPageViewCookie = '';
         $scope.initController = function (sortKey, jsonItemsEndpoint) {
+            // TEMP SOl. to extrac the page resource string. After the merge of GUI-172, this part should be refactored
+            tempArray = jsonItemsEndpoint.split('/');
+            tempArray.pop();
+            var pageResource = tempArray.pop();
+
+            $scope.initCookieStrings(pageResource);
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
+            $scope.setWatch();
+        };
+        $scope.initCookieStrings = function (pageResource){
+            $scope.pageResource = pageResource;
+            $scope.sortByCookie = $scope.pageResource + "-sortBy";
+            $scope.sortReverseCookie = $scope.pageResource + "-sortReverse";
+            $scope.landingPageViewCookie = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
-            $scope.sortBy = sortKey;
+            if($.cookie($scope.sortByCookie) == null ){
+                $scope.sortBy = sortKey;
+            }else{
+                $scope.sortBy = $.cookie($scope.sortByCookie);
+            }
+
+            if($.cookie($scope.sortReverseCookie) == null ){
+                $scope.sortReverse = false;
+            }else{
+                $scope.sortReverse = ($.cookie($scope.sortReverseCookie) === 'true');
+            }
+
+            if($.cookie($scope.landingPageViewCookie) == null ){
+                $scope.landingPageView = "tableview";
+            }else{
+                $scope.landingPageView = $.cookie($scope.landingPageViewCookie);
+            }
+        };
+        $scope.setWatch = function(){
             $scope.$watch('sortBy',  function () {
                 if ($('#sorting-dropdown').hasClass('open')) {
                     $('#sorting-dropdown').removeClass('open');
                     $('#sorting-dropdown').removeAttr('style');
                 }
+               // Set sortBy Cookie
+               $.cookie($scope.sortByCookie, $scope.sortBy);
             });
             $scope.$watch('sortReverse', function(){
                 if( $scope.sortReverse == true ){
@@ -33,7 +71,20 @@ angular.module('LandingPage', ['CustomFilters'])
                     $('#sorting-reverse').removeClass('up-caret');
                     $('#sorting-reverse').addClass('down-caret');
                 } 
+                // Set SortReverse Cookie
+                $.cookie($scope.sortReverseCookie, $scope.sortReverse);
             });
+            $scope.$watch('landingPageView', function(){
+               if( $scope.landingPageView == 'gridview' ){
+                   $('#gridview-button').addClass("selected");
+                   $('#tableview-button').removeClass("selected");
+               }else{
+                   $('#tableview-button').addClass("selected");
+                   $('#gridview-button').removeClass("selected");
+               }
+               // Set landingPageView Cookie
+               $.cookie($scope.landingPageViewCookie, $scope.landingPageView);
+            }); 
         };
         $scope.applyGetRequestFilters = function () {
             // Apply an "all" match of filters based on URL params
@@ -96,7 +147,10 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
         $scope.reverseSort = function(){
-           $scope.sortReverse = !$scope.sortReverse
+            $scope.sortReverse = !$scope.sortReverse
+        };
+        $scope.switchView = function(view){
+            $scope.landingPageView = view;
         };
     })
 ;
