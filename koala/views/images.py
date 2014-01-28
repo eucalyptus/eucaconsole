@@ -42,7 +42,9 @@ class ImagesView(LandingPageView):
             LandingPageFilter(key='owner_alias', name='Images owned by', choices=owner_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']
+        self.filter_keys = [
+            'architecture', 'description', 'id', 'name', 'owner_alias',
+            'platform_name', 'root_device_type', 'tagged_name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='id', name='ID'),
@@ -70,19 +72,15 @@ class ImagesJsonView(BaseView):
         images = []
         for image in self.get_items():
             platform = ImageView.get_platform(image)
-            tagged_name = image.tags.get('Name', '') if image.tags.get('Name', '') else ''
             images.append(dict(
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
-                kernel_id=image.kernel_id,
                 name=image.name,
-                tagged_name=tagged_name,
+                tagged_name=TaggedItemView.get_display_name(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
-                platform_key=ImageView.get_platform_key(platform),
                 root_device_type=image.root_device_type,
-                ramdisk_id=image.ramdisk_id,
             ))
         return dict(results=images)
 
