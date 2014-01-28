@@ -99,7 +99,6 @@
             <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.ipcount)}
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <div class="row">
                     <div class="small-4 columns"></div>
                     <div class="small-8 columns">
@@ -121,7 +120,6 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/ipaddresses.js')}"></script>

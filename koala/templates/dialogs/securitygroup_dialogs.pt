@@ -10,7 +10,6 @@
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="securitygroup_id" value="{{ securitygroupID }}" />
             </div>
             <button type="submit" class="button" i18n:translate="">Yes, delete</button>

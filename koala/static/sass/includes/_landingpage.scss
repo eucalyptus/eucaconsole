@@ -224,6 +224,7 @@ $gridwrapper-table-width: 98%;
     }
 }
 
+// Table view
 .gridwrapper .table {
     border: none;
     width: $gridwrapper-table-width;
@@ -257,6 +258,10 @@ $gridwrapper-table-width: 98%;
                 position: relative;
                 float: right;
                 top: -10px;
+            }
+            &.tags {
+                max-width: 20rem;
+                word-break: break-all;
             }
         }
     }

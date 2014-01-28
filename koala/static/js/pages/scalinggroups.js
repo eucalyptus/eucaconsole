@@ -8,6 +8,7 @@ angular.module('ScalingGroupsPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
+        $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.urlParams = $.url().param();
@@ -19,7 +20,6 @@ angular.module('ScalingGroupsPage', ['CustomFilters'])
             $scope.sortBy = sortKey;
         };
         $scope.getItems = function (jsonItemsEndpoint) {
-            $scope.itemsLoading = true;
             $http.get(jsonItemsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;

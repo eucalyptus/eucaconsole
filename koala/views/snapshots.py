@@ -31,7 +31,6 @@ class SnapshotsView(LandingPageView):
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            display_type=self.display_type,
             prefix=self.prefix,
             delete_form=self.delete_form,
             register_form=self.register_form,
@@ -73,8 +72,7 @@ class SnapshotsView(LandingPageView):
     def snapshots_delete(self):
         snapshot_id = self.request.params.get('snapshot_id')
         snapshot = self.get_snapshot(snapshot_id)
-        display_type = self.request.params.get('display', self.display_type)
-        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
+        location = self.get_redirect_location('snapshots')
         if snapshot and self.delete_form.validate():
             try:
                 snapshot.delete()
@@ -104,13 +102,15 @@ class SnapshotsView(LandingPageView):
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
         bdm['/dev/sda'] = root_vol
-        display_type = self.request.params.get('display', self.display_type)
-        location = '{0}?display={1}'.format(self.request.route_url('snapshots'), display_type)
+        location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             try:
-                snapshot.connection.register_image(name=name, description=description,
-                        kernel_id=('windows' if reg_as_windows else None),
-                        block_device_map=bdm)
+                snapshot.connection.register_image(
+                    name=name,
+                    description=description,
+                    kernel_id=('windows' if reg_as_windows else None),
+                    block_device_map=bdm
+                )
                 time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
@@ -162,7 +162,8 @@ class SnapshotView(TaggedItemView):
         self.conn = self.get_connection()
         self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
-        self.volume_name = TaggedItemView.get_display_name(self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
+        self.volume_name = TaggedItemView.get_display_name(
+            self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)

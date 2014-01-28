@@ -7,8 +7,6 @@
 angular.module('InstancesPage', ['CustomFilters'])
     .controller('InstancesCtrl', function ($scope) {
         $scope.instanceID = '';
-        $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = instance['id'];
@@ -26,6 +24,7 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
+        $scope.initialLoading = true;
         $scope.pageResource = '';
         $scope.sortByCookie = '';
         $scope.sortReverseCookie = '';
@@ -34,7 +33,7 @@ angular.module('InstancesPage', ['CustomFilters'])
             $scope.jsonEndpoint = jsonItemsEndpoint;
 
             // TEMP SOl. to extrac the page resource string. After the merge of GUI-172, this part should be refactored
-            tempArray = jsonItemsEndpoint.split('/');
+            var tempArray = jsonItemsEndpoint.split('/');
             tempArray.pop();
             var pageResource = tempArray.pop();
 
@@ -66,43 +65,45 @@ angular.module('InstancesPage', ['CustomFilters'])
                 $scope.landingPageView = "tableview";
             }else{
                 $scope.landingPageView = $.cookie($scope.landingPageViewCookie);
-            };
+            }
         };
-        $scope.setWatch = function(){
+        $scope.setWatch = function () {
+            var sortingDropdown = $('#sorting-dropdown'),
+                sortingReverse = $('#sorting-reverse');
             $scope.$watch('sortBy',  function () {
-                if ($('#sorting-dropdown').hasClass('open')) {
-                    $('#sorting-dropdown').removeClass('open');
-                    $('#sorting-dropdown').removeAttr('style');
+                if (sortingDropdown.hasClass('open')) {
+                    sortingDropdown.removeClass('open');
+                    sortingDropdown.removeAttr('style');
                 }
                 // Set sortBy Cookie
                 $.cookie($scope.sortByCookie, $scope.sortBy);
             });
             $scope.$watch('sortReverse', function(){
                 if( $scope.sortReverse == true ){
-                    $('#sorting-reverse').removeClass('down-caret');
-                    $('#sorting-reverse').addClass('up-caret');
+                    sortingReverse.removeClass('down-caret');
+                    sortingReverse.addClass('up-caret');
                 }else{
-                    $('#sorting-reverse').removeClass('up-caret');
-                    $('#sorting-reverse').addClass('down-caret');
+                    sortingReverse.removeClass('up-caret');
+                    sortingReverse.addClass('down-caret');
                 } 
                 // Set SortReverse Cookie
                 $.cookie($scope.sortReverseCookie, $scope.sortReverse);
             });
-            
-            $scope.$watch('landingPageView', function(){
-               if( $scope.landingPageView == 'gridview' ){
-                   $('#gridview-button').addClass("selected");
-                   $('#tableview-button').removeClass("selected");
-               }else{
-                   $('#tableview-button').addClass("selected");
-                   $('#gridview-button').removeClass("selected");
+            $scope.$watch('landingPageView', function () {
+                var gridviewBtn = $('#gridview-button'),
+                    tableviewBtn = $('#tableview-button');
+               if ($scope.landingPageView == 'gridview') {
+                   gridviewBtn.addClass("selected");
+                   tableviewBtn.removeClass("selected");
+               } else {
+                   tableviewBtn.addClass("selected");
+                   gridviewBtn.removeClass("selected");
                }
                // Set landingPageView Cookie
                $.cookie($scope.landingPageViewCookie, $scope.landingPageView);
             }); 
         };
         $scope.getItems = function () {
-            $scope.itemsLoading = true;
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 var transitionalCount = 0;

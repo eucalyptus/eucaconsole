@@ -74,7 +74,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            display_type=self.display_type,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             start_form=self.start_form,

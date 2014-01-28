@@ -31,7 +31,6 @@ class ScalingGroupsView(LandingPageView):
         super(ScalingGroupsView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
     @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
@@ -46,7 +45,6 @@ class ScalingGroupsView(LandingPageView):
             dict(key='availability_zones', name=_(u'Availability zones')),
         ]
         return dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
