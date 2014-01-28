@@ -6,7 +6,8 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="VolumesPage" ng-controller="VolumesCtrl" ng-init="initPage(${instances_by_zone})">
-        <div class="row" id="contentwrap" ng-controller="ItemsCtrl" ng-init="initController('${initial_sort_key}', '${json_items_endpoint}')">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+             ng-init="initController('volumes', '${initial_sort_key}', '${json_items_endpoint}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -136,8 +137,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/volumes.js')}"></script>
 </div>
