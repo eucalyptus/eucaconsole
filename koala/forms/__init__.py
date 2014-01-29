@@ -91,13 +91,12 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         security_groups = securitygroups or []
-        if security_groups is None and self.conn is not None:
+        if not security_groups and self.conn is not None:
             security_groups = self.conn.get_all_security_groups()
         for sgroup in security_groups:
-            if sgroup.id:
-                choices.append((sgroup.name, sgroup.name))
+            choices.append((sgroup.name, sgroup.name))
         if not security_groups:
-            choices.append(('', 'default'))
+            choices.append(('default', 'default'))
         return sorted(set(choices))
 
     def keypairs(self, keypairs=None, add_blank=True):

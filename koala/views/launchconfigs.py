@@ -4,6 +4,7 @@ Pyramid views for Eucalyptus and AWS launch configurations
 
 """
 import re
+import simplejson as json
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 from boto.exception import BotoServerError
@@ -17,6 +18,7 @@ from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
+from ..views.securitygroups import SecurityGroupsView
 
 
 class LaunchConfigsView(LandingPageView):
@@ -68,7 +70,7 @@ class LaunchConfigsView(LandingPageView):
     def get_sort_keys():
         return [
             dict(key='name', name='Name'),
-            dict(key='-created_time', name='Created time (recent first)'),
+            dict(key='-created_time', name='Created time'),
             dict(key='image_name', name='Image Name'),
             dict(key='key_name', name='Key pair'),
             dict(key='instance_monitoring', name='Instance monitoring'),
@@ -193,9 +195,12 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         super(CreateLaunchConfigView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
+        self.securitygroups = self.get_security_groups()
         self.create_form = CreateLaunchConfigForm(
-            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+            self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
+            formdata=self.request.params or None)
         self.images_json_endpoint = self.request.route_url('images_json')
+        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.owner_choices = self.get_owner_choices()
         self.render_dict = dict(
             image=self.image,
@@ -252,4 +257,13 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             return HTTPFound(location=location)
         return self.render_dict
 
+    def get_security_groups(self):
+        if self.conn:
+            return self.conn.get_all_security_groups()
+        return []
 
+    def get_securitygroups_rules(self):
+        rules_dict = {}
+        for security_group in self.securitygroups:
+            rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+        return rules_dict
