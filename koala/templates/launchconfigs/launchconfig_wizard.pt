@@ -82,12 +82,13 @@
                             <p class="description" i18n:translate="">
                                 Specify the launch configuration name and the instance size/type.
                             </p>
-                            ${panel('form_field', field=create_form['name'])}
-                            ${panel('form_field', field=create_form['instance_type'], ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'instanceType'})}
                             <hr />
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
                                         <span i18n:translate="">Next</span>
                                     </a>
@@ -99,42 +100,15 @@
                             <p class="description" i18n:translate="">
                                 Specify the key pair and security group.
                             </p>
-                            ${panel('form_field', field=create_form['keypair'], ng_attrs={'model': 'keyPair'})}
-                            ${panel('form_field', field=create_form['securitygroup'],
+                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'keyPair'})}
+                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9,
                                 ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()'})}
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns rules-title" ng-show="selectedGroupRules.length > 0">
-                                    <span i18n:translate="">Incoming rules for security group</span>
-                                    <b>{{ securityGroup }}</b>:
-                                </div>
-                                <div class="small-8 columns rules-title" ng-show="selectedGroupRules.length === 0">
-                                    <p>
-                                        <span i18n:translate="">WARNING, NO RULES DEFINED!</span>
-                                        Your instance(s) will not be accessible until you add rules to this security group
-                                        (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
-                                        You can add rules to security group
-                                        <a ng-href="/securitygroups/{{ securityGroup }}" target="_blank">{{ securityGroup }}</a>
-                                        after you launch the instance(s) if you select security group {{ securityGroup }}.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns">
-                                    <strong i18n:translate="">Rule</strong>:
-                                    {{ rule.ip_protocol.toUpperCase() }}
-                                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-                                    <span ng-repeat="grant in rule.grants">
-                                        <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
-                                        <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
-                                    </span>
-                                </div>
-                            </div>
+                            ${panel('securitygroup_rules_preview')}
                             <hr />
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="create-launchconfig-btn-step3">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button><br />
