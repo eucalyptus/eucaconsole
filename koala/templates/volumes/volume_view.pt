@@ -37,23 +37,30 @@
                          if volume else request.route_url('volume_create');
                          volume_tags volume.tags if volume else {};
                          html_attrs {'disabled': 'disabled'} if volume else {};">
-            <div class="panel">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
+                    <metal:actions metal:fill-slot="actions">
+                        <li ng-show="volumeStatus == 'available'">
+                            <a href="#" data-reveal-id="attach-volume-modal"
+                               id="attach-volume-action" i18n:translate="">Attach to instance</a>
+                        </li>
+                        <li ng-show="volumeStatus == 'in-use'">
+                            <a href="#" data-reveal-id="detach-volume-modal"
+                               id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                        </li>
+                        <li ng-show="volumeStatus == 'available'">
+                            <a id="delete-volume-action" data-reveal-id="delete-volume-modal" i18n:translate="">
+                                Delete volume
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:volume_form['csrf_token']}
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <a href="#"  id="current-status" class="small secondary button dropdown" data-dropdown="volume-status-dropdown" ng-disabled="['attaching', 'detaching', 'deleting', 'deleted'].indexOf(volumeStatus) > -1">{{volumeStatus}}</a>
-                            <span ng-show="['attaching', 'detaching', 'deleting', 'deleted'].indexOf(volumeStatus) === -1">
-                              <ul id="volume-status-dropdown" class="f-dropdown" data-dropdown-content>
-                                <li ng-show="volumeStatus == 'available'">
-                                  <a href="#" data-reveal-id="attach-volume-modal" i18n:translate="">Attach to instance</a>
-                                </li>
-                                <li ng-show="volumeStatus == 'in-use'">
-                                  <a href="#" data-reveal-id="detach-volume-modal" i18n:translate="">Detach from instance</a>
-                                </li>
-                              </ul>
-                            </span>
+                            <span class="label radius status {{ volumeStatus }}">{{ volumeStatus }}</span>
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
@@ -116,13 +123,6 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div tal:condition="volume" tal:omit-tag="">
-                <div class="panel other-actions" ng-show="volumeStatus == 'available'">
-                    <a class="button secondary delete" data-reveal-id="delete-volume-modal" i18n:translate="">
-                        Delete volume
-                    </a>
-                </div>
-            </div>
             <div class="help-content" tal:condition="not volume">
                 <h5 class="title">Create a Volume</h5>
                 <p> Eucalyptus offers persistent storage that you can attach to a

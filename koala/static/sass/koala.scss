@@ -538,7 +538,7 @@ textarea.hidden {
 .panel{
     &.has-title {
         position: relative;
-        padding-top: 60px;
+        padding-top: 50px;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -548,6 +548,9 @@ textarea.hidden {
             color: white;
             font-weight: normal;
             @include ellipsis-overflow;
+        }
+        .label.status {
+            margin-bottom: 8px;
         }
         .actions-menu {
             position: absolute;
@@ -563,11 +566,6 @@ textarea.hidden {
                 width: auto;
             }
         }
-    }
-    &.other-actions {
-        word-break: normal;
-        background-color: white;
-        border: none;
     }
 }
 

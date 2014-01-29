@@ -79,13 +79,13 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
-.status.creating { color: #97eb00; }
+.status { background-color: transparent; }
 
-.status.available { color: #76b800; }
+.status.creating { background-color: #97eb00; }
 
-.status.in-use { color: darkorange; }
+.status.available { background-color: #76b800; }
 
-#volume-status-label { position: relative; top: 3px; }
+.status.in-use { background-color: darkorange; }
 
 .reveal-modal #device { width: 10rem; }
 
