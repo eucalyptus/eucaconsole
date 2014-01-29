@@ -208,6 +208,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
+            securitygroups_rules_json=self.securitygroups_rules_json,
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')

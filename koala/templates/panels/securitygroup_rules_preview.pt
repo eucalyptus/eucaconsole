@@ -1,0 +1,32 @@
+<!--! Security group rules preview (used in Launch Instance and Create Launch Configuration wizards) -->
+<div tal:omit-tag="">
+    <div class="row">
+        <div class="small-${leftcol_width} columns">&nbsp;</div>
+        <div class="small-${rightcol_width} columns rules-title" ng-show="selectedGroupRules.length > 0">
+            <span i18n:translate="">Incoming rules for security group</span>
+            <b>{{ securityGroup }}</b>:
+        </div>
+        <div class="small-${rightcol_width} columns rules-title" ng-show="selectedGroupRules.length === 0">
+            <p>
+                <span i18n:translate="">WARNING, NO RULES DEFINED!</span>
+                Your instance(s) will not be accessible until you add rules to this security group
+                (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
+                You can add rules to security group
+                <a ng-href="/securitygroups/{{ securityGroup }}" target="_blank">{{ securityGroup }}</a>
+                after you launch the instance(s) if you select security group {{ securityGroup }}.
+            </p>
+        </div>
+    </div>
+    <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
+        <div class="small-${leftcol_width} columns">&nbsp;</div>
+        <div class="small-${rightcol_width} columns">
+            <strong i18n:translate="">Rule</strong>:
+            {{ rule.ip_protocol.toUpperCase() }}
+            ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+            <span ng-repeat="grant in rule.grants">
+                <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+            </span>
+        </div>
+    </div>
+</div>
