@@ -19,27 +19,34 @@
             </metal:breadcrumbs>
         </h3>
         <div class="large-7 columns">
-            <div class="no-title" tal:condition="eip">
+            <div class="panel has-title" tal:condition="eip">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">
+                    <metal:actions metal:fill-slot="actions">
+                        <li tal:condition="not eip.instance_id">
+                            <a id="associate-ip-action" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
+                                Associate with an instance
+                            </a>
+                        </li>
+                        <li tal:condition="eip.instance_id">
+                            <a id="disassociate-ip-action" data-reveal-id="disassociate-ip-modal" i18n:translate="">
+                                Disassociate from instance
+                            </a>
+                        </li>
+                        <li>
+                            <a id="release-ip-action" data-reveal-id="release-ip-modal"
+                               i18n:translate="">Release IP address to cloud
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <div tal:condition="not eip.instance_id">
                     <p i18n:translate="">The IP address is not associated with any instances.</p>
-                    <a class="button secondary" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
-                        Associate with an instance
-                    </a>
                 </div>
                 <div tal:condition="eip.instance_id">
                     <p>
                         <span i18n:translate="">The IP address is associated with instance</span>
                         <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>.
                     </p>
-                    <a class="button secondary" data-reveal-id="disassociate-ip-modal" i18n:translate="">
-                        Disassociate from instance
-                    </a>
-                </div>
-                <div>
-                    <p i18n:translate="">If you no longer need this IP address you can...</p>
-                    <a class="button secondary" data-reveal-id="release-ip-modal"
-                       i18n:translate="">Release IP address to cloud
-                    </a>
                 </div>
             </div>
             <div tal:condition="not eip">

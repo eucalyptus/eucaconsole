@@ -79,11 +79,11 @@
 /* Small screen */
 @media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
-.tile .status.pending { background-color: #bcdd8f; }
+.status.pending { background-color: #bcdd8f; }
 
-.tile .status.completed { background-color: #468400; }
+.status.completed { background-color: #468400; }
 
-.tile .status.failed { background-color: #990000; }
+.status.failed { background-color: #990000; }
 
 .table td.id, .table td.volumeid, .table td.starttime { white-space: nowrap; }
 .table td.status { position: relative; }
