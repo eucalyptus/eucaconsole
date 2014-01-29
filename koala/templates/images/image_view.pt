@@ -6,7 +6,7 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('images')}" i18n:translate="">Images</a></li>
-                    <li class="current"><a href="#">${image.id}</a></li>
+                    <li class="current"><a href="#">${image_display_name}</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
@@ -45,6 +45,10 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Root Device Name</label></div>
                                 <div class="small-8 columns value">${image.root_device_name if image.root_device_name else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Owner account (ID)</label></div>
+                                <div class="small-8 columns value">${image.owner_id if image.owner_id else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Manifest Path</label></div>

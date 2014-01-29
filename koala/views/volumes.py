@@ -38,7 +38,6 @@ class VolumesView(LandingPageView):
         # seems redundant
         #self.filter_fields = self.get_filter_fields()
         self.render_dict = dict(
-            display_type=self.display_type,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
         )

@@ -5,14 +5,18 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li class="current"><a href="#" i18n:translate="">Images</a></li>
                 </metal:crumbs>
             </metal:breadcrumbs>
-            <a class="help-icon" data-reveal-id="help-modal">?</a>
+            <span class="icon-block">
+                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
+                <a class="help-icon" data-reveal-id="help-modal">?</a>
+            </span>
         </h3>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
@@ -38,7 +42,7 @@
                     </div>
                     <div>
                         <button type="submit" class="secondary small button">Apply</button>
-                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
                     </div>
                 </metal:block>
             </div>
@@ -51,16 +55,23 @@
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
-                    <li><a i18n:translate="" href="/instances/new?image_id={{ item.id }}">Launch instance</a></li>
+                    <li><a i18n:translate="" ng-href="${request.route_url('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
+                    <li><a ng-href="${request.route_url('launchconfig_new')}?image_id={{ item.id }}"
+                           i18n:translate="">Create scaling group launch configuration</a>
+                    </li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.id || item.name }}">{{ item.name || item.id }}</a>
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Machine Image Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
                 </div>
                 <div ng-show="item.platform_name">
                     <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
@@ -77,10 +88,6 @@
                     <span class="label" title="Architecture" i18n:attributes="title" data-tooltip="">AR</span>
                     {{ item.architecture }}
                 </div>
-                <div ng-show="item.kernel_id">
-                    <span class="label" title="kernel id" i18n:attributes="title" data-tooltip="">KN</span>
-                    {{ item.kernel_id }}
-                </div>
                 <div ng-show="item.owner_alias">
                     <span class="label" title="Owner Alias" i18n:attributes="title" data-tooltip="">OW</span>
                     {{ item.owner_alias }}
@@ -90,15 +97,10 @@
                     {{ item.root_device_type }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer">
-                <div class="footer">
-                    <a href="/instances/new?image_id={{ item.id }}" class="action"
-                            i18n:translate="">Launch instance</a>
-                </div>
-            </div>
+            <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th>ID</th>
-                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Name (ID)</th>
+                <th i18n:translate="">EMI Name</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
                 <th i18n:translate="">Root Device</th>
@@ -106,18 +108,23 @@
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.id }}</a></td>
-                <td>{{ item.name }}</td>
+                <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a></td>
+                <td><span class="emi-name">{{ item.name }}</span></td>
                 <td>{{ item.description }}</td>
-                <td>{{ item.architecture }}</td>
-                <td>{{ item.root_device_type }}</td>
+                <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
+                <td><span class="label radius {{ item.root_device_type }}">{{ item.root_device_type }}</span></td>
                 <td>{{ item.platform_name }}</td>
                 <td>
-                <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
-                    <li><a i18n:translate="" href="/instances/new?image_id={{ item.id }}">Launch instance</a></li>
-                </ul>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="${request.route_url('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
+                            <li><a ng-href="${request.route_url('launchconfig_new')}?image_id={{ item.id }}"
+                                   i18n:translate="">Create scaling group launch configuration</a>
+                            </li>
+                        </ul>
+                    </span>
                 </td>
             </metal:block>
         </div>

@@ -56,6 +56,7 @@
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
 .gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
+.gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
@@ -65,6 +66,9 @@
 #properties-filter-form { font-size: 0.9rem; }
 
 #sorting-controls, #results-count { padding-top: 1rem; }
+
+.refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
+.refresh-icon .dots { width: 20px; position: relative; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

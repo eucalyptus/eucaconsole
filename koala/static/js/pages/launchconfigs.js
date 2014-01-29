@@ -9,8 +9,6 @@ angular.module('LaunchConfigsPage', ['LandingPage'])
     .controller('LaunchConfigsPageCtrl', function ($scope) {
         $scope.launchConfigName= '';
         $scope.launchConfigInUse = false;
-        $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.revealModal = function (action, launchConfig) {
             $scope.launchConfigName = launchConfig['name'];
             $scope.launchConfigInUse = launchConfig['in_use'];

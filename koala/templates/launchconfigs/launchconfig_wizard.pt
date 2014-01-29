@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigWizard" ng-controller="LaunchConfigWizardCtrl"
-         ng-init="initController()">
+         ng-init="initController('${securitygroups_rules_json}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -30,18 +30,21 @@
                                 <span class="cir">1</span> <b>Image</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image" class="active">
-                            <a id="tabStep2" href="#step2">
+                        <dd class="${'active' if image else 'disabled'}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               tal:attributes="href '#step2' if image else None" tal:omit-tag="not image">
                                 <span class="cir">2</span> <b>Type</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image">
-                            <a id="tabStep3" href="#step3">
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep3" ng-click="visitNextStep(3, $event)"
+                               tal:attributes="href '#step3' if image else None" tal:omit-tag="not image">
                                 <span class="cir">3</span> <b>Security</b>
                             </a>
                         </dd>
-                        <dd tal:condition="image">
-                            <a id="tabStep4" href="#step4">
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep4" href="#step4" ng-click="visitNextStep(4, $event)"
+                               tal:attributes="href '#step4' if image else None" tal:omit-tag="not image">
                                 <span class="cir">4</span> <b>Advanced</b>
                             </a>
                         </dd>
@@ -59,7 +62,7 @@
                                 <div class="small-8 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
                                     <a class="button secondary small" i18n:translate="" id="image-id-btn"
-                                       ng-click="inputImageID('${request.route_url('launchconfig_new')}')">GO</a>
+                                       ng-click="inputImageID('${request.route_url('launchconfig_new')}')">Next</a>
                                 </div>
                             </div>
                             <p>OR select an image below</p>
@@ -69,7 +72,7 @@
                                 <div class="small-6 columns">&nbsp;</div>
                                 <div class="small-6 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
-                                        <span i18n:translate="">Next: Select type</span>
+                                        <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
                             </div>
@@ -79,13 +82,15 @@
                             <p class="description" i18n:translate="">
                                 Specify the launch configuration name and the instance size/type.
                             </p>
-                            ${panel('form_field', field=create_form['name'])}
-                            ${panel('form_field', field=create_form['instance_type'], ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'instanceType'})}
+                            <hr />
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
-                                        <span i18n:translate="">Next: Select security</span>
+                                        <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
                             </div>
@@ -95,11 +100,15 @@
                             <p class="description" i18n:translate="">
                                 Specify the key pair and security group.
                             </p>
-                            ${panel('form_field', field=create_form['keypair'], ng_attrs={'model': 'keyPair'})}
-                            ${panel('form_field', field=create_form['securitygroup'], ng_attrs={'model': 'securityGroup'})}
+                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'keyPair'})}
+                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9,
+                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()'})}
+                            ${panel('securitygroup_rules_preview')}
+                            <hr />
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="create-launchconfig-btn-step3">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button><br />
@@ -115,11 +124,11 @@
                             <p class="description" i18n:translate="">
                                 User data and other advanced options (optional).
                             </p>
-                            ${panel('form_field', field=create_form['userdata'])}
-                            ${panel('form_field', field=create_form['userdata_file'])}
+                            ${panel('form_field', field=create_form['userdata'], ng_attrs={'model': 'userData'})}
+                            ${panel('form_field', field=create_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
-                            ${panel('form_field', field=create_form['monitoring_enabled'])}
+                            ${panel('form_field', field=create_form['monitoring_enabled'], ng_attrs={'model': 'monitoringEnabled'})}
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -157,13 +166,13 @@
                     <div class="small-8 columns value">${image.location}</div>
                 </div>
             </div>
-            <div class="section">
+            <div class="section step2 hide">
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
                     <div class="small-8 columns value">{{ instanceType }}</div>
                 </div>
             </div>
-            <div class="section">
+            <div class="section step3 hide">
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Key pair:</label></div>
                     <div class="small-8 columns value">{{ keyPair }}</div>
@@ -171,6 +180,18 @@
                 <div class="row">
                     <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
                     <div class="small-8 columns value">{{ securityGroup }}</div>
+                </div>
+            </div>
+            <div class="section step4 hide">
+                <div class="row">
+                    <div class="columns value" ng-show="userData || userDataFile">
+                        <i class="fi-check"></i> User data added
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="columns value" ng-show="monitoringEnabled">
+                        <i class="fi-check"></i> Monitoring enabled
+                    </div>
                 </div>
             </div>
         </div>

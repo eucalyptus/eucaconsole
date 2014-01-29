@@ -165,6 +165,9 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
         # Set error messages
         self.name.error_msg = self.name_error_msg
 
+        # Set initial data
+        self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
     """Edit Scaling Group form"""
@@ -178,6 +181,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         ],
     )
     termination_policies_error_msg = _(u'At least one termination policy is required')
+    termination_policies_help_text = _(u'Add termination policies in the order they should be executed.')
     termination_policies = wtforms.SelectMultipleField(
         label=_(u'Termination policies'),
         validators=[
@@ -200,6 +204,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         # Set help text
         self.default_cooldown.help_text = self.default_cooldown_help_text
         self.health_check_period.help_text = self.health_check_period_help_text
+        self.termination_policies.help_text = self.termination_policies_help_text
 
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
@@ -319,4 +324,8 @@ class ScalingGroupInstancesMarkUnhealthyForm(BaseSecureForm):
     """Scaling Group instance mark unhealthy form"""
     respect_grace_period = wtforms.BooleanField(label=_(u'Respect grace period?'))
 
+
+class ScalingGroupInstancesTerminateForm(BaseSecureForm):
+    """Scaling Group instance terminate form"""
+    decrement_capacity = wtforms.BooleanField(label=_(u'Decrement capacity of scaling group?'))
 

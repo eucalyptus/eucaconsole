@@ -24,11 +24,9 @@ class SecurityGroupsView(LandingPageView):
         self.conn = self.get_connection()
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             delete_form=self.delete_form,
-            display_type=self.display_type,
             prefix=self.prefix,
         )
 
@@ -70,8 +68,7 @@ class SecurityGroupsView(LandingPageView):
     def securitygroups_delete(self):
         securitygroup_id = self.request.params.get('securitygroup_id')
         security_group = self.get_security_group(securitygroup_id)
-        display_type = self.request.params.get('display', self.display_type)
-        location = '{0}?display={1}'.format(self.request.route_url('securitygroups'), display_type)
+        location = self.get_redirect_location('securitygroups')
         if security_group and self.delete_form.validate():
             name = security_group.name
             try:

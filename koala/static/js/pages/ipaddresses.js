@@ -9,8 +9,6 @@ angular.module('ElasticIPsPage', ['LandingPage'])
     .controller('ElasticIPsCtrl', function ($scope) {
         $scope.publicIP = '';
         $scope.instanceID = '';
-        $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
         };

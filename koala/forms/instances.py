@@ -94,13 +94,14 @@ class LaunchInstanceForm(BaseSecureForm):
     userdata_file = wtforms.FileField(label=_(u''))
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
-    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
+    monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.image = image
+        self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -119,8 +120,8 @@ class LaunchInstanceForm(BaseSecureForm):
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.zone.choices = self.choices_manager.availability_zones()
-        self.keypair.choices = self.choices_manager.keypairs()
-        self.securitygroup.choices = self.choices_manager.security_groups()
+        self.keypair.choices = self.get_keypair_choices()
+        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
@@ -139,12 +140,17 @@ class LaunchInstanceForm(BaseSecureForm):
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
+    def get_keypair_choices(self):
+        choices = self.choices_manager.keypairs()
+        choices.append(('none', _(u'None (advanced option)')))
+        return choices
+
 
 class LaunchMoreInstancesForm(BaseSecureForm):
     """Form class for launch more instances like this one"""
     number_error_msg = _(u'Number of instances is required')
     number = wtforms.IntegerField(
-        label=_(u'Number of instances'),
+        label=_(u'How many instances would you like to launch?'),
         validators=[
             validators.Required(message=number_error_msg),
             validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go

@@ -56,6 +56,7 @@
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
 .gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
+.gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
@@ -66,6 +67,9 @@
 
 #sorting-controls, #results-count { padding-top: 1rem; }
 
+.refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
+.refresh-icon .dots { width: 20px; position: relative; }
+
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
@@ -75,5 +79,12 @@
 .tile .label.has-tip { background: white; color: #00415e; font-weight: bold; border-bottom: 1px solid #444444; }
 .tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #76b800; color: white; }
 .tile .footer .action:hover { background-color: #558500; }
+
+.table td .label { padding: 4px 6px; }
+.table td .label.i386 { background-color: #999999; }
+.table td .label.x86_64 { background-color: #40a8c6; }
+.table td .label.ebs { background-color: #468400; }
+.table td .label.instance-store { background-color: #737373; }
+.table td .emi-name { display: inline-block; width: 12rem; word-break: break-all; }
 
 .row.sort-search { margin-top: 20px; }

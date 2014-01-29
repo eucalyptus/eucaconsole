@@ -20,6 +20,7 @@ from ..forms.instances import (
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
+from ..views.securitygroups import SecurityGroupsView
 
 
 class BaseInstanceView(BaseView):
@@ -73,7 +74,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            display_type=self.display_type,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             start_form=self.start_form,
@@ -545,8 +545,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.request = request
         self.image = self.get_image()
         self.location = self.request.route_url('instances')
+        self.securitygroups = self.get_security_groups()
         self.launch_form = LaunchInstanceForm(
-            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+            self.request, image=self.image, securitygroups=self.securitygroups,
+            conn=self.conn, formdata=self.request.params or None)
+        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_url('images_json')
         self.owner_choices = self.get_owner_choices()
         self.render_dict = dict(
@@ -555,6 +558,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
+            securitygroups_rules_json=self.securitygroups_rules_json,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -569,6 +573,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
             key_name = self.request.params.get('keypair')
+            if key_name and key_name == 'none':
+                key_name = None  # Handle "None (advanced)" option
             num_instances = int(self.request.params.get('number', 1))
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
@@ -619,6 +625,17 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=self.location)
         return self.render_dict
+
+    def get_security_groups(self):
+        if self.conn:
+            return self.conn.get_all_security_groups()
+        return []
+
+    def get_securitygroups_rules(self):
+        rules_dict = {}
+        for security_group in self.securitygroups:
+            rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+        return rules_dict
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):

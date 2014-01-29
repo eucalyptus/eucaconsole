@@ -42,7 +42,9 @@ class ImagesView(LandingPageView):
             LandingPageFilter(key='owner_alias', name='Images owned by', choices=owner_choices),
         ]
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = ['architecture', 'description', 'id', 'name', 'owner_alias']
+        self.filter_keys = [
+            'architecture', 'description', 'id', 'name', 'owner_alias',
+            'platform_name', 'root_device_type', 'tagged_name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='id', name='ID'),
@@ -54,7 +56,6 @@ class ImagesView(LandingPageView):
         ]
 
         return dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
@@ -75,13 +76,12 @@ class ImagesJsonView(BaseView):
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
-                kernel_id=image.kernel_id,
                 name=image.name,
+                tagged_name=TaggedItemView.get_display_name(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
-                platform_key=ImageView.get_platform_key(platform),
+                platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
-                ramdisk_id=image.ramdisk_id,
             ))
         return dict(results=images)
 
@@ -99,10 +99,12 @@ class ImagesJsonView(BaseView):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
         cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
 
+        # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
         def _get_images_cache(_owners, _region):
             try:
-                return conn.get_all_images(owners=_owners) if conn else []
+                filters = {'image-type': 'machine'}
+                return conn.get_all_images(owners=_owners, filters=filters) if conn else []
             except EC2ResponseError as exc:
                 return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)
@@ -118,8 +120,10 @@ class ImageView(TaggedItemView):
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
+        self.image_display_name=self.get_display_name()
         self.render_dict = dict(
             image=self.image,
+            image_display_name=self.image_display_name,
             image_form=self.image_form,
         )
 
@@ -171,6 +175,11 @@ class ImageView(TaggedItemView):
                             return choice
             return unknown
 
+    def get_display_name(self):
+        if self.image:
+            return TaggedItemView.get_display_name(self.image)
+        return None
+
     @staticmethod
     def get_platform_name(platform):
         """platform could be either a unicode object (e.g. 'windows')
@@ -188,3 +197,4 @@ class ImageView(TaggedItemView):
         if isinstance(platform, unicode):
             return platform
         return platform.key
+

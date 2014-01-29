@@ -36,6 +36,9 @@ $wizard-border-width: 16px;
                     color: white;
                 }
             }
+            &.disabled {
+                padding: 1rem 16px;
+            }
             a {
                 white-space: nowrap;
                 padding: 1rem 16px;
@@ -79,6 +82,7 @@ $wizard-border-width: 16px;
         right: -1rem;
         color: $euca-darkblue;
         font-weight: bold;
+        margin-bottom: 4px;
     }
     .value {
         word-break: break-all;
@@ -95,6 +99,9 @@ $wizard-border-width: 16px;
     .section {
         padding: 0.5rem 0;
         border-bottom: 1px solid $euca-lightgrey;
+        &:last-child {
+            border-bottom: none;
+        }
     }
     #tag-preview {
         word-break: break-all;

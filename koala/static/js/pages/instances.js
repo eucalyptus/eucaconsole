@@ -7,8 +7,6 @@
 angular.module('InstancesPage', ['CustomFilters'])
     .controller('InstancesCtrl', function ($scope) {
         $scope.instanceID = '';
-        $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'gridview';
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = instance['id'];
@@ -22,31 +20,71 @@ angular.module('InstancesPage', ['CustomFilters'])
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
+        $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
+        $scope.initialLoading = true;
+        $scope.pageResource = '';
+        $scope.sortByKey = '';
+        $scope.sortReverseKey = '';
+        $scope.landingPageViewKey = '';
+        $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
+            $scope.jsonEndpoint = jsonItemsEndpoint;
+            $scope.initLocalStorageKeys(pageResource);
+            $scope.setInitialSort(sortKey);
+            $scope.setWatch();
+            $scope.getItems();
+        };
+        $scope.initLocalStorageKeys = function (pageResource){
+            $scope.pageResource = pageResource;
+            $scope.sortByKey = $scope.pageResource + "-sortBy";
+            $scope.sortReverseKey = $scope.pageResource + "-sortReverse";
+            $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
+        };
         $scope.setInitialSort = function (sortKey) {
-            $scope.sortBy = sortKey;
-            $scope.$watch('sortBy',  function () { 
-                if ($('#sorting-dropdown').hasClass('open')) { 
-                    $('#sorting-dropdown').removeClass('open'); 
-                    $('#sorting-dropdown').removeAttr('style'); 
-                } 
+            var storedSort = localStorage.getItem($scope.sortByKey),
+                storedSortReverse = localStorage.getItem($scope.sortReverseKey),
+                storedLandingPageView = localStorage.getItem($scope.landingPageViewKey);
+            $scope.sortBy = storedSort || sortKey;
+            $scope.sortReverse = storedSortReverse == null ? false : (storedSortReverse === 'true');
+            $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
+        };
+        $scope.setWatch = function () {
+            var sortingDropdown = $('#sorting-dropdown'),
+                sortingReverse = $('#sorting-reverse');
+            $scope.$watch('sortBy',  function () {
+                if (sortingDropdown.hasClass('open')) {
+                    sortingDropdown.removeClass('open');
+                    sortingDropdown.removeAttr('style');
+                }
+                // Set sortBy in localStorage
+                localStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
             $scope.$watch('sortReverse', function(){
-                if( $scope.sortReverse == true ){
-                    $('#sorting-reverse').removeClass('down-caret');
-                    $('#sorting-reverse').addClass('up-caret');
-                }else{
-                    $('#sorting-reverse').removeClass('up-caret');
-                    $('#sorting-reverse').addClass('down-caret');
-                } 
+                if ($scope.sortReverse == true) {
+                    sortingReverse.removeClass('down-caret');
+                    sortingReverse.addClass('up-caret');
+                } else {
+                    sortingReverse.removeClass('up-caret');
+                    sortingReverse.addClass('down-caret');
+                }
+                // Set SortReverse in localStorage
+                localStorage.setItem($scope.sortReverseKey, $scope.sortReverse);
             });
-        };
-        $scope.initController = function (sortKey, jsonItemsEndpoint) {
-            $scope.jsonEndpoint = jsonItemsEndpoint;
-            $scope.setInitialSort(sortKey);
-            $scope.getItems();
+            $scope.$watch('landingPageView', function () {
+                var gridviewBtn = $('#gridview-button'),
+                    tableviewBtn = $('#tableview-button');
+               if ($scope.landingPageView == 'gridview') {
+                   gridviewBtn.addClass("selected");
+                   tableviewBtn.removeClass("selected");
+               } else {
+                   tableviewBtn.addClass("selected");
+                   gridviewBtn.removeClass("selected");
+               }
+               // Set landingPageView in localStorage
+               localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
+            }); 
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -92,6 +130,9 @@ angular.module('InstancesPage', ['CustomFilters'])
         };
         $scope.reverseSort = function(){
            $scope.sortReverse = !$scope.sortReverse
+        };
+        $scope.switchView = function(view){
+            $scope.landingPageView = view;
         };
     })
 ;

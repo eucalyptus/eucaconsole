@@ -19,7 +19,7 @@ from pyramid.view import view_config
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
-    ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
+    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 
@@ -31,7 +31,6 @@ class ScalingGroupsView(LandingPageView):
         super(ScalingGroupsView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
 
     @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
@@ -46,7 +45,6 @@ class ScalingGroupsView(LandingPageView):
             dict(key='availability_zones', name=_(u'Availability zones')),
         ]
         return dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
@@ -106,6 +104,10 @@ class BaseScalingGroupView(BaseView):
             return self.cloudwatch_conn.describe_alarms()
         return []
 
+    def get_policies(self, scaling_group):
+        policies = self.autoscale_conn.get_all_policies(as_group=scaling_group.name)
+        return sorted(policies)
+
     def parse_tags_param(self, scaling_group_name=None):
         tags_json = self.request.params.get('tags')
         tags_list = json.loads(tags_json) if tags_json else []
@@ -127,12 +129,14 @@ class ScalingGroupView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
+        self.policies = self.get_policies(self.scaling_group)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            policies=self.policies,
             edit_form=self.edit_form,
             delete_form=self.delete_form,
             avail_zone_placeholder_text=_(u'Select one or more availability zones...'),
@@ -210,11 +214,15 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupInstancesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
+        self.policies = self.get_policies(self.scaling_group)
         self.markunhealthy_form = ScalingGroupInstancesMarkUnhealthyForm(
             self.request, formdata=self.request.params or None)
+        self.terminate_form = ScalingGroupInstancesTerminateForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            policies=self.policies,
             markunhealthy_form=self.markunhealthy_form,
+            terminate_form=self.terminate_form,
             json_items_endpoint=self.request.route_url('scalinggroup_instances_json', id=self.scaling_group.name),
         )
 
@@ -243,6 +251,28 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.markunhealthy_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='scalinggroup_instances_terminate', renderer=TEMPLATE, request_method='POST')
+    def scalinggroup_instances_terminate(self):
+        location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
+        if self.terminate_form.validate():
+            instance_id = self.request.params.get('instance_id')
+            decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
+            try:
+                self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
+                time.sleep(5)
+                prefix = _(u'Successfully sent terminate request for instance')
+                msg = '{0} {1}'.format(prefix, instance_id)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.terminate_form.get_errors_list()
         return self.render_dict
 
 
@@ -289,7 +319,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
-        self.policies = self.get_policies()
+        self.policies = self.get_policies(self.scaling_group)
         self.alarms = self.get_alarms()
         self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = ScalingGroupPolicyCreateForm(
@@ -327,10 +357,6 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
-
-    def get_policies(self):
-        policies = self.autoscale_conn.get_all_policies(as_group=self.scaling_group.name)
-        return sorted(policies)
 
 
 class ScalingGroupPolicyView(BaseScalingGroupView):
@@ -438,14 +464,12 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
                     load_balancers=self.request.params.getall('load_balancers'),
-                    # default_cooldown=None,  # TODO: Implement
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),
                     min_size=self.request.params.get('min_size'),
                     max_size=self.request.params.get('max_size'),
                     tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
-                    # termination_policies=self.request.params.get('policies'),  # TODO: Implement
                 )
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')

@@ -11,7 +11,6 @@
               id="attach-form" data-abide="">
             ${structure:attach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()'})}
@@ -46,7 +45,6 @@
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             <div>&nbsp;</div>
@@ -70,7 +68,6 @@
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             <button type="submit" class="button" i18n:translate="">Yes, delete</button>

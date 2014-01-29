@@ -3,6 +3,7 @@
 Core views
 
 """
+from operator import itemgetter
 import simplejson as json
 import textwrap
 from urllib import urlencode
@@ -220,7 +221,7 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request):
         super(LandingPageView, self).__init__(request)
-        # defaulting to table view since most of our users are on a desktop.
+        # NOTE: The display type is now configured client-side in the landing pages
         # TODO: figure out how to default to gridview for small screens. Maybe this can be a client-side
         # thing vs server-side? That way, switching can be based on media query.
         self.display_type = self.request.params.get('display', 'tableview')
@@ -260,8 +261,7 @@ class LandingPageView(BaseView):
         )
 
     def get_redirect_location(self, route):
-        display_type = self.request.params.get('display', self.display_type)
-        return '{0}?display={1}'.format(self.request.route_url(route), display_type)
+        return '{0}'.format(self.request.route_url(route))
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')
