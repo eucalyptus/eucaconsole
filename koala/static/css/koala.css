@@ -1496,8 +1496,11 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel.has-title { position: relative; padding-top: 60px; border: none; }
+.panel.has-title { position: relative; padding-top: 60px; }
 .panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.panel.has-title .actions-menu { position: absolute; top: 0; right: 0; }
+.panel.has-title .actions-menu .secondary.button.dropdown { background-color: #cccccc; border: none; }
+.panel.has-title .actions-menu .f-dropdown { min-width: 12rem; width: auto; }
 .panel.other-actions { word-break: normal; background-color: white; border: none; }
 
 .reveal-modal h3 { font-weight: bold; }

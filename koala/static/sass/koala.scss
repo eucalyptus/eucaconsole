@@ -539,7 +539,6 @@ textarea.hidden {
     &.has-title {
         position: relative;
         padding-top: 60px;
-        border: none;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -549,6 +548,18 @@ textarea.hidden {
             color: white;
             font-weight: normal;
             @include ellipsis-overflow;
+        }
+        .actions-menu {
+            position: absolute;
+            top: 0; right: 0;
+            .secondary.button.dropdown {
+                background-color: $euca-lightgrey;
+                border: none;
+            }
+            .f-dropdown {
+                min-width: 12rem;
+                width: auto;
+            }
         }
     }
     &.other-actions {
