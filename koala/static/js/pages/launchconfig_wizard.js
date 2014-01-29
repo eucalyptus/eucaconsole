@@ -10,6 +10,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor']
         $scope.form = $('#launch-config-form');
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
+        $scope.summarySection = $('.summary');
+        $scope.securityGroupsRules = {};
+        $scope.selectedGroupRules = [];
+        $scope.updateSelectedSecurityGroupRules = function () {
+            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
         $scope.setInitialValues = function () {
             $scope.instanceType = $scope.urlParams['instance_type'] || 'm1.small';
             $scope.instanceNumber = '1';
@@ -18,8 +24,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor']
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
         };
-        $scope.initController = function () {
+        $scope.initController = function (securityGroupsRulesJson) {
             $scope.setInitialValues();
+            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
+            $scope.updateSelectedSecurityGroupRules();
         };
         $scope.inputImageID = function (url) {
             url += '?image_id=' + $scope.imageID;
@@ -38,6 +46,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor']
             }
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
+            // Unhide appropriate step in summary
+            $scope.summarySection.find('.step' + nextStep).removeClass('hide');
         };
     })
 ;

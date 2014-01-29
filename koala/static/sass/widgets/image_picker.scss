@@ -18,7 +18,6 @@
                 width: 50px;
                 height: 50px;
                 background: url(/static/img/image-platform-icons.png) no-repeat top left;
-                &.unknown { background-position: 0 -900px; }
                 &.redhat { background-position: 0 0; }
                 &.fedora { background-position: 0 -51px; }
                 &.gentoo { background-position: 0 -101px; }
@@ -28,6 +27,7 @@
                 &.debian { background-position: 0 -301px; }
                 &.linux { background-position: 0 -351px; }
                 &.windows { background-position: 0 50px; }
+                &.unknown { background-position: 0 -451px; }
             }
         }
         .name a {

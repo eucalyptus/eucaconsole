@@ -32,10 +32,6 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $scope.setInitialValues();
         };
         $scope.visitNextStep = function (nextStep, $event) {
-            // Unhide step 2 of summary
-            if (nextStep === 2) {
-                $scope.summarySection.find('.step2').removeClass('hide');
-            }
             // Trigger form validation before proceeding to next step
             $scope.form.trigger('validate');
             var currentStep = nextStep - 1,
@@ -48,6 +44,10 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             }
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
+            // Unhide step 2 of summary
+            if (nextStep === 2) {
+                $scope.summarySection.find('.step2').removeClass('hide');
+            }
         };
         $scope.handleSizeChange = function () {
             // Adjust desired/max based on min size change
