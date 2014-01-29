@@ -20,12 +20,12 @@ class VolumeForm(BaseSecureForm):
     size_error_msg = _(u'Volume size is required')
     size = wtforms.TextField(
         label=_(u'Volume size (GB)'),
-        validators=[validators.Required(message=size_error_msg)],
+        validators=[validators.InputRequired(message=size_error_msg)],
     )
     zone_error_msg = _(u'Availability zone is required')
     zone = wtforms.SelectField(
         label=_(u'Availability zone'),
-        validators=[validators.Required(message=zone_error_msg)],
+        validators=[validators.InputRequired(message=zone_error_msg)],
     )
 
     def __init__(self, request, conn=None, volume=None, snapshots=None, zones=None, **kwargs):
@@ -110,12 +110,12 @@ class AttachForm(BaseSecureForm):
     instance_error_msg = _(u'Instance is required')
     instance_id = wtforms.SelectField(
         label=_(u'Instance'),
-        validators=[validators.Required(message=instance_error_msg)],
+        validators=[validators.InputRequired(message=instance_error_msg)],
     )
     device_error_msg = _(u'Device is required')
     device = wtforms.TextField(
         label=_(u'Device'),
-        validators=[validators.Required(message=device_error_msg)],
+        validators=[validators.InputRequired(message=device_error_msg)],
     )
 
     # requires instances which comes from: self.conn.get_only_instances()

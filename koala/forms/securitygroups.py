@@ -18,13 +18,13 @@ class SecurityGroupForm(BaseSecureForm):
     name_error_msg = _(u'Name is required')
     name = wtforms.TextField(
         label=_(u'Name'),
-        validators=[validators.Required(message=name_error_msg)],
+        validators=[validators.InputRequired(message=name_error_msg)],
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
-            validators.Required(message=desc_error_msg),
+            validators.InputRequired(message=desc_error_msg),
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )

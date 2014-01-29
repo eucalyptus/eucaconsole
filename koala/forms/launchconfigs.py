@@ -24,22 +24,22 @@ class CreateLaunchConfigForm(BaseSecureForm):
     name_error_msg = _(u'Name is required')
     name = wtforms.TextField(
         label=_(u'Name'),
-        validators=[validators.Required(message=name_error_msg)],
+        validators=[validators.InputRequired(message=name_error_msg)],
     )
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
         label=_(u'Instance type'),
-        validators=[validators.Required(message=instance_type_error_msg)],
+        validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
-        validators=[validators.Required(message=keypair_error_msg)],
+        validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
         label=_(u'Security group'),
-        validators=[validators.Required(message=securitygroup_error_msg)],
+        validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
