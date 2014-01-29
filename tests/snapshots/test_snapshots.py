@@ -10,7 +10,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from koala.forms import BaseSecureForm
 from koala.forms.snapshots import SnapshotForm, DeleteSnapshotForm
 from koala.views import TaggedItemView
-from koala.views.snapshots import SnapshotsView, SnapshotView
+from koala.views.snapshots import SnapshotsView, SnapshotView, SnapshotsJsonView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -30,7 +30,7 @@ class SnapshotsViewTests(BaseViewTestCase):
 
     def test_snapshots_landing_page_json(self):
         request = testing.DummyRequest()
-        view = SnapshotsView(request).snapshots_json()
+        view = SnapshotsJsonView(request).snapshots_json()
         self.assertEqual(view.get('results'), [])
 
 

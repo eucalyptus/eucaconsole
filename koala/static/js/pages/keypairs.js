@@ -8,8 +8,6 @@
 angular.module('KeypairsPage', ['LandingPage'])
     .controller('KeypairsCtrl', function ($scope) {
         $scope.keypairName= '';
-        $scope.urlParams = $.url().param();
-        $scope.displayType = $scope.urlParams['display'] || 'tableview';
         $scope.revealModal = function (action, keypair_name) {
             keypair_name = keypair_name || '';
             var modal = $('#' + action + '-keypair-modal');

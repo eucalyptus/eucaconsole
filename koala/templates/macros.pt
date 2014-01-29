@@ -15,13 +15,20 @@
     </a>
 </p>
 
+<!-- Refresh icon for landing pages === -->
+<metal:refresh_icon metal:define-macro="refresh_icon">
+    <a class="refresh-icon" ng-show="!itemsLoading" ng-cloak=""
+       ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
+    <a class="refresh-icon" ng-show="itemsLoading" ng-cloak=""><span class="dots"></span></a>
+</metal:refresh_icon>
+
+
 <!-- Filter form for landing pages =====
      Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
 <metal:properties_filter_form metal:define-macro="properties_filter_form">
     <div id="filters" tal:condition="filter_fields">
         <h6>Filters</h6>
         <form method="get" id="properties-filter-form" action="${request.current_route_url()}">
-            <input type="hidden" name="display" value="${display_type}" />
             <div class="match-condition">Match all of...</div>
             <div metal:define-slot="filter_form_fields">
                 <div tal:repeat="field filter_fields">
@@ -35,7 +42,7 @@
                 </div>
                 <div>
                     <button type="submit" class="secondary small button" name="filter" value="apply">Apply</button>
-                    &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}?display=${display_type}">Clear</a>
+                    &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
                 </div>
             </div>
         </form>
@@ -45,17 +52,14 @@
 
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
-    <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items"
-         ng-controller="ItemsCtrl" ng-init="initController('${initial_sort_key}', '${json_items_endpoint}')">
+    <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row display-switcher">
             <div class="small-6 columns">
                 <metal:block metal:define-slot="new_button"></metal:block>
             </div>
             <div class="small-6 columns displayicons">
-                <a class="gridview ${'selected' if display_type=='gridview' else ''}" title="Grid view"
-                   href="${layout.gridview_url}"><i class="fi-thumbnails"></i></a>
-                <a class="tableview ${'selected' if display_type=='tableview' else ''}" title="Table view"
-                   href="${layout.tableview_url}"><i class="fi-list"></i></a>
+                <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
+                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list"></i></a>
             </div>
         </div>
         <div class="row sort-search" ng-cloak="cloak">
@@ -86,12 +90,13 @@
                     </div>
                 </form>
             </div>
-            <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading" ng-cloak="cloak" metal:define-slot="results_count">
-                {{ items.length }} <span class="hide-for-small">items</span> found
+            <div class="small-3 columns right" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
+                <span ng-show="!itemsLoading" >{{ items.length }} <span class="hide-for-small">items</span> found</span>
+                <span class="dots" ng-show="itemsLoading"></span>
             </div>
         </div>
-        <div ng-show="itemsLoading">Loading...</div>
-        <div class="gridwrapper" tal:condition="display_type == 'gridview'">
+        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div id="gridview" class="gridwrapper" ng-show="landingPageView == 'gridview' &amp;&amp; !itemsLoading">
             <div ng-show="!itemsLoading">
                 <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
                     No items were found
@@ -130,7 +135,7 @@
                 </metal:block>
             </div>
         </div>
-        <div class="gridwrapper" tal:condition="display_type == 'tableview'">
+        <div id="tableview" class="gridwrapper" ng-show="landingPageView == 'tableview'">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>

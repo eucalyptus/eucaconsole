@@ -2,6 +2,10 @@
 
 @import "../includes/eucavariables";
 
+form input.name {
+    margin-right: 6px;
+}
+
 #controls_userdata_file {
     position: relative;
     top: -0.5rem;

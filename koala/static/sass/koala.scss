@@ -148,15 +148,19 @@ body {
         font-size: 1.3rem;
         border-bottom: 1px solid darken($euca-extralightblue, 10%);
     }
-    .help-icon {
+    .icon-block{
         display: inline-block;
         position: absolute;
         top: 0; bottom: 0; right: 0;
-        padding: 8px 16px;
-        text-align: center;
         vertical-align: middle;
+        padding-top: 8px;
+    }
+    .help-icon {
+        position: relative;
+        padding: 8px 16px;
         border-left: 1px solid darken($euca-extralightblue, 30%);
         font-weight: bold;
+        text-align: center;
     }
 }
 

@@ -22,7 +22,6 @@ class IPAddressesView(LandingPageView):
         self.initial_sort_key = 'public_ip'
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/ipaddresses'
-        self.display_type = self.request.params.get('display', 'tableview')  # Set tableview as default
         self.conn = self.get_connection()
         self.allocate_form = AllocateIPsForm(self.request, formdata=self.request.params or None)
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
@@ -33,7 +32,6 @@ class IPAddressesView(LandingPageView):
         self.location = self.get_redirect_location('ipaddresses')
         self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
-            display_type=self.display_type,
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
@@ -171,9 +169,11 @@ class IPAddressView(BaseView):
         super(IPAddressView, self).__init__(request)
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
+        self.instance = self.get_instance()
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
+        self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
         self.render_dict = dict(
             eip=self.elastic_ip,
             associate_form=self.associate_form,
@@ -225,4 +225,10 @@ class IPAddressView(BaseView):
         ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
         elastic_ip = ip_addresses[0] if ip_addresses else None
         return elastic_ip
+
+    def get_instance(self):
+        if self.elastic_ip and self.elastic_ip.instance_id:
+            instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
+            return instances[0] if instances else None
+        return None
 

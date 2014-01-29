@@ -27,7 +27,6 @@ class SecurityGroupsViewTests(BaseViewTestCase):
     def test_landing_page_view(self):
         lpview = self.view.securitygroups_landing()
         self.assertEqual(lpview.get('prefix'), '/securitygroups')
-        self.assertEqual(lpview.get('display_type'), 'tableview')  # Security group defaults to table view
         self.assertTrue('/securitygroups/json' in lpview.get('json_items_endpoint'))  # JSON endpoint
         self.assertEqual(lpview.get('initial_sort_key'), 'name')
         filter_keys = lpview.get('filter_keys')

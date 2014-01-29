@@ -97,8 +97,16 @@
                     <label class="right" i18n:translate="">Evaluation</label>
                 </div>
                 <div class="small-9 columns">
-                    ${panel('form_field', field=alarm_form['evaluation_periods'])}
-                    ${panel('form_field', field=alarm_form['period'])}
+                    <div>
+                        <span i18n:translate="">Evaluate this measurement</span>
+                        ${structure:alarm_form.evaluation_periods(**{'type': 'number', 'min': 1, 'step': 1})}
+                        <span i18n:translate="">times</span>
+                    </div>
+                    <div>
+                        <span i18n:translate="">with each measurement lasting</span>
+                        ${structure:alarm_form.period(**{'type': 'number', 'min': 30, 'step': 30})}
+                        <span i18n:translate="">seconds</span>
+                    </div>
                 </div>
             </div>
             <hr />

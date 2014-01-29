@@ -24,7 +24,6 @@
               tal:condition="not in_use if launch_config else True">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="display" value="{{ displayType }}" />
                 <input type="hidden" name="name" value="{{ launchConfigName }}">
             </div>
             <button type="submit" class="button" i18n:translate="">Yes, delete</button>
