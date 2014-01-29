@@ -15,7 +15,16 @@
 
         <div class="large-7 columns"
             tal:define="readonly True if group else False;">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="group">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-group-action" data-reveal-id="delete-group-modal" i18n:translate="">
+                                Delete group
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form action="${request.route_url('group_update', name=group.group_name)}" method="post" data-abide="abide">
                     ${structure:group_form['csrf_token']}
                     <div tal:condition="group">
@@ -53,11 +62,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="group">
-                <a class="button secondary delete" data-reveal-id="delete-group-modal" i18n:translate="">
-                    Delete group
-                </a>
-            </div>
+            <!--! Help goes here -->
         </div>
     </div>
 </div>
