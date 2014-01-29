@@ -5,6 +5,7 @@ Pyramid views for Login/Logout
 """
 import base64
 from urllib2 import HTTPError, URLError
+from urlparse import urlparse
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -37,7 +38,8 @@ class LoginView(BaseView):
         logout_url = self.request.route_url('logout')
         if referrer in [login_url, logout_url]:
             referrer = '/'  # never use the login form (or logout view) itself as came_from
-        self.came_from = self.request.params.get('came_from', referrer)
+        came_from_param = self.request.params.get('came_from', referrer)
+        self.came_from = urlparse(came_from_param).path or '/'
         self.login_form_errors = []
         self.duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
         self.https_required = asbool(self.request.registry.settings.get('session.secure', False))
