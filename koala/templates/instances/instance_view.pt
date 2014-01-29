@@ -26,39 +26,43 @@
 
         <div class="large-8 columns">
             <div class="panel has-title">
-                <div class="actions-menu">
-                    <span class="small secondary button dropdown" data-dropdown="actions-dropdown"
-                          i18n:translate="">Actions</span>
-                    <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
-                            <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                            <a href="#" id="reboot-instance-action"
+                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
                         </li>
                         <li ng-show="instanceState == 'stopped'">
-                            <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                            <a href="#" id="start-instance-action"
+                               data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
                         </li>
                         <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
-                            <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
-                        </li>
-                        <li ng-show="instanceState != 'terminated'">
-                            <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                            <a href="#" id="stop-instance-action"
+                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
                         </li>
                         <li>
-                            <a href="${request.route_url('instance_more', id=instance.id)}" i18n:translate="">
+                            <a href="${request.route_url('instance_more', id=instance.id)}"
+                               id="launchmore-instance-action"  i18n:translate="">
                                 Launch more like this
                             </a>
                         </li>
                         <li>
-                            <a i18n:translate="" href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
+                            <a i18n:translate="" id="create-launchconfig-action"
+                               href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
                                 Create scaling group launch configuration like this
                             </a>
                         </li>
                         <li ng-show="instanceState == 'running'">
-                            <a i18n:translate="" ng-click="revealConsoleOutputModal()">
+                            <a i18n:translate="" id="view-consoleoutput-action" ng-click="revealConsoleOutputModal()">
                                 View console output
                             </a>
                         </li>
-                    </ul>
-                </div>
+                        <li ng-show="instanceState != 'terminated'">
+                            <a href="#" id="terminate-instance-action"
+                               data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
                 </p>

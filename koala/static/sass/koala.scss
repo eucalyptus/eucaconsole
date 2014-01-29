@@ -552,9 +552,11 @@ textarea.hidden {
         .actions-menu {
             position: absolute;
             top: 0; right: 0;
+            .fi-widget { margin-right: 6px; }
             .secondary.button.dropdown {
                 background-color: $euca-lightgrey;
                 border: none;
+                margin-bottom: 0;
             }
             .f-dropdown {
                 min-width: 12rem;
