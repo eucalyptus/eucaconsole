@@ -86,7 +86,9 @@ class KeyPairView(BaseView):
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
         keypairs_param = [keypair_param]
-        keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+        keypairs = [];
+        if self.conn:
+            keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
         keypair = keypairs[0] if keypairs else None
         return keypair 
 
