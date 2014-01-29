@@ -55,6 +55,7 @@ class BaseScalingGroupFormTestCase(BaseFormTestCase):
     def test_required_fields(self):
         self.assert_required('launch_config')
         self.assert_required('availability_zones')
+        self.assert_not_required('load_balancers')
         self.assert_required('desired_capacity')
         self.assert_required('max_size')
         self.assert_required('min_size')

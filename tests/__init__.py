@@ -157,7 +157,8 @@ class BaseFormTestCase(unittest.TestCase):
     def assert_not_required(self, field_name):
         field = self._get_field(field_name)
         msg = "Field '%s' is required." % field_name
-        assert not self._get_validator(field, InputRequired), msg
+        valid = self._get_validator(field, InputRequired) or self._get_validator(field, DataRequired)
+        assert not valid, msg
 
     def assert_required(self, field_name):
         field = self._get_field(field_name)
