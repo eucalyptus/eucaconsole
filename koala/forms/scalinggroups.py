@@ -17,14 +17,14 @@ class BaseScalingGroupForm(BaseSecureForm):
     launch_config = wtforms.SelectField(
         label=_(u'Launch configuration'),
         validators=[
-            validators.InputRequired(message=launch_config_error_msg),
+            validators.Required(message=launch_config_error_msg),
         ],
     )
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
         validators=[
-            validators.InputRequired(message=availability_zones_error_msg),
+            validators.Required(message=availability_zones_error_msg),
         ],
     )
     load_balancers = wtforms.SelectMultipleField(
@@ -34,7 +34,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     desired_capacity = wtforms.IntegerField(
         label=_(u'Desired'),
         validators=[
-            validators.InputRequired(message=desired_capacity_error_msg),
+            validators.Required(message=desired_capacity_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
@@ -42,7 +42,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     max_size = wtforms.IntegerField(
         label=_(u'Max'),
         validators=[
-            validators.InputRequired(message=max_size_error_msg),
+            validators.Required(message=max_size_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
@@ -50,7 +50,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     min_size = wtforms.IntegerField(
         label=_(u'Min'),
         validators=[
-            validators.InputRequired(message=min_size_error_msg),
+            validators.Required(message=min_size_error_msg),
             validators.NumberRange(min=0, max=99),
         ],
     )
@@ -58,7 +58,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     health_check_type = wtforms.SelectField(
         label=_(u'Type'),
         validators=[
-            validators.InputRequired(message=health_check_type_error_msg),
+            validators.Required(message=health_check_type_error_msg),
         ],
     )
     health_check_period_error_msg = _(u'Health check grace period is required')
@@ -69,7 +69,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     health_check_period = wtforms.IntegerField(
         label=_(u'Grace period (seconds)'),
         validators=[
-            validators.InputRequired(message=health_check_period_error_msg),
+            validators.Required(message=health_check_period_error_msg),
         ],
     )
 
@@ -113,8 +113,9 @@ class BaseScalingGroupForm(BaseSecureForm):
         launch_configs = self.launch_configs
         if launch_configs is None and self.autoscale_conn is not None:
             launch_configs = self.autoscale_conn.get_all_launch_configurations()
-        for launch_config in launch_configs:
-            choices.append((launch_config.name, launch_config.name))
+        if launch_configs:
+            for launch_config in launch_configs:
+                choices.append((launch_config.name, launch_config.name))
         if self.scaling_group:
             launch_config_name = self.scaling_group.launch_config_name
             choices.append((launch_config_name, launch_config_name))
@@ -153,7 +154,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[
-            validators.InputRequired(message=name_error_msg),
+            validators.Required(message=name_error_msg),
         ],
     )
 
@@ -177,7 +178,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
     default_cooldown = wtforms.IntegerField(
         label=_(u'Default cooldown period (seconds)'),
         validators=[
-            validators.InputRequired(message=default_cooldown_error_msg),
+            validators.Required(message=default_cooldown_error_msg),
         ],
     )
     termination_policies_error_msg = _(u'At least one termination policy is required')
@@ -185,7 +186,7 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
     termination_policies = wtforms.SelectMultipleField(
         label=_(u'Termination policies'),
         validators=[
-            validators.InputRequired(message=termination_policies_error_msg),
+            validators.Required(message=termination_policies_error_msg),
         ],
     )
 
@@ -224,28 +225,28 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[
-            validators.InputRequired(message=name_error_msg),
+            validators.Required(message=name_error_msg),
         ],
     )
     adjustment_direction_error_msg = _(u'Action is required')
     adjustment_direction = wtforms.SelectField(
         label=_(u'Action'),
         validators=[
-            validators.InputRequired(message=adjustment_direction_error_msg),
+            validators.Required(message=adjustment_direction_error_msg),
         ],
     )
     adjustment_amount_error_msg = _(u'Amount is required')
     adjustment_amount = wtforms.IntegerField(
         label=_(u'Amount'),
         validators=[
-            validators.InputRequired(message=adjustment_amount_error_msg),
+            validators.Required(message=adjustment_amount_error_msg),
         ],
     )
     adjustment_type_error_msg = _(u'Measure is required')
     adjustment_type = wtforms.SelectField(
         label=_(u'Measure'),
         validators=[
-            validators.InputRequired(message=adjustment_type_error_msg),
+            validators.Required(message=adjustment_type_error_msg),
         ],
     )
     cooldown_error_msg = _(u'Cooldown period is required')
@@ -255,14 +256,14 @@ class ScalingGroupPolicyCreateForm(BaseSecureForm):
     cooldown = wtforms.IntegerField(
         label=_(u'Cooldown period (seconds)'),
         validators=[
-            validators.InputRequired(message=cooldown_error_msg),
+            validators.Required(message=cooldown_error_msg),
         ],
     )
     alarm_error_msg = _(u'Alarm is required')
     alarm = wtforms.SelectField(
         label=_(u'Alarm'),
         validators=[
-            validators.InputRequired(message=alarm_error_msg),
+            validators.Required(message=alarm_error_msg),
         ],
     )
 
