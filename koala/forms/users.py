@@ -53,20 +53,17 @@ class UserForm(BaseSecureForm):
     # additional items used for update user form
     user_name = wtforms.TextField(label=_(u"Name"))
     email = wtforms.TextField(label=_(u"E-mail address"))
-    password = wtforms.PasswordField(
-        _(u'Current password'), validators=[validators.Required(message=_(u'Password is required'))],
-        widget=widgets.PasswordInput())
     new_password = wtforms.PasswordField(
         _(u'New password'),
         validators=[
-            validators.Required(message=_(u'New Password is required')),
+            validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())
     new_password2 = wtforms.PasswordField(
         _(u'Confirm new password'),
         validators=[
-            validators.Required(message=_(u'New Password is required')),
+            validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())
