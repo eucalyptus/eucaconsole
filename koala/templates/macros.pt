@@ -172,6 +172,19 @@
 </metal:notifications>
 
 
+<!-- Detail page actions menu ===== -->
+<metal:actionsmenu metal:define-macro="actions_menu">
+    <div class="actions-menu">
+        <span class="small secondary button dropdown" data-dropdown="actions-dropdown">
+            <i class="fi-widget"></i>
+            <span i18n:translate="">Actions</span>
+        </span>
+        <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">
+            <metal:block metal:define-slot="actions" />
+        </ul>
+    </div>
+</metal:actionsmenu>
+
 <!-- Security group rules display
      For displaying a list of rules (one per line) in a tableview column or gridview tile row -->
 <metal:securitygrouprules metal:define-macro="securitygroup_rulesdisplay">

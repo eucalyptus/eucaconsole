@@ -16,7 +16,23 @@
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
                         readonly True if image else False;">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="${request.route_url('instance_create')}?image_id=${image.id}"
+                               id="launch-instance-action" i18n:translate="">
+                                Launch Instance from this Image
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${request.route_url('launchconfig_new')}?image_id=${image.id}"
+                               id="create-launchconfig-action" i18n:translate="">
+                                Create scaling group launch configuration from this Image
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
@@ -139,14 +155,6 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="image">
-                <a class="button secondary" href="${request.route_url('instance_create')}?image_id=${image.id}" i18n:translate="">
-                    Launch Instance from this Image
-                </a>
-                <a class="button secondary" href="${request.route_url('launchconfig_new')}?image_id=${image.id}" i18n:translate="">
-                    Create scaling group launch configuration from this Image
-                </a>
-            </div>
             <!--! Tag editor help content -->
             <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
             </metal:block>

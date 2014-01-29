@@ -14,7 +14,21 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}"
+                               id="create-scalinggroup-action" i18n:translate="">
+                                Create scaling group with this launch configuration
+                            </a>
+                        </li>
+                        <li>
+                            <a id="delete-launchconfig-action" data-reveal-id="delete-launchconfig-modal"
+                               i18n:translate="">Delete launch configuration</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
@@ -88,29 +102,11 @@
                         <div class="small-9 columns value breakword">${image.location}</div>
                     </div>
                 </form>
+                <div>&nbsp;</div>
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel no-title">
-                <div class="row">
-                    <div class="large-1 columns">&nbsp;</div>
-                    <div class="large-11 columns">
-                        <a class="button"
-                           href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}">
-                            <span>Create scaling group</span><br />
-                            <span>with this launch configuration</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="large-1 columns">&nbsp;</div>
-                    <div class="large-11 columns">
-                        <a class="button secondary delete" data-reveal-id="delete-launchconfig-modal" i18n:translate="">
-                            Delete launch configuration
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!--! Help goes here -->
         </div>
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', launch_config=launch_config, in_use=in_use, delete_form=delete_form)}

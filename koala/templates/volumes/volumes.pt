@@ -97,7 +97,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
                 <td>
-                    <span class="item status {{ item.attach_status || item.status }}">
+                    <span class="label radius item status {{ item.attach_status || item.status }}">
                         {{ item.attach_status || item.status }}
                     </span>
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>

@@ -25,7 +25,44 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-8 columns">
-            <div class="panel">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li ng-show="instanceState == 'running'">
+                            <a href="#" id="reboot-instance-action"
+                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                        </li>
+                        <li ng-show="instanceState == 'stopped'">
+                            <a href="#" id="start-instance-action"
+                               data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                        </li>
+                        <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                            <a href="#" id="stop-instance-action"
+                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
+                        </li>
+                        <li>
+                            <a href="${request.route_url('instance_more', id=instance.id)}"
+                               id="launchmore-instance-action"  i18n:translate="">
+                                Launch more like this
+                            </a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" id="create-launchconfig-action"
+                               href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
+                                Create scaling group launch configuration like this
+                            </a>
+                        </li>
+                        <li ng-show="instanceState == 'running'">
+                            <a i18n:translate="" id="view-consoleoutput-action" ng-click="revealConsoleOutputModal()">
+                                View console output
+                            </a>
+                        </li>
+                        <li ng-show="instanceState != 'terminated'">
+                            <a href="#" id="terminate-instance-action"
+                               data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <p tal:condition="image.root_device_type == 'ebs'">
                 Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
                 </p>
@@ -38,32 +75,17 @@
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <a href="#"  id="current-status" class="small secondary button dropdown" data-dropdown="instance-state-dropdown" ng-disabled="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) > -1">{{instanceState}}</a>
-                            <span ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
-                              <ul id="instance-state-dropdown" class="f-dropdown" data-dropdown-content>
-                                <li ng-show="instanceState == 'running'">
-                                  <a href="#" data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
-                                </li>
-                                <li ng-show="instanceState == 'stopped'">
-                                  <a href="#" data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
-                                </li>
-                                <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
-                                  <a href="#" data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
-                                </li>
-                                <li ng-show="instanceState != 'terminated'">
-                                  <a href="#" data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
-                                </li>
-                              </ul>
-                            </span>
-                            <!--
-                            <div id="change-instance-state"
-                                 ng-show="['pending', 'stopping', 'shutting-down', 'terminated'].indexOf(instanceState) === -1">
-                            </div>
-                            -->
+                            <span class="label radius status {{ instanceState }}">{{instanceState}}</span>
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    ${panel('form_field', field=instance_form.instance_type, ng_attrs={'disabled':'isNotStopped'})}
+                    <div class="row controls-wrapper readonly" tal:condition="image.root_device_type != 'ebs'">
+                        <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
+                        <div class="small-8 columns value">${instance.instance_type}</div>
+                    </div>
+                    <div tal:condition="image.root_device_type == 'ebs'" tal:omit-tag="">
+                        ${panel('form_field', field=instance_form.instance_type, ng_attrs={'disabled':'isNotStopped'})}
+                    </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">OS</label></div>
                         <div class="small-8 columns value">${instance.platform}</div>
@@ -153,8 +175,20 @@
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
                         <div class="small-8 columns value breakword">${image.location}</div>
                     </div>
-                    ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
-                    ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
+                    <div tal:condition="image.root_device_type != 'ebs'" tal:omit-tag="">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div class="small-8 columns value">${image.kernel_id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
+                            <div class="small-8 columns value">${image.ramdisk_id}</div>
+                        </div>
+                    </div>
+                    <div tal:condition="image.root_device_type == 'ebs'" tal:omit-tag="">
+                        ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
+                        ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
+                    </div
                     <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
@@ -172,20 +206,6 @@
             </div>
         </div>
         <div class="large-4 columns">
-            <div class="panel other-actions">
-                <a href="${request.route_url('instance_more', id=instance.id)}" class="button secondary" i18n:translate="">
-                    Launch more like this
-                </a>
-                <br/>
-                <a class="button secondary" i18n:translate=""
-                   href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
-                    Create scaling group launch configuration like this
-                </a>
-                <br/>
-                <a class="button secondary" i18n:translate="" ng-click="revealConsoleOutputModal()">
-                    View console output
-                </a>
-            </div>
             <div class="help-content">
                 <h5 class="title">Connecting to an instance</h5>
                 <p>To connect to your instance, be sure the security group

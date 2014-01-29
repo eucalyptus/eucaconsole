@@ -82,6 +82,7 @@ $gridwrapper-table-width: 98%;
     .content {
         padding: 8px;
         font-size: 0.9em;
+        a { color: $euca-darkgreen; }
         a:hover { text-decoration: underline; }
         div {
             margin-bottom: 2px;
@@ -174,7 +175,10 @@ $gridwrapper-table-width: 98%;
         top: 20px; left: auto; right: 0;
         li {
             a {
-                color: $euca-green;
+                color: #333;
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
     }
@@ -246,6 +250,12 @@ $gridwrapper-table-width: 98%;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
+            a {
+                color: $euca-darkgreen;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
             position: relative;
             padding-top: 12px;
             padding-bottom: 12px;

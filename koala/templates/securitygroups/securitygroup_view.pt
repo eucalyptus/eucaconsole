@@ -27,10 +27,19 @@
         <div class="large-7 columns"
                 tal:define="form_action request.route_url('securitygroup_update', id=security_group.id)
                         if security_group else request.route_url('securitygroup_create')">
-            <div class="panel"
+            <div class="panel has-title"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
                                 sgroup_tags security_group.tags if security_group else {};
                                 readonly True if security_group else False;">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="security_group">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="delete-securitygroup-modal" i18n:translate="" id="delete-securitygroup-action">
+                                Delete security group
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
                     <div tal:condition="not security_group" tal:omit-tag="">
@@ -69,11 +78,6 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="security_group">
-                <a class="button secondary delete" data-reveal-id="delete-securitygroup-modal" i18n:translate="">
-                    Delete security group
-                </a>
-            </div>
             <div class="help-content">
                 <h5 class="title">Managing Security Group Rules</h5>
                     <h6>Add Security Group Rules</h6>

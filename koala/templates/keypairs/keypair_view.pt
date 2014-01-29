@@ -32,7 +32,16 @@
         </div>
 
         <div class="large-7 columns">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="keypair">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="delete-keypair-modal" i18n:translate="" id="delete-keypair-action">
+                                Delete keypair
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <div tal:condition="keypair">
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
@@ -93,11 +102,6 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="keypair">
-                <a class="button secondary delete" data-reveal-id="delete-keypair-modal" i18n:translate="">
-                    Delete keypair
-                </a>
-            </div>
             <div class="help-content">
                 <div tal:condition="keypair" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Delete Key Pair</h5>
