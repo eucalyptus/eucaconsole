@@ -37,7 +37,7 @@ class KeyPairViewTests(BaseViewTestCase):
 
     def test_item_view(self):
         itemview = KeyPairView(self.request).keypair_view()
-        self.assertEqual(itemview.get('keypairp'), None)
+        self.assertEqual(itemview.get('keypair'), None)
         self.assertTrue(itemview.get('keypair_form') is not None)
         self.assertTrue(itemview.get('keypair_import_form') is not None)
         self.assertTrue(itemview.get('delete_form') is not None)
