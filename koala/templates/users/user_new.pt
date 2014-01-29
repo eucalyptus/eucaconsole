@@ -1,0 +1,78 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="UserNew" ng-controller="UserNewCtrl">
+        <h3 class="header" id="pagetitle">
+            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+                <metal:crumbs metal:fill-slot="crumbs">
+                    <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
+                    <li class="current" i18n:translate="">Create new users</li>
+                </metal:crumbs>
+            </metal:breadcrumbs>
+        </h3>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-7 columns">
+            <div class="panel no-title">
+                <form action="${request.route_url('user_create')}" method="post" data-abide="abide"
+                        id="user-new-form">
+                    ${structure:user_form['csrf_token']}
+                    <div class="section">
+                        ${panel('user_editor')}
+                        ${panel('form_field_rev', field=user_form['random_password'])}
+                        ${panel('form_field_rev', field=user_form['access_keys'])}
+                        ${panel('form_field_rev', field=user_form['email_users'])}
+                        ${panel('form_field_rev', field=user_form['allow_all'])}
+                    </div>
+                    <hr/>
+                    <div class="expando" id="quotas-section" ng-cloak="">
+                        <h6 class="title" >
+                            <a ng-click="toggleQuotasContent()">
+                                <i class="fi-plus" ng-show="!quotas_expanded"></i>
+                                <i class="fi-minus" ng-show="quotas_expanded"></i>
+                                &nbsp;<span i18n:translate="">Quotas</span>
+                            </a>
+                        </h6>
+                        <div class="quotas-content" ng-show="quotas_expanded">
+                            ${panel('quotas_panel', quota_form=user_form)}
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="expando" id="advance-section" ng-cloak="">
+                        <h6 class="title" >
+                            <a ng-click="toggleAdvContent()">
+                                <i class="fi-plus" ng-show="!adv_expanded"></i>
+                                <i class="fi-minus" ng-show="adv_expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </h6>
+                        <div class="advance-content" ng-show="adv_expanded">
+                            ${panel('form_field', field=user_form['path'])}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" id="create-user-btn">
+                                <span i18n:translate="">Create</span>
+                            </button>
+                            <a href="${request.route_url('users')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/user_new.js')}"></script>
+</div>
+
+</metal:block>
+

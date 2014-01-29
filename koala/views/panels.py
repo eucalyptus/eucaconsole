@@ -15,6 +15,12 @@ from pyramid_layout.panel import panel_config
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
+@panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
+def top_nav(context, request):
+    """ Top nav bar panel"""
+    return dict()
+
+
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
@@ -60,6 +66,51 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
         leftcol_width=leftcol_width, rightcol_width=rightcol_width
     )
 
+@panel_config('form_field_rev', renderer='../templates/panels/form_field_row_rev.pt')
+def form_field_row_rev(context, request, field=None, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
+    """ Widget for a singe form field row.
+        The left/right column widths are Zurb Foundation grid units.
+            e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
+        Pass any HTML attributes to this widget as keyword arguments.
+            e.g. ${panel('form_field_rev', field=the_field, readonly='readonly')}
+    """
+    html_attrs = {}
+    error_msg = getattr(field, 'error_msg', None)
+
+    # Add required="required" HTML attribute to form field if any "required" validators
+    if field.flags.required:
+        html_attrs['required'] = 'required'
+
+    # Add appropriate HTML attributes based on validators
+    for validator in field.validators:
+        # Add maxlength="..." HTML attribute to form field if any length validators
+        # If we have multiple Length validators, the last one wins
+        if isinstance(validator, Length):
+            html_attrs['maxlength'] = validator.max
+
+    # Add HTML attributes based on field type (e.g. IntegerField)
+    if isinstance(field, IntegerField):
+        html_attrs['pattern'] = 'integer'  # Uses Zurb Foundation Abide's 'integer' named pattern
+        html_attrs['type'] = 'number'  # Use input type="number" for IntegerField inputs
+        html_attrs['min'] = kwargs.get('min', 0)
+
+    # Add any passed kwargs to field's HTML attributes
+    for key, value in kwargs.items():
+        html_attrs[key] = value
+
+    # Add AngularJS attributes
+    # A bit of a hack since we can't pass ng-model='foo' to the form_field_rev panel
+    # So instead we pass ng_attrs={'model': 'foo'} to the form field
+    # e.g. ${panel('form_field_rev', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshot_id'}, **html_attrs)}
+    if ng_attrs:
+        for ngkey, ngvalue in ng_attrs.items():
+            html_attrs['ng-{0}'.format(ngkey)] = ngvalue
+
+    return dict(
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline,
+        leftcol_width=leftcol_width, rightcol_width=rightcol_width
+    )
+
 
 @panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
 def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
@@ -69,6 +120,14 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8):
     tags = tags or {}
     tags_json = json.dumps(tags)
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
+
+
+@panel_config('user_editor', renderer='../templates/panels/user_editor.pt')
+def user_editor(context, request, leftcol_width=4, rightcol_width=8):
+    """ User editor panel.
+        Usage example (in Chameleon template): ${panel('user_editor')}
+    """
+    return dict(leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 
 @panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')

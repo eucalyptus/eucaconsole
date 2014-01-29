@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -16,33 +16,80 @@
         <div class="large-7 columns"
             tal:define="readonly True if user else False;">
             <div class="panel no-title">
-                <form action="${request.route_url('user_update', name=user.user_name)}" method="post" data-abide="abide">
+                <form action="${request.route_url('user_update', name=user.user_name)}" method="post" data-abide="abide" id="user-update-form">
                     ${structure:user_form['csrf_token']}
-                    <div tal:condition="user">
-                        <div class="section">
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">User name</label></div>
-                                <div class="small-8 columns value">${user.user_name if user.user_name else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
-                                <div class="small-8 columns value">${user.user_id if user.user_id else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Path</label></div>
-                                <div class="small-8 columns value">${user.path if user.path else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
-                                <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
-                            </div>
+                    <div class="section">
+                        <h4>General</h4>
+                        ${panel('form_field', field=user_form['user_name'])}
+                        ${panel('form_field', field=user_form['email'])}
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
+                            <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
                         </div>
+                        ${panel('form_field', field=user_form['path'])}
                     </div>
-                    <hr/>
-                    <div class="row hide">
+                    <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn">
+                            <button type="submit" class="button" id="save-user-btn">
+                                <span tal:condition="user" i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('users')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <hr/>
+                <form action="${request.route_url('user_change_password', name=user.user_name)}" method="post" data-abide="abide" id="user-change-password-form">
+                    ${structure:user_form['csrf_token']}
+                    <div class="section">
+                        <h4>Password</h4>
+                        ${panel('form_field', field=user_form['new_password'])}
+                        ${panel('form_field', field=user_form['new_password2'])}
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" id="save-password-btn">
+                                <span tal:condition="user" i18n:translate="">Save changes</span>
+                            </button>
+                            <a href="${request.route_url('users')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+                <hr/>
+                <form action="${request.route_url('user_generate_keys', name=user.user_name)}" method="post" id="user-generate-keys-form">
+                    ${structure:user_form['csrf_token']}
+                    <div class="section">
+                        <h4>Access keys</h4>
+                        <div class="columns field inline">
+                            <button type="submit" class="button" id="gen-keys-btn">
+                                <span tal:condition="user" i18n:translate="">Generate Access Key</span>
+                            </button>
+                        </div>
+                        ${panel('form_field_rev', field=user_form['download_keys'])}
+                    </div>
+                </form>
+                <hr/>
+                    <div class="section">
+                        <h4>Groups</h4>
+                    </div>
+                    <hr/>
+                    <div class="section">
+                        <h4>Permissions</h4>
+                    </div>
+                <hr/>
+                <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
+                    <div class="section">
+                        <h4>Quotas</h4>
+                        ${panel('quotas_panel', quota_form=user_form)}
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" id="save-quotas-btn">
                                 <span tal:condition="user" i18n:translate="">Save changes</span>
                             </button>
                             <a href="${request.route_url('users')}"
@@ -60,6 +107,39 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var newPasswordForm = $('#new_password');
+            // add password strength meter to first new password field
+            newPasswordForm.after("<hr id='password-strength'/>");
+            newPasswordForm.on('keypress', function () {
+                var val = $(this).val();
+                var score = zxcvbn(val).score;
+                $('#password-strength').attr('class', "password_" + score);
+            });
+
+            var form = $('#euca-changepassword-form');
+            form.on('submit', function () {
+                $('.error').css('display', 'none');
+                var pass = $(this).find('#password').val();
+                var newpass = $(this).find('#new_password').val();
+                var newpass2 = $(this).find('#new_password2').val();
+                if (pass == newpass) {
+                    $('#password-different').css('display', 'block');
+                    return false;
+                }
+                if (newpass != newpass2) {
+                    $('#passwords-match').css('display', 'block');
+                    return false;
+                }
+            });
+        });
+    </script>
 </div>
 
 </metal:block>

@@ -5,7 +5,6 @@
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                     <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
                     <li class="current"><a href="#">${launch_config.name}</a></li>
                 </metal:crumbs>
@@ -15,11 +14,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
-                <h6 class="title">
-                    <span i18n:translate="">Properties of launch configuration</span>
-                    <strong>${launch_config.name }</strong>
-                </h6>
+            <div class="panel no-title">
                 <form>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
@@ -32,7 +27,7 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Security groups</label></div>
+                        <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
                             <span tal:repeat="security_group launch_config.security_groups">
                                 <a href="${request.route_url('securitygroup_view', id=security_group)}">${security_group}</a>
@@ -54,7 +49,7 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Created</label></div>
+                        <div class="small-3 columns"><label i18n:translate="">Creation time</label></div>
                         <div class="small-9 columns value">${launch_config.created_time.strftime(layout.date_format)}</div>
                     </div>
                     <hr />
@@ -92,24 +87,21 @@
                         <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
                         <div class="small-9 columns value breakword">${image.location}</div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
-                            <a class="button"
-                               href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}">
-                                <span>Create scaling group</span><br />
-                                <span>with this launch configuration</span>
-                            </a>
-                            <a href="${request.route_url('launchconfigs')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
         <div class="large-5 columns">
             <div class="panel no-title">
+                <div class="row">
+                    <div class="large-1 columns">&nbsp;</div>
+                    <div class="large-11 columns">
+                        <a class="button"
+                           href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}">
+                            <span>Create scaling group</span><br />
+                            <span>with this launch configuration</span>
+                        </a>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="large-1 columns">&nbsp;</div>
                     <div class="large-11 columns">

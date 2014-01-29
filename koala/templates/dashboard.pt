@@ -69,12 +69,12 @@
                 <div class="tile small-6 columns" id="groups">
                     <h5 class="subheader" i18n:translate="">Groups</h5>
                     <div class="content">
-                        <a href="#">
-                            <i class="fi-torsos-all icon"><em>0</em></i>
+                        <a href="${request.route_url('groups')}">
+                            <i class="fi-torsos-all icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.groups }}</em></i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="#" i18n:translate="">Add group</a>
+                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Add group</a>
                     </div>
                 </div>
                 <div class="tile small-6 columns" id="users">

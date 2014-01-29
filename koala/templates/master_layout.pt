@@ -50,45 +50,8 @@
     </section>
 </nav>
 
-<nav class="top-bar" id="navbar" tal:condition="request.user.is_authenticated()" metal:define-slot="navbar" data-topbar="">
-    <ul class="title-area">
-        <li class="name"></li>
-        <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
-    </ul>
-
-    <section class="top-bar-section">
-        <ul class="resources-nav left-align">
-            <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_url('dashboard')}">Dashboard</a></li>
-            <li><a id="resource-menu-image" class="lnk-image" href="${request.route_url('images')}">Images</a></li>
-            <li class="has-dropdown">
-                <a id="resource-menu-instance" class="lnk-instance" href="${request.route_url('instances')}">Instances</a>
-                <ul class="dropdown">
-                    <li><a id="resource-menuitem-instance" href="${request.route_url('instances')}">Instances</a></li>
-                    <li class="divider"></li>
-                    <li><a id="resource-menuitem-scaling" href="${request.route_url('scalinggroups')}">Auto Scaling Groups</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a id="resource-menu-storage" class="lnk-storage" href="#">Storage</a>
-                <ul class="dropdown">
-                    <li><a id="resource-menuitem-volume" href="${request.route_url('volumes')}">Volumes</a></li>
-                    <li class="divider"></li>
-                    <li><a id="resource-menuitem-snapshot" href="${request.route_url('snapshots')}">Snapshots</a></li>
-                </ul>
-            </li>
-            <li class="has-dropdown">
-                <a id="resource-menu-netsec" class="lnk-netsec" href="#">Network &amp; Security</a>
-                <ul class="dropdown">
-                    <li><a id="resource-menuitem-sgroup" href="${request.route_url('securitygroups')}">Security Groups</a></li>
-                    <li class="divider"></li>
-                    <li><a id="resource-menuitem-keypair" href="${request.route_url('keypairs')}">Key Pairs</a></li>
-                    <li class="divider"></li>
-                    <li><a id="resource-menuitem-eip" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
-                </ul>
-            </li>
-        </ul>
-    </section>
-</nav>
+<!-- Top nav bar -->
+${panel('top_nav')}
 
 <!-- Main Content -->
 <section class="main" id="maincontent" role="content">
@@ -100,7 +63,7 @@
 <footer>
     <div class="row">
        <h6 class="copyright subheader">
-           © 2012-2014 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
+           © 2014 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
     </div>
     <form id="euca-logout-form" method="post"
           action="${request.route_url('logout')}">
