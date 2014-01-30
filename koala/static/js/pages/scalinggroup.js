@@ -7,6 +7,7 @@
 // Volume page includes the AutoScale tag editor, so pull in that module as well.
 angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
     .controller('ScalingGroupPageCtrl', function ($scope) {
+        $scope.isHelpExpanded = false;
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
@@ -33,6 +34,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             if ($scope.maxSize < $scope.desiredCapacity) {
                 $scope.maxSize = $scope.desiredCapacity;
             }
+        };
+        $scope.toggleHelpContent = function () {
+            $scope.isHelpExpanded = !$scope.isHelpExpanded;
         };
     })
 ;

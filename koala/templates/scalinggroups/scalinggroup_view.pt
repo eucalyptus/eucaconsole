@@ -87,7 +87,18 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <!--! Help goes here -->
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+             </div>
+             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                 <!--! Help goes here -->
+            </div>
         </div>
         <!--! Modal dialogs -->
         <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
