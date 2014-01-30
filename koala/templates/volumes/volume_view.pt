@@ -175,7 +175,7 @@
                 <p> To delete a volume, click the "Delete Volume" button.</p>
                 <p><strong>Note:</strong> You may not delete a volume that is attached to an instance.</p>
             </div>
-            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="" 
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak=""> 
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                     <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
