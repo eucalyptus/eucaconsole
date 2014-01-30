@@ -163,11 +163,11 @@
                         &nbsp;<span i18n:translate="">Help</span>
                     </a>
                 </h6>
-                <div class="help-content" ng-show="isHelpExpanded">
-                    <!--! Tag editor help content -->
-                    <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                    </metal:block>
-               </div>
+            </div>
+            <div class="help-content" ng-show="isHelpExpanded">
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                </metal:block>
             </div>
         </div>
     </div>

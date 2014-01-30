@@ -124,7 +124,16 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="help-content">
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+            </div>
+            <div class="help-content" ng-show="isHelpExpanded">
                 <div tal:condition="not snapshot" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Create a Snapshot</h5> 
                     <p i18n:translate="">A snapshot is a block level storage volume that is created by copying an existing volume and is backed by persistent storage. You can use snapshots to create new volumes to be used with your instances.</p>
@@ -170,10 +179,12 @@
                     </ol> 
                 </div>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
-            </metal:block>
+            <div class="help-content" ng-show="isHelpExpanded">
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                    <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
+                </metal:block>
+            </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form, register_form=register_form)}
