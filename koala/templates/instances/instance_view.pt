@@ -206,26 +206,35 @@
             </div>
         </div>
         <div class="large-4 columns">
-            <div class="help-content">
-                <h5 class="title">Connecting to an instance</h5>
-                <p>To connect to your instance, be sure the security group
-                   <b>${instance.groups[0].name if instance.groups else 'default'}</b> has
-                   TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
-                   apply if you did not select a key pair when you launched this instance):
-                </p>
-                <ol>
-                    <li>Open an SSH terminal window.</li>
-                    <li>Change your directory to the one where you stored your key file "${instance.key_name}.pem"</li>
-                    <li>Run the following command to set the correct permissions for your key file:<br />
-                        <code>chmod 400 ${instance.key_name or 'key_file'}.pem</code>
-                    </li>
-                    <li>Connect to your instance via its public IP address by running the following command:<br />
-                        <code>ssh -i ${instance.key_name or 'key_file'}.pem root@${instance.ip_address}</code>
-                    </li>
-                </ol>
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+                <div class="help-content" ng-show="isHelpExpanded">
+                    <h5 class="title">Connecting to an instance</h5>
+                    <p>To connect to your instance, be sure the security group
+                       <b>${instance.groups[0].name if instance.groups else 'default'}</b> has
+                       TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
+                       apply if you did not select a key pair when you launched this instance):
+                    </p>
+                    <ol>
+                        <li>Open an SSH terminal window.</li>
+                        <li>Change your directory to the one where you stored your key file "${instance.key_name}.pem"</li>
+                        <li>Run the following command to set the correct permissions for your key file:<br />
+                            <code>chmod 400 ${instance.key_name or 'key_file'}.pem</code>
+                        </li>
+                        <li>Connect to your instance via its public IP address by running the following command:<br />
+                            <code>ssh -i ${instance.key_name or 'key_file'}.pem root@${instance.ip_address}</code>
+                        </li>
+                    </ol>
+                    <!--! Tag editor help content -->
+                    <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
+                </div>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form,
