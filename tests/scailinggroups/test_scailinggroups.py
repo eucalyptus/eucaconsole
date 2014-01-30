@@ -120,7 +120,7 @@ class DeleteFormTestCase(BaseFormTestCase):
     form = form_class(request)
 
     def test_secure_form(self):
-        self.has_field('csrf_token');
+        self.has_field('csrf_token')
 
 class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupPolicyCreateForm
@@ -151,7 +151,7 @@ class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
     form = form_class(request)
 
     def test_secure_form(self):
-        self.has_field('csrf_token');
+        self.has_field('csrf_token')
 
 class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesMarkUnhealthyForm
@@ -159,7 +159,7 @@ class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
     form = form_class(request)
 
     def test_secure_form(self):
-        self.has_field('csrf_token');
+        self.has_field('csrf_token')
 
 class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesTerminateForm
@@ -167,5 +167,5 @@ class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
     form = form_class(request)
 
     def test_secure_form(self):
-        self.has_field('csrf_token');
+        self.has_field('csrf_token')
 
