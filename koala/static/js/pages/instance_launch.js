@@ -5,7 +5,7 @@
  */
 
 // Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
-angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker'])
+angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.form = $('#launch-instance-form');
@@ -14,13 +14,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.urlParams = $.url().param();
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
-        $scope.securityGroupsRules = {};
-        $scope.selectedGroupRules = [];
-        $scope.keyPairChoices = [];
+        $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
+        $scope.securityGroupsRules = {};
+        $scope.selectedGroupRules = [];
+        $scope.securityGroupModal = $('#create-securitygroup-modal');
+        $scope.securityGroupForm = $('#create-securitygroup-form');
+        $scope.securityGroupChoices = {};
+        $scope.newSecurityGroupName = '';
+        $scope.isLoadingSecurityGroup = false;
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
@@ -60,13 +65,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.watchTags();
             $scope.focusEnterImageID();
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
+            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -119,7 +125,40 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     alert(oData.message);
                 }
             });
-        }
+        };
+        $scope.handleSecurityGroupCreate = function ($event, url) {
+            $event.preventDefault();
+            $scope.isLoadingSecurityGroup = true;
+            var formData = $($event.target).serialize();
+            $scope.securityGroupForm.trigger('validate');
+            if ($scope.securityGroupForm.find('[data-invalid]').length) {
+                return false;
+            }
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: url,
+                data: formData
+            }).success(function (oData) {
+                $scope.isLoadingSecurityGroup = false;
+                // Add new security group to choices and set it as selected
+                $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
+                $scope.securityGroup = $scope.newSecurityGroupName;
+                $scope.selectedGroupRules = JSON.parse($('#rules').val());
+                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                // Reset values
+                $scope.newSecurityGroupName = '';
+                $scope.newSecurityGroupDesc = '';
+                $('textarea#rules').val('');
+                $('textarea#tags').val('');
+                $scope.securityGroupModal.foundation('reveal', 'close');
+            }).error(function (oData) {
+                $scope.isLoadingSecurityGroup = false;
+                if (oData.message) {
+                    alert(oData.message);
+                }
+            });
+        };
     })
 ;
 
