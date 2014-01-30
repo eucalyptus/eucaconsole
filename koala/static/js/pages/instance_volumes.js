@@ -14,6 +14,7 @@ angular.module('InstanceVolumes', [])
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
         $scope.detachFormAction = '';
+        $scope.isHelpExpanded = false;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.initChosenSelector();
@@ -54,6 +55,9 @@ angular.module('InstanceVolumes', [])
                     $('#euca-logout-form').submit();
                 }
             });
+        };
+        $scope.toggleHelpContent = function () {
+            $scope.isHelpExpanded = !$scope.isHelpExpanded;
         };
     })
 ;
