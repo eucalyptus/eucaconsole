@@ -262,7 +262,7 @@
                 </div>
             </form>
             <form ng-show="showKeyPairMaterial" ng-submit="confirmKeyPair($event)">
-                <textarea id="keypair-material" ng-click="select()"></textarea>
+                <textarea id="keypair-material"></textarea>
                 <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">
                     Got it!
                 </button>
