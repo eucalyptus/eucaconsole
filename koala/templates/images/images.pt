@@ -71,7 +71,7 @@
                 </div>
                 <div>
                     <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'euca'">EM</span>
-                    <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'aws'">AM</span>
+                    <span class="label" title="AMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'aws'">AM</span>
                     {{ item.name }}
                 </div>
                 <div ng-show="item.platform_name">
