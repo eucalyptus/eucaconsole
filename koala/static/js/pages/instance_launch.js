@@ -7,6 +7,7 @@
 // Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
