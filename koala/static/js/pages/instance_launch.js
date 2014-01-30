@@ -4,11 +4,11 @@
  *
  */
 
-// Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
+// Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
     .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.form = $('#launch-instance-form');
+        $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
@@ -76,9 +76,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
-            $scope.form.trigger('validate');
+            $scope.launchForm.trigger('validate');
             var currentStep = nextStep - 1,
-                tabContent = $scope.form.find('#step' + currentStep),
+                tabContent = $scope.launchForm.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
             if (invalidFields.length) {
                 invalidFields.focus();
@@ -157,7 +157,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
-                $('textarea#tags').val('');
                 $scope.securityGroupModal.foundation('reveal', 'close');
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
