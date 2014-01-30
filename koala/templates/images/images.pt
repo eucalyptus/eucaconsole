@@ -70,7 +70,7 @@
                     {{ item.id }}
                 </div>
                 <div>
-                    <span class="label" title="Machine Image Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="">EM</span>
                     {{ item.name }}
                 </div>
                 <div ng-show="item.platform_name">

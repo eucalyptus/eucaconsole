@@ -39,7 +39,7 @@
                         <div class="section">
                             <h6 i18n:translate="">Machine</h6>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">EMI Name</label></div>
                                 <div class="small-8 columns value">${image.name if image.name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
