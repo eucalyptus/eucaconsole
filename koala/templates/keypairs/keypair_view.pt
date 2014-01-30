@@ -2,7 +2,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};">
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
+            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -102,7 +103,15 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="help-content">
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+            <div class="help-content" ng-show="isHelpExpanded">
                 <div tal:condition="keypair" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Delete Key Pair</h5>
                     <p i18n:translate="">This dialog box allows you to confirm or cancel a key pair delete operation.</p>
@@ -164,6 +173,8 @@
                         </li>
                     </ol>
                 </div>
+            </div>
+
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
