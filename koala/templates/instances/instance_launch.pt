@@ -238,13 +238,14 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        <div id="create-keypair-modal" class="reveal-modal small" data-reveal="">
+        <div id="create-keypair-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
             <h3 i18n:translate="">Create key pair</h3>
             <p i18n:translate="">You can use this key pair to connect to the instances you launch here.</p>
             <p i18n:translate="">
-                Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
+                Save the key pair the file in a place you will remember.
+                You will need to enter the path later to connect to your instances.
             </p>
-            <form method="post" data-abide="abide"
+            <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial"
                   ng-submit="handleKeyPairCreate($event, '${request.route_url('keypair_create')}')">
                 ${structure:keypair_form['csrf_token']}
                 ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'},
@@ -253,12 +254,19 @@
                 <div class="row">
                     <div class="small-3 columns">&nbsp;</div>
                     <div class="small-9 columns field inline">
-                        <button type="submit" class="button" id="create-keypair-btn" i18n:translate="">
-                            Create and download
+                        <button type="submit" class="button" id="create-keypair-btn"
+                                i18n:translate="" ng-disabled="isLoadingKeyPair">
+                            Create key pair
                         </button>
                     </div>
                 </div>
-             </form>
+            </form>
+            <form ng-show="showKeyPairMaterial" ng-submit="confirmKeyPair($event)">
+                <textarea id="keypair-material" ng-click="select()"></textarea>
+                <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">
+                    Got it!
+                </button>
+            </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>

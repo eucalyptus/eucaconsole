@@ -40,3 +40,5 @@
 #launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
 #launch-instance-form #create-keypair-link { position: relative; top: -6px; margin-bottom: 10px; }
 #launch-instance-form .rules-title { margin-bottom: 3px; }
+
+#create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }

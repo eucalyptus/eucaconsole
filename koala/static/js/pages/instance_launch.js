@@ -17,6 +17,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.selectedGroupRules = [];
         $scope.keyPairChoices = [];
         $scope.newKeyPairName = '';
+        $scope.keyPairModal = $('#create-keypair-modal');
+        $scope.showKeyPairMaterial = false;
+        $scope.isLoadingKeyPair = false;
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
@@ -87,21 +90,33 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             return result;
         };
+        $scope.confirmKeyPair = function ($event) {
+            $event.preventDefault();
+            $scope.showKeyPairMaterial = false;
+            $scope.keyPairModal.foundation('reveal', 'close');
+        };
         $scope.handleKeyPairCreate = function ($event, url) {
             $event.preventDefault();
             var formData = $($event.target).serialize();
+            $scope.isLoadingKeyPair = true;
             $http({
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'POST',
                 url: url,
                 data: formData
             }).success(function (oData) {
-                var keyPairMaterial = oData['payload'] || '';
-                // TODO: Force download of new key pair
+                $scope.showKeyPairMaterial = true;
+                $scope.isLoadingKeyPair = false;
+                $('#keypair-material').val(oData['payload']);
+                // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
+                $scope.keyPair = $scope.newKeyPairName;
                 $scope.newKeyPairName = '';
             }).error(function (oData) {
-                // TODO: Handle error case
+                $scope.isLoadingKeyPair = false;
+                if (oData.message) {
+                    alert(oData.message);
+                }
             });
         }
     })
