@@ -127,6 +127,15 @@ class UserForm(BaseSecureForm):
                                 self.iam_inst_profiles_max = limit
                                 
 
+class ChangePasswordForm(BaseSecureForm):
+    """CSRF-protected form to delete a user"""
+    password = wtforms.PasswordField(
+        _(u'Your password'),
+        validators=[
+            validators.InputRequired(message=_(u'A password is required')),
+            validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
+        ],
+        widget=widgets.PasswordInput())
 
 class DeleteUserForm(BaseSecureForm):
     """CSRF-protected form to delete a user"""

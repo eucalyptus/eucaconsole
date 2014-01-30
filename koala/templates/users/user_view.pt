@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template">
 
+<div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/changepassword.css')}" />
+</div>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
         <h3 class="header" id="pagetitle">
@@ -16,48 +20,78 @@
         <div class="large-7 columns"
             tal:define="readonly True if user else False;">
             <div class="panel no-title">
-                <form action="${request.route_url('user_update', name=user.user_name)}" method="post" data-abide="abide" id="user-update-form">
-                    ${structure:user_form['csrf_token']}
-                    <div class="section">
-                        <h4>General</h4>
-                        ${panel('form_field', field=user_form['user_name'])}
-                        ${panel('form_field', field=user_form['email'])}
-                        <div class="row controls-wrapper readonly">
-                            <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
-                            <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
+                <div ng-controller="UserUpdateCtrl"
+                     ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
+
+                    <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
+                        ${structure:user_form['csrf_token']}
+                        <div class="section">
+                            <h4>General</h4>
+                            ${panel('form_field', field=user_form['user_name'])}
+                            <!-- ${panel('form_field', field=user_form['email'])} -->
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
+                                <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
+                            </div>
+                            ${panel('form_field', field=user_form['path'])}
                         </div>
-                        ${panel('form_field', field=user_form['path'])}
-                    </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-user-btn">
-                                <span tal:condition="user" i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('users')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <button type="submit" class="button" id="save-user-btn">
+                                    <span tal:condition="user" i18n:translate="">Save changes</span>
+                                </button>
+                                <a href="${request.route_url('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <hr/>
-                <form action="${request.route_url('user_change_password', name=user.user_name)}" method="post" data-abide="abide" id="user-change-password-form">
-                    ${structure:user_form['csrf_token']}
-                    <div class="section">
-                        <h4>Password</h4>
-                        ${panel('form_field', field=user_form['new_password'])}
-                        ${panel('form_field', field=user_form['new_password2'])}
-                    </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-password-btn">
-                                <span tal:condition="user" i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('users')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                <div ng-controller="UserPasswordCtrl"
+                     ng-init="initController('${request.route_url('user_change_password', name=user.user_name)}')">
+                    <form data-abide="abide" id="user-change-password-form" ng-submit="submit($event)">
+                        ${structure:user_form['csrf_token']}
+                        <div class="section">
+                            <h4>Password</h4>
+                            ${panel('form_field', field=user_form['new_password'])}
+                            ${panel('form_field', field=user_form['new_password2'])}
                         </div>
+                        <div class="row">
+                          <div class="large-4 columns">&nbsp;</div>
+                          <div class="large-8 columns">
+                            <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <button type="submit" class="button" id="save-password-btn">
+                                    <span tal:condition="user" i18n:translate="">Save changes</span>
+                                </button>
+                                <a href="${request.route_url('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="change-password-modal" class="reveal-modal small" data-reveal="">
+                        <h3 i18n:translate="">Change Password</h3>
+                        <p>
+                            <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below:</span>?
+                        </p>
+                        <form method="post" id="delete-form" data-abide="" ng-submit="changePassword($event)">
+                            ${panel('form_field', field=change_password_form['password'])}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                </div>
+                            </div>
+                        </form>
+                        <a class="close-reveal-modal">&#215;</a>
                     </div>
-                </form>
+                </div>
                 <hr/>
                 <form action="${request.route_url('user_generate_keys', name=user.user_name)}" method="post" id="user-generate-keys-form">
                     ${structure:user_form['csrf_token']}
@@ -106,40 +140,31 @@
                 </a>
             </div>
         </div>
+        <div id="user-dialogs">
+            <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete User</h3>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the user</span>?
+                </p>
+                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
 </div>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var newPasswordForm = $('#new_password');
-            // add password strength meter to first new password field
-            newPasswordForm.after("<hr id='password-strength'/>");
-            newPasswordForm.on('keypress', function () {
-                var val = $(this).val();
-                var score = zxcvbn(val).score;
-                $('#password-strength').attr('class', "password_" + score);
-            });
-
-            var form = $('#euca-changepassword-form');
-            form.on('submit', function () {
-                $('.error').css('display', 'none');
-                var pass = $(this).find('#password').val();
-                var newpass = $(this).find('#new_password').val();
-                var newpass2 = $(this).find('#new_password2').val();
-                if (pass == newpass) {
-                    $('#password-different').css('display', 'block');
-                    return false;
-                }
-                if (newpass != newpass2) {
-                    $('#passwords-match').css('display', 'block');
-                    return false;
-                }
-            });
-        });
-    </script>
 </div>
 
 </metal:block>

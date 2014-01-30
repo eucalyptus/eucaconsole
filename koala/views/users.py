@@ -4,19 +4,21 @@ Pyramid views for Eucalyptus and AWS Users
 
 """
 import os, random, string
+from urllib2 import HTTPError, URLError
 from urllib import urlencode
 import simplejson as json
 
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 
-from ..forms.users import UserForm
+from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, TaggedItemView
+from ..models.auth import EucaAuthenticator
 
 
 class UsersView(LandingPageView):
@@ -75,7 +77,7 @@ class UsersJsonView(BaseView):
         conn = self.get_connection(conn_type="iam")
         try:
             return conn.get_all_users().users
-        except EC2ResponseError as exc:
+        except BotoServerError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
 
 class UserView(BaseView):
@@ -88,9 +90,13 @@ class UserView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
+        self.change_password_form = ChangePasswordForm(self.request)
+        self.delete_form = DeleteUserForm(self.request)
         self.render_dict = dict(
             user=self.user,
             user_form=self.user_form,
+            change_password_form=self.change_password_form,
+            delete_form=self.delete_form,
         )
 
     def get_user(self):
@@ -199,24 +205,60 @@ class UserView(BaseView):
             msg = _(u'Successfully created user(s).')
             location = self.request.route_url('user_view', name=user.user_name)
             return HTTPFound(location=location)
-        except EC2ResponseError as err:
+        except BotoServerError as err:
             msg = err.message
             queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
             location = self.request.route_url('users')
             return HTTPFound(location=location)
  
-    @view_config(route_name='user_update', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
-        if self.user_form.validate():
-            # TODO: do stuff...
+        """ calls iam:UpdateUser """
+        try:
+            new_name = self.request.params.get('user_name', None)
+            path = self.request.params.get('path', None)
+            if new_name == self.user.user_name:
+                new_name = None
+            result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
+            self.user = self.get_user()
+            return dict(results=self.user)
+        except BotoServerError as err:
+            return dict(error=getattr(err, 'status', 400), msg=err.message)
 
-            location = self.request.route_url('user_view', name=self.user.user_name)
-            msg = _(u'Successfully modified user')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-
-        return self.render_dict
+    @view_config(route_name='user_change_password', request_method='POST', renderer='json')
+    def user_change_password(self):
+        """ calls iam:UpdateLoginProfile """
+        try:
+            password = self.request.params.get('password')
+            clchost = self.request.registry.settings.get('clchost')
+            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
+            auth = EucaAuthenticator(host=clchost, duration=duration)
+            session = self.request.session
+            account=session['account']
+            username=session['username']
+            creds = auth.authenticate(account=account, user=username,
+                                      passwd=password, timeout=8)
+            # store new token values in session
+            session['session_token'] = creds.session_token
+            session['access_id'] = creds.access_key
+            session['secret_key'] = creds.secret_key
+            new_pass = self.request.params.get('new_password')
+            try:
+                # try to fetch login profile.
+                self.conn.get_login_profiles(user_name=self.user.user_name)
+                # if that worked, update the profile
+                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+            except BotoServerError:
+                # if that failed, create the profile
+                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+            return dict(results="true")
+        except BotoServerError as err:  # catch error in password change
+            return dict(error=getattr(err, 'status', 400), msg=err.message)
+        except HTTPError, err:          # catch error in authentication
+            return dict(error=getattr(err, 'status', 401), msg=err.message)
+        except URLError, err:           # catch error in authentication
+            return dict(error=getattr(err, 'status', 401), msg=err.message)
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
