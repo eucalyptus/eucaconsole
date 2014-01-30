@@ -12,7 +12,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -78,7 +78,16 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="help-content">
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+            </div>
+            <div class="help-content" ng-show="isHelpExpanded">
                 <h5 class="title">Managing Security Group Rules</h5>
                     <h6>Add Security Group Rules</h6>
                     <div>
@@ -117,14 +126,19 @@
                     next to the existing rule you want to delete.
                 </div>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
+            <div class="help-content" ng-show="isHelpExpanded">
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
+            </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
     </div>
 </div>
+
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/securitygroup.js')}"></script>
 </div>
+
 </metal:block>
