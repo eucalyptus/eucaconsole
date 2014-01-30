@@ -87,7 +87,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <h5 class="title">Managing Security Group Rules</h5>
                     <h6>Add Security Group Rules</h6>
                     <div>
@@ -126,7 +126,7 @@
                     next to the existing rule you want to delete.
                 </div>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
             </div>

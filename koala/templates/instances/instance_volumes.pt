@@ -79,7 +79,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <h5 class="title" i18n:translate="">Attach a volume to this instance</h5>
                 <div class="topic">
                     <ol>

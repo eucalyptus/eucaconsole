@@ -132,7 +132,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded">
+            <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded" ng-cloak="">
 
                 <h5 class="title">Create a Volume</h5>
                 <p> Eucalyptus offers persistent storage that you can attach to a
@@ -164,18 +164,18 @@
                     </li>
                 </ol>
             </div>
-            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded">
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 <h5 class="title">Manage Snapshots</h5>
                 <p> To manage snapshots for this volume, click the
                     <strong><a href="${request.route_url('volume_snapshots', id=volume.id)}">Snapshots</a></strong> link.
                 </p>
             </div>
-            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded">
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 <h5 class="title">Delete a Volume</h5>
                 <p> To delete a volume, click the "Delete Volume" button.</p>
                 <p><strong>Note:</strong> You may not delete a volume that is attached to an instance.</p>
             </div>
-            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded"> 
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="" 
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                     <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
