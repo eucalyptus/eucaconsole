@@ -123,7 +123,17 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="help-content" tal:condition="not volume">
+             <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+            </div>
+            <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded">
+
                 <h5 class="title">Create a Volume</h5>
                 <p> Eucalyptus offers persistent storage that you can attach to a
                     running instance. These elastic block storage (EBS) volumes persist
@@ -154,21 +164,23 @@
                     </li>
                 </ol>
             </div>
-            <div class="help-content" tal:condition="volume">
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded">
                 <h5 class="title">Manage Snapshots</h5>
                 <p> To manage snapshots for this volume, click the
                     <strong><a href="${request.route_url('volume_snapshots', id=volume.id)}">Snapshots</a></strong> link.
                 </p>
             </div>
-            <div class="help-content" tal:condition="volume">
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded">
                 <h5 class="title">Delete a Volume</h5>
                 <p> To delete a volume, click the "Delete Volume" button.</p>
                 <p><strong>Note:</strong> You may not delete a volume that is attached to an instance.</p>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
-            </metal:block>
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded"> 
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                    <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
+                </metal:block>
+            </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('volume_dialogs', volume=volume, volume_name=volume_name, instance_name=instance_name,
