@@ -3,12 +3,13 @@
 Pyramid views for Eucalyptus and AWS security groups
 
 """
-from boto.exception import EC2ResponseError
 import simplejson as json
 import time
 
+from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
+from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
@@ -174,13 +175,24 @@ class SecurityGroupView(TaggedItemView):
                 msg = _(u'Successfully created security group')
                 queue = Notification.SUCCESS
                 location = self.request.route_url('securitygroup_view', id=new_security_group.id)
+                status = 200
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 location = self.request.route_url('securitygroups')
-            self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
-        return self.render_dict
+                status = getattr(err, 'status', 400)
+            if self.request.is_xhr:
+                resp_body = json.dumps(dict(message=msg))
+                return Response(status=status, body=resp_body)
+            else:
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+        if self.request.is_xhr:
+            form_errors = ', '.join(self.securitygroup_form.get_errors_list())
+            Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+        else:
+            self.request.error_messages = self.securitygroup_form.get_errors_list()
+            return self.render_dict
 
     @view_config(route_name='securitygroup_update', request_method='POST', renderer=TEMPLATE)
     def securitygroup_update(self):

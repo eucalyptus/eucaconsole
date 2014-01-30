@@ -18,14 +18,10 @@ $volume-status-color-attached: darkorange;
 // Volume page
 
 // Volume status
-.status.creating { color: $volume-status-color-creating; }
-.status.available { color: $volume-status-color-available; }
-.status.in-use { color: $volume-status-color-attached; }
-
-#volume-status-label {
-    position: relative;
-    top: 3px;
-}
+.status { background-color: transparent; }
+.status.creating { background-color: $volume-status-color-creating; }
+.status.available { background-color: $volume-status-color-available; }
+.status.in-use { background-color: $volume-status-color-attached; }
 
 .reveal-modal {
     #device {

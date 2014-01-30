@@ -170,10 +170,11 @@ class IPAddressView(BaseView):
         self.conn = self.get_connection()
         self.elastic_ip = self.get_elastic_ip()
         self.instance = self.get_instance()
-        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params)
-        self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params)
-        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params)
-        self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
+        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
+        if self.instance:
+            self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
         self.render_dict = dict(
             eip=self.elastic_ip,
             associate_form=self.associate_form,
@@ -222,7 +223,9 @@ class IPAddressView(BaseView):
     def get_elastic_ip(self):
         address_param = self.request.matchdict.get('public_ip')
         addresses_param = [address_param]
-        ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
+        ip_addresses = []
+        if self.conn:
+            ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
         elastic_ip = ip_addresses[0] if ip_addresses else None
         return elastic_ip
 

@@ -27,7 +27,7 @@
             <span class="hide-for-xsmall">${layout.username_label}</span>
             <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
         </a>
-        <ul id="user-dropdown" class="f-dropdown">
+        <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
             <li tal:condition="layout.cloud_type == 'euca'">
                 <a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a>

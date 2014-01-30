@@ -9,7 +9,7 @@ import unittest
 
 from pyramid import testing
 from wtforms import Field
-from wtforms.validators import DataRequired, Length, Email, Optional, NumberRange
+from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
 
 from koala.routes import urls
 
@@ -157,12 +157,13 @@ class BaseFormTestCase(unittest.TestCase):
     def assert_not_required(self, field_name):
         field = self._get_field(field_name)
         msg = "Field '%s' is required." % field_name
-        assert not self._get_validator(field, DataRequired), msg
+        valid = self._get_validator(field, InputRequired) or self._get_validator(field, DataRequired)
+        assert not valid, msg
 
     def assert_required(self, field_name):
         field = self._get_field(field_name)
         msg = "Field '%s' is not required." % field_name
-        assert self._get_validator(field, DataRequired), msg
+        assert self._get_validator(field, InputRequired), msg
 
     def assert_email(self, field_name):
         field = self._get_field(field_name)

@@ -17,9 +17,9 @@ $snapshot-status-color-failed: darken(red, 20%);
 }
 
 
-.tile .status.pending { background-color: $snapshot-status-color-pending; }
-.tile .status.completed { background-color: $snapshot-status-color-completed; }
-.tile .status.failed { background-color: $snapshot-status-color-failed; }
+.status.pending { background-color: $snapshot-status-color-pending; }
+.status.completed { background-color: $snapshot-status-color-completed; }
+.status.failed { background-color: $snapshot-status-color-failed; }
 
 
 .table {

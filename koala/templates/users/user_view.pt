@@ -17,9 +17,17 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns"
-            tal:define="readonly True if user else False;">
+        <div class="large-7 columns" tal:define="readonly True if user else False;">
             <div class="panel no-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                Delete user
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <div ng-controller="UserUpdateCtrl"
                      ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
 
@@ -134,11 +142,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="user">
-                <a class="button secondary delete" data-reveal-id="delete-user-modal" i18n:translate="">
-                    Delete user
-                </a>
-            </div>
+            <!--! Help goes here -->
         </div>
         <div id="user-dialogs">
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">

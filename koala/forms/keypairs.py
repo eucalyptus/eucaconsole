@@ -18,7 +18,7 @@ class KeyPairForm(BaseSecureForm):
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),
-        validators=[validators.Required(message=name_error_msg), validators.Length(min=1, max=255)],
+        validators=[validators.InputRequired(message=name_error_msg), validators.Length(min=1, max=255)],
     )
 
     def __init__(self, request, keypair=None, **kwargs):
@@ -37,12 +37,12 @@ class KeyPairImportForm(BaseSecureForm):
     name = wtforms.TextField(
         id=u'key-name',
         label=_(u'Name'),
-        validators=[validators.Required(message=name_error_msg), validators.Length(min=1, max=255)],
+        validators=[validators.InputRequired(message=name_error_msg), validators.Length(min=1, max=255)],
     )
     key_material = wtforms.TextAreaField(
         id=u'key-import-contents',
         label=_(u'Public SSH Key Contents'),
-        validators=[validators.Required(message=key_material_error_msg), validators.Length(min=1)],
+        validators=[validators.InputRequired(message=key_material_error_msg), validators.Length(min=1)],
     )
 
     def __init__(self, request, keypair=None, **kwargs):

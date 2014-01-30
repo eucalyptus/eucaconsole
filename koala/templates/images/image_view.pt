@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap"  ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -16,14 +16,33 @@
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
                         readonly True if image else False;">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="${request.route_url('instance_create')}?image_id=${image.id}"
+                               id="launch-instance-action" i18n:translate="">
+                                Launch Instance from this Image
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${request.route_url('launchconfig_new')}?image_id=${image.id}"
+                               id="create-launchconfig-action" i18n:translate="">
+                                Create scaling group launch configuration from this Image
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
                             <h6 i18n:translate="">Machine</h6>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                                <div class="small-4 columns">
+                                    <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">EMI Name</label>
+                                    <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">AMI Name</label>
+                                </div>
                                 <div class="small-8 columns value">${image.name if image.name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
@@ -139,19 +158,26 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="image">
-                <a class="button secondary" href="${request.route_url('instance_create')}?image_id=${image.id}" i18n:translate="">
-                    Launch Instance from this Image
-                </a>
-                <a class="button secondary" href="${request.route_url('launchconfig_new')}?image_id=${image.id}" i18n:translate="">
-                    Create scaling group launch configuration from this Image
-                </a>
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-            </metal:block>
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                </metal:block>
+            </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/image.js')}"></script>
 </div>
 
 </metal:block>

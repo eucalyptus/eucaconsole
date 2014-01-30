@@ -13,11 +13,11 @@ from . import BaseSecureForm
 
 class EucaLoginForm(BaseSecureForm):
     account = wtforms.TextField(
-        _(u'Account Name'), validators=[validators.Required(message=_(u'Account name is required'))])
+        _(u'Account Name'), validators=[validators.InputRequired(message=_(u'Account name is required'))])
     username = wtforms.TextField(
-        _(u'Username'), validators=[validators.Required(message=_(u'Username is required'))])
+        _(u'Username'), validators=[validators.InputRequired(message=_(u'Username is required'))])
     password = wtforms.PasswordField(
-        _(u'Password'), validators=[validators.Required(message=_(u'Password is required'))])
+        _(u'Password'), validators=[validators.InputRequired(message=_(u'Password is required'))])
 
 
 class AWSLoginForm(BaseSecureForm):
@@ -27,19 +27,19 @@ class AWSLoginForm(BaseSecureForm):
 
 class EucaChangePasswordForm(BaseSecureForm):
     password = wtforms.PasswordField(
-        _(u'Current password'), validators=[validators.Required(message=_(u'Password is required'))],
+        _(u'Current password'), validators=[validators.InputRequired(message=_(u'Password is required'))],
         widget=widgets.PasswordInput())
     new_password = wtforms.PasswordField(
         _(u'New password'),
         validators=[
-            validators.Required(message=_(u'New Password is required')),
+            validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())
     new_password2 = wtforms.PasswordField(
         _(u'Confirm new password'),
         validators=[
-            validators.Required(message=_(u'New Password is required')),
+            validators.InputRequired(message=_(u'New Password is required')),
             validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
         ],
         widget=widgets.PasswordInput())

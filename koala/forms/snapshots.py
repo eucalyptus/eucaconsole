@@ -18,7 +18,7 @@ class SnapshotForm(BaseSecureForm):
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
-        validators=[validators.Required(message=volume_error_msg),]
+        validators=[validators.InputRequired(message=volume_error_msg),]
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
@@ -66,7 +66,7 @@ class DeleteSnapshotForm(BaseSecureForm):
 class RegisterSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
     name = wtforms.TextField(label=_(u'Name'),
-        validators=[validators.Required(message=_(u'Image name is required'))])
+        validators=[validators.InputRequired(message=_(u'Image name is required'))])
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
