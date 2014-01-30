@@ -73,6 +73,15 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
     )
 
 
+@panel_config('create_securitygroup_dialog', renderer='../templates/dialogs/create_securitygroup_dialog.pt')
+def create_securitygroup_dialog(context, request, securitygroup_form=None, security_group_names=None):
+    """ Modal dialog for creating a security group."""
+    return dict(
+        securitygroup_form=securitygroup_form,
+        security_group_names=security_group_names,
+    )
+
+
 @panel_config('create_alarm_dialog', renderer='../templates/dialogs/create_alarm_dialog.pt')
 def create_alarm_dialog(context, request, alarm_form=None, redirect_location=None, modal_size='medium'):
     """Create alarm dialog page."""
