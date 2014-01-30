@@ -5,7 +5,6 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
 
 from koala.forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from koala.views import BaseView
@@ -28,8 +27,10 @@ class KeyPairsViewTests(BaseViewTestCase):
         self.assertTrue('name' in filter_keys)
         self.assertTrue('fingerprint' in filter_keys)
 
+
 class KeyPairViewTests(BaseViewTestCase):
     request = testing.DummyRequest()
+    request.is_xhr = False
     view = KeyPairView(request)
 
     def test_is_base_view(self):
