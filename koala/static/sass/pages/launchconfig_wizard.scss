@@ -31,6 +31,24 @@
             display: inline-block;
         }
     }
+    #create-keypair-link, #create-securitygroup-link {
+        position: relative;
+        top: -6px;
+        margin-bottom: 10px;
+    }
+    .rules-title {
+        margin-bottom: 3px;
+    }
+}
+
+#create-keypair-modal {
+    #keypair-material {
+        height: 16rem;
+        color: white;
+        background-color: black;
+        font-weight: bold;
+        font-family: Courier, "courier New", monospace, sans-serif;
+    }
 }
 
 

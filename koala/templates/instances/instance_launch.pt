@@ -246,31 +246,7 @@
         </div>
         <!--! Modal dialogs -->
         ${panel('create_keypair_dialog', keypair_form=keypair_form, generate_file_form=generate_file_form)}
-        <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
-            <h3 i18n:translate="">Create security group</h3>
-            <p i18n:translate=""></p>
-            <form method="post" data-abide="abide" id="create-securitygroup-form"
-                  ng-submit="handleSecurityGroupCreate($event, '${request.route_url('securitygroup_create')}')">
-                ${structure:securitygroup_form['csrf_token']}
-                ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'},
-                        leftcol_width=3, rightcol_width=9)}
-                ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'},
-                        leftcol_width=3, rightcol_width=9)}
-                <hr />
-                ${panel('securitygroup_rules', groupnames=security_group_names)}
-                <hr />
-                <div class="row">
-                    <div class="small-3 columns">&nbsp;</div>
-                    <div class="small-9 columns field inline">
-                        <button type="submit" class="button" id="create-securitygroup-btn"
-                                i18n:translate="" ng-disabled="isLoadingSecurityGroup">
-                            Create security group
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        ${panel('create_securitygroup_dialog', securitygroup_form=securitygroup_form, security_group_names=security_group_names)}
     </div>
 </div>
 
