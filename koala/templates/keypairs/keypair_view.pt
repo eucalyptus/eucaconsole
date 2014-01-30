@@ -111,6 +111,7 @@
                         &nbsp;<span i18n:translate="">Help</span>
                     </a>
                 </h6>
+            </div>
             <div class="help-content" ng-show="isHelpExpanded">
                 <div tal:condition="keypair" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Delete Key Pair</h5>
@@ -173,8 +174,6 @@
                         </li>
                     </ol>
                 </div>
-            </div>
-
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
