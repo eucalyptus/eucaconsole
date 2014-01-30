@@ -97,10 +97,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             return result;
         };
-        $scope.confirmKeyPair = function ($event) {
+        $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: $scope.newKeyPairName + '.pem',
+                content: form.find('textarea[name="content"]').val(),
+                script: downloadUrl
+            });
             $scope.showKeyPairMaterial = false;
             $scope.keyPairModal.foundation('reveal', 'close');
+            $scope.newKeyPairName = '';
         };
         $scope.handleKeyPairCreate = function ($event, url) {
             $event.preventDefault();
@@ -118,7 +126,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
-                $scope.newKeyPairName = '';
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 if (oData.message) {

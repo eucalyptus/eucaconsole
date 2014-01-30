@@ -245,37 +245,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        <div id="create-keypair-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
-            <h3 i18n:translate="">Create key pair</h3>
-            <p i18n:translate="">You can use this key pair to connect to the instances you launch here.</p>
-            <p i18n:translate="">
-                Save the key pair the file in a place you will remember.
-                You will need to enter the path later to connect to your instances.
-            </p>
-            <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial" id="create-keypair-form"
-                  ng-submit="handleKeyPairCreate($event, '${request.route_url('keypair_create')}')">
-                ${structure:keypair_form['csrf_token']}
-                ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'},
-                        leftcol_width=3, rightcol_width=9)}
-                <hr>
-                <div class="row">
-                    <div class="small-3 columns">&nbsp;</div>
-                    <div class="small-9 columns field inline">
-                        <button type="submit" class="button" id="create-keypair-btn"
-                                i18n:translate="" ng-disabled="isLoadingKeyPair">
-                            Create key pair
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <form ng-show="showKeyPairMaterial" ng-submit="confirmKeyPair($event)">
-                <textarea id="keypair-material"></textarea>
-                <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">
-                    Got it!
-                </button>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        ${panel('create_keypair_dialog', keypair_form=keypair_form, generate_file_form=generate_file_form)}
         <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
             <h3 i18n:translate="">Create security group</h3>
             <p i18n:translate=""></p>
@@ -307,6 +277,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance_launch.js')}"></script>
 </div>
 
