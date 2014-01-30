@@ -94,6 +94,15 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
     )
 
 
+@panel_config('create_keypair_dialog', renderer='../templates/dialogs/create_keypair_dialog.pt')
+def create_keypair_dialog(context, request, keypair_form=None, generate_file_form=None):
+    """ Modal dialog for creating a key pair."""
+    return dict(
+        keypair_form=keypair_form,
+        generate_file_form=generate_file_form,
+    )
+
+
 @panel_config('launchconfig_dialogs', renderer='../templates/dialogs/launchconfig_dialogs.pt')
 def launchconfig_dialogs(context, request, launch_config=None, in_use=False, landingpage=False, delete_form=None):
     """ Modal dialogs for Launch configurations landing and detail page."""
