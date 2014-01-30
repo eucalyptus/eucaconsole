@@ -215,7 +215,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <h5 class="title">Connecting to an instance</h5>
                 <p>To connect to your instance, be sure the security group
                    <b>${instance.groups[0].name if instance.groups else 'default'}</b> has
@@ -233,7 +233,7 @@
                     </li>
                 </ol>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
             </div>

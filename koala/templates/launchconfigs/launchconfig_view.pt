@@ -115,7 +115,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" ng-show="isHelpExpanded">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
             </div>
         </div>

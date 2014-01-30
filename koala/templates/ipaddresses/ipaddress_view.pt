@@ -62,7 +62,7 @@
                     </a>
                 </h6>
             </div>
-            <div class="help-content" tal:condition="eip" ng-show="isHelpExpanded">
+            <div class="help-content" tal:condition="eip" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="not eip.instance_id">
                     <h5 class="title" i18n:translate="">Associate an Elastic IP Address with an Instance</h5>
                     <p i18n:translate="">This dialog box lets you associate an elastic IP address with a running instance.</p>
