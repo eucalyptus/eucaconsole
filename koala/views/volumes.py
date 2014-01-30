@@ -197,6 +197,7 @@ class VolumesView(LandingPageView):
             return instances_list[0] if instances_list else None
         return None
 
+
 class VolumeView(TaggedItemView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
 
@@ -364,6 +365,7 @@ class VolumeView(TaggedItemView):
         if self.volume:
             return TaggedItemView.get_display_name(self.volume)
         return None
+
 
 class VolumeStateView(BaseView):
     def __init__(self, request):

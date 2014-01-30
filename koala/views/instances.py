@@ -17,6 +17,8 @@ from pyramid.view import view_config
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm)
+from ..forms.keypairs import KeyPairForm
+from ..forms.securitygroups import SecurityGroupForm
 from ..models import LandingPageFilter, Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
@@ -91,7 +93,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='-launch_time', name=_(u'Launch time (most recent first)')),
+            dict(key='-launch_time', name=_(u'Launch time')),
             dict(key='id', name=_(u'Instance ID')),
             dict(key='placement', name=_(u'Availability zone')),
             dict(key='key_name', name=_(u'Key pair')),
@@ -549,16 +551,25 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
             conn=self.conn, formdata=self.request.params or None)
+        self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_url('images_json')
         self.owner_choices = self.get_owner_choices()
+        self.keypair_choices_json = json.dumps(dict(self.launch_form.keypair.choices))
+        self.securitygroup_choices_json = json.dumps(dict(self.launch_form.securitygroup.choices))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
+            keypair_form=self.keypair_form,
+            securitygroup_form=self.securitygroup_form,
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
+            keypair_choices_json=self.keypair_choices_json,
+            securitygroup_choices_json=self.securitygroup_choices_json,
+            security_group_names=[name for name, label in self.launch_form.securitygroup.choices],
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')

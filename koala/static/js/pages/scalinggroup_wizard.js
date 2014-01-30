@@ -10,9 +10,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.healthCheckType = 'EC2';
         $scope.healthCheckPeriod = 120;
-        $scope.minSize = 0;
+        $scope.minSize = 1;
         $scope.desiredCapacity = 1;
-        $scope.maxSize = 2;
+        $scope.maxSize = 1;
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
         $scope.summarySection = $('.summary');

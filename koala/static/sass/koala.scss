@@ -538,8 +538,7 @@ textarea.hidden {
 .panel{
     &.has-title {
         position: relative;
-        padding-top: 60px;
-        border: none;
+        padding-top: 50px;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -550,11 +549,23 @@ textarea.hidden {
             font-weight: normal;
             @include ellipsis-overflow;
         }
-    }
-    &.other-actions {
-        word-break: normal;
-        background-color: white;
-        border: none;
+        .label.status {
+            margin-bottom: 8px;
+        }
+        .actions-menu {
+            position: absolute;
+            top: 0; right: 0;
+            .fi-widget { margin-right: 6px; }
+            .secondary.button.dropdown {
+                background-color: $euca-lightgrey;
+                border: none;
+                margin-bottom: 0;
+            }
+            .f-dropdown {
+                min-width: 12rem;
+                width: auto;
+            }
+        }
     }
 }
 

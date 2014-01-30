@@ -130,15 +130,18 @@ class ImageView(TaggedItemView):
     def get_image(self):
         image_param = self.request.matchdict.get('id')
         images_param = [image_param]
-        images = self.conn.get_all_images(image_ids=images_param)
+        images = []
+        if self.conn:
+            images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
-        attrs = image.__dict__
-        image.block_device_names = []
-        if attrs['block_device_mapping'] is not None:
-            for attr in attrs['block_device_mapping']:
-                image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
-        image.platform = self.get_platform(image)
-        image.platform_name = ImageView.get_platform_name(image.platform)
+        if image:
+            attrs = image.__dict__
+            image.block_device_names = []
+            if attrs['block_device_mapping'] is not None:
+                for attr in attrs['block_device_mapping']:
+                    image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+            image.platform = self.get_platform(image)
+            image.platform_name = ImageView.get_platform_name(image.platform)
         return image
 
     @view_config(route_name='image_view', renderer=TEMPLATE)

@@ -19,17 +19,17 @@ $volume-status-color-available: $euca-green;
 
 
 // Volume status
-.tile .status.creating { background-color: $volume-status-color-creating; }
-.tile .status.available { background-color: $volume-status-color-available; }
-.tile .status.in-use { background-color: $volume-status-color-attached; }
-.tile .status.deleting { background-color: $volume-status-color-deleting; }
-.tile .status.deleted { background-color: $volume-status-color-deleted; }
+.status.creating { background-color: $volume-status-color-creating; }
+.status.available { background-color: $volume-status-color-available; }
+.status.in-use { background-color: $volume-status-color-attached; }
+.status.deleting { background-color: $volume-status-color-deleting; }
+.status.deleted { background-color: $volume-status-color-deleted; }
 
 // Volume attach_data status styles
-.tile .status.attaching { background-color: $volume-status-color-attaching; }
-.tile .status.attached { background-color: $volume-status-color-attached; }
-.tile .status.detached { background-color: $volume-status-color-detached; }
-.tile .status.detaching { background-color: $volume-status-color-detaching; }
+.status.attaching { background-color: $volume-status-color-attaching; }
+.status.attached { background-color: $volume-status-color-attached; }
+.status.detached { background-color: $volume-status-color-detached; }
+.status.detaching { background-color: $volume-status-color-detaching; }
 
 
 .table td.instance {

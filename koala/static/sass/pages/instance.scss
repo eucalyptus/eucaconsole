@@ -18,12 +18,12 @@ $volume-status-color-attaching: lighten($euca-green, 10%);
 $volume-status-color-detaching: $euca-grey;
 
 
-.row .status.running { color: $instance-status-color-running; }
-.row .status.pending { color: $instance-status-color-pending; }
-.row .status.stopped { color: $instance-status-color-stopped; }
-.row .status.stopping { color: $instance-status-color-stopping; }
-.row .status.terminated { color: $instance-status-color-terminated; }
-.row .status.terminating { color: $instance-status-color-terminating; }
+.row .status.running { background-color: $instance-status-color-running; }
+.row .status.pending { background-color: $instance-status-color-pending; }
+.row .status.stopped { background-color: $instance-status-color-stopped; }
+.row .status.stopping { background-color: $instance-status-color-stopping; }
+.row .status.terminated { background-color: $instance-status-color-terminated; }
+.row .status.terminating { background-color: $instance-status-color-terminating; }
 
 
 // Forms
@@ -45,10 +45,6 @@ form .row.controls-wrapper {
 #change-instance-state {
     display: inline-block;
     margin-left: 1rem;
-}
-
-#instance-status-label {
-    position: relative; top: 6px;
 }
 
 #current-status {

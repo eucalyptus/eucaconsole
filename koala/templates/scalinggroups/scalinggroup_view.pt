@@ -25,7 +25,16 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="scaling_group">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-scalinggroup-action" data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
+                                Delete scaling group
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <p tal:condition="not policies">
                     <span i18n:translate="">To automatically scale your group up or down, please</span>
                     <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
@@ -78,16 +87,17 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel no-title" tal:condition="scaling_group">
-                <div class="row">
-                    <div class="small-2 columns">&nbsp;</div>
-                    <div class="small-10 columns">
-                        <a class="button secondary delete" id="delete-scalinggroup-btn"
-                           data-reveal-id="delete-scalinggroup-modal" i18n:translate="">
-                            Delete scaling group
-                        </a>
-                    </div>
-                </div>
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
+             </div>
+             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                 <!--! Help goes here -->
             </div>
         </div>
         <!--! Modal dialogs -->

@@ -90,7 +90,7 @@
                         &nbsp;<span class="dots">&nbsp;</span>
                     </div>
                     <span ng-show="item.status === 'completed'">
-                        {{ item.status }}
+                        <span class="label radius status completed">{{ item.status }}</span>
                     </span>
                 </td>
                 <td class="size">{{ item.volume_size }}&nbsp;GB</td>

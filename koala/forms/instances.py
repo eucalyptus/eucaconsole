@@ -65,29 +65,29 @@ class LaunchInstanceForm(BaseSecureForm):
     number = wtforms.IntegerField(
         label=_(u'Number of instances'),
         validators=[
-            validators.Required(message=number_error_msg),
+            validators.InputRequired(message=number_error_msg),
             validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go
         ],
     )
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(
         label=_(u'Instance type'),
-        validators=[validators.Required(message=instance_type_error_msg)],
+        validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
     zone_error_msg = _(u'Availability zone is required')
     zone = wtforms.SelectField(
         label=_(u'Availability zone'),
-        validators=[validators.Required(message=zone_error_msg)],
+        validators=[validators.InputRequired(message=zone_error_msg)],
     )
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
-        validators=[validators.Required(message=keypair_error_msg)],
+        validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
         label=_(u'Security group'),
-        validators=[validators.Required(message=securitygroup_error_msg)],
+        validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
@@ -152,7 +152,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     number = wtforms.IntegerField(
         label=_(u'How many instances would you like to launch?'),
         validators=[
-            validators.Required(message=number_error_msg),
+            validators.InputRequired(message=number_error_msg),
             validators.NumberRange(min=1, max=10),  # Restrict num instances that can be launched in one go
         ],
     )
@@ -217,12 +217,12 @@ class AttachVolumeForm(BaseSecureForm):
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Volume'),
-        validators=[validators.Required(message=volume_error_msg)],
+        validators=[validators.InputRequired(message=volume_error_msg)],
     )
     device_error_msg = _(u'Device is required')
     device = wtforms.TextField(
         label=_(u'Device'),
-        validators=[validators.Required(message=device_error_msg)],
+        validators=[validators.InputRequired(message=device_error_msg)],
     )
 
     def __init__(self, request, volumes=None, instance=None, **kwargs):

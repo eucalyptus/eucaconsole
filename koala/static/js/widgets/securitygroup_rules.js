@@ -9,6 +9,7 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
+        $scope.selectedProtocol = '';
         $scope.resetValues = function () {
             $scope.trafficType = 'ip';
             $scope.fromPort = '';
@@ -67,7 +68,7 @@ angular.module('SecurityGroupRules', [])
             $scope.syncRules();
         };
         $scope.setPorts = function (port) {
-            if (!isNaN(port)) {
+            if (!isNaN(parseInt(port, 10))) {
                 $scope.fromPort = port;
                 $scope.toPort = port;
             } else {
@@ -80,10 +81,3 @@ angular.module('SecurityGroupRules', [])
         };
     })
 ;
-
-
-// Avoid clobbering the tag editor, since we have multiple ng-app="" attributes on the page.
-angular.element(document).ready(function() {
-    angular.bootstrap(document.getElementById('tag-editor'), ['TagEditor']);
-});
-

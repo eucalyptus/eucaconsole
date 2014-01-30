@@ -16,7 +16,7 @@ class AllocateIPsForm(BaseSecureForm):
     ipcount_error_msg = _(u'Invalid number')
     ipcount = wtforms.TextField(
         label=_(u'Number to allocate:'),
-        validators=[validators.Required(message=ipcount_error_msg)],
+        validators=[validators.InputRequired(message=ipcount_error_msg)],
         widget=widgets.TextInput(),
     )
 
@@ -30,7 +30,7 @@ class AssociateIPForm(BaseSecureForm):
     instance_error_msg = _(u'Instance is required')
     instance_id = wtforms.SelectField(
         label=_(u'Instance:'),
-        validators=[validators.Required(message=instance_error_msg)],
+        validators=[validators.InputRequired(message=instance_error_msg)],
     )
 
     def __init__(self, request, conn=None, **kwargs):

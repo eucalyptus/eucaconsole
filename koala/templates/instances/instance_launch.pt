@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
-         ng-init="initController('${securitygroups_rules_json}')">
+         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -111,13 +111,24 @@
                         </div>
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
-                            <p class="description" i18n:translate="">
-                                Specify key pair and security group.
-                            </p>
+                            <p class="description" i18n:translate="">Specify key pair and security group.</p>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'keyPair'})}
+                                    ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            <div class="row">
+                                <div class="small-9 columns right">
+                                    <a data-reveal-id="create-keypair-modal" i18n:translate=""
+                                       id="create-keypair-link">Create key pair</a>
+                                </div>
+                            </div>
                             ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9,
-                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()'})}
+                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()',
+                                          'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            <div class="row">
+                                <div class="small-9 columns right">
+                                    <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
+                                       id="create-securitygroup-link">Create security group</a>
+                                </div>
+                            </div>
                             ${panel('securitygroup_rules_preview')}
                             <hr />
                             <div class="row">
@@ -232,6 +243,63 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="create-keypair-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
+            <h3 i18n:translate="">Create key pair</h3>
+            <p i18n:translate="">You can use this key pair to connect to the instances you launch here.</p>
+            <p i18n:translate="">
+                Save the key pair the file in a place you will remember.
+                You will need to enter the path later to connect to your instances.
+            </p>
+            <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial" id="create-keypair-form"
+                  ng-submit="handleKeyPairCreate($event, '${request.route_url('keypair_create')}')">
+                ${structure:keypair_form['csrf_token']}
+                ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'},
+                        leftcol_width=3, rightcol_width=9)}
+                <hr>
+                <div class="row">
+                    <div class="small-3 columns">&nbsp;</div>
+                    <div class="small-9 columns field inline">
+                        <button type="submit" class="button" id="create-keypair-btn"
+                                i18n:translate="" ng-disabled="isLoadingKeyPair">
+                            Create key pair
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <form ng-show="showKeyPairMaterial" ng-submit="confirmKeyPair($event)">
+                <textarea id="keypair-material"></textarea>
+                <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">
+                    Got it!
+                </button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
+            <h3 i18n:translate="">Create security group</h3>
+            <p i18n:translate=""></p>
+            <form method="post" data-abide="abide" id="create-securitygroup-form"
+                  ng-submit="handleSecurityGroupCreate($event, '${request.route_url('securitygroup_create')}')">
+                ${structure:securitygroup_form['csrf_token']}
+                ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'},
+                        leftcol_width=3, rightcol_width=9)}
+                ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'},
+                        leftcol_width=3, rightcol_width=9)}
+                <hr />
+                ${panel('securitygroup_rules', groupnames=security_group_names)}
+                <hr />
+                <div class="row">
+                    <div class="small-3 columns">&nbsp;</div>
+                    <div class="small-9 columns field inline">
+                        <button type="submit" class="button" id="create-securitygroup-btn"
+                                i18n:translate="" ng-disabled="isLoadingSecurityGroup">
+                            Create security group
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

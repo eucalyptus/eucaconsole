@@ -28,7 +28,27 @@
                          if snapshot else request.route_url('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
                          html_attrs {'disabled': 'disabled'} if snapshot else {};">
-            <div class="panel">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}"
+                               id="create-volume-action" i18n:translate="">
+                                Create volume from snapshot
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="register-snapshot-modal" i18n:translate="" id="register-image-action">
+                                Register as image
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="delete-snapshot-modal" i18n:translate="" id="delete-snapshot-action">
+                                Delete snapshot
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
@@ -104,22 +124,16 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div tal:condition="snapshot" tal:omit-tag="">
-                <div class="panel other-actions">
-                    <a class="button secondary" href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}" i18n:translate="">
-                        Create volume from snapshot
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
                     </a>
-                    <br/>
-                    <a class="button secondary register" data-reveal-id="register-snapshot-modal" i18n:translate="">
-                        Register as image
-                    </a>
-                    <br/>
-                    <a class="button secondary delete" data-reveal-id="delete-snapshot-modal" i18n:translate="">
-                        Delete snapshot
-                    </a>
-                </div>
+                </h6>
             </div>
-            <div class="help-content">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="not snapshot" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Create a Snapshot</h5> 
                     <p i18n:translate="">A snapshot is a block level storage volume that is created by copying an existing volume and is backed by persistent storage. You can use snapshots to create new volumes to be used with your instances.</p>
@@ -165,10 +179,12 @@
                     </ol> 
                 </div>
             </div>
-            <!--! Tag editor help content -->
-            <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
-            </metal:block>
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                    <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
+                </metal:block>
+            </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('snapshot_dialogs', snapshot=snapshot, snapshot_name=snapshot_name, delete_form=delete_form, register_form=register_form)}

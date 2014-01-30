@@ -13,6 +13,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
         $scope.isUpdating = false;
+        $scope.isHelpExpanded = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -59,6 +60,9 @@ angular.module('SnapshotPage', ['TagEditor'])
                     $('#euca-logout-form').submit();
                 }
             });
+        };
+        $scope.toggleHelpContent = function () {
+            $scope.isHelpExpanded = !$scope.isHelpExpanded;
         };
     })
 ;

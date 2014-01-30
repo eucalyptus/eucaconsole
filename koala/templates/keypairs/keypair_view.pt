@@ -2,7 +2,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};">
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
+            ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -32,7 +33,16 @@
         </div>
 
         <div class="large-7 columns">
-            <div class="panel no-title">
+            <div class="panel has-title">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="keypair">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a data-reveal-id="delete-keypair-modal" i18n:translate="" id="delete-keypair-action">
+                                Delete keypair
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
                 <div tal:condition="keypair">
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
@@ -52,14 +62,14 @@
                         ${structure:keypair_form['csrf_token']}
                         ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         <hr>
-                    <div class="row">
-                        <div class="small-3 columns">&nbsp;</div>
-                        <div class="small-9 columns field inline">
-                            <button type="submit" class="button" i18n:translate="">Create and download</button>
-                            <a href="${request.route_url('keypairs')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                        <div class="row">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns field inline">
+                                <button type="submit" class="button" i18n:translate="">Create and download</button>
+                                <a href="${request.route_url('keypairs')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
                         </div>
-                    </div>
                      </form>
                  </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
@@ -93,12 +103,16 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="panel other-actions" tal:condition="keypair">
-                <a class="button secondary delete" data-reveal-id="delete-keypair-modal" i18n:translate="">
-                    Delete keypair
-                </a>
+            <div class="expando" id="advanced-section" ng-cloak="">
+                <h6 class="title" >
+                    <a ng-click="toggleHelpContent()">
+                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                        &nbsp;<span i18n:translate="">Help</span>
+                    </a>
+                </h6>
             </div>
-            <div class="help-content">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="keypair" tal:omit-tag="">
                     <h5 class="title" i18n:translate="">Delete Key Pair</h5>
                     <p i18n:translate="">This dialog box allows you to confirm or cancel a key pair delete operation.</p>
