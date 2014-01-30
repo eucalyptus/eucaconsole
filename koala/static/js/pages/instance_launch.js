@@ -6,7 +6,7 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker'])
-    .controller('LaunchInstanceCtrl', function ($scope, $timeout) {
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
@@ -15,6 +15,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceNames = [];
         $scope.securityGroupsRules = {};
         $scope.selectedGroupRules = [];
+        $scope.keyPairChoices = [];
+        $scope.newKeyPairName = '';
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
@@ -54,12 +56,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.initController = function (securityGroupsRulesJson) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.watchTags();
             $scope.focusEnterImageID();
+            $scope.keyPairChoices = JSON.parse(keyPairChoices);
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -84,6 +87,23 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             return result;
         };
+        $scope.handleKeyPairCreate = function ($event, url) {
+            $event.preventDefault();
+            var formData = $($event.target).serialize();
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: url,
+                data: formData
+            }).success(function (oData) {
+                var keyPairMaterial = oData['payload'] || '';
+                // TODO: Force download of new key pair
+                $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
+                $scope.newKeyPairName = '';
+            }).error(function (oData) {
+                // TODO: Handle error case
+            });
+        }
     })
 ;
 
