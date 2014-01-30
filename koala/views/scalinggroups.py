@@ -96,7 +96,9 @@ class BaseScalingGroupView(BaseView):
     def get_scaling_group(self):
         scalinggroup_param = self.request.matchdict.get('id')  # id = scaling_group.name
         scalinggroups_param = [scalinggroup_param]
-        scaling_groups = self.autoscale_conn.get_all_groups(names=scalinggroups_param)
+        scaling_groups = []
+        if self.autoscale_conn:
+            scaling_groups = self.autoscale_conn.get_all_groups(names=scalinggroups_param)
         return scaling_groups[0] if scaling_groups else None
 
     def get_alarms(self):
@@ -105,7 +107,9 @@ class BaseScalingGroupView(BaseView):
         return []
 
     def get_policies(self, scaling_group):
-        policies = self.autoscale_conn.get_all_policies(as_group=scaling_group.name)
+        policies = []
+        if self.autoscale_conn:
+            policies = self.autoscale_conn.get_all_policies(as_group=scaling_group.name)
         return sorted(policies)
 
     def parse_tags_param(self, scaling_group_name=None):

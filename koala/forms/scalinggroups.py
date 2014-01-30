@@ -113,8 +113,9 @@ class BaseScalingGroupForm(BaseSecureForm):
         launch_configs = self.launch_configs
         if launch_configs is None and self.autoscale_conn is not None:
             launch_configs = self.autoscale_conn.get_all_launch_configurations()
-        for launch_config in launch_configs:
-            choices.append((launch_config.name, launch_config.name))
+        if launch_configs:
+            for launch_config in launch_configs:
+                choices.append((launch_config.name, launch_config.name))
         if self.scaling_group:
             launch_config_name = self.scaling_group.launch_config_name
             choices.append((launch_config_name, launch_config_name))
