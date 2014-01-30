@@ -6,7 +6,8 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker'])
-    .controller('LaunchInstanceCtrl', function ($scope, $timeout) {
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.form = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
@@ -15,6 +16,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceNames = [];
         $scope.securityGroupsRules = {};
         $scope.selectedGroupRules = [];
+        $scope.keyPairChoices = [];
+        $scope.newKeyPairName = '';
+        $scope.keyPairModal = $('#create-keypair-modal');
+        $scope.showKeyPairMaterial = false;
+        $scope.isLoadingKeyPair = false;
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
@@ -54,12 +60,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.initController = function (securityGroupsRulesJson) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.watchTags();
             $scope.focusEnterImageID();
+            $scope.keyPairChoices = JSON.parse(keyPairChoices);
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -84,6 +91,35 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             return result;
         };
+        $scope.confirmKeyPair = function ($event) {
+            $event.preventDefault();
+            $scope.showKeyPairMaterial = false;
+            $scope.keyPairModal.foundation('reveal', 'close');
+        };
+        $scope.handleKeyPairCreate = function ($event, url) {
+            $event.preventDefault();
+            var formData = $($event.target).serialize();
+            $scope.isLoadingKeyPair = true;
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                url: url,
+                data: formData
+            }).success(function (oData) {
+                $scope.showKeyPairMaterial = true;
+                $scope.isLoadingKeyPair = false;
+                $('#keypair-material').val(oData['payload']);
+                // Add new key pair to choices and set it as selected
+                $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
+                $scope.keyPair = $scope.newKeyPairName;
+                $scope.newKeyPairName = '';
+            }).error(function (oData) {
+                $scope.isLoadingKeyPair = false;
+                if (oData.message) {
+                    alert(oData.message);
+                }
+            });
+        }
     })
 ;
 

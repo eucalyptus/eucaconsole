@@ -3,6 +3,8 @@
 Pyramid views for Eucalyptus and AWS key pairs
 
 """
+import simplejson as json
+
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -117,7 +119,7 @@ class KeyPairView(BaseView):
             del session['new_keypair_name']
             del session['material']
             response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
-            response.body=str(material)
+            response.body = str(material)
             response.content_disposition='attachment; filename="{name}.pem"'.format(name=name)
             return response
 
@@ -128,22 +130,34 @@ class KeyPairView(BaseView):
         if self.keypair_form.validate():
             name = self.request.params.get('name')
             session = self.request.session
+            new_keypair = None
             try:
                 new_keypair = self.conn.create_key_pair(name)
-                # Store the new keypair material information in the session            
+                # Store the new keypair material information in the session
                 session['new_keypair_name'] = new_keypair.name 
                 session['material'] = new_keypair.material
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 queue = Notification.SUCCESS
+                status = 200
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('keypair_view', id=name)
-            self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
-
-        return self.render_dict
+                status = getattr(err, 'status', 400)
+            if self.request.is_xhr:
+                keypair_material = new_keypair.material if new_keypair else None
+                resp_body = json.dumps(dict(message=msg, payload=keypair_material))
+                return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
+            else:
+                location = self.request.route_url('keypair_view', id=name)
+                self.request.session.flash(msg, queue=queue)
+                return HTTPFound(location=location)
+        if self.request.is_xhr:
+            form_errors = ', '.join(self.keypair_form.get_errors_list())
+            Response(status=400, resp_body=dict(message=form_errors))  # Validation failure = bad request
+        else:
+            self.request.error_messages = self.keypair_form.get_errors_list()
+            return self.render_dict
 
     @view_config(route_name='keypair_import', request_method='POST', renderer=TEMPLATE)
     def keypair_import(self):
