@@ -23,8 +23,8 @@ def help_instances(context, request, display, instance_name='default', instance_
     return dict(display=display, instance_name=instance_name, instance_key_name=instance_key_name, instance_ip_address=instance_ip_address)
 
 @panel_config('help_volumes', renderer='../templates/help/help_volumes.pt')
-def help_volumes(context, request, display):
-    return dict(display=display)
+def help_volumes(context, request, display, snapshot_url=''):
+    return dict(display=display, snapshot_url=snapshot_url)
 
 @panel_config('help_snapshots', renderer='../templates/help/help_snapshots.pt')
 def help_snapshots(context, request, display):
