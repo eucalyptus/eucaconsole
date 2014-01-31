@@ -25,7 +25,6 @@
                         ${panel('user_editor')}
                         ${panel('form_field', field=user_form['random_password'], reverse="true")}
                         ${panel('form_field', field=user_form['access_keys'], reverse="true")}
-                        ${panel('form_field', field=user_form['email_users'], reverse="true")}
                         ${panel('form_field', field=user_form['allow_all'], reverse="true")}
                     </div>
                     <hr/>

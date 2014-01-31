@@ -1,36 +1,36 @@
 
 <!--! Form field row -->
 <div class="row ${inline} controls-wrapper" id="controls_${field.name}">
+    <span tal:condition="not:reverse">
     <div class="small-${leftcol_width} columns">
-        <span tal:condition="not:reverse">
-            <label class="right">
-                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-            </label>
-        </span>
-        <span tal:condition="reverse" class="right">
-            ${structure:field(**html_attrs)}
-            <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
-                  data-tooltip="" title="${field.help_text}">?</span>
-            <small class="error" tal:condition="error_msg">${error_msg}</small>
-            <div tal:condition="field.errors" class="server-validation">
-                <span class="error" tal:repeat="error field.errors">${error}</span>
-            </div>
-        </span>
+        <label class="right">
+            ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
+        </label>
     </div>
     <div class="small-${rightcol_width} columns field">
-        <span tal:condition="not:reverse">
+        ${structure:field(**html_attrs)}
+        <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
+              data-tooltip="" title="${field.help_text}">?</span>
+        <small class="error" tal:condition="error_msg">${error_msg}</small>
+        <div tal:condition="field.errors" class="server-validation">
+            <span class="error" tal:repeat="error field.errors">${error}</span>
+        </div>
+    </div>
+    </span>
+    <span tal:condition="reverse">
+        <div class="columns">
+          <div class="column">
             ${structure:field(**html_attrs)}
+            <label for="${field.name}">
+                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
+            </label>
             <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
                   data-tooltip="" title="${field.help_text}">?</span>
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
                 <span class="error" tal:repeat="error field.errors">${error}</span>
             </div>
-        </span>
-        <span tal:condition="reverse">
-            <label class="left">
-                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-            </label>
-        </span>
-    </div>
+          </div>
+        </div>
+    </span>
 </div>

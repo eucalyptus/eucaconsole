@@ -22,7 +22,6 @@ class UserForm(BaseSecureForm):
     # these fields used for new user form
     random_password = wtforms.BooleanField(label=_(u"Create and download random password"))
     access_keys = wtforms.BooleanField(label=_(u"Create and download access keys"))
-    email_users = wtforms.BooleanField(label=_(u"E-mail users with credentials attached"))
     allow_all = wtforms.BooleanField(label=_(u"Allow read/write access to all resource except users and groups"))
 
     path = wtforms.TextField(label=_(u"Path"), default="/")

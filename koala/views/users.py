@@ -156,13 +156,12 @@ class UserView(BaseView):
         # now get the rest
         random_password = self.request.params.get('random_password', 'n')
         access_keys = self.request.params.get('access_keys', 'n')
-        email_users = self.request.params.get('email_users', 'n')
         allow_all = self.request.params.get('allow_all', 'n')
         path = self.request.params.get('path', '/')
         try:
             if users_json:
                 users = json.loads(users_json)
-                for name, email in users.items():
+                for name in users.items():
                     user = self.conn.create_user(name, path)
                     policy = {}
                     policy['Version'] = '2011-04-01'

@@ -12,12 +12,11 @@ angular.module('UserEditor', [])
         $scope.syncUsers = function () {
             var usersObj = {};
             $scope.usersArray.forEach(function(user) {
-                usersObj[user.name] = user.email;
+                usersObj[user.name] = "no-email"; //user.email;
             });
             $scope.usersTextarea.val(JSON.stringify(usersObj));
         };
         $scope.initUsers = function() {
-            console.log("we're initializing the user editor here!");
             $scope.syncUsers();
         };
         $scope.removeUser = function (index, $event) {
@@ -25,16 +24,21 @@ angular.module('UserEditor', [])
             $scope.usersArray.splice(index, 1);
             $scope.syncUsers();
         };
+        $scope.keyListener = function ($event) {
+            if ($event.keyCode == 13) {
+                $scope.addUser($event)
+            }
+        };
         $scope.addUser = function ($event) {
             $event.preventDefault();
             var userEntry = $($event.currentTarget).closest('.userentry'),
                 userNameField = userEntry.find('.name'),
-                userEmailField = userEntry.find('.email'),
+                //userEmailField = userEntry.find('.email'),
                 usersArrayLength = $scope.usersArray.length,
                 existingUserFound = false,
                 form = $($event.currentTarget).closest('form'),
                 invalidFields = form.find('[data-invalid]');
-            if (userNameField.val() && userEmailField.val()) {
+            if (userNameField.val()) {// && userEmailField.val()) {
                 // Trigger validation to avoid users that start with 'aws:'
                 form.trigger('validate');
                 if (invalidFields.length) {
@@ -53,15 +57,16 @@ angular.module('UserEditor', [])
                 } else {
                     $scope.usersArray.push({
                         'name': userNameField.val(),
-                        'email': userEmailField.val(),
+                        //'email': userEmailField.val(),
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
                     userNameField.val('').focus();
-                    userEmailField.val('');
+                    //userEmailField.val('');
                 }
             } else {
-                userNameField.val() ? userEmailField.focus() : userNameField.focus();
+                //userNameField.val() ? userEmailField.focus() : userNameField.focus();
+                userNameField.focus();
             }
         };
     })

@@ -70,8 +70,8 @@ angular.module('UserView', [])
                 var score = zxcvbn(val).score;
                 $('#password-strength').attr('class', "password_" + score);
             });
-            $("#change-password-modal").on('aftershow', function () {
-                $('#password').focus();
+            $("#change-password-modal").on('show', function () {
+                $('#password').focus(); // doesn't seem to work.
             });
         };
         // Handles first step in submit.. validation and dialog

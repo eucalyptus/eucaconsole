@@ -76,7 +76,7 @@
                             <div class="small-4 columns">&nbsp;</div>
                             <div class="small-8 columns field inline">
                                 <button type="submit" class="button" id="save-password-btn">
-                                    <span tal:condition="user" i18n:translate="">Save changes</span>
+                                    <span tal:condition="user" i18n:translate="">Save password</span>
                                 </button>
                                 <a href="${request.route_url('users')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
@@ -193,12 +193,11 @@
                         <h4>Quotas</h4>
                         ${panel('quotas_panel', quota_form=user_form)}
                     </div>
-                    <hr/>
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button" id="save-quotas-btn">
-                                <span tal:condition="user" i18n:translate="">Save changes</span>
+                                <span tal:condition="user" i18n:translate="">Save quotas</span>
                             </button>
                             <a href="${request.route_url('users')}"
                                class="cancel-link" i18n:translate="">Cancel</a>

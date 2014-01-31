@@ -2,10 +2,7 @@
 <!--! User editor -->
 <div id="user-editor" class="row controls-wrapper" ng-app="UserEditor"
      ng-controller="UserEditorCtrl" ng-init="initUsers()">
-    <div class="small-${leftcol_width} columns">
-        <label class="right" i18n:translate="">Users</label>
-    </div>
-    <div class="small-${rightcol_width} columns field">
+    <div class="small-12 columns field">
         <div class="row userentry existing inline controls-wrapper"
              ng-repeat="user in usersArray" ng-cloak="cloak">
             <div class="small-1 columns">
@@ -14,7 +11,7 @@
             </div>
             <div class="small-11 columns">
                 <strong i18n:translate="">User</strong>:
-                <span class="{{user.fresh}}">{{ user.name }} <em>=</em> {{ user.email }}</span>
+                <span class="{{user.fresh}}">{{ user.name }} <!--<em>=</em> {{ user.email }}--></span>
             </div>
         </div>
         <div class="row">
@@ -25,21 +22,23 @@
         </div>
         <div class="row userentry controls-wrapper">
             <div>
-                <div class="small-4 columns">
-                    <input class="userinput name" placeholder="name..." ng-model="newUserName"/>
+                <div class="small-12 columns">
+                    <input class="userinput name" placeholder="name..." ng-model="newUserName" ng-keypress="keyListener($event)"/>
                     <small class="error" i18n:translate="">What??</small>
                 </div>
+                <!--
                 <div class="small-8 columns">
                     <input class="userinput email" placeholder="e-mail..."/>
                     <small class="error" i18n:translate="">What??</small>
                 </div>
+                -->
             </div>
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
                     <a href="#" ng-click="addUser($event)" class="button round secondary tiny" id="add-user-btn"
                        title="Add user" i18n:translate="">Add user</a>
-                </div>
+                
             </div>
         </div>
         <!--! Add class="debug" to textarea to view users data posted by form -->
