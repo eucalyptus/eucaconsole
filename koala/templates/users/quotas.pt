@@ -1,0 +1,80 @@
+<!--! Modal dialogs for Snapshots on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="quotas-panel" class="section">
+        <p i18n:translate="">Define limits on resource that this user is allowed to create. Leave blank for unlimited rights.</p>
+        <div class="expando" id="ec2-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleEC2Content()">
+                    <i class="fi-plus" ng-show="!ec2_expanded"></i>
+                    <i class="fi-minus" ng-show="ec2_expanded"></i>
+                    &nbsp;<span i18n:translate="">EC2</span>
+                </a>
+            </h6>
+            <div class="ec2-content" ng-show="ec2_expanded">
+                ${panel('form_field', field=quota_form['ec2_images_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['ec2_instances_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['ec2_volumes_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['ec2_total_size_all_vols'], reverse='true')}
+                ${panel('form_field', field=quota_form['ec2_snapshots_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['ec2_elastic_ip_max'], reverse='true')}
+            </div>
+        </div>
+        <div class="expando" id="s3-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleS3Content()">
+                    <i class="fi-plus" ng-show="!s3_expanded"></i>
+                    <i class="fi-minus" ng-show="s3_expanded"></i>
+                    &nbsp;<span i18n:translate="">S3/Walrus</span>
+                </a>
+            </h6>
+            <div class="s3-content" ng-show="s3_expanded">
+                ${panel('form_field', field=quota_form['s3_buckets_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['s3_objects_per_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['s3_bucket_size'], reverse='true')}
+                ${panel('form_field', field=quota_form['s3_total_size_all_buckets'], reverse='true')}
+            </div>
+        </div>
+        <div class="expando" id="autoscale-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleAutoscaleContent()">
+                    <i class="fi-plus" ng-show="!autoscale_expanded"></i>
+                    <i class="fi-minus" ng-show="autoscale_expanded"></i>
+                    &nbsp;<span i18n:translate="">Autoscaling</span>
+                </a>
+            </h6>
+            <div class="autoscale-content" ng-show="autoscale_expanded">
+                ${panel('form_field', field=quota_form['autoscale_groups_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['launch_configs_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['scaling_policies_max'], reverse='true')}
+            </div>
+        </div>
+        <div class="expando" id="elb-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleELBContent()">
+                    <i class="fi-plus" ng-show="!elb_expanded"></i>
+                    <i class="fi-minus" ng-show="elb_expanded"></i>
+                    &nbsp;<span i18n:translate="">Elastic load balancing</span>
+                </a>
+            </h6>
+            <div class="elb-content" ng-show="elb_expanded">
+                ${panel('form_field', field=quota_form['elb_load_balancers_max'], reverse='true')}
+            </div>
+        </div>
+        <div class="expando" id="iam-section" ng-cloak="">
+            <h6 class="title" >
+                <a ng-click="toggleIAMContent()">
+                    <i class="fi-plus" ng-show="!iam_expanded"></i>
+                    <i class="fi-minus" ng-show="iam_expanded"></i>
+                    &nbsp;<span i18n:translate="">IAM</span>
+                </a>
+            </h6>
+            <div class="iam-content" ng-show="iam_expanded">
+                ${panel('form_field', field=quota_form['iam_groups_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['iam_users_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['iam_roles_max'], reverse='true')}
+                ${panel('form_field', field=quota_form['iam_inst_profiles_max'], reverse='true')}
+            </div>
+        </div>
+    </div>
+</div>
+

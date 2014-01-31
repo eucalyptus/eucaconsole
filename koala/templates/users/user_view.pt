@@ -1,7 +1,12 @@
 <metal:block use-macro="main_template">
 
+<div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/user.css')}" />
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/changepassword.css')}" />
+</div>
+
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -13,9 +18,8 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns"
-            tal:define="readonly True if user else False;">
-            <div class="panel has-title">
+        <div class="large-7 columns" tal:define="readonly True if user else False;">
+            <div class="panel no-title">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -25,34 +29,175 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_url('user_update', name=user.user_name)}" method="post" data-abide="abide">
-                    ${structure:user_form['csrf_token']}
-                    <div tal:condition="user">
+                <div ng-controller="UserUpdateCtrl"
+                     ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
+
+                    <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
+                        ${structure:user_form['csrf_token']}
                         <div class="section">
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">User name</label></div>
-                                <div class="small-8 columns value">${user.user_name if user.user_name else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
-                                <div class="small-8 columns value">${user.user_id if user.user_id else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Path</label></div>
-                                <div class="small-8 columns value">${user.path if user.path else ''}</div>
-                            </div>
+                            <h4>General</h4>
+                            ${panel('form_field', field=user_form['user_name'])}
+                            <!-- ${panel('form_field', field=user_form['email'])} -->
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
                                 <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
                             </div>
+                            ${panel('form_field', field=user_form['path'])}
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <button type="submit" class="button" id="save-user-btn">
+                                    <span tal:condition="user" i18n:translate="">Save changes</span>
+                                </button>
+                                <a href="${request.route_url('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr/>
+                <div ng-controller="UserPasswordCtrl"
+                     ng-init="initController('${request.route_url('user_change_password', name=user.user_name)}')">
+                    <form data-abide="abide" id="user-change-password-form" ng-submit="submit($event)">
+                        ${structure:user_form['csrf_token']}
+                        <div class="section">
+                            <h4>Password</h4>
+                            ${panel('form_field', field=user_form['new_password'])}
+                            ${panel('form_field', field=user_form['new_password2'])}
+                        </div>
+                        <div class="row">
+                          <div class="large-4 columns">&nbsp;</div>
+                          <div class="large-8 columns">
+                            <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <button type="submit" class="button" id="save-password-btn">
+                                    <span tal:condition="user" i18n:translate="">Save password</span>
+                                </button>
+                                <a href="${request.route_url('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="change-password-modal" class="reveal-modal small" data-reveal="">
+                        <h3 i18n:translate="">Change Password</h3>
+                        <p>
+                            <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below:</span>?
+                        </p>
+                        <form method="post" id="delete-form" data-abide="" ng-submit="changePassword($event)">
+                            ${panel('form_field', field=change_password_form['password'])}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                </div>
+                            </div>
+                        </form>
+                        <a class="close-reveal-modal">&#215;</a>
+                    </div>
+                </div>
+                <hr/>
+                <div ng-controller="UserAccessKeysCtrl"
+                     ng-init="initController(
+                            '${request.route_url('user_generate_keys', name=user.user_name)}',
+                            '${request.route_url('user_access_keys_json', name=user.user_name)}')">
+                    <div class="section">
+                        <h4>Access keys</h4>
+                        <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
+                            ${structure:user_form['csrf_token']}
+                            <div class="columns field inline">
+                                <button type="submit" class="button" id="gen-keys-btn">
+                                    <span tal:condition="user" i18n:translate="">Generate Access Key</span>
+                                </button>
+                            </div>
+                            ${panel('form_field_rev', field=user_form['download_keys'])}
+                        </form>
+                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
+                                    <li ng-show="item.status === 'Active'">
+                                        <a i18n:translate="" ng-click="revealModal('attach', item)">Make inactive</a>
+                                    </li>
+                                    <li ng-show="item.status === 'Inactive'">
+                                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                                    </li>
+                                    <li>
+                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                                <div>
+                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                                    {{ item.access_key_id }}
+                                </div>
+                            </div>
+                            <metal:block metal:fill-slot="tile_footer">
+                                <div ng-show="item.status" class="footer status {{ item.status }}">
+                                    {{ item.status }}
+                                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                                </div>
+                            </metal:block>
                         </div>
                     </div>
-                    <hr/>
-                    <div class="row hide">
+                </div>
+                <hr/>
+                <div ng-controller="UserGroupsCtrl"
+                     ng-init="initController(
+                            '${request.route_url('user_add_to_group', name=user.user_name)}',
+                            '${request.route_url('user_groups_json', name=user.user_name)}')">
+                    <div class="section">
+                        <h4>Groups</h4>
+                        <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
+                            ${structure:user_form['csrf_token']}
+                            <!-- this needs to be a chosen group selector containing groups not already containing this user
+                            ${panel('form_field_rev', field=user_form['download_keys'])}
+                            -->
+                            <div class="columns field inline">
+                                <button type="submit" class="button" id="add-user-to-group-btn">
+                                    <span tal:condition="user" i18n:translate="">Add user to group</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
+                                    <li>
+                                        <a i18n:translate="" ng-click="revealModal('remove', item)">Remove user</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                                <div>
+                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                                    {{ item.group_name }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="section">
+                    <h4>Permissions</h4>
+                </div>
+                <hr/>
+                <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
+                    <div class="section">
+                        <h4>Quotas</h4>
+                        ${panel('quotas_panel', quota_form=user_form)}
+                    </div>
+                    <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn">
-                                <span tal:condition="user" i18n:translate="">Save changes</span>
+                            <button type="submit" class="button" id="save-quotas-btn">
+                                <span tal:condition="user" i18n:translate="">Save quotas</span>
                             </button>
                             <a href="${request.route_url('users')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
@@ -64,7 +209,31 @@
         <div class="large-5 columns">
             <!--! Help goes here -->
         </div>
+        <div id="user-dialogs">
+            <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete User</h3>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the user</span>?
+                </p>
+                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
 </div>
 
 </metal:block>

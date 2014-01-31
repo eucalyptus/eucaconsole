@@ -1,0 +1,34 @@
+/* @fileOverview User detail page CSS */
+@import "../includes/eucavariables";
+
+// Import landing page styles for tile view display on User page
+@import "../includes/landingpage";
+
+// User status choices are: creating, available, in-use, deleting, deleted, error
+
+// Status colors
+$keys-status-color-active: $euca-darkblue;
+$keys-status-color-inactive: $euca-grey;
+
+
+// ***********
+// User page
+
+// User status
+.status { background-color: transparent; }
+.status.Inactive { background-color: $keys-status-color-inactive; }
+.status.Active { background-color: $keys-status-color-active; }
+
+.reveal-modal {
+    #device {
+        width: 10rem;
+    }
+}
+
+
+// *********************
+// User snapshots page
+.tile {
+    @include panel-tile-mixin;
+}
+

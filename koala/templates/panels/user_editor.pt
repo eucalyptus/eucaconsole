@@ -1,0 +1,48 @@
+
+<!--! User editor -->
+<div id="user-editor" class="row controls-wrapper" ng-app="UserEditor"
+     ng-controller="UserEditorCtrl" ng-init="initUsers()">
+    <div class="small-12 columns field">
+        <div class="row userentry existing inline controls-wrapper"
+             ng-repeat="user in usersArray" ng-cloak="cloak">
+            <div class="small-1 columns">
+                <a href="#" class="circle remove has-tip" ng-click="removeUser($index, $event)"
+                   title="Remove user"><i class="fi-minus-circle"></i></a>
+            </div>
+            <div class="small-11 columns">
+                <strong i18n:translate="">User</strong>:
+                <span class="{{user.fresh}}">{{ user.name }} <!--<em>=</em> {{ user.email }}--></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns subheader">
+                <span i18n:translate="" ng-show="usersArray.length">Add another user</span><span
+                      ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
+            </div>
+        </div>
+        <div class="row userentry controls-wrapper">
+            <div>
+                <div class="small-12 columns">
+                    <input class="userinput name" placeholder="name..." ng-model="newUserName" ng-keypress="keyListener($event)"/>
+                    <small class="error" i18n:translate="">What??</small>
+                </div>
+                <!--
+                <div class="small-8 columns">
+                    <input class="userinput email" placeholder="e-mail..."/>
+                    <small class="error" i18n:translate="">What??</small>
+                </div>
+                -->
+            </div>
+            <div>&nbsp;</div>
+            <div>
+                <div class="columns">
+                    <a href="#" ng-click="addUser($event)" class="button round secondary tiny" id="add-user-btn"
+                       title="Add user" i18n:translate="">Add user</a>
+                
+            </div>
+        </div>
+        <!--! Add class="debug" to textarea to view users data posted by form -->
+        <textarea id="users" name="users" class="hidden"></textarea>
+    </div>
+    <script src="${request.static_url('koala:static/js/widgets/user_editor.js')}"></script>
+</div>

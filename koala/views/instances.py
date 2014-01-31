@@ -570,9 +570,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
-            keypair_choices_json=self.keypair_choices_json,
-            securitygroup_choices_json=self.securitygroup_choices_json,
-            security_group_names=[name for name, label in self.launch_form.securitygroup.choices],
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
