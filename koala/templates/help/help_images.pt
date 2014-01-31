@@ -1,0 +1,6 @@
+
+<!-- HELP IMAGE-->
+<div tal:condition="display == 'image_help'">
+</div>
+
+

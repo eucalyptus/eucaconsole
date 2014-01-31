@@ -173,8 +173,10 @@ class IPAddressView(BaseView):
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
-        if self.instance:
-            self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
+        if self.elastic_ip:
+            self.elastic_ip.instance_name = ''
+            if self.instance:
+                self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
         self.render_dict = dict(
             eip=self.elastic_ip,
             associate_form=self.associate_form,
