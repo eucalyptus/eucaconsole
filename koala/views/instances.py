@@ -17,6 +17,7 @@ from pyramid.view import view_config
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm)
+from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..models import LandingPageFilter, Notification
@@ -551,6 +552,9 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
             conn=self.conn, formdata=self.request.params or None)
+        self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
+        self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_url('images_json')
         self.owner_choices = self.get_owner_choices()
@@ -561,6 +565,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             launch_form=self.launch_form,
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
+            generate_file_form=self.generate_file_form,
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),

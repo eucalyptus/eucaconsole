@@ -19,6 +19,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
+from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
 from ..models.auth import ConnectionManager
 
@@ -262,6 +263,26 @@ class LandingPageView(BaseView):
 
     def get_redirect_location(self, route):
         return '{0}'.format(self.request.route_url(route))
+
+
+class GenerateFileView(BaseView):
+    """Generate file based on given content, used for key pair download et. al."""
+    @view_config(route_name='generate_file', request_method='POST')
+    def generate_file(self):
+        generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
+        if generate_file_form.validate():
+            resp_body = self.request.params.get('content', '')
+            filename = self.request.params.get('filename', 'file')
+            response = Response(
+                content_type='application/octet-stream',
+                charset='UTF-8',
+                body=resp_body,
+            )
+            response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+            return response
+        else:
+            form_errors = ', '.join(generate_file_form.get_errors_list())
+            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')
