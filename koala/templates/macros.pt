@@ -149,6 +149,51 @@
     </div>
 </metal:datagrid_macro>
 
+<!-- Plain datagrid macro (no search or filtering) ===== -->
+<metal:plaindatagrid_macro metal:define-macro="plain_datagrid">
+    <div class="large-12 columns datagrid" id="datagrid-items">
+        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div id="gridview" class="gridwrapper" ng-show="!itemsLoading">
+            <div ng-show="!itemsLoading">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="1">
+                    No items were found
+                    <a href="#" class="close">&times;</a>
+                </div>
+            </div>
+            <!-- Begin grid view -->
+            <div class="tile item" ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+                <div class="header">
+                    <strong>
+                        <metal:block metal:define-slot="tile_header">
+                             <span>{{ item.title }}</span>
+                        </metal:block>
+                    </strong>
+                    <metal:block metal:define-slot="tile_dropdown_button">
+                        <a href="#" class="tiny secondary button dropdown right"
+                              data-dropdown="item-dropdown_{{ $index }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ $index }}" class="f-dropdown">
+                            <metal:block metal:define-slot="tile-dropdown-items">
+                                <li><a href="#">This is a link</a></li>
+                                <li><a href="#">This is another</a></li>
+                                <li><a href="#">Yet another</a></li>
+                            </metal:block>
+                        </ul>
+                    </metal:block>
+                </div>
+                <div class="content off-canvas-wrap">
+                    <section class="inner-wrap">
+                        <metal:block metal:define-slot="tile_content"></metal:block>
+                    </section>
+                </div>
+                <metal:block metal:define-slot="tile_footer">
+                    <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
+                        {{ item.status.replace('-', ' ') }}
+                    </div>
+                </metal:block>
+            </div>
+        </div>
+    </div>
+</metal:plaindatagrid_macro>
 
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">

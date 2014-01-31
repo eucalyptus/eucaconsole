@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/user.css')}" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/changepassword.css')}" />
 </div>
 
@@ -101,26 +102,91 @@
                     </div>
                 </div>
                 <hr/>
-                <form action="${request.route_url('user_generate_keys', name=user.user_name)}" method="post" id="user-generate-keys-form">
-                    ${structure:user_form['csrf_token']}
+                <div ng-controller="UserAccessKeysCtrl"
+                     ng-init="initController(
+                            '${request.route_url('user_generate_keys', name=user.user_name)}',
+                            '${request.route_url('user_access_keys_json', name=user.user_name)}')">
                     <div class="section">
                         <h4>Access keys</h4>
-                        <div class="columns field inline">
-                            <button type="submit" class="button" id="gen-keys-btn">
-                                <span tal:condition="user" i18n:translate="">Generate Access Key</span>
-                            </button>
+                        <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
+                            ${structure:user_form['csrf_token']}
+                            <div class="columns field inline">
+                                <button type="submit" class="button" id="gen-keys-btn">
+                                    <span tal:condition="user" i18n:translate="">Generate Access Key</span>
+                                </button>
+                            </div>
+                            ${panel('form_field_rev', field=user_form['download_keys'])}
+                        </form>
+                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
+                                    <li ng-show="item.status === 'Active'">
+                                        <a i18n:translate="" ng-click="revealModal('attach', item)">Make inactive</a>
+                                    </li>
+                                    <li ng-show="item.status === 'Inactive'">
+                                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                                    </li>
+                                    <li>
+                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                                <div>
+                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                                    {{ item.access_key_id }}
+                                </div>
+                            </div>
+                            <metal:block metal:fill-slot="tile_footer">
+                                <div ng-show="item.status" class="footer status {{ item.status }}">
+                                    {{ item.status }}
+                                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                                </div>
+                            </metal:block>
                         </div>
-                        ${panel('form_field_rev', field=user_form['download_keys'])}
                     </div>
-                </form>
+                </div>
                 <hr/>
+                <div ng-controller="UserGroupsCtrl"
+                     ng-init="initController(
+                            '${request.route_url('user_add_to_group', name=user.user_name)}',
+                            '${request.route_url('user_groups_json', name=user.user_name)}')">
                     <div class="section">
                         <h4>Groups</h4>
+                        <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
+                            ${structure:user_form['csrf_token']}
+                            <!-- this needs to be a chosen group selector containing groups not already containing this user
+                            ${panel('form_field_rev', field=user_form['download_keys'])}
+                            -->
+                            <div class="columns field inline">
+                                <button type="submit" class="button" id="add-user-to-group-btn">
+                                    <span tal:condition="user" i18n:translate="">Add user to group</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
+                                    <li>
+                                        <a i18n:translate="" ng-click="revealModal('remove', item)">Remove user</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                                <div>
+                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
+                                    {{ item.group_name }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <hr/>
-                    <div class="section">
-                        <h4>Permissions</h4>
-                    </div>
+                </div>
+                <hr/>
+                <div class="section">
+                    <h4>Permissions</h4>
+                </div>
                 <hr/>
                 <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
                     <div class="section">

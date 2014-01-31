@@ -117,5 +117,101 @@ angular.module('UserView', [])
               });
         };
     })
+    .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.jsonEndpoint = '';
+        $scope.jsonItemsEndpoint = '';
+        $scope.items = [];
+        $scope.itemsLoading = true;
+        $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
+            $scope.jsonEndpoint = jsonEndpoint;
+            $scope.jsonItemsEndpoint = jsonItemsEndpoint;
+            $scope.getItems(jsonItemsEndpoint);
+        };
+        $scope.getItems = function (jsonItemsEndpoint) {
+            $http.get(jsonItemsEndpoint).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = false;
+                $scope.items = results;
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
+            });
+        };
+        $scope.revealModal = function (modal, item) {
+        };
+        $scope.generateKeys = function ($event) {
+            $http({method:'POST', url:$scope.jsonEndpoint, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                // TODO: how to notify user of success??
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                // TODO: properly handle error notifications
+                if (errorMsg && status === 403) {
+                    // not authorized
+                    alert(errorMsg);
+                } else {
+                    // other kind of error
+                }
+              });
+        };
+    })
+    .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.jsonEndpoint = '';
+        $scope.jsonItemsEndpoint = '';
+        $scope.items = [];
+        $scope.itemsLoading = true;
+        $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
+            $scope.jsonEndpoint = jsonEndpoint;
+            $scope.jsonItemsEndpoint = jsonItemsEndpoint;
+            $scope.getItems(jsonItemsEndpoint);
+        };
+        $scope.getItems = function (jsonItemsEndpoint) {
+            $http.get(jsonItemsEndpoint).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = false;
+                $scope.items = results;
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
+            });
+        };
+        $scope.revealModal = function (modal, item) {
+        };
+        $scope.addUserToGroup = function ($event) {
+            $http({method:'POST', url:$scope.jsonEndpoint, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                // TODO: how to notify user of success??
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                // TODO: properly handle error notifications
+                if (errorMsg && status === 403) {
+                    // not authorized
+                    alert(errorMsg);
+                } else {
+                    // other kind of error
+                }
+              });
+        };
+    })
 ;
 

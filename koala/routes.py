@@ -177,10 +177,13 @@ urls = [
     Route(name='user_new', pattern='/users/new'),
     Route(name='user_create', pattern='/users/create'),
     Route(name='user_view', pattern='/users/{name}'), # Pass name='new' to render Create User(s) page
+    Route(name='user_access_keys_json', pattern='/users/{name}/keys_json'),
+    Route(name='user_groups_json', pattern='/users/{name}/groups_json'),
     Route(name='user_update', pattern='/users/{name}/update'),
     Route(name='user_delete', pattern='/users/{name}/delete'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
     Route(name='user_generate_keys', pattern='/users/{name}/genkeys'),
+    Route(name='user_add_to_group', pattern='/users/{name}/addgroup'),
     Route(name='user_update_quotas', pattern='/users/{name}/quotas'),
 
     # Groups #####

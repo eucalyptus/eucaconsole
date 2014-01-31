@@ -90,10 +90,12 @@ class UserView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
+        self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
         self.render_dict = dict(
             user=self.user,
+            prefix=self.prefix,
             user_form=self.user_form,
             change_password_form=self.change_password_form,
             delete_form=self.delete_form,
@@ -128,6 +130,22 @@ class UserView(BaseView):
     def user_view(self):
         return self.render_dict
  
+    @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
+    def user_keys_json(self):
+        """Return user access keys list"""
+        keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
+        for k in keys.list_access_keys_result.access_key_metadata:
+            k.title = k.access_key_id
+        return dict(results=keys.list_access_keys_result.access_key_metadata)
+
+    @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
+    def user_groups_json(self):
+        """Return user groups list"""
+        groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
+        for g in groups.groups:
+            g.title = g.group_name
+        return dict(results=groups.groups)
+
     @view_config(route_name='user_create', renderer=TEMPLATE, request_method='POST')
     def user_create(self):
         # can't use regular form validation here. We allow empty values and the validation
@@ -259,6 +277,25 @@ class UserView(BaseView):
             return dict(error=getattr(err, 'status', 401), msg=err.message)
         except URLError, err:           # catch error in authentication
             return dict(error=getattr(err, 'status', 401), msg=err.message)
+
+    @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
+    def user_genKeys(self):
+        """ calls iam:CreateAccessKey """
+        try:
+            result = self.conn.create_access_key(user_name=self.user.user_name)
+            self.user = self.get_user()
+            return dict(results=self.user)
+        except BotoServerError as err:
+            return dict(error=getattr(err, 'status', 400), msg=err.message)
+
+    @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
+    def user_add_to_group(self):
+        """ calls iam:CreateAccessKey """
+        try:
+            result = self.conn.create_access_key(user_name=self.user.user_name)
+            return dict(results=result)
+        except BotoServerError as err:
+            return dict(error=getattr(err, 'status', 400), msg=err.message)
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):

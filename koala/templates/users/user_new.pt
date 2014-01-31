@@ -23,10 +23,10 @@
                     ${structure:user_form['csrf_token']}
                     <div class="section">
                         ${panel('user_editor')}
-                        ${panel('form_field_rev', field=user_form['random_password'])}
-                        ${panel('form_field_rev', field=user_form['access_keys'])}
-                        ${panel('form_field_rev', field=user_form['email_users'])}
-                        ${panel('form_field_rev', field=user_form['allow_all'])}
+                        ${panel('form_field', field=user_form['random_password'], reverse="true")}
+                        ${panel('form_field', field=user_form['access_keys'], reverse="true")}
+                        ${panel('form_field', field=user_form['email_users'], reverse="true")}
+                        ${panel('form_field', field=user_form['allow_all'], reverse="true")}
                     </div>
                     <hr/>
                     <div class="expando" id="quotas-section" ng-cloak="">
