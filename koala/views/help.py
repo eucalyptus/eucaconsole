@@ -14,6 +14,10 @@ def help_ipaddresses(context, request, display):
 def help_keypairs(context, request, display):
     return dict(display=display)
 
+@panel_config('help_securitygroups', renderer='../templates/help/help_securitygroups.pt')
+def help_securitygroups(context, request, display):
+    return dict(display=display)
+
 @panel_config('help_images', renderer='../templates/help/help_images.pt')
 def help_images(context, request, display):
     return dict(display=display)
