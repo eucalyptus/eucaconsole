@@ -14,7 +14,10 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 import time
 
+from ..forms import GenerateFileForm
+from ..forms.keypairs import KeyPairForm
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
+from ..forms.securitygroups import SecurityGroupForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
@@ -189,6 +192,7 @@ class LaunchConfigView(BaseView):
 
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
+    """Create Launch Configuration wizard"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_wizard.pt'
 
     def __init__(self, request):
@@ -199,16 +203,28 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
+        self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
+        self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
+        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_url('images_json')
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.owner_choices = self.get_owner_choices()
+        self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
+        self.securitygroup_choices_json = json.dumps(dict(self.create_form.securitygroup.choices))
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
+            keypair_form=self.keypair_form,
+            securitygroup_form=self.securitygroup_form,
+            generate_file_form=self.generate_file_form,
             images_json_endpoint=self.images_json_endpoint,
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
+            keypair_choices_json=self.keypair_choices_json,
+            securitygroup_choices_json=self.securitygroup_choices_json,
+            security_group_names=[name for name, label in self.create_form.securitygroup.choices],
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')

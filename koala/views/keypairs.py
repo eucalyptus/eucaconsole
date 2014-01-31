@@ -122,9 +122,8 @@ class KeyPairView(BaseView):
             del session['material']
             response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
             response.body = str(material)
-            response.content_disposition='attachment; filename="{name}.pem"'.format(name=name)
+            response.content_disposition = 'attachment; filename="{name}.pem"'.format(name=name)
             return response
-
         return self.render_dict
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
@@ -156,7 +155,7 @@ class KeyPairView(BaseView):
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.keypair_form.get_errors_list())
-            Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
         else:
             self.request.error_messages = self.keypair_form.get_errors_list()
             return self.render_dict

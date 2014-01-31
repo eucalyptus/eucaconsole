@@ -31,6 +31,10 @@ class BaseSecureForm(SecureForm):
         return error_messages
 
 
+class GenerateFileForm(BaseSecureForm):
+    pass
+
+
 class ChoicesManager(object):
     """Container for form choices reused across the app"""
 

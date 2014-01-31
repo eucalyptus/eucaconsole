@@ -66,6 +66,8 @@ def form_field_row(context, request, field=None, leftcol_width=4, rightcol_width
         leftcol_width=leftcol_width, rightcol_width=rightcol_width
     )
 
+
+# FIXME: Confirm we need this since it appears to duplicate form_field_row above
 @panel_config('form_field_rev', renderer='../templates/panels/form_field_row_rev.pt')
 def form_field_row_rev(context, request, field=None, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.

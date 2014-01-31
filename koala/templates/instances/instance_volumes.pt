@@ -80,27 +80,7 @@
                 </h6>
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                <h5 class="title" i18n:translate="">Attach a volume to this instance</h5>
-                <div class="topic">
-                    <ol>
-                        <li i18n:translate="">Click the <strong>Attach a volume</strong> icon</li>
-                        <li i18n:translate="">
-                            The <strong>Attach volume to instance</strong> dialog box will appear.
-                            Select the volume you want to attach to this instance.
-                        </li>
-                    </ol>
-                </div>
-                <h5 class="title" i18n:translate="">Detach a volume from this instance</h5>
-                <div class="topic">
-                    <ol>
-                        <li i18n:translate="">
-                            Click the <i class="fi-minus-circle"></i> icon for the instance you want to detach.
-                        </li>
-                        <li i18n:translate="">
-                            The <strong>Detach volume</strong> dialog box will appear.  Click confirm to detach the volume.
-                        </li>
-                    </ol>
-                </div>
+                ${panel('help_instances', 'instance_volume')}
             </div>
         </div>
         <!--! modal dialogs -->

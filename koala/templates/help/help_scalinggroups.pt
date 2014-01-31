@@ -1,0 +1,6 @@
+
+<!-- HELP SCALING GROUP-->
+<div tal:condition="display == 'scalinggroup_help'">
+</div>
+
+

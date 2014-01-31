@@ -189,7 +189,7 @@ class SecurityGroupView(TaggedItemView):
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.securitygroup_form.get_errors_list())
-            Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
         else:
             self.request.error_messages = self.securitygroup_form.get_errors_list()
             return self.render_dict
