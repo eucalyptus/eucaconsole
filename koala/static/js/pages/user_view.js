@@ -42,17 +42,15 @@ angular.module('UserView', [])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 // could put data back into form, but form already contains changes
-                // TODO: how to notify user of success??
+                if (oData.error == undefined) {
+                    Notify.success(oData.message);
+                } else {
+                    Notify.failure(oData.message);
+                }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })
@@ -100,20 +98,11 @@ angular.module('UserView', [])
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
-                // TODO: how to notify user of success??
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (status == 401) {
-                    alert("Invalid password");
-                }
-                else if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })
@@ -134,9 +123,8 @@ angular.module('UserView', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
                     $('#euca-logout-form').submit();
                 }
             });
@@ -148,20 +136,14 @@ angular.module('UserView', [])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                // TODO: how to notify user of success??
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })
@@ -182,9 +164,8 @@ angular.module('UserView', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
                     $('#euca-logout-form').submit();
                 }
             });
@@ -196,20 +177,14 @@ angular.module('UserView', [])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                // TODO: how to notify user of success??
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })

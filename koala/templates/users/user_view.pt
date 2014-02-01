@@ -19,7 +19,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns" tal:define="readonly True if user else False;">
-            <div class="panel no-title">
+            <div class="panel has-title">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -232,8 +232,9 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
 </div>
 
 </metal:block>
