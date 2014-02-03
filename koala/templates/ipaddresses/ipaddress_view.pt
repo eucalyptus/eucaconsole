@@ -53,9 +53,9 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="">
+            <div class="expando" id="advanced-section" ng-cloak="" ng-init="isHelpExpanded = false">
                 <h6 class="title" >
-                    <a ng-click="toggleHelpContent()">
+                    <a ng-click="isHelpExpanded = !isHelpExpanded">
                         <i class="fi-plus" ng-show="!isHelpExpanded"></i>
                         <i class="fi-minus" ng-show="isHelpExpanded"></i>
                         &nbsp;<span i18n:translate="">Help</span>

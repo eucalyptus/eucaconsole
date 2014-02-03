@@ -6,10 +6,6 @@
 
 angular.module('IPAddressPage', [])
     .controller('IPAddressPageCtrl', function ($scope) {
-        $scope.isHelpExpanded = false;
-        $scope.toggleHelpContent = function () {
-            $scope.isHelpExpanded = !$scope.isHelpExpanded;
-        };
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.setWatch();

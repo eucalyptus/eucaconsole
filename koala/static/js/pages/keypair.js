@@ -6,15 +6,11 @@
 
 angular.module('KeypairPage', [])
     .controller('KeypairPageCtrl', function ($scope) {
-        $scope.isHelpExpanded = false;
-        $scope.toggleHelpContent = function () {
-            $scope.isHelpExpanded = !$scope.isHelpExpanded;
-        };
-        $scope.setInitialValues = function () {
-        };
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.setWatch();
+        };
+        $scope.setInitialValues = function () {
         };
         $scope.setWatch = function () {
             // JAVASCRIPT SNIPPET TAKEN FROM 3.4.1 TO ADD A LISTENER TO THE FILE UPLOAD INPUTBOX
