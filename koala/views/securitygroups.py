@@ -14,7 +14,7 @@ from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 
 
 class SecurityGroupsView(LandingPageView):
@@ -182,14 +182,13 @@ class SecurityGroupView(TaggedItemView):
                 location = self.request.route_url('securitygroups')
                 status = getattr(err, 'status', 400)
             if self.request.is_xhr:
-                resp_body = json.dumps(dict(message=msg))
-                return Response(status=status, body=resp_body)
+                return JSONResponse(status=status, message=msg)
             else:
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.securitygroup_form.get_errors_list())
-            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
         else:
             self.request.error_messages = self.securitygroup_form.get_errors_list()
             return self.render_dict
