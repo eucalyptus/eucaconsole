@@ -3,7 +3,6 @@
 Core views
 
 """
-from operator import itemgetter
 import simplejson as json
 import textwrap
 from urllib import urlencode
@@ -22,6 +21,16 @@ from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_A
 from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
 from ..models.auth import ConnectionManager
+
+
+class JSONResponse(Response):
+    def __init__(self, status=200, message=None, **kwargs):
+        super(JSONResponse, self).__init__(**kwargs)
+        self.status = status
+        self.content_type = 'application/json'
+        self.body = json.dumps(
+            dict(message=message)
+        )
 
 
 class BaseView(object):
