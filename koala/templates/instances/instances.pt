@@ -5,7 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl">
-    <div class="row" id="contentwrap" ng-controller="ItemsCtrl" ng-init="initController('instances', '${initial_sort_key}', '${json_items_endpoint}')">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('instances', '${initial_sort_key}', '${json_items_endpoint}')">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -150,7 +151,9 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instances.js')}"></script>
 </div>
 

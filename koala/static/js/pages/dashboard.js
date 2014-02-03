@@ -10,7 +10,6 @@ angular.module('Dashboard', [])
         $scope.getItemCounts = function(jsonEndpoint) {
             $scope.itemsLoading = true;
             $http.get(jsonEndpoint).success(function(oData) {
-                console.log(status)
                 var results = oData ? oData : {};
                 $scope.itemsLoading = false;
                 $scope.totals = results;

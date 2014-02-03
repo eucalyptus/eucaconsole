@@ -141,6 +141,7 @@ class SnapshotsJsonView(BaseView):
                 description=snapshot.description,
                 name=snapshot.tags.get('Name', snapshot.id),
                 progress=snapshot.progress,
+                transitional=self.is_transitional(snapshot.progress),
                 start_time=snapshot.start_time,
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
@@ -161,6 +162,10 @@ class SnapshotsJsonView(BaseView):
             volumes_list = [volume for volume in self.volumes if volume.id == volume_id]
             return volumes_list[0] if volumes_list else None
         return None
+
+    @staticmethod
+    def is_transitional(progress):
+        return int(progress.replace('%', '')) < 100
 
 
 class SnapshotView(TaggedItemView):
