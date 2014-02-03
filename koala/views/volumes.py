@@ -20,13 +20,32 @@ from ..models import LandingPageFilter, Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
 
-class VolumesView(LandingPageView):
+class BaseVolumeView(BaseView):
+    """Base class for volume-related views"""
+    def __init__(self, request):
+        super(BaseVolumeView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    def get_instance(self, instance_id):
+        if instance_id:
+            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+            return instances_list[0] if instances_list else None
+        return None
+
+    def get_volume(self, volume_id=None):
+        volume_id = volume_id or self.request.matchdict.get('id')
+        if volume_id:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+            return volumes_list[0] if volumes_list else None
+        return None
+
+
+class VolumesView(LandingPageView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volumes.pt'
 
     def __init__(self, request):
         super(VolumesView, self).__init__(request)
         self.conn = self.get_connection()
-        self.items = self.get_items()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
         self.json_items_endpoint = self.get_json_endpoint('volumes_json')
@@ -35,8 +54,6 @@ class VolumesView(LandingPageView):
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
         self.location = self.get_redirect_location('volumes')
-        # seems redundant
-        #self.filter_fields = self.get_filter_fields()
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -60,35 +77,6 @@ class VolumesView(LandingPageView):
             instances_by_zone=json.dumps(self.get_instances_by_zone(self.instances)),
         ))
         return self.render_dict
-
-    @view_config(route_name='volumes_json', renderer='json', request_method='GET')
-    def volumes_json(self):
-        volumes = []
-        transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
-        filtered_items = self.filter_items(self.items)
-        snapshots = self.conn.get_all_snapshots() if self.conn else []
-        for volume in filtered_items:
-            status = volume.status
-            attach_status = volume.attach_data.status
-            instance_name = None
-            if volume.attach_data is not None and volume.attach_data.instance_id is not None:
-                instance = self.get_instance(volume.attach_data.instance_id)
-                instance_name=TaggedItemView.get_display_name(instance)
-            volumes.append(dict(
-                create_time=volume.create_time,
-                id=volume.id,
-                instance=volume.attach_data.instance_id,
-                instance_name=instance_name,
-                name=volume.tags.get('Name', volume.id),
-                snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
-                size=volume.size,
-                status=status,
-                attach_status=volume.attach_data.status,
-                zone=volume.zone,
-                tags=TaggedItemView.get_tags_display(volume.tags),
-                transitional=status in transitional_states or attach_status in transitional_states,
-            ))
-        return dict(results=volumes)
 
     @view_config(route_name='volumes_delete', request_method='POST')
     def volumes_delete(self):
@@ -149,15 +137,6 @@ class VolumesView(LandingPageView):
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
-    def get_volume(self, volume_id):
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
-        return None
-
-    def get_items(self):
-        return self.conn.get_all_volumes() if self.conn else []
-
     @staticmethod
     def get_instances_by_zone(instances):
         zones = set(instance.placement for instance in instances)
@@ -191,14 +170,46 @@ class VolumesView(LandingPageView):
             dict(key='zone', name=_(u'Availability zone')),
         ]
 
-    def get_instance(self, instance_id):
-        if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
-        return None
+
+class VolumesJsonView(LandingPageView, BaseVolumeView):
+    def __init__(self, request):
+        super(VolumesJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    @view_config(route_name='volumes_json', renderer='json', request_method='GET')
+    def volumes_json(self):
+        volumes = []
+        transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
+        filtered_items = self.filter_items(self.get_items())
+        snapshots = self.conn.get_all_snapshots() if self.conn else []
+        for volume in filtered_items:
+            status = volume.status
+            attach_status = volume.attach_data.status
+            instance_name = None
+            if volume.attach_data is not None and volume.attach_data.instance_id is not None:
+                instance = self.get_instance(volume.attach_data.instance_id)
+                instance_name = TaggedItemView.get_display_name(instance)
+            volumes.append(dict(
+                create_time=volume.create_time,
+                id=volume.id,
+                instance=volume.attach_data.instance_id,
+                instance_name=instance_name,
+                name=volume.tags.get('Name', volume.id),
+                snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
+                size=volume.size,
+                status=status,
+                attach_status=volume.attach_data.status,
+                zone=volume.zone,
+                tags=TaggedItemView.get_tags_display(volume.tags),
+                transitional=status in transitional_states or attach_status in transitional_states,
+            ))
+        return dict(results=volumes)
+
+    def get_items(self):
+        return self.conn.get_all_volumes() if self.conn else []
 
 
-class VolumeView(TaggedItemView):
+class VolumeView(TaggedItemView, BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_view.pt'
 
     def __init__(self, request):
@@ -223,7 +234,7 @@ class VolumeView(TaggedItemView):
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
-            self.instance_name=TaggedItemView.get_display_name(instance)
+            self.instance_name = TaggedItemView.get_display_name(instance)
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
@@ -344,13 +355,6 @@ class VolumeView(TaggedItemView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    def get_volume(self):
-        volume_id = self.request.matchdict.get('id')
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
-        return None
-
     def get_snapshot(self, snapshot_id):
         snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
         return snapshots_list[0] if snapshots_list else None
@@ -367,7 +371,7 @@ class VolumeView(TaggedItemView):
         return None
 
 
-class VolumeStateView(BaseView):
+class VolumeStateView(BaseVolumeView):
     def __init__(self, request):
         super(VolumeStateView, self).__init__(request)
         self.request = request
@@ -383,15 +387,8 @@ class VolumeStateView(BaseView):
             results=dict(volume_status=volume_status, attach_status=attach_status)
         )
 
-    def get_volume(self):
-        volume_id = self.request.matchdict.get('id')
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
-        return None
 
-
-class VolumeSnapshotsView(BaseView):
+class VolumeSnapshotsView(BaseVolumeView):
     VIEW_TEMPLATE = '../templates/volumes/volume_snapshots.pt'
 
     def __init__(self, request):
@@ -483,13 +480,6 @@ class VolumeSnapshotsView(BaseView):
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         return self.render_dict
-
-    def get_volume(self):
-        volume_id = self.request.matchdict.get('id')
-        if volume_id:
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
-        return None
 
     def get_snapshot(self, snapshot_id):
         snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
