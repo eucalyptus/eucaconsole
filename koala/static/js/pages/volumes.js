@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('VolumesPage', ['CustomFilters', 'LandingPage'])
+angular.module('VolumesPage', ['LandingPage'])
     .controller('VolumesCtrl', function ($scope) {
         $scope.volumeID = '';
         $scope.volumeZone = '';

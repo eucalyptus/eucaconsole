@@ -23,6 +23,7 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.sortReverseKey = '';
         $scope.landingPageViewKey = '';
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
+            pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
             $scope.setInitialSort(sortKey);

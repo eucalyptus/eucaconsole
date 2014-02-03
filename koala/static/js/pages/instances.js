@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('InstancesPage', ['CustomFilters', 'LandingPage'])
+angular.module('InstancesPage', ['LandingPage'])
     .controller('InstancesCtrl', function ($scope) {
         $scope.instanceID = '';
         $scope.revealModal = function (action, instance) {

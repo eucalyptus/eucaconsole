@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('SnapshotsPage', ['CustomFilters', 'LandingPage'])
+angular.module('SnapshotsPage', ['LandingPage'])
     .controller('SnapshotsCtrl', function ($scope) {
         $scope.snapshotID = '';
         $scope.revealModal = function (action, snapshot_id) {
