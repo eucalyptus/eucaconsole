@@ -6,20 +6,24 @@
 
 
 angular.module('LandingPage', ['CustomFilters'])
-    .controller('ItemsCtrl', function ($scope, $http) {
+    .controller('ItemsCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        $scope.urlParams = $.url().param();
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
         $scope.sortReverse = false;
         $scope.landingPageView = "tableview";
-        $scope.urlParams = $.url().param();
+        $scope.jsonEndpoint = '';
+        $scope.searchFilter = '';
+        $scope.itemsLoading = true;
         $scope.pageResource = '';
         $scope.sortByKey = '';
         $scope.sortReverseKey = '';
         $scope.landingPageViewKey = '';
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
+            $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
@@ -99,14 +103,24 @@ angular.module('LandingPage', ['CustomFilters'])
                 }
             });
         };
-        $scope.getItems = function (jsonItemsEndpoint) {
-            $http.get(jsonItemsEndpoint).success(function(oData) {
+        $scope.getItems = function () {
+            $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
+                var transitionalCount = 0;
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
                 if ($.url().param('filter')) {
                     $scope.applyGetRequestFilters();
+                }
+                $scope.items.forEach(function (item) {
+                    if (!!item['transitional']) {
+                        transitionalCount += 1;
+                    }
+                });
+                // Auto-refresh items if any are in a transitional state
+                if (transitionalCount > 0) {
+                    $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['error'] || null;
