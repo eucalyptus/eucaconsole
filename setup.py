@@ -59,7 +59,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
-    tests_require=requires,
+    tests_require=[],
     message_extractors=message_extractors,
     test_suite="tests",
     entry_points="""\
