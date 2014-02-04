@@ -30,20 +30,18 @@
                     <div tal:condition="group">
                         <div class="section">
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Group name</label></div>
-                                <div class="small-8 columns value">${group.group_name if group.group_name else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
-                                <div class="small-8 columns value">${group.group_id if group.group_id else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Path</label></div>
-                                <div class="small-8 columns value">${group.path if group.path else ''}</div>
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=4, rightcol_width=8)}
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
                                 <div class="small-8 columns value">${group.arn if group.arn else ''}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                ${panel('form_field', field=group_form.path, leftcol_width=4, rightcol_width=8)}
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
+                                <div class="small-8 columns value">${group.group_id if group.group_id else ''}</div>
                             </div>
                         </div>
                     </div>

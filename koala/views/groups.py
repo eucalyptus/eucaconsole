@@ -82,7 +82,7 @@ class GroupView(TaggedItemView):
         super(GroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
-        self.group_form = GroupForm(self.request, formdata=self.request.params or None)
+        self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.tagged_obj = self.group
         self.render_dict = dict(
             group=self.group,
