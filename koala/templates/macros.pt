@@ -28,7 +28,7 @@
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row display-switcher">
             <div class="small-6 columns">
-                <metal:block metal:define-slot="new_button"></metal:block>
+                <metal:block metal:define-slot="new_button" />
             </div>
             <div class="small-6 columns displayicons">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="content off-canvas-wrap">
                     <section class="inner-wrap">
-                        <metal:block metal:define-slot="tile_content"></metal:block>
+                        <metal:block metal:define-slot="tile_content" />
                     </section>
                 </div>
                 <metal:block metal:define-slot="tile_footer">
@@ -111,10 +111,10 @@
         <div id="tableview" class="gridwrapper" ng-show="landingPageView == 'tableview'">
             <!-- Begin table view -->
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
-                <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
+                <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
                 <tbody>
                     <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
-                        <metal:block metal:define-slot="tableview_columns"></metal:block>
+                        <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
                 </tbody>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="content off-canvas-wrap">
                     <section class="inner-wrap">
-                        <metal:block metal:define-slot="tile_content"></metal:block>
+                        <metal:block metal:define-slot="tile_content" />
                     </section>
                 </div>
                 <metal:block metal:define-slot="tile_footer">

@@ -16,7 +16,8 @@ from pyramid.view import view_config
 
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
-    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstancesFiltersForm)
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
+    BatchTerminateInstancesForm, InstancesFiltersForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -75,6 +76,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
         self.filters_form = InstancesFiltersForm(
             self.request, conn=self.conn, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -84,6 +86,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
+            batch_terminate_form=self.batch_terminate_form,
             filters_form=self.filters_form,
         )
 

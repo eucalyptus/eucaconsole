@@ -203,6 +203,11 @@ class TerminateInstanceForm(BaseSecureForm):
     pass
 
 
+class BatchTerminateInstancesForm(BaseSecureForm):
+    """CSRF-protected form to batch-terminate instances"""
+    pass
+
+
 class AttachVolumeForm(BaseSecureForm):
     """CSRF-protected form to attach a volume to an instance
        Note: This is for attaching a volume on the instance detail page
