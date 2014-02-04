@@ -218,7 +218,6 @@ class InstancesJsonView(LandingPageView):
                 placement=instance.placement,
                 root_device=instance.root_device_type,
                 security_groups=security_groups_array,
-                security_groups_string=' '.join(security_groups_array),
                 key_name=instance.key_name,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),

@@ -249,7 +249,7 @@ class LandingPageView(BaseView):
             for fkey, fval in filter_params.items():
                 if fval and fval[0]:
                     if fkey == 'tags':  # Special case to handle tags
-                        if any([fval[0] in item.tags.keys(), fval[0] in item.tags.values()]):
+                        if self.match_tags(item=item, tags=fval[0].split(',')):
                             matchedkey_count += 1
                     elif hasattr(item, fkey) and getattr(item, fkey, None) in fval:
                         matchedkey_count += 1
@@ -258,6 +258,14 @@ class LandingPageView(BaseView):
             if matchedkey_count == len(filter_params):
                 filtered_items.append(item)
         return filtered_items
+
+    @staticmethod
+    def match_tags(item=None, tags=None):
+        for tag in tags:
+            tag = tag.strip()
+            if any([tag in item.tags.keys(), tag in item.tags.values()]):
+                return True
+        return False
 
     def get_json_endpoint(self, route):
         return '{0}{1}'.format(
