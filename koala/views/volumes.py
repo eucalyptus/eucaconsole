@@ -192,7 +192,7 @@ class VolumesJsonView(LandingPageView, BaseVolumeView):
                 snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                 size=volume.size,
                 status=status,
-                attach_status=volume.attach_data.status,
+                attach_status=attach_status,
                 zone=volume.zone,
                 tags=TaggedItemView.get_tags_display(volume.tags),
                 transitional=status in transitional_states or attach_status in transitional_states,
