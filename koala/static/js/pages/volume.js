@@ -16,7 +16,6 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.instanceId = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
-        $scope.isHelpExpanded = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -81,9 +80,6 @@ angular.module('VolumePage', ['TagEditor'])
                     $('input#device').val(results);
                 }
             });
-        };
-        $scope.toggleHelpContent = function () {
-            $scope.isHelpExpanded = !$scope.isHelpExpanded;
         };
     })
 ;

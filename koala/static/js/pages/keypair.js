@@ -6,14 +6,7 @@
 
 angular.module('KeypairPage', [])
     .controller('KeypairPageCtrl', function ($scope) {
-        $scope.isHelpExpanded = false;
-        $scope.toggleHelpContent = function () {
-            $scope.isHelpExpanded = !$scope.isHelpExpanded;
-        };
-        $scope.setInitialValues = function () {
-        };
         $scope.initController = function () {
-            $scope.setInitialValues();
             $scope.setWatch();
         };
         $scope.setWatch = function () {

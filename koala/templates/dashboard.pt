@@ -12,7 +12,7 @@
                 <div class="tile" id="running">
                     <h5 class="subheader" i18n:translate="">Running instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?filter=apply&amp;status=running">
+                        <a href="${request.route_url('instances')}?state=running">
                             <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_running }}</em></i>
                         </a>
                     </div>
@@ -23,7 +23,7 @@
                 <div class="tile" id="stopped">
                     <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?filter=apply&amp;status=stopped">
+                        <a href="${request.route_url('instances')}?state=stopped">
                             <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_stopped }}</em></i>
                         </a>
                     </div>

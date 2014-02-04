@@ -21,6 +21,14 @@ def top_nav(context, request):
     return dict()
 
 
+@panel_config('landingpage_filters', renderer='../templates/panels/landingpage_filters.pt')
+def landingpage_filters(context, request, filters_form=None):
+    """Landing page filters form"""
+    return dict(
+        filters_form=filters_form,
+    )
+
+
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
 def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.

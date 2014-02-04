@@ -18,7 +18,7 @@ class SnapshotForm(BaseSecureForm):
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
-        validators=[validators.InputRequired(message=volume_error_msg),]
+        validators=[validators.DataRequired(message=volume_error_msg),]
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
@@ -63,6 +63,7 @@ class DeleteSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
     pass
 
+
 class RegisterSnapshotForm(BaseSecureForm):
     """CSRF-protected form to delete a snapshot"""
     name = wtforms.TextField(label=_(u'Name'),
@@ -75,4 +76,22 @@ class RegisterSnapshotForm(BaseSecureForm):
     )
     dot = wtforms.BooleanField(label=_(u'Delete on terminate'))
     reg_as_windows = wtforms.BooleanField(label=_(u'Register as Windows OS image'))
+
+
+class SnapshotsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    status = wtforms.SelectMultipleField(label=_(u'Status'))
+    tags = wtforms.TextField(label=_(u'Tags'))
+
+    def __init__(self, request, **kwargs):
+        super(SnapshotsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.status.choices = self.get_status_choices()
+
+    @staticmethod
+    def get_status_choices():
+        return (
+            ('pending', 'In progress'),
+            ('completed', 'Completed'),
+        )
 

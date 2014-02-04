@@ -50,7 +50,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                        <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
+                        <div class="small-9 columns value breakword">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
@@ -103,15 +103,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="">
-                <h6 class="title" >
-                    <a ng-click="toggleHelpContent()">
-                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
-                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
-                        &nbsp;<span i18n:translate="">Help</span>
-                    </a>
-                </h6>
-            </div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="keypair" tal:omit-tag="">
                     ${panel('help_keypairs', 'delete_keypair')}

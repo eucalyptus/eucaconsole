@@ -23,33 +23,6 @@
 </metal:refresh_icon>
 
 
-<!-- Filter form for landing pages =====
-     Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
-<metal:properties_filter_form metal:define-macro="properties_filter_form">
-    <div id="filters" tal:condition="filter_fields">
-        <h6>Filters</h6>
-        <form method="get" id="properties-filter-form" action="${request.current_route_url()}">
-            <div class="match-condition">Match all of...</div>
-            <div metal:define-slot="filter_form_fields">
-                <div tal:repeat="field filter_fields">
-                    <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-                    <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
-                            placeholder="${field.name}" name="${field.key}">
-                        <option value="">${field.name}...</option>
-                        <option tal:repeat="choice field.choices" value="${choice}"
-                                tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
-                    </select>
-                </div>
-                <div>
-                    <button type="submit" class="secondary small button" name="filter" value="apply">Apply</button>
-                    &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
-                </div>
-            </div>
-        </form>
-    </div>
-</metal:properties_filter_form>
-
-
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
@@ -143,8 +116,15 @@
                     <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
                         <metal:block metal:define-slot="tableview_columns"></metal:block>
                     </tr>
+                    <tr ng-show="!itemsLoading"></tr>
                 </tbody>
             </table>
+            <div ng-show="!itemsLoading">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="" i18n:translate="">
+                    No items were found
+                    <a href="#" class="close">&times;</a>
+                </div>
+            </div>
         </div>
     </div>
 </metal:datagrid_macro>
@@ -229,6 +209,19 @@
         </ul>
     </div>
 </metal:actionsmenu>
+
+<!--! Help content expando ===== -->
+<metal:helpexpando metal:define-macro="help_expando">
+    <div class="expando" id="help-expando" ng-cloak="" ng-init="isHelpExpanded = false">
+        <h6 class="title" >
+            <a ng-click="isHelpExpanded = !isHelpExpanded">
+                <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                &nbsp;<span i18n:translate="">Help</span>
+            </a>
+        </h6>
+    </div>
+</metal:helpexpando>
 
 <!-- Security group rules display
      For displaying a list of rules (one per line) in a tableview column or gridview tile row -->

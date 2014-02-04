@@ -9,12 +9,11 @@ import time
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
-from pyramid.response import Response
 from pyramid.view import view_config
 
-from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
+from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 
 
 class SecurityGroupsView(LandingPageView):
@@ -25,10 +24,13 @@ class SecurityGroupsView(LandingPageView):
         self.conn = self.get_connection()
         self.initial_sort_key = 'name'
         self.prefix = '/securitygroups'
+        self.json_items_endpoint = self.get_json_endpoint('securitygroups_json')
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
+        self.filters_form = SecurityGroupsFiltersForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
-            delete_form=self.delete_form,
             prefix=self.prefix,
+            delete_form=self.delete_form,
+            filters_form=self.filters_form,
         )
 
     @view_config(route_name='securitygroups', renderer=TEMPLATE)
@@ -40,30 +42,14 @@ class SecurityGroupsView(LandingPageView):
             dict(key='name', name=_(u'Name')),
             dict(key='description', name=_(u'Description')),
         ]
-        json_items_endpoint = self.request.route_url('securitygroups_json')
         self.render_dict.update(dict(
-            filter_fields=self.filter_fields,
+            filter_fields=True,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
+            json_items_endpoint=self.json_items_endpoint,
         ))
         return self.render_dict
-
-    @view_config(route_name='securitygroups_json', renderer='json', request_method='GET')
-    def securitygroups_json(self):
-        securitygroups = []
-        for securitygroup in self.get_items():
-            securitygroups.append(dict(
-                id=securitygroup.id,
-                description=securitygroup.description,
-                name=securitygroup.name,
-                owner_id=securitygroup.owner_id,
-                rules=self.get_rules(securitygroup.rules),
-                tags=TaggedItemView.get_tags_display(securitygroup.tags),
-                vpc_id=securitygroup.vpc_id,
-            ))
-        return dict(results=securitygroups)
 
     @view_config(route_name='securitygroups_delete', request_method='POST')
     def securitygroups_delete(self):
@@ -89,10 +75,6 @@ class SecurityGroupsView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
 
-    def get_items(self):
-        conn = self.get_connection()
-        return conn.get_all_security_groups() if conn else []
-
     def get_security_group(self, group_id=None):
         group_param = group_id
         if group_param is None:
@@ -116,6 +98,30 @@ class SecurityGroupsView(LandingPageView):
                 grants=grants,
             ))
         return rules_list
+
+
+class SecurityGroupsJsonView(LandingPageView):
+    def __init__(self, request):
+        super(SecurityGroupsJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    @view_config(route_name='securitygroups_json', renderer='json', request_method='GET')
+    def securitygroups_json(self):
+        securitygroups = []
+        for securitygroup in self.filter_items(self.get_items()):
+            securitygroups.append(dict(
+                id=securitygroup.id,
+                description=securitygroup.description,
+                name=securitygroup.name,
+                owner_id=securitygroup.owner_id,
+                rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                tags=TaggedItemView.get_tags_display(securitygroup.tags),
+                vpc_id=securitygroup.vpc_id,
+            ))
+        return dict(results=securitygroups)
+
+    def get_items(self):
+        return self.conn.get_all_security_groups() if self.conn else []
 
 
 class SecurityGroupView(TaggedItemView):
@@ -182,14 +188,13 @@ class SecurityGroupView(TaggedItemView):
                 location = self.request.route_url('securitygroups')
                 status = getattr(err, 'status', 400)
             if self.request.is_xhr:
-                resp_body = json.dumps(dict(message=msg))
-                return Response(status=status, body=resp_body)
+                return JSONResponse(status=status, message=msg)
             else:
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.securitygroup_form.get_errors_list())
-            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
         else:
             self.request.error_messages = self.securitygroup_form.get_errors_list()
             return self.render_dict

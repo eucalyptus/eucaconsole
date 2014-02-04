@@ -3,7 +3,6 @@
 Core views
 
 """
-from operator import itemgetter
 import simplejson as json
 import textwrap
 from urllib import urlencode
@@ -22,6 +21,16 @@ from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_A
 from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
 from ..models.auth import ConnectionManager
+
+
+class JSONResponse(Response):
+    def __init__(self, status=200, message=None, **kwargs):
+        super(JSONResponse, self).__init__(**kwargs)
+        self.status = status
+        self.content_type = 'application/json'
+        self.body = json.dumps(
+            dict(message=message)
+        )
 
 
 class BaseView(object):
@@ -204,9 +213,6 @@ class BlockDeviceMappingItemView(BaseView):
 class LandingPageView(BaseView):
     """Common view for landing pages
 
-    :ivar display_type: Either 'tableview' or 'gridview'.  Defaults to 'gridview' if unspecified
-    :ivar filter_fields: List of models.LandingPageFilter instances for landing page filters (usually at left)
-        Leave empty to hide filters on landing page
     :ivar filter_keys: List of strings to pass to client-side filtering engine
         The search box input (usually above the landing page datagrid) will match each property in the list against
         each item in the collection to do the filtering.  See $scope.searchFilterItems in landingpage.js
@@ -222,10 +228,6 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request):
         super(LandingPageView, self).__init__(request)
-        # NOTE: The display type is now configured client-side in the landing pages
-        # TODO: figure out how to default to gridview for small screens. Maybe this can be a client-side
-        # thing vs server-side? That way, switching can be based on media query.
-        self.display_type = self.request.params.get('display', 'tableview')
         self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []
@@ -233,27 +235,38 @@ class LandingPageView(BaseView):
         self.items = []
         self.prefix = '/'
 
-    def filter_items(self, items):
-        """Filter items based on filter fields form"""
-        ignored_filters = ['filter', 'display']
-        filtered_params = [param for param in self.request.params.keys() if param not in ignored_filters]
-        if not filtered_params:
-            return items
+    def filter_items(self, items, ignore=None):
+        ignore = ignore or []  # Pass list of filters to ignore
         filtered_items = []
-        filters = []
-        for filter_field in self.filter_fields:
-            value = self.request.params.get(filter_field.key)
-            if value:
-                filters.append((filter_field.key, value))
-        for item in items:
-            matchedkey_count = 0
-            for fkey, fval in filters:
-                if fval and hasattr(item, fkey) and getattr(item, fkey, None) == fval:
-                    matchedkey_count += 1
-            # Add to filtered items if *all* conditions match
-            if matchedkey_count == len(filters):
-                filtered_items.append(item)
+        if hasattr(self.request.params, 'dict_of_lists'):
+            filter_params = self.request.params.dict_of_lists()
+            for skip in ignore:
+                if skip in filter_params.keys():
+                    del filter_params[skip]
+            if not filter_params:
+                return items
+            for item in items:
+                matchedkey_count = 0
+                for fkey, fval in filter_params.items():
+                    if fval and fval[0]:
+                        if fkey == 'tags':  # Special case to handle tags
+                            if self.match_tags(item=item, tags=fval[0].split(',')):
+                                matchedkey_count += 1
+                        elif hasattr(item, fkey) and getattr(item, fkey, None) in fval:
+                            matchedkey_count += 1
+                    else:
+                        matchedkey_count += 1  # Handle empty param values
+                if matchedkey_count == len(filter_params):
+                    filtered_items.append(item)
         return filtered_items
+
+    @staticmethod
+    def match_tags(item=None, tags=None):
+        for tag in tags:
+            tag = tag.strip()
+            if any([tag in item.tags.keys(), tag in item.tags.values()]):
+                return True
+        return False
 
     def get_json_endpoint(self, route):
         return '{0}{1}'.format(

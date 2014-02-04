@@ -13,7 +13,7 @@ from pyramid.response import Response
 
 from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView
+from ..views import BaseView, LandingPageView, JSONResponse
 
 
 class KeyPairsView(LandingPageView):
@@ -155,7 +155,7 @@ class KeyPairView(BaseView):
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.keypair_form.get_errors_list())
-            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
+            return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request
         else:
             self.request.error_messages = self.keypair_form.get_errors_list()
             return self.render_dict

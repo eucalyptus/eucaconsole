@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -106,15 +106,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="">
-                <h6 class="title" >
-                    <a ng-click="toggleHelpContent()">
-                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
-                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
-                        &nbsp;<span i18n:translate="">Help</span>
-                    </a>
-                </h6>
-            </div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
             </div>
@@ -122,10 +114,6 @@
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', launch_config=launch_config, in_use=in_use, delete_form=delete_form)}
     </div>
-</div>
-
-<div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/pages/launchconfig.js')}"></script>
 </div>
 
 </metal:block>

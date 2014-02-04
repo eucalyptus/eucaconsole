@@ -8,7 +8,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="IPAddressPage" ng-controller="IPAddressPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -53,15 +53,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="">
-                <h6 class="title" >
-                    <a ng-click="toggleHelpContent()">
-                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
-                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
-                        &nbsp;<span i18n:translate="">Help</span>
-                    </a>
-                </h6>
-            </div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" tal:condition="eip" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="not eip.instance_id">
                     ${panel('help_ipaddresses', 'associate_ip')}
@@ -80,7 +72,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/ipaddress.js')}"></script>
     <script>
         $(document).ready(function() {
             $('#instance_id').chosen({'width': '80%'});

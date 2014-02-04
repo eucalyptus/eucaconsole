@@ -22,23 +22,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-2 columns" id="landing-page-filters">
-            <div metal:use-macro="layout.global_macros['properties_filter_form']">
-                <metal:block metal:fill-slot="filter_form_fields">
-                    <div tal:repeat="field filter_fields">
-                        <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-                        <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
-                                name="${field.key}">
-                            <option value="">${field.name}...</option>
-                            <option tal:repeat="choice field.choices" value="${choice.key}"
-                                    tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice.key">${choice.label}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button type="submit" class="secondary small button">Apply</button>
-                        &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
-                    </div>
-                </metal:block>
-            </div>
+            <!--! Filters go here -->
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
@@ -104,7 +88,6 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
 </div>

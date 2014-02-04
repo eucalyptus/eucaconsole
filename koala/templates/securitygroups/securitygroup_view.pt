@@ -12,7 +12,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -78,22 +78,14 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="">
-                <h6 class="title" >
-                    <a ng-click="toggleHelpContent()">
-                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
-                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
-                        &nbsp;<span i18n:translate="">Help</span>
-                    </a>
-                </h6>
-            </div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_securitygroups', 'create_securitygroup')}
                 ${panel('help_securitygroups', 'delete_securitygroup')}
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']"></metal:block>
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
@@ -103,7 +95,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/securitygroup.js')}"></script>
 </div>
 
 </metal:block>

@@ -18,13 +18,13 @@ class SecurityGroupForm(BaseSecureForm):
     name_error_msg = _(u'Name is required')
     name = wtforms.TextField(
         label=_(u'Name'),
-        validators=[validators.InputRequired(message=name_error_msg)],
+        validators=[validators.DataRequired(message=name_error_msg)],
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(
         label=_(u'Description'),
         validators=[
-            validators.InputRequired(message=desc_error_msg),
+            validators.DataRequired(message=desc_error_msg),
             validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
         ],
     )
@@ -45,3 +45,8 @@ class SecurityGroupDeleteForm(BaseSecureForm):
        Only need to initialize as a secure form to generate CSRF token
     """
     pass
+
+
+class SecurityGroupsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    tags = wtforms.TextField(label=_(u'Tags'))
