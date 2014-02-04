@@ -210,6 +210,19 @@
     </div>
 </metal:actionsmenu>
 
+<!--! Help content expando ===== -->
+<metal:helpexpando metal:define-macro="help_expando">
+    <div class="expando" id="help-expando" ng-cloak="" ng-init="isHelpExpanded = false">
+        <h6 class="title" >
+            <a ng-click="isHelpExpanded = !isHelpExpanded">
+                <i class="fi-plus" ng-show="!isHelpExpanded"></i>
+                <i class="fi-minus" ng-show="isHelpExpanded"></i>
+                &nbsp;<span i18n:translate="">Help</span>
+            </a>
+        </h6>
+    </div>
+</metal:helpexpando>
+
 <!-- Security group rules display
      For displaying a list of rules (one per line) in a tableview column or gridview tile row -->
 <metal:securitygrouprules metal:define-macro="securitygroup_rulesdisplay">

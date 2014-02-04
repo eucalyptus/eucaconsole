@@ -16,7 +16,6 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
         $scope.instanceForm = $('#instance-form');
-        $scope.isHelpExpanded = false;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -66,9 +65,6 @@ angular.module('InstancePage', ['TagEditor'])
             $event.preventDefault();
             $('a.close-reveal-modal').trigger('click');
             $scope.instanceForm.submit();
-        };
-        $scope.toggleHelpContent = function () {
-            $scope.isHelpExpanded = !$scope.isHelpExpanded;
         };
     })
 ;
