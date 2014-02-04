@@ -13,7 +13,7 @@ from pyramid.view import view_config
 from ..forms.groups import GroupForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView
 
 
 class GroupsView(LandingPageView):
@@ -74,7 +74,7 @@ class GroupsJsonView(BaseView):
             return BaseView.handle_403_error(exc, request=self.request)
 
 
-class GroupView(TaggedItemView):
+class GroupView(BaseView):
     """Views for single Group"""
     TEMPLATE = '../templates/groups/group_view.pt'
 
@@ -83,7 +83,6 @@ class GroupView(TaggedItemView):
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
-        self.tagged_obj = self.group
         self.render_dict = dict(
             group=self.group,
             group_form=self.group_form,
@@ -101,8 +100,6 @@ class GroupView(TaggedItemView):
     @view_config(route_name='group_update', request_method='POST', renderer=TEMPLATE)
     def group_update(self):
         if self.group_form.validate():
-            self.update_tags()
-
             location = self.request.route_url('group_view', id=self.group.id)
             msg = _(u'Successfully modified group')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
