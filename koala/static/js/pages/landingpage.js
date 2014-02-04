@@ -32,7 +32,7 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.setWatch();
         };
         $scope.initChosenFilters = function () {
-            $.chosen && $('#filters').find('select').chosen({
+            !!$(document).chosen && $('#filters').find('select').chosen({
                 'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
             });
         };
