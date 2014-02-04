@@ -1,7 +1,7 @@
 <!-- Landing page filters form -->
-<div id="filters" ng-cloak="">
+<div id="filters">
     <h6 i18n:translate="">Filter by</h6>
-    <form method="get" action="${request.current_route_url()}">
+    <form method="get" action="${request.current_route_url()}" ng-cloak="">
         <div tal:repeat="field filters_form">
             <div tal:condition="field.short_name != 'csrf_token'" tal:omit-tag="">
                 <label>${field.label}</label>

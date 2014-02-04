@@ -23,33 +23,6 @@
 </metal:refresh_icon>
 
 
-<!-- Filter form for landing pages =====
-     Expects the view to pass a 'filter_fields' list of models.LandingPageFilter() objects. -->
-<metal:properties_filter_form metal:define-macro="properties_filter_form">
-    <div id="filters" tal:condition="filter_fields">
-        <h6>Filters</h6>
-        <form method="get" action="${request.current_route_url()}">
-            <div class="match-condition">Match all of...</div>
-            <div metal:define-slot="filter_form_fields">
-                <div tal:repeat="field filter_fields">
-                    <input type="text" tal:condition="not field.choices" placeholder="${field.name}" />
-                    <select tal:define="num_choices len(field.choices)" tal:condition="field.choices"
-                            placeholder="${field.name}" name="${field.key}">
-                        <option value="">${field.name}...</option>
-                        <option tal:repeat="choice field.choices" value="${choice}"
-                                tal:attributes="selected num_choices == 1 or request.params.get(field.key) == choice">${choice}</option>
-                    </select>
-                </div>
-                <div>
-                    <button type="submit" class="secondary small button" name="filter" value="apply">Apply</button>
-                    &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
-                </div>
-            </div>
-        </form>
-    </div>
-</metal:properties_filter_form>
-
-
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
