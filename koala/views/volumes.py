@@ -15,8 +15,9 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.volumes import VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm
-from ..models import LandingPageFilter, Notification
+from ..forms.volumes import (
+    VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
+from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
 
@@ -53,10 +54,12 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
+        self.filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.location = self.get_redirect_location('volumes')
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
+            filters_form=self.filters_form,
         )
 
     @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
@@ -67,7 +70,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         ]
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
-            filter_fields=self.get_filter_fields(),
+            filter_fields=True,
             sort_keys=self.get_sort_keys(),
             filter_keys=filter_keys,
             json_items_endpoint=self.json_items_endpoint,
@@ -149,15 +152,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
                     zone_instances.append({'id': instance.id, 'name': instance_name})
             instances_by_zone[zone] = zone_instances
         return instances_by_zone
-
-    def get_filter_fields(self):
-        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
-        status_choices = sorted(set(item.status for item in self.items))
-        zone_choices = sorted(set(item.zone for item in self.items))
-        return [
-            LandingPageFilter(key='status', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='zone', name=_(u'Availability zone'), choices=zone_choices),
-        ]
 
     @staticmethod
     def get_sort_keys():

@@ -51,8 +51,8 @@ class InstanceForm(BaseSecureForm):
     def set_choices(self):
         self.ip_address.choices = self.choices_manager.elastic_ips(instance=self.instance)
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.kernel.choices = self.choices_manager.kernels();
-        self.ramdisk.choices = self.choices_manager.ramdisks();
+        self.kernel.choices = self.choices_manager.kernels()
+        self.ramdisk.choices = self.choices_manager.ramdisks()
 
 
 class LaunchInstanceForm(BaseSecureForm):

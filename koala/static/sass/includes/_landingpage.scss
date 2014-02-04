@@ -291,10 +291,19 @@ $gridwrapper-table-width: 98%;
 
 #filters {
     margin-top: 70px;
-}
-
-#properties-filter-form {
-    font-size: 0.9rem;
+    label {
+        font-weight: bold;
+        position: relative;
+        top: 2px;
+        margin-top: 0.5rem;
+    }
+    form {
+        font-size: 0.9rem;
+        input {
+            height: 2rem;
+            margin-bottom: 0;
+        }
+    }
 }
 
 #sorting-controls, #results-count {

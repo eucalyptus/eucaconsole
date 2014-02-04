@@ -22,7 +22,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-2 columns" id="landing-page-filters">
-            <div metal:use-macro="layout.global_macros['properties_filter_form']"></div>
+            ${panel('landingpage_filters', filters_form=filters_form)}
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">

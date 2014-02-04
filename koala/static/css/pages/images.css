@@ -66,8 +66,9 @@
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
 #filters { margin-top: 70px; }
-
-#properties-filter-form { font-size: 0.9rem; }
+#filters label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; }
+#filters form { font-size: 0.9rem; }
+#filters form input { height: 2rem; margin-bottom: 0; }
 
 #sorting-controls, #results-count { padding-top: 1rem; }
 

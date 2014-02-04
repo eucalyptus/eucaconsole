@@ -150,3 +150,27 @@ class AttachForm(BaseSecureForm):
 class DetachForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""
     pass
+
+
+class VolumesFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
+    status = wtforms.SelectMultipleField(label=_(u'Status'))
+    tags = wtforms.TextField(label=_(u'Tags'))
+
+    def __init__(self, request, conn=None, **kwargs):
+        super(VolumesFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.zone.choices = self.get_availability_zone_choices()
+        self.status.choices = self.get_status_choices()
+
+    def get_availability_zone_choices(self):
+        return self.choices_manager.availability_zones(add_blank=False)
+
+    @staticmethod
+    def get_status_choices():
+        return (
+            ('available', 'Available'),
+            ('in-use', 'Attached'),
+        )
