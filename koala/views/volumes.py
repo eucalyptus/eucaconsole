@@ -262,7 +262,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             msg = _(u'Successfully modified volume')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
-
+        else:
+            self.request.error_messages = self.volume_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='volume_create', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -297,6 +298,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_url('volumes')
                 return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.volume_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -313,6 +316,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             location = self.request.route_url('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.volume_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='volume_attach', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -331,6 +336,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             location = self.request.route_url('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.volume_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -347,6 +354,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             location = self.request.route_url('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.volume_form.get_errors_list()
         return self.render_dict
 
     def get_snapshot(self, snapshot_id):
@@ -453,6 +462,8 @@ class VolumeSnapshotsView(BaseVolumeView):
             location = self.request.route_url('volume_snapshots', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='volume_snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
