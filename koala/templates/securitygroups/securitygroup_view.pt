@@ -12,7 +12,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -95,7 +95,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('koala:static/js/pages/securitygroup.js')}"></script>
 </div>
 
 </metal:block>
