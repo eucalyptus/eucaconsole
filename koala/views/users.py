@@ -57,6 +57,7 @@ class UsersView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
+            delete_form=DeleteUserForm(self.request),
         )
 
 
