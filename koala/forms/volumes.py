@@ -20,12 +20,12 @@ class VolumeForm(BaseSecureForm):
     size_error_msg = _(u'Volume size is required')
     size = wtforms.TextField(
         label=_(u'Volume size (GB)'),
-        validators=[validators.InputRequired(message=size_error_msg)],
+        validators=[validators.DataRequired(message=size_error_msg)],
     )
     zone_error_msg = _(u'Availability zone is required')
     zone = wtforms.SelectField(
         label=_(u'Availability zone'),
-        validators=[validators.InputRequired(message=zone_error_msg)],
+        validators=[validators.DataRequired(message=zone_error_msg)],
     )
 
     def __init__(self, request, conn=None, volume=None, snapshots=None, zones=None, **kwargs):

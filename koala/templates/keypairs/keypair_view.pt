@@ -50,7 +50,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
-                        <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
+                        <div class="small-9 columns value breakword">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                     </div>
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">
