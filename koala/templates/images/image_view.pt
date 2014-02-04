@@ -158,15 +158,7 @@
             </div>
         </div>
         <div class="large-5 columns">
-            <div class="expando" id="advanced-section" ng-cloak="" ng-init="isHelpExpanded = false">
-                <h6 class="title" >
-                    <a ng-click="isHelpExpanded = !isHelpExpanded">
-                        <i class="fi-plus" ng-show="!isHelpExpanded"></i>
-                        <i class="fi-minus" ng-show="isHelpExpanded"></i>
-                        &nbsp;<span i18n:translate="">Help</span>
-                    </a>
-                </h6>
-            </div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
