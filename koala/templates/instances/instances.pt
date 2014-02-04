@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instances.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl">
+<div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl" ng-init="initController()">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('instances', '${initial_sort_key}', '${json_items_endpoint}')">
         <h3 class="header" id="pagetitle">
@@ -16,7 +16,7 @@
             </metal:breadcrumbs>
             <span class="icon-block">
                 <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
-                <a class="help-icon" data-reveal-id="help-modal">?</a>
+                <a class="help-icon">?</a>
             </span>
         </h3>
         <!-- Notifications -->
@@ -26,9 +26,11 @@
             ${panel('landingpage_filters', filters_form=filters_form)}
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
-            <div metal:fill-slot="new_button">
+            <div metal:fill-slot="new_button" id="primary-buttons">
                 <a class="button" i18n:translate="" id="launch-instance-btn"
                    href="${request.route_url('instance_create')}">Launch New Instance</a>
+                <a class="button secondary small" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
+                   href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} instances</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
@@ -148,6 +150,8 @@
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form,
                 reboot_form=reboot_form, terminate_form=terminate_form)}
+        <!--! Batch-terminate instance modal dialog -->
+        ${panel('terminate_instances_dialog', batch_terminate_form=batch_terminate_form)}
     </div>
 </div>
 

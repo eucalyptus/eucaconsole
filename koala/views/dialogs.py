@@ -48,6 +48,14 @@ def instance_dialogs(context, request, instance=None, instance_name=None, landin
     )
 
 
+@panel_config('terminate_instances_dialog', renderer='../templates/dialogs/terminate_instances_dialog.pt')
+def terminate_instances_dialog(context, request, batch_terminate_form=None):
+    """Batch-terminate instances dialog"""
+    return dict(
+        batch_terminate_form=batch_terminate_form,
+    )
+
+
 @panel_config('volume_dialogs', renderer='../templates/dialogs/volume_dialogs.pt')
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):

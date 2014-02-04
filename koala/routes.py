@@ -46,6 +46,8 @@ urls = [
     Route(name='instances_stop', pattern='/instances/stop'),
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
+    Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
+
     # Detail page
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),

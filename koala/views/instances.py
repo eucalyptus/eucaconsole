@@ -16,7 +16,8 @@ from pyramid.view import view_config
 
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
-    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstancesFiltersForm)
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
+    BatchTerminateInstancesForm, InstancesFiltersForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -75,6 +76,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
         self.filters_form = InstancesFiltersForm(
             self.request, conn=self.conn, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -84,13 +86,14 @@ class InstancesView(LandingPageView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
+            batch_terminate_form=self.batch_terminate_form,
             filters_form=self.filters_form,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
         filter_keys = [
-            'id', 'instance_type', 'ip_address', 'key_name', 'placement',
+            'id', 'name', 'instance_type', 'ip_address', 'key_name', 'placement',
             'root_device', 'security_groups_string', 'state', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
@@ -190,6 +193,25 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 queue = Notification.ERROR
         else:
             msg = _(u'Unable to terminate instance')  # Prolly due to missing CSRF token here
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
+    @view_config(route_name='instances_batch_terminate', request_method='POST')
+    def instances_batch_terminate(self):
+        instance_ids = self.request.params.getall('instance_ids')
+        if self.batch_terminate_form.validate():
+            try:
+                self.conn.terminate_instances(instance_ids=instance_ids)
+                time.sleep(4)
+                prefix = _(u'Successfully sent request to terminate the following instances:')
+                msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to terminate instances')
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)

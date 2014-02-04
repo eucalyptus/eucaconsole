@@ -38,3 +38,9 @@ $instance-status-color-terminating: lightgrey;
         &.shutting-down { background-color: $instance-status-color-terminating; }
     }
 }
+
+#terminate-instances-btn {
+    margin-left: 1rem;
+    border: none;
+}
+
