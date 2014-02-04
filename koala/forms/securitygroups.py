@@ -45,3 +45,8 @@ class SecurityGroupDeleteForm(BaseSecureForm):
        Only need to initialize as a secure form to generate CSRF token
     """
     pass
+
+
+class SecurityGroupsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    tags = wtforms.TextField(label=_(u'Tags'))
