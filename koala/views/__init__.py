@@ -238,25 +238,26 @@ class LandingPageView(BaseView):
     def filter_items(self, items, ignore=None):
         ignore = ignore or []  # Pass list of filters to ignore
         filtered_items = []
-        filter_params = self.request.params.dict_of_lists()
-        for skip in ignore:
-            if skip in filter_params.keys():
-                del filter_params[skip]
-        if not filter_params:
-            return items
-        for item in items:
-            matchedkey_count = 0
-            for fkey, fval in filter_params.items():
-                if fval and fval[0]:
-                    if fkey == 'tags':  # Special case to handle tags
-                        if self.match_tags(item=item, tags=fval[0].split(',')):
+        if getattr(self.request.params, 'dict_of_lists', None):
+            filter_params = self.request.params.dict_of_lists()
+            for skip in ignore:
+                if skip in filter_params.keys():
+                    del filter_params[skip]
+            if not filter_params:
+                return items
+            for item in items:
+                matchedkey_count = 0
+                for fkey, fval in filter_params.items():
+                    if fval and fval[0]:
+                        if fkey == 'tags':  # Special case to handle tags
+                            if self.match_tags(item=item, tags=fval[0].split(',')):
+                                matchedkey_count += 1
+                        elif hasattr(item, fkey) and getattr(item, fkey, None) in fval:
                             matchedkey_count += 1
-                    elif hasattr(item, fkey) and getattr(item, fkey, None) in fval:
-                        matchedkey_count += 1
-                else:
-                    matchedkey_count += 1  # Handle empty param values
-            if matchedkey_count == len(filter_params):
-                filtered_items.append(item)
+                    else:
+                        matchedkey_count += 1  # Handle empty param values
+                if matchedkey_count == len(filter_params):
+                    filtered_items.append(item)
         return filtered_items
 
     @staticmethod

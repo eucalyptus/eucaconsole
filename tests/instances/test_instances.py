@@ -11,7 +11,7 @@ from koala.forms import BaseSecureForm
 from koala.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
 from koala.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
 from koala.views import TaggedItemView
-from koala.views.instances import InstancesView, InstanceView
+from koala.views.instances import InstancesView, InstancesJsonView, InstanceView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -31,7 +31,7 @@ class InstancesViewTests(BaseViewTestCase):
 
     def test_instances_landing_page_json(self):
         request = testing.DummyRequest()
-        view = InstancesView(request).instances_json()
+        view = InstancesJsonView(request).instances_json()
         self.assertEqual(view.get('results'), [])
 
 

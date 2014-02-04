@@ -11,7 +11,7 @@ from koala.forms import BaseSecureForm
 from koala.forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm)
 from koala.views import TaggedItemView
-from koala.views.volumes import VolumesView, VolumeView
+from koala.views.volumes import VolumesView, VolumesJsonView, VolumeView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
@@ -31,7 +31,7 @@ class VolumesViewTests(BaseViewTestCase):
 
     def test_volumes_landing_page_json(self):
         request = testing.DummyRequest()
-        view = VolumesView(request).volumes_json()
+        view = VolumesJsonView(request).volumes_json()
         self.assertEqual(view.get('results'), [])
 
 
