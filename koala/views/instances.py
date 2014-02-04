@@ -197,6 +197,25 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
+    @view_config(route_name='instances_batch_terminate', request_method='POST')
+    def instances_batch_terminate(self):
+        instance_ids = self.request.params.getall('instance_ids')
+        if self.batch_terminate_form.validate():
+            try:
+                self.conn.terminate_instances(instance_ids=instance_ids)
+                time.sleep(4)
+                prefix = _(u'Successfully sent request to terminate the following instances:')
+                msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+        else:
+            msg = _(u'Unable to terminate instances')
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)
+
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):

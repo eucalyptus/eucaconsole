@@ -100,3 +100,5 @@
 .table .label.stopping { background-color: #ff9999; }
 .table .label.terminated { background-color: gray; }
 .table .label.shutting-down { background-color: lightgrey; }
+
+#terminate-instances-btn { margin-left: 1rem; border: none; }

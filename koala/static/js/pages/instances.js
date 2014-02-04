@@ -24,6 +24,11 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.rootDevice = instance['root_device'];
             modal.foundation('reveal', 'open');
         };
+        $scope.unterminatedInstancesCount = function (items) {
+            return items.filter(function (item) {
+                return item.status !== 'terminated';
+            }).length;
+        }
     })
 ;
 

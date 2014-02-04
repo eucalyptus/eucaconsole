@@ -27,10 +27,10 @@
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
         <div class="row display-switcher">
-            <div class="small-6 columns">
+            <div class="small-8 columns">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="small-6 columns displayicons">
+            <div class="small-4 columns displayicons">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list"></i></a>
             </div>

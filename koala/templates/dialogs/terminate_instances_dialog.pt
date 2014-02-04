@@ -3,11 +3,12 @@
     <div id="batch-terminate-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Terminate instances</h3>
         <p i18n:translate="">Are you sure you want to terminate the following instances?</p>
-        <form method="post" action="" id="batch-terminate-form">
+        <form method="post" action="${request.route_url('instances_batch_terminate')}" id="batch-terminate-form">
             ${structure:batch_terminate_form['csrf_token']}
             <div>
                 <select multiple="" name="instance_ids" id="instance-ids" ng-cloak="">
-                    <option ng-repeat="item in items" selected="" value="{{ item.id }}">{{ item.name }}</option>
+                    <option ng-repeat="item in items" selected="" value="{{ item.id }}"
+                            ng-if="item.status !== 'terminated'">{{ item.name }}</option>
                 </select>
             </div>
             <div>&nbsp;</div>
