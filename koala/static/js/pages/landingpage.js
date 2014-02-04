@@ -8,7 +8,6 @@
 angular.module('LandingPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.urlParams = $.url().param();
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
