@@ -58,7 +58,7 @@
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
-.gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
+.gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
@@ -66,8 +66,9 @@
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
 #filters { margin-top: 70px; }
-
-#properties-filter-form { font-size: 0.9rem; }
+#filters label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; }
+#filters form { font-size: 0.9rem; }
+#filters form input { height: 2rem; margin-bottom: 0; }
 
 #sorting-controls, #results-count { padding-top: 1rem; }
 
@@ -85,7 +86,6 @@
 
 .status.failed { background-color: #990000; }
 
-.table td.id, .table td.volumeid, .table td.starttime { white-space: nowrap; }
 .table td.status { position: relative; }
 .table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }
 .table td.status .progress .meter { padding-left: 4px; color: white; font-weight: bold; }

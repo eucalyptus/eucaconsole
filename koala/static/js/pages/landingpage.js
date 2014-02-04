@@ -8,7 +8,6 @@
 angular.module('LandingPage', ['CustomFilters'])
     .controller('ItemsCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.urlParams = $.url().param();
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
@@ -23,12 +22,18 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.sortReverseKey = '';
         $scope.landingPageViewKey = '';
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
+            $scope.initChosenFilters();
             pageResource = pageResource || window.location.pathname.split('/')[0];
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
             $scope.setWatch();
+        };
+        $scope.initChosenFilters = function () {
+            !!$(document).chosen && $('#filters').find('select').chosen({
+                'width': '100%', 'search_contains': true, 'placeholder_text_multiple': 'select...'
+            });
         };
         $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
@@ -80,30 +85,6 @@ angular.module('LandingPage', ['CustomFilters'])
                localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             }); 
         };
-        $scope.applyGetRequestFilters = function () {
-            // Apply an "all" match of filters based on URL params
-            // If item matches all applicable non-empty URL param filters, return the item.
-            $scope.items = $scope.items.filter(function(item) {
-                var urlParams = $scope.urlParams,
-                    matchedKeys = [];
-                delete urlParams['filter'];  // Ignore filter
-                delete urlParams['display'];  // Ignore display = tableview | gridview
-                var urlParamKeys = Object.keys(urlParams);
-                var filteredKeys = [];
-                for (var i=0; i < urlParamKeys.length; i++) {
-                    if (urlParams[urlParamKeys[i]]) {
-                        filteredKeys.push(1);  // Ignore empty URL params
-                    }
-                    if (item[urlParamKeys[i]] === urlParams[urlParamKeys[i]]) {
-                        matchedKeys.push(1)
-                    }
-                }
-                // If all URL param keys match, return item.
-                if (matchedKeys.length === filteredKeys.length) {
-                    return item;
-                }
-            });
-        };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
@@ -111,9 +92,6 @@ angular.module('LandingPage', ['CustomFilters'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
-                if ($.url().param('filter')) {
-                    $scope.applyGetRequestFilters();
-                }
                 $scope.items.forEach(function (item) {
                     if (!!item['transitional']) {
                         transitionalCount += 1;

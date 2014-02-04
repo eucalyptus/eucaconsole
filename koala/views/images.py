@@ -4,7 +4,6 @@ Pyramid views for Eucalyptus and AWS images
 
 """
 import re
-from urllib import urlencode
 
 from beaker.cache import cache_region
 from boto.exception import EC2ResponseError
@@ -13,11 +12,9 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 
-from ..constants.images import (
-    PLATFORM_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES, PlatformChoice)
-from ..forms.images import ImageForm
+from ..constants.images import PLATFORM_CHOICES, PlatformChoice
+from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
-from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, TaggedItemView
 
 
@@ -28,25 +25,35 @@ class ImagesView(LandingPageView):
         super(ImagesView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/images'
+        self.json_items_endpoint = self.get_json_endpoint('images_json')
+        self.filters_form = ImagesFiltersForm(
+            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+        self.filter_keys = self.get_filter_keys()
+        self.sort_keys = self.get_sort_keys()
+        self.render_dict = dict(
+            filter_keys=self.filter_keys,
+            sort_keys=self.sort_keys,
+            prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
+            json_items_endpoint=self.json_items_endpoint,
+            filter_fields=True,
+            filters_form=self.filters_form,
+        )
 
     @view_config(route_name='images', renderer=TEMPLATE)
     def images_landing(self):
-        json_items_endpoint = self.request.route_url('images_json')
-        if self.request.GET:
-            json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
-        # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
-        owner_choices = EUCA_IMAGE_OWNER_ALIAS_CHOICES
-        if self.cloud_type == 'aws':
-            owner_choices = AWS_IMAGE_OWNER_ALIAS_CHOICES
-        self.filter_fields = [
-            LandingPageFilter(key='owner_alias', name='Images owned by', choices=owner_choices),
-        ]
         # filter_keys are passed to client-side filtering in search box
-        self.filter_keys = [
-            'architecture', 'description', 'id', 'name', 'owner_alias',
-            'platform_name', 'root_device_type', 'tagged_name']
         # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
+        return self.render_dict
+
+    @staticmethod
+    def get_filter_keys():
+        return ['architecture', 'description', 'id', 'name', 'owner_alias',
+                'platform_name', 'root_device_type', 'tagged_name']
+
+    @staticmethod
+    def get_sort_keys():
+        return [
             dict(key='id', name='ID'),
             dict(key='name', name=_(u'Image name')),
             dict(key='architecture', name=_(u'Architecture')),
@@ -55,22 +62,14 @@ class ImagesView(LandingPageView):
             dict(key='description', name=_(u'Description')),
         ]
 
-        return dict(
-            filter_fields=self.filter_fields,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
-            prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
-        )
 
-
-class ImagesJsonView(BaseView):
+class ImagesJsonView(LandingPageView):
     """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
         images = []
-        for image in self.get_items():
+        # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
+        for image in self.filter_items(self.get_items(), ignore=['owner_alias']):
             platform = ImageView.get_platform(image)
             images.append(dict(
                 architecture=image.architecture,

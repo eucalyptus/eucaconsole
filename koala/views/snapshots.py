@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm
+from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -27,13 +27,15 @@ class SnapshotsView(LandingPageView):
         self.conn = self.get_connection()
         self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
-        self.json_items_endpoint = self.request.route_url('snapshots_json')
+        self.json_items_endpoint = self.get_json_endpoint('snapshots_json')
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
+        self.filters_form = SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            filters_form=self.filters_form,
         )
 
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
@@ -41,7 +43,7 @@ class SnapshotsView(LandingPageView):
         filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
         self.render_dict.update(dict(
             filter_keys=filter_keys,
-            filter_fields=self.filter_fields,
+            filter_fields=True,
             sort_keys=self.get_sort_keys(),
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.json_items_endpoint,
@@ -123,8 +125,7 @@ class SnapshotsView(LandingPageView):
         ]
 
 
-class SnapshotsJsonView(BaseView):
-
+class SnapshotsJsonView(LandingPageView):
     def __init__(self, request):
         super(SnapshotsJsonView, self).__init__(request)
         self.conn = self.get_connection()
@@ -133,7 +134,7 @@ class SnapshotsJsonView(BaseView):
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
     def snapshots_json(self):
         snapshots = []
-        for snapshot in self.get_items():
+        for snapshot in self.filter_items(self.get_items()):
             volume = self.get_volume(snapshot.volume_id)
             volume_name = TaggedItemView.get_display_name(volume)
             snapshots.append(dict(
@@ -303,9 +304,10 @@ class SnapshotView(TaggedItemView):
         bdm['/dev/sda'] = root_vol
         if self.snapshot and self.register_form.validate():
             try:
-                self.snapshot.connection.register_image(name=name, description=description,
-                        kernel_id=('windows' if reg_as_windows else None),
-                        block_device_map=bdm)
+                self.snapshot.connection.register_image(
+                    name=name, description=description,
+                    kernel_id=('windows' if reg_as_windows else None),
+                    block_device_map=bdm)
                 time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)

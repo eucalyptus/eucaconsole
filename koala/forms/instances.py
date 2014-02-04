@@ -17,18 +17,12 @@ class InstanceForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     instance_type_error_msg = _(u'Instance type is required')
-    instance_type = wtforms.SelectField(
-        label=_(u'Instance type')
-    )
+    instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
-    kernel = wtforms.SelectField(
-        label=_(u'Kernel ID')
-    )
-    ramdisk = wtforms.SelectField(
-        label=_(u'RAM disk ID (ramfs)')
-    )
+    kernel = wtforms.SelectField(label=_(u'Kernel ID'))
+    ramdisk = wtforms.SelectField(label=_(u'RAM disk ID (ramfs)'))
     start_later = wtforms.HiddenField()
 
     def __init__(self, request, instance=None, conn=None, **kwargs):
@@ -51,8 +45,8 @@ class InstanceForm(BaseSecureForm):
     def set_choices(self):
         self.ip_address.choices = self.choices_manager.elastic_ips(instance=self.instance)
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.kernel.choices = self.choices_manager.kernels();
-        self.ramdisk.choices = self.choices_manager.ramdisks();
+        self.kernel.choices = self.choices_manager.kernels()
+        self.ramdisk.choices = self.choices_manager.ramdisks()
 
 
 class LaunchInstanceForm(BaseSecureForm):
@@ -264,3 +258,47 @@ class DetachVolumeForm(BaseSecureForm):
     """CSRF-protected form to detach a volume from an instance"""
     pass
 
+
+class InstancesFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    state = wtforms.SelectMultipleField(label=_(u'Status'))
+    placement = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
+    root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
+    tags = wtforms.TextField(label=_(u'Tags'))
+
+    def __init__(self, request, conn=None, cloud_type='euca', **kwargs):
+        super(InstancesFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.conn = conn
+        self.cloud_type = cloud_type
+        self.choices_manager = ChoicesManager(conn=conn)
+        self.placement.choices = self.get_availability_zone_choices()
+        self.state.choices = self.get_status_choices()
+        self.instance_type.choices = self.get_instance_type_choices()
+        self.root_device_type.choices = self.get_root_device_type_choices()
+
+    def get_availability_zone_choices(self):
+        return self.choices_manager.availability_zones(add_blank=False)
+
+    def get_instance_type_choices(self):
+        return self.choices_manager.instance_types(
+            cloud_type=self.cloud_type, add_blank=False, add_description=False)
+
+    @staticmethod
+    def get_status_choices():
+        return (
+            ('running', 'Running'),
+            ('pending', 'Pending'),
+            ('stopping', 'Stopping'),
+            ('stopped', 'Stopped'),
+            ('shutting-down', 'Terminating'),
+            ('terminated', 'Terminated'),
+        )
+
+    @staticmethod
+    def get_root_device_type_choices():
+        return (
+            ('ebs', 'EBS'),
+            ('instance-store', 'Instance-store')
+        )

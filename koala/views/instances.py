@@ -16,11 +16,11 @@ from pyramid.view import view_config
 
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
-    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm)
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstancesFiltersForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
-from ..models import LandingPageFilter, Notification
+from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
@@ -66,16 +66,17 @@ class BaseInstanceView(BaseView):
 class InstancesView(LandingPageView, BaseInstanceView):
     def __init__(self, request):
         super(InstancesView, self).__init__(request)
-        self.items = self.get_items()
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
-        self.filter_fields = self.get_filter_fields()
+        self.filter_fields = True
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
         self.location = self.get_redirect_location('instances')
         self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.filters_form = InstancesFiltersForm(
+            self.request, conn=self.conn, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -83,6 +84,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
+            filters_form=self.filters_form,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -106,32 +108,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             json_items_endpoint=self.json_items_endpoint,
         ))
         return self.render_dict
-
-    @view_config(route_name='instances_json', renderer='json', request_method='GET')
-    def instances_json(self):
-        instances = []
-        filtered_items = self.filter_items(self.items)
-        transitional_states = ['pending', 'stopping', 'shutting-down']
-        for instance in filtered_items:
-            is_transitional = instance.state in transitional_states
-            security_groups_array = sorted(group.name for group in instance.groups)
-            instances.append(dict(
-                id=instance.id,
-                name=TaggedItemView.get_display_name(instance),
-                instance_type=instance.instance_type,
-                image_id=instance.image_id,
-                ip_address=instance.ip_address,
-                launch_time=instance.launch_time,
-                placement=instance.placement,
-                root_device=instance.root_device_type,
-                security_groups=security_groups_array,
-                security_groups_string=' '.join(security_groups_array),
-                key_name=instance.key_name,
-                status=instance.state,
-                tags=TaggedItemView.get_tags_display(instance.tags),
-                transitional=is_transitional,
-            ))
-        return dict(results=instances)
 
     @view_config(route_name='instances_start', request_method='POST')
     def instances_start(self):
@@ -218,26 +194,46 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
+
+class InstancesJsonView(LandingPageView):
+    def __init__(self, request):
+        super(InstancesJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
+    @view_config(route_name='instances_json', renderer='json', request_method='GET')
+    def instances_json(self):
+        instances = []
+        filtered_items = self.filter_items(self.get_items())
+        transitional_states = ['pending', 'stopping', 'shutting-down']
+        for instance in filtered_items:
+            is_transitional = instance.state in transitional_states
+            security_groups_array = sorted(group.name for group in instance.groups)
+            instances.append(dict(
+                id=instance.id,
+                name=TaggedItemView.get_display_name(instance),
+                instance_type=instance.instance_type,
+                image_id=instance.image_id,
+                ip_address=instance.ip_address,
+                launch_time=instance.launch_time,
+                placement=instance.placement,
+                root_device=instance.root_device_type,
+                security_groups=security_groups_array,
+                key_name=instance.key_name,
+                status=instance.state,
+                tags=TaggedItemView.get_tags_display(instance.tags),
+                transitional=is_transitional,
+            ))
+        return dict(results=instances)
+
     def get_items(self):
         if self.conn:
             instances = []
             for reservation in self.conn.get_all_reservations():
-                instance = reservation.instances[0]
-                instance.groups = reservation.groups
-                instances.append(instance)
+                for instance in reservation.instances:
+                    instance.groups = reservation.groups
+                    instances.append(instance)
             return instances
         return []
-
-    def get_filter_fields(self):
-        """Filter fields are passed to 'properties_filter_form' template macro to display filters at left"""
-        status_choices = sorted(set(instance.state for instance in self.items))
-        instance_type_choices = sorted(set(instance.instance_type for instance in self.items))
-        avail_zone_choices = sorted(set(instance.placement for instance in self.items))
-        return [
-            LandingPageFilter(key='state', name=_(u'Status'), choices=status_choices),
-            LandingPageFilter(key='instance_type', name=_(u'Instance type'), choices=instance_type_choices),
-            LandingPageFilter(key='placement', name=_(u'Availability zone'), choices=avail_zone_choices),
-        ]
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):
