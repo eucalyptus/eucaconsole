@@ -213,9 +213,6 @@ class BlockDeviceMappingItemView(BaseView):
 class LandingPageView(BaseView):
     """Common view for landing pages
 
-    :ivar display_type: Either 'tableview' or 'gridview'.  Defaults to 'gridview' if unspecified
-    :ivar filter_fields: List of models.LandingPageFilter instances for landing page filters (usually at left)
-        Leave empty to hide filters on landing page
     :ivar filter_keys: List of strings to pass to client-side filtering engine
         The search box input (usually above the landing page datagrid) will match each property in the list against
         each item in the collection to do the filtering.  See $scope.searchFilterItems in landingpage.js
@@ -231,10 +228,6 @@ class LandingPageView(BaseView):
     """
     def __init__(self, request):
         super(LandingPageView, self).__init__(request)
-        # NOTE: The display type is now configured client-side in the landing pages
-        # TODO: figure out how to default to gridview for small screens. Maybe this can be a client-side
-        # thing vs server-side? That way, switching can be based on media query.
-        self.display_type = self.request.params.get('display', 'tableview')
         self.filter_fields = []
         self.filter_keys = []
         self.sort_keys = []

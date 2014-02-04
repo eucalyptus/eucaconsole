@@ -70,7 +70,7 @@ class ChoicesManager(object):
                     choices.append((value, label))
         return choices
 
-    def instance_types(self, cloud_type='euca', add_blank=True):
+    def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
         """Get instance type (e.g. m1.small) choices
             cloud_type is either 'euca' or 'aws'
         """
@@ -81,8 +81,9 @@ class ChoicesManager(object):
             if self.conn is not None:
                 types = self.conn.get_list('DescribeInstanceTypes', {}, [('euca:item', VmType)], verb='POST')
                 for vmtype in types:
-                    vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
-                    vmtype_tuple = vmtype.name, vmtype_str
+                    vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(
+                        vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                    vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
                     choices.append(vmtype_tuple)
             else:
                 choices.append(BLANK_CHOICE)
