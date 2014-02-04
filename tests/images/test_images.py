@@ -14,11 +14,10 @@ from tests import BaseViewTestCase, BaseFormTestCase
 
 
 class ImagesViewTests(BaseViewTestCase):
-    request = testing.DummyRequest()
-    view = ImagesView(request)
 
     def test_landing_page_view(self):
-        lpview = self.view.images_landing()
+        request = testing.DummyRequest()
+        lpview = ImagesView(request).images_landing()
         self.assertEqual(lpview.get('prefix'), '/images')
         self.assertEqual(lpview.get('initial_sort_key'), 'name')
         filter_keys = lpview.get('filter_keys')
