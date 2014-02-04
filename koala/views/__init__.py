@@ -238,7 +238,7 @@ class LandingPageView(BaseView):
     def filter_items(self, items, ignore=None):
         ignore = ignore or []  # Pass list of filters to ignore
         filtered_items = []
-        if getattr(self.request.params, 'dict_of_lists', None):
+        if hasattr(self.request.params, 'dict_of_lists'):
             filter_params = self.request.params.dict_of_lists()
             for skip in ignore:
                 if skip in filter_params.keys():
