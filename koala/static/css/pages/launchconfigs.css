@@ -58,7 +58,7 @@
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
-.gridwrapper .table tr td.id { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 120px; }
+.gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
 .gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }

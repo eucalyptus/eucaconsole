@@ -23,9 +23,6 @@ $snapshot-status-color-failed: darken(red, 20%);
 
 
 .table {
-    td.id, td.volumeid, td.starttime {
-        white-space: nowrap;
-    }
     td.status {
         position: relative;
         .progress {

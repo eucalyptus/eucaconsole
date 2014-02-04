@@ -261,7 +261,6 @@ $gridwrapper-table-width: 98%;
             padding-bottom: 12px;
             vertical-align: top;
             &.id {
-                @include ellipsis-overflow;
                 max-width: 120px;
             }
             span.actions {
