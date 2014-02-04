@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+    <div class="row" id="contentwrap" ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
         <h3 class="header" id="pagetitle">
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
@@ -166,6 +166,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/pages/image.js')}"></script>
 </div>
 
 </metal:block>
