@@ -232,7 +232,7 @@ class InstancesJsonView(LandingPageView):
         if security_group_param:
             filters = {'group-name': security_group_param}
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=['security_group', 'scaling_group'])
-        if self.request.params.getall('scaling_group'):
+        if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         for instance in filtered_items:
