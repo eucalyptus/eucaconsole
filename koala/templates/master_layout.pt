@@ -28,8 +28,8 @@
         <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
         <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
             <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
-                <span class="hide-for-xsmall">${layout.username_label}</span>
-                <i class="fi-torso icon show-for-xsmall"></i>
+                <span class="${'hide-for-xsmall' if layout.cloud_type == 'aws' else ''}">${layout.username_label}</span>
+                <i class="fi-torso icon show-for-xsmall" tal:condition="layout.cloud_type == 'aws'"></i>
                 <span class="down-caret"></span>
             </a>
             <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
