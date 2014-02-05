@@ -1,4 +1,8 @@
 /* @fileOverview Login page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+body, #maincontent { background-color: #eef7e3; }
+
 #notifications-wrapper { margin-top: 2rem; }
 
 #login-wrapper { position: relative; margin-top: 3rem; background-color: #eeeeee; padding: 10px; box-shadow: 0 3px 6px #999999; }
@@ -15,9 +19,9 @@
 #aws-login-button.button { background-color: #ff9900; border-color: #995c00; margin-top: 10px; margin-bottom: 10px; }
 
 /* Medium/large screen */
-@media screen and (min-width: 768px) { #login-panel-wrapper { margin-top: 4rem; }
+@media screen and (min-width: 920px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 768px) { #login-panel-wrapper { margin-top: 1rem; }
+@media screen and (max-width: 920px) { #login-panel-wrapper { margin-top: 1rem; }
   #login-panel { border-radius: 0; box-shadow: none; padding: 10px; }
   #login-panel .header { border-radius: 0; box-shadow: none; top: 0; left: 0; right: 0; } }

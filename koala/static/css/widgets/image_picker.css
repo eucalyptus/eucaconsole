@@ -1,5 +1,7 @@
 @charset "UTF-8";
 /* @fileOverview Image picker widget Sass CSS styles */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
 #image-picker .table { width: 100%; }
 #image-picker .table tbody { display: block; overflow-y: scroll; }
 #image-picker .table .icon { padding: 15px; }

@@ -10,9 +10,11 @@ $euca-contentwrap-width: 1040px;
 $euca-darkblue: #00415e;
 $euca-extralightblue: #ecf4f7;
 $euca-notificationblue: #40a8c6;
+$euca-orange: #f18f30;
 
 $euca-green: #76b800;
 $euca-lightgreen: #8dc640;
+$euca-extralightgreen: #eef7e3;
 $euca-darkgreen: #468400;
 
 $euca-grey: #999;
@@ -57,15 +59,35 @@ $code-color: darkred;
 $f-dropdown-bg: #fff;
 $f-dropdown-triangle-color: #fff;
 
-// Navigation bar settings
-$topbar-bg-color: $euca-green;
+// Navigation bar settings ============
+// Breakpoint handling
+$topbar-transition-speed: 300ms;
+$topbar-breakpoint: 920px !default; // Change to 9999px for always mobile layout
+// Colors
+$topbar-bg-color: white;
 $topbar-bg: $topbar-bg-color;
-$topbar-dropdown-bg: $euca-green;
+$topbar-dropdown-bg: $euca-orange;
 $topbar-dropdown-link-bg: $euca-green;
 $topbar-link-bg-hover: $euca-darkgreen;
-$topbar-menu-link-color-toggled: white;
-$topbar-menu-icon-color-toggled: white;
-$topbar-breakpoint: 768px !default; // Change to 9999px for always mobile layout
+/* Dropdown elements */
+$topbar-dropdown-bg: white;
+$topbar-dropdown-link-color: #000;
+$topbar-dropdown-link-bg: white;
+$topbar-dropdown-toggle-size: 5px;
+$topbar-dropdown-toggle-color: black;
+$topbar-dropdown-toggle-alpha: 1.0;
+/* Set the link colors and styles for top-level nav */
+$topbar-link-color: #000;
+$topbar-link-color-hover: #000;
+$topbar-link-color-active: #fff;
+$topbar-link-color-active-hover: #fff;
+$topbar-link-weight: normal;
+$topbar-link-font-size: rem-calc(13);
+$topbar-link-hover-lightness: -10%; // Darken by 10%
+$topbar-link-bg-hover: $euca-orange;
+$topbar-link-bg-active: $euca-orange;
+$topbar-link-bg-active-hover: $primary-color;
+$topbar-link-font-family: $body-font-family;
 
 // Sub-nav
 $sub-nav-active-bg: $euca-darkblue;

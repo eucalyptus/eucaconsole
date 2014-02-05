@@ -1,6 +1,10 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
+body, #maincontent {
+    background-color: $euca-extralightgreen;
+}
+
 #notifications-wrapper {
     margin-top: 2rem;
 }

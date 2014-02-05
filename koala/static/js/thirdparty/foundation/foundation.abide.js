@@ -4,10 +4,11 @@
   Foundation.libs.abide = {
     name : 'abide',
 
-    version : '5.0.0',
+    version : '5.0.3',
 
     settings : {
       focus_on_invalid : true,
+      error_labels: true, // labels with a for="inputId" will recieve an `error` class
       timeout : 1000,
       patterns : {
         alpha: /[a-zA-Z]+/,
@@ -115,16 +116,16 @@
       var type = el.getAttribute('type'),
           required = typeof el.getAttribute('required') === 'string';
 
-      if (this.settings.patterns.hasOwnProperty(type)) {
-        return [el, this.settings.patterns[type], required];
-      }
-
       var pattern = el.getAttribute('pattern') || '';
 
       if (this.settings.patterns.hasOwnProperty(pattern) && pattern.length > 0) {
         return [el, this.settings.patterns[pattern], required];
       } else if (pattern.length > 0) {
         return [el, new RegExp(pattern), required];
+      }
+      
+      if (this.settings.patterns.hasOwnProperty(type)) {
+        return [el, this.settings.patterns[type], required];
       }
 
       pattern = /.*/;
@@ -143,6 +144,7 @@
             is_equal = el.getAttribute('data-equalto'),
             is_radio = el.type === "radio",
             is_checkbox = el.type === "checkbox",
+            label = $('label[for="' + el.getAttribute('id') + '"]'),
             valid_length = (required) ? (el.value.length > 0) : true;
 
         if (is_radio && required) {
@@ -155,9 +157,13 @@
           if (el_patterns[i][1].test(value) && valid_length ||
             !required && el.value.length < 1) {
             $(el).removeAttr('data-invalid').parent().removeClass('error');
+            if (label.length > 0 && this.settings.error_labels) label.removeClass('error');
+
             validations.push(true);
           } else {
             $(el).attr('data-invalid', '').parent().addClass('error');
+            if (label.length > 0 && this.settings.error_labels) label.addClass('error');
+
             validations.push(false);
           }
         }

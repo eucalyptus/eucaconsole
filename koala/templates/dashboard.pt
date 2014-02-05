@@ -6,130 +6,175 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-         ng-init="getItemCounts('${request.route_url('dashboard_json')}')" ng-cloak="cloak">
-        <div class="large-3 columns">
-            <div class="panel" id="instances">
+         ng-init="initController('${request.route_url('dashboard_json')}')" ng-cloak="cloak">
+        <div id="pagetitle">
+            <h3 i18n:translate="">Dashboard</h3>
+            <div id="zone-selector">
+                <a href="#" data-dropdown="zone-dropdown">
+                    <span ng-if="selectedZone">{{ selectedZone }}</span>
+                    <span ng-if="!selectedZone" i18n:translate="">All availability zones</span>
+                    <span class="down-caret"></span>
+                </a>
+                <ul id="zone-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="selectedZone !== ''">
+                        <a ng-click="setZone('')" i18n:translate="">All availability zones</a>
+                    </li>
+                    <li tal:repeat="zone availability_zones" ng-show="selectedZone !== '${zone.name}'">
+                        <a ng-click="setZone('${zone.name}')">${zone.name}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+            <li class="panel" id="instance-running">
                 <div class="tile" id="running">
                     <h5 class="subheader" i18n:translate="">Running instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?state=running">
-                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_running }}</em></i>
+                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.instances_running }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a class="button" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
+                        <a class="button small primary" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
                     </div>
                 </div>
-                <div class="tile" id="stopped">
+            </li>
+            <li class="panel" id="instances-stopped">
+                <div class="tile">
                     <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?state=stopped">
-                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_stopped }}</em></i>
+                            <i class="fi-prohibited icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.instances_stopped }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer"></div>
                 </div>
+            </li>
+            <li class="panel" id="scaling-groups">
                 <div class="tile" id="in-scaling-group">
-                    <h5 class="subheader" i18n:translate="">In scaling groups</h5>
+                    <h5 class="subheader" i18n:translate="">
+                        <span i18n:translate=""> Instances in scaling groups</span>
+                    </h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
-                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.instances_scaling }}</em></i>
+                            <i class="fi-graph-trend icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.instances_scaling }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('scalinggroup_new')}" i18n:translate="">Create scaling group</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="elastic-ips">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
+                    <div class="content">
+                        <a href="${request.route_url('ipaddresses')}">
+                            <i class="fi-thumbnails icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.eips }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer"></div>
                 </div>
-            </div>
-        </div>
-        <div class="large-6 columns">
-            <div class="panel row" id="volumes-snapshots">
-                <div class="tile small-6 columns" id="volumes">
+            </li>
+            <li class="panel" id="volumes">
+                <div class="tile">
                     <h5 class="subheader" i18n:translate="">Volumes</h5>
                     <div class="content">
                         <a href="${request.route_url('volumes')}">
-                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.volumes }}</em></i>
+                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.volumes }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer">
                         <a href="${request.route_url('volume_view', id='new')}" i18n:translate="">Create volume</a>
                     </div>
                 </div>
-                <div class="tile small-6 columns" id="snapshots">
+            </li>
+            <li class="panel" id="snapshots">
+                <div class="tile">
                     <h5 class="subheader" i18n:translate="">Snapshots</h5>
                     <div class="content">
                         <a href="${request.route_url('snapshots')}">
-                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.snapshots }}</em></i>
+                            <i class="fi-camera icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.snapshots }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer">
                         <a href="${request.route_url('snapshot_view', id='new')}" i18n:translate="">Create snapshot</a>
                     </div>
                 </div>
-            </div>
-            <div class="panel row" id="users-groups">
-                <div class="tile small-6 columns" id="groups">
-                    <h5 class="subheader" i18n:translate="">Groups</h5>
-                    <div class="content">
-                        <a href="${request.route_url('groups')}">
-                            <i class="fi-torsos-all icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.groups }}</em></i>
-                        </a>
-                    </div>
-                    <div class="footer">
-                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Add group</a>
-                    </div>
-                </div>
-                <div class="tile small-6 columns" id="users">
-                    <h5 class="subheader" i18n:translate="">Users</h5>
-                    <div class="content">
-                        <a href="${request.route_url('users')}">
-                            <i class="fi-torso icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.users }}</em></i>
-                        </a>
-                    </div>
-                    <div class="footer">
-                        <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Add user</a>
-                    </div>
-                </div>
-            </div>
-            <div class="panel row">
-                <div class="tile small-6 columns" id="security-groups">
+            </li>
+            <li class="panel" id="security-groups">
+                <div class="tile">
                     <h5 class="subheader" i18n:translate="">Security groups</h5>
                     <div class="content">
                         <a href="${request.route_url('securitygroups')}">
-                            <i class="fi-lock icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.securitygroups }}</em></i>
+                            <i class="fi-lock icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.securitygroups }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer">
                         <a href="${request.route_url('securitygroup_view', id='new')}" i18n:translate="">Create security group</a>
                     </div>
                 </div>
-                <div class="tile small-6 columns" id="key-pairs">
+            </li>
+            <li class="panel" id="key-pairs">
+                <div class="tile">
                     <h5 class="subheader" i18n:translate="">Key pairs</h5>
                     <div class="content">
                         <a href="${request.route_url('keypairs')}">
-                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.keypairs }}</em></i>
+                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.keypairs }}</span></em>
+                            </i>
                         </a>
                     </div>
                     <div class="footer">
                         <a href="#" i18n:translate="">Create key pair</a>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="large-3 columns">
-            <div class="panel" id="elastic-ips">
+            </li>
+            <li class="panel" id="groups">
                 <div class="tile">
-                    <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
+                    <h5 class="subheader" i18n:translate="">Groups</h5>
                     <div class="content">
-                        <a href="${request.route_url('ipaddresses')}">
-                            <i class="fi-thumbnails icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>{{ totals.eips }}</em></i>
+                        <a href="${request.route_url('groups')}">
+                            <i class="fi-torsos-all icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.groups }}</span></em>
+                            </i>
                         </a>
                     </div>
-                    <div class="footer"></div>
+                    <div class="footer">
+                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Add group</a>
+                    </div>
                 </div>
-            </div>
-            <div class="panel" id="recent-actions">
-                <h5 class="subheader" i18n:translate="">Recent Actions</h5>
-            </div>
-        </div>
+            </li>
+            <li class="panel" id="users">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Users</h5>
+                    <div class="content">
+                        <a href="${request.route_url('users')}">
+                            <i class="fi-torso icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading">{{ totals.users }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Add user</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
 

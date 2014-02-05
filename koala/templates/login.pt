@@ -58,7 +58,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <input type="submit" class="submit button radius"
+                                    <input type="submit" class="submit button"
                                            id="euca-login-button" value="Log in to Eucalyptus" />
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                             </div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <input type="submit" class="submit button radius"
+                                    <input type="submit" class="submit button"
                                            id="aws-login-button" value="Log in to AWS" />
                                 </div>
                             </div>
