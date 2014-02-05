@@ -22,6 +22,7 @@ class ImageForm(BaseSecureForm):
 class ImagesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     owner_alias = wtforms.SelectField(label=_(u'Images owned by'))
+    platform = wtforms.SelectMultipleField(label=_(u'Platform'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     architecture = wtforms.SelectMultipleField(label=_(u'Architecture'))
     tags = wtforms.TextField(label=_(u'Tags'))
@@ -31,8 +32,11 @@ class ImagesFiltersForm(BaseSecureForm):
         self.request = request
         self.cloud_type = cloud_type
         self.owner_alias.choices = self.get_owner_choices()
+        self.platform.choices = self.get_platform_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
         self.architecture.choices = self.get_architecture_choices()
+        if cloud_type == 'aws' and not self.request.params.get('owner_alias'):
+            self.owner_alias.data = 'amazon'  # Default to Amazon AMIs on AWS
 
     def get_owner_choices(self):
         owner_choices = EUCA_IMAGE_OWNER_ALIAS_CHOICES
@@ -41,10 +45,17 @@ class ImagesFiltersForm(BaseSecureForm):
         return owner_choices
 
     @staticmethod
+    def get_platform_choices():
+        return (
+            ('', 'Linux'),
+            ('windows', 'Windows'),
+        )
+
+    @staticmethod
     def get_root_device_type_choices():
         return (
             ('ebs', 'EBS'),
-            ('instance-store', 'Instance-store')
+            ('instance-store', 'Instance-store'),
         )
 
     @staticmethod
