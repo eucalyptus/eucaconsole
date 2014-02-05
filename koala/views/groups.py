@@ -10,10 +10,10 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.groups import GroupForm
+from ..forms.groups import GroupForm, GroupUpdateForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView
 
 
 class GroupsView(LandingPageView):
@@ -74,7 +74,7 @@ class GroupsJsonView(BaseView):
             return BaseView.handle_403_error(exc, request=self.request)
 
 
-class GroupView(TaggedItemView):
+class GroupView(BaseView):
     """Views for single Group"""
     TEMPLATE = '../templates/groups/group_view.pt'
 
@@ -82,30 +82,66 @@ class GroupView(TaggedItemView):
         super(GroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
-        self.group_form = GroupForm(self.request, formdata=self.request.params or None)
-        self.tagged_obj = self.group
+        self.group_route_id = self.request.matchdict.get('name')
+        self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
+        self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.render_dict = dict(
             group=self.group,
+            group_route_id=self.group_route_id,
             group_form=self.group_form,
+            group_update_form=self.group_update_form,
         )
 
     def get_group(self):
         group_param = self.request.matchdict.get('name')
-        group = self.conn.get_group(group_name=group_param)
+        # Return None if the request is to create new group. Prob. No groupname "new" can be created
+        if group_param == "new" or group_param is None:
+            return None
+        group = []
+        if self.conn:
+            group = self.conn.get_group(group_name=group_param)
         return group
 
     @view_config(route_name='group_view', renderer=TEMPLATE)
     def group_view(self):
         return self.render_dict
  
+    @view_config(route_name='group_create', request_method='POST', renderer=TEMPLATE)
+    def group_create(self):
+        print "HERE"
+        if self.group_form.validate():
+            new_group_name = self.request.params.get('group_name') 
+            new_path = self.request.params.get('path')
+            try:
+                self.conn.create_group(group_name=new_group_name, path=new_path)
+                msg_template = _(u'Successfully created group {group}')
+                msg = msg_template.format(group=new_group_name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('group_view', name=new_group_name)
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
+
+        return self.render_dict
+
     @view_config(route_name='group_update', request_method='POST', renderer=TEMPLATE)
     def group_update(self):
-        if self.group_form.validate():
-            self.update_tags()
-
-            location = self.request.route_url('group_view', id=self.group.id)
-            msg = _(u'Successfully modified group')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
+        if self.group_update_form.validate():
+            new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
+            new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
+            this_group_name = new_group_name if new_group_name is not None else self.group.group_name
+            try:
+                self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
+                msg_template = _(u'Successfully modified group {group}')
+                msg = msg_template.format(group=this_group_name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('group_view', name=this_group_name)
+            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
         return self.render_dict
