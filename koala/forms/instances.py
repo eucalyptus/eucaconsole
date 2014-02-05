@@ -271,25 +271,29 @@ class InstancesFiltersForm(BaseSecureForm):
     instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     security_group = wtforms.SelectField(label=_(u'Security group'))
+    scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = wtforms.TextField(label=_(u'Tags'))
 
-    def __init__(self, request, conn=None, cloud_type='euca', **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
-        self.conn = conn
+        self.ec2_conn = ec2_conn
+        self.autoscale_conn = autoscale_conn
         self.cloud_type = cloud_type
-        self.choices_manager = ChoicesManager(conn=conn)
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.placement.choices = self.get_availability_zone_choices()
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
-        self.security_group.choices = self.choices_manager.security_groups()
+        self.security_group.choices = self.ec2_choices_manager.security_groups()
+        self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
 
     def get_availability_zone_choices(self):
-        return self.choices_manager.availability_zones(add_blank=False)
+        return self.ec2_choices_manager.availability_zones(add_blank=False)
 
     def get_instance_type_choices(self):
-        return self.choices_manager.instance_types(
+        return self.ec2_choices_manager.instance_types(
             cloud_type=self.cloud_type, add_blank=False, add_description=False)
 
     @staticmethod
