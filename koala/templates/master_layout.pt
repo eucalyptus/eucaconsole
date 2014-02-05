@@ -57,7 +57,7 @@
 
     <!-- Top nav bar -->
     <div id="navbar" tal:condition="request.user.is_authenticated()">
-        <nav class="row top-bar" data-topbar="">
+        <nav class="row top-bar" data-topbar="" data-options="is_hover:false">
             <ul class="title-area">
                 <li class="name"></li>
                 <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
