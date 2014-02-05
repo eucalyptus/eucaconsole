@@ -1,17 +1,21 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
-body, #maincontent {
-    background-color: $euca-extralightgreen;
+#logobar {
+    border-bottom: 1px solid black;
+}
+
+#maincontent {
+    background-color: #eee;
 }
 
 #notifications-wrapper {
-    margin-top: 2rem;
+    padding-top: 2rem;
 }
 
 #login-wrapper {
     position: relative;
-    margin-top: 3rem;
+    margin-top: 1.5rem;
     background-color: $euca-extralightgrey;
     padding: 10px;
     box-shadow: 0 3px 6px $euca-grey;

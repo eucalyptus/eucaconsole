@@ -179,10 +179,13 @@
 
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
-    <ul id="breadcrumbs" class="breadcrumbs">
-        <li><a href="${request.route_url('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
-        <metal:block metal:define-slot="crumbs" />
-    </ul>
+    <div id="breadcrumbs">
+        <ul class="breadcrumbs">
+            <li><a href="${request.route_url('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
+            <metal:block metal:define-slot="crumbs" />
+        </ul>
+        <span class="icon-block"><metal:block metal:define-slot="icons" /></span>
+    </div>
 </metal:breadcrumbs>
 
 

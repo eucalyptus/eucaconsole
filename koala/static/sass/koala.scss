@@ -66,6 +66,7 @@ body {
     color: #333;
     min-height: 100%;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow-y: scroll;
 }
 
 
@@ -157,22 +158,22 @@ body {
 }
 
 
-// Page title
-#pagetitle {
+// Breadcrumbs
+$breadcrumb-border-color: lighten($euca-orange, 20%);
+#breadcrumbs {
     position: relative;
-    &.header {
-        margin-top: 0;
-        margin-bottom: 2.5rem;
-        padding-left: 14px;
-        padding-top: 6px;
-        padding-bottom: 6px;
-        color: $euca-darkgrey;
-        background-color: lighten($euca-orange, 40%);
-        letter-spacing: 1px;
-        font-weight: normal;
-        font-size: 1.1rem;
-        border-bottom: 1px solid lighten($euca-orange, 20%);
-    }
+    overflow: hidden;
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    padding-left: 14px;
+    padding-top: 5px;
+    padding-bottom: 1px;
+    color: $euca-darkgrey;
+    background-color: lighten($euca-orange, 40%);
+    letter-spacing: 1px;
+    font-weight: normal;
+    font-size: 1.1rem;
+    border-bottom: 1px solid $breadcrumb-border-color;
     .icon-block{
         display: inline-block;
         position: absolute;
@@ -183,7 +184,7 @@ body {
     .help-icon {
         position: relative;
         padding: 8px 16px;
-        border-left: 1px solid darken($euca-extralightblue, 30%);
+        border-left: 1px solid $breadcrumb-border-color;
         font-weight: bold;
         text-align: center;
     }

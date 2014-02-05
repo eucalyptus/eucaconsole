@@ -22,7 +22,8 @@
 <body class="off-canvas-wrap">
 <div id="canvaswrap" class="inner-wrap">
     <nav id="logobar" class="${'row' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
-        <a class="left-off-canvas-toggle" id="offcanvas-icon"><i class="fi-list"></i></a>
+        <a class="left-off-canvas-toggle" id="offcanvas-icon"
+           tal:condition="request.user.is_authenticated()"><i class="fi-list"></i></a>
         <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
         <section tal:condition="request.user.is_authenticated()">
             <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
