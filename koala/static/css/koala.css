@@ -125,6 +125,8 @@ textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
 /** Remove most spacing between table cells. */
 table { border-collapse: collapse; border-spacing: 0; }
 
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
 meta.foundation-mq-small { font-family: "/only screen and (max-width: 40em)/"; width: 0em; }
 
 meta.foundation-mq-medium { font-family: "/only screen and (min-width:40.063em) and (max-width:64em)/"; width: 40.063em; }
@@ -984,10 +986,10 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
   .tooltip.tip-left, .tooltip.tip-right { float: none !important; }
   .tooltip.tip-left > .nub { border-color: transparent transparent transparent #333333; right: -10px; left: auto; top: 50%; margin-top: -5px; }
   .tooltip.tip-right > .nub { border-color: transparent #333333 transparent transparent; right: auto; left: -10px; top: 50%; margin-top: -5px; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 768px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
 
 /* Wrapped around .top-bar to contain to grid width */
-.contain-to-grid { width: 100%; background: #76b800; }
+.contain-to-grid { width: 100%; background: white; }
 .contain-to-grid .top-bar { margin-bottom: 0; }
 
 .fixed { width: 100%; left: 0; position: fixed; top: 0; z-index: 99; }
@@ -995,7 +997,7 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .fixed.expanded:not(.top-bar) .title-area { position: fixed; width: 100%; z-index: 99; }
 .fixed.expanded:not(.top-bar) .top-bar-section { z-index: 98; margin-top: 45px; }
 
-.top-bar { overflow: hidden; height: 45px; line-height: 45px; position: relative; background: #76b800; margin-bottom: 0; }
+.top-bar { overflow: hidden; height: 45px; line-height: 45px; position: relative; background: white; margin-bottom: 0; }
 .top-bar ul { margin-bottom: 0; list-style: none; }
 .top-bar .row { max-width: none; }
 .top-bar form, .top-bar input { margin-bottom: 0; }
@@ -1004,21 +1006,21 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .top-bar .title-area { position: relative; margin: 0; }
 .top-bar .name { height: 45px; margin: 0; font-size: 16px; }
 .top-bar .name h1 { line-height: 45px; font-size: 1.0625rem; margin: 0; }
-.top-bar .name h1 a { font-weight: normal; color: white; width: 50%; display: block; padding: 0 15px; }
+.top-bar .name h1 a { font-weight: normal; color: black; width: 50%; display: block; padding: 0 15px; }
 .top-bar .toggle-topbar { position: absolute; right: 0; top: 0; }
-.top-bar .toggle-topbar a { color: white; text-transform: uppercase; font-size: 0.8125rem; font-weight: bold; position: relative; display: block; padding: 0 15px; height: 45px; line-height: 45px; }
+.top-bar .toggle-topbar a { color: black; text-transform: uppercase; font-size: 0.8125rem; font-weight: bold; position: relative; display: block; padding: 0 15px; height: 45px; line-height: 45px; }
 .top-bar .toggle-topbar.menu-icon { right: 15px; top: 50%; margin-top: -16px; padding-left: 40px; }
 .top-bar .toggle-topbar.menu-icon a { text-indent: -48px; width: 34px; height: 34px; line-height: 33px; padding: 0; color: white; }
 .top-bar .toggle-topbar.menu-icon a span { position: absolute; right: 0; display: block; width: 16px; height: 0; -webkit-box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; }
 .top-bar.expanded { height: auto; background: transparent; }
-.top-bar.expanded .title-area { background: #76b800; }
-.top-bar.expanded .toggle-topbar a { color: white; }
-.top-bar.expanded .toggle-topbar a span { -webkit-box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; box-shadow: 0 10px 0 1px white, 0 16px 0 1px white, 0 22px 0 1px white; }
+.top-bar.expanded .title-area { background: white; }
+.top-bar.expanded .toggle-topbar a { color: #888888; }
+.top-bar.expanded .toggle-topbar a span { -webkit-box-shadow: 0 10px 0 1px #888888, 0 16px 0 1px #888888, 0 22px 0 1px #888888; box-shadow: 0 10px 0 1px #888888, 0 16px 0 1px #888888, 0 22px 0 1px #888888; }
 
 .top-bar-section { left: 0; position: relative; width: auto; -webkit-transition: left 300ms ease-out; -moz-transition: left 300ms ease-out; transition: left 300ms ease-out; }
-.top-bar-section ul { width: 100%; height: auto; display: block; background: #76b800; font-size: 16px; margin: 0; }
-.top-bar-section .divider, .top-bar-section [role="separator"] { border-top: solid 1px #558500; clear: both; height: 1px; width: 100%; }
-.top-bar-section ul li > a { display: block; width: 100%; color: white; padding: 12px 0 12px 0; padding-left: 15px; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; background: #76b800; }
+.top-bar-section ul { width: 100%; height: auto; display: block; background: white; font-size: 16px; margin: 0; }
+.top-bar-section .divider, .top-bar-section [role="separator"] { border-top: solid 1px #e6e6e6; clear: both; height: 1px; width: 100%; }
+.top-bar-section ul li > a { display: block; width: 100%; color: black; padding: 12px 0 12px 0; padding-left: 15px; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; background: white; }
 .top-bar-section ul li > a.button { background: #76b800; font-size: 0.8125rem; padding-right: 15px; padding-left: 15px; }
 .top-bar-section ul li > a.button:hover { background: #558500; }
 .top-bar-section ul li > a.button.secondary { background: #e7e7e7; }
@@ -1027,12 +1029,12 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .top-bar-section ul li > a.button.success:hover { background: #72a330; }
 .top-bar-section ul li > a.button.alert { background: #f04124; }
 .top-bar-section ul li > a.button.alert:hover { background: #d32a0e; }
-.top-bar-section ul li:hover > a { background: #468400; color: white; }
-.top-bar-section ul li.active > a { background: #76b800; color: white; }
-.top-bar-section ul li.active > a:hover { background: #669f00; }
+.top-bar-section ul li:hover > a { background: #f18f30; color: black; }
+.top-bar-section ul li.active > a { background: #f18f30; color: white; }
+.top-bar-section ul li.active > a:hover { background: #76b800; }
 .top-bar-section .has-form { padding: 15px; }
 .top-bar-section .has-dropdown { position: relative; }
-.top-bar-section .has-dropdown > a:after { content: ""; display: block; width: 0; height: 0; border: inset 5px; border-color: transparent transparent transparent rgba(255, 255, 255, 0.4); border-left-style: solid; margin-right: 15px; margin-top: -4.5px; position: absolute; top: 50%; right: 0; }
+.top-bar-section .has-dropdown > a:after { content: ""; display: block; width: 0; height: 0; border: inset 5px; border-color: transparent transparent transparent black; border-left-style: solid; margin-right: 15px; margin-top: -4.5px; position: absolute; top: 50%; right: 0; }
 .top-bar-section .has-dropdown.moved { position: static; }
 .top-bar-section .has-dropdown.moved > .dropdown { display: block; }
 .top-bar-section .dropdown { position: absolute; left: 100%; top: 0; display: none; z-index: 99; }
@@ -1040,43 +1042,43 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .top-bar-section .dropdown li a { font-weight: normal; padding: 8px 15px; }
 .top-bar-section .dropdown li a.parent-link { font-weight: normal; }
 .top-bar-section .dropdown li.title h5 { margin-bottom: 0; }
-.top-bar-section .dropdown li.title h5 a { color: white; line-height: 22.5px; display: block; }
+.top-bar-section .dropdown li.title h5 a { color: black; line-height: 22.5px; display: block; }
 .top-bar-section .dropdown label { padding: 8px 15px 2px; margin-bottom: 0; text-transform: uppercase; color: #777777; font-weight: bold; font-size: 0.625rem; }
 
 .js-generated { display: block; }
 
-@media only screen and (min-width: 40.063em) { .top-bar { background: #76b800; *zoom: 1; overflow: visible; }
+@media only screen and (min-width: 40.063em) { .top-bar { background: white; *zoom: 1; overflow: visible; }
   .top-bar:before, .top-bar:after { content: " "; display: table; }
   .top-bar:after { clear: both; }
   .top-bar .toggle-topbar { display: none; }
   .top-bar .title-area { float: left; }
   .top-bar .name h1 a { width: auto; }
   .top-bar input, .top-bar .button { font-size: 0.875rem; position: relative; top: 7px; }
-  .top-bar.expanded { background: #76b800; }
+  .top-bar.expanded { background: white; }
   .contain-to-grid .top-bar { max-width: 65rem; margin: 0 auto; margin-bottom: 0; }
   .top-bar-section { -webkit-transition: none 0 0; -moz-transition: none 0 0; transition: none 0 0; left: 0 !important; }
   .top-bar-section ul { width: auto; height: auto !important; display: inline; }
   .top-bar-section ul li { float: left; }
   .top-bar-section ul li .js-generated { display: none; }
-  .top-bar-section li.hover > a:not(.button) { background: #468400; color: white; }
-  .top-bar-section li a:not(.button) { padding: 0 15px; line-height: 45px; background: #76b800; }
-  .top-bar-section li a:not(.button):hover { background: #468400; }
+  .top-bar-section li.hover > a:not(.button) { background: #f18f30; color: black; }
+  .top-bar-section li a:not(.button) { padding: 0 15px; line-height: 45px; background: white; }
+  .top-bar-section li a:not(.button):hover { background: #f18f30; }
   .top-bar-section .has-dropdown > a { padding-right: 35px !important; }
-  .top-bar-section .has-dropdown > a:after { content: ""; display: block; width: 0; height: 0; border: inset 5px; border-color: rgba(255, 255, 255, 0.4) transparent transparent transparent; border-top-style: solid; margin-top: -2.5px; top: 22.5px; }
+  .top-bar-section .has-dropdown > a:after { content: ""; display: block; width: 0; height: 0; border: inset 5px; border-color: black transparent transparent transparent; border-top-style: solid; margin-top: -2.5px; top: 22.5px; }
   .top-bar-section .has-dropdown.moved { position: relative; }
   .top-bar-section .has-dropdown.moved > .dropdown { display: none; }
   .top-bar-section .has-dropdown.hover > .dropdown, .top-bar-section .has-dropdown.not-click:hover > .dropdown { display: block; }
   .top-bar-section .has-dropdown .dropdown li.has-dropdown > a:after { border: none; content: "\00bb"; top: 1rem; margin-top: -2px; right: 5px; }
   .top-bar-section .dropdown { left: 0; top: auto; background: transparent; min-width: 100%; }
-  .top-bar-section .dropdown li a { color: white; line-height: 1; white-space: nowrap; padding: 12px 15px; background: #76b800; }
+  .top-bar-section .dropdown li a { color: black; line-height: 1; white-space: nowrap; padding: 12px 15px; background: white; }
   .top-bar-section .dropdown li label { white-space: nowrap; background: #333333; }
   .top-bar-section .dropdown li .dropdown { left: 100%; top: 0; }
-  .top-bar-section > ul > .divider, .top-bar-section > ul > [role="separator"] { border-bottom: none; border-top: none; border-right: solid 1px #97eb00; clear: none; height: 45px; width: 0; }
-  .top-bar-section .has-form { background: #76b800; padding: 0 15px; height: 45px; }
+  .top-bar-section > ul > .divider, .top-bar-section > ul > [role="separator"] { border-bottom: none; border-top: none; border-right: solid 1px white; clear: none; height: 45px; width: 0; }
+  .top-bar-section .has-form { background: white; padding: 0 15px; height: 45px; }
   .top-bar-section ul.right li .dropdown { left: auto; right: 0; }
   .top-bar-section ul.right li .dropdown li .dropdown { right: 100%; }
-  .no-js .top-bar-section ul li:hover > a { background: #468400; color: white; }
-  .no-js .top-bar-section ul li:active > a { background: #76b800; color: white; }
+  .no-js .top-bar-section ul li:hover > a { background: #f18f30; color: black; }
+  .no-js .top-bar-section ul li:active > a { background: #f18f30; color: white; }
   .no-js .top-bar-section .has-dropdown:hover > .dropdown { display: block; } }
 /* Typography resets */
 div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; }
@@ -1189,7 +1191,7 @@ blockquote, blockquote p { line-height: 1.6; color: #6f6f6f; }
   .print-only { display: block !important; }
   .hide-for-print { display: none !important; }
   .show-for-print { display: inherit !important; } }
-meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 768px; }
+meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/"; width: 920px; }
 
 .off-canvas-wrap { -webkit-backface-visibility: hidden; position: relative; width: 100%; overflow: hidden; }
 
@@ -1359,42 +1361,44 @@ th.hide-for-touch { display: table-cell !important; }
 /* Eucalyptus Management Console main styles */
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
-html { background-color: #444; border-top: 10px solid #00415e; }
+html { background-color: #444; border-top: 16px solid white; }
 
-body { position: relative; color: #333; background: #eaedee url(../img/main-bgfill.png) repeat left top; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+body { position: relative; color: #333; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
 #logobar { height: 44px; padding: 5px 0 10px 15px; background-color: #fff; color: #333; }
 #logobar.signedout { box-shadow: 0 1px 1px 1px #cccccc; }
-
 #logobar a { font-size: 0.9rem; color: #333; }
-
-#logobar #logo { display: inline-block; width: 199px; height: 22px; background: url(../img/eucalogo-199x22.png) no-repeat; }
-
-#logobar section { line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
-
-#logobar section .button { top: 0; border: 0; background-color: transparent; font-weight: normal; }
-
+#logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
+#logobar .dropdown { display: inline-block; margin-left: 2rem; color: #76b800; }
+#logobar .dropdown .icon { display: inline-block; }
+#logobar .f-dropdown { width: auto; min-width: 8rem; }
+#logobar .f-dropdown.open { width: auto !important; }
+#logobar #logo { display: inline-block; width: 199px; height: 22px; background: url(../img/eucalogo-199x22.png) no-repeat; }
+#logobar #region-dropdown { min-width: 12rem; }
 
 #region-dropdown li[data-selected] { display: none; }
 
+#navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
-#navbar .dropdown li a { line-height: 1.2rem; }
+#navbar .dropdown { box-shadow: 0px 0px 1px 1px #f4a960; }
+#navbar .dropdown li a { text-transform: none; }
+#navbar .dropdown li a:hover { background-color: #eee; }
 
 #pagetitle { position: relative; }
-#pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 10px; padding-bottom: 6px; color: #444444; background-color: #ecf4f7; letter-spacing: 1px; font-weight: normal; font-size: 1.3rem; border-bottom: 1px solid #c8dfe8; }
+#pagetitle.header { margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 6px; color: #444444; background-color: #fef6ef; letter-spacing: 1px; font-weight: normal; font-size: 1.1rem; border-bottom: 1px solid #f7c390; }
 #pagetitle .icon-block { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
 #pagetitle .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #80b6ca; font-weight: bold; text-align: center; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
-#maincontent { position: relative; }
+#maincontent { background: #eee; position: relative; }
 
 #contentwrap { position: relative; background-color: white; padding-bottom: 3rem; min-height: 30rem; }
 
-@media screen and (min-width: 768px) { #login-panel { margin-bottom: 5rem; }
+@media screen and (min-width: 920px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
@@ -1530,6 +1534,7 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 
 .hide-for-xsmall { display: inline !important; }
 
+@media only screen and (max-width: 920px) { #navbar { display: none; } }
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
@@ -1537,9 +1542,9 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
   .hide-for-xsmall { display: none !important; }
   #logobar section .button { margin-top: -6px; } }
 /* Small screen */
-@media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
+@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
   .sub-nav { top: 0; left: 0; margin-top: -28px; margin-left: 4px; margin-bottom: 1.5rem; } }
-@media screen and (min-width: 768px) { span.hide-for-small { display: inline !important; } }
+@media screen and (min-width: 920px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug
 ----------------------------------------- */
 #pDebugToolbarHandle { top: 120px !important; }

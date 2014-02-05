@@ -20,12 +20,13 @@
 </head>
 
 <body>
-<nav id="logobar" class="top-bar ${'' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar" data-topbar="">
+<nav id="logobar" class="${'row' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
     <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
     <section tal:condition="request.user.is_authenticated()">
-        <a href="#" data-dropdown="user-dropdown" class="small secondary button dropdown">
+        <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
             <span class="hide-for-xsmall">${layout.username_label}</span>
-            <span class="show-for-xsmall"><i class="fi-torso icon"></i></span>
+            <i class="fi-torso icon show-for-xsmall"></i>
+            <span class="down-caret"></span>
         </a>
         <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
             <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
@@ -36,9 +37,10 @@
         </ul>
     </section>
     <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
-        <a href="#" data-dropdown="region-dropdown" class="small secondary button dropdown">
+        <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
             <span class="hide-for-xsmall">${layout.selected_region_label}</span>
-            <span class="show-for-xsmall"><i class="fi-cloud icon"></i></span>
+            <i class="fi-cloud icon show-for-xsmall"></i>
+            <span class="down-caret"></span>
         </a>
         <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
             <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">

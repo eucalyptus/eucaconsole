@@ -1,4 +1,8 @@
 /* @fileOverview IAM Users landing page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
 /* @section Landing pages styles */
 .columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
 
@@ -78,5 +82,5 @@
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Small screen */
-@media screen and (max-width: 768px) { .columns.datagrid { padding-left: 1rem; }
+@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
   .sort-search .go { min-width: 32px; } }
