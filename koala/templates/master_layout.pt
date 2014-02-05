@@ -40,7 +40,7 @@
             <span class="hide-for-xsmall">${layout.selected_region_label}</span>
             <span class="show-for-xsmall"><i class="fi-cloud icon"></i></span>
         </a>
-        <ul id="region-dropdown" class="f-dropdown">
+        <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
             <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
                 <a href="${request.route_url('region_select')}?region=${region.name}&amp;returnto=${request.url}">
                         ${region.label}
@@ -73,8 +73,6 @@ ${panel('top_nav')}
 </footer>
 
 <script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
-<!--! when foundation updates their .min.js version, we can remove this updated tabs version -->
-<script src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.tab.js')}"></script>
 <script type="text/javascript">
     // Initialize all Zurb Foundation components
     $(document).foundation();
