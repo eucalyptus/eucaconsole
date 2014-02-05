@@ -7,17 +7,11 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('groups', '${initial_sort_key}', '${json_items_endpoint}')">
-        <h3 class="header" id="pagetitle">
-            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
-                <metal:crumbs metal:fill-slot="crumbs">
-                    <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
-                </metal:crumbs>
-            </metal:breadcrumbs>
-            <span class="icon-block">
-                <metal:block metal:use-macro="layout.global_macros['refresh_icon']" />
-                <a class="help-icon" data-reveal-id="help-modal">?</a>
-            </span>
-        </h3>
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 

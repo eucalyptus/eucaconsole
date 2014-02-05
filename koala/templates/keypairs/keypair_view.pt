@@ -4,18 +4,16 @@
     <div class="row" id="contentwrap"
             tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
-        <h3 class="header" id="pagetitle">
-            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
-                <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
-                    <li class="current">
-                        <a tal:condition="keypair">${keypair.name }</a>
-                        <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create new keypair</a>
-                        <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import public key</a>
-                    </li>
-                </metal:crumbs>
-            </metal:breadcrumbs>
-        </h3>
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
+                <li class="current">
+                    <a tal:condition="keypair">${keypair.name }</a>
+                    <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create new keypair</a>
+                    <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import public key</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 

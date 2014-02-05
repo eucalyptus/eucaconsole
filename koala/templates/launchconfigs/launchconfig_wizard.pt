@@ -8,14 +8,12 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigWizard" ng-controller="LaunchConfigWizardCtrl"
          ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}')">
-        <h3 class="header" id="pagetitle">
-            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
-                <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
-                    <li class="current"><a href="#" i18n:translate="">Create Launch configuration</a></li>
-                </metal:crumbs>
-            </metal:breadcrumbs>
-        </h3>
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create Launch configuration</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">

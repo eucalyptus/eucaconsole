@@ -19,12 +19,14 @@
     <meta metal:define-slot="head_js" />
 </head>
 
-<body class="off-canvas-wrap">
+<body>
+<div class="off-canvas-wrap">
 <div id="canvaswrap" class="inner-wrap">
     <nav id="logobar" class="${'row' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
-        <a class="left-off-canvas-toggle" id="offcanvas-icon"><i class="fi-list"></i></a>
+        <a class="left-off-canvas-toggle" id="offcanvas-icon"
+           tal:condition="request.user.is_authenticated()"><i class="fi-list"></i></a>
         <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-        <section tal:condition="request.user.is_authenticated()">
+        <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
             <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
                 <span class="hide-for-xsmall">${layout.username_label}</span>
                 <i class="fi-torso icon show-for-xsmall"></i>
@@ -40,8 +42,7 @@
         </section>
         <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
             <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
-                <span class="hide-for-xsmall">${layout.selected_region_label}</span>
-                <i class="fi-cloud icon show-for-xsmall"></i>
+                <span>${layout.selected_region_label}</span>
                 <span class="down-caret"></span>
             </a>
             <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
@@ -56,7 +57,7 @@
 
     <!-- Top nav bar -->
     <div id="navbar" tal:condition="request.user.is_authenticated()">
-        <nav class="row top-bar" data-topbar="">
+        <nav class="row top-bar" data-topbar="" data-options="is_hover:false">
             <ul class="title-area">
                 <li class="name"></li>
                 <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
@@ -97,6 +98,6 @@
     $(document).foundation();
 </script>
 <div metal:define-slot="tail_js"></div>
-</div><!--! /end canvaswrap -->
+</div></div><!--! /end off-canvas wraps -->
 </body>
 </html>

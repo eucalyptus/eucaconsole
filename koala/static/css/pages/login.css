@@ -1,11 +1,13 @@
 /* @fileOverview Login page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
-body, #maincontent { background-color: #eef7e3; }
+#logobar { border-bottom: 1px solid black; }
 
-#notifications-wrapper { margin-top: 2rem; }
+#maincontent { background-color: #eee; }
 
-#login-wrapper { position: relative; margin-top: 3rem; background-color: #eeeeee; padding: 10px; box-shadow: 0 3px 6px #999999; }
+#notifications-wrapper { padding-top: 2rem; }
+
+#login-wrapper { position: relative; margin-top: 1.5rem; background-color: #eeeeee; padding: 10px; box-shadow: 0 3px 6px #999999; }
 #login-wrapper label { font-weight: bold; white-space: nowrap; vertical-align: middle; position: relative; top: 0px; left: 0px; bottom: 10px; }
 #login-wrapper input { background-color: #eeeeee; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
