@@ -100,10 +100,12 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <span ng-repeat="user in users">
-                                     <a>
-                                         <i class="fi-x"></i>
-                                     </a>
-                                     <span class="label radius secondary">{{ user }}</span>
+                                     <span class="label radius secondary">
+                                         <a>
+                                             <i class="fi-x"></i>
+                                         </a>
+                                         {{ user }}
+                                     </span>
                                 </span>
                             </div>
                             <div class="row">
