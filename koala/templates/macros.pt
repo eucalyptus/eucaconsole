@@ -41,9 +41,8 @@
                    ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
                 &nbsp;
                 <span ng-show="!itemsLoading" >{{ items.length }} <span class="hide-for-small">items</span> found</span>
-                <span class="dots" ng-show="itemsLoading"></span>
             </div>
-            <div class="small-5 columns" id="sorting-controls">
+            <div class="small-5 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
                     Sort by
                     <a href="#" data-dropdown="sorting-dropdown">
