@@ -30,6 +30,13 @@ class GroupForm(BaseSecureForm):
         validators=[validators.Length(min=1, max=255)],
     )
 
+    users_error_msg = ''
+    users = wtforms.TextField(
+        id=u'group-users',
+        label=(u''),
+        validators=[],
+    )
+
     def __init__(self, request, group=None, **kwargs):
         super(GroupForm, self).__init__(request, **kwargs)
         self.request = request

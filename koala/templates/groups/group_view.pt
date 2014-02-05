@@ -29,6 +29,7 @@
                     ${structure:group_form['csrf_token']}
                     <div tal:condition="group">
                         <div class="section">
+                            <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper readonly">
                                 ${panel('form_field', field=group_form.group_name, leftcol_width=4, rightcol_width=8)}
                             </div>
@@ -44,16 +45,34 @@
                                 <div class="small-8 columns value">${group.group_id if group.group_id else ''}</div>
                             </div>
                         </div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn">
-                                <span tal:condition="group" i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('groups')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                        <hr />
+                        <div class="section">
+                            <h6 i18n:translate="">Users</h6>
+                            <div class="row controls-wrapper readonly">
+                                ${panel('form_field', field=group_form.users, leftcol_width=12, rightcol_width=0)}
+                            </div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="save-changes-btn">
+                                        <span tal:condition="group" i18n:translate="">Save changes</span>
+                                    </button>
+                                    <a href="${request.route_url('groups')}"
+                                        class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="section">
+                            <h6 i18n:translate="">Permissions</h6>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="add-policy-btn">
+                                        <span tal:condition="group" i18n:translate="">Add policy</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
