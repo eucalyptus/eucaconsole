@@ -108,7 +108,6 @@ class GroupView(BaseView):
  
     @view_config(route_name='group_create', request_method='POST', renderer=TEMPLATE)
     def group_create(self):
-        print "HERE"
         if self.group_form.validate():
             new_group_name = self.request.params.get('group_name') 
             new_path = self.request.params.get('path')
