@@ -18,14 +18,12 @@
                  '${volume.status if volume else ''}',
                  '${volume.attach_data.status if volume else ''}'
                  )">
-        <h3 class="header" id="pagetitle">
-            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
-                <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
-                    <li class="current"><a href="#">${volume_name or 'Create volume'}</a></li>
-                </metal:crumbs>
-            </metal:breadcrumbs>
-        </h3>
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                <li class="current"><a href="#">${volume_name or 'Create volume'}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
         <dl class="sub-nav" id="volume-subnav" tal:condition="volume">
             <dd class="active"><a href="#" i18n:translate="">Volume</a></dd>
             <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>

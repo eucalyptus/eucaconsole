@@ -12,7 +12,7 @@ $tile-border-color: $euca-grey;
 $tile-bg-color: $euca-extralightgrey;
 $tile-label-padding: 28px;
 $grid-dropdown-width: 160px;
-$gridwrapper-table-width: 98%;
+$gridwrapper-table-width: 100%;
 
 
 .columns.datagrid {
@@ -323,6 +323,12 @@ $gridwrapper-table-width: 98%;
 /* -----------------------------------------
    Media Queries
 ----------------------------------------- */
+
+@media screen and (max-width: 1024px) {
+    #filters {
+        margin-top: 1rem;
+    }
+}
 
 /* Small screen */
 @media screen and (max-width: $topbar-breakpoint) {

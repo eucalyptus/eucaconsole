@@ -7,14 +7,12 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupInstances" ng-controller="ScalingGroupInstancesCtrl"
          ng-init="initController('${json_items_endpoint}')">
-        <h3 class="header" id="pagetitle">
-            <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
-                <metal:crumbs metal:fill-slot="crumbs">
-                    <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                    <li class="current"><a>${scaling_group.name}</a></li>
-                </metal:crumbs>
-            </metal:breadcrumbs>
-        </h3>
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li class="current"><a>${scaling_group.name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
         <dl class="sub-nav" id="scalinggroup-subnav">
             <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
             <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
