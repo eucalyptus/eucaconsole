@@ -7,7 +7,7 @@
         <a id="resource-menu-autoscaling">Auto Scaling</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-scalinggroups" href="${request.route_url('scalinggroups')}">Scaling Groups</a></li>
-            <li class="divider"></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-launchconfigs" href="${request.route_url('launchconfigs')}">Launch Configurations</a></li>
         </ul>
     </li>
@@ -15,7 +15,7 @@
         <a id="resource-menu-storage">Storage</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-volumes" href="${request.route_url('volumes')}">Volumes</a></li>
-            <li class="divider"></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-snapshots" href="${request.route_url('snapshots')}">Snapshots</a></li>
         </ul>
     </li>
@@ -23,9 +23,9 @@
         <a id="resource-menu-netsec">Network &amp; Security</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-securitygroups" href="${request.route_url('securitygroups')}">Security Groups</a></li>
-            <li class="divider"></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-keypairs" href="${request.route_url('keypairs')}">Key Pairs</a></li>
-            <li class="divider"></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-eips" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
         </ul>
     </li>
@@ -33,7 +33,7 @@
         <a id="resource-menu-iam">IAM</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
-            <li class="divider"></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-groups" href="${request.route_url('groups')}">IAM Groups</a></li>
         </ul>
     </li>

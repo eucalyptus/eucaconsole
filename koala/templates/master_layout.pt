@@ -26,7 +26,7 @@
         <a class="left-off-canvas-toggle" id="offcanvas-icon"
            tal:condition="request.user.is_authenticated()"><i class="fi-list"></i></a>
         <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-        <section tal:condition="request.user.is_authenticated()">
+        <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
             <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
                 <span class="hide-for-xsmall">${layout.username_label}</span>
                 <i class="fi-torso icon show-for-xsmall"></i>
@@ -42,8 +42,7 @@
         </section>
         <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
             <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
-                <span class="hide-for-xsmall">${layout.selected_region_label}</span>
-                <i class="fi-cloud icon show-for-xsmall"></i>
+                <span>${layout.selected_region_label}</span>
                 <span class="down-caret"></span>
             </a>
             <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">

@@ -674,29 +674,36 @@ footer {
     .hide-for-xsmall {
         display: none !important;
     }
-    #logobar section .button {
-        margin-top: -6px;
-    }
 }
 
 // Nav bar adjustments
 @media screen and (max-width: $topbar-breakpoint) {
     #logobar {
         border-bottom: 1px solid black;
+        #logo {
+            width: 20px;
+        }
+        #offcanvas-icon {
+            display: inline-block !important;
+            margin-right: 12px;
+        }
+        #user-dropdown-section {
+            position: relative;
+            top: -4px;
+            left: -10px;
+            .down-caret {
+                position: relative;
+                top: -6px;
+            }
+        }
     }
     #navbar {
         display: none;
-    }
-    #offcanvas-icon {
-        display: inline-block !important;
     }
 }
 
 /* Other Small screen tweaks */
 @media screen and (max-width: $topbar-breakpoint) {
-    #pagetitle {
-        padding-left: 8px;
-    }
     .columns.datagrid {
         padding-left: 1rem;
     }

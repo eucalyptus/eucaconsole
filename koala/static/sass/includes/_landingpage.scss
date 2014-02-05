@@ -324,6 +324,12 @@ $gridwrapper-table-width: 100%;
    Media Queries
 ----------------------------------------- */
 
+@media screen and (max-width: 1024px) {
+    #filters {
+        margin-top: 1rem;
+    }
+}
+
 /* Small screen */
 @media screen and (max-width: $topbar-breakpoint) {
     .columns.datagrid {
