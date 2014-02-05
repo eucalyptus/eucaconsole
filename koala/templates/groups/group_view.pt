@@ -87,9 +87,23 @@
                         <div class="section" ng-init="users = ${users}" ng-cloak="">
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_update_form.users, leftcol_width=12, rightcol_width=0)}
+                                <div class="small-8 columns">
+                                    <div class="row collapse">
+                                        <div class="small-10 columns">
+                                            <input type="search" placeholder="Search users and select to add">
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
                                 <span ng-repeat="user in users">
-                                     <span>USER: {{ user }}</span>
+                                     <a>
+                                         <i class="fi-x"></i>
+                                     </a>
+                                     <span>{{ user }}</span>
                                 </span>
                             </div>
                             <div class="row">
