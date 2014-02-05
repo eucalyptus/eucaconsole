@@ -103,7 +103,7 @@
                                      <a>
                                          <i class="fi-x"></i>
                                      </a>
-                                     <span>{{ user }}</span>
+                                     <span class="label radius secondary">{{ user }}</span>
                                 </span>
                             </div>
                             <div class="row">
