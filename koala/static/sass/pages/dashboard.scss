@@ -5,66 +5,61 @@ $dashboard-panel-tile-height: 200px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-border-width: 4px;
 $dashboard-panel-border-color: $euca-lightgrey;
-$dashboard-panel-icon-width: 120px;
+$dashboard-panel-icon-size: 80px;
 
 
 #maincontent {
-    padding-top: 1.5rem;
-}
-
-.large-3.columns {
-    .tile {
-        margin-bottom: 10px;
+    padding-top: 1rem;
+    background: #eef7e3;
+    #pagetitle {
+        h3 {
+            font-weight: bold;
+            margin-top: 0;
+        }
     }
-}
-
-.large-6.columns .row {
-    margin-bottom: 5 * $dashboard-panel-border-width;
 }
 
 .panel {
+    background-color: transparent;
+    border: none;
+    margin-bottom: 0;
     box-sizing: border-box;
     position: relative;
-    padding: 0 0 0 0;
-    border: $dashboard-panel-border-width solid $dashboard-panel-border-color;
-    background-color: white;
     font-size: 0.825rem;
-    .subheader {
-        background-color: $euca-extralightblue;
-        font-weight: bold;
-        font-size: 1rem;
-        text-align: center;
-        color: $euca-darkblue;
-        padding: 4px 0;
-        margin: 0 0 0 0;
-    }
     .tile {
+        background-color: white;
         position: relative;
         height: $dashboard-panel-tile-height;
-        padding: 0 0 0 0;
-        .icon {
+        padding: 4px 8px;
+        .subheader {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #333;
+            margin: 0 0 0 0;
+        }
+        .icon {  // Font icons
             position: absolute;
-            top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-width/2);
+            top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-size/2);
             display: inline-block;
-            width: $dashboard-panel-icon-width; height: 120px;
+            width: $dashboard-panel-icon-size; height: $dashboard-panel-icon-size;
             border-radius: 100px;
             text-align: center;
-            background: lighten($euca-extralightgrey, 2%);
-            color: lighten($euca-lightgreen, 20%);
-            font-size: 5rem;
-            em {
-                font-size: 4rem;
+            background: $euca-darkblue;
+            color: white;
+            font-size: 3rem;
+            em {  // Item counts
+                font-size: 1.5rem;
                 position: absolute;
-                bottom: 15%; left: 0; right: 0;
+                bottom: -50%; left: 0; right: 0;
                 text-align: center;
-                color: darken($euca-darkgreen, 5%);
+                color: black;
                 font-style: normal;
             }
         }
         .footer {
             position: absolute;
             height: 30px;
-            left: 0; right: 0; bottom: 0;
+            left: 1rem; right: 1rem; bottom: 8px;
             text-align: center;
             a {
                 font-weight: bold;
@@ -74,32 +69,12 @@ $dashboard-panel-icon-width: 120px;
             }
             .button {
                 display: block;
-                margin: 0 8px;
             }
         }
         a:hover .icon {
-            background-color: lighten($euca-lightgreen, 35%);
+            background-color: lighten($euca-darkblue, 20%);
         }
     }
-}
-
-#instances.panel .tile {
-    margin-bottom: 28px;
-}
-
-#instances.panel .tile:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-#elastic-ips.panel {
-    margin-bottom: 5 * $dashboard-panel-border-width;
-    max-height: $dashboard-panel-tile-height + 8px;
-}
-
-#recent-actions {
-    height: 2 * $dashboard-panel-tile-height + 9 * $dashboard-panel-border-width;
-    overflow: scroll-y;
 }
 
 
@@ -108,23 +83,8 @@ $dashboard-panel-icon-width: 120px;
 // --------------------
 //
 
-/* Small screen */
-@media screen and (max-width: $topbar-breakpoint) {
-    .large-3.columns {
-        padding-left: $dashboard-panel-padding;
-        padding-right: $dashboard-panel-padding;
-    }
-    .large-3.columns .tile {
-        display: inline-block;
-        min-width: 32%;
-    }
-    .large-3.columns #instances .tile {
-        border-bottom: none;
-    }
-}
 
+/* Small screen */
 @media screen and (max-width: 480px) {
-    .large-3.columns .tile {
-        display: block;
-    }
+
 }
