@@ -666,6 +666,7 @@ footer {
    Media Queries
 ----------------------------------------- */
 
+
 /* Extra small screen (< 481px) */
 @media screen and (max-width: $euca-extrasmall-breakpoint) {
     .show-for-xsmall {
@@ -676,12 +677,22 @@ footer {
     }
 }
 
+@media screen and (max-width: 640px) {
+    #logo {
+        width: 20px !important;
+    }
+}
+
+
+
 // Nav bar adjustments
 @media screen and (max-width: $topbar-breakpoint) {
     #logobar {
         border-bottom: 1px solid black;
-        #logo {
-            width: 20px;
+        margin-top: 8px;
+        .dropdown {
+            position: relative;
+            top: 4px;
         }
         #offcanvas-icon {
             display: inline-block !important;
@@ -689,12 +700,7 @@ footer {
         }
         #user-dropdown-section {
             position: relative;
-            top: -4px;
             left: -10px;
-            .down-caret {
-                position: relative;
-                top: -6px;
-            }
         }
     }
     #navbar {
