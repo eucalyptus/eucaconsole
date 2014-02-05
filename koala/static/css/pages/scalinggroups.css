@@ -54,11 +54,11 @@
 .displayicons .selected :hover { color: black; cursor: default; }
 .displayicons i { display: inline-block; padding: 4px 12px; }
 
-.gridwrapper .table { border: none; width: 98%; }
+.gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
-.gridwrapper .table tr { position: relative; width: 98%; border-bottom: 1px solid #ddd; }
+.gridwrapper .table tr { position: relative; width: 100%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
