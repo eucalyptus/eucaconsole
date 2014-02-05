@@ -100,9 +100,19 @@ class GroupView(BaseView):
     @view_config(route_name='group_update', request_method='POST', renderer=TEMPLATE)
     def group_update(self):
         if self.group_form.validate():
-            location = self.request.route_url('group_view', id=self.group.id)
-            msg = _(u'Successfully modified group')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
+            new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
+            this_group_name = new_group_name if new_group_name is not None else self.group.group_name
+            try:
+                self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
+                msg_template = _(u'Successfully modified group {group}')
+                msg = msg_template.format(group=this_group_name)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            location = self.request.route_url('group_view', name=this_group_name)
+            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
         return self.render_dict
