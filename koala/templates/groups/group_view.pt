@@ -6,7 +6,10 @@
             <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
                 <metal:crumbs metal:fill-slot="crumbs">
                     <li><a href="${request.route_url('groups')}" i18n:translate="">IAM Groups</a></li>
-                    <li class="current"><a href="#">${group.group_name}</a></li>
+                    <li class="current">
+                        <a tal:condition="group" href="#">${group.group_name}</a>
+                        <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
+                    </li>
                 </metal:crumbs>
             </metal:breadcrumbs>
         </h3>
@@ -25,9 +28,46 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_url('group_update', name=group.group_name)}" method="post" data-abide="abide">
-                    ${structure:group_form['csrf_token']}
-                    <div tal:condition="group">
+                <div tal:condition="not group and group_route_id == 'new'" i18n:translate="">
+                    <form action="${request.route_url('group_create')}" method="post" data-abide="abide">
+                        ${structure:group_form['csrf_token']}
+                        <div class="section">
+                            <div class="row controls-wrapper readonly">
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=4, rightcol_width=8)}
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
+                            <h6>
+                                <a ng-click="expanded = !expanded">
+                                    <i class="fi-plus" ng-show="!expanded"></i>
+                                    <i class="fi-minus" ng-show="expanded"></i>
+                                    &nbsp;<span i18n:translate="">Advanced</span>
+                                </a>
+                            </h6>
+                            <div class="section" ng-show="expanded">
+                                <div class="row controls-wrapper readonly">
+                                    ${panel('form_field', field=group_form.path, leftcol_width=4, rightcol_width=8)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="create-btn">
+                                        <span i18n:translate="">Create</span>
+                                    </button>
+                                    <a href="${request.route_url('groups')}"
+                                        class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div tal:condition="group">
+                    <form action="${request.route_url('group_update', name=group.group_name)}" method="post" data-abide="abide">
+                        ${structure:group_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper readonly">
@@ -74,8 +114,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="large-5 columns">

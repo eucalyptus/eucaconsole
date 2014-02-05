@@ -82,15 +82,21 @@ class GroupView(BaseView):
         super(GroupView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
+        self.group_route_id = self.request.matchdict.get('name')
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.render_dict = dict(
             group=self.group,
+            group_route_id=self.group_route_id,
             group_form=self.group_form,
         )
 
     def get_group(self):
         group_param = self.request.matchdict.get('name')
-        group = self.conn.get_group(group_name=group_param)
+        if group_param == "new":
+            return None
+        group = []
+        if self.conn:
+            group = self.conn.get_group(group_name=group_param)
         return group
 
     @view_config(route_name='group_view', renderer=TEMPLATE)
