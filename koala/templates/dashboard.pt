@@ -57,9 +57,7 @@
             <li class="panel" id="scaling-groups">
                 <div class="tile" id="in-scaling-group">
                     <h5 class="subheader" i18n:translate="">
-                        <span i18n:translate="" class="hide-for-small">Instances in</span>
-                        <span i18n:translate="" class="show-for-small">In</span>
-                        <span i18n:translate="">scaling groups</span>
+                        <span i18n:translate=""> Instances in scaling groups</span>
                     </h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
