@@ -67,18 +67,18 @@
                 </div>
                 <div tal:condition="group">
                     <form action="${request.route_url('group_update', name=group.group_name)}" method="post" data-abide="abide">
-                        ${structure:group_form['csrf_token']}
+                        ${structure:group_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=4, rightcol_width=8)}
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
                                 <div class="small-8 columns value">${group.arn if group.arn else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.path, leftcol_width=4, rightcol_width=8)}
+                                ${panel('form_field', field=group_update_form.path, leftcol_width=4, rightcol_width=8)}
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">ID</label></div>
@@ -89,7 +89,7 @@
                         <div class="section">
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.users, leftcol_width=12, rightcol_width=0)}
+                                ${panel('form_field', field=group_update_form.users, leftcol_width=12, rightcol_width=0)}
                             </div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
