@@ -59,7 +59,6 @@
 ----------------------------------------- */
 html {
     background-color: #444;
-    border-top: 16px solid white;
 }
 
 body {
@@ -78,6 +77,7 @@ body {
 #logobar {
     height: 44px;
     padding: 5px 0 10px 15px;
+    margin-top: 20px;
     background-color: #fff;
     color: #333;
     &.signedout {
@@ -119,6 +119,13 @@ body {
     }
     #region-dropdown {
         min-width: 12rem;
+    }
+    #offcanvas-icon {
+        display: none;
+        margin-right: 12px;
+        i {
+            font-size: 1.8rem;
+        }
     }
 }
 
@@ -652,12 +659,6 @@ footer {
     display: inline !important;
 }
 
-@media only screen and (max-width: $topbar-breakpoint) {
-    #navbar {
-        display: none;
-    }
-
-}
 
 
 /* -----------------------------------------
@@ -677,8 +678,24 @@ footer {
     }
 }
 
-/* Small screen */
+// Nav bar adjustments
 @media screen and (max-width: $topbar-breakpoint) {
+    #logobar {
+        border-bottom: 1px solid black;
+    }
+    #navbar {
+        display: none;
+    }
+    #offcanvas-icon {
+        display: inline-block !important;
+    }
+}
+
+/* Other Small screen tweaks */
+@media screen and (max-width: $topbar-breakpoint) {
+    #pagetitle {
+        padding-left: 8px;
+    }
     .columns.datagrid {
         padding-left: 1rem;
     }

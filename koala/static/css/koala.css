@@ -1361,13 +1361,13 @@ th.hide-for-touch { display: table-cell !important; }
 /* Eucalyptus Management Console main styles */
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
-html { background-color: #444; border-top: 16px solid white; }
+html { background-color: #444; }
 
 body { position: relative; color: #333; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
 
 /* ----------------------------------------- Header
 ----------------------------------------- */
-#logobar { height: 44px; padding: 5px 0 10px 15px; background-color: #fff; color: #333; }
+#logobar { height: 44px; padding: 5px 0 10px 15px; margin-top: 20px; background-color: #fff; color: #333; }
 #logobar.signedout { box-shadow: 0 1px 1px 1px #cccccc; }
 #logobar a { font-size: 0.9rem; color: #333; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
@@ -1378,6 +1378,8 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar #logo { display: inline-block; width: 199px; height: 22px; background: url(../img/eucalogo-199x22.png) no-repeat; }
 #logobar #region-dropdown { min-width: 12rem; }
+#logobar #offcanvas-icon { display: none; margin-right: 12px; }
+#logobar #offcanvas-icon i { font-size: 1.8rem; }
 
 #region-dropdown li[data-selected] { display: none; }
 
@@ -1534,15 +1536,18 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 
 .hide-for-xsmall { display: inline !important; }
 
-@media only screen and (max-width: 920px) { #navbar { display: none; } }
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 480px) { .show-for-xsmall { display: inline-block !important; }
   .hide-for-xsmall { display: none !important; }
   #logobar section .button { margin-top: -6px; } }
-/* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
+@media screen and (max-width: 920px) { #logobar { border-bottom: 1px solid black; }
+  #navbar { display: none; }
+  #offcanvas-icon { display: inline-block !important; } }
+/* Other Small screen tweaks */
+@media screen and (max-width: 920px) { #pagetitle { padding-left: 8px; }
+  .columns.datagrid { padding-left: 1rem; }
   .sub-nav { top: 0; left: 0; margin-top: -28px; margin-left: 4px; margin-bottom: 1.5rem; } }
 @media screen and (min-width: 920px) { span.hide-for-small { display: inline !important; } }
 /* ----------------------------------------- Debug

@@ -16,9 +16,11 @@ from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 
 
 @panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
-def top_nav(context, request):
+def top_nav(context, request, off_canvas=False):
     """ Top nav bar panel"""
-    return dict()
+    return dict(
+        off_canvas=off_canvas
+    )
 
 
 @panel_config('landingpage_filters', renderer='../templates/panels/landingpage_filters.pt')

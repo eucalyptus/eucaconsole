@@ -1,49 +1,40 @@
-<div id="navbar" tal:condition="request.user.is_authenticated()">
-    <nav class="row top-bar" data-topbar="">
-        <ul class="title-area">
-            <li class="name"></li>
-            <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+<!-- top nav links (reused in off-canvas menu) -->
+<ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}">
+    <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_url('dashboard')}">Dashboard</a></li>
+    <li><a id="resource-menu-images" href="${request.route_url('images')}">Images</a></li>
+    <li><a id="resource-menu-instances" href="${request.route_url('instances')}">Instances</a></li>
+    <li class="has-dropdown">
+        <a id="resource-menu-autoscaling">Auto Scaling</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-scalinggroups" href="${request.route_url('scalinggroups')}">Scaling Groups</a></li>
+            <li class="divider"></li>
+            <li><a id="resource-menuitem-launchconfigs" href="${request.route_url('launchconfigs')}">Launch Configurations</a></li>
         </ul>
-        <section class="top-bar-section">
-            <ul class="resources-nav left-align">
-                <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_url('dashboard')}">Dashboard</a></li>
-                <li><a id="resource-menu-images" href="${request.route_url('images')}">Images</a></li>
-                <li><a id="resource-menu-instances" href="${request.route_url('instances')}">Instances</a></li>
-                <li class="has-dropdown">
-                    <a id="resource-menu-autoscaling">Auto Scaling</a>
-                    <ul class="dropdown">
-                        <li><a id="resource-menuitem-scalinggroups" href="${request.route_url('scalinggroups')}">Scaling Groups</a></li>
-                        <li class="divider"></li>
-                        <li><a id="resource-menuitem-launchconfigs" href="${request.route_url('launchconfigs')}">Launch Configurations</a></li>
-                    </ul>
-                </li>
-                <li class="has-dropdown">
-                    <a id="resource-menu-storage">Storage</a>
-                    <ul class="dropdown">
-                        <li><a id="resource-menuitem-volumes" href="${request.route_url('volumes')}">Volumes</a></li>
-                        <li class="divider"></li>
-                        <li><a id="resource-menuitem-snapshots" href="${request.route_url('snapshots')}">Snapshots</a></li>
-                    </ul>
-                </li>
-                <li class="has-dropdown">
-                    <a id="resource-menu-netsec">Network &amp; Security</a>
-                    <ul class="dropdown">
-                        <li><a id="resource-menuitem-securitygroups" href="${request.route_url('securitygroups')}">Security Groups</a></li>
-                        <li class="divider"></li>
-                        <li><a id="resource-menuitem-keypairs" href="${request.route_url('keypairs')}">Key Pairs</a></li>
-                        <li class="divider"></li>
-                        <li><a id="resource-menuitem-eips" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
-                    </ul>
-                </li>
-                <li class="has-dropdown" tal:condition="layout.username == 'admin'">
-                    <a id="resource-menu-iam">IAM</a>
-                    <ul class="dropdown">
-                        <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
-                        <li class="divider"></li>
-                        <li><a id="resource-menuitem-groups" href="${request.route_url('groups')}">IAM Groups</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
-    </nav>
-</div>
+    </li>
+    <li class="has-dropdown">
+        <a id="resource-menu-storage">Storage</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-volumes" href="${request.route_url('volumes')}">Volumes</a></li>
+            <li class="divider"></li>
+            <li><a id="resource-menuitem-snapshots" href="${request.route_url('snapshots')}">Snapshots</a></li>
+        </ul>
+    </li>
+    <li class="has-dropdown">
+        <a id="resource-menu-netsec">Network &amp; Security</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-securitygroups" href="${request.route_url('securitygroups')}">Security Groups</a></li>
+            <li class="divider"></li>
+            <li><a id="resource-menuitem-keypairs" href="${request.route_url('keypairs')}">Key Pairs</a></li>
+            <li class="divider"></li>
+            <li><a id="resource-menuitem-eips" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
+        </ul>
+    </li>
+    <li class="has-dropdown" tal:condition="layout.username == 'admin'">
+        <a id="resource-menu-iam">IAM</a>
+        <ul class="dropdown">
+            <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
+            <li class="divider"></li>
+            <li><a id="resource-menuitem-groups" href="${request.route_url('groups')}">IAM Groups</a></li>
+        </ul>
+    </li>
+</ul>
