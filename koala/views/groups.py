@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
+import unicodedata
 from urllib import urlencode
 
 from boto.exception import EC2ResponseError
@@ -83,11 +84,13 @@ class GroupView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
         self.group_route_id = self.request.matchdict.get('name')
+        self.users = self.get_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.render_dict = dict(
             group=self.group,
             group_route_id=self.group_route_id,
+            users=self.users,
             group_form=self.group_form,
             group_update_form=self.group_update_form,
         )
@@ -101,6 +104,16 @@ class GroupView(BaseView):
         if self.conn:
             group = self.conn.get_group(group_name=group_param)
         return group
+
+    def get_users_array(self):
+        group_param = self.request.matchdict.get('name')
+        if group_param == "new" or group_param is None:
+            return None
+        users = []
+        # Group's path to be used ?
+        if self.conn:
+            users = [u.user_name.encode('ascii', 'ignore') for u in self.conn.get_all_users().users]
+        return users
 
     @view_config(route_name='group_view', renderer=TEMPLATE)
     def group_view(self):

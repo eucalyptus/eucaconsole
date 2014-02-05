@@ -84,10 +84,13 @@
                             </div>
                         </div>
                         <hr />
-                        <div class="section">
+                        <div class="section" ng-init="users = ${users}" ng-cloak="">
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
                                 ${panel('form_field', field=group_update_form.users, leftcol_width=12, rightcol_width=0)}
+                                <span ng-repeat="user in users">
+                                     <span>USER: {{ user }}</span>
+                                </span>
                             </div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
