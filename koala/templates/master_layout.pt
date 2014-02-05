@@ -19,7 +19,8 @@
     <meta metal:define-slot="head_js" />
 </head>
 
-<body class="off-canvas-wrap">
+<body>
+<div class="off-canvas-wrap">
 <div id="canvaswrap" class="inner-wrap">
     <nav id="logobar" class="${'row' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
         <a class="left-off-canvas-toggle" id="offcanvas-icon"
@@ -98,6 +99,6 @@
     $(document).foundation();
 </script>
 <div metal:define-slot="tail_js"></div>
-</div><!--! /end canvaswrap -->
+</div></div><!--! /end off-canvas wraps -->
 </body>
 </html>
