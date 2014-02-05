@@ -1519,6 +1519,7 @@ footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
+.button.primary { background-color: #f18f30; }
 .button.secondary { border: 1px solid #b3b3b3; }
 
 /* ----------------------------------------- Foundation fixes

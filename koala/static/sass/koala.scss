@@ -608,6 +608,9 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
+    &.primary {
+        background-color: $euca-orange;
+    }
     &.secondary {
         border: 1px solid lighten($euca-grey, 10%);
     }

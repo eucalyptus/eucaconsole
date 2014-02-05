@@ -11,19 +11,31 @@ class DashboardView(BaseView):
     def __init__(self, request):
         super(DashboardView, self).__init__(request)
         self.request = request
+        self.conn = self.get_connection()
 
-    @staticmethod
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
-    def dashboard_home():
-        return dict()
+    def dashboard_home(self):
+        availability_zones = self.conn.get_all_zones()
+        return dict(
+            availability_zones=availability_zones
+        )
 
+
+class DashboardJsonView(BaseView):
     @view_config(route_name='dashboard_json', request_method='GET', renderer='json')
     def dashboard_json(self):
         ec2_conn = self.get_connection()
 
+        # Fetch availability zone if set
+        zone = self.request.params.get('zone')
+        filters = {}
+        if zone:
+            filters = {'availability_zone': zone}
+
         # Instances counts
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
-        for instance in ec2_conn.get_only_instances():
+
+        for instance in ec2_conn.get_only_instances(filters=filters):
             instances_total_count += 1
             if instance.tags.get('aws:autoscaling:groupName'):
                 instances_scaling_count += 1
@@ -33,7 +45,7 @@ class DashboardView(BaseView):
                 instances_stopped_count += 1
 
         # Volume/snapshot counts
-        volumes_count = len(ec2_conn.get_all_volumes())
+        volumes_count = len(ec2_conn.get_all_volumes(filters=filters))
         snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
 
         # Security groups, key pairs, IP addresses
@@ -44,7 +56,7 @@ class DashboardView(BaseView):
         # IAM counts
         session = self.request.session
         try:
-            username=session['username']
+            username = session['username']
             if username == 'admin':
                 iam_conn = self.get_connection(conn_type="iam")
                 users_count = len(iam_conn.get_all_users().users)
