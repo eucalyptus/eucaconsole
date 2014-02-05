@@ -50,7 +50,6 @@ class User(object):
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""
     @staticmethod
-    @cache_region('default_term', 'aws_connection_cache')
     def aws_connection(region, access_key, secret_key, token, conn_type):
         """Return AWS EC2 connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
@@ -68,23 +67,28 @@ class ConnectionManager(object):
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
 
         """
-        conn = None
-        if conn_type == 'ec2':
-            conn = ec2.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 'autoscale':
-            conn = ec2.autoscale.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        elif conn_type == 'cloudwatch':
-            conn = ec2.cloudwatch.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        if conn_type == 'elb':
-            conn = ec2.elb.connect_to_region(
-                region, aws_access_key_id=access_key, aws_secret_access_key=secret_key, security_token=token)
-        return conn
+        cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
+
+        @cache_region('default_term', cache_key)
+        def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
+            conn = None
+            if conn_type == 'ec2':
+                conn = ec2.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'autoscale':
+                conn = ec2.autoscale.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            elif conn_type == 'cloudwatch':
+                conn = ec2.cloudwatch.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            if conn_type == 'elb':
+                conn = ec2.elb.connect_to_region(
+                    _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            return conn
+
+        return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    @cache_region('default_term', 'euca_connection_cache')
     def euca_connection(clchost, port, access_id, secret_key, token, conn_type):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
@@ -105,41 +109,51 @@ class ConnectionManager(object):
         :param conn_type: Connection type ('ec2', 'autoscale', 'cloudwatch', or 'elb')
 
         """
-        region = RegionInfo(name='eucalyptus', endpoint=clchost)
-        path = '/services/Eucalyptus'
-        conn_class = EC2Connection
-        api_version = '2012-12-01'
+        cache_key = 'euca_connection_cache_{conn_type}_{clchost}_{port}'.format(
+            conn_type=conn_type, clchost=clchost, port=port
+        )
 
-        # Configure based on connection type
-        if conn_type == 'autoscale':
-            api_version = '2011-01-01'
-            conn_class = boto.ec2.autoscale.AutoScaleConnection
-            path = '/services/AutoScaling'
-        if conn_type == 'cloudwatch':
-            path = '/services/CloudWatch'
-            conn_class = boto.ec2.cloudwatch.CloudWatchConnection
-        if conn_type == 'elb':
-            path = '/services/LoadBalancing'
-            conn_class = boto.ec2.elb.ELBConnection
-        if conn_type == 'iam':
-            path = '/services/Euare'
-            conn_class = boto.iam.IAMConnection
+        @cache_region('default_term', cache_key)
+        def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
+            region = RegionInfo(name='eucalyptus', endpoint=_clchost)
+            path = '/services/Eucalyptus'
+            conn_class = EC2Connection
+            api_version = '2012-12-01'
 
-        if conn_type != 'iam':
-            conn = conn_class(
-                access_id, secret_key, region=region, port=port, path=path, is_secure=True, security_token=token)
-        else:
-            conn = conn_class(
-                access_id, secret_key, host=clchost, port=port, path=path, is_secure=True, security_token=token)
+            # Configure based on connection type
+            if conn_type == 'autoscale':
+                api_version = '2011-01-01'
+                conn_class = boto.ec2.autoscale.AutoScaleConnection
+                path = '/services/AutoScaling'
+            if conn_type == 'cloudwatch':
+                path = '/services/CloudWatch'
+                conn_class = boto.ec2.cloudwatch.CloudWatchConnection
+            if conn_type == 'elb':
+                path = '/services/LoadBalancing'
+                conn_class = boto.ec2.elb.ELBConnection
+            if conn_type == 'iam':
+                path = '/services/Euare'
+                conn_class = boto.iam.IAMConnection
 
-        # AutoScaling service needs additional auth info
-        if conn_type == 'autoscale':
-            conn.auth_region_name = 'Eucalyptus'
+            if conn_type != 'iam':
+                conn = conn_class(
+                    _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
+                )
+            else:
+                conn = conn_class(
+                    _access_id, _secret_key, host=_clchost, port=_port, path=path, is_secure=True, security_token=_token
+                )
 
-        setattr(conn, 'APIVersion', api_version)
-        conn.https_validate_certificates = False
-        conn.http_connection_kwargs['timeout'] = 30
-        return conn
+            # AutoScaling service needs additional auth info
+            if conn_type == 'autoscale':
+                conn.auth_region_name = 'Eucalyptus'
+
+            setattr(conn, 'APIVersion', api_version)
+            conn.https_validate_certificates = False
+            conn.http_connection_kwargs['timeout'] = 30
+            return conn
+
+        return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
 
 
 def groupfinder(user_id, request):
