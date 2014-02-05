@@ -225,7 +225,11 @@ class InstancesJsonView(LandingPageView):
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
         instances = []
-        filtered_items = self.filter_items(self.get_items())
+        filters = {}
+        security_group_param = self.request.params.get('security_group')
+        if security_group_param:
+            filters = {'group-name': security_group_param}
+        filtered_items = self.filter_items(self.get_items(filters=filters), ignore=['security_group'])
         transitional_states = ['pending', 'stopping', 'shutting-down']
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
@@ -247,10 +251,10 @@ class InstancesJsonView(LandingPageView):
             ))
         return dict(results=instances)
 
-    def get_items(self):
+    def get_items(self, filters=None):
         if self.conn:
             instances = []
-            for reservation in self.conn.get_all_reservations():
+            for reservation in self.conn.get_all_reservations(filters=filters):
                 for instance in reservation.instances:
                     instance.groups = reservation.groups
                     instances.append(instance)

@@ -270,6 +270,7 @@ class InstancesFiltersForm(BaseSecureForm):
     placement = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
+    security_group = wtforms.SelectField(label=_(u'Security group'))
     tags = wtforms.TextField(label=_(u'Tags'))
 
     def __init__(self, request, conn=None, cloud_type='euca', **kwargs):
@@ -282,6 +283,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
+        self.security_group.choices = self.choices_manager.security_groups()
 
     def get_availability_zone_choices(self):
         return self.choices_manager.availability_zones(add_blank=False)
