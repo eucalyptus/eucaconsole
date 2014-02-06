@@ -17,7 +17,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns" tal:define="readonly True if user else False;">
-            <div class="panel no-title">
+            <div class="panel has-title">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -115,33 +115,54 @@
                             </div>
                             ${panel('form_field_rev', field=user_form['download_keys'])}
                         </form>
-                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
-                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
-                                    <li ng-show="item.status === 'Active'">
-                                        <a i18n:translate="" ng-click="revealModal('attach', item)">Make inactive</a>
-                                    </li>
-                                    <li ng-show="item.status === 'Inactive'">
-                                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
-                                    </li>
-                                    <li>
-                                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div metal:fill-slot="tile_content" tal:omit-tag="">
-                                <div>
-                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
-                                    {{ item.access_key_id }}
-                                </div>
-                            </div>
-                            <metal:block metal:fill-slot="tile_footer">
-                                <div ng-show="item.status" class="footer status {{ item.status }}">
-                                    {{ item.status }}
-                                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
-                                </div>
+                        <div metal:use-macro="layout.global_macros['plain_tableview']">
+                            <metal:block metal:fill-slot="tableview_headers">
+                                <th i18n:translate="">ACCESS KEY ID</th>
+                                <th i18n:translate="">STATUS</th>
+                                <th i18n:translate="">ACTIONS</th>
                             </metal:block>
+                            <metal:block metal:fill-slot="tableview_columns">
+                                <td>{{ item.access_key_id }}</td>
+                                <td>{{ item.status }}</td>
+                                <td>
+                                    <span class="actions">
+                                        <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                                            <li ng-show="item.status === 'Active'">
+                                                <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
+                                            </li>
+                                            <li ng-show="item.status === 'Inactive'">
+                                                <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_activate_key', name='_name_', key='_key_')}', item)">Activate</a>
+                                            </li>
+                                            <li>
+                                                <a i18n:translate="" ng-click="confirmDelete(item)">Delete</a>
+                                            </li>
+                                        </ul>
+                                    </span>
+                                </td>
+                            </metal:block>
+                        </div>
+                        <div id="user-dialogs">
+                            <div id="delete-key-modal" class="reveal-modal small" data-reveal="">
+                                <h3 i18n:translate="">Delete Access Key</h3>
+                                <p>
+                                    <span i18n:translate="">Are you sure you want to delete the access key?</span>
+                                </p>
+                                <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
+                                    <input type="hidden" id="user-with-key" name="user-with-key" value=""/>
+                                    <input type="hidden" id="key-to-delete" name="key-to-delete" value=""/>
+                                    <div>&nbsp;</div>
+                                    <div class="row">
+                                        <div class="small-4 columns">&nbsp;</div>
+                                        <div class="small-8 columns field inline">
+                                            <button type="submit" class="button" id="delete-key-btn">
+                                                <span i18n:translate="">Yes, delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <a class="close-reveal-modal">&#215;</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -211,9 +232,9 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete User</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete the user</span>?
+                    <span i18n:translate="">Are you sure you want to delete the user {{ user.user_name }}</span>?
                 </p>
-                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                <form method="post" id="delete-form" action="{{ deleteFormAction }}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
@@ -230,8 +251,9 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
 </div>
 
 </metal:block>

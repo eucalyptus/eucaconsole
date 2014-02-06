@@ -9,15 +9,17 @@ from urllib import urlencode
 import simplejson as json
 
 from boto.exception import BotoServerError
+from pyramid.httpexceptions import exception_response
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
+from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 
 
 from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from ..models.auth import EucaAuthenticator
 
 
@@ -55,6 +57,7 @@ class UsersView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
+            delete_form=DeleteUserForm(self.request),
         )
 
 
@@ -134,9 +137,7 @@ class UserView(BaseView):
     def user_keys_json(self):
         """Return user access keys list"""
         keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
-        for k in keys.list_access_keys_result.access_key_metadata:
-            k.title = k.access_key_id
-        return dict(results=keys.list_access_keys_result.access_key_metadata)
+        return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
@@ -228,6 +229,7 @@ class UserView(BaseView):
             self.request.session.flash(msg, queue=queue)
             location = self.request.route_url('users')
             return HTTPFound(location=location)
+
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
@@ -238,10 +240,13 @@ class UserView(BaseView):
             if new_name == self.user.user_name:
                 new_name = None
             result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
-            self.user = self.get_user()
-            return dict(results=self.user)
+            self.user.path = path;
+            if self.user.user_name != new_name:
+                pass # TODO: need to force view refresh if name changes
+            return dict(message=_(u"Successfully updated user information"),
+                        results=self.user)
         except BotoServerError as err:
-            return dict(error=getattr(err, 'status', 400), msg=err.message)
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
@@ -269,42 +274,75 @@ class UserView(BaseView):
             except BotoServerError:
                 # if that failed, create the profile
                 result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
-            return dict(results="true")
+            return dict(message=_(u"Successfully set user password"),
+                        results="true")
         except BotoServerError as err:  # catch error in password change
-            return dict(error=getattr(err, 'status', 400), msg=err.message)
+            return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
-            return dict(error=getattr(err, 'status', 401), msg=err.message)
+            return JSONResponse(status=401, message=err.message);
         except URLError, err:           # catch error in authentication
-            return dict(error=getattr(err, 'status', 401), msg=err.message)
+            return JSONResponse(status=401, message=err.message);
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
         """ calls iam:CreateAccessKey """
         try:
             result = self.conn.create_access_key(user_name=self.user.user_name)
-            self.user = self.get_user()
-            return dict(results=self.user)
+            return dict(message=_(u"Successfully generated keys"))
         except BotoServerError as err:
-            return dict(error=getattr(err, 'status', 400), msg=err.message)
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
+    def user_delete_key(self):
+        """ calls iam:DeleteAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
+            return dict(message=_(u"Successfully deleted key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
+    def user_deactivate_key(self):
+        """ calls iam:UpdateAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
+            return dict(message=_(u"Successfully deactivated key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
+    def user_activate_key(self):
+        """ calls iam:UpdateAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
+            return dict(message=_(u"Successfully activated key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
-        """ calls iam:CreateAccessKey """
+        """ calls iam:AddUserToGroup """
         try:
-            result = self.conn.create_access_key(user_name=self.user.user_name)
-            return dict(results=result)
+            group = self.request.params.get('group')
+            result = self.conn.add_user_to_group(user_name=self.user.user_name, group=group)
+            return dict(message=_(u"Successfully added user to group"),
+                        results=result)
         except BotoServerError as err:
-            return dict(error=getattr(err, 'status', 400), msg=err.message)
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
         if self.user is None:
             raise HTTPNotFound
+        try:
             self.conn.delete_user(user_name=self.user.user_name)
-
             location = self.request.route_url('users')
             msg = _(u'Successfully deleted user')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
-
-        return self.render_dict
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);

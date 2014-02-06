@@ -186,6 +186,9 @@ urls = [
     Route(name='user_delete', pattern='/users/{name}/delete'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
     Route(name='user_generate_keys', pattern='/users/{name}/genkeys'),
+    Route(name='user_delete_key', pattern='/users/{name}/keys/{key}/delete'),
+    Route(name='user_deactivate_key', pattern='/users/{name}/keys/{key}/deactivate'),
+    Route(name='user_activate_key', pattern='/users/{name}/keys/{key}/activate'),
     Route(name='user_add_to_group', pattern='/users/{name}/addgroup'),
     Route(name='user_update_quotas', pattern='/users/{name}/quotas'),
 

@@ -5,6 +5,8 @@ Forms for Users
 """
 import simplejson as json
 
+from boto.exception import BotoServerError
+
 import wtforms
 from wtforms import validators
 from wtforms import widgets
@@ -76,54 +78,58 @@ class UserForm(BaseSecureForm):
         if user is not None:
             self.user_name.data = user.user_name
             self.path.data = user.path
-            policy_json = self.conn.get_user_policy(user_name=user.user_name,
-                                policy_name="user-all-access-plus-quotas").policy_document
-            policy = json.loads(policy_json)
-            for s in policy['Statement']:
-                try:    # skip statements without conditions
-                    s['Condition']
-                except KeyError:
-                    continue
-                for cond in s['Condition'].keys():
-                    if cond == "NumericLessThanEquals": 
-                        for val in s['Condition'][cond].keys():
-                            limit = s['Condition'][cond][val]
-                            if val == 'ec2:quota-imagenumber':
-                                self.ec2_images_max.data = limit
-                            elif val == 'ec2:quota-vminstancenumber':
-                                self.ec2_instances_max.data = limit
-                            elif val == 'ec2:quota-volumenumber':
-                                self.ec2_volumes_max.data = limit
-                            elif val == 'ec2:quota-snapshotnumber':
-                                self.ec2_snapshots_max.data = limit
-                            elif val == 'ec2:quota-volumetotalsize':
-                                self.ec2_total_size_all_vols = limit
-                            elif val == 'ec2:quota-addressnumber':
-                                self.ec2_elastic_ip_max = limit
-                            elif val == 's3:quota-bucketnumber':
-                                self.s3_buckets_max = limit
-                            elif val == 's3:quota-bucketobjectnumber':
-                                self.s3_objects_per_max = limit
-                            elif val == 's3:quota-bucketsize':
-                                self.s3_bucket_size = limit
-                            elif val == 's3:quota-buckettotalsize':
-                                self.s3_total_size_all_buckets = limit
-                            elif val == 'autoscaling:quota-autoscalinggroupnumber':
-                                self.autoscale_groups_max = limit
-                            elif val == 'autoscaling:quota-launchconfigurationnumber':
-                                self.launch_configs_max = limit
-                            elif val == 'autoscaling:quota-scalingpolicynumber':
-                                self.scaling_policies_max = limit
-                            elif val == 'elasticloadbalancing:quota-loadbalancernumber':
-                                self.elb_load_balancers_max = limit
-                            elif val == 'iam:quota-groupnumber':
-                                self.iam_groups_max = limit
-                            elif val == 'iam:quota-usernumber':
-                                self.iam_users_max = limit
-                            elif val == 'iam:quota-rolenumber':
-                                self.iam_roles_max = limit
-                            elif val == 'iam:quota-instanceprofilenumber':
-                                self.iam_inst_profiles_max = limit
+            try:
+                policy_json = self.conn.get_user_policy(user_name=user.user_name,
+                                    policy_name="user-all-access-plus-quotas").policy_document
+                policy = json.loads(policy_json)
+                for s in policy['Statement']:
+                    try:    # skip statements without conditions
+                        s['Condition']
+                    except KeyError:
+                        continue
+                    for cond in s['Condition'].keys():
+                        if cond == "NumericLessThanEquals": 
+                            for val in s['Condition'][cond].keys():
+                                limit = s['Condition'][cond][val]
+                                if val == 'ec2:quota-imagenumber':
+                                    self.ec2_images_max.data = limit
+                                elif val == 'ec2:quota-vminstancenumber':
+                                    self.ec2_instances_max.data = limit
+                                elif val == 'ec2:quota-volumenumber':
+                                    self.ec2_volumes_max.data = limit
+                                elif val == 'ec2:quota-snapshotnumber':
+                                    self.ec2_snapshots_max.data = limit
+                                elif val == 'ec2:quota-volumetotalsize':
+                                    self.ec2_total_size_all_vols = limit
+                                elif val == 'ec2:quota-addressnumber':
+                                    self.ec2_elastic_ip_max = limit
+                                elif val == 's3:quota-bucketnumber':
+                                    self.s3_buckets_max = limit
+                                elif val == 's3:quota-bucketobjectnumber':
+                                    self.s3_objects_per_max = limit
+                                elif val == 's3:quota-bucketsize':
+                                    self.s3_bucket_size = limit
+                                elif val == 's3:quota-buckettotalsize':
+                                    self.s3_total_size_all_buckets = limit
+                                elif val == 'autoscaling:quota-autoscalinggroupnumber':
+                                    self.autoscale_groups_max = limit
+                                elif val == 'autoscaling:quota-launchconfigurationnumber':
+                                    self.launch_configs_max = limit
+                                elif val == 'autoscaling:quota-scalingpolicynumber':
+                                    self.scaling_policies_max = limit
+                                elif val == 'elasticloadbalancing:quota-loadbalancernumber':
+                                    self.elb_load_balancers_max = limit
+                                elif val == 'iam:quota-groupnumber':
+                                    self.iam_groups_max = limit
+                                elif val == 'iam:quota-usernumber':
+                                    self.iam_users_max = limit
+                                elif val == 'iam:quota-rolenumber':
+                                    self.iam_roles_max = limit
+                                elif val == 'iam:quota-instanceprofilenumber':
+                                    self.iam_inst_profiles_max = limit
+            except BotoServerError as err:
+                pass
+                                
                                 
 
 class ChangePasswordForm(BaseSecureForm):

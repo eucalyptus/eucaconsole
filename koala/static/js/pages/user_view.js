@@ -42,17 +42,15 @@ angular.module('UserView', [])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 // could put data back into form, but form already contains changes
-                // TODO: how to notify user of success??
+                if (oData.error == undefined) {
+                    Notify.success(oData.message);
+                } else {
+                    Notify.failure(oData.message);
+                }
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })
@@ -100,20 +98,11 @@ angular.module('UserView', [])
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
-                // TODO: how to notify user of success??
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (status == 401) {
-                    alert("Invalid password");
-                }
-                else if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })
@@ -134,35 +123,70 @@ angular.module('UserView', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
                     $('#euca-logout-form').submit();
                 }
             });
-        };
-        $scope.revealModal = function (modal, item) {
         };
         $scope.generateKeys = function ($event) {
             $http({method:'POST', url:$scope.jsonEndpoint, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                // TODO: how to notify user of success??
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
+        };
+        $scope.makeAjaxCall = function (url, item) {
+            url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);
+            $http({method:'POST', url:url, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
+              }).
+              error(function (oData, status) {
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
+              });
+        };
+        $scope.confirmDelete = function (item) {
+            var modal = $('#delete-key-modal');
+            $('#user-with-key').val(item.user_name);
+            $('#key-to-delete').val(item.access_key_id);
+            modal.foundation('reveal', 'open');
+        };
+        $scope.deleteKey = function (url) {
+            var name = $('#user-with-key').val();
+            var key = $('#key-to-delete').val();
+            url = url.replace("_name_", name).replace("_key_", key);
+            $http({method:'POST', url:url, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
+              }).
+              error(function (oData, status) {
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
+              });
+            $('#delete-key-modal').foundation('reveal', 'close');
         };
     })
     .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
@@ -182,9 +206,8 @@ angular.module('UserView', [])
                 $scope.itemsLoading = false;
                 $scope.items = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
                     $('#euca-logout-form').submit();
                 }
             });
@@ -196,20 +219,14 @@ angular.module('UserView', [])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                // TODO: how to notify user of success??
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
-                // TODO: properly handle error notifications
-                if (errorMsg && status === 403) {
-                    // not authorized
-                    alert(errorMsg);
-                } else {
-                    // other kind of error
-                }
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
               });
         };
     })

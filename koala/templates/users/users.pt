@@ -65,7 +65,9 @@
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
                         <li><a i18n:translate="" href="">Disable</a></li>
-                        <li><a i18n:translate="" href="">Delete</a></li>
+                        <li>
+                            <a i18n:translate="" ng-click="$('#delete-user-modal').foundation('reveal', 'open')">Delete</a>
+                        </li>
                     </ul>
                   </span>
                 </td>
@@ -77,6 +79,25 @@
                 Need some content
             </p>
             <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="user-dialogs">
+            <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete User</h3>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete the user</span>?
+                </p>
+                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
         </div>
     </div>
 </div>
