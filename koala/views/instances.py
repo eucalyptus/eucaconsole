@@ -629,7 +629,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
-            availability_zone = self.request.params.get('zone')
+            availability_zone = self.request.params.get('zone') or None
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
