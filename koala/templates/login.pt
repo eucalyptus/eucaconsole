@@ -33,12 +33,12 @@
                 <dl class="tabs" id="login-tabs" data-tab="">
                     <dd id="euca-tab" class="active">
                         <a href="#eucalyptus">
-                            <span class="hide-for-small" i18n:translate="">Log in to </span><span i18n:translate="">Eucalyptus</span>
+                            <span class="hide-for-small" i18n:translate="">Log in to</span>&nbsp;<span i18n:translate="">Eucalyptus</span>
                         </a>
                     </dd>
                     <dd id="aws-tab" tal:condition="layout.aws_enabled">
                         <a href="#aws">
-                            <span i18n:translate="" class="hide-for-small">Log in to</span><span i18n:translate="">AWS</span>
+                            <span i18n:translate="" class="hide-for-small">Log in to</span>&nbsp;<span i18n:translate="">AWS</span>
                         </a>
                     </dd>
                 </dl>
