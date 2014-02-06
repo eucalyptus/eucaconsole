@@ -129,8 +129,6 @@ angular.module('UserView', [])
                 }
             });
         };
-        $scope.revealModal = function (modal, item) {
-        };
         $scope.generateKeys = function ($event) {
             $http({method:'POST', url:$scope.jsonEndpoint, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
@@ -142,9 +140,53 @@ angular.module('UserView', [])
                 Notify.success(oData.message);
               }).
               error(function (oData, status) {
+                if (status == 403) window.location = '/';
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+        };
+        $scope.makeAjaxCall = function (url, item) {
+            url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);
+            $http({method:'POST', url:url, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
+              }).
+              error(function (oData, status) {
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
+              });
+        };
+        $scope.confirmDelete = function (item) {
+            var modal = $('#delete-key-modal');
+            $('#user-with-key').val(item.user_name);
+            $('#key-to-delete').val(item.access_key_id);
+            modal.foundation('reveal', 'open');
+        };
+        $scope.deleteKey = function (url) {
+            var name = $('#user-with-key').val();
+            var key = $('#key-to-delete').val();
+            url = url.replace("_name_", name).replace("_key_", key);
+            $http({method:'POST', url:url, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+                Notify.success(oData.message);
+              }).
+              error(function (oData, status) {
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
+              });
+            $('#delete-key-modal').foundation('reveal', 'close');
         };
     })
     .controller('UserGroupsCtrl', function($scope, $http, $timeout) {

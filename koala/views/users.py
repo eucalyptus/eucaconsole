@@ -19,7 +19,7 @@ from pyramid.view import view_config
 from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from ..models.auth import EucaAuthenticator
 
 
@@ -137,9 +137,7 @@ class UserView(BaseView):
     def user_keys_json(self):
         """Return user access keys list"""
         keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
-        for k in keys.list_access_keys_result.access_key_metadata:
-            k.title = k.access_key_id
-        return dict(results=keys.list_access_keys_result.access_key_metadata)
+        return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
@@ -248,8 +246,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully updated user information"),
                         results=self.user)
         except BotoServerError as err:
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 400))
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
@@ -280,26 +277,50 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully set user password"),
                         results="true")
         except BotoServerError as err:  # catch error in password change
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 400))
+            return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 401))
+            return JSONResponse(status=401, message=err.message);
         except URLError, err:           # catch error in authentication
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 401))
+            return JSONResponse(status=401, message=err.message);
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
         """ calls iam:CreateAccessKey """
         try:
             result = self.conn.create_access_key(user_name=self.user.user_name)
-            self.user = self.get_user()
-            return dict(message=_(u"Successfully generated keys"),
-                        results=self.user)
+            return dict(message=_(u"Successfully generated keys"))
         except BotoServerError as err:
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 400))
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
+    def user_delete_key(self):
+        """ calls iam:DeleteAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
+            return dict(message=_(u"Successfully deleted key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
+    def user_deactivate_key(self):
+        """ calls iam:UpdateAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
+            return dict(message=_(u"Successfully deactivated key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
+    def user_activate_key(self):
+        """ calls iam:UpdateAccessKey """
+        key_id = self.request.matchdict.get('key')
+        try:
+            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
+            return dict(message=_(u"Successfully activated key"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
@@ -310,8 +331,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully added user to group"),
                         results=result)
         except BotoServerError as err:
-            return dict(message=err.message,
-                        error=getattr(err, 'status', 400))
+            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
@@ -322,9 +342,7 @@ class UserView(BaseView):
             location = self.request.route_url('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=queue)
+            return HTTPFound(location=location)
         except BotoServerError as err:
-            location = self.request.route_url('user', name=self.user.user_name)
-            msg = err.message
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
-        return HTTPFound(location=location)
+            return JSONResponse(status=400, message=err.message);

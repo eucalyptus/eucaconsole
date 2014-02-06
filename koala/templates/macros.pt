@@ -175,6 +175,30 @@
     </div>
 </metal:plaindatagrid_macro>
 
+<metal:plaintableview_macro metal:define-macro="plain_tableview">
+    <div class="large-12 columns datagrid" id="datagrid-items">
+        <div ng-show="itemsLoading"><span class="dots"></span></div>
+        <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
+            <!-- Begin table view -->
+            <table class="table" ng-show="!itemsLoading" ng-cloak="true">
+                <thead><tr><metal:block metal:define-slot="tableview_headers"></metal:block></tr></thead>
+                <tbody>
+                    <tr ng-repeat="item in items | orderBy: sortBy:sortReverse" ng-cloak="true">
+                        <metal:block metal:define-slot="tableview_columns"></metal:block>
+                    </tr>
+                    <tr ng-show="!itemsLoading"></tr>
+                </tbody>
+            </table>
+            <div ng-show="!itemsLoading">
+                <div data-alert="alert" class="alert-box secondary" ng-show="items.length == 0" ng-cloak="" i18n:translate="">
+                    No items were found
+                    <a href="#" class="close">&times;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</metal:plaintableview_macro>
+
 <!-- Breadcrumbs ===== -->
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
     <ul id="breadcrumbs" class="breadcrumbs">
