@@ -113,14 +113,14 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.zone.choices = self.choices_manager.availability_zones()
+        self.zone.choices = self.get_availability_zone_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
-        if len(self.zone.choices) > 1:
+        if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = self.securitygroup.choices[1][0]
@@ -137,6 +137,15 @@ class LaunchInstanceForm(BaseSecureForm):
     def get_keypair_choices(self):
         choices = self.choices_manager.keypairs()
         choices.append(('none', _(u'None (advanced option)')))
+        return choices
+
+    def get_availability_zone_choices(self):
+        choices = []
+        add_blank = True
+        if self.cloud_type == 'euca':
+            choices = [('Any', _(u'No preference'))]
+            add_blank = False
+        choices.extend(self.choices_manager.availability_zones(add_blank=add_blank))
         return choices
 
 
