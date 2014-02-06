@@ -72,14 +72,12 @@ class BaseView(object):
         status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
         message = exc.message
         if request.is_xhr:
-            resp_body = json.dumps(dict(error=message))
-            return Response(status=status, body=resp_body)
-        timed_out = all([
-            status in [403],
-            'Invalid access key' in message
-        ])
-        if timed_out:
-            notice = _(u'Your session has timed out.')
+            return JSONResponse(status=status, message=message)
+        if status in [403]:
+            if any(['Invalid access key' in message, 'Invalid security token' in message]):
+                notice = message
+            else:
+                notice = _(u'Your session has timed out')
             request.session.flash(notice, queue='warning')
             # Empty Beaker cache to clear connection objects
             cls.invalidate_cache()
