@@ -12,6 +12,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.tagsObject = {};
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
+        $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
         $scope.keyPairChoices = {};
@@ -87,6 +88,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
+            // Unhide appropriate step in summary
+            $scope.summarySection.find('.step' + nextStep).removeClass('hide');
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])

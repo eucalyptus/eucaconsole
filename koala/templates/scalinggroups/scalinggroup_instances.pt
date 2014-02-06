@@ -91,7 +91,7 @@
                 ${structure:terminate_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=terminate_form['decrement_capacity'],
-                        leftcol_width=8, rightcol_width=4)}
+                        leftcol_width=8, rightcol_width=4, reverse=True)}
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns">
                     <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
