@@ -149,6 +149,9 @@ class GroupView(BaseView):
     @view_config(route_name='group_update', request_method='POST', renderer=TEMPLATE)
     def group_update(self):
         if self.group_update_form.validate():
+            new_users = self.request.params.getall('input-users-select')
+            if new_users is not None:
+                self.group_update_users( self.group.group_name, new_users)
             new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
             new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
@@ -166,10 +169,28 @@ class GroupView(BaseView):
 
         return self.render_dict
 
-    def group_add_user(self):
-        group_name = self.request.matchdict.get('name')
-        users = self.request.matchdict.get('users')
-        self.conn.add_user_to_group(group_name, users)
-        return self.render_dict
+    def group_update_users(self, group_name, new_users):
+        new_users = [u.encode('ascii', 'ignore') for u in new_users]
+
+        for new_user in new_users:
+            isNew = True
+            for user in self.group_users:
+                if user == new_user:
+                    isNew = False
+            if isNew:
+                self.conn.add_user_to_group(group_name, new_user)
+
+        for user in self.group_users:
+            isDeleted = True
+            for new_user in new_users:
+                if user == new_user:
+                    isDeleted = False
+            if isDeleted:
+                self.conn.remove_user_from_group(group_name, user)
+
+        return 
+
+
+
 
 
