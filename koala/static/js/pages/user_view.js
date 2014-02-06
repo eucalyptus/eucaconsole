@@ -89,6 +89,21 @@ angular.module('UserView', [])
         $scope.changePassword = function($event) {
             // add in current password, then submit the request
             var data = $scope.data+"&password="+$event.target.password.value;
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: "not-used", // let the server set this
+                content: data,
+                script: $scope.jsonEndpoint
+            });
+            $('#change-password-modal').foundation('reveal', 'close');
+            // same notes about setTimeout apply as below
+            setTimeout(function() {
+                $('#new_password').val("");
+                $('#new_password2').val("");
+                $('#password-strength').removeAttr('class');
+            }, 2000);
+            /*
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -104,6 +119,7 @@ angular.module('UserView', [])
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+              */
         };
     })
     .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
@@ -130,6 +146,21 @@ angular.module('UserView', [])
             });
         };
         $scope.generateKeys = function ($event) {
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: "not-used", // let the server set this
+                content: "no-content",
+                script: $scope.jsonEndpoint
+            });
+            // this is clearly a hack. We'd need to bake callbacks into the generateFile
+            // stuff to do this properly. Probably should open an issue. TODO
+            setTimeout(function() {
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+            }, 2000);
+            /* keeping this stuff in case we do the callbacks in generateFile
             $http({method:'POST', url:$scope.jsonEndpoint, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -144,6 +175,7 @@ angular.module('UserView', [])
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+              */
         };
         $scope.makeAjaxCall = function (url, item) {
             url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);

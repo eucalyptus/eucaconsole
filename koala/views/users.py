@@ -7,6 +7,7 @@ import os, random, string
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
 import simplejson as json
+import urlparse
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import exception_response
@@ -14,7 +15,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
-
+from pyramid.response import Response
 
 from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
 from ..models import Notification
@@ -252,7 +253,14 @@ class UserView(BaseView):
     def user_change_password(self):
         """ calls iam:UpdateLoginProfile """
         try:
-            password = self.request.params.get('password')
+            # side effect of using generateFile on the client is that these 2 params come inside "content"
+            #password = self.request.params.get('password')
+            #new_pass = self.request.params.get('new_password')
+            content = self.request.params.get('content')
+            parsed = urlparse.parse_qs(content)
+            password = parsed['password'][0]
+            new_pass = parsed['new_password'][0]
+
             clchost = self.request.registry.settings.get('clchost')
             duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
             auth = EucaAuthenticator(host=clchost, duration=duration)
@@ -265,7 +273,6 @@ class UserView(BaseView):
             session['session_token'] = creds.session_token
             session['access_id'] = creds.access_key
             session['secret_key'] = creds.secret_key
-            new_pass = self.request.params.get('new_password')
             try:
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
@@ -274,8 +281,16 @@ class UserView(BaseView):
             except BotoServerError:
                 # if that failed, create the profile
                 result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
-            return dict(message=_(u"Successfully set user password"),
-                        results="true")
+            # assemble file response
+            account = self.request.session['account']
+            response = Response(content_type='text/csv')
+            response.body = "'{account}', '{user}', '{password}'".\
+                            format(account=account, user=self.user.user_name, password=new_pass);
+            response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
+                                format(acct=account, user=self.user.user_name)
+            return response
+            #return dict(message=_(u"Successfully set user password"),
+            #            results="true")
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
@@ -288,7 +303,15 @@ class UserView(BaseView):
         """ calls iam:CreateAccessKey """
         try:
             result = self.conn.create_access_key(user_name=self.user.user_name)
-            return dict(message=_(u"Successfully generated keys"))
+            #return dict(message=_(u"Successfully generated keys"))
+            account = self.request.session['account']
+            response = Response(content_type='text/csv')
+            response.body = "'{account}', '{user}', '{access}', '{secret}'".\
+                            format(account=account, user=self.user.user_name,
+                                   access=result.access_key.access_key_id, secret=result.access_key.secret_access_key);
+            response.content_disposition = 'attachment; filename="{acct}-{user}-{key}-creds.csv"'.\
+                                format(acct=account, user=self.user.user_name, key=result.access_key.access_key_id)
+            return response
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
 

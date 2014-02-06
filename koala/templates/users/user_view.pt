@@ -87,6 +87,7 @@
                             <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below:</span>?
                         </p>
                         <form method="post" id="delete-form" data-abide="" ng-submit="changePassword($event)">
+                            ${structure:delete_form['csrf_token']}
                             ${panel('form_field', field=change_password_form['password'])}
                             <div>&nbsp;</div>
                             <div class="row">
@@ -253,6 +254,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/user_view.js')}"></script>
 </div>
 
