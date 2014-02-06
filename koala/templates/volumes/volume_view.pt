@@ -58,8 +58,8 @@
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="label radius status {{ volumeStatus }}">{{ volumeStatus }}</span>
-                            <span class="dots" ng-show="isUpdating">&nbsp;</span>
+                            <span class="label radius status {{ volumeStatus }}">{{ volumeAttachStatus || volumeStatus }}</span>
+                            &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
