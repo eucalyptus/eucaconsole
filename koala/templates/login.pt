@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
 
     <!-- Notifications -->
-    <div id="notifications-wrapper">
+    <div id="notifications-wrapper" class="row">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
              tal:condition="https_required and request.scheme != 'https'">
