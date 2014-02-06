@@ -84,13 +84,15 @@ class GroupView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
         self.group_route_id = self.request.matchdict.get('name')
-        self.users = self.get_users_array()
+        self.group_users = self.get_users_array(self.group)
+        self.all_users = self.get_all_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.render_dict = dict(
             group=self.group,
             group_route_id=self.group_route_id,
-            users=self.users,
+            group_users=self.group_users,
+            all_users=self.all_users,
             group_form=self.group_form,
             group_update_form=self.group_update_form,
         )
@@ -105,7 +107,13 @@ class GroupView(BaseView):
             group = self.conn.get_group(group_name=group_param)
         return group
 
-    def get_users_array(self):
+    def get_users_array(self, group):
+        if group is None:
+            return []
+        users = [u.user_name.encode('ascii', 'ignore') for u in group.users]
+        return users
+
+    def get_all_users_array(self):
         group_param = self.request.matchdict.get('name')
         if group_param == "new" or group_param is None:
             return None
@@ -157,4 +165,11 @@ class GroupView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    def group_add_user(self):
+        group_name = self.request.matchdict.get('name')
+        users = self.request.matchdict.get('users')
+        self.conn.add_user_to_group(group_name, users)
+        return self.render_dict
+
 
