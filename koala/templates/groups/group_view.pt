@@ -92,13 +92,13 @@
                         <div class="section" ng-cloak="">
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
-                                        <div class="small-10 columns">
-                                            <select id="users-select" class="chosen" multiple="true" data-placeholder="Search users and select to add">
-	                                        <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
-                                            </select>
-                                        </div>
+                                <div class="small-10 columns">
+                                    <select id="users-select" class="chosen" multiple="true" data-placeholder="Search users and select to add">
+	                                <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="row">
+                            <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="save-changes-btn">
