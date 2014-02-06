@@ -159,21 +159,28 @@ body {
 
 
 // Breadcrumbs
-$breadcrumb-border-color: lighten($euca-orange, 20%);
+$breadcrumb-background-color: $euca-extralightgreen;
+$breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 #breadcrumbs {
     position: relative;
     overflow: hidden;
     margin-top: 0;
     margin-bottom: 2.5rem;
     padding-left: 14px;
-    padding-top: 5px;
+    padding-top: 6px;
     padding-bottom: 1px;
     color: $euca-darkgrey;
-    background-color: lighten($euca-orange, 40%);
+    background-color: $breadcrumb-background-color;
     letter-spacing: 1px;
     font-weight: normal;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     border-bottom: 1px solid $breadcrumb-border-color;
+    li {
+        font-size: 1.0rem;
+        &.current a {
+            color: #444;
+        }
+    }
     .icon-block{
         display: inline-block;
         position: absolute;
@@ -332,9 +339,6 @@ a.circle {
 #tag-editor {
     #add-tag-btn {
         margin-bottom: 0;
-    }
-    .tagentry {
-        .new { color: $euca-green; }
     }
     small {
         font-size: 0.825rem;

@@ -1389,9 +1389,11 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 5px; padding-bottom: 1px; color: #444444; background-color: #fef6ef; letter-spacing: 1px; font-weight: normal; font-size: 1.1rem; border-bottom: 1px solid #f7c390; }
+#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; font-size: 0.9rem; border-bottom: 1px solid #bee094; }
+#breadcrumbs li { font-size: 1.0rem; }
+#breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
-#breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #f7c390; font-weight: bold; text-align: center; }
+#breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #bee094; font-weight: bold; text-align: center; }
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
@@ -1438,7 +1440,6 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.alert { background-color: darkred; }
 
 #tag-editor #add-tag-btn { margin-bottom: 0; }
-#tag-editor .tagentry .new { color: #76b800; }
 #tag-editor small { font-size: 0.825rem; }
 
 textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }

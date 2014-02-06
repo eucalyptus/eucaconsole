@@ -8,7 +8,6 @@
          form .ip-label, form .sg-label { margin-right: 1rem; }
          form label.ipaddress, form label.securitygroupname { text-align: left !important; }
          form .cidr-ip, form .groupname { display: inline; width: 50%; }
-         form .rule.new { color: darkgreen; }
          form label.protocol { margin-bottom: 1.5rem; }
     </style>
     <div class="small-${leftcol_width} columns">
