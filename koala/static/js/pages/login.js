@@ -71,7 +71,7 @@ angular.module('LoginPage', [])
                 params = params + "&Signature=" + encoded;
                 $('#aws_csrf_token').val($('#csrf_token').val());
                 $('#package').val($.base64.encode(params));
-                evt.preventDefault(); debugger;
+                evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });
         };
