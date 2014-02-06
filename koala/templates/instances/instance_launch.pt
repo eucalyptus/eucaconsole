@@ -151,8 +151,14 @@
                             ${panel('form_field', field=launch_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
-                            ${panel('form_field', field=launch_form['monitoring_enabled'], ng_attrs={'model': 'monitoringEnabled'})}
-                            ${panel('form_field', field=launch_form['private_addressing'], ng_attrs={'model': 'privateAddressing'})}
+                            <div class="small-8 columns right">
+                                ${panel('form_field', field=launch_form['monitoring_enabled'], reverse=True,
+                                        ng_attrs={'model': 'monitoringEnabled'})}
+                            </div>
+                            <div class="small-8 columns right">
+                                ${panel('form_field', field=launch_form['private_addressing'], reverse=True,
+                                    ng_attrs={'model': 'privateAddressing'})}
+                            </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
