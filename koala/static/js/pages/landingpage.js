@@ -102,7 +102,7 @@ angular.module('LandingPage', ['CustomFilters'])
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
                     alert(errorMsg);
                     $('#euca-logout-form').submit();
