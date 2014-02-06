@@ -2,7 +2,10 @@
 <div tal:omit-tag="">
     <div id="batch-terminate-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Terminate instances</h3>
-        <p i18n:translate="">Are you sure you want to terminate the following instances?</p>
+        <p i18n:translate="">
+            Are you sure you want to terminate these instances?
+            Remove any instances below that you do not wish to terminate.
+        </p>
         <form method="post" action="${request.route_url('instances_batch_terminate')}" id="batch-terminate-form">
             ${structure:batch_terminate_form['csrf_token']}
             <div>
