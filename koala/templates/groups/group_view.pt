@@ -1,7 +1,12 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
+</head
+
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="">
+    <div class="row" id="contentwrap"
+         ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('groups')}" i18n:translate="">IAM Groups</a></li>
@@ -84,12 +89,17 @@
                             </div>
                         </div>
                         <hr />
-                        <div class="section">
+                        <div class="section" ng-cloak="">
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_update_form.users, leftcol_width=12, rightcol_width=0)}
+                                <div class="small-10 columns">
+                                    <select name="input-users-select" id="users-select" class="chosen"
+                                        multiple="true" i18n:attributes="data-placeholder" data-placeholder="Search users and select to add">
+	                                <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="row">
+                            <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="save-changes-btn">
@@ -121,6 +131,11 @@
             <!--! Help goes here -->
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/group.js')}"></script>
 </div>
 
 </metal:block>

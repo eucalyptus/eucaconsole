@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
+import unicodedata
 from urllib import urlencode
 
 from boto.exception import EC2ResponseError
@@ -83,11 +84,15 @@ class GroupView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.group = self.get_group()
         self.group_route_id = self.request.matchdict.get('name')
+        self.group_users = self.get_users_array(self.group)
+        self.all_users = self.get_all_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.render_dict = dict(
             group=self.group,
             group_route_id=self.group_route_id,
+            group_users=self.group_users,
+            all_users=self.all_users,
             group_form=self.group_form,
             group_update_form=self.group_update_form,
         )
@@ -102,13 +107,28 @@ class GroupView(BaseView):
             group = self.conn.get_group(group_name=group_param)
         return group
 
+    def get_users_array(self, group):
+        if group is None:
+            return []
+        users = [u.user_name.encode('ascii', 'ignore') for u in group.users]
+        return users
+
+    def get_all_users_array(self):
+        group_param = self.request.matchdict.get('name')
+        if group_param == "new" or group_param is None:
+            return None
+        users = []
+        # Group's path to be used ?
+        if self.conn:
+            users = [u.user_name.encode('ascii', 'ignore') for u in self.conn.get_all_users().users]
+        return users
+
     @view_config(route_name='group_view', renderer=TEMPLATE)
     def group_view(self):
         return self.render_dict
  
     @view_config(route_name='group_create', request_method='POST', renderer=TEMPLATE)
     def group_create(self):
-        print "HERE"
         if self.group_form.validate():
             new_group_name = self.request.params.get('group_name') 
             new_path = self.request.params.get('path')
@@ -129,6 +149,9 @@ class GroupView(BaseView):
     @view_config(route_name='group_update', request_method='POST', renderer=TEMPLATE)
     def group_update(self):
         if self.group_update_form.validate():
+            new_users = self.request.params.getall('input-users-select')
+            if new_users is not None:
+                self.group_update_users( self.group.group_name, new_users)
             new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
             new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
@@ -145,4 +168,29 @@ class GroupView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    def group_update_users(self, group_name, new_users):
+        new_users = [u.encode('ascii', 'ignore') for u in new_users]
+
+        for new_user in new_users:
+            is_new = True
+            for user in self.group_users:
+                if user == new_user:
+                    is_new = False
+            if is_new:
+                self.conn.add_user_to_group(group_name, new_user)
+
+        for user in self.group_users:
+            is_deleted = True
+            for new_user in new_users:
+                if user == new_user:
+                    is_deleted = False
+            if is_deleted:
+                self.conn.remove_user_from_group(group_name, user)
+
+        return 
+
+
+
+
 
