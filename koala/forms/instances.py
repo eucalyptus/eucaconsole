@@ -68,11 +68,7 @@ class LaunchInstanceForm(BaseSecureForm):
         label=_(u'Instance type'),
         validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
-    zone_error_msg = _(u'Availability zone is required')
-    zone = wtforms.SelectField(
-        label=_(u'Availability zone'),
-        validators=[validators.InputRequired(message=zone_error_msg)],
-    )
+    zone = wtforms.SelectField(label=_(u'Availability zone'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
@@ -130,7 +126,6 @@ class LaunchInstanceForm(BaseSecureForm):
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
         self.instance_type.error_msg = self.instance_type_error_msg
-        self.zone.error_msg = self.zone_error_msg
         self.keypair.error_msg = self.keypair_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
@@ -140,12 +135,8 @@ class LaunchInstanceForm(BaseSecureForm):
         return choices
 
     def get_availability_zone_choices(self):
-        choices = []
-        add_blank = True
-        if self.cloud_type == 'euca':
-            choices = [('Any', _(u'No preference'))]
-            add_blank = False
-        choices.extend(self.choices_manager.availability_zones(add_blank=add_blank))
+        choices = [('', _(u'No preference'))]
+        choices.extend(self.choices_manager.availability_zones(add_blank=False))
         return choices
 
 
