@@ -173,19 +173,19 @@ class GroupView(BaseView):
         new_users = [u.encode('ascii', 'ignore') for u in new_users]
 
         for new_user in new_users:
-            isNew = True
+            is_new = True
             for user in self.group_users:
                 if user == new_user:
-                    isNew = False
-            if isNew:
+                    is_new = False
+            if is_new:
                 self.conn.add_user_to_group(group_name, new_user)
 
         for user in self.group_users:
-            isDeleted = True
+            is_deleted = True
             for new_user in new_users:
                 if user == new_user:
-                    isDeleted = False
-            if isDeleted:
+                    is_deleted = False
+            if is_deleted:
                 self.conn.remove_user_from_group(group_name, user)
 
         return 

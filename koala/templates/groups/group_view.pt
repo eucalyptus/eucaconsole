@@ -94,7 +94,7 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-10 columns">
                                     <select name="input-users-select" id="users-select" class="chosen"
-                                        multiple="true" data-placeholder="Search users and select to add">
+                                        multiple="true" i18n:attributes="data-placeholder" data-placeholder="Search users and select to add">
 	                                <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
                                     </select>
                                 </div>
