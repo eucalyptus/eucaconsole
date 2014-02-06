@@ -77,8 +77,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.filters_form = InstancesFiltersForm(
-            self.request, conn=self.conn, cloud_type=self.cloud_type, formdata=self.request.params or None)
+            self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -225,7 +227,13 @@ class InstancesJsonView(LandingPageView):
     @view_config(route_name='instances_json', renderer='json', request_method='GET')
     def instances_json(self):
         instances = []
-        filtered_items = self.filter_items(self.get_items())
+        filters = {}
+        security_group_param = self.request.params.get('security_group')
+        if security_group_param:
+            filters = {'group-name': security_group_param}
+        filtered_items = self.filter_items(self.get_items(filters=filters), ignore=['security_group', 'scaling_group'])
+        if self.request.params.get('scaling_group'):
+            filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
@@ -247,15 +255,25 @@ class InstancesJsonView(LandingPageView):
             ))
         return dict(results=instances)
 
-    def get_items(self):
+    def get_items(self, filters=None):
         if self.conn:
             instances = []
-            for reservation in self.conn.get_all_reservations():
+            for reservation in self.conn.get_all_reservations(filters=filters):
                 for instance in reservation.instances:
                     instance.groups = reservation.groups
                     instances.append(instance)
             return instances
         return []
+
+    def filter_by_scaling_group(self, items):
+        filtered_items = []
+        for item in items:
+            autoscaling_tag = item.tags.get('aws:autoscaling:groupName')
+            if autoscaling_tag:
+                for scaling_group in self.request.params.getall('scaling_group'):
+                    if autoscaling_tag == scaling_group:
+                        filtered_items.append(item)
+        return filtered_items
 
 
 class InstanceView(TaggedItemView, BaseInstanceView):

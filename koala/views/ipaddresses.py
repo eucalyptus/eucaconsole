@@ -8,7 +8,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.ipaddresses import AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm
+from ..forms.ipaddresses import (
+    AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm, IPAddressesFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -27,12 +28,13 @@ class IPAddressesView(LandingPageView):
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
-        self.json_items_endpoint = self.request.route_url('ipaddresses_json')
+        self.filters_form = IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.json_items_endpoint = self.get_json_endpoint('ipaddresses_json')
         self.sort_keys = self.get_sort_keys()
         self.location = self.get_redirect_location('ipaddresses')
         self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
-            filter_fields=self.filter_fields,
+            filter_fields=True,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
@@ -41,7 +43,8 @@ class IPAddressesView(LandingPageView):
             allocate_form=self.allocate_form,
             associate_form=self.associate_form,
             disassociate_form=self.disassociate_form,
-            release_form=self.release_form
+            release_form=self.release_form,
+            filters_form=self.filters_form,
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -128,7 +131,7 @@ class IPAddressesView(LandingPageView):
         ]
 
 
-class IPAddressesJsonView(BaseView):
+class IPAddressesJsonView(LandingPageView):
     def __init__(self, request):
         super(IPAddressesJsonView, self).__init__(request)
         self.conn = self.get_connection()
@@ -136,9 +139,11 @@ class IPAddressesJsonView(BaseView):
     @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
     def ipaddresses_json(self):
         ipaddresses = []
-        addresses = self.get_items()
-        instances = self.get_instances(addresses)
-        for address in addresses:
+        items = self.get_items()
+        if self.request.params.getall('assignment'):
+            items = self.filter_by_assignment(items)
+        instances = self.get_instances(items)
+        for address in items:
             ipaddresses.append(dict(
                 public_ip=address.public_ip,
                 instance_id=address.instance_id,
@@ -159,6 +164,14 @@ class IPAddressesJsonView(BaseView):
         for inst in instances:
             ret[inst.id] = inst
         return ret
+
+    def filter_by_assignment(self, items):
+        filtered_items = []
+        for item in items:
+            for assignment in self.request.params.getall('assignment'):
+                if (assignment and item.instance_id) or (not assignment and not item.instance_id):
+                    filtered_items.append(item)
+        return filtered_items
 
 
 class IPAddressView(BaseView):

@@ -50,3 +50,20 @@ class ReleaseIPForm(BaseSecureForm):
     """No fields required here except the CSRF token"""
     pass
 
+
+class IPAddressesFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    assignment = wtforms.SelectMultipleField(label=_(u'Assignment'))
+
+    def __init__(self, request, conn=None, **kwargs):
+        super(IPAddressesFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.assignment.choices = self.get_assignment_choices()
+
+    @staticmethod
+    def get_assignment_choices():
+        return (
+            ('assigned', 'Assigned'),
+            ('', 'Unassigned'),
+        )
+

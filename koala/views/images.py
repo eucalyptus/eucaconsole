@@ -69,7 +69,10 @@ class ImagesJsonView(LandingPageView):
     def images_json(self):
         images = []
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
-        for image in self.filter_items(self.get_items(), ignore=['owner_alias']):
+        filtered_items = self.filter_items(self.get_items(), ignore=['owner_alias', 'platform'])
+        if self.request.params.getall('platform'):
+            filtered_items = self.filter_by_platform(filtered_items)
+        for image in filtered_items:
             platform = ImageView.get_platform(image)
             images.append(dict(
                 architecture=image.architecture,
@@ -107,6 +110,14 @@ class ImagesJsonView(LandingPageView):
             except EC2ResponseError as exc:
                 return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)
+
+    def filter_by_platform(self, items):
+        filtered_items = []
+        for item in items:
+            for platform in self.request.params.getall('platform'):
+                if item.platform == platform:
+                    filtered_items.append(item)
+        return filtered_items
 
 
 class ImageView(TaggedItemView):
