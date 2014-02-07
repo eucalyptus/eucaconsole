@@ -4,7 +4,10 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="UserNew" ng-controller="UserNewCtrl">
+    <div class="row" id="contentwrap" ng-app="UserNew" ng-controller="UserNewCtrl"
+            ng-init="initController('${request.route_url('user_create')}',
+                                    '${request.route_url('users')}',
+                                    '${request.route_url('user_view', name='_name_')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
@@ -16,8 +19,8 @@
 
         <div class="large-7 columns">
             <div class="panel no-title">
-                <form action="${request.route_url('user_create')}" method="post" data-abide="abide"
-                        id="user-new-form">
+                <form id="user-new-form" ng-submit="submit($event)"
+                        data-abide="abide" >
                     ${structure:user_form['csrf_token']}
                     <div class="section">
                         ${panel('user_editor')}
@@ -68,6 +71,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/user_new.js')}"></script>
 </div>
 

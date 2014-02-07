@@ -118,8 +118,8 @@ class UserView(BaseView):
         random.seed = (os.urandom(1024))
         return ''.join(random.choice(chars) for i in range(12))
 
-    def addQuotaLimit(self, statements, param, action, condition):
-        val = self.request.params.get(param, None)
+    def addQuotaLimit(self, statements, parsed, param, action, condition):
+        val = self.getParsedValue(parsed, param, None)
         if val:
             statements.append({'Effect': 'Limit', 'Action': action,
                 'Resource': '*', 'Condition':{'NumericLessThanEquals':{condition: val}}})
@@ -148,82 +148,116 @@ class UserView(BaseView):
             g.title = g.group_name
         return dict(results=groups.groups)
 
-    @view_config(route_name='user_create', renderer=TEMPLATE, request_method='POST')
+    def getParsedValue(self, vals, key, default):
+        try:
+            ret = vals[key][0]
+        except KeyError as err:
+            ret = default
+        return ret
+
+    @view_config(route_name='user_create', renderer='json', request_method='POST')
     def user_create(self):
         # can't use regular form validation here. We allow empty values and the validation
         # code does not, so we need to roll our own below.
+        content = self.request.params.get('content')
+        parsed = urlparse.parse_qs(content)
         # get user list
-        users_json = self.request.params.get('users')
+        users_json = parsed['users'][0]
         # get quota info
         # now get the rest
-        random_password = self.request.params.get('random_password', 'n')
-        access_keys = self.request.params.get('access_keys', 'n')
-        allow_all = self.request.params.get('allow_all', 'n')
-        path = self.request.params.get('path', '/')
+        random_password = self.getParsedValue(parsed, 'random_password', 'n')
+        access_keys = self.getParsedValue(parsed, 'access_keys', 'n')
+        allow_all = self.getParsedValue(parsed, 'allow_all', 'n')
+        path = self.getParsedValue(parsed, 'path', '/')
+       
+        session = self.request.session
+        account=session['account']
         try:
+            user_list = []
             if users_json:
                 users = json.loads(users_json)
-                for name in users.items():
+                for (name, email) in users.items():
                     user = self.conn.create_user(name, path)
+                    user_data = {'account': account, 'username':name}
                     policy = {}
                     policy['Version'] = '2011-04-01'
                     statements = []
                     if random_password == 'y':
-                        self.conn.create_login_profile(name, self.generatePassword())
+                        password = self.generatePassword()
+                        self.conn.create_login_profile(name, password)
+                        user_data['password'] = password
                     if access_keys == 'y':
-                        self.conn.create_access_key(name)
+                        creds = self.conn.create_access_key(name)
+                        user_data['access_id'] = creds.access_key.access_key_id
+                        user_data['secret_key'] = creds.access_key.secret_access_key
+                    # store this away for file creation later
+                    user_list.append(user_data)
                     if allow_all == 'y':
                         statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
                     ## s3
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_bucket_size', 's3:????', 's3:quota-bucketsize')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
                     ## iam
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
                     ## autoscaling
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
                     ## elb
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
 
                     if len(statements) > 0:
                         policy['Statement'] = statements
                         import logging; logging.info("policy being set to = "+json.dumps(policy, indent=2))
                         self.conn.put_user_policy(name, "user-all-access-plus-quotas", json.dumps(policy))
-            msg = _(u'Successfully created user(s).')
-            location = self.request.route_url('user_view', name=user.user_name)
-            return HTTPFound(location=location)
+            #msg = _(u'Successfully created user(s).')
+            #location = self.request.route_url('user_view', name=user.user_name)
+            #return HTTPFound(location=location)
+            # create file to send instead. Since # users is probably small, do it all in memory
+            csv = ""
+            for user in user_list:
+                csv += "'{account}', '{user}'".format(account=user_data['account'], user=user_data['username'])
+                if random_password == 'y':
+                    csv += ", '{password}'".format(password=user_data['password'])
+                if access_keys == 'y':
+                    csv += ", '{access_id}', {secret_key}'".format(access_id=user_data['access_id'], secret_key=user_data['secret_key'])
+                csv += '\n'
+            import pdb; pdb.set_trace()
+            response = Response(content_type='text/csv')
+            response.body = csv
+            response.content_disposition = 'attachment; filename="{acct}-users.csv"'.format(acct=account)
+            return response
         except BotoServerError as err:
             msg = err.message
             queue = Notification.ERROR
