@@ -150,24 +150,30 @@ class GroupView(BaseView):
     def group_update(self):
         if self.group_update_form.validate():
             new_users = self.request.params.getall('input-users-select')
-            if new_users is not None:
-                self.group_update_users( self.group.group_name, new_users)
             new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
             new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
-            try:
-                self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
-                msg_template = _(u'Successfully modified group {group}')
-                msg = msg_template.format(group=this_group_name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+            if new_users is not None:
+                self.group_update_users( self.group.group_name, new_users)
+            if new_group_name is not None or new_path is not None:
+                self.group_update_name_and_path(new_group_name, new_path)
             location = self.request.route_url('group_view', name=this_group_name)
-            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    def group_update_name_and_path(self, new_group_name, new_path):
+        this_group_name = new_group_name if new_group_name is not None else self.group.group_name
+        try:
+            self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
+            msg_template = _(u'Successfully modified group {group}')
+            msg = msg_template.format(group=this_group_name)
+            queue = Notification.SUCCESS
+        except EC2ResponseError as err:
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return
 
     def group_update_users(self, group_name, new_users):
         new_users = [u.encode('ascii', 'ignore') for u in new_users]
@@ -178,7 +184,7 @@ class GroupView(BaseView):
                 if user == new_user:
                     is_new = False
             if is_new:
-                self.conn.add_user_to_group(group_name, new_user)
+                self.group_add_user(group_name, new_user)
 
         for user in self.group_users:
             is_deleted = True
@@ -186,11 +192,34 @@ class GroupView(BaseView):
                 if user == new_user:
                     is_deleted = False
             if is_deleted:
-                self.conn.remove_user_from_group(group_name, user)
+                self.group_remove_user(group_name, user)
 
         return 
 
+    def group_add_user(self, group_name, user):
+        try:
+            self.conn.add_user_to_group(group_name, user)
+            msg_template = _(u'Successfully added user {user}')
+            msg = msg_template.format(user=user)
+            queue = Notification.SUCCESS
+        except EC2ResponseError as err:
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
 
+        return
 
+    def group_remove_user(self, group_name, user):
+        try:
+            self.conn.remove_user_from_group(group_name, user)
+            msg_template = _(u'Successfully removed user {user}')
+            msg = msg_template.format(user=user)
+            queue = Notification.SUCCESS
+        except EC2ResponseError as err:
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+
+        return
 
 
