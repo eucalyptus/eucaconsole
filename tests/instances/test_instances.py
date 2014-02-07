@@ -29,11 +29,6 @@ class InstancesViewTests(BaseViewTestCase):
         view = InstancesView(request).instances_landing()
         self.assertTrue('/instances/json' in view.get('json_items_endpoint'))
 
-    def test_instances_landing_page_json(self):
-        request = testing.DummyRequest()
-        view = InstancesJsonView(request).instances_json()
-        self.assertEqual(view.get('results'), [])
-
 
 class InstanceViewTests(BaseViewTestCase):
     """Instance detail page view"""
@@ -135,7 +130,6 @@ class InstanceLaunchFormTestCase(BaseFormTestCase):
     def test_required_fields(self):
         self.assert_required('number')
         self.assert_required('instance_type')
-        self.assert_required('zone')
         self.assert_required('keypair')
         self.assert_required('securitygroup')
 

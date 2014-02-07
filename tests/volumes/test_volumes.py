@@ -29,11 +29,6 @@ class VolumesViewTests(BaseViewTestCase):
         view = VolumesView(request).volumes_landing()
         self.assertTrue('/volumes/json' in view.get('json_items_endpoint'))
 
-    def test_volumes_landing_page_json(self):
-        request = testing.DummyRequest()
-        view = VolumesJsonView(request).volumes_json()
-        self.assertEqual(view.get('results'), [])
-
 
 class VolumeViewTests(BaseViewTestCase):
     """Volume detail page view"""
