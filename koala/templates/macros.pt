@@ -131,12 +131,12 @@
             </div>
         </div>
         <div>&nbsp;</div>
-        <div ng-cloak="" id="show-more-wrapper">
-            <button class="secondary" ng-if="items.length > displayCount" id="show-more-btn" ng-click="showMore()">
-                <span i18n:translate="">Display</span>
-                {{ moreItemsCount }}
-                <span i18n:translate="">more items</span>
-            </button>
+        <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
+            <span i18n:translate="">Displaying</span>
+            <strong>{{ displayCount }}</strong>
+            <span i18n:translate="">of</span>
+            <strong>{{ items.length }}</strong>
+            <span i18n:translate="">items</span>
         </div>
     </div>
 </metal:datagrid_macro>
