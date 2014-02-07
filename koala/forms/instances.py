@@ -267,10 +267,10 @@ class DetachVolumeForm(BaseSecureForm):
 class InstancesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     state = wtforms.SelectMultipleField(label=_(u'Status'))
-    placement = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    availability_zone = wtforms.SelectMultipleField(label=_(u'Availability zone'))
     instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
-    security_group = wtforms.SelectField(label=_(u'Security group'))
+    security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = wtforms.TextField(label=_(u'Tags'))
 
@@ -282,11 +282,11 @@ class InstancesFiltersForm(BaseSecureForm):
         self.cloud_type = cloud_type
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
-        self.placement.choices = self.get_availability_zone_choices()
+        self.availability_zone.choices = self.get_availability_zone_choices()
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
-        self.security_group.choices = self.ec2_choices_manager.security_groups()
+        self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
 
     def get_availability_zone_choices(self):

@@ -174,7 +174,14 @@ class VolumesJsonView(LandingPageView, BaseVolumeView):
     def volumes_json(self):
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
-        filtered_items = self.filter_items(self.get_items())
+        filters = {}
+        availability_zone_param = self.request.params.getall('zone')
+        if availability_zone_param:
+            filters.update({'availability-zone': availability_zone_param})
+        # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
+        # Note: the choices are from attributes in VolumesFiltersForm
+        ignore_params = ['zone']
+        filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         snapshots = self.conn.get_all_snapshots() if self.conn else []
         for volume in filtered_items:
             status = volume.status
@@ -199,8 +206,8 @@ class VolumesJsonView(LandingPageView, BaseVolumeView):
             ))
         return dict(results=volumes)
 
-    def get_items(self):
-        return self.conn.get_all_volumes() if self.conn else []
+    def get_items(self, filters=None):
+        return self.conn.get_all_volumes(filters=filters) if self.conn else []
 
 
 class VolumeView(TaggedItemView, BaseVolumeView):

@@ -228,10 +228,26 @@ class InstancesJsonView(LandingPageView):
     def instances_json(self):
         instances = []
         filters = {}
-        security_group_param = self.request.params.get('security_group')
+        availability_zone_param = self.request.params.getall('availability_zone')
+        if availability_zone_param:
+            filters.update({'availability-zone': availability_zone_param})
+        instance_state_param = self.request.params.getall('state')
+        if instance_state_param:
+            filters.update({'instance-state-name': instance_state_param})
+        instance_type_param = self.request.params.getall('instance_type')
+        if instance_type_param:
+            filters.update({'instance-type': instance_type_param})
+        security_group_param = self.request.params.getall('security_group')
         if security_group_param:
-            filters = {'group-name': security_group_param}
-        filtered_items = self.filter_items(self.get_items(filters=filters), ignore=['security_group', 'scaling_group'])
+            filters.update({'group-name': security_group_param})
+        root_device_type_param = self.request.params.getall('root_device_type')
+        if root_device_type_param:
+            filters.update({'root-device-type': root_device_type_param})
+        # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
+        # Note: the choices are from attributes in InstancesFiltersForm
+        ignore_params = [
+            'availability_zone', 'instance_type', 'state', 'security_group', 'scaling_group', 'root_device_type']
+        filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
