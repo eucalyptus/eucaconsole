@@ -74,7 +74,12 @@
 #filters form { font-size: 0.9rem; }
 #filters form input { height: 2rem; margin-bottom: 0; }
 
-#sorting-controls, #results-count { padding-top: 1rem; }
+#sorting-controls { padding-top: 1rem; }
+
+#results-count { padding-top: 1rem; }
+#results-count em { color: #555; font-style: normal; }
+
+#show-more-btn { display: block; width: 98%; margin: 0 auto; }
 
 .refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
 .refresh-icon .dots { width: 20px; position: relative; }
@@ -90,6 +95,7 @@
 .tile .footer .action { display: block; position: absolute; left: 0; right: 0; bottom: 0; line-height: 1.5rem; text-align: center; background-color: #76b800; color: white; }
 .tile .footer .action:hover { background-color: #558500; }
 
+.table td .description { word-break: break-all; }
 .table td .label { padding: 4px 6px; }
 .table td .label.i386 { background-color: #999999; }
 .table td .label.x86_64 { background-color: #40a8c6; }

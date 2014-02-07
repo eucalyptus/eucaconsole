@@ -83,7 +83,7 @@
             <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">EMI Name</th>
+                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
                 <th i18n:translate="">Root Device</th>
@@ -93,7 +93,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a></td>
                 <td><span class="emi-name">{{ item.name }}</span></td>
-                <td>{{ item.description }}</td>
+                <td><span class="description">{{ item.description }}</span></td>
                 <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
                 <td><span class="label radius {{ item.root_device_type }}">{{ item.root_device_type }}</span></td>
                 <td>{{ item.platform_name }}</td>
