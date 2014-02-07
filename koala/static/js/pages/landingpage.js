@@ -23,7 +23,6 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.landingPageViewKey = '';
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
-        $scope.moreItemsCount = 0;
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
             $scope.initChosenFilters();
             pageResource = pageResource || window.location.pathname.split('/')[0];
@@ -32,6 +31,7 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
             $scope.setWatch();
+            $scope.enableInfiniteScroll();
         };
         $scope.initChosenFilters = function () {
             !!$(document).chosen && $('#filters').find('select').chosen({
@@ -139,11 +139,19 @@ angular.module('LandingPage', ['CustomFilters'])
         };
         $scope.setMoreCount = function () {
             $scope.remainingCount = $scope.items.length - $scope.displayCount;
-            $scope.moreItemsCount = $scope.remainingCount < $scope.limitCount ? $scope.remainingCount : $scope.limitCount;
         }
         $scope.showMore = function () {
-            $scope.displayCount += $scope.limitCount;
-            $scope.setMoreCount();
+            if ($scope.displayCount < $scope.items.length) {
+                $scope.displayCount += $scope.limitCount;
+                $scope.setMoreCount();
+            }
         };
+        $scope.enableInfiniteScroll = function () {
+            $(window).scroll(function() {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    $timeout(function () { $scope.showMore(); }, 50);
+                }
+            });
+        }
     })
 ;
