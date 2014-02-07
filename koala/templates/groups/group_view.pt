@@ -2,7 +2,10 @@
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
-</head
+    <style>
+        .chosen-container-multi .chosen-choices li.search-choice { display: none; }
+    </style>
+</head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
@@ -97,6 +100,13 @@
                                         multiple="true" i18n:attributes="data-placeholder" data-placeholder="Search users and select to add">
 	                                <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
                                     </select>
+                                </div>
+                            </div> 
+                            <div class="row controls-wrapper readonly">
+                                <div id="users_select_field">
+                                    <span class="label radius secondary" ng-repeat="user in groupUsers">
+                                        <a ng-click="removeUser(user)"><i class="fi-x"></i></a>{{ user }}
+                                    </span>
                                 </div>
                             </div>
                             <div class="row controls-wrapper readonly">
