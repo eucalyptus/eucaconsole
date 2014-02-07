@@ -21,6 +21,9 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.sortByKey = '';
         $scope.sortReverseKey = '';
         $scope.landingPageViewKey = '';
+        $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
+        $scope.displayCount = $scope.limitCount;
+        $scope.moreItemsCount = 0;
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
             $scope.initChosenFilters();
             pageResource = pageResource || window.location.pathname.split('/')[0];
@@ -92,6 +95,7 @@ angular.module('LandingPage', ['CustomFilters'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
+                $scope.setMoreCount();
                 $scope.items.forEach(function (item) {
                     if (!!item['transitional']) {
                         transitionalCount += 1;
@@ -132,6 +136,14 @@ angular.module('LandingPage', ['CustomFilters'])
         };
         $scope.switchView = function(view){
             $scope.landingPageView = view;
+        };
+        $scope.setMoreCount = function () {
+            $scope.remainingCount = $scope.items.length - $scope.displayCount;
+            $scope.moreItemsCount = $scope.remainingCount < $scope.limitCount ? $scope.remainingCount : $scope.limitCount;
+        }
+        $scope.showMore = function () {
+            $scope.displayCount += $scope.limitCount;
+            $scope.setMoreCount();
         };
     })
 ;

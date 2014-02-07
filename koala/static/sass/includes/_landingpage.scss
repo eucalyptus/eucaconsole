@@ -305,8 +305,22 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-#sorting-controls, #results-count {
+#sorting-controls {
     padding-top: 1rem;
+}
+
+#results-count {
+    padding-top: 1rem;
+    em {
+        color: #555;
+        font-style: normal;
+    }
+}
+
+#show-more-btn {
+    display: block;
+    width: 98%;
+    margin: 0 auto;
 }
 
 .refresh-icon {

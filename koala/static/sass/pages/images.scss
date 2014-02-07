@@ -33,6 +33,9 @@
 // Table view
 .table {
     td {
+        .description {
+            word-break: break-all;
+        }
         .label {
             padding: 4px 6px;
             &.i386 { background-color: $euca-grey; }

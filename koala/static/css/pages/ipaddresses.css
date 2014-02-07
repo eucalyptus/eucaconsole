@@ -72,7 +72,12 @@
 #filters form { font-size: 0.9rem; }
 #filters form input { height: 2rem; margin-bottom: 0; }
 
-#sorting-controls, #results-count { padding-top: 1rem; }
+#sorting-controls { padding-top: 1rem; }
+
+#results-count { padding-top: 1rem; }
+#results-count em { color: #555; font-style: normal; }
+
+#show-more-btn { display: block; width: 98%; margin: 0 auto; }
 
 .refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
 .refresh-icon .dots { width: 20px; position: relative; }
