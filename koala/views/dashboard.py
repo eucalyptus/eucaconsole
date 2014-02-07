@@ -30,7 +30,7 @@ class DashboardJsonView(BaseView):
         zone = self.request.params.get('zone')
         filters = {}
         if zone:
-            filters = {'availability_zone': zone}
+            filters = {'availability-zone': zone}
 
         # Instances counts
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
