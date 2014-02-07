@@ -130,6 +130,7 @@
                 </div>
             </div>
         </div>
+        <div>&nbsp;</div>
         <div ng-cloak="" ng-if="items.length > displayCount" id="show-more-btn">
             <span i18n:translate="">Displaying</span>
             <strong>{{ displayCount }}</strong>
