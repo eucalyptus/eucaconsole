@@ -11,6 +11,9 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
             </metal:crumbs>
+            <metal:help metal:fill-slot="icons">
+                <a class="right-off-canvas-toggle help-icon">?</a>
+            </metal:help>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
@@ -77,6 +80,9 @@
                 Need some content
             </p>
             <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_groups', 'group_landing_page' )}
         </div>
     </div>
 </div>

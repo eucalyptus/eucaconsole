@@ -42,3 +42,7 @@ def help_launchconfigs(context, request, display):
 def help_scalinggroups(context, request, display):
     return dict(display=display)
 
+@panel_config('help_groups', renderer='../templates/help/help_groups.pt')
+def help_groups(context, request, display):
+    return dict(display=display)
+
