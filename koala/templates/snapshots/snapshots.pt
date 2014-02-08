@@ -106,6 +106,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_snapshots', 'snapshot_landing_page' )}
+        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('snapshot_dialogs', delete_form=delete_form, register_form=register_form, landingpage=True)}
     </div>

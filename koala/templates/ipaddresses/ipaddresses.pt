@@ -106,6 +106,9 @@
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_ipaddresses', 'ipaddress_landing_page' )}
+        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('ipaddress_dialogs', associate_form=associate_form,
                 disassociate_form=disassociate_form, release_form=release_form, landingpage=True)}

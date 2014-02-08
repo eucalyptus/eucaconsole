@@ -122,6 +122,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_scalinggroups', 'scalinggroup_landing_page' )}
+        </div>
     </div>
 </div>
 

@@ -123,6 +123,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_volumes', 'volume_landing_page' )}
+        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('volume_dialogs', landingpage=True,
                 attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}

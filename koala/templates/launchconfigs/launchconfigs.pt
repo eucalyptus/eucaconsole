@@ -82,6 +82,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_launchconfigs', 'launchconfig_landing_page' )}
+        </div>
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', delete_form=delete_form, landingpage=True)}
     </div>

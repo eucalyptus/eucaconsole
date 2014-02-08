@@ -68,6 +68,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_securitygroups', 'securitygroup_landing_page' )}
+        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', delete_form=delete_form, landingpage=True)}
     </div>

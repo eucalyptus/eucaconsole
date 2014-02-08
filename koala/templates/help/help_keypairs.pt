@@ -1,4 +1,11 @@
 
+<!-- HELP KEYPAIRS: KEYPAIR LANDING PAGE -->
+<div tal:condition="display == 'keypair_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP KEYPAIR: CREATE KEYPAIR-->
 <div tal:condition="display == 'create_keypair'">
     <h5 class="title" i18n:translate="">Create a Key Pair</h5>
