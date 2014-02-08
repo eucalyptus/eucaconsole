@@ -32,6 +32,7 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.getItems(jsonItemsEndpoint);
             $scope.setWatch();
             $scope.enableInfiniteScroll();
+            $scope.setOffCanvasHelp();
         };
         $scope.initChosenFilters = function () {
             !!$(document).chosen && $('#filters').find('select').chosen({
@@ -139,7 +140,7 @@ angular.module('LandingPage', ['CustomFilters'])
         };
         $scope.setMoreCount = function () {
             $scope.remainingCount = $scope.items.length - $scope.displayCount;
-        }
+        };
         $scope.showMore = function () {
             if ($scope.displayCount < $scope.items.length) {
                 $scope.displayCount += $scope.limitCount;
@@ -152,6 +153,9 @@ angular.module('LandingPage', ['CustomFilters'])
                     $timeout(function () { $scope.showMore(); }, 50);
                 }
             });
-        }
+        };
+        $scope.setOffCanvasHelp = function (){
+             $('#right-off-canvas-div').append($('#help-content-div'))
+        };
     })
 ;

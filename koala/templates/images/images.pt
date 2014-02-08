@@ -13,7 +13,7 @@
                 <li class="current"><a href="#" i18n:translate="">Images</a></li>
             </metal:crumbs>
             <metal:help metal:fill-slot="icons">
-                <a class="help-icon" data-reveal-id="help-modal">?</a>
+                <a class="right-off-canvas-toggle help-icon">?</a>
             </metal:help>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -111,18 +111,14 @@
                 </td>
             </metal:block>
         </div>
-        <div id="help-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Help</h3>
-            <p>
-                If you don't see the image listed here, you can
-                <a href="${request.route_url('instance_create')}?input_image_id=1">
-                    enter any image ID at the Launch Instance page.
-                </a>
-            </p>
-            <a class="close-reveal-modal">&#215;</a>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_images', 'image_landing_page', request.route_url('instance_create') )}
         </div>
     </div>
 </div>
+
+
+
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>

@@ -1,6 +1,11 @@
 
 <!-- HELP IMAGE-->
-<div tal:condition="display == 'image_help'">
+<div tal:condition="display == 'image_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p>
+        If you don't see the image listed here, you can
+        <a href="${instance_create_url}?input_image_id=1">
+            enter any image ID at the Launch Instance page.
+        </a>
+    </p>
 </div>
-
-

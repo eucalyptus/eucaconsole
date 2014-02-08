@@ -67,9 +67,14 @@
             </section>
         </nav>
     </div>
-    <!-- Off Canvas Menu -->
+    <!-- Off Canvas Menu: Left -->
     <div class="left-off-canvas-menu">
         ${panel('top_nav', off_canvas=True)}
+    </div>
+
+    <!-- Off Canvas Menu: Right-->
+    <div class="right-off-canvas-menu" style="background-color:white;">
+        <div id="right-off-canvas-div"></div>
     </div>
 
     <!-- Main Content -->
