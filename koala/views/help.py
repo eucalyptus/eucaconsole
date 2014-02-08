@@ -46,3 +46,7 @@ def help_scalinggroups(context, request, display):
 def help_groups(context, request, display):
     return dict(display=display)
 
+@panel_config('help_users', renderer='../templates/help/help_users.pt')
+def help_users(context, request, display):
+    return dict(display=display)
+

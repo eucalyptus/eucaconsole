@@ -1,0 +1,6 @@
+
+<!-- HELP USERS-->
+<div tal:condition="display == 'user_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>

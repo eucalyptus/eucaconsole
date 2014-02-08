@@ -1,4 +1,10 @@
 
+<!-- HELP INSTANCES: INSTANCE LANDING PAGE -->
+<div tal:condition="display == 'instance_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
 <!-- HELP INSTANCE: CONNECT INSTANCE-->
 <div tal:condition="display == 'connect_instance'">
     <h5 class="title">Connecting to an instance</h5>

@@ -141,6 +141,9 @@
                 </td>
             </metal:block>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_instances', 'instance_landing_page' )}
+        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form,
                 reboot_form=reboot_form, terminate_form=terminate_form)}

@@ -99,6 +99,9 @@
                 <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>
+        <div id="help-content-div" class="help-content" ng-cloak="">
+            ${panel('help_users', 'user_landing_page' )}
+        </div>
     </div>
 </div>
 

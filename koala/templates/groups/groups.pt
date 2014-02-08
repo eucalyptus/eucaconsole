@@ -11,9 +11,6 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
             </metal:crumbs>
-            <metal:help metal:fill-slot="icons">
-                <a class="right-off-canvas-toggle help-icon">?</a>
-            </metal:help>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
