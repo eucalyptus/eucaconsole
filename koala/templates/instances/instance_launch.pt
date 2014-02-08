@@ -185,84 +185,84 @@
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
-        <div class="summary" ng-cloak="" tal:condition="image">
-            <h5 i18n:translate="" class="title">Summary</h5>
-            <div class="section">
-                <div class="row">
-                    <label i18n:translate="">Image:</label>
-                    <div class="columns value">${image.name or image.id}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Platform:</label>
-                    <div class="columns value">${image.platform_name}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Root device:</label>
-                    <div class="columns value">${image.root_device_type}</div>
-                </div>
-            </div>
-            <div class="section step2 ${'hide' if not image else ''}">
-                <div class="row">
-                    <label i18n:translate="">Size:</label>
-                    <div class="columns value">{{ instanceType }}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Number:</label>
-                    <div class="columns value">{{ instanceNumber }}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Zone:</label>
-                    <div class="columns value">{{ instanceZone }}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Names:</label>
-                    <div class="columns value">
-                        <span ng-repeat="instanceName in instanceNames">
-                            {{ instanceName }}<span ng-show="!$last">, </span>
-                        </span>
+            <div class="summary" ng-cloak="" tal:condition="image">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section">
+                    <div class="row">
+                        <label i18n:translate="">Image:</label>
+                        <div class="columns value">${image.name or image.id}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Platform:</label>
+                        <div class="columns value">${image.platform_name}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Root device:</label>
+                        <div class="columns value">${image.root_device_type}</div>
                     </div>
                 </div>
-                <div class="row">
-                    <label i18n:translate="">Tags:</label>
-                    <div class="columns value" id="tag-preview">
-                        <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                <div class="section step2 ${'hide' if not image else ''}">
+                    <div class="row">
+                        <label i18n:translate="">Size:</label>
+                        <div class="columns value">{{ instanceType }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Number:</label>
+                        <div class="columns value">{{ instanceNumber }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Zone:</label>
+                        <div class="columns value">{{ instanceZone }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Names:</label>
+                        <div class="columns value">
+                            <span ng-repeat="instanceName in instanceNames">
+                                {{ instanceName }}<span ng-show="!$last">, </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Tags:</label>
+                        <div class="columns value" id="tag-preview">
+                            <div ng-repeat="(name, value) in tagsObject">{{ name }}={{ value }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section step3 hide">
+                    <div class="row">
+                        <label i18n:translate="">Key:</label>
+                        <div class="columns value">{{ keyPair }}</div>
+                    </div>
+                    <div class="row">
+                        <label i18n:translate="">Security group:</label>
+                        <div class="columns value">{{ securityGroup }}</div>
+                    </div>
+                </div>
+                <div class="section step4 hide">
+                    <div class="row">
+                        <div class="columns value" ng-show="userData || userDataFile">
+                            <i class="fi-check"></i> User data added
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="monitoringEnabled">
+                            <i class="fi-check"></i> Monitoring enabled
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="privateAddressing">
+                            <i class="fi-check"></i> Uses private addressing
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="section step3 hide">
-                <div class="row">
-                    <label i18n:translate="">Key:</label>
-                    <div class="columns value">{{ keyPair }}</div>
-                </div>
-                <div class="row">
-                    <label i18n:translate="">Security group:</label>
-                    <div class="columns value">{{ securityGroup }}</div>
+            <div class="">
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
                 </div>
             </div>
-            <div class="section step4 hide">
-                <div class="row">
-                    <div class="columns value" ng-show="userData || userDataFile">
-                        <i class="fi-check"></i> User data added
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="columns value" ng-show="monitoringEnabled">
-                        <i class="fi-check"></i> Monitoring enabled
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="columns value" ng-show="privateAddressing">
-                        <i class="fi-check"></i> Uses private addressing
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="">
-            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                <!-- HELP CONTENT -->
-            </div>
-        </div>
         </div>
         <!--! Modal dialogs -->
         ${panel('create_keypair_dialog', keypair_form=keypair_form, generate_file_form=generate_file_form)}
