@@ -38,9 +38,6 @@ class UsersView(LandingPageView):
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         conn = self.get_connection(conn_type="iam")
         group_choices = [] #sorted(set(conn.get_all_groups().groups))
-        self.filter_fields = [
-            LandingPageFilter(key='group', name='Groups', choices=group_choices),
-        ]
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
@@ -51,7 +48,7 @@ class UsersView(LandingPageView):
         ]
 
         return dict(
-            filter_fields=self.filter_fields,
+            filter_fields=False,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,

@@ -73,8 +73,8 @@
     </div>
 
     <!-- Off Canvas Menu: Right-->
-    <div class="right-off-canvas-menu" style="background-color:white;">
-        <div id="right-off-canvas-div"></div>
+    <div class="right-off-canvas-menu">
+        <metal:block metal:define-slot="offcanvas_right" />
     </div>
 
     <!-- Main Content -->

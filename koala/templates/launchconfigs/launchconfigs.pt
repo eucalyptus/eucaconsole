@@ -82,13 +82,16 @@
                 </td>
             </metal:block>
         </div>
-        <div id="help-content-div" class="help-content" ng-cloak="">
-            ${panel('help_launchconfigs', 'launchconfig_landing_page' )}
-        </div>
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', delete_form=delete_form, landingpage=True)}
     </div>
 </div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_launchconfigs', 'launchconfig_landing_page' )}
+    </div>
+</metal:block>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>

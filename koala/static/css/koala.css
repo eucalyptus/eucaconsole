@@ -1449,6 +1449,8 @@ textarea.console-output { width: 100%; min-height: 30rem; background-color: blac
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
+.right-off-canvas-menu { background-color: white; padding: 10px; }
+
 .help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
 .help-content p { margin-bottom: 0.5rem; }
 .help-content ol { list-style-position: inside; }
