@@ -10,7 +10,7 @@
 
 #breadcrumbs .icon-block { display: inline-block; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d3e9b6; }
@@ -25,9 +25,9 @@
 .tile .content a { color: #468400; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #808285; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
-.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; background-color: #808285; }
+.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #808285; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; }
 .tile .footer .completed { padding: 4px 0 4px 10px; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }

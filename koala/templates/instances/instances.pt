@@ -21,9 +21,9 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button" id="primary-buttons">
-                <a class="button small" i18n:translate="" id="launch-instance-btn"
+                <a class="button" i18n:translate="" id="launch-instance-btn"
                    href="${request.route_url('instance_create')}">Launch New Instance</a>
-                <a class="button secondary small" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
+                <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
                    href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} instances</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">

@@ -6,7 +6,7 @@
 
 // Sass variables
 $tile-width: 200px;
-$tile-height: 200px;
+$tile-height: 220px;
 $tile-row-height: 24px;
 $tile-bg-color: white;
 $tile-label-padding: 28px;
@@ -105,7 +105,8 @@ $dropdown-border-color: $euca-green;
         .label {
             padding: 1px 3px;
             margin-left: -$tile-label-padding;
-            background-color: $euca-grey;
+            background-color: #e6e7e8;
+            color: #555;
             margin-right: 0.2rem;
             font-family: Verdana, sans-serif;
             min-width: 22px;
@@ -119,10 +120,12 @@ $dropdown-border-color: $euca-green;
         position: absolute;
         bottom: 0;
         left: 0; right: 0;
-        height: $tile-row-height;
-        padding: 4px 4px 4px 10px;
+        padding: 5px;
         color: white;
         background-color: $euca-grey;
+        text-align: center;
+        line-height: 1.4rem;
+        text-transform: capitalize;
         &.has-progress {
             padding: 0 0 0 0;
         }

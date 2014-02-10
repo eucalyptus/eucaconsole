@@ -7,8 +7,7 @@ $wizard-border-width: 16px;
 /* @section Wizard styles */
 .wizard {
     position: relative;
-    background-color: $euca-extralightgrey;
-    padding-top: $wizard-border-width;
+    background-color: transparent;
     &.has-title {
         position: relative;
         padding-top: 42px;
@@ -31,6 +30,9 @@ $wizard-border-width: 16px;
         margin-left: $wizard-border-width;
         dd {
             &.active {
+                a {
+                    background-color: white;
+                }
                 .cir {
                     background-color: $euca-darkblue;
                     color: white;
@@ -42,6 +44,7 @@ $wizard-border-width: 16px;
             a {
                 white-space: nowrap;
                 padding: 1rem 16px;
+                background-color: $euca-extralightgrey;
             }
             .cir {
                 position: relative;
@@ -63,8 +66,6 @@ $wizard-border-width: 16px;
         margin: 0 0 0 0;
         padding: 1rem;
         background-color: white;
-        border-right: $wizard-border-width solid $euca-extralightgrey;
-        border-left: $wizard-border-width solid  $euca-extralightgrey;
         .content {
             width: 100%;
         }
@@ -72,11 +73,13 @@ $wizard-border-width: 16px;
 }
 
 .summary {
+    background-color: white;
     position: relative;
     top: 2px;
-    padding-top: 8px;
+    padding: 8px;
     padding-bottom: 2rem;
-    background-color: $euca-extralightgrey;
+    margin-top: 54px;
+    margin-bottom: 1rem;
     label {
         position: relative;
         right: -1rem;

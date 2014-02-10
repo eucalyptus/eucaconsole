@@ -6,7 +6,7 @@
 
 // Status colors
 $snapshot-status-color-pending: lighten($euca-lightgreen, 20%);
-$snapshot-status-color-completed: $euca-darkgreen;
+$snapshot-status-color-completed: $euca-green;
 $snapshot-status-color-failed: darken(red, 20%);
 
 // Mixin for the "in-progress" dots indicator
@@ -46,21 +46,17 @@ $snapshot-status-color-failed: darken(red, 20%);
 // Progress indicator of snapshots in tile view
 .tile {
     .footer {
-        padding: 0 0 0 0;
         .completed {
-            padding: 4px 0 4px 8px;
-            height: 24px;
+            padding: 0 0 0 0;
         }
         .progress {
+            text-align: left;
             position: relative;
-            margin: 0 0 0 0;
-            height: 24px;
             border: none;
             .meter {
                 position: relative;
                 top: -2px; left: -2px;
-                padding: 4px 0 4px 8px;
-                height: 24px;
+                padding: 1px 0 1px 0;
                 display: inline-block;
                 white-space: nowrap;
                 font-weight: bold;

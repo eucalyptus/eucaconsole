@@ -1389,7 +1389,7 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 1.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { font-size: 0.9rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
