@@ -1,12 +1,8 @@
 /* @fileOverview Login page CSS */
 @import "../includes/eucavariables";
 
-#logobar {
+#logobar-wrapper {
     border-bottom: 1px solid black;
-}
-
-#maincontent {
-    background-color: #eee;
 }
 
 #notifications-wrapper {
@@ -15,9 +11,7 @@
 
 #login-wrapper {
     position: relative;
-    background-color: $euca-extralightgrey;
     padding: 10px;
-    box-shadow: 0 3px 6px $euca-grey;
     label {
         font-weight: bold;
         white-space: nowrap;
@@ -33,37 +27,31 @@
         margin: 0 auto;
     }
     .tabs {
-        a {
-            padding: 16px 32px;
-            font-weight: bold;
-        }
-        #euca-tab a {
-            color: $euca-darkgreen;
-        }
-        #aws-tab a {
-            color: darkorange;
+        dd {
+            &:first-child a {
+                box-shadow: none;
+            }
+            a {
+                box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2);
+                padding: 10px 32px 6px 24px;
+                font-weight: bold;
+            }
+            &.active a {
+                box-shadow: none;
+            }
         }
     }
     .tabs-content {
         padding: 1rem;
         padding-bottom: 2rem;
         background-color: white;
+        box-shadow: 3px 3px 5px 0px $euca-grey;
     }
-}
-
-
-#euca-login-button.button {
-    background-color: $euca-green;
-    border-color: darken($euca-green, 20%);
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#aws-login-button.button {
-    background-color: $aws-orange;
-    border-color: darken($aws-orange, 20%);
-    margin-top: 10px;
-    margin-bottom: 10px;
+    .button {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        background-color: $euca-orange;
+    }
 }
 
 

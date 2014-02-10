@@ -120,7 +120,9 @@ $button-border-style: solid;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
+$tabs-navigation-bg-color: $euca-green;
 $tabs-content-margin-bottom: rem-calc(1) !default;
+$tabs-navigation-hover-bg-color: lighten($tabs-navigation-bg-color, 5%);
 
 // Tooltips
 $tooltip-padding: rem-calc(5);

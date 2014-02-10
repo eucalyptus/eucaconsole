@@ -952,8 +952,8 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
 .tabs:before, .tabs:after { content: " "; display: table; }
 .tabs:after { clear: both; }
 .tabs dd { position: relative; margin-bottom: 0 !important; top: 1px; float: left; }
-.tabs dd > a { display: block; background: #efefef; color: #222222; padding-top: 0.25rem; padding-right: 0.5rem; padding-bottom: 0.3125rem; padding-left: 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 1rem; }
-.tabs dd > a:hover { background: #e2e2e2; }
+.tabs dd > a { display: block; background: #76b800; color: #222222; padding-top: 0.25rem; padding-right: 0.5rem; padding-bottom: 0.3125rem; padding-left: 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 1rem; }
+.tabs dd > a:hover { background: #86d200; }
 .tabs dd.active a { background: #fff; }
 .tabs.radius dd:first-child a { -moz-border-radius-bottomleft: 3px; -moz-border-radius-topleft: 3px; -webkit-border-bottom-left-radius: 3px; -webkit-border-top-left-radius: 3px; border-bottom-left-radius: 3px; border-top-left-radius: 3px; }
 .tabs.radius dd:last-child a { -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
@@ -1361,7 +1361,7 @@ th.hide-for-touch { display: table-cell !important; }
 /* Eucalyptus Management Console main styles */
 /* ----------------------------------------- Master Layout
 ----------------------------------------- */
-html { background-color: #444; }
+html { background-color: white; }
 
 body { position: relative; color: #333; min-height: 100%; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; overflow-y: scroll; }
 
@@ -1389,7 +1389,7 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; font-size: 0.9rem; border-bottom: 1px solid #bee094; }
+#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 2.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; font-size: 0.9rem; }
 #breadcrumbs li { font-size: 1.0rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: inline-block; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
@@ -1397,9 +1397,9 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
-#maincontent { background: #eee; position: relative; }
+#maincontent { background: #eef7e3; position: relative; padding-bottom: 3rem; }
 
-#contentwrap { position: relative; background-color: white; padding-bottom: 3rem; min-height: 30rem; }
+#contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
 @media screen and (min-width: 920px) { #login-panel { margin-bottom: 5rem; }
   #maincontent { min-height: 480px; } }
@@ -1521,9 +1521,8 @@ table.table tr td { vertical-align: top; }
 
 /* ----------------------------------------- Footer
 ----------------------------------------- */
-footer { width: 100%; height: 80px; padding: 15px; background-color: #333333; }
-
-.copyright { font-size: 0.8em; }
+footer { padding: 15px 0 3rem 1rem; }
+footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */

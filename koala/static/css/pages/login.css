@@ -1,24 +1,19 @@
 /* @fileOverview Login page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
-#logobar { border-bottom: 1px solid black; }
-
-#maincontent { background-color: #eee; }
+#logobar-wrapper { border-bottom: 1px solid black; }
 
 #notifications-wrapper { padding-top: 2rem; }
 
-#login-wrapper { position: relative; background-color: #eeeeee; padding: 10px; box-shadow: 0 3px 6px #999999; }
+#login-wrapper { position: relative; padding: 10px; }
 #login-wrapper label { font-weight: bold; white-space: nowrap; vertical-align: middle; position: relative; top: 0px; left: 0px; bottom: 10px; }
 #login-wrapper input { background-color: #eeeeee; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
-#login-wrapper .tabs a { padding: 16px 32px; font-weight: bold; }
-#login-wrapper .tabs #euca-tab a { color: #468400; }
-#login-wrapper .tabs #aws-tab a { color: darkorange; }
-#login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; }
-
-#euca-login-button.button { background-color: #76b800; border-color: #355200; margin-top: 10px; margin-bottom: 10px; }
-
-#aws-login-button.button { background-color: #ff9900; border-color: #995c00; margin-top: 10px; margin-bottom: 10px; }
+#login-wrapper .tabs dd:first-child a { box-shadow: none; }
+#login-wrapper .tabs dd a { box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
+#login-wrapper .tabs dd.active a { box-shadow: none; }
+#login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #999999; }
+#login-wrapper .button { margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
 
 /* Medium/large screen */
 @media screen and (min-width: 920px) { #login-panel-wrapper { margin-top: 4rem; }

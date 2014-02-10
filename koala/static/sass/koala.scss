@@ -58,7 +58,7 @@
    Master Layout
 ----------------------------------------- */
 html {
-    background-color: #444;
+    background-color: white;
 }
 
 body {
@@ -173,7 +173,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     letter-spacing: 1px;
     font-weight: normal;
     font-size: 0.9rem;
-    border-bottom: 1px solid $breadcrumb-border-color;
     li {
         font-size: 1.0rem;
         &.current a {
@@ -201,13 +200,13 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Main Content
 ----------------------------------------- */
 #maincontent {
-    background: #eee;
+    background: $euca-extralightgreen;
     position: relative;
+    padding-bottom: 3rem;
 }
 
 #contentwrap {
     position: relative;
-    background-color: white;
     padding-bottom: 3rem;
     min-height: 30rem;
 }
@@ -628,14 +627,10 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    width: 100%;
-    height: $euca-footer-height;
-    padding: 15px;
-    background-color: rgb(51, 51, 51);
-}
-
-.copyright {
-    font-size: 0.8em;
+    padding: 15px 0 3rem 1rem;
+    .copyright {
+        font-size: 0.9em;
+    }
 }
 
 

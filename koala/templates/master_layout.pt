@@ -22,38 +22,40 @@
 <body>
 <div class="off-canvas-wrap">
 <div id="canvaswrap" class="inner-wrap">
-    <nav id="logobar" class="${'row' if request.user.is_authenticated() else 'signedout'}" metal:define-slot="logobar">
-        <a class="left-off-canvas-toggle" id="offcanvas-icon"
-           tal:condition="request.user.is_authenticated()"><i class="fi-list"></i></a>
-        <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
-        <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
-            <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
-                <span class="${'hide-for-xsmall' if layout.cloud_type == 'aws' else ''}">${layout.username_label}</span>
-                <i class="fi-torso icon show-for-xsmall" tal:condition="layout.cloud_type == 'aws'"></i>
-                <span class="down-caret"></span>
-            </a>
-            <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
-                <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
-                <li tal:condition="layout.cloud_type == 'euca'">
-                    <a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a>
-                </li>
-                <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
-            </ul>
-        </section>
-        <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
-            <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
-                <span>${layout.selected_region_label}</span>
-                <span class="down-caret"></span>
-            </a>
-            <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
-                <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
-                    <a href="${request.route_url('region_select')}?region=${region.name}&amp;returnto=${request.url}">
-                            ${region.label}
-                    </a>
-                </li>
-            </ul>
-        </section>
-    </nav>
+    <div id="logobar-wrapper">
+        <nav id="logobar" class="row" metal:define-slot="logobar">
+            <a class="left-off-canvas-toggle" id="offcanvas-icon"
+               tal:condition="request.user.is_authenticated()"><i class="fi-list"></i></a>
+            <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
+            <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
+                <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
+                    <span class="${'hide-for-xsmall' if layout.cloud_type == 'aws' else ''}">${layout.username_label}</span>
+                    <i class="fi-torso icon show-for-xsmall" tal:condition="layout.cloud_type == 'aws'"></i>
+                    <span class="down-caret"></span>
+                </a>
+                <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
+                    <li tal:condition="layout.cloud_type == 'euca'">
+                        <a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a>
+                    </li>
+                    <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
+                </ul>
+            </section>
+            <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
+                <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
+                    <span>${layout.selected_region_label}</span>
+                    <span class="down-caret"></span>
+                </a>
+                <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
+                        <a href="${request.route_url('region_select')}?region=${region.name}&amp;returnto=${request.url}">
+                                ${region.label}
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </nav>
+    </div>
 
     <!-- Top nav bar -->
     <div id="navbar" tal:condition="request.user.is_authenticated()">
@@ -93,8 +95,8 @@
               action="${request.route_url('logout')}">
             <input type="submit" style="display:none;" id="euca-logout-button"/>
         </form>
-
     </footer>
+
     <a class="exit-off-canvas"></a>
 
 <script type="text/javascript" src="${request.static_url('koala:static/js/thirdparty/foundation/foundation.min.js')}"></script>
