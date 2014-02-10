@@ -1,4 +1,10 @@
 
+<!-- HELP IPADDRESSESS: IPADDRESSES LANDING PAGE -->
+<div tal:condition="display == 'ipaddress_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
 <!-- HELP IPADDRESS: ASSOCIATE IP-->
 <div tal:condition="display == 'associate_ip'">
 <h5 class="title" i18n:translate="">Associate an Elastic IP Address with an Instance</h5>

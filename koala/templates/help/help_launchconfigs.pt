@@ -1,4 +1,11 @@
 
+<!-- HELP LAUNCH CONFIGS: LAUNCH CONFIG LANDING PAGE -->
+<div tal:condition="display == 'launchconfig_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP LAUNCH CONFIG-->
 <div tal:condition="display == 'launchconfig_help'">
 </div>

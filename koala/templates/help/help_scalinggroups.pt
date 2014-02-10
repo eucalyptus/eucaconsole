@@ -1,4 +1,11 @@
 
+<!-- HELP SCALING GROUPS: SCALING GROUP LANDING PAGE -->
+<div tal:condition="display == 'scalinggroup_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP SCALING GROUP-->
 <div tal:condition="display == 'scalinggroup_help'">
 </div>

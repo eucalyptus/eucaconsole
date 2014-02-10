@@ -157,7 +157,6 @@ body {
     }
 }
 
-
 // Breadcrumbs
 $breadcrumb-background-color: $euca-extralightgreen;
 $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
@@ -369,6 +368,11 @@ textarea.console-output {
 /* -----------------------------------------
    Help content
 ----------------------------------------- */
+.right-off-canvas-menu {
+    background-color: white;
+    padding: 10px;
+}
+
 .help-content {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;

@@ -95,7 +95,6 @@ angular.module('LandingPage', ['CustomFilters'])
                 $scope.itemsLoading = false;
                 $scope.items = results;
                 $scope.unfilteredItems = results;
-                $scope.setMoreCount();
                 $scope.items.forEach(function (item) {
                     if (!!item['transitional']) {
                         transitionalCount += 1;
@@ -137,13 +136,9 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.switchView = function(view){
             $scope.landingPageView = view;
         };
-        $scope.setMoreCount = function () {
-            $scope.remainingCount = $scope.items.length - $scope.displayCount;
-        }
         $scope.showMore = function () {
             if ($scope.displayCount < $scope.items.length) {
                 $scope.displayCount += $scope.limitCount;
-                $scope.setMoreCount();
             }
         };
         $scope.enableInfiniteScroll = function () {
@@ -152,6 +147,6 @@ angular.module('LandingPage', ['CustomFilters'])
                     $timeout(function () { $scope.showMore(); }, 50);
                 }
             });
-        }
+        };
     })
 ;

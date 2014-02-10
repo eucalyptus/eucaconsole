@@ -1,4 +1,11 @@
 
+<!-- HELP SECURITY GROUPSS: SECURITY GROUP LANDING PAGE -->
+<div tal:condition="display == 'securitygroup_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP SECURITY GROUP: CREATE SECURITY GROUP-->
 <div tal:condition="display == 'create_securitygroup'">
     <h5 class="title">Managing Security Group Rules</h5>

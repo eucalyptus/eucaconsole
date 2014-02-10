@@ -1,4 +1,11 @@
 
+<!-- HELP SNAPSHOTS: SNAPSHOT LANDING PAGE -->
+<div tal:condition="display == 'snapshot_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP SNAPSHOT: CREATE SNAPSHOT-->
 <div tal:condition="display == 'create_snapshot'">
     <h5 class="title" i18n:translate="">Create a Snapshot</h5>

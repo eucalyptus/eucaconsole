@@ -1,4 +1,11 @@
 
+<!-- HELP VOLUMES: VOLUME LANDING PAGE -->
+<div tal:condition="display == 'volume_landing_page'">
+    <h3 i18n:translate="">Help</h3>
+    <p></p>
+</div>
+
+
 <!-- HELP VOLUME: CREATE VOLUME-->
 <div tal:condition="display == 'create_volume'">
     <h5 class="title">Create a Volume</h5>

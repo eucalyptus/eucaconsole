@@ -100,10 +100,8 @@
                         </ul>
                     </metal:block>
                 </div>
-                <div class="content off-canvas-wrap">
-                    <section class="inner-wrap">
-                        <metal:block metal:define-slot="tile_content" />
-                    </section>
+                <div class="content">
+                    <metal:block metal:define-slot="tile_content" />
                 </div>
                 <metal:block metal:define-slot="tile_footer">
                     <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
@@ -172,10 +170,8 @@
                         </ul>
                     </metal:block>
                 </div>
-                <div class="content off-canvas-wrap">
-                    <section class="inner-wrap">
-                        <metal:block metal:define-slot="tile_content" />
-                    </section>
+                <div class="content">
+                    <metal:block metal:define-slot="tile_content" />
                 </div>
                 <metal:block metal:define-slot="tile_footer">
                     <div ng-show="item.status" class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
@@ -218,7 +214,9 @@
             <li><a href="${request.route_url('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
             <metal:block metal:define-slot="crumbs" />
         </ul>
-        <span class="icon-block"><metal:block metal:define-slot="icons" /></span>
+        <span class="icon-block">
+            <a class="right-off-canvas-toggle help-icon">?</a>
+        </span>
     </div>
 </metal:breadcrumbs>
 
