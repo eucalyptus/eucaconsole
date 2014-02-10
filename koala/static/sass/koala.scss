@@ -130,11 +130,9 @@ body {
     }
 }
 
-
 #region-dropdown li[data-selected] {
     display: none;  // Hide selected region
 }
-
 
 // Nav bar styles
 #navbar {
@@ -172,15 +170,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     background-color: $breadcrumb-background-color;
     letter-spacing: 1px;
     font-weight: normal;
-    font-size: 0.9rem;
     li {
-        font-size: 1.0rem;
+        font-size: 0.9rem;
         &.current a {
             color: #444;
         }
     }
     .icon-block{
-        display: inline-block;
+        display: none;
         position: absolute;
         top: 0; bottom: 0; right: 0;
         vertical-align: middle;
@@ -192,6 +189,34 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
         border-left: 1px solid $breadcrumb-border-color;
         font-weight: bold;
         text-align: center;
+    }
+    .breadcrumbs > ::before {
+        position: relative;
+        top: -2px;
+        font-size: 0.7rem;
+    }
+}
+
+// Subnav styles
+.sub-nav {
+    position: relative;
+    top: -1.5rem;
+    left: 1rem;
+    margin-bottom: -1rem;
+    dd {
+        a {
+            font-weight: bold;
+            margin-right: 0.5rem;
+            &:hover {
+                color: $euca-green;
+                text-decoration: underline;
+            }
+        }
+        &.active a:hover {
+            color: white;
+            text-decoration: none;
+            background-color: $euca-green;
+        }
     }
 }
 
@@ -220,9 +245,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 /* -----------------------------------------
    Misc
 ----------------------------------------- */
-ul.breadcrumbs {
-    margin-bottom: 0;
-}
 
 .dots {
     display: inline-block;
@@ -245,27 +267,6 @@ a.has-tip {
     word-wrap: break-word;
 }
 
-.sub-nav {
-    position: relative;
-    top: -1.5rem;
-    left: 1rem;
-    margin-bottom: -1rem;
-    dd {
-        a {
-            font-weight: bold;
-            margin-right: 0.5rem;
-            &:hover {
-                color: $euca-green;
-                text-decoration: underline;
-            }
-        }
-        &.active a:hover {
-            color: white;
-            text-decoration: none;
-            background-color: $euca-green;
-        }
-    }
-}
 
 i.fi-plus.circle {
     border: 2px solid black;
@@ -282,10 +283,6 @@ i.fi-minus-circle {
     }
 }
 
-a.button.secondary.delete:hover {
-    color: white;
-    background-color: darkred;
-}
 
 a.circle {
     color: black;
@@ -412,7 +409,6 @@ textarea.console-output {
    Forms
 ----------------------------------------- */
 
-
 form {
     label {
         cursor: default;
@@ -519,7 +515,6 @@ form {
     }
 }
 
-
 form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;
@@ -550,7 +545,6 @@ textarea.hidden {
     }
 }
 
-
 // Help text icon for inline help on form fields
 .helptext-icon {
     display: inline-block;
@@ -569,7 +563,7 @@ textarea.hidden {
 /* -----------------------------------------
    Panels and modals
 ----------------------------------------- */
-.panel{
+.panel {
     &.has-title {
         position: relative;
         padding-top: 50px;
@@ -602,7 +596,6 @@ textarea.hidden {
         }
     }
 }
-
 
 .reveal-modal {
     h3 {
@@ -638,11 +631,13 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    &.primary {
-        background-color: $euca-orange;
-    }
+    background-color: $euca-orange;
     &.secondary {
-        border: 1px solid lighten($euca-grey, 10%);
+        background-color: $euca-grey;
+        color: white;
+    }
+    &:hover {
+        background-color: darken($euca-orange, 10%);
     }
 }
 
@@ -669,7 +664,6 @@ footer {
    Media Queries
 ----------------------------------------- */
 
-
 /* Extra small screen (< 481px) */
 @media screen and (max-width: $euca-extrasmall-breakpoint) {
     .show-for-xsmall {
@@ -685,8 +679,6 @@ footer {
         width: 20px !important;
     }
 }
-
-
 
 // Nav bar adjustments
 @media screen and (max-width: $topbar-breakpoint) {
@@ -725,13 +717,13 @@ footer {
     }
 }
 
-
 @media screen and (min-width: $topbar-breakpoint) {
     // Ensure span.hide-for-small are display: inline (Foundation sets them as display: inherit
     span.hide-for-small {
         display: inline !important;
     }
 }
+
 
 /* -----------------------------------------
    Debug

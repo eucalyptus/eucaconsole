@@ -12,7 +12,7 @@
 #login-wrapper .tabs dd:first-child a { box-shadow: none; }
 #login-wrapper .tabs dd a { box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 #login-wrapper .tabs dd.active a { box-shadow: none; }
-#login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #999999; }
+#login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #808285; }
 #login-wrapper .button { margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
 
 /* Medium/large screen */

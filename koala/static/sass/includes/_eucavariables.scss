@@ -17,7 +17,7 @@ $euca-lightgreen: #8dc640;
 $euca-extralightgreen: #eef7e3;
 $euca-darkgreen: #468400;
 
-$euca-grey: #999;
+$euca-grey: #808285;
 $euca-darkgrey: #444;
 $euca-lightgrey: #ccc;
 $euca-extralightgrey: #eee;
@@ -52,6 +52,7 @@ $row-width: rem-calc(1040);
 
 // Colors
 $primary-color: $euca-green;
+$secondary-color: $euca-grey;
 $success-color: $euca-lightgreen;
 $code-color: darkred;
 
@@ -95,7 +96,7 @@ $sub-nav-active-bg: $euca-darkblue;
 // Breadcrumbs
 $crumb-bg: transparent;
 $crumb-padding: 0 0 0 0;
-$crumb-side-padding: rem-calc(10);
+$crumb-side-padding: rem-calc(6);
 $crumb-function-factor: -10%;
 $crumb-border-size: 0;
 $crumb-border-style: solid;
@@ -107,8 +108,8 @@ $crumb-font-color-current: #333;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: #ccc;
-$crumb-slash: "/";
+$crumb-slash-color: #333;
+$crumb-slash: ">";
 
 // Buttons
 $button-tny: rem-calc(6);

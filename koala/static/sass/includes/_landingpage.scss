@@ -8,11 +8,13 @@
 $tile-width: 200px;
 $tile-height: 200px;
 $tile-row-height: 24px;
-$tile-border-color: $euca-grey;
-$tile-bg-color: $euca-extralightgrey;
+$tile-bg-color: white;
 $tile-label-padding: 28px;
+
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
+
+$dropdown-border-color: $euca-green;
 
 
 .columns.datagrid {
@@ -23,6 +25,12 @@ $gridwrapper-table-width: 100%;
 
 .large-12.columns.datagrid {
     padding-left: 1rem;
+}
+
+#breadcrumbs {
+    .icon-block {
+        display: inline-block;
+    }
 }
 
 .tile {
@@ -58,15 +66,13 @@ $gridwrapper-table-width: 100%;
     }
     .header {
         position: relative;
-        border-bottom: 1px solid $tile-border-color;
         height: $tile-row-height;
-        color: white;
-        background-color: $euca-darkgrey;
         a {
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: white;
+            color: black;
+            font-weight: bold;
             &:hover {
                 color: $euca-green;
             }
@@ -74,9 +80,16 @@ $gridwrapper-table-width: 100%;
         strong {
             font-weight: normal;
         }
+        .button.dropdown.tiny {
+            border-width: 0;
+            background-color: white;
+            color: $euca-darkgreen;
+            font-size: 1.1rem;
+        }
         .f-dropdown a {
             white-space: pre-wrap;
             overflow: visible;
+            font-weight: normal;
         }
     }
     .content {
@@ -151,7 +164,7 @@ $gridwrapper-table-width: 100%;
         color: black;
         font-size: 1rem;
         padding: 0 0 0 0;
-        border: 1px solid $tile-border-color;
+        border: 1px solid $dropdown-border-color;
         border-top: none;
         border-right: none;
         &:hover {
@@ -184,17 +197,21 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-
 .sort-search {
     font-size: 0.9rem;
     form {
         margin-bottom: 0;
+        position: relative;
+        input {
+            background-color: transparent;
+            border-color: $euca-grey;
+        }
     }
     .go {
-        position: relative;
-        left: -2px;
         font-size: 1.2rem;
-        color: darken($euca-grey, 20%);
+        position: absolute;
+        top: 8px; right: 10px;
+        color: #999;
     }
 }
 
@@ -216,7 +233,7 @@ $gridwrapper-table-width: 100%;
         }
     }
     .selected {
-        background-color: $euca-extralightgrey;
+        background-color: white;
         :hover {
             color: black;
             cursor: default;
@@ -287,9 +304,9 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-
+// Filters at left
 #filters {
-    margin-top: 70px;
+    margin-top: 60px;
     label {
         font-weight: bold;
         position: relative;
@@ -317,21 +334,10 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-#show-more-btn {
-    display: block;
-    width: 98%;
-    margin: 0 auto;
+#refresh-btn {
+    background-color: $euca-orange;
 }
 
-.refresh-icon {
-    position: relative;
-    padding: 8px 10px 8px 18px;
-    border-left: 1px solid darken($euca-extralightblue, 30%);
-    .dots {
-        width: 20px;
-        position: relative;
-    }
-}
 
 
 /* -----------------------------------------
@@ -348,9 +354,6 @@ $gridwrapper-table-width: 100%;
 @media screen and (max-width: $topbar-breakpoint) {
     .columns.datagrid {
         padding-left: 1rem;
-    }
-    .sort-search .go {
-        min-width: 32px;
     }
 }
 
