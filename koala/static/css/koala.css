@@ -1463,6 +1463,9 @@ textarea.console-output { width: 100%; min-height: 30rem; background-color: blac
 ----------------------------------------- */
 form label { cursor: default; }
 form label .req { color: darkred; }
+form input { background-color: #eef7e3; }
+form input[type=text], form input[type=password], form input[type=number] { background-color: #eef7e3; }
+form select, form textarea { background-color: #eef7e3; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }
 form .row input[type='number'] { width: 3rem; }
@@ -1501,12 +1504,14 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
+.panel { background-color: white; border: 0; }
 .panel.has-title { position: relative; padding-top: 50px; }
 .panel.has-title h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-title .label.status { margin-bottom: 8px; }
 .panel.has-title .actions-menu { position: absolute; top: 0; right: 0; }
 .panel.has-title .actions-menu .fi-widget { margin-right: 6px; }
-.panel.has-title .actions-menu .secondary.button.dropdown { background-color: #cccccc; border: none; margin-bottom: 0; }
+.panel.has-title .actions-menu .secondary.button.dropdown { background-color: #f18f30; border: none; margin-bottom: 0; }
+.panel.has-title .actions-menu .secondary.button.dropdown::before { border-color: white transparent transparent transparent; }
 .panel.has-title .actions-menu .f-dropdown { min-width: 12rem; width: auto; }
 
 .reveal-modal h3 { font-weight: bold; }

@@ -73,17 +73,18 @@
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
 
-#filters { margin-top: 60px; }
-#filters label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; }
+#filters { background-color: white; padding: 8px; margin-top: 113px; }
 #filters form { font-size: 0.9rem; }
-#filters form input { height: 2rem; margin-bottom: 0; }
+#filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
+#filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 
 #sorting-controls { padding-top: 1rem; }
 
 #results-count { padding-top: 1rem; }
 #results-count em { color: #555; font-style: normal; }
 
-#refresh-btn { background-color: #f18f30; }
+#refresh-btn { background-color: #f18f30; padding: 3px 6px; }
+#refresh-btn i { font-size: 1rem; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */

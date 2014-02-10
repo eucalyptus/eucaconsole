@@ -416,20 +416,31 @@ form {
             color: darkred;
         }
     }
+    input {
+        background-color: $euca-extralightgreen;
+        &[type=text],
+        &[type=password],
+        &[type=number] {
+            background-color: $euca-extralightgreen;
+        }
+    }
+    select, textarea {
+        background-color: $euca-extralightgreen;
+    }
     .row {
-      .inline-label {
-        line-height: 2rem;
-      }
-      input {
-          &[type='text'], &[type='password'] {
-              margin: 0 0 0 0;
-              height: $euca-input-field-height;
-              line-height: $euca-input-field-height;
-          }
-          &[type='number'] {
-              width: 3rem;
-          }
-      }
+        .inline-label {
+            line-height: 2rem;
+        }
+        input {
+            &[type='text'], &[type='password'] {
+                margin: 0 0 0 0;
+                height: $euca-input-field-height;
+                line-height: $euca-input-field-height;
+            }
+            &[type='number'] {
+                width: 3rem;
+            }
+        }
     }
     .columns input {
         max-width: 100%;
@@ -453,9 +464,14 @@ form {
     }
 }
 
+// Chosen widget
 .chosen-container {
-    &.chosen-container-multi .chosen-choices li.search-field input[type=text] {
-        height: auto;
+    &.chosen-container-multi {
+        .chosen-choices  {
+            li.search-field input[type=text] {
+                height: auto;
+            }
+        }
     }
     &.chosen-container-single {
         .chosen-single {
@@ -564,6 +580,8 @@ textarea.hidden {
    Panels and modals
 ----------------------------------------- */
 .panel {
+    background-color: white;
+    border: 0;
     &.has-title {
         position: relative;
         padding-top: 50px;
@@ -585,9 +603,12 @@ textarea.hidden {
             top: 0; right: 0;
             .fi-widget { margin-right: 6px; }
             .secondary.button.dropdown {
-                background-color: $euca-lightgrey;
+                background-color: $euca-orange;
                 border: none;
                 margin-bottom: 0;
+                &::before {
+                    border-color: white transparent transparent transparent;
+                }
             }
             .f-dropdown {
                 min-width: 12rem;
