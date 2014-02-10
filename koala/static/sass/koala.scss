@@ -467,7 +467,9 @@ form {
 // Chosen widget
 .chosen-container {
     &.chosen-container-multi {
+        background-color: $euca-extralightgreen !important;
         .chosen-choices  {
+            background-color: $euca-extralightgreen !important;
             li.search-field input[type=text] {
                 height: auto;
             }

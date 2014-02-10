@@ -1476,6 +1476,8 @@ form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
+.chosen-container.chosen-container-multi { background-color: #eef7e3 !important; }
+.chosen-container.chosen-container-multi .chosen-choices { background-color: #eef7e3 !important; }
 .chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
 .chosen-container.chosen-container-single .chosen-single { border-radius: 0; height: 2rem; line-height: 2rem; font-size: 0.875rem; }
 .chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
