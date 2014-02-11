@@ -444,6 +444,9 @@ form {
         &[type=number] {
             background-color: $euca-extralightgreen;
         }
+        &[type=file] {
+            background-color: transparent;
+        }
     }
     select, textarea {
         background-color: $euca-extralightgreen;
