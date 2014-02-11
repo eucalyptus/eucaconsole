@@ -1,0 +1,43 @@
+/* @fileOverview Security Group Rules editor CSS */
+
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+
+form {
+    input.port {
+        width: 3.8rem;
+    }
+    .row.trafficfrom {
+        margin-top: 1rem;
+    }
+    .ip-label, .sg-label {
+        margin-right: 1rem;
+    }
+    label.ipaddress, label.securitygroupname {
+        text-align: left !important;
+    }
+    .cidr-ip, .groupname {
+        display: inline; width: 50%;
+    }
+    label.protocol {
+        margin-bottom: 1.5rem;
+    }
+}
+
+#rules-editor {
+    .items {
+        margin-bottom: 6px;
+        .rulesentry {
+            color: #333;
+            background-color: $euca-lightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
+    }
+    .add-label {
+        margin-bottom: 6px;
+    }
+}

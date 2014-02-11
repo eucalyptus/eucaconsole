@@ -1,0 +1,14 @@
+/* @fileOverview Security Group Rules editor CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+form input.port { width: 3.8rem; }
+form .row.trafficfrom { margin-top: 1rem; }
+form .ip-label, form .sg-label { margin-right: 1rem; }
+form label.ipaddress, form label.securitygroupname { text-align: left !important; }
+form .cidr-ip, form .groupname { display: inline; width: 50%; }
+form label.protocol { margin-bottom: 1.5rem; }
+
+#rules-editor .items { margin-bottom: 6px; }
+#rules-editor .items .rulesentry { color: #333; background-color: #cccccc; margin-right: 8px; }
+#rules-editor .items .rulesentry a { color: white; }
+#rules-editor .add-label { margin-bottom: 6px; }

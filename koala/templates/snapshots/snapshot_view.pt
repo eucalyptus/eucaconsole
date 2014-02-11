@@ -106,16 +106,13 @@
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
                         <a href="${request.route_url('snapshots')}" i18n:translate="">Return to snapshots page</a>
                     </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button">
-                                <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
-                                <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
-                            </button>
-                            <a href="${request.route_url('snapshots')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
+                    <div>
+                        <button type="submit" class="button">
+                            <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
+                            <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
+                        </button>
+                        <a href="${request.route_url('snapshots')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
             </div>

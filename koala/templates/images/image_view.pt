@@ -142,15 +142,12 @@
                     <hr />
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn">
-                                <span tal:condition="image" i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('images')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn">
+                            <span tal:condition="image" i18n:translate="">Save changes</span>
+                        </button>
+                        <a href="${request.route_url('images')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
             </div>

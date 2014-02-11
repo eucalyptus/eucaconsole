@@ -2,43 +2,28 @@
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
-     <style type="text/css">
-         input.port { width: 3.8rem; }
-         form .row.trafficfrom { margin-top: 1rem; }
-         form .ip-label, form .sg-label { margin-right: 1rem; }
-         form label.ipaddress, form label.securitygroupname { text-align: left !important; }
-         form .cidr-ip, form .groupname { display: inline; width: 50%; }
-         form label.protocol { margin-bottom: 1.5rem; }
-    </style>
-    <div class="small-${leftcol_width} columns">
-        <label class="right" i18n:translate="">Inbound Rules</label>
+    <link rel="stylesheet" href="${request.static_url('koala:static/css/widgets/securitygroup_rules.css')}"
+          type="text/css" charset="utf-8" />
+    <div class="columns">
+        <h6 i18n:translate="">Inbound Rules</h6>
     </div>
-    <div class="small-${rightcol_width} columns field" ng-cloak="cloak">
-        <div class="row rulesentry existing inline controls-wrapper"
-             ng-repeat="rule in rulesArray">
-            <div class="small-1 columns">
-                <a href="#"  class="circle remove has-tip" ng-click="removeRule($index, $event)"
-                        title="Remove rule"><i class="fi-minus-circle"></i></a>
-            </div>
-            <div class="small-11 columns rule {{ rule.fresh }}">
-                <strong i18n:translate="">Rule</strong>:
+    <div class="columns field" ng-cloak="cloak">
+        <div class="items">
+            <span class="label radius secondary rulesentry" ng-repeat="rule in rulesArray">
                 {{ rule.ip_protocol.toUpperCase() }}
                 ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                 <span ng-repeat="grant in rule.grants">
                     <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
                     <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
                 </span>
-            </div>
+                <a class="remove" ng-click="removeRule($index, $event)"
+                        title="Remove rule"><i class="fi-x"></i></a>
+            </span>
         </div>
         <div class="row rulesentry inline controls-wrapper">
-            <div class="row">
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <h6 class="columns subheader">
-                        <span ng-show="!rulesArray.length"><span i18n:translate="">Add a rule</span>:</span>
-                        <span ng-show="rulesArray.length"><span i18n:translate="">Add another rule</span>:</span>
-                    </h6>
-                </div>
+            <div class=" columns add-label">
+                <span ng-show="!rulesArray.length"><span i18n:translate="">Add a rule</span>:</span>
+                <span ng-show="rulesArray.length"><span i18n:translate="">Add another rule</span>:</span>
             </div>
             <div class="row">
                 <div class="small-3 columns">
@@ -103,7 +88,7 @@
         <div class="row" ng-show="selectedProtocol">
             <div class="small-3 columns">&nbsp;</div>
             <div class="small-9 columns">
-                <a href="#" class="button round secondary small" i18n:translate=""
+                <a href="#" class="button round small" i18n:translate=""
                         ng-click="addRule($event)">Add rule</a>
             </div>
         </div>
