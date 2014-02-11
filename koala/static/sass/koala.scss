@@ -354,21 +354,29 @@ textarea.console-output {
    Tag editor
 ----------------------------------------- */
 #tag-editor {
-    .tagentry {
-        &.existing {
+    small {
+        font-size: 0.825rem;
+    }
+    .items {
+        margin-bottom: 6px;
+        .tagentry {
             color: #333;
             background-color: $euca-lightgrey;
             margin-right: 8px;
             a {
                 color: white;
             }
+            .propagates {
+                color: #777;
+                font-size: 0.7em;
+            }
         }
+    }
+    .add-label {
+        margin-bottom: 6px;
     }
     #add-tag-btn {
         margin-bottom: 0;
-    }
-    small {
-        font-size: 0.825rem;
     }
 }
 
@@ -625,7 +633,7 @@ textarea.hidden {
     position: relative;
     &.has-actions {
         position: relative;
-        padding-top: 50px;
+        padding-top: 60px;
         h6.title {
             position: absolute;
             top: 0; left: 0; right: 0;

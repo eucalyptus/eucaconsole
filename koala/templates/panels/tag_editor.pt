@@ -2,20 +2,18 @@
 <!--! Tag editor -->
 <div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
      ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}')">
-    <div class="columns">
-        <h6 i18n:translate="">Tags</h6>
-    </div>
+    <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field">
-        <span class="label radius secondary tagentry existing" ng-repeat="tag in tagsArray" ng-cloak="cloak">
-            <span class="{{tag.fresh}}">{{ tag.name }} <em>=</em> {{ tag.value }}</span>
-            <a href="#" class="remove" ng-click="removeTag($index, $event)"
-               title="Remove tag"><i class="fi-x"></i></a>
-        </span>
-        <div class="row">
-            <div class="columns subheader">
-                <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
-                      ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
-            </div>
+        <div class="items">
+            <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
+                <span>{{ tag.name }} <em>=</em> {{ tag.value }}</span>
+                <a href="#" class="remove" ng-click="removeTag($index, $event)"
+                   title="Remove tag"><i class="fi-x"></i></a>
+            </span>
+        </div>
+        <div class="add-label">
+            <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
+                  ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
         </div>
         <div class="row tagentry controls-wrapper">
             <div>

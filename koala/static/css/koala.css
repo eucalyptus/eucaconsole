@@ -1442,10 +1442,13 @@ textarea.console-output { width: 100%; min-height: 30rem; background-color: blac
 
 /* ----------------------------------------- Tag editor
 ----------------------------------------- */
-#tag-editor .tagentry.existing { color: #333; background-color: #cccccc; margin-right: 8px; }
-#tag-editor .tagentry.existing a { color: white; }
-#tag-editor #add-tag-btn { margin-bottom: 0; }
 #tag-editor small { font-size: 0.825rem; }
+#tag-editor .items { margin-bottom: 6px; }
+#tag-editor .items .tagentry { color: #333; background-color: #cccccc; margin-right: 8px; }
+#tag-editor .items .tagentry a { color: white; }
+#tag-editor .items .tagentry .propagates { color: #777; font-size: 0.7em; }
+#tag-editor .add-label { margin-bottom: 6px; }
+#tag-editor #add-tag-btn { margin-bottom: 0; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
@@ -1515,7 +1518,7 @@ textarea.hidden.debug { display: block; }
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
 .panel { background-color: white; border: 0; position: relative; }
-.panel.has-actions { position: relative; padding-top: 50px; }
+.panel.has-actions { position: relative; padding-top: 60px; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
 .panel.has-actions .actions-menu { box-shadow: 1px 1px 5px 0px #9a9c9e; position: absolute; top: 10px; right: 10px; }
