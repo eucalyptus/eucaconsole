@@ -12,7 +12,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
                         <li>

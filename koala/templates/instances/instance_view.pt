@@ -23,7 +23,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-8 columns">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
@@ -61,8 +61,9 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <p tal:condition="image.root_device_type == 'ebs'">
-                Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
+                <p tal:condition="image.root_device_type == 'ebs'" class="note">
+                    Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device.
+                    To update any of these attributes, stop the instance first.
                 </p>
                 <form action="${request.route_url('instance_update', id=instance.id)}" id="instance-form"
                       method="post" data-abide="abide">

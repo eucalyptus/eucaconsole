@@ -17,7 +17,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns" tal:define="readonly True if user else False;">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                     <metal:actions metal:fill-slot="actions">
                         <li>

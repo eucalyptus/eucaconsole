@@ -81,9 +81,6 @@ body {
     margin-top: 20px;
     background-color: #fff;
     color: #333;
-    &.signedout {
-        box-shadow: 0 1px 1px 1px $euca-lightgrey;
-    }
     a {
         font-size: 0.9rem;
         color: #333;
@@ -609,7 +606,7 @@ textarea.hidden {
 .panel {
     background-color: white;
     border: 0;
-    &.has-title {
+    &.has-actions {
         position: relative;
         padding-top: 50px;
         h6.title {
@@ -627,8 +624,8 @@ textarea.hidden {
         }
         .actions-menu {
             position: absolute;
-            top: 0; right: 0;
-            .fi-widget { margin-right: 6px; }
+            top: 10px; right: 10px;
+            box-shadow: 2px 2px 5px 0px lighten($euca-grey, 10%);
             .secondary.button.dropdown {
                 background-color: $euca-orange;
                 border: none;
@@ -638,6 +635,7 @@ textarea.hidden {
                 }
             }
             .f-dropdown {
+                box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
                 min-width: 12rem;
                 width: auto;
             }

@@ -34,7 +34,7 @@
                          if volume else request.route_url('volume_create');
                          volume_tags volume.tags if volume else {};
                          html_attrs {'disabled': 'disabled'} if volume else {};">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="volumeStatus == 'available'">

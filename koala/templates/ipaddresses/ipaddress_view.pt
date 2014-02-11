@@ -15,7 +15,7 @@
             </metal:crumbs>
         </metal:breadcrumbs>
         <div class="large-7 columns">
-            <div class="panel has-title" tal:condition="eip">
+            <div class="panel has-actions" tal:condition="eip">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">
                     <metal:actions metal:fill-slot="actions">
                         <li tal:condition="not eip.instance_id">
