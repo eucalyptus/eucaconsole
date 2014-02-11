@@ -19,7 +19,7 @@ requires = [
     'lingua >= 1.5',  # not required for deployment or tests
     'M2Crypto >= 0.20.2',
     'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
-    # 'pycrypto == 2.6.1',
+    'pycrypto >= 2.6',
     'Paste >= 1.5',
     'pyramid >= 1.4',
     'pyramid_beaker >= 0.8',
