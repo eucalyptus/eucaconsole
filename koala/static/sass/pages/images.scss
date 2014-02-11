@@ -40,7 +40,7 @@
             padding: 4px 6px;
             &.i386 { background-color: $euca-grey; }
             &.x86_64 { background-color: $euca-notificationblue; }
-            &.ebs { background-color: $euca-darkgreen; }
+            &.ebs { background-color: $euca-darkgreen; text-transform: uppercase; }
             &.instance-store { background-color: darken($euca-grey, 15%); }
         }
         .emi-name {

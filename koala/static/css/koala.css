@@ -1510,7 +1510,7 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
-.panel { background-color: white; border: 0; }
+.panel { background-color: white; border: 0; position: relative; }
 .panel.has-actions { position: relative; padding-top: 50px; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }

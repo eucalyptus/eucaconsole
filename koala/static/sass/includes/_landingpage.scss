@@ -33,6 +33,7 @@ $dropdown-border-color: $euca-green;
     }
 }
 
+// Tile/grid view
 .tile {
     font-size: $euca-font-size;
     position: relative;
@@ -158,6 +159,71 @@ $dropdown-border-color: $euca-green;
     }
 }
 
+// Table view
+.gridwrapper .table {
+    border: none;
+    width: $gridwrapper-table-width;
+    thead tr {
+        border-top: 2px solid $euca-darkgrey;
+        border-bottom: 2px solid $euca-darkgrey;
+        th {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+            &.actions {
+                text-align: right;
+            }
+        }
+    }
+    tr {
+        position: relative;
+        width: $gridwrapper-table-width;
+        border-bottom: 1px solid #ddd;
+        td {
+            &.status {
+                text-transform: capitalize;
+            }
+            a {
+                color: $euca-darkgreen;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+            position: relative;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            vertical-align: top;
+            &.id {
+                max-width: 120px;
+            }
+            span.actions {
+                position: relative;
+                float: right;
+                top: -10px;
+            }
+            &.tags {
+                max-width: 20rem;
+                word-break: break-all;
+            }
+        }
+    }
+    .dropdown.button.tiny {
+        top: 8px; right: 20px;
+        padding-left: 10px;
+        padding-right: 24px;
+        background-color: #eee;
+        border-color: #999;
+    }
+    .f-dropdown::before, .f-dropdown::after {
+        left: $grid-dropdown-width - 22px;
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        left: auto; right: 22px;
+    }
+}
+
+
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -245,65 +311,6 @@ $dropdown-border-color: $euca-green;
     i {
         display: inline-block;
         padding: 4px 12px;
-    }
-}
-
-// Table view
-.gridwrapper .table {
-    border: none;
-    width: $gridwrapper-table-width;
-    thead tr {
-        border-top: 2px solid $euca-darkgrey;
-        border-bottom: 2px solid $euca-darkgrey;
-        th {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            text-transform: uppercase;
-            white-space: nowrap;
-            &.actions {
-                text-align: right;
-            }
-        }
-    }
-    tr {
-        position: relative;
-        width: $gridwrapper-table-width;
-        border-bottom: 1px solid #ddd;
-        td {
-            a {
-                color: $euca-darkgreen;
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
-            position: relative;
-            padding-top: 12px;
-            padding-bottom: 12px;
-            vertical-align: top;
-            &.id {
-                max-width: 120px;
-            }
-            span.actions {
-                position: relative;
-                float: right;
-                top: -10px;
-            }
-            &.tags {
-                max-width: 20rem;
-                word-break: break-all;
-            }
-        }
-    }
-    .dropdown.button.tiny {
-        top: 8px; right: 20px;
-        padding-left: 10px;
-        padding-right: 24px;
-    }
-    .f-dropdown::before, .f-dropdown::after {
-        left: $grid-dropdown-width - 22px;
-    }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        left: auto; right: 22px;
     }
 }
 
