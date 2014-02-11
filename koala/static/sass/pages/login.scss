@@ -26,21 +26,6 @@
         max-width: 480px;
         margin: 0 auto;
     }
-    .tabs {
-        dd {
-            &:first-child a {
-                box-shadow: none;
-            }
-            a {
-                box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2);
-                padding: 10px 32px 6px 24px;
-                font-weight: bold;
-            }
-            &.active a {
-                box-shadow: none;
-            }
-        }
-    }
     .tabs-content {
         padding: 1rem;
         padding-bottom: 2rem;

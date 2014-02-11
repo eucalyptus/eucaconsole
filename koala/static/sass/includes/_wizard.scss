@@ -42,9 +42,10 @@ $wizard-border-width: 16px;
                 padding: 1rem 16px;
             }
             a {
+                box-shadow: none;
                 white-space: nowrap;
                 padding: 1rem 16px;
-                background-color: $euca-extralightgrey;
+                background-color: darken($euca-extralightgreen, 10%);
             }
             .cir {
                 position: relative;

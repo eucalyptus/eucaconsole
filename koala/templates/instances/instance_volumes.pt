@@ -15,14 +15,14 @@
                 <li class="current"><a href="#">Volumes</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
-        <dl class="sub-nav" id="instance-subnav">
-            <dd><a href="${request.route_url('instance_view', id=instance.id)}" i18n:translate="">Instance</a></dd>
-            <dd class="active"><a href="#" i18n:translate="">Volumes</a></dd>
-        </dl>
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-8 columns" tal:define="parse_date import: dateutil.parser.parse">
+            <dl class="tabs" id="instance-subnav">
+                <dd><a href="${request.route_url('instance_view', id=instance.id)}" i18n:translate="">General</a></dd>
+                <dd class="active"><a i18n:translate="">Volumes</a></dd>
+            </dl>
             <div class="panel gridwrapper no-title">
                 <div class="tile add" id="attach-volume">
                     <a href="#" data-reveal-id="attach-volume-modal">

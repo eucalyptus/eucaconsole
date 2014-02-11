@@ -1545,6 +1545,12 @@ footer .copyright { font-size: 0.9em; }
 .button.secondary { background-color: #808285; color: white; }
 .button:hover { background-color: #df750f; }
 
+/* ----------------------------------------- Tabs
+----------------------------------------- */
+.tabs dd:first-child a { box-shadow: none; }
+.tabs dd a { box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
+.tabs dd.active a { box-shadow: none; }
+
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
 .f-dropdown { left: -99999px; }

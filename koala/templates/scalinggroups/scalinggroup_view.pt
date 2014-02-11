@@ -13,15 +13,15 @@
                 <li class="current"><a href="#">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
-        <dl class="sub-nav" id="scalinggroup-subnav">
-            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-            <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
-            <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
-        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
+            <dl class="tabs" id="scalinggroup-subnav">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
+            </dl>
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="scaling_group">
                     <metal:actions metal:fill-slot="actions">
