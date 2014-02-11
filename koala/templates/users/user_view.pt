@@ -33,7 +33,7 @@
                     <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                         ${structure:user_form['csrf_token']}
                         <div class="section">
-                            <h4>General</h4>
+                            <h6 i18n:translate="">General</h6>
                             ${panel('form_field', field=user_form['user_name'])}
                             <!-- ${panel('form_field', field=user_form['email'])} -->
                             <div class="row controls-wrapper readonly">
@@ -60,7 +60,7 @@
                     <form data-abide="abide" id="user-change-password-form" ng-submit="submit($event)">
                         ${structure:user_form['csrf_token']}
                         <div class="section">
-                            <h4>Password</h4>
+                            <h6 i18n:translate="">Password</h6>
                             ${panel('form_field', field=user_form['new_password'])}
                             ${panel('form_field', field=user_form['new_password2'])}
                         </div>
@@ -105,7 +105,7 @@
                             '${request.route_url('user_generate_keys', name=user.user_name)}',
                             '${request.route_url('user_access_keys_json', name=user.user_name)}')">
                     <div class="section">
-                        <h4>Access keys</h4>
+                        <h6 i18n:translate="">Access keys</h6>
                         <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
                             ${structure:user_form['csrf_token']}
                             <div class="columns field inline">
@@ -172,7 +172,7 @@
                             '${request.route_url('user_add_to_group', name=user.user_name)}',
                             '${request.route_url('user_groups_json', name=user.user_name)}')">
                     <div class="section">
-                        <h4>Groups</h4>
+                        <h6 i18n:translate="">Groups</h6>
                         <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
                             ${structure:user_form['csrf_token']}
                             <!-- this needs to be a chosen group selector containing groups not already containing this user
@@ -204,12 +204,12 @@
                 </div>
                 <hr/>
                 <div class="section">
-                    <h4>Permissions</h4>
+                    <h6 i18n:translate="">Permissions</h6>
                 </div>
                 <hr/>
                 <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
                     <div class="section">
-                        <h4>Quotas</h4>
+                        <h6 i18n:translate="">Quotas</h6>
                         ${panel('quotas_panel', quota_form=user_form)}
                     </div>
                     <div class="row">
