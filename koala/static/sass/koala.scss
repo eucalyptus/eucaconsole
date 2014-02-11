@@ -464,34 +464,6 @@ form {
     }
 }
 
-// Chosen widget
-.chosen-container {
-    &.chosen-container-multi {
-        background-color: $euca-extralightgreen !important;
-        .chosen-choices  {
-            background-color: $euca-extralightgreen !important;
-            li.search-field input[type=text] {
-                height: auto;
-            }
-        }
-    }
-    &.chosen-container-single {
-        .chosen-single {
-            border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
-            font-size: 0.875rem;
-            b {
-                position: relative;
-                top: 4px;
-            }
-        }
-    }
-    .chosen-drop .chosen-results {
-        font-size: 0.875rem;
-    }
-}
-
 .row.controls-wrapper {
     margin-bottom: 0.5rem;
     label {
@@ -575,6 +547,59 @@ textarea.hidden {
     text-align: center;
     padding-top: 3px;
     font-size: 0.825rem;
+}
+
+
+/* -----------------------------------------
+   Chosen widget
+----------------------------------------- */
+.chosen-container {
+    &.chosen-container-multi {
+        background: none;
+        background-color: $euca-extralightgreen !important;
+        .chosen-choices  {
+            background: none;
+            background-color: $euca-extralightgreen !important;
+            li {
+                &.search-field  {
+                    input[type=text] {
+                        height: auto;
+                    }
+                    .default {
+                        color: #999;
+                    }
+                }
+                &.search-choice {
+                    background-image: none;
+                    background-color: #d1d3d4;
+                    border: none;
+                    font-size: 0.9rem;
+                    padding: 4px 20px 4px 8px;
+                    color: #555;
+                    .search-choice-close {
+                        top: 5px;
+                    }
+                }
+            }
+        }
+    }
+    &.chosen-container-single {
+        .chosen-single {
+            background-image: none;
+            background-color: $euca-extralightgreen !important;
+            border-radius: 0;
+            height: 2rem;
+            line-height: 2rem;
+            font-size: 0.875rem;
+            b {
+                position: relative;
+                top: 4px;
+            }
+        }
+    }
+    .chosen-drop .chosen-results {
+        font-size: 0.875rem;
+    }
 }
 
 

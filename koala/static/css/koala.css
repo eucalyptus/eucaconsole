@@ -1476,13 +1476,6 @@ form .controls_csrf_token { display: none; }
 form .server-validation span.error { display: block !important; }
 form .error .chosen-container .chosen-single { border-color: darkred; background: #ffe9ec; }
 
-.chosen-container.chosen-container-multi { background-color: #eef7e3 !important; }
-.chosen-container.chosen-container-multi .chosen-choices { background-color: #eef7e3 !important; }
-.chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
-.chosen-container.chosen-container-single .chosen-single { border-radius: 0; height: 2rem; line-height: 2rem; font-size: 0.875rem; }
-.chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
-.chosen-container .chosen-drop .chosen-results { font-size: 0.875rem; }
-
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
@@ -1503,6 +1496,18 @@ textarea.hidden { display: none; }
 textarea.hidden.debug { display: block; }
 
 .helptext-icon { display: inline-block; margin-left: 5px; width: 20px; height: 20px; border-radius: 32px; border: 1px solid #808285; background-color: #cccccc; color: white; text-align: center; padding-top: 3px; font-size: 0.825rem; }
+
+/* ----------------------------------------- Chosen widget
+----------------------------------------- */
+.chosen-container.chosen-container-multi { background: none; background-color: #eef7e3 !important; }
+.chosen-container.chosen-container-multi .chosen-choices { background: none; background-color: #eef7e3 !important; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-field input[type=text] { height: auto; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-field .default { color: #999; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice { background-image: none; background-color: #d1d3d4; border: none; font-size: 0.9rem; padding: 4px 20px 4px 8px; color: #555; }
+.chosen-container.chosen-container-multi .chosen-choices li.search-choice .search-choice-close { top: 5px; }
+.chosen-container.chosen-container-single .chosen-single { background-image: none; background-color: #eef7e3 !important; border-radius: 0; height: 2rem; line-height: 2rem; font-size: 0.875rem; }
+.chosen-container.chosen-container-single .chosen-single b { position: relative; top: 4px; }
+.chosen-container .chosen-drop .chosen-results { font-size: 0.875rem; }
 
 /* ----------------------------------------- Panels and modals
 ----------------------------------------- */
