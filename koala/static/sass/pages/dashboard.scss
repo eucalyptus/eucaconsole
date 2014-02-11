@@ -73,7 +73,11 @@ $dashboard-panel-icon-size: 80px;
                 }
             }
             .button {
-                display: block;
+                display: inline-block;
+                font-weight: bold;
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
         a:hover .icon {

@@ -37,7 +37,7 @@
                         </a>
                     </div>
                     <div class="footer">
-                        <a class="button small primary" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
+                        <a class="button small round primary" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
                     </div>
                 </div>
             </li>
