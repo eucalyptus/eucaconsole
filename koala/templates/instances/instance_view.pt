@@ -71,6 +71,7 @@
                     ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
+                    <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
@@ -160,6 +161,7 @@
                     </div>
                     ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
+                    <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
                         <div class="small-8 columns value">${image.id}</div>

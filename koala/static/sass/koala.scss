@@ -634,6 +634,10 @@ textarea.hidden {
     background-color: white;
     border: 0;
     position: relative;
+    h6 {
+        font-weight: bold;
+        color: $euca-darkblue;
+    }
     &.has-actions {
         position: relative;
         padding-top: 60px;

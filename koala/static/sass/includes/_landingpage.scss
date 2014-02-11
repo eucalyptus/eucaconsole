@@ -56,7 +56,7 @@ $dropdown-border-color: $euca-green;
         i {
             position: relative;
             top: 2px;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
@@ -254,7 +254,7 @@ $dropdown-border-color: $euca-green;
         padding-left: 10px;
         padding-right: 24px;
         background-color: #eee;
-        border-color: #999;
+        @include button-shadow-mixin;
         i {
             font-size: 1rem;
             top: 0;
