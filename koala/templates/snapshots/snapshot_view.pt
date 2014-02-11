@@ -25,7 +25,7 @@
                          if snapshot else request.route_url('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
                          html_attrs {'disabled': 'disabled'} if snapshot else {};">
-            <div class="panel has-actions">
+            <div class="panel ${'has-actions' if snapshot else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -48,6 +48,7 @@
                 </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
+                    <h6 i18n:translate="">Snapshot</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
                         <div class="small-4 columns">
                             <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus === 'completed'">Status</label>

@@ -4,6 +4,11 @@
 // Import landing page styles for tile view display on Scaling group policies page
 @import "../includes/landingpage";
 
+
+.panel.has-actions {
+    padding-top: 60px;
+}
+
 // Hide "?" help icon in breadcrumbs
 #breadcrumbs .icon-block { display: none; }
 

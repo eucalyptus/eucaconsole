@@ -1520,7 +1520,7 @@ textarea.hidden.debug { display: block; }
 ----------------------------------------- */
 .panel { background-color: white; border: 0; position: relative; }
 .panel h6 { font-weight: bold; color: #00415e; }
-.panel.has-actions { position: relative; padding-top: 60px; }
+.panel.has-actions { position: relative; padding-top: 50px; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
 .panel.has-actions .actions-menu { box-shadow: 1px 1px 5px 0px #9a9c9e; position: absolute; top: 10px; right: 10px; }

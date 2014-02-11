@@ -100,6 +100,7 @@
                                     ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9,
                                     ng_attrs={'model': 'instanceZone'})}
+                            <hr />
                             ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                             <hr />
                             <div class="row">

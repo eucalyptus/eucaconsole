@@ -31,7 +31,7 @@
         </div>
 
         <div class="large-7 columns">
-            <div class="panel has-actions">
+            <div class="panel ${'has-actions' if keypair else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="keypair">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -42,6 +42,7 @@
                     </metal:actions>
                 </metal:block>
                 <div tal:condition="keypair">
+                    <h6 i18n:translate="">Key Pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
                         <div class="small-9 columns value">${keypair.name if keypair.name else ''}</div>

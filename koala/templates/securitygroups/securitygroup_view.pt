@@ -24,7 +24,7 @@
         <div class="large-7 columns"
                 tal:define="form_action request.route_url('securitygroup_update', id=security_group.id)
                         if security_group else request.route_url('securitygroup_create')">
-            <div class="panel has-actions"
+            <div class="panel ${'has-actions' if security_group else ''}"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
                                 sgroup_tags security_group.tags if security_group else {};
                                 readonly True if security_group else False;">
@@ -39,6 +39,7 @@
                 </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
+                    <h6 i18n:translate="">Security Group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9)}
                     </div>
