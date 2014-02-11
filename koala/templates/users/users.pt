@@ -4,8 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/users.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage()">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -64,9 +64,11 @@
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
-                        <li><a i18n:translate="" href="">Disable</a></li>
                         <li>
-                            <a i18n:translate="" ng-click="$('#delete-user-modal').foundation('reveal', 'open')">Delete</a>
+                            <a i18n:translate="" ng-click="revealModal('disable', item)">Disable</a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                         </li>
                     </ul>
                   </span>
@@ -84,9 +86,9 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete User</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete the user</span>?
+                    <span i18n:translate="">Are you sure you want to delete the user <strong>{{ user_name }}</strong></span>?
                 </p>
-                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                <form method="post" id="delete-form" action="${request.route_url('user_delete', name='_name_')}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
@@ -105,6 +107,7 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/users.js')}"></script>
 </div>
 
 </metal:block>

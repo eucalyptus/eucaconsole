@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS Users
 
 """
+import csv, StringIO
 import os, random, string
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
@@ -93,6 +94,7 @@ class UserView(BaseView):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
+        self.location = self.request.route_url('user_view', name=self.user.user_name)
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
@@ -245,17 +247,18 @@ class UserView(BaseView):
             #location = self.request.route_url('user_view', name=user.user_name)
             #return HTTPFound(location=location)
             # create file to send instead. Since # users is probably small, do it all in memory
-            csv = ""
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
             for user in user_list:
-                csv += "'{account}', '{user}'".format(account=user_data['account'], user=user_data['username'])
+                row = [user_data['account'], user_data['username']]
                 if random_password == 'y':
-                    csv += ", '{password}'".format(password=user_data['password'])
+                    row.append(user_data['password'])
                 if access_keys == 'y':
-                    csv += ", '{access_id}', {secret_key}'".format(access_id=user_data['access_id'], secret_key=user_data['secret_key'])
-                csv += '\n'
-            import pdb; pdb.set_trace()
+                    row.append(user_data['access_id'])
+                    row.append(user_data['secret_key'])
+                csv_w.writerow(row)
             response = Response(content_type='text/csv')
-            response.body = csv
+            response.body = string_output.getvalue()
             response.content_disposition = 'attachment; filename="{acct}-users.csv"'.format(acct=account)
             return response
         except BotoServerError as err:
@@ -399,7 +402,9 @@ class UserView(BaseView):
             location = self.request.route_url('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
-            self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            location = self.location
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)

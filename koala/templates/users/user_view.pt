@@ -150,8 +150,8 @@
                                     <span i18n:translate="">Are you sure you want to delete the access key?</span>
                                 </p>
                                 <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
-                                    <input type="hidden" id="user-with-key" name="user-with-key" value=""/>
-                                    <input type="hidden" id="key-to-delete" name="key-to-delete" value=""/>
+                                    <input type="hidden" name="user-with-key" value="{{ userWithKey }}" />
+                                    <input type="hidden" name="key-to-delete" value="{{ keyToDelete }}" />
                                     <div>&nbsp;</div>
                                     <div class="row">
                                         <div class="small-4 columns">&nbsp;</div>
@@ -233,9 +233,9 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete User</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete the user {{ user.user_name }}</span>?
+                    <span i18n:translate="">Are you sure you want to delete the user <strong>${user.user_name}</strong></span>?
                 </p>
-                <form method="post" id="delete-form" action="{{ deleteFormAction }}">
+                <form method="post" id="delete-form" action="${request.route_url('user_delete', name=user.user_name)}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">

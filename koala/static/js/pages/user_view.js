@@ -128,6 +128,8 @@ angular.module('UserView', [])
         $scope.jsonItemsEndpoint = '';
         $scope.items = [];
         $scope.itemsLoading = true;
+        $scope.userWithKey = '';
+        $scope.keyToDelete = '';
         $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
@@ -196,14 +198,12 @@ angular.module('UserView', [])
         };
         $scope.confirmDelete = function (item) {
             var modal = $('#delete-key-modal');
-            $('#user-with-key').val(item.user_name);
-            $('#key-to-delete').val(item.access_key_id);
+            $scope.userWithKey = item.user_name;
+            $scope.keyToDelete = item.access_key_id;
             modal.foundation('reveal', 'open');
         };
         $scope.deleteKey = function (url) {
-            var name = $('#user-with-key').val();
-            var key = $('#key-to-delete').val();
-            url = url.replace("_name_", name).replace("_key_", key);
+            url = url.replace("_name_", $scope.userWithKey).replace("_key_", $scope.keyToDelete);
             $http({method:'POST', url:url, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
