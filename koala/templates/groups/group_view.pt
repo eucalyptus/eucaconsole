@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <style>
         .chosen-container-multi .chosen-choices li.search-choice { display: none; }
     </style>
@@ -24,7 +23,7 @@
 
         <div class="large-7 columns"
             tal:define="readonly True if group else False;">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="group">
                     <metal:actions metal:fill-slot="actions">
                         <li>

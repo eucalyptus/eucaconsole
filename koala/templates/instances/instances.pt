@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instances.css')}" />
 </head>
 
@@ -23,7 +22,7 @@
             <div metal:fill-slot="new_button" id="primary-buttons">
                 <a class="button" i18n:translate="" id="launch-instance-btn"
                    href="${request.route_url('instance_create')}">Launch New Instance</a>
-                <a class="button secondary small" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
+                <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
                    href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} instances</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
@@ -103,7 +102,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id }}</a></td>
-                <td>
+                <td class="status">
                     <span class="label radius {{ item.status }}">{{ item.status }}</span>
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </td>

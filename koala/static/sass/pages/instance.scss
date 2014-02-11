@@ -42,6 +42,9 @@ form .row.controls-wrapper {
     margin-left: 1rem;
 }
 
+// Hide "?" help icon in breadcrumbs
+#breadcrumbs .icon-block { display: none; }
+
 #change-instance-state {
     display: inline-block;
     margin-left: 1rem;

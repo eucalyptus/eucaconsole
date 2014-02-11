@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/instance_launch.css')}" />
 </head>
 
@@ -101,6 +100,7 @@
                                     ng_attrs={'model': 'instanceType'})}
                             ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9,
                                     ng_attrs={'model': 'instanceZone'})}
+                            <hr />
                             ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                             <hr />
                             <div class="row">

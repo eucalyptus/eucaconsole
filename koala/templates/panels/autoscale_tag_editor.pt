@@ -2,36 +2,25 @@
 <!--! Tag editor for Scaling Groups -->
 <div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor"
      ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
-    <style type="text/css">
-        #tag-editor .label.secondary { background-color: transparent; }
-    </style>
-    <div class="small-${leftcol_width} columns">
-        <h6 i18n:translate="">Tags</h6>
-    </div>
-    <div class="small-${rightcol_width} columns field">
-        <div class="row tagentry existing inline controls-wrapper"
-             ng-repeat="tag in tagsArray" ng-cloak="cloak">
-            <div class="small-1 columns">
-                <a href="#" class="circle remove has-tip" ng-click="removeTag($index, $event)"
-                   title="Remove tag"><i class="fi-minus-circle"></i></a>
-            </div>
-            <div class="small-11 columns">
-                <strong i18n:translate="">Tag</strong>:
-                <span class="{{tag.fresh}}">{{ tag.name }} <em>=</em> {{ tag.value }}</span>
-                <small ng-show="tag.propagate_at_launch">&nbsp;(<em i18n:translate="">propagates to instances</em>)</small>
-            </div>
+    <div class="columns"><h6 i18n:translate="">Tags</h6></div>
+    <div class="columns field">
+        <div class="items">
+            <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
+                <span>{{ tag.name }} <em>=</em> {{ tag.value }}</span>
+                <small ng-show="tag.propagate_at_launch" class="propagates">&nbsp;(<small i18n:translate="">propagate</small>)</small>
+                <a href="#" class="remove" ng-click="removeTag($index, $event)"
+                   title="Remove tag"><i class="fi-x"></i></a>
+            </span>
         </div>
-        <div class="row">
-            <div class="columns subheader">
-                <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
-                      ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
-            </div>
+        <div class="add-label">
+            <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
+                  ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
         </div>
         <div class="row tagentry controls-wrapper">
             <div>
                 <div class="small-3 columns">
                     <input id="propagate-checkbox" class="taginput propagate" type="checkbox" ng-model="newTagPropagate" />
-                    <span class="label secondary" i18n:translate="" ng-click="togglePropagateCheckbox()"
+                    <span class="secondary" i18n:translate="" ng-click="togglePropagateCheckbox()"
                           data-tooltip="" title="Propagate to instances launched by this scaling group"
                           i18n:attributes="title">Propagate</span>
                 </div>
@@ -47,7 +36,7 @@
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addTag($event)" class="button round secondary tiny" id="add-tag-btn"
+                    <a href="#" ng-click="addTag($event)" class="button round tiny" id="add-tag-btn"
                        title="Add tag" i18n:translate="">Add tag</a>
                 </div>
             </div>

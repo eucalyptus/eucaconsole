@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <style type="text/css">
         #contentwrap { padding-bottom: 10rem; }
     </style>
@@ -16,7 +15,7 @@
             </metal:crumbs>
         </metal:breadcrumbs>
         <div class="large-7 columns">
-            <div class="panel has-title" tal:condition="eip">
+            <div class="panel has-actions" tal:condition="eip">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">
                     <metal:actions metal:fill-slot="actions">
                         <li tal:condition="not eip.instance_id">

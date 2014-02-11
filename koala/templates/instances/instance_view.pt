@@ -15,15 +15,15 @@
                 <li class="current"><a href="#">${instance_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
-        <dl class="sub-nav" id="instance-subnav">
-            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-            <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
-        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-8 columns">
-            <div class="panel has-title">
+            <dl class="tabs" id="instance-subnav">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_url('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
+            </dl>
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
@@ -61,8 +61,9 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <p tal:condition="image.root_device_type == 'ebs'">
-                Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device. To update any of these attributes, stop the instance first.
+                <p tal:condition="image.root_device_type == 'ebs'" class="note">
+                    Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device.
+                    To update any of these attributes, stop the instance first.
                 </p>
                 <form action="${request.route_url('instance_update', id=instance.id)}" id="instance-form"
                       method="post" data-abide="abide">
@@ -70,6 +71,7 @@
                     ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
                     <!--! Modal dialogs are near the bottom of this template -->
+                    <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="" id="instance-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
@@ -159,8 +161,7 @@
                     </div>
                     ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
-                    ${panel('tag_editor', tags=instance.tags)}
-                    <hr />
+                    <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
                         <div class="small-8 columns value">${image.id}</div>
@@ -188,17 +189,16 @@
                         ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
                     </div
                     <hr />
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn"
-                                    tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
-                                <span i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('instances')}" id="cancel-update-link"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                            <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
-                        </div>
+                    ${panel('tag_editor', tags=instance.tags)}
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn"
+                                tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
+                            <span i18n:translate="">Save changes</span>
+                        </button>
+                        <a href="${request.route_url('instances')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                        <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
                     </div>
                 </form>
             </div>

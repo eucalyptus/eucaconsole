@@ -14,11 +14,15 @@ $volume-status-color-error: darkred;
 $volume-status-color-attached: darkorange;
 
 
+// Hide "?" help icon in breadcrumbs
+#breadcrumbs .icon-block { display: none; }
+
+
 // ***********
 // Volume page
 
 // Volume status
-.status { background-color: transparent; }
+.status { background-color: transparent; text-transform: capitalize; }
 .status.creating { background-color: $volume-status-color-creating; }
 .status.available { background-color: $volume-status-color-available; }
 .status.in-use { background-color: $volume-status-color-attached; }

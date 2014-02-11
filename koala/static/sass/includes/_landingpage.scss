@@ -6,13 +6,15 @@
 
 // Sass variables
 $tile-width: 200px;
-$tile-height: 200px;
+$tile-height: 220px;
 $tile-row-height: 24px;
-$tile-border-color: $euca-grey;
-$tile-bg-color: $euca-extralightgrey;
+$tile-bg-color: white;
 $tile-label-padding: 28px;
+
 $grid-dropdown-width: 160px;
 $gridwrapper-table-width: 100%;
+
+$dropdown-border-color: $euca-green;
 
 
 .columns.datagrid {
@@ -25,6 +27,59 @@ $gridwrapper-table-width: 100%;
     padding-left: 1rem;
 }
 
+#breadcrumbs {
+    .icon-block {
+        display: inline-block;
+    }
+}
+
+// Dropdown buttons on landing page tile/table view
+.gridwrapper {
+    .dropdown.button.tiny {
+        z-index: 99999;
+        background: none;
+        box-shadow: none;
+        position: absolute;
+        width: 30px; height: $tile-row-height;
+        top: 0; right: 0;
+        color: $euca-green;
+        font-size: 1.1rem;
+        padding: 0 0 0 0;
+        border-top: none;
+        border-right: none;
+        &:hover {
+            color: $euca-green;
+        }
+        &::before {
+            border: none;
+        }
+        i {
+            position: relative;
+            top: 2px;
+            font-size: 1.3rem;
+        }
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        z-index: 9999;
+        width: auto;
+        display: block;
+        border-color: $euca-lightgreen;
+        box-shadow: 2px 2px 5px $euca-grey;
+        top: -1px; left: auto; right: -1px;
+        padding-top: $tile-row-height;
+        &::before, &::after {
+            border-color: transparent;
+        }
+        li a {
+            color: #333;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+// Tile/grid view
 .tile {
     font-size: $euca-font-size;
     position: relative;
@@ -58,15 +113,13 @@ $gridwrapper-table-width: 100%;
     }
     .header {
         position: relative;
-        border-bottom: 1px solid $tile-border-color;
         height: $tile-row-height;
-        color: white;
-        background-color: $euca-darkgrey;
         a {
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: white;
+            color: black;
+            font-weight: bold;
             &:hover {
                 color: $euca-green;
             }
@@ -77,6 +130,7 @@ $gridwrapper-table-width: 100%;
         .f-dropdown a {
             white-space: pre-wrap;
             overflow: visible;
+            font-weight: normal;
         }
     }
     .content {
@@ -92,7 +146,8 @@ $gridwrapper-table-width: 100%;
         .label {
             padding: 1px 3px;
             margin-left: -$tile-label-padding;
-            background-color: $euca-grey;
+            background-color: #e6e7e8;
+            color: #555;
             margin-right: 0.2rem;
             font-family: Verdana, sans-serif;
             min-width: 22px;
@@ -106,10 +161,12 @@ $gridwrapper-table-width: 100%;
         position: absolute;
         bottom: 0;
         left: 0; right: 0;
-        height: $tile-row-height;
-        padding: 4px 4px 4px 10px;
+        padding: 5px;
         color: white;
         background-color: $euca-grey;
+        text-align: center;
+        line-height: 1.4rem;
+        text-transform: capitalize;
         &.has-progress {
             padding: 0 0 0 0;
         }
@@ -142,92 +199,6 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-// Dropdown buttons on landing page tile/table view
-.gridwrapper {
-    .dropdown.button.tiny {
-        position: absolute;
-        width: 30px; height: $tile-row-height;
-        top: 0; right: 0;
-        color: black;
-        font-size: 1rem;
-        padding: 0 0 0 0;
-        border: 1px solid $tile-border-color;
-        border-top: none;
-        border-right: none;
-        &:hover {
-            color: $euca-green;
-        }
-        &::before {
-            border: none;
-        }
-        i {
-            position: relative;
-            top: 2px;
-            &.fi-minus-circle {
-                top: -2px;
-            }
-        }
-    }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        width: $grid-dropdown-width;
-        display: block;
-        box-shadow: 3px 3px 5px $euca-grey;
-        top: 20px; left: auto; right: 0;
-        li {
-            a {
-                color: #333;
-                &:hover {
-                    text-decoration: none;
-                }
-            }
-        }
-    }
-}
-
-
-.sort-search {
-    font-size: 0.9rem;
-    form {
-        margin-bottom: 0;
-    }
-    .go {
-        position: relative;
-        left: -2px;
-        font-size: 1.2rem;
-        color: darken($euca-grey, 20%);
-    }
-}
-
-.match-condition {
-    font-size: $euca-font-size;
-    margin-bottom: 4px;
-}
-
-// tableview/gridview icon switcher
-.displayicons {
-    font-size: 2rem;
-    a {
-        float: right;
-        border-bottom: none;
-        color: black;
-        &:hover {
-            border-bottom: none;
-            color: $euca-green;
-        }
-    }
-    .selected {
-        background-color: $euca-extralightgrey;
-        :hover {
-            color: black;
-            cursor: default;
-        }
-    }
-    i {
-        display: inline-block;
-        padding: 4px 12px;
-    }
-}
-
 // Table view
 .gridwrapper .table {
     border: none;
@@ -250,6 +221,9 @@ $gridwrapper-table-width: 100%;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
+            &.status {
+                text-transform: capitalize;
+            }
             a {
                 color: $euca-darkgreen;
                 &:hover {
@@ -275,32 +249,103 @@ $gridwrapper-table-width: 100%;
         }
     }
     .dropdown.button.tiny {
+        z-index: 0;
         top: 8px; right: 20px;
         padding-left: 10px;
         padding-right: 24px;
+        background-color: #eee;
+        @include button-shadow-mixin;
+        i {
+            font-size: 1rem;
+            top: 0;
+        }
     }
     .f-dropdown::before, .f-dropdown::after {
         left: $grid-dropdown-width - 22px;
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        top: 28px;
         left: auto; right: 22px;
+        min-width: 10rem;
+        padding-top: 0;
+        &::before {
+            border-color: transparent transparent white transparent;
+        }
+        &::after {
+            border-color: transparent transparent #cccccc transparent;
+        }
     }
 }
 
-
-#filters {
-    margin-top: 70px;
-    label {
-        font-weight: bold;
-        position: relative;
-        top: 2px;
-        margin-top: 0.5rem;
-    }
+.sort-search {
+    font-size: 0.9rem;
     form {
-        font-size: 0.9rem;
+        margin-bottom: 0;
+        position: relative;
         input {
-            height: 2rem;
+            background-color: transparent;
+            border-color: $euca-grey;
+        }
+    }
+    .go {
+        font-size: 1.2rem;
+        position: absolute;
+        top: 8px; right: 10px;
+        color: #999;
+    }
+}
+
+.match-condition {
+    font-size: $euca-font-size;
+    margin-bottom: 4px;
+}
+
+// tableview/gridview icon switcher
+.displayicons {
+    font-size: 2rem;
+    a {
+        float: right;
+        border-bottom: none;
+        color: black;
+        &:hover {
+            border-bottom: none;
+            color: $euca-green;
+        }
+    }
+    .selected {
+        background-color: white;
+        :hover {
+            color: black;
+            cursor: default;
+        }
+    }
+    i {
+        display: inline-block;
+        padding: 4px 12px;
+    }
+}
+
+// Filters at left
+#filters {
+    background-color: white;
+    padding: 8px;
+    margin-top: 113px;
+    font-size: 0.8rem;
+    form {
+        label {
+            font-weight: bold;
+            position: relative;
+            top: 2px;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        input {
+            height: 1.8rem;
             margin-bottom: 0;
+            font-size: 0.8rem;
+        }
+        button {
+            box-shadow: none;
         }
     }
 }
@@ -317,21 +362,18 @@ $gridwrapper-table-width: 100%;
     }
 }
 
-#show-more-btn {
-    display: block;
-    width: 98%;
-    margin: 0 auto;
-}
-
-.refresh-icon {
-    position: relative;
-    padding: 8px 10px 8px 18px;
-    border-left: 1px solid darken($euca-extralightblue, 30%);
-    .dots {
-        width: 20px;
-        position: relative;
+#refresh-btn {
+    background-color: $euca-orange;
+    padding: 3px 6px;
+    &:hover {
+        color: white;
+        background-color: darken($euca-orange, 10%);
+    }
+    i {
+        font-size: 1rem;
     }
 }
+
 
 
 /* -----------------------------------------
@@ -348,9 +390,6 @@ $gridwrapper-table-width: 100%;
 @media screen and (max-width: $topbar-breakpoint) {
     .columns.datagrid {
         padding-left: 1rem;
-    }
-    .sort-search .go {
-        min-width: 32px;
     }
 }
 

@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroup.css')}" />
 </head>
 
@@ -14,16 +13,16 @@
                 <li class="current"><a href="#">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
-        <dl class="sub-nav" id="scalinggroup-subnav">
-            <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-            <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
-            <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
-        </dl>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
+            <dl class="tabs" id="scalinggroup-subnav">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
+            </dl>
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="scaling_group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -71,15 +70,12 @@
                     <hr />
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-change-btn">
-                                <span tal:condition="scaling_group" i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('scalinggroups')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
+                    <div>
+                        <button type="submit" class="button" id="save-change-btn">
+                            <span tal:condition="scaling_group" i18n:translate="">Save changes</span>
+                        </button>
+                        <a href="${request.route_url('scalinggroups')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
             </div>

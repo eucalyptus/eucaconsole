@@ -15,14 +15,6 @@
     </a>
 </p>
 
-<!-- Refresh icon for landing pages === -->
-<metal:refresh_icon metal:define-macro="refresh_icon">
-    <a class="refresh-icon" ng-show="!itemsLoading" ng-cloak=""
-       ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
-    <a class="refresh-icon" ng-show="itemsLoading" ng-cloak=""><span class="dots"></span></a>
-</metal:refresh_icon>
-
-
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
@@ -37,7 +29,7 @@
         </div>
         <div class="row sort-search" ng-cloak="cloak">
             <div class="small-4 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
-                <a class="label secondary radius" ng-show="!itemsLoading" ng-cloak=""
+                <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
                    ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
                 &nbsp;
                 <span ng-show="!itemsLoading" ><strong>{{ items.length }}</strong>
@@ -59,15 +51,9 @@
             </div>
             <div class="small-4 columns search-filter">
                 <form metal:define-slot="search_controls" id="search-filter-form">
-                    <div class="row collapse">
-                        <div class="small-10 columns">
-                            <input type="search" ng-model="searchFilter" id="search-filter"
-                                   ng-keyup="searchFilterItems(${filter_keys})" />
-                        </div>
-                        <div class="small-2 columns">
-                            <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
-                        </div>
-                    </div>
+                    <input type="search" ng-model="searchFilter" id="search-filter"
+                           ng-keyup="searchFilterItems(${filter_keys})" />
+                    <i class="fi-magnifying-glass go"></i>
                 </form>
             </div>
         </div>
@@ -238,8 +224,8 @@
 <metal:actionsmenu metal:define-macro="actions_menu">
     <div class="actions-menu">
         <span class="small secondary button dropdown" data-dropdown="actions-dropdown">
-            <i class="fi-widget"></i>
             <span i18n:translate="">Actions</span>
+            <i class="fi-widget"></i>
         </span>
         <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">
             <metal:block metal:define-slot="actions" />

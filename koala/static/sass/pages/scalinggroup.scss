@@ -5,6 +5,13 @@
 @import "../includes/landingpage";
 
 
+.panel.has-actions {
+    padding-top: 60px;
+}
+
+// Hide "?" help icon in breadcrumbs
+#breadcrumbs .icon-block { display: none; }
+
 input[type="number"] {
     width: 3rem;
 }

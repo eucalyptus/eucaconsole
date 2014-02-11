@@ -58,7 +58,7 @@
    Master Layout
 ----------------------------------------- */
 html {
-    background-color: #444;
+    background-color: white;
 }
 
 body {
@@ -81,9 +81,6 @@ body {
     margin-top: 20px;
     background-color: #fff;
     color: #333;
-    &.signedout {
-        box-shadow: 0 1px 1px 1px $euca-lightgrey;
-    }
     a {
         font-size: 0.9rem;
         color: #333;
@@ -130,11 +127,9 @@ body {
     }
 }
 
-
 #region-dropdown li[data-selected] {
     display: none;  // Hide selected region
 }
-
 
 // Nav bar styles
 #navbar {
@@ -164,7 +159,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     position: relative;
     overflow: hidden;
     margin-top: 0;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
     padding-left: 14px;
     padding-top: 6px;
     padding-bottom: 1px;
@@ -172,16 +167,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     background-color: $breadcrumb-background-color;
     letter-spacing: 1px;
     font-weight: normal;
-    font-size: 0.9rem;
-    border-bottom: 1px solid $breadcrumb-border-color;
     li {
-        font-size: 1.0rem;
+        font-size: 0.9rem;
         &.current a {
             color: #444;
         }
     }
     .icon-block{
-        display: inline-block;
+        display: none;
         position: absolute;
         top: 0; bottom: 0; right: 0;
         vertical-align: middle;
@@ -194,58 +187,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
         font-weight: bold;
         text-align: center;
     }
+    .breadcrumbs > ::before {
+        position: relative;
+        top: -2px;
+        font-size: 0.7rem;
+    }
 }
 
-
-/* -----------------------------------------
-   Main Content
------------------------------------------ */
-#maincontent {
-    background: #eee;
-    position: relative;
-}
-
-#contentwrap {
-    position: relative;
-    background-color: white;
-    padding-bottom: 3rem;
-    min-height: 30rem;
-}
-
-@media screen and (min-width: $topbar-breakpoint) {
-    #login-panel { margin-bottom: 5rem; }
-    #maincontent { min-height: 480px; }
-}
-
-
-/* -----------------------------------------
-   Misc
------------------------------------------ */
-ul.breadcrumbs {
-    margin-bottom: 0;
-}
-
-.dots {
-    display: inline-block;
-    width: 32px; height: 10px;
-    background-image: url(/static/img/dots32.gif)
-}
-
-a.has-tip {
-    border-bottom: none !important;
-}
-
-.tooltip {
-    font-weight: normal;
-    font-size: 0.825rem;
-    font-family: Verdana, Geneva, Helvetica, sans-serif;
-    max-width: 260px;
-}
-
-.breakword {
-    word-wrap: break-word;
-}
-
+// Subnav styles
 .sub-nav {
     position: relative;
     top: -1.5rem;
@@ -268,6 +217,54 @@ a.has-tip {
     }
 }
 
+
+/* -----------------------------------------
+   Main Content
+----------------------------------------- */
+#maincontent {
+    background: $euca-extralightgreen;
+    position: relative;
+    padding-bottom: 3rem;
+}
+
+#contentwrap {
+    position: relative;
+    padding-bottom: 3rem;
+    min-height: 30rem;
+}
+
+@media screen and (min-width: $topbar-breakpoint) {
+    #login-panel { margin-bottom: 5rem; }
+    #maincontent { min-height: 480px; }
+}
+
+
+/* -----------------------------------------
+   Misc
+----------------------------------------- */
+
+.dots {
+    display: inline-block;
+    width: 32px; height: 10px;
+    background-image: url(/static/img/dots32.gif)
+}
+
+a.has-tip {
+    border-bottom: none !important;
+}
+
+.tooltip {
+    font-weight: normal;
+    font-size: 0.825rem;
+    font-family: Verdana, Geneva, Helvetica, sans-serif;
+    max-width: 260px;
+}
+
+.breakword {
+    word-wrap: break-word;
+}
+
+
 i.fi-plus.circle {
     border: 2px solid black;
     border-radius: 100px;
@@ -283,10 +280,6 @@ i.fi-minus-circle {
     }
 }
 
-a.button.secondary.delete:hover {
-    color: white;
-    background-color: darkred;
-}
 
 a.circle {
     color: black;
@@ -335,15 +328,6 @@ a.circle {
     }
 }
 
-#tag-editor {
-    #add-tag-btn {
-        margin-bottom: 0;
-    }
-    small {
-        font-size: 0.825rem;
-    }
-}
-
 textarea.console-output {
     width: 100%;
     min-height: 30rem;
@@ -364,6 +348,39 @@ textarea.console-output {
         }
     }
 }
+
+
+/* -----------------------------------------
+   Tag editor
+----------------------------------------- */
+#tag-editor {
+    small {
+        font-size: 0.825rem;
+    }
+    .items {
+        margin-bottom: 6px;
+        .tagentry {
+            color: #333;
+            background-color: $euca-lightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+            .propagates {
+                color: #777;
+                font-size: 0.7em;
+            }
+        }
+    }
+    .add-label {
+        margin-bottom: 6px;
+    }
+    #add-tag-btn {
+        margin-bottom: 0;
+    }
+}
+
+
 
 /* -----------------------------------------
    Help content
@@ -413,7 +430,6 @@ textarea.console-output {
    Forms
 ----------------------------------------- */
 
-
 form {
     label {
         cursor: default;
@@ -421,20 +437,34 @@ form {
             color: darkred;
         }
     }
+    input {
+        background-color: $euca-extralightgreen;
+        &[type=text],
+        &[type=password],
+        &[type=number] {
+            background-color: $euca-extralightgreen;
+        }
+        &[type=file] {
+            background-color: transparent;
+        }
+    }
+    select, textarea {
+        background-color: $euca-extralightgreen;
+    }
     .row {
-      .inline-label {
-        line-height: 2rem;
-      }
-      input {
-          &[type='text'], &[type='password'] {
-              margin: 0 0 0 0;
-              height: $euca-input-field-height;
-              line-height: $euca-input-field-height;
-          }
-          &[type='number'] {
-              width: 3rem;
-          }
-      }
+        .inline-label {
+            line-height: 2rem;
+        }
+        input {
+            &[type='text'], &[type='password'] {
+                margin: 0 0 0 0;
+                height: $euca-input-field-height;
+                line-height: $euca-input-field-height;
+            }
+            &[type='number'] {
+                width: 3rem;
+            }
+        }
     }
     .columns input {
         max-width: 100%;
@@ -455,27 +485,6 @@ form {
     .error .chosen-container .chosen-single {
         border-color: darkred;
         background: $euca-validation-input-bgcolor;
-    }
-}
-
-.chosen-container {
-    &.chosen-container-multi .chosen-choices li.search-field input[type=text] {
-        height: auto;
-    }
-    &.chosen-container-single {
-        .chosen-single {
-            border-radius: 0;
-            height: 2rem;
-            line-height: 2rem;
-            font-size: 0.875rem;
-            b {
-                position: relative;
-                top: 4px;
-            }
-        }
-    }
-    .chosen-drop .chosen-results {
-        font-size: 0.875rem;
     }
 }
 
@@ -520,7 +529,6 @@ form {
     }
 }
 
-
 form .controls-wrapper > [class*='small-'] label {
     font-weight: bold;
     padding-top: 0.3rem;
@@ -551,7 +559,6 @@ textarea.hidden {
     }
 }
 
-
 // Help text icon for inline help on form fields
 .helptext-icon {
     display: inline-block;
@@ -568,10 +575,70 @@ textarea.hidden {
 
 
 /* -----------------------------------------
+   Chosen widget
+----------------------------------------- */
+.chosen-container {
+    &.chosen-container-multi {
+        background: none;
+        background-color: $euca-extralightgreen !important;
+        .chosen-choices  {
+            background: none;
+            background-color: $euca-extralightgreen !important;
+            li {
+                &.search-field  {
+                    input[type=text] {
+                        height: auto;
+                    }
+                    .default {
+                        color: #999;
+                    }
+                }
+                &.search-choice {
+                    background-image: none;
+                    background-color: #d1d3d4;
+                    border: none;
+                    font-size: 0.9rem;
+                    padding: 4px 20px 4px 8px;
+                    color: #555;
+                    .search-choice-close {
+                        top: 5px;
+                    }
+                }
+            }
+        }
+    }
+    &.chosen-container-single {
+        .chosen-single {
+            background-image: none;
+            background-color: $euca-extralightgreen !important;
+            border-radius: 0;
+            height: 2rem;
+            line-height: 2rem;
+            font-size: 0.875rem;
+            b {
+                position: relative;
+                top: 4px;
+            }
+        }
+    }
+    .chosen-drop .chosen-results {
+        font-size: 0.875rem;
+    }
+}
+
+
+/* -----------------------------------------
    Panels and modals
 ----------------------------------------- */
-.panel{
-    &.has-title {
+.panel {
+    background-color: white;
+    border: 0;
+    position: relative;
+    h6 {
+        font-weight: bold;
+        color: $euca-darkblue;
+    }
+    &.has-actions {
         position: relative;
         padding-top: 50px;
         h6.title {
@@ -588,22 +655,25 @@ textarea.hidden {
             margin-bottom: 8px;
         }
         .actions-menu {
+            @include button-shadow-mixin;
             position: absolute;
-            top: 0; right: 0;
-            .fi-widget { margin-right: 6px; }
+            top: 10px; right: 10px;
             .secondary.button.dropdown {
-                background-color: $euca-lightgrey;
+                background-color: $euca-orange;
                 border: none;
                 margin-bottom: 0;
+                &::before {
+                    border-color: white transparent transparent transparent;
+                }
             }
             .f-dropdown {
+                box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
                 min-width: 12rem;
                 width: auto;
             }
         }
     }
 }
-
 
 .reveal-modal {
     h3 {
@@ -628,14 +698,10 @@ table.table {
    Footer
 ----------------------------------------- */
 footer {
-    width: 100%;
-    height: $euca-footer-height;
-    padding: 15px;
-    background-color: rgb(51, 51, 51);
-}
-
-.copyright {
-    font-size: 0.8em;
+    padding: 15px 0 3rem 1rem;
+    .copyright {
+        font-size: 0.9em;
+    }
 }
 
 
@@ -643,11 +709,33 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    &.primary {
-        background-color: $euca-orange;
-    }
+    @include button-shadow-mixin;
+    background-color: $euca-orange;
     &.secondary {
-        border: 1px solid lighten($euca-grey, 10%);
+        background-color: $euca-grey;
+        color: white;
+    }
+    &:hover {
+        background-color: darken($euca-orange, 10%);
+    }
+}
+
+/* -----------------------------------------
+   Tabs
+----------------------------------------- */
+.tabs {
+    dd {
+        &:first-child a {
+            box-shadow: none;
+        }
+        a {
+            box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2);
+            padding: 10px 32px 6px 24px;
+            font-weight: bold;
+        }
+        &.active a {
+            box-shadow: none;
+        }
     }
 }
 
@@ -674,7 +762,6 @@ footer {
    Media Queries
 ----------------------------------------- */
 
-
 /* Extra small screen (< 481px) */
 @media screen and (max-width: $euca-extrasmall-breakpoint) {
     .show-for-xsmall {
@@ -690,8 +777,6 @@ footer {
         width: 20px !important;
     }
 }
-
-
 
 // Nav bar adjustments
 @media screen and (max-width: $topbar-breakpoint) {
@@ -730,13 +815,13 @@ footer {
     }
 }
 
-
 @media screen and (min-width: $topbar-breakpoint) {
     // Ensure span.hide-for-small are display: inline (Foundation sets them as display: inherit
     span.hide-for-small {
         display: inline !important;
     }
 }
+
 
 /* -----------------------------------------
    Debug

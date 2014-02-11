@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <div class="row panel no-title large-8 columns large-centered" id="login-wrapper"
+    <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
@@ -43,7 +43,7 @@
                     </dd>
                 </dl>
                 <div class="tabs-content">
-                    <div class="content active large-8 medium-8 columns large-centered medium-centered" id="eucalyptus">
+                    <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_url('login')}?login_type=Eucalyptus">
                             <input type="hidden" name="came_from" value="${came_from}" />
@@ -72,7 +72,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="content large-8 medium-8 columns large-centered medium-centered"
+                    <div class="content large-10 medium-10 columns large-centered medium-centered"
                          tal:condition="layout.aws_enabled" id="aws">
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_url('login')}?login_type=AWS">

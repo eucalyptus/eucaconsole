@@ -8,23 +8,34 @@
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 200px; max-height: 200px; background-color: #eeeeee; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+#breadcrumbs .icon-block { display: inline-block; }
+
+.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #76b800; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
+.gridwrapper .dropdown.button.tiny:hover { color: #76b800; }
+.gridwrapper .dropdown.button.tiny::before { border: none; }
+.gridwrapper .dropdown.button.tiny i { position: relative; top: 2px; font-size: 1.3rem; }
+.gridwrapper .button.dropdown:hover + .f-dropdown, .gridwrapper .f-dropdown:hover { z-index: 9999; width: auto; display: block; border-color: #8dc640; box-shadow: 2px 2px 5px #808285; top: -1px; left: auto; right: -1px; padding-top: 24px; }
+.gridwrapper .button.dropdown:hover + .f-dropdown::before, .gridwrapper .button.dropdown:hover + .f-dropdown::after, .gridwrapper .f-dropdown:hover::before, .gridwrapper .f-dropdown:hover::after { border-color: transparent; }
+.gridwrapper .button.dropdown:hover + .f-dropdown li a, .gridwrapper .f-dropdown:hover li a { color: #333; }
+.gridwrapper .button.dropdown:hover + .f-dropdown li a:hover, .gridwrapper .f-dropdown:hover li a:hover { text-decoration: none; }
+
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d3e9b6; }
 .tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
-.tile .header { position: relative; border-bottom: 1px solid #999999; height: 24px; color: white; background-color: #444444; }
-.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: white; }
+.tile .header { position: relative; height: 24px; }
+.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: black; font-weight: bold; }
 .tile .header a:hover { color: #76b800; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown a { white-space: pre-wrap; overflow: visible; }
+.tile .header .f-dropdown a { white-space: pre-wrap; overflow: visible; font-weight: normal; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content a { color: #468400; }
 .tile .content a:hover { text-decoration: underline; }
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
-.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #999999; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
-.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 4px 4px 10px; color: white; background-color: #999999; }
+.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #808285; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; }
 .tile .footer .completed { padding: 4px 0 4px 10px; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
@@ -32,71 +43,65 @@
 .tile .footer .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
 .tile .f-dropdown::before, .tile .f-dropdown::after { left: 138px; }
 
-.gridwrapper .dropdown.button.tiny { position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: black; font-size: 1rem; padding: 0 0 0 0; border: 1px solid #999999; border-top: none; border-right: none; }
-.gridwrapper .dropdown.button.tiny:hover { color: #76b800; }
-.gridwrapper .dropdown.button.tiny::before { border: none; }
-.gridwrapper .dropdown.button.tiny i { position: relative; top: 2px; }
-.gridwrapper .dropdown.button.tiny i.fi-minus-circle { top: -2px; }
-.gridwrapper .button.dropdown:hover + .f-dropdown, .gridwrapper .f-dropdown:hover { width: 160px; display: block; box-shadow: 3px 3px 5px #999999; top: 20px; left: auto; right: 0; }
-.gridwrapper .button.dropdown:hover + .f-dropdown li a, .gridwrapper .f-dropdown:hover li a { color: #333; }
-.gridwrapper .button.dropdown:hover + .f-dropdown li a:hover, .gridwrapper .f-dropdown:hover li a:hover { text-decoration: none; }
-
-.sort-search { font-size: 0.9rem; }
-.sort-search form { margin-bottom: 0; }
-.sort-search .go { position: relative; left: -2px; font-size: 1.2rem; color: #666666; }
-
-.match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
-
-.displayicons { font-size: 2rem; }
-.displayicons a { float: right; border-bottom: none; color: black; }
-.displayicons a:hover { border-bottom: none; color: #76b800; }
-.displayicons .selected { background-color: #eeeeee; }
-.displayicons .selected :hover { color: black; cursor: default; }
-.displayicons i { display: inline-block; padding: 4px 12px; }
-
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { border-top: 2px solid #444444; border-bottom: 2px solid #444444; }
 .gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
 .gridwrapper .table tr { position: relative; width: 100%; border-bottom: 1px solid #ddd; }
 .gridwrapper .table tr td { position: relative; padding-top: 12px; padding-bottom: 12px; vertical-align: top; }
+.gridwrapper .table tr td.status { text-transform: capitalize; }
 .gridwrapper .table tr td a { color: #468400; }
 .gridwrapper .table tr td a:hover { text-decoration: underline; }
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
-.gridwrapper .table .dropdown.button.tiny { top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
+.gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; background-color: #eee; box-shadow: 1px 1px 5px 0px #9a9c9e; }
+.gridwrapper .table .dropdown.button.tiny i { font-size: 1rem; top: 0; }
 .gridwrapper .table .f-dropdown::before, .gridwrapper .table .f-dropdown::after { left: 138px; }
-.gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { left: auto; right: 22px; }
+.gridwrapper .table .button.dropdown:hover + .f-dropdown, .gridwrapper .table .f-dropdown:hover { top: 28px; left: auto; right: 22px; min-width: 10rem; padding-top: 0; }
+.gridwrapper .table .button.dropdown:hover + .f-dropdown::before, .gridwrapper .table .f-dropdown:hover::before { border-color: transparent transparent white transparent; }
+.gridwrapper .table .button.dropdown:hover + .f-dropdown::after, .gridwrapper .table .f-dropdown:hover::after { border-color: transparent transparent #cccccc transparent; }
 
-#filters { margin-top: 70px; }
-#filters label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; }
-#filters form { font-size: 0.9rem; }
-#filters form input { height: 2rem; margin-bottom: 0; }
+.sort-search { font-size: 0.9rem; }
+.sort-search form { margin-bottom: 0; position: relative; }
+.sort-search form input { background-color: transparent; border-color: #808285; }
+.sort-search .go { font-size: 1.2rem; position: absolute; top: 8px; right: 10px; color: #999; }
+
+.match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
+
+.displayicons { font-size: 2rem; }
+.displayicons a { float: right; border-bottom: none; color: black; }
+.displayicons a:hover { border-bottom: none; color: #76b800; }
+.displayicons .selected { background-color: white; }
+.displayicons .selected :hover { color: black; cursor: default; }
+.displayicons i { display: inline-block; padding: 4px 12px; }
+
+#filters { background-color: white; padding: 8px; margin-top: 113px; font-size: 0.8rem; }
+#filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
+#filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
+#filters form button { box-shadow: none; }
 
 #sorting-controls { padding-top: 1rem; }
 
 #results-count { padding-top: 1rem; }
 #results-count em { color: #555; font-style: normal; }
 
-#show-more-btn { display: block; width: 98%; margin: 0 auto; }
-
-.refresh-icon { position: relative; padding: 8px 10px 8px 18px; border-left: 1px solid #80b6ca; }
-.refresh-icon .dots { width: 20px; position: relative; }
+#refresh-btn { background-color: #f18f30; padding: 3px 6px; }
+#refresh-btn:hover { color: white; background-color: #df750f; }
+#refresh-btn i { font-size: 1rem; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
-@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
-  .sort-search .go { min-width: 32px; } }
+@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
 .status { background-color: transparent; }
 
-.status.Inactive { background-color: #999999; }
+.status.Inactive { background-color: #808285; }
 
 .status.Active { background-color: #00415e; }
 
 .reveal-modal #device { width: 10rem; }
 
-.tile { background-color: white; border: 1px solid #cccccc; width: 180px; height: 140px; }
-.tile .header .button.dropdown { height: 24px; color: black; }
+.tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
+.tile .footer { height: 24px; padding-top: 2px; }

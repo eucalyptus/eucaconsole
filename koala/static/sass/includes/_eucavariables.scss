@@ -17,7 +17,7 @@ $euca-lightgreen: #8dc640;
 $euca-extralightgreen: #eef7e3;
 $euca-darkgreen: #468400;
 
-$euca-grey: #999;
+$euca-grey: #808285;
 $euca-darkgrey: #444;
 $euca-lightgrey: #ccc;
 $euca-extralightgrey: #eee;
@@ -52,6 +52,7 @@ $row-width: rem-calc(1040);
 
 // Colors
 $primary-color: $euca-green;
+$secondary-color: $euca-grey;
 $success-color: $euca-lightgreen;
 $code-color: darkred;
 
@@ -95,7 +96,7 @@ $sub-nav-active-bg: $euca-darkblue;
 // Breadcrumbs
 $crumb-bg: transparent;
 $crumb-padding: 0 0 0 0;
-$crumb-side-padding: rem-calc(10);
+$crumb-side-padding: rem-calc(6);
 $crumb-function-factor: -10%;
 $crumb-border-size: 0;
 $crumb-border-style: solid;
@@ -107,8 +108,8 @@ $crumb-font-color-current: #333;
 $crumb-font-color-unavailable: #999;
 $crumb-font-transform: normal;
 $crumb-link-decor: underline;
-$crumb-slash-color: #ccc;
-$crumb-slash: "/";
+$crumb-slash-color: #333;
+$crumb-slash: ">";
 
 // Buttons
 $button-tny: rem-calc(6);
@@ -120,7 +121,9 @@ $button-border-style: solid;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
+$tabs-navigation-bg-color: $euca-green;
 $tabs-content-margin-bottom: rem-calc(1) !default;
+$tabs-navigation-hover-bg-color: lighten($tabs-navigation-bg-color, 5%);
 
 // Tooltips
 $tooltip-padding: rem-calc(5);
@@ -137,10 +140,13 @@ $tooltip-padding: rem-calc(5);
 @mixin panel-tile-mixin {
     background-color: white;
     border: 1px solid $euca-lightgrey;
-    width: 180px; height: 140px;
-    .header .button.dropdown {
+    width: 190px; height: 160px;
+    .footer {
         height: 24px;
-        color: black;
+        padding-top: 2px;
     }
 }
 
+@mixin button-shadow-mixin {
+    box-shadow: 1px 1px 5px 0px lighten($euca-grey, 10%);
+}

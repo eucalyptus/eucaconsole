@@ -12,7 +12,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <div class="panel has-title">
+            <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -28,6 +28,7 @@
                     </metal:actions>
                 </metal:block>
                 <form>
+                    <h6 i18n:translate="">Launch Configuration</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
                         <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>
@@ -65,6 +66,7 @@
                         <div class="small-9 columns value">${launch_config.created_time.strftime(layout.date_format)}</div>
                     </div>
                     <hr />
+                    <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
                         <div class="small-9 columns value">${launch_config.instance_type}</div>

@@ -1,7 +1,6 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/snapshot.css')}" />
 </head>
 
@@ -26,7 +25,7 @@
                          if snapshot else request.route_url('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
                          html_attrs {'disabled': 'disabled'} if snapshot else {};">
-            <div class="panel has-title">
+            <div class="panel ${'has-actions' if snapshot else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
                     <metal:actions metal:fill-slot="actions">
                         <li>
@@ -49,6 +48,7 @@
                 </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
+                    <h6 i18n:translate="">Snapshot</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
                         <div class="small-4 columns">
                             <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus === 'completed'">Status</label>
@@ -107,16 +107,13 @@
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
                         <a href="${request.route_url('snapshots')}" i18n:translate="">Return to snapshots page</a>
                     </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button">
-                                <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
-                                <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
-                            </button>
-                            <a href="${request.route_url('snapshots')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
+                    <div>
+                        <button type="submit" class="button">
+                            <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
+                            <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
+                        </button>
+                        <a href="${request.route_url('snapshots')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
             </div>
