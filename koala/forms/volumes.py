@@ -172,5 +172,5 @@ class VolumesFiltersForm(BaseSecureForm):
     def get_status_choices():
         return (
             ('available', 'Available'),
-            ('in-use', 'Attached'),
+            ('in-use', 'In use'),
         )
