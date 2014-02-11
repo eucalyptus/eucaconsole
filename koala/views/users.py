@@ -94,7 +94,10 @@ class UserView(BaseView):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
-        self.location = self.request.route_url('user_view', name=self.user.user_name)
+        if self.user is None:
+            self.location = self.request.route_url('users')
+        else:
+            self.location = self.request.route_url('user_view', name=self.user.user_name)
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
@@ -243,9 +246,6 @@ class UserView(BaseView):
                         policy['Statement'] = statements
                         import logging; logging.info("policy being set to = "+json.dumps(policy, indent=2))
                         self.conn.put_user_policy(name, "user-all-access-plus-quotas", json.dumps(policy))
-            #msg = _(u'Successfully created user(s).')
-            #location = self.request.route_url('user_view', name=user.user_name)
-            #return HTTPFound(location=location)
             # create file to send instead. Since # users is probably small, do it all in memory
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
@@ -265,8 +265,7 @@ class UserView(BaseView):
             msg = err.message
             queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
-            location = self.request.route_url('users')
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
 
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
@@ -320,9 +319,12 @@ class UserView(BaseView):
                 result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
             # assemble file response
             account = self.request.session['account']
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            row = [account, self.user.user_name, new_pass]
+            csv_w.writerow(row)
             response = Response(content_type='text/csv')
-            response.body = "'{account}', '{user}', '{password}'".\
-                            format(account=account, user=self.user.user_name, password=new_pass);
+            response.body = string_output.getvalue()
             response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
                                 format(acct=account, user=self.user.user_name)
             return response
@@ -342,10 +344,12 @@ class UserView(BaseView):
             result = self.conn.create_access_key(user_name=self.user.user_name)
             #return dict(message=_(u"Successfully generated keys"))
             account = self.request.session['account']
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
+            csv_w.writerow(row)
             response = Response(content_type='text/csv')
-            response.body = "'{account}', '{user}', '{access}', '{secret}'".\
-                            format(account=account, user=self.user.user_name,
-                                   access=result.access_key.access_key_id, secret=result.access_key.secret_access_key);
+            response.body = string_output.getvalue()
             response.content_disposition = 'attachment; filename="{acct}-{user}-{key}-creds.csv"'.\
                                 format(acct=account, user=self.user.user_name, key=result.access_key.access_key_id)
             return response
