@@ -147,3 +147,6 @@ $tooltip-padding: rem-calc(5);
     }
 }
 
+@mixin button-shadow-mixin {
+    box-shadow: 1px 1px 5px 0px lighten($euca-grey, 10%);
+}

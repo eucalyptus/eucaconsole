@@ -328,15 +328,6 @@ a.circle {
     }
 }
 
-#tag-editor {
-    #add-tag-btn {
-        margin-bottom: 0;
-    }
-    small {
-        font-size: 0.825rem;
-    }
-}
-
 textarea.console-output {
     width: 100%;
     min-height: 30rem;
@@ -357,6 +348,31 @@ textarea.console-output {
         }
     }
 }
+
+
+/* -----------------------------------------
+   Tag editor
+----------------------------------------- */
+#tag-editor {
+    .tagentry {
+        &.existing {
+            color: #333;
+            background-color: $euca-lightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
+    }
+    #add-tag-btn {
+        margin-bottom: 0;
+    }
+    small {
+        font-size: 0.825rem;
+    }
+}
+
+
 
 /* -----------------------------------------
    Help content
@@ -624,9 +640,9 @@ textarea.hidden {
             margin-bottom: 8px;
         }
         .actions-menu {
+            @include button-shadow-mixin;
             position: absolute;
             top: 10px; right: 10px;
-            box-shadow: 2px 2px 5px 0px lighten($euca-grey, 10%);
             .secondary.button.dropdown {
                 background-color: $euca-orange;
                 border: none;
@@ -678,6 +694,7 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
+    @include button-shadow-mixin;
     background-color: $euca-orange;
     &.secondary {
         background-color: $euca-grey;

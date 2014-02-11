@@ -1435,13 +1435,17 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
 
-#tag-editor #add-tag-btn { margin-bottom: 0; }
-#tag-editor small { font-size: 0.825rem; }
-
 textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
 .expando .title a { color: #333; }
 .expando .title a:hover { color: #76b800; border-bottom: 1px solid #76b800; }
+
+/* ----------------------------------------- Tag editor
+----------------------------------------- */
+#tag-editor .tagentry.existing { color: #333; background-color: #cccccc; margin-right: 8px; }
+#tag-editor .tagentry.existing a { color: white; }
+#tag-editor #add-tag-btn { margin-bottom: 0; }
+#tag-editor small { font-size: 0.825rem; }
 
 /* ----------------------------------------- Help content
 ----------------------------------------- */
@@ -1514,7 +1518,7 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions { position: relative; padding-top: 50px; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
-.panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; box-shadow: 2px 2px 5px 0px #9a9c9e; }
+.panel.has-actions .actions-menu { box-shadow: 1px 1px 5px 0px #9a9c9e; position: absolute; top: 10px; right: 10px; }
 .panel.has-actions .actions-menu .secondary.button.dropdown { background-color: #f18f30; border: none; margin-bottom: 0; }
 .panel.has-actions .actions-menu .secondary.button.dropdown::before { border-color: white transparent transparent transparent; }
 .panel.has-actions .actions-menu .f-dropdown { box-shadow: 0px 0px 1px 1px #f4a960; min-width: 12rem; width: auto; }
@@ -1533,7 +1537,7 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Buttons
 ----------------------------------------- */
-.button { background-color: #f18f30; }
+.button { box-shadow: 1px 1px 5px 0px #9a9c9e; background-color: #f18f30; }
 .button.secondary { background-color: #808285; color: white; }
 .button:hover { background-color: #df750f; }
 

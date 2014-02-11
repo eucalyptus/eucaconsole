@@ -160,8 +160,6 @@
                     </div>
                     ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
-                    ${panel('tag_editor', tags=instance.tags)}
-                    <hr />
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
                         <div class="small-8 columns value">${image.id}</div>
@@ -189,17 +187,16 @@
                         ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
                     </div
                     <hr />
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-changes-btn"
-                                    tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
-                                <span i18n:translate="">Save changes</span>
-                            </button>
-                            <a href="${request.route_url('instances')}" id="cancel-update-link"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                            <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
-                        </div>
+                    ${panel('tag_editor', tags=instance.tags)}
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="save-changes-btn"
+                                tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
+                            <span i18n:translate="">Save changes</span>
+                        </button>
+                        <a href="${request.route_url('instances')}" id="cancel-update-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                        <button type="submit" class="button" style="display:none;" id="save-update-button"></button>
                     </div>
                 </form>
             </div>

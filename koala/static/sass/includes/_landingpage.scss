@@ -33,6 +33,55 @@ $dropdown-border-color: $euca-green;
     }
 }
 
+// Dropdown buttons on landing page tile/table view
+.gridwrapper {
+    .dropdown.button.tiny {
+        background: none;
+        box-shadow: none;
+        position: absolute;
+        width: 30px; height: $tile-row-height;
+        top: 0; right: 0;
+        color: $euca-green;
+        font-size: 1.1rem;
+        padding: 0 0 0 0;
+        border-top: none;
+        border-right: none;
+        &:hover {
+            color: $euca-green;
+        }
+        &::before {
+            border: none;
+        }
+        i {
+            position: relative;
+            top: 2px;
+            &.fi-minus-circle {
+                top: -2px;
+            }
+        }
+    }
+    .button.dropdown:hover {
+        z-index: 99999;
+    }
+    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        z-index: 9999;
+        width: auto;
+        display: block;
+        border-color: $euca-lightgreen;
+        box-shadow: 2px 2px 5px $euca-grey;
+        top: -1px; left: auto; right: -1px;
+        &::before, &::after {
+            border-color: transparent;
+        }
+        li a {
+            color: #333;
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
 // Tile/grid view
 .tile {
     font-size: $euca-font-size;
@@ -80,12 +129,6 @@ $dropdown-border-color: $euca-green;
         }
         strong {
             font-weight: normal;
-        }
-        .button.dropdown.tiny {
-            border-width: 0;
-            background-color: white;
-            color: $euca-darkgreen;
-            font-size: 1.1rem;
         }
         .f-dropdown a {
             white-space: pre-wrap;
@@ -219,49 +262,14 @@ $dropdown-border-color: $euca-green;
         left: $grid-dropdown-width - 22px;
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
+        top: 28px;
         left: auto; right: 22px;
-    }
-}
-
-
-// Dropdown buttons on landing page tile/table view
-.gridwrapper {
-    .dropdown.button.tiny {
-        position: absolute;
-        width: 30px; height: $tile-row-height;
-        top: 0; right: 0;
-        color: black;
-        font-size: 1rem;
-        padding: 0 0 0 0;
-        border: 1px solid $dropdown-border-color;
-        border-top: none;
-        border-right: none;
-        &:hover {
-            color: $euca-green;
-        }
+        min-width: 10rem;
         &::before {
-            border: none;
+            border-color: transparent transparent white transparent;
         }
-        i {
-            position: relative;
-            top: 2px;
-            &.fi-minus-circle {
-                top: -2px;
-            }
-        }
-    }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        width: $grid-dropdown-width;
-        display: block;
-        box-shadow: 3px 3px 5px $euca-grey;
-        top: 20px; left: auto; right: 0;
-        li {
-            a {
-                color: #333;
-                &:hover {
-                    text-decoration: none;
-                }
-            }
+        &::after {
+            border-color: transparent transparent #cccccc transparent;
         }
     }
 }
@@ -332,6 +340,9 @@ $dropdown-border-color: $euca-green;
             height: 1.8rem;
             margin-bottom: 0;
             font-size: 0.8rem;
+        }
+        button {
+            box-shadow: none;
         }
     }
 }
