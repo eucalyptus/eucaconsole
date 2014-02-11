@@ -3,10 +3,12 @@
 Pyramid views for Eucalyptus and AWS Users
 
 """
+import csv, StringIO
 import os, random, string
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
 import simplejson as json
+import urlparse
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import exception_response
@@ -14,7 +16,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
-
+from pyramid.response import Response
 
 from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
 from ..models import Notification
@@ -89,6 +91,10 @@ class UserView(BaseView):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
+        if self.user is None:
+            self.location = self.request.route_url('users')
+        else:
+            self.location = self.request.route_url('user_view', name=self.user.user_name)
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
@@ -114,8 +120,8 @@ class UserView(BaseView):
         random.seed = (os.urandom(1024))
         return ''.join(random.choice(chars) for i in range(12))
 
-    def addQuotaLimit(self, statements, param, action, condition):
-        val = self.request.params.get(param, None)
+    def addQuotaLimit(self, statements, parsed, param, action, condition):
+        val = self.getParsedValue(parsed, param, None)
         if val:
             statements.append({'Effect': 'Limit', 'Action': action,
                 'Resource': '*', 'Condition':{'NumericLessThanEquals':{condition: val}}})
@@ -144,88 +150,119 @@ class UserView(BaseView):
             g.title = g.group_name
         return dict(results=groups.groups)
 
-    @view_config(route_name='user_create', renderer=TEMPLATE, request_method='POST')
+    def getParsedValue(self, vals, key, default):
+        try:
+            ret = vals[key][0]
+        except KeyError as err:
+            ret = default
+        return ret
+
+    @view_config(route_name='user_create', renderer='json', request_method='POST')
     def user_create(self):
         # can't use regular form validation here. We allow empty values and the validation
         # code does not, so we need to roll our own below.
+        content = self.request.params.get('content')
+        parsed = urlparse.parse_qs(content)
         # get user list
-        users_json = self.request.params.get('users')
+        users_json = parsed['users'][0]
         # get quota info
         # now get the rest
-        random_password = self.request.params.get('random_password', 'n')
-        access_keys = self.request.params.get('access_keys', 'n')
-        allow_all = self.request.params.get('allow_all', 'n')
-        path = self.request.params.get('path', '/')
+        random_password = self.getParsedValue(parsed, 'random_password', 'n')
+        access_keys = self.getParsedValue(parsed, 'access_keys', 'n')
+        allow_all = self.getParsedValue(parsed, 'allow_all', 'n')
+        path = self.getParsedValue(parsed, 'path', '/')
+       
+        session = self.request.session
+        account=session['account']
         try:
+            user_list = []
             if users_json:
                 users = json.loads(users_json)
-                for name in users.items():
+                for (name, email) in users.items():
                     user = self.conn.create_user(name, path)
+                    user_data = {'account': account, 'username':name}
                     policy = {}
                     policy['Version'] = '2011-04-01'
                     statements = []
                     if random_password == 'y':
-                        self.conn.create_login_profile(name, self.generatePassword())
+                        password = self.generatePassword()
+                        self.conn.create_login_profile(name, password)
+                        user_data['password'] = password
                     if access_keys == 'y':
-                        self.conn.create_access_key(name)
+                        creds = self.conn.create_access_key(name)
+                        user_data['access_id'] = creds.access_key.access_key_id
+                        user_data['secret_key'] = creds.access_key.secret_access_key
+                    # store this away for file creation later
+                    user_list.append(user_data)
                     if allow_all == 'y':
                         statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
                     ## s3
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_bucket_size', 's3:????', 's3:quota-bucketsize')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
                     ## iam
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
                     ## autoscaling
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
                     ## elb
-                    self.addQuotaLimit(statements,
+                    self.addQuotaLimit(statements, parsed,
                         'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
 
                     if len(statements) > 0:
                         policy['Statement'] = statements
                         import logging; logging.info("policy being set to = "+json.dumps(policy, indent=2))
                         self.conn.put_user_policy(name, "user-all-access-plus-quotas", json.dumps(policy))
-            msg = _(u'Successfully created user(s).')
-            location = self.request.route_url('user_view', name=user.user_name)
-            return HTTPFound(location=location)
+            # create file to send instead. Since # users is probably small, do it all in memory
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            for user in user_list:
+                row = [user_data['account'], user_data['username']]
+                if random_password == 'y':
+                    row.append(user_data['password'])
+                if access_keys == 'y':
+                    row.append(user_data['access_id'])
+                    row.append(user_data['secret_key'])
+                csv_w.writerow(row)
+            response = Response(content_type='text/csv')
+            response.body = string_output.getvalue()
+            response.content_disposition = 'attachment; filename="{acct}-users.csv"'.format(acct=account)
+            return response
         except BotoServerError as err:
             msg = err.message
             queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
-            location = self.request.route_url('users')
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
 
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
@@ -249,7 +286,14 @@ class UserView(BaseView):
     def user_change_password(self):
         """ calls iam:UpdateLoginProfile """
         try:
-            password = self.request.params.get('password')
+            # side effect of using generateFile on the client is that these 2 params come inside "content"
+            #password = self.request.params.get('password')
+            #new_pass = self.request.params.get('new_password')
+            content = self.request.params.get('content')
+            parsed = urlparse.parse_qs(content)
+            password = parsed['password'][0]
+            new_pass = parsed['new_password'][0]
+
             clchost = self.request.registry.settings.get('clchost')
             duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
             auth = EucaAuthenticator(host=clchost, duration=duration)
@@ -262,7 +306,6 @@ class UserView(BaseView):
             session['session_token'] = creds.session_token
             session['access_id'] = creds.access_key
             session['secret_key'] = creds.secret_key
-            new_pass = self.request.params.get('new_password')
             try:
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
@@ -271,8 +314,19 @@ class UserView(BaseView):
             except BotoServerError:
                 # if that failed, create the profile
                 result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
-            return dict(message=_(u"Successfully set user password"),
-                        results="true")
+            # assemble file response
+            account = self.request.session['account']
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            row = [account, self.user.user_name, new_pass]
+            csv_w.writerow(row)
+            response = Response(content_type='text/csv')
+            response.body = string_output.getvalue()
+            response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
+                                format(acct=account, user=self.user.user_name)
+            return response
+            #return dict(message=_(u"Successfully set user password"),
+            #            results="true")
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
@@ -285,7 +339,17 @@ class UserView(BaseView):
         """ calls iam:CreateAccessKey """
         try:
             result = self.conn.create_access_key(user_name=self.user.user_name)
-            return dict(message=_(u"Successfully generated keys"))
+            #return dict(message=_(u"Successfully generated keys"))
+            account = self.request.session['account']
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
+            csv_w.writerow(row)
+            response = Response(content_type='text/csv')
+            response.body = string_output.getvalue()
+            response.content_disposition = 'attachment; filename="{acct}-{user}-{key}-creds.csv"'.\
+                                format(acct=account, user=self.user.user_name, key=result.access_key.access_key_id)
+            return response
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
 
@@ -339,7 +403,9 @@ class UserView(BaseView):
             location = self.request.route_url('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
-            self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=location)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            location = self.location
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=self.location)

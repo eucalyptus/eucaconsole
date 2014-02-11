@@ -89,6 +89,21 @@ angular.module('UserView', [])
         $scope.changePassword = function($event) {
             // add in current password, then submit the request
             var data = $scope.data+"&password="+$event.target.password.value;
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: "not-used", // let the server set this
+                content: data,
+                script: $scope.jsonEndpoint
+            });
+            $('#change-password-modal').foundation('reveal', 'close');
+            // same notes about setTimeout apply as below
+            setTimeout(function() {
+                $('#new_password').val("");
+                $('#new_password2').val("");
+                $('#password-strength').removeAttr('class');
+            }, 2000);
+            /*
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -104,6 +119,7 @@ angular.module('UserView', [])
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+              */
         };
     })
     .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
@@ -112,6 +128,8 @@ angular.module('UserView', [])
         $scope.jsonItemsEndpoint = '';
         $scope.items = [];
         $scope.itemsLoading = true;
+        $scope.userWithKey = '';
+        $scope.keyToDelete = '';
         $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
@@ -130,6 +148,21 @@ angular.module('UserView', [])
             });
         };
         $scope.generateKeys = function ($event) {
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: "not-used", // let the server set this
+                content: "no-content",
+                script: $scope.jsonEndpoint
+            });
+            // this is clearly a hack. We'd need to bake callbacks into the generateFile
+            // stuff to do this properly. Probably should open an issue. TODO
+            setTimeout(function() {
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+            }, 2000);
+            /* keeping this stuff in case we do the callbacks in generateFile
             $http({method:'POST', url:$scope.jsonEndpoint, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -144,6 +177,7 @@ angular.module('UserView', [])
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+              */
         };
         $scope.makeAjaxCall = function (url, item) {
             url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);
@@ -164,14 +198,12 @@ angular.module('UserView', [])
         };
         $scope.confirmDelete = function (item) {
             var modal = $('#delete-key-modal');
-            $('#user-with-key').val(item.user_name);
-            $('#key-to-delete').val(item.access_key_id);
+            $scope.userWithKey = item.user_name;
+            $scope.keyToDelete = item.access_key_id;
             modal.foundation('reveal', 'open');
         };
         $scope.deleteKey = function (url) {
-            var name = $('#user-with-key').val();
-            var key = $('#key-to-delete').val();
-            url = url.replace("_name_", name).replace("_key_", key);
+            url = url.replace("_name_", $scope.userWithKey).replace("_key_", $scope.keyToDelete);
             $http({method:'POST', url:url, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
