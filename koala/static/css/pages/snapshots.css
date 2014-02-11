@@ -87,6 +87,7 @@
 #results-count em { color: #555; font-style: normal; }
 
 #refresh-btn { background-color: #f18f30; padding: 3px 6px; }
+#refresh-btn:hover { color: white; background-color: #df750f; }
 #refresh-btn i { font-size: 1rem; }
 
 /* ----------------------------------------- Media Queries

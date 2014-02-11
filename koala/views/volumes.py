@@ -66,7 +66,8 @@ class VolumesView(LandingPageView, BaseVolumeView):
     def volumes_landing(self):
         # Filter fields are passed to 'properties_filter_form' template macro to display filters at left
         filter_keys = [
-            'attach_status', 'create_time', 'id', 'instance', 'name', 'size', 'snapshot_id', 'status', 'tags', 'zone'
+            'attach_status', 'create_time', 'id', 'instance', 'name', 'instance_name',
+            'size', 'snapshot_id', 'status', 'tags', 'zone'
         ]
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
@@ -195,7 +196,7 @@ class VolumesJsonView(LandingPageView, BaseVolumeView):
                 id=volume.id,
                 instance=volume.attach_data.instance_id,
                 instance_name=instance_name,
-                name=volume.tags.get('Name', volume.id),
+                name=TaggedItemView.get_display_name(volume),
                 snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                 size=volume.size,
                 status=status,

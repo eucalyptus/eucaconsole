@@ -77,7 +77,7 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Volume</th>
+                <th i18n:translate="">Name (ID)</th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">Size</th>
                 <th i18n:translate="">Instance</th>

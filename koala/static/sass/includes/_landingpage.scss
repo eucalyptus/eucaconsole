@@ -365,6 +365,10 @@ $dropdown-border-color: $euca-green;
 #refresh-btn {
     background-color: $euca-orange;
     padding: 3px 6px;
+    &:hover {
+        color: white;
+        background-color: darken($euca-orange, 10%);
+    }
     i {
         font-size: 1rem;
     }
