@@ -3,11 +3,14 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
-        <h3 class="header" id="pagetitle" i18n:translate="">
-            404 Not Found
-        </h3>
-        <div class="columns" style="min-height: 26rem;">
-            <p i18n:translate="">The resource you have requested was not found.</p>
+        <div>&nbsp;</div>
+        <div class="columns">
+            <h3 class="header" id="pagetitle" i18n:translate="">
+                404 Not Found
+            </h3>
+            <div style="min-height: 26rem;">
+                <p i18n:translate="">The resource you have requested was not found.</p>
+            </div>
         </div>
     </div>
 </div>

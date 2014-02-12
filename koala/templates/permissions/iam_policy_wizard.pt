@@ -1,0 +1,90 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/iam_policy_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Create IAM Policy</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-8 columns">
+            <div class="wizard no-title">
+                <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    <dl class="tabs" data-tab="">
+                        <dd class="active">
+                            <a id="tabStep1" href="#step1">
+                                <span class="cir">1</span> <b>Choose Policy</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep2" href="#step2">
+                                <span class="cir">2</span> <b>Create Policy</b>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="tabStep3" href="#step3">
+                                <span class="cir">3</span> <b>View Policy</b>
+                            </a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: Choose Policy -->
+                        <div class="content active" id="step1">
+                            <p class="description" i18n:translate="">
+                                Select a policy template or create your own policy
+                            </p>
+                        </div>
+                        <!--! Step 2: Create Policy -->
+                        <div class="content" id="step2">
+                            <p class="description" i18n:translate="">
+                                Define custom access permissions
+                            </p>
+                        </div>
+                        <!--! Step 3: View Policy -->
+                        <div class="content" id="step3">
+                            <p class="description" i18n:translate="">
+                                View and customize policy statements
+                            </p>
+                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=2, rightcol_width=10)}
+                            ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=2, rightcol_width=10)}
+                            ${panel('form_field', field=create_form['policy_file'], ng_attrs={'model': 'policyFile'}, leftcol_width=2, rightcol_width=10)}
+                            <hr />
+                            <div class="row">
+                                <div class="small-10 columns right">
+                                    <button type="submit" class="button" id="create-iam-policy-btn">
+                                        <span i18n:translate="">Create Policy</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div>
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/iam_policy_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

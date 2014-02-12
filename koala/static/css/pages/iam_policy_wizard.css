@@ -37,14 +37,4 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-/* @section Launch Instance page styles */
-#launch-instance-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
-#launch-instance-form #number { width: 3rem; }
-#launch-instance-form #instance_type option { font-size: 0.825rem; }
-#launch-instance-form #image-id-input { width: 10rem; display: inline; }
-#launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
-#launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
-#launch-instance-form #create-keypair-link, #launch-instance-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
-#launch-instance-form .rules-title { margin-bottom: 3px; }
-
-#create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
+#iam-policy-form #policy { height: 20rem; }

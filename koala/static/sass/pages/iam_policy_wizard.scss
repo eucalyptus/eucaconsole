@@ -1,0 +1,13 @@
+// @fileOverview IAM Policy Wizard styles
+
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+#iam-policy-form {
+    #policy {
+        height: 20rem;
+    }
+}

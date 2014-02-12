@@ -7,11 +7,12 @@
 .wizard.has-title { position: relative; padding-top: 42px; }
 .wizard.has-title h6.title { position: absolute; text-transform: uppercase; letter-spacing: 1px; top: 0; left: 0; right: 0; line-height: 2.5rem; padding-left: 12px; background-color: #00415e; color: white; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
-.wizard .tabs { margin-left: 16px; }
 .wizard .tabs dd.active a { background-color: white; }
+.wizard .tabs dd.active a:hover { background-color: white; }
 .wizard .tabs dd.active .cir { background-color: #00415e; color: white; }
-.wizard .tabs dd.disabled { padding: 1rem 16px; }
+.wizard .tabs dd.disabled { padding: 1rem 22px; background-color: #eeeeee; }
 .wizard .tabs dd a { box-shadow: none; white-space: nowrap; padding: 1rem 16px; background-color: #d6ecbb; }
+.wizard .tabs dd a:hover { background-color: #bee094; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #808285; color: white; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
 .wizard .tabs-content .content { width: 100%; }

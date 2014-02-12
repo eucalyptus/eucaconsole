@@ -47,7 +47,6 @@ urls = [
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
     Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
-
     # Detail page
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
@@ -198,5 +197,10 @@ urls = [
     Route(name='group_create', pattern='/groups/create'),
     Route(name='group_view', pattern='/groups/{name}'),
     Route(name='group_update', pattern='/groups/{name}/update'),
+
+    # IAM Policies/Permissions #####
+    Route(name='iam_policy_new', pattern='/iam/policies/new'),
+    Route(name='iam_policy_create', pattern='/iam/policies/create'),
 ]
+
 
