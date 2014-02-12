@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Panels (reusable, parameterized template snippets) used across the app.
 
@@ -189,6 +190,12 @@ def image_picker(context, request, image=None, images_json_endpoint=None,
         owner_choices=owner_choices,
         prefix_route=prefix_route,
     )
+
+
+@panel_config('policy_generator', renderer='../templates/permissions/policy_generator.pt')
+def policy_generator(context, request):
+    """IAM Policy generator"""
+    return dict()
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')

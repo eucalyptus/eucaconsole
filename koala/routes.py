@@ -201,6 +201,7 @@ urls = [
     # IAM Policies/Permissions #####
     Route(name='iam_policy_new', pattern='/policies/new'),
     Route(name='iam_policy_create', pattern='/policies/create'),
+    Route(name='iam_policy_json', pattern='/policies/canned/json'),
 ]
 
 

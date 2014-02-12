@@ -31,8 +31,9 @@ USER_ACCESS_POLICY = {
     ]
 }
 
+
 # Monitor/readonly access policy (except users/groups)
-MONITOR_ACCES_POLICY = {
+MONITOR_ACCESS_POLICY = {
     "Version": API_VERSION,
     "Statement": [
         {
@@ -51,4 +52,9 @@ MONITOR_ACCES_POLICY = {
     ]
 }
 
+TYPE_POLICY_MAPPING = {
+    'admin_access': ADMIN_ACCESS_POLICY,
+    'user_access': USER_ACCESS_POLICY,
+    'monitor_access': MONITOR_ACCESS_POLICY,
+}
 
