@@ -739,6 +739,25 @@ footer {
     }
 }
 
+/* -----------------------------------------
+   IAM User Icons
+----------------------------------------- */
+.iam-user-icon {
+    color: #333;
+    background-color: #cccccc;
+    margin-right: 3px;
+    a {
+        color: white;
+        margin-left: 2px;
+    }
+}
+
+/* -----------------------------------------
+   Extra Element Padding 
+----------------------------------------- */
+.padded-element { padding: 5px 5px; }
+.users-select-field-padding { padding-top: 10px; padding-left: 15px; }
+
 
 /* -----------------------------------------
    Foundation fixes
