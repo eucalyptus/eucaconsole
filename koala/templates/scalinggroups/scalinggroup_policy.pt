@@ -39,13 +39,12 @@
                         </div>
                     </div>
                     <hr />
-                    <div class="row controls-wrapper">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns">
-                            <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
-                                Add policy
-                            </button>
-                        </div>
+                    <div>
+                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
+                            Add policy
+                        </button>
+                        <a class="cancel-link" i18n:translate=""
+                           href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">Cancel</a>
                     </div>
                 </form>
             </div>

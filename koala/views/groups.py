@@ -175,23 +175,54 @@ class GroupView(BaseView):
     def group_update_users(self, group_name, new_users):
         new_users = [u.encode('ascii', 'ignore') for u in new_users]
 
+        self.group_add_new_users(group_name, new_users)
+        self.group_remove_deleted_users(group_name, new_users)
+
+        return 
+
+    def group_add_new_users(self, group_name, new_users):
+        success_msg = ''
+        error_msg = ''
         for new_user in new_users:
             is_new = True
             for user in self.group_users:
                 if user == new_user:
                     is_new = False
             if is_new:
-                self.group_add_user(group_name, new_user)
+                (msg, queue) = self.group_add_user(group_name, new_user)
+                if queue is Notification.SUCCESS:
+                    success_msg +=  msg + " "
+                else:
+                    error_msg += msg + " "
 
+        if success_msg != '':
+            self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+        if error_msg != '':
+            self.request.session.flash(error_msg, queue=Notification.ERROR)
+
+        return
+
+    def group_remove_deleted_users(self, group_name, new_users):
+        success_msg = ''
+        error_msg = ''
         for user in self.group_users:
             is_deleted = True
             for new_user in new_users:
                 if user == new_user:
                     is_deleted = False
             if is_deleted:
-                self.group_remove_user(group_name, user)
+                (msg, queue) = self.group_remove_user(group_name, user)
+                if queue is Notification.SUCCESS:
+                    success_msg +=  msg + " "
+                else:
+                    error_msg += msg + " "
 
-        return 
+        if success_msg != '':
+            self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+        if error_msg != '':
+            self.request.session.flash(error_msg, queue=Notification.ERROR)
+
+        return
 
     def group_add_user(self, group_name, user):
         try:
@@ -202,9 +233,8 @@ class GroupView(BaseView):
         except EC2ResponseError as err:
             msg = err.message
             queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
 
-        return
+        return (msg, queue)
 
     def group_remove_user(self, group_name, user):
         try:
@@ -215,8 +245,7 @@ class GroupView(BaseView):
         except EC2ResponseError as err:
             msg = err.message
             queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
 
-        return
+        return (msg, queue)
 
 

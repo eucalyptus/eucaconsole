@@ -7,6 +7,7 @@
 angular.module('UsersPage', ['LandingPage'])
     .controller('UsersCtrl', function ($scope) {
         $scope.user_name = '';
+        $scope.groupName = '';
         $scope.initPage = function () {
         };
         $scope.revealModal = function (action, user) {

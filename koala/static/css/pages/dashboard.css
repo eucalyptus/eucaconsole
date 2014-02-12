@@ -13,7 +13,8 @@
 .panel .tile .footer { position: absolute; height: 30px; left: 1rem; right: 1rem; bottom: 8px; text-align: center; }
 .panel .tile .footer a { font-weight: bold; }
 .panel .tile .footer a:hover { text-decoration: underline; }
-.panel .tile .footer .button { display: block; }
+.panel .tile .footer .button { display: inline-block; font-weight: bold; }
+.panel .tile .footer .button:hover { text-decoration: none; }
 .panel .tile a:hover .icon { background-color: #0088c4; }
 
 /* Small screen */
