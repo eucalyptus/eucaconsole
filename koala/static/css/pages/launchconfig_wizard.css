@@ -16,6 +16,7 @@
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #808285; color: white; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
 .wizard .tabs-content .content { width: 100%; }
+.wizard .tabs-content .content .description { font-weight: bold; color: #00415e; }
 
 .summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-top: 54px; margin-bottom: 1rem; }
 .summary label { position: relative; right: -1rem; color: #00415e; font-weight: bold; margin-bottom: 4px; }

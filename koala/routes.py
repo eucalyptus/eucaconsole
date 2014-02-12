@@ -199,8 +199,8 @@ urls = [
     Route(name='group_update', pattern='/groups/{name}/update'),
 
     # IAM Policies/Permissions #####
-    Route(name='iam_policy_new', pattern='/iam/policies/new'),
-    Route(name='iam_policy_create', pattern='/iam/policies/create'),
+    Route(name='iam_policy_new', pattern='/policies/new'),
+    Route(name='iam_policy_create', pattern='/policies/create'),
 ]
 
 

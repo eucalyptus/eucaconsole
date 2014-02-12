@@ -11,3 +11,23 @@
         height: 20rem;
     }
 }
+
+// Select/create policy expandos
+.expando {
+    .content {
+        margin-top: 1rem;
+        .choice {
+            border-bottom: 1px solid $euca-lightgrey;
+            margin-bottom: 1rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            p {
+                line-height: 1.3rem;
+            }
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
+

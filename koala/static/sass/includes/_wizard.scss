@@ -75,6 +75,10 @@ $wizard-border-width: 16px;
         background-color: white;
         .content {
             width: 100%;
+            .description {
+                font-weight: bold;
+                color: $euca-darkblue;
+            }
         }
     }
 }

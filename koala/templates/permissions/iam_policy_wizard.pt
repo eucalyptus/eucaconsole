@@ -41,6 +41,74 @@
                             <p class="description" i18n:translate="">
                                 Select a policy template or create your own policy
                             </p>
+                            <div class="expando" id="select-policy" ng-cloak="" ng-init="selectPolicyExpanded = true">
+                                <h6 class="title" >
+                                    <a ng-click="selectPolicyExpanded = !selectPolicyExpanded">
+                                        <i class="fi-plus" ng-show="!selectPolicyExpanded"></i>
+                                        <i class="fi-minus" ng-show="selectPolicyExpanded"></i>
+                                        &nbsp;<span i18n:translate="">Select a policy template</span>
+                                    </a>
+                                </h6>
+                                <div class="content columns" ng-show="selectPolicyExpanded">
+                                    <div class="row choice">
+                                        <div class="small-10 columns">
+                                            <strong i18n:translate="">Account administrator access</strong>
+                                            <p i18n:translate="">Provides full access to all resources, including users and groups</p>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <a ng-click="selectPolicy('account_admin')" class="button small" i18n:translate="">Select</a>
+                                        </div>
+                                    </div>
+                                    <div class="row choice">
+                                        <div class="small-10 columns">
+                                            <strong i18n:translate="">User access</strong>
+                                            <p i18n:translate="">Provides full access to all resources, but not users and groups</p>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <a ng-click="selectPolicy('user_access')" class="button small" i18n:translate="">Select</a>
+                                        </div>
+                                    </div>
+                                    <div class="row choice">
+                                        <div class="small-10 columns">
+                                            <strong i18n:translate="">Monitor access</strong>
+                                            <p i18n:translate="">Provides read-only access to all resources, with no access to users and groups</p>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <a ng-click="selectPolicy('monitor_access')" class="button small" i18n:translate="">Select</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="expando" id="create-policy" ng-cloak="" ng-init="createPolicyExpanded = true">
+                                <h6 class="title" >
+                                    <a ng-click="createPolicyExpanded = !createPolicyExpanded">
+                                        <i class="fi-plus" ng-show="!createPolicyExpanded"></i>
+                                        <i class="fi-minus" ng-show="createPolicyExpanded"></i>
+                                        &nbsp;<span i18n:translate="">Create a policy</span>
+                                    </a>
+                                </h6>
+                                <div class="content columns" ng-show="createPolicyExpanded">
+                                    <div class="row choice">
+                                        <div class="small-10 columns">
+                                            <strong i18n:translate="">Use the policy generator</strong>
+                                            <p i18n:translate="">This tool helps you easily create a policy without needing to understand policy language</p>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <a ng-click="visitStep(2, $event)" class="button small" i18n:translate="">Select</a>
+                                        </div>
+                                    </div>
+                                    <div class="row choice">
+                                        <div class="small-10 columns">
+                                            <strong i18n:translate="">Upload or write a file (advanced)</strong>
+                                            <p i18n:translate="">Upload a policy file, or write a policy using policy syntax</p>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <a ng-click="visitStep(3, $event)" class="button small" i18n:translate="">Select</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!--! Step 2: Create Policy -->
                         <div class="content" id="step2">
