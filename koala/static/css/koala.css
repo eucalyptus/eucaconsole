@@ -1552,17 +1552,6 @@ footer .copyright { font-size: 0.9em; }
 .tabs dd a { box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
 
-/* ----------------------------------------- IAM User Icons
------------------------------------------ */
-.iam-user-icon { color: #333; background-color: #cccccc; margin-right: 3px; }
-.iam-user-icon a { color: white; margin-left: 2px; }
-
-/* ----------------------------------------- Extra Element Padding 
------------------------------------------ */
-.padded-element { padding: 5px 5px; }
-
-.users-select-field-padding { padding-top: 10px; padding-left: 15px; }
-
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
 .f-dropdown { left: -99999px; }
