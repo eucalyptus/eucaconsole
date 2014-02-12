@@ -3,6 +3,11 @@
 <head metal:fill-slot="head_css">
     <style>
         .chosen-container-multi .chosen-choices li.search-choice { display: none; }
+        .padding-5x5 { padding: 5px 5px; }
+        .padding-top-10 {padding-top: 10px; }
+        .padding-left-15 { padding-left: 15px; }
+        .user-icon { color: #333; background-color: #cccccc; margin-right: 3px; }
+        .user-icon a { color: white; margin-left: 2px; }
     </style>
 </head>
 
@@ -75,19 +80,15 @@
                         ${structure:group_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
-                            <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=4, rightcol_width=8)}
+                            <div class="row controls-wrapper readonly padding-5x5">
+                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9)}
                             </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
-                                <div class="small-8 columns value">${group.arn if group.arn else ''}</div>
+                            <div class="row controls-wrapper readonly padding-5x5">
+                                <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
+                                <div class="small-9 columns value inline">${group.arn if group.arn else ''}</div>
                             </div>
-                            <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=4, rightcol_width=8)}
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ID</label></div>
-                                <div class="small-8 columns value">${group.group_id if group.group_id else ''}</div>
+                            <div class="row controls-wrapper readonly padding-5x5">
+                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9)}
                             </div>
                         </div>
                         <hr />
@@ -101,10 +102,12 @@
                                     </select>
                                 </div>
                             </div> 
-                            <div class="row controls-wrapper readonly">
-                                <div id="users_select_field">
-                                    <span class="label radius secondary" ng-repeat="user in groupUsers">
-                                        <a ng-click="removeUser(user)"><i class="fi-x"></i></a>{{ user }}
+                            <div class="row controls-wrapper readonly padding-top-10">
+                                <div id="users_select_field" class="padding-left-15">
+                                    <span ng-repeat="user in groupUsers">
+                                        <span class="label radius secondary user-icon padding-5x5">
+                                            {{ user }}<a ng-click="removeUser(user)"><i class="fi-x"></i></a>
+                                        </span>
                                     </span>
                                 </div>
                             </div>
