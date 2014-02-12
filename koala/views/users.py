@@ -18,7 +18,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm
+from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm, AddToGroupForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
@@ -130,10 +130,12 @@ class UserView(BaseView):
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
+        self.group_form = AddToGroupForm(self.request)
+        self.render_dict['group_form'] = self.group_form
         return self.render_dict
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
-    def user_view(self):
+    def user_new(self):
         return self.render_dict
  
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
@@ -149,6 +151,16 @@ class UserView(BaseView):
         for g in groups.groups:
             g.title = g.group_name
         return dict(results=groups.groups)
+
+    @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
+    def user_avail_groups_json(self):
+        """Return groups this user isn't part of"""
+        taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
+        all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
+        avail_groups = list(set(all_groups) - set(taken_groups))
+        if len(avail_groups) == 0:
+            avail_groups.append(_(u"User already a member of all groups"))
+        return dict(results=avail_groups)
 
     def getParsedValue(self, vals, key, default):
         try:
@@ -386,10 +398,21 @@ class UserView(BaseView):
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
         """ calls iam:AddUserToGroup """
+        group = self.request.matchdict.get('group')
         try:
-            group = self.request.params.get('group')
-            result = self.conn.add_user_to_group(user_name=self.user.user_name, group=group)
+            result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
             return dict(message=_(u"Successfully added user to group"),
+                        results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
+    def user_remove_from_group(self):
+        """ calls iam:RemoveUserToGroup """
+        group = self.request.matchdict.get('group')
+        try:
+            result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
+            return dict(message=_(u"Successfully removed user to group"),
                         results=result)
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
@@ -408,4 +431,4 @@ class UserView(BaseView):
             msg = err.message
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
-        return HTTPFound(location=self.location)
+        return HTTPFound(location=location)
