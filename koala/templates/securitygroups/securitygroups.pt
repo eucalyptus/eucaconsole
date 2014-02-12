@@ -54,7 +54,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
-                <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay']" /></td>
+                <td><metal:block metal:use-macro="layout.global_macros['securitygroup_rulesdisplay_tableview']" /></td>
                 <td>{{ item.tags }}</td>
                 <td>
                     <span class="actions">
