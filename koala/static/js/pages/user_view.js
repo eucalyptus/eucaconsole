@@ -223,14 +223,19 @@ angular.module('UserView', [])
     })
     .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.jsonEndpoint = '';
+        $scope.addEndpoint = '';
+        $scope.removeEndpoint = '';
         $scope.jsonItemsEndpoint = '';
+        $scope.jsonGroupsEndpoint = '';
         $scope.items = [];
         $scope.itemsLoading = true;
-        $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint) {
+            $scope.addEndpoint = addEndpoint;
+            $scope.removeEndpoint = removeEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
+            $scope.jsonGroupsEndpoint = jsonGroupsEndpoint;
             $scope.getItems(jsonItemsEndpoint);
+            $scope.getAvailableGroups();
         };
         $scope.getItems = function (jsonItemsEndpoint) {
             $http.get(jsonItemsEndpoint).success(function(oData) {
@@ -244,16 +249,52 @@ angular.module('UserView', [])
                 }
             });
         };
-        $scope.revealModal = function (modal, item) {
+        $scope.getAvailableGroups = function () {
+            $http.get($scope.jsonGroupsEndpoint).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.groups = results;
+                options = "";
+                for (var i=0; i<results.length; i++) {
+                    options += "<option value='"+results[i]+"'>"+results[i]+"</option>";
+                }
+                $('#group_name').find('option').remove().end().append($(options));
+                $('#group_name').trigger('chosen:updated');
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+            });
         };
         $scope.addUserToGroup = function ($event) {
-            $http({method:'POST', url:$scope.jsonEndpoint, data:'',
+            group_name = $('#group_name').val();
+            url = $scope.addEndpoint.replace("_group_", group_name);
+            $http({method:'POST', url:url, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
+                $scope.getAvailableGroups();
+                Notify.success(oData.message);
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['error'] || '';
+                Notify.failure(errorMsg);
+              });
+        };
+        $scope.removeUserFromGroup = function (item) {
+            group_name = item.group_name;
+            url = $scope.removeEndpoint.replace("_group_", group_name);
+            $http({method:'POST', url:url, data:'',
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.itemsLoading = true;
+                $scope.items = [];
+                $scope.getItems($scope.jsonItemsEndpoint);
+                $scope.getAvailableGroups();
                 Notify.success(oData.message);
               }).
               error(function (oData, status) {

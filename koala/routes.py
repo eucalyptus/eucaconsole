@@ -182,6 +182,7 @@ urls = [
     Route(name='user_view', pattern='/users/{name}'), # Pass name='new' to render Create User(s) page
     Route(name='user_access_keys_json', pattern='/users/{name}/keys_json'),
     Route(name='user_groups_json', pattern='/users/{name}/groups_json'),
+    Route(name='user_avail_groups_json', pattern='/users/{name}/groups_available_json'),
     Route(name='user_update', pattern='/users/{name}/update'),
     Route(name='user_delete', pattern='/users/{name}/delete'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
@@ -189,7 +190,8 @@ urls = [
     Route(name='user_delete_key', pattern='/users/{name}/keys/{key}/delete'),
     Route(name='user_deactivate_key', pattern='/users/{name}/keys/{key}/deactivate'),
     Route(name='user_activate_key', pattern='/users/{name}/keys/{key}/activate'),
-    Route(name='user_add_to_group', pattern='/users/{name}/addgroup'),
+    Route(name='user_add_to_group', pattern='/users/{name}/addgroup/{group}'),
+    Route(name='user_remove_from_group', pattern='/users/{name}/removegroup/{group}'),
     Route(name='user_update_quotas', pattern='/users/{name}/quotas'),
 
     # Groups #####
