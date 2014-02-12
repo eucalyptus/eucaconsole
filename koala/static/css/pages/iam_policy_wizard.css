@@ -44,3 +44,5 @@
 .expando .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .expando .content .choice p { line-height: 1.3rem; }
 .expando .content .choice:last-child { border-bottom: none; }
+
+.CodeMirror { border: 1px solid #cccccc; padding: 10px; }
