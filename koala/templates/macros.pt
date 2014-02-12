@@ -249,13 +249,14 @@
 <!-- Security group rules display
      For displaying a list of rules (one per line) in a tableview column or gridview tile row -->
 <metal:securitygrouprules metal:define-macro="securitygroup_rulesdisplay">
-    <span ng-repeat="rule in item.rules">
+    <span ng-repeat="rule in item.rules | limitTo: 3">
         {{ rule.ip_protocol.toUpperCase() }}
         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-        <span ng-repeat="grant in rule.grants">
+        <span ng-repeat="grant in rule.grants | limitTo: 1">
             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
             <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
-        </span><br ng-show="!$last" />
+            <span ng-show="rule.grants.length > 1">..</span>
+        </span><br ng-show="!$last" /><span ng-show="$last && item.rules.length > 3"><br>...</span>
     </span>
 </metal:securitygrouprules>
 
