@@ -9,6 +9,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
 from .routes import urls
+from .tweens import setup_tweens
 
 
 def get_configurator(settings, enable_auth=True):
@@ -24,6 +25,7 @@ def get_configurator(settings, enable_auth=True):
     config.add_layout('koala.layout.MasterLayout', 'koala.layout:templates/master_layout.pt')
     for route in urls:
         config.add_route(route.name, route.pattern)
+    setup_tweens(config)
     config.scan()
     return config
 
