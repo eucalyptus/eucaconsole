@@ -2,8 +2,8 @@
     <table class="table actions-wrapper">
         <thead>
             <tr>
-                <th class="allow" i18n:translate="">ALLOW</th>
-                <th class="deny" i18n:translate="">DENY</th>
+                <th class="allow" i18n:translate="">Allow</th>
+                <th class="deny" i18n:translate="">Deny</th>
                 <th class="actions">&nbsp;</th>
             </tr>
         </thead>

@@ -122,6 +122,8 @@
                 <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
+                    <input type="hidden" name="type" value="${request.params.get('type', '')}" />
+                    <input type="hidden" name="id" value="${request.params.get('id', '')}" />
                     <label><strong i18n:translate="">Name</strong></label>
                     ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
                         leftcol_width=0, rightcol_width=12)}
@@ -131,12 +133,10 @@
                     ${panel('form_field', field=create_form['policy_file'], ng_attrs={'model': 'policyFile'},
                         leftcol_width=0, rightcol_width=12)}
                     <hr />
-                    <div class="row" ng-show="policyText">
-                        <div class="small-10 columns right">
-                            <button type="submit" class="button" id="create-iam-policy-btn">
-                                <span i18n:translate="">Create Policy</span>
-                            </button>
-                        </div>
+                    <div ng-show="policyText" ng-cloak="">
+                        <button type="submit" class="button" id="create-iam-policy-btn">
+                            <span i18n:translate="">Create Policy</span>
+                        </button>
                     </div>
                 </form>
             </div>

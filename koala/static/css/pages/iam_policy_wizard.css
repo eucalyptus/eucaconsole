@@ -50,8 +50,7 @@
 #policy-generator .table { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
 #policy-generator .table tr.namespace { border-top: 1px solid #cccccc; }
 #policy-generator .table tr.namespace td { font-size: 1rem; }
-#policy-generator .table th.allow { width: 40px; }
-#policy-generator .table th.deny { width: 40px; }
+#policy-generator .table th.allow, #policy-generator .table th.deny { text-transform: uppercase; width: 40px; }
 #policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
 #policy-generator .table td.allow, #policy-generator .table td.deny { text-align: center; }
 #policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }

@@ -58,8 +58,10 @@
             }
         }
         th {
-            &.allow { width: 40px; }
-            &.deny { width: 40px; }
+            &.allow, &.deny {
+                text-transform: uppercase;
+                width: 40px;
+            }
         }
         td {
             font-size: 0.9rem;
