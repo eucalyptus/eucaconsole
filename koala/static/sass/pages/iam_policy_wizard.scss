@@ -45,11 +45,13 @@
 // Policy generator styles
 #policy-generator {
     .table {
-        border: none;
+        border-color: $euca-lightgrey;
+        border-left: none;
+        border-right: none;
         width: 100%;
         tr {
             &.namespace {
-                border-top: 1px solid $euca-grey;
+                border-top: 1px solid $euca-lightgrey;
                 td {
                     font-size: 1rem;
                 }
@@ -62,7 +64,9 @@
         td {
             font-size: 0.9rem;
             line-height: 1rem;
-
+            &.allow, &.deny {
+                text-align: center
+            }
             i.tick {
                 color: $euca-lightgrey;
                 font-size: 1.2rem;
