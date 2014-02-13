@@ -436,7 +436,9 @@ class UserView(BaseView):
         if self.user is None:
             raise HTTPNotFound
         try:
-            self.conn.delete_user(user_name=self.user.user_name)
+            params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
+            self.conn.get_response('DeleteUser', params)
+            
             location = self.request.route_url('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
