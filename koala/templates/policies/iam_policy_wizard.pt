@@ -117,7 +117,7 @@
                             <p class="description" i18n:translate="">
                                 Define custom access permissions
                             </p>
-                            <!--! Policy generator here -->
+                            ${panel('policy_generator', policy_actions=policy_actions)}
                         </div>
                         <!--! Step 3: View Policy -->
                         <div class="content" id="step3">

@@ -192,10 +192,13 @@ def image_picker(context, request, image=None, images_json_endpoint=None,
     )
 
 
-@panel_config('policy_generator', renderer='../templates/permissions/policy_generator.pt')
-def policy_generator(context, request):
+@panel_config('policy_generator', renderer='../templates/policies/policy_generator.pt')
+def policy_generator(context, request, policy_actions=None):
     """IAM Policy generator"""
-    return dict()
+    policy_actions = policy_actions or {}
+    return dict(
+        policy_actions=policy_actions,
+    )
 
 
 @panel_config('quotas_panel', renderer='../templates/users/quotas.pt')

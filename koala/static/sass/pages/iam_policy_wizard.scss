@@ -6,11 +6,6 @@
 // Import common wizard styles
 @import "../includes/wizard";
 
-#iam-policy-form {
-    #policy {
-        height: 20rem;
-    }
-}
 
 // Select/create policy expandos
 .expando {
@@ -26,6 +21,39 @@
             }
             &:last-child {
                 border-bottom: none;
+            }
+        }
+    }
+}
+
+#iam-policy-form {
+    #policy {
+        height: 20rem;
+    }
+}
+
+// Policy generator styles
+#policy-generator {
+    .table {
+        width: 100%;
+        th {
+            &.allow { width: 40px; }
+            &.deny { width: 40px; }
+        }
+        td {
+            font-size: 1rem;
+            line-height: 1.5rem;
+            text-align: center;
+            &.actions {
+                text-align: left;
+                .spacer {
+                    display: inline-block;
+                    width: 20px;
+                }
+            }
+            i.tick {
+                color: $euca-lightgrey;
+                font-size: 1.2rem;
             }
         }
     }

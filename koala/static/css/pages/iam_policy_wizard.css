@@ -38,11 +38,19 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-#iam-policy-form #policy { height: 20rem; }
-
 .expando .content { margin-top: 1rem; }
 .expando .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .expando .content .choice p { line-height: 1.3rem; }
 .expando .content .choice:last-child { border-bottom: none; }
+
+#iam-policy-form #policy { height: 20rem; }
+
+#policy-generator .table { width: 100%; }
+#policy-generator .table th.allow { width: 40px; }
+#policy-generator .table th.deny { width: 40px; }
+#policy-generator .table td { font-size: 1rem; line-height: 1.5rem; text-align: center; }
+#policy-generator .table td.actions { text-align: left; }
+#policy-generator .table td.actions .spacer { display: inline-block; width: 20px; }
+#policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
 
 .CodeMirror { border: 1px solid #cccccc; }

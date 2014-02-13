@@ -5,13 +5,15 @@
  */
 
 angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http) {
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyJsonEndpoint = '';
         $scope.policyTextarea = document.getElementById('policy');
         $scope.codeEditor = null;
+        $scope.policyActions = {};
         $scope.initController = function (policyJsonEndpoint) {
             $scope.policyJsonEndpoint = policyJsonEndpoint;
+            console.log($scope.policyActions)
             $scope.initCodeMirror();
         };
         $scope.initCodeMirror = function () {
