@@ -45,25 +45,33 @@
 // Policy generator styles
 #policy-generator {
     .table {
+        border: none;
         width: 100%;
+        tr {
+            &.namespace {
+                border-top: 1px solid $euca-grey;
+                td {
+                    font-size: 1rem;
+                }
+            }
+        }
         th {
             &.allow { width: 40px; }
             &.deny { width: 40px; }
         }
         td {
-            font-size: 1rem;
-            line-height: 1.5rem;
-            text-align: center;
-            &.actions {
-                text-align: left;
-                .spacer {
-                    display: inline-block;
-                    width: 20px;
-                }
-            }
+            font-size: 0.9rem;
+            line-height: 1rem;
+
             i.tick {
                 color: $euca-lightgrey;
                 font-size: 1.2rem;
+                &.fi-check.selected {
+                    color: $euca-green;
+                }
+                &.fi-x.selected {
+                    color: red;
+                }
             }
         }
     }

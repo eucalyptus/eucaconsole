@@ -15,7 +15,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div class="large-7 columns">
+        <div class="large-6 columns">
             <div class="wizard no-title">
                 <dl class="tabs" data-tab="">
                     <dd class="active">
@@ -115,19 +115,21 @@
                 <div class="clearfix">&nbsp;</div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-6 columns">
             <!--! Preview Policy -->
             <div id="policy-preview">
                 <h6 class="title">View Policy</h6>
                 <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
+                    <label><strong i18n:translate="">Name</strong></label>
                     ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
-                        leftcol_width=2, rightcol_width=10)}
+                        leftcol_width=0, rightcol_width=12)}
+                    <label><strong i18n:translate="">Policy</strong></label>
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
-                        leftcol_width=2, rightcol_width=10)}
+                        leftcol_width=0, rightcol_width=12)}
                     ${panel('form_field', field=create_form['policy_file'], ng_attrs={'model': 'policyFile'},
-                        leftcol_width=2, rightcol_width=10)}
+                        leftcol_width=0, rightcol_width=12)}
                     <hr />
                     <div class="row" ng-show="policyText">
                         <div class="small-10 columns right">

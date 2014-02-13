@@ -47,12 +47,14 @@
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
 #policy-preview h6.title { font-weight: bold; color: #00415e; margin-bottom: 1rem; }
 
-#policy-generator .table { width: 100%; }
+#policy-generator .table { border: none; width: 100%; }
+#policy-generator .table tr.namespace { border-top: 1px solid #808285; }
+#policy-generator .table tr.namespace td { font-size: 1rem; }
 #policy-generator .table th.allow { width: 40px; }
 #policy-generator .table th.deny { width: 40px; }
-#policy-generator .table td { font-size: 1rem; line-height: 1.5rem; text-align: center; }
-#policy-generator .table td.actions { text-align: left; }
-#policy-generator .table td.actions .spacer { display: inline-block; width: 20px; }
+#policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
 #policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
+#policy-generator .table td i.tick.fi-check.selected { color: #76b800; }
+#policy-generator .table td i.tick.fi-x.selected { color: red; }
 
 .CodeMirror { border: 1px solid #cccccc; min-height: 24rem; }
