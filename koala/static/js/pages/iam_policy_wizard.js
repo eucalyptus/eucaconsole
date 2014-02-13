@@ -5,23 +5,24 @@
  */
 
 angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http) {
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyJsonEndpoint = '';
-        $scope.policyTextarea = $('#policy');
+        $scope.policyTextarea = document.getElementById('policy');
         $scope.codeEditor = null;
         $scope.initController = function (policyJsonEndpoint) {
             $scope.policyJsonEndpoint = policyJsonEndpoint;
             $scope.initCodeMirror();
         };
         $scope.initCodeMirror = function () {
-            $scope.codeEditor = CodeMirror.fromTextArea(document.getElementById('policy'), {
+            $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
                 mode: "javascript",
-                lineWrapping: true
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true
             });
         };
-        $scope.visitStep = function(step, $event) {
-            $event.preventDefault();
+        $scope.visitStep = function(step) {
             $('#tabStep' + step).click();
         };
         $scope.selectPolicy = function(policyType) {
@@ -32,6 +33,7 @@ angular.module('IAMPolicyWizard', [])
                 if (results) {
                     formattedResults = JSON.stringify(results, null, 2);
                     $scope.codeEditor.setValue(formattedResults);
+                    $scope.codeEditor.focus();
                 }
             });
             $('#tabStep3').click();

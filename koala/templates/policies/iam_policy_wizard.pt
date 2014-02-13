@@ -97,7 +97,7 @@
                                             <p i18n:translate="">This tool helps you easily create a policy without needing to understand policy language</p>
                                         </div>
                                         <div class="small-2 columns">
-                                            <a ng-click="visitStep(2, $event)" class="button small" i18n:translate="">Select</a>
+                                            <a ng-click="visitStep(2)" class="button small" i18n:translate="">Select</a>
                                         </div>
                                     </div>
                                     <div class="row choice">
@@ -106,7 +106,7 @@
                                             <p i18n:translate="">Upload a policy file, or write a policy using policy syntax</p>
                                         </div>
                                         <div class="small-2 columns">
-                                            <a ng-click="visitStep(3, $event)" class="button small" i18n:translate="">Select</a>
+                                            <a ng-click="selectPolicy('blank')" class="button small" i18n:translate="">Select</a>
                                         </div>
                                     </div>
                                 </div>
@@ -159,6 +159,7 @@
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/codemirror/codemirror.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/iam_policy_wizard.js')}"></script>
 </div>
 

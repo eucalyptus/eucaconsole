@@ -37,6 +37,7 @@ MONITOR_ACCESS_POLICY = {
     "Version": API_VERSION,
     "Statement": [
         {
+            "Effect": "Allow",
             "Action": [
                 "autoscaling:Describe*",
                 "cloudwatch:Describe*",
@@ -46,15 +47,29 @@ MONITOR_ACCESS_POLICY = {
                 "s3:Get*",
                 "s3:List*",
             ],
-            "Effect": "Allow",
             "Resource": "*"
         }
     ]
 }
 
+
+# Starter template for empty access policy (advanced option in wizard)
+BLANK_POLICY = {
+    "Version": API_VERSION,
+    "Statement": [
+        {
+            "Effect": "",
+            "Action": [],
+            "Resource": ""
+        }
+    ]
+}
+
+
 TYPE_POLICY_MAPPING = {
     'admin_access': ADMIN_ACCESS_POLICY,
     'user_access': USER_ACCESS_POLICY,
     'monitor_access': MONITOR_ACCESS_POLICY,
+    'blank': BLANK_POLICY,
 }
 
