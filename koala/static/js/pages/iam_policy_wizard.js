@@ -5,7 +5,7 @@
  */
 
 angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http) {
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
         $scope.policyJsonEndpoint = '';
@@ -14,7 +14,6 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
-        $scope.generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
         $scope.initController = function (policyJsonEndpoint) {
             $scope.policyJsonEndpoint = policyJsonEndpoint;
             $scope.initCodeMirror();
@@ -55,29 +54,34 @@ angular.module('IAMPolicyWizard', [])
             // Set policy name
             $scope.setPolicyName(policyType);
         };
-        // Updates from policy generator
-        $scope.updatePolicy = function () {
-            var formattedResults = JSON.stringify($scope.generatorPolicy, null, 2);
+        $scope.updatePolicy = function() {
+            var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
+            var formattedResults = JSON.stringify(generatorPolicy, null, 2);
             $scope.policyText = formattedResults;
             $scope.codeEditor.setValue(formattedResults);
         };
-        // Add "Allow" or "Deny" statement
-        $scope.addStatement = function (effect, namespace, action, $event) {
-            var nsAction = namespace.toLowerCase() + ':' + action;
-            var flattenedStatement =  effect + namespace + action;
+        $scope.updateStatements = function () {
+            $scope.policyStatements = [];
+            $scope.policyGenerator.find('.action').find('i.selected').each(function(idx, item) {
+                var namespace = item.getAttribute('data-namespace'),
+                    action = item.getAttribute('data-action'),
+                    effect = item.getAttribute('data-effect'),
+                    nsAction = namespace.toLowerCase() + ':' + action;
+                $scope.policyStatements.push({
+                    "Action": [nsAction],
+                    "Resource": "*",
+                    "Effect": effect
+                });
+            });
+            $scope.updatePolicy();
+        };
+        $scope.handleSelection = function ($event) {
             var tgt = $($event.target);
-            var statement = {
-                "Action": [nsAction],
-                "Resource": "*",
-                "Effect": effect  // Can be "Allow" or "Deny"
-            };
-            if ($scope.addedStatements.indexOf(flattenedStatement) === -1) {
-                $scope.policyStatements.push(statement);
-                $scope.addedStatements.push(flattenedStatement);
-                $scope.updatePolicy();
-            }
             tgt.closest('tr').find('i').removeClass('selected');
             tgt.addClass('selected');
+            $timeout(function () {
+                $scope.updateStatements();
+            }, 50);
         };
         $scope.toggleAll = function (action, namespace, $event) {
             // action is 'allow' or 'deny'
@@ -87,6 +91,9 @@ angular.module('IAMPolicyWizard', [])
             $($event.target).addClass('selected');
             $scope.policyGenerator.find(nsSelector).find(enabledMark).addClass('selected');
             $scope.policyGenerator.find(nsSelector).find(disabledMark).removeClass('selected');
+            $timeout(function () {
+                $scope.updateStatements();
+            }, 100)
         };
     })
 ;
