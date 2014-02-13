@@ -1,0 +1,60 @@
+
+<!--! Policy list -->
+<div id="policy-list" class="row controls-wrapper" ng-app="PolicyList"
+     ng-controller="PolicyListCtrl" ng-init="initPolicies('${policies_url}', '${policy_url}', '${remove_url}', '${update_url}')">
+    <div class="small-12 columns field">
+        <div>&nbsp;</div>
+        <div class="row userentry controls-wrapper">
+            <div>
+                <div class="columns">
+                    <a href="#" ng-click="addPolicy($event)" class="button" id="add-policy-btn"
+                       title="Add policy" i18n:translate="">Add policy</a>
+                
+                </div>
+            </div>
+        </div>
+        <div class="row userentry existing inline controls-wrapper"
+             ng-repeat="policy in policyArray" ng-cloak="cloak">
+            <div class="small-1 columns">
+                <a href="#" class="circle remove has-tip" ng-click="removePolicy($index, $event)"
+                   title="Remove policy"><i class="fi-minus-circle"></i></a>
+            </div>
+            <div class="small-1 columns">
+                <a href="#" class="circle remove has-tip" ng-click="editPolicy($index, $event)"
+                   title="Edit policy"><i class="fi-pencil"></i></a>
+            </div>
+            <div class="small-10 columns">
+                <span>{{ policy.name }}</span>
+            </div>
+        </div>
+        <textarea id="policies" name="policies" class="hidden"></textarea>
+        <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">{{ policyName }} policy</h3>
+            <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
+            <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
+            
+            <button type="submit" class="button" id="save-policy-btn" ng-click="savePolicy()">
+                <span i18n:translate="">Save changes</span>
+            </button>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="delete-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete policy</h3>
+            <p>
+                <span i18n:translate="">Are you sure you want to delete the policy <strong>{{ policyName }}</strong></span>?
+            </p>
+            
+            <form ng-submit="doDelete($event)" id="delete-form">
+                <div class="row">
+                    <div class="small-4 columns">&nbsp;</div>
+                    <div class="small-8 columns field inline">
+                        <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                    </div>
+                </div>
+            </form>
+            
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+    <script src="${request.static_url('koala:static/js/widgets/policy_list.js')}"></script>
+<div>

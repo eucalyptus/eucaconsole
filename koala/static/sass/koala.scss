@@ -337,6 +337,13 @@ textarea.console-output {
     font-weight: bold;
 }
 
+textarea.policy-area {
+    width: 100%;
+    min-height: 30rem;
+    font-family: Courier, "courier new", monospace;
+    font-weight: bold;
+}
+
 .expando {
     .title {
         a {
@@ -675,7 +682,12 @@ textarea.hidden {
     }
 }
 
+.reveal-modal-bg {
+    z-index: 9999998;
+}
+
 .reveal-modal {
+    z-index: 9999999;
     h3 {
         font-weight: bold;
     }

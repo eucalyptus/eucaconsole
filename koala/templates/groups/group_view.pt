@@ -115,19 +115,20 @@
                                 </div>
                             </div>
                         </div>
-                        <hr />
+                    </form>
+                    <hr />
+                    <div tal:define="policies_url request.route_url('group_policies_json', name=group.group_name);
+                                     policy_url request.route_url('group_policy_json', name=group.group_name, policy='_policy_');
+                                     remove_url request.route_url('group_delete_policy', name=group.group_name, policy='_policy_');
+                                     update_url request.route_url('group_update_policy', name=group.group_name, policy='_policy_')">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" id="add-policy-btn">
-                                        <span tal:condition="group" i18n:translate="">Add policy</span>
-                                    </button>
-                                </div>
+                            <div>
+                                <strong i18n:translate="">Group policies</strong>
+                                ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url)}
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,6 +141,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/group.js')}"></script>
 </div>
 
