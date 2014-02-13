@@ -26,9 +26,19 @@
     }
 }
 
-#iam-policy-form {
-    #policy {
-        height: 20rem;
+
+// Policy preview
+#policy-preview {
+    background-color: white;
+    padding: 1rem;
+    margin-top: 56px;
+    input[type=text], textarea {
+        background-color: white;
+    }
+    h6.title {
+        font-weight: bold;
+        color: $euca-darkblue;
+        margin-bottom: 1rem;
     }
 }
 
@@ -60,7 +70,10 @@
 }
 
 
+
+
 // CodeMirror styles
 .CodeMirror {
     border: 1px solid $euca-lightgrey;
+    min-height: 24rem;
 }

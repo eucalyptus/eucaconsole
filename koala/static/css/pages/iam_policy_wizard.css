@@ -43,7 +43,9 @@
 .expando .content .choice p { line-height: 1.3rem; }
 .expando .content .choice:last-child { border-bottom: none; }
 
-#iam-policy-form #policy { height: 20rem; }
+#policy-preview { background-color: white; padding: 1rem; margin-top: 56px; }
+#policy-preview input[type=text], #policy-preview textarea { background-color: white; }
+#policy-preview h6.title { font-weight: bold; color: #00415e; margin-bottom: 1rem; }
 
 #policy-generator .table { width: 100%; }
 #policy-generator .table th.allow { width: 40px; }
@@ -53,4 +55,4 @@
 #policy-generator .table td.actions .spacer { display: inline-block; width: 20px; }
 #policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
 
-.CodeMirror { border: 1px solid #cccccc; }
+.CodeMirror { border: 1px solid #cccccc; min-height: 24rem; }

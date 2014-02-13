@@ -27,18 +27,30 @@ angular.module('IAMPolicyWizard', [])
         $scope.visitStep = function(step) {
             $('#tabStep' + step).click();
         };
+        $scope.setPolicyName = function (policyType) {
+            var typeNameMapping = {
+                'admin_access': 'AccountAdminAccessPolicy',
+                'user_access': 'PowerUserAccessPolicy',
+                'monitor_access': 'ReadOnlyUserAccessPolicy',
+                'blank': 'CustomAccessPolicy'
+            }
+            $scope.policyName = typeNameMapping[policyType] || '';
+        };
         $scope.selectPolicy = function(policyType) {
+            // Fetch hard-coded canned policies
             var jsonUrl = $scope.policyJsonEndpoint + "?type=" + policyType;
             $http.get(jsonUrl).success(function(oData) {
                 var results = oData ? oData['policy'] : '',
                     formattedResults = '';
                 if (results) {
                     formattedResults = JSON.stringify(results, null, 2);
+                    $scope.policyText = formattedResults;
                     $scope.codeEditor.setValue(formattedResults);
                     $scope.codeEditor.focus();
                 }
             });
-            $('#tabStep3').click();
+            // Set policy name
+            $scope.setPolicyName(policyType);
         };
     })
 ;

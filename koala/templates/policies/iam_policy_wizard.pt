@@ -15,141 +15,128 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div class="large-8 columns">
+        <div class="large-7 columns">
             <div class="wizard no-title">
-                <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
-                      method="post" data-abide="abide" enctype="multipart/form-data">
-                    ${structure:create_form['csrf_token']}
-                    <dl class="tabs" data-tab="">
-                        <dd class="active">
-                            <a id="tabStep1" href="#step1">
-                                <span class="cir">1</span> <b>Choose Policy</b>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a id="tabStep2" href="#step2">
-                                <span class="cir">2</span> <b>Create Policy</b>
-                            </a>
-                        </dd>
-                        <dd>
-                            <a id="tabStep3" href="#step3">
-                                <span class="cir">3</span> <b>View Policy</b>
-                            </a>
-                        </dd>
-                    </dl>
-                    <div class="tabs-content">
-                        <!--! Step 1: Choose Policy -->
-                        <div class="content active" id="step1">
-                            <p class="description" i18n:translate="">
-                                Select a policy template or create your own policy
-                            </p>
-                            <div class="expando" id="select-policy" ng-cloak="" ng-init="selectPolicyExpanded = true">
-                                <h6 class="title" >
-                                    <a ng-click="selectPolicyExpanded = !selectPolicyExpanded">
-                                        <i class="fi-plus" ng-show="!selectPolicyExpanded"></i>
-                                        <i class="fi-minus" ng-show="selectPolicyExpanded"></i>
-                                        &nbsp;<span i18n:translate="">Select a policy template</span>
-                                    </a>
-                                </h6>
-                                <div class="content columns" ng-show="selectPolicyExpanded">
-                                    <div class="row choice">
-                                        <div class="small-10 columns">
-                                            <strong i18n:translate="">Account administrator access</strong>
-                                            <p i18n:translate="">Provides full access to all resources, including users and groups</p>
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <a ng-click="selectPolicy('admin_access')" class="button small" i18n:translate="">Select</a>
-                                        </div>
+                <dl class="tabs" data-tab="">
+                    <dd class="active">
+                        <a id="tabStep1" href="#step1">
+                            <span class="cir">1</span> <b>Choose Policy</b>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a id="tabStep2" href="#step2">
+                            <span class="cir">2</span> <b>Create Policy</b>
+                        </a>
+                    </dd>
+                </dl>
+                <div class="tabs-content">
+                    <!--! Step 1: Choose Policy -->
+                    <div class="content active" id="step1">
+                        <p class="description" i18n:translate="">
+                            Select a policy template or create your own policy
+                        </p>
+                        <div class="expando" id="select-policy" ng-cloak="" ng-init="selectPolicyExpanded = true">
+                            <h6 class="title" >
+                                <a ng-click="selectPolicyExpanded = !selectPolicyExpanded">
+                                    <i class="fi-plus" ng-show="!selectPolicyExpanded"></i>
+                                    <i class="fi-minus" ng-show="selectPolicyExpanded"></i>
+                                    &nbsp;<span i18n:translate="">Select a policy template</span>
+                                </a>
+                            </h6>
+                            <div class="content columns" ng-show="selectPolicyExpanded">
+                                <div class="row choice">
+                                    <div class="small-10 columns">
+                                        <strong i18n:translate="">Account administrator access</strong>
+                                        <p i18n:translate="">Provides full access to all resources, including users and groups</p>
                                     </div>
-                                    <div class="row choice">
-                                        <div class="small-10 columns">
-                                            <strong i18n:translate="">User access</strong>
-                                            <p i18n:translate="">Provides full access to all resources, but not users and groups</p>
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <a ng-click="selectPolicy('user_access')" class="button small" i18n:translate="">Select</a>
-                                        </div>
-                                    </div>
-                                    <div class="row choice">
-                                        <div class="small-10 columns">
-                                            <strong i18n:translate="">Monitor access</strong>
-                                            <p i18n:translate="">Provides read-only access to all resources, with no access to users and groups</p>
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <a ng-click="selectPolicy('monitor_access')" class="button small" i18n:translate="">Select</a>
-                                        </div>
+                                    <div class="small-2 columns">
+                                        <a ng-click="selectPolicy('admin_access')" class="button small" i18n:translate="">Select</a>
                                     </div>
                                 </div>
-                            </div>
-                            <hr />
-                            <div class="expando" id="create-policy" ng-cloak="" ng-init="createPolicyExpanded = true">
-                                <h6 class="title" >
-                                    <a ng-click="createPolicyExpanded = !createPolicyExpanded">
-                                        <i class="fi-plus" ng-show="!createPolicyExpanded"></i>
-                                        <i class="fi-minus" ng-show="createPolicyExpanded"></i>
-                                        &nbsp;<span i18n:translate="">Create a policy</span>
-                                    </a>
-                                </h6>
-                                <div class="content columns" ng-show="createPolicyExpanded">
-                                    <div class="row choice">
-                                        <div class="small-10 columns">
-                                            <strong i18n:translate="">Use the policy generator</strong>
-                                            <p i18n:translate="">This tool helps you easily create a policy without needing to understand policy language</p>
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <a ng-click="visitStep(2)" class="button small" i18n:translate="">Select</a>
-                                        </div>
+                                <div class="row choice">
+                                    <div class="small-10 columns">
+                                        <strong i18n:translate="">User access</strong>
+                                        <p i18n:translate="">Provides full access to all resources, but not users and groups</p>
                                     </div>
-                                    <div class="row choice">
-                                        <div class="small-10 columns">
-                                            <strong i18n:translate="">Upload or write a file (advanced)</strong>
-                                            <p i18n:translate="">Upload a policy file, or write a policy using policy syntax</p>
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <a ng-click="selectPolicy('blank')" class="button small" i18n:translate="">Select</a>
-                                        </div>
+                                    <div class="small-2 columns">
+                                        <a ng-click="selectPolicy('user_access')" class="button small" i18n:translate="">Select</a>
+                                    </div>
+                                </div>
+                                <div class="row choice">
+                                    <div class="small-10 columns">
+                                        <strong i18n:translate="">Monitor access</strong>
+                                        <p i18n:translate="">Provides read-only access to all resources, with no access to users and groups</p>
+                                    </div>
+                                    <div class="small-2 columns">
+                                        <a ng-click="selectPolicy('monitor_access')" class="button small" i18n:translate="">Select</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!--! Step 2: Create Policy -->
-                        <div class="content" id="step2">
-                            <p class="description" i18n:translate="">
-                                Define custom access permissions
-                            </p>
-                            ${panel('policy_generator', policy_actions=policy_actions)}
-                        </div>
-                        <!--! Step 3: View Policy -->
-                        <div class="content" id="step3">
-                            <p class="description" i18n:translate="">
-                                View and customize policy statements
-                            </p>
-                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
-                                leftcol_width=2, rightcol_width=10)}
-                            ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
-                                leftcol_width=2, rightcol_width=10)}
-                            ${panel('form_field', field=create_form['policy_file'], ng_attrs={'model': 'policyFile'},
-                                leftcol_width=2, rightcol_width=10)}
-                            <hr />
-                            <div class="row">
-                                <div class="small-10 columns right">
-                                    <button type="submit" class="button" id="create-iam-policy-btn">
-                                        <span i18n:translate="">Create Policy</span>
-                                    </button>
+                        <hr />
+                        <div class="expando" id="create-policy" ng-cloak="" ng-init="createPolicyExpanded = true">
+                            <h6 class="title" >
+                                <a ng-click="createPolicyExpanded = !createPolicyExpanded">
+                                    <i class="fi-plus" ng-show="!createPolicyExpanded"></i>
+                                    <i class="fi-minus" ng-show="createPolicyExpanded"></i>
+                                    &nbsp;<span i18n:translate="">Create a policy</span>
+                                </a>
+                            </h6>
+                            <div class="content columns" ng-show="createPolicyExpanded">
+                                <div class="row choice">
+                                    <div class="small-10 columns">
+                                        <strong i18n:translate="">Use the policy generator</strong>
+                                        <p i18n:translate="">This tool helps you easily create a policy without needing to understand policy language</p>
+                                    </div>
+                                    <div class="small-2 columns">
+                                        <a ng-click="visitStep(2)" class="button small" i18n:translate="">Select</a>
+                                    </div>
+                                </div>
+                                <div class="row choice">
+                                    <div class="small-10 columns">
+                                        <strong i18n:translate="">Upload or write a file (advanced)</strong>
+                                        <p i18n:translate="">Upload a policy file, or write a policy using policy syntax</p>
+                                    </div>
+                                    <div class="small-2 columns">
+                                        <a ng-click="selectPolicy('blank')" class="button small" i18n:translate="">Select</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="clearfix">&nbsp;</div>
-                </form>
+                    <!--! Step 2: Create Policy -->
+                    <div class="content" id="step2">
+                        <p class="description" i18n:translate="">
+                            Define custom access permissions
+                        </p>
+                        ${panel('policy_generator', policy_actions=policy_actions)}
+                    </div>
+                </div>
+                <div class="clearfix">&nbsp;</div>
             </div>
         </div>
-        <div class="large-4 columns">
-            <div>
-                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                    <!-- HELP CONTENT -->
-                </div>
+        <div class="large-5 columns">
+            <!--! Preview Policy -->
+            <div id="policy-preview">
+                <h6 class="title">View Policy</h6>
+                <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
+                        leftcol_width=2, rightcol_width=10)}
+                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
+                        leftcol_width=2, rightcol_width=10)}
+                    ${panel('form_field', field=create_form['policy_file'], ng_attrs={'model': 'policyFile'},
+                        leftcol_width=2, rightcol_width=10)}
+                    <hr />
+                    <div class="row" ng-show="policyText">
+                        <div class="small-10 columns right">
+                            <button type="submit" class="button" id="create-iam-policy-btn">
+                                <span i18n:translate="">Create Policy</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
