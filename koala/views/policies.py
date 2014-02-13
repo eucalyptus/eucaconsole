@@ -42,9 +42,16 @@ class IAMPolicyWizardView(BaseView):
         """Handles the POST from the Create IAM Policy wizard"""
         location = self.request.route_url('users')
         if self.create_form.validate():
-            name = self.request.params.get('name')
+            policy_name = self.request.params.get('name')
+            target_type = self.request.params.get('type')  # 'user' or 'group'
+            target_name = self.request.params.get('id')  # user or group name
+            policy_json = self.request.params.get('policy', '{}')
             try:
-                # self.conn.put_user_policy()
+                if target_type == 'user':
+                    caller = self.conn.put_user_policy
+                else:
+                    caller = self.conn.put_group_policy
+                caller(target_name, policy_name, policy_json)
                 msg = _(u'Successfully created IAM policy.')
                 queue = Notification.SUCCESS
             except BotoServerError as err:
