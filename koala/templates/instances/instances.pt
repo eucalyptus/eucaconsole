@@ -31,6 +31,9 @@
                     <li>
                         <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
                     </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
+                    </li>
                     <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
                         <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
                     </li>
@@ -122,6 +125,9 @@
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li>
                                 <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                             </li>
                             <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
                                 <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
