@@ -38,14 +38,23 @@
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 560px) { dl.tabs a b { display: none; } }
-/* @section Launch Instance page styles */
-#launch-instance-form input.name { width: 100px; margin-right: 8px; margin-bottom: 4px; padding: 4px; }
-#launch-instance-form #number { width: 3rem; }
-#launch-instance-form #instance_type option { font-size: 0.825rem; }
-#launch-instance-form #image-id-input { width: 10rem; display: inline; }
-#launch-instance-form #controls_userdata_file { position: relative; top: -0.5rem; }
-#launch-instance-form #controls_userdata_file #userdata_file { width: 80%; display: inline-block; }
-#launch-instance-form #create-keypair-link, #launch-instance-form #create-securitygroup-link { position: relative; top: -6px; margin-bottom: 10px; }
-#launch-instance-form .rules-title { margin-bottom: 3px; }
+.expando .content { margin-top: 1rem; }
+.expando .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
+.expando .content .choice p { line-height: 1.3rem; }
+.expando .content .choice:last-child { border-bottom: none; }
 
-#create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
+#policy-preview { background-color: white; padding: 1rem; margin-top: 56px; }
+#policy-preview input[type=text], #policy-preview textarea { background-color: white; }
+#policy-preview h6.title { font-weight: bold; color: #00415e; margin-bottom: 1rem; }
+
+#policy-generator .table { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
+#policy-generator .table tr.namespace { border-top: 1px solid #cccccc; }
+#policy-generator .table tr.namespace td { font-size: 1rem; }
+#policy-generator .table th.allow, #policy-generator .table th.deny { text-transform: uppercase; width: 40px; }
+#policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
+#policy-generator .table td.allow, #policy-generator .table td.deny { text-align: center; }
+#policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
+#policy-generator .table td i.tick.fi-check.selected { color: #76b800; }
+#policy-generator .table td i.tick.fi-x.selected { color: red; }
+
+.CodeMirror { border: 1px solid #cccccc; min-height: 24rem; }

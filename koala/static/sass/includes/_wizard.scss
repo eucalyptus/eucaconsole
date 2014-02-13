@@ -27,11 +27,13 @@ $wizard-border-width: 16px;
         margin-bottom: 0.5rem;
     }
     .tabs {
-        margin-left: $wizard-border-width;
         dd {
             &.active {
                 a {
                     background-color: white;
+                    &:hover {
+                        background-color: white;
+                    }
                 }
                 .cir {
                     background-color: $euca-darkblue;
@@ -39,13 +41,17 @@ $wizard-border-width: 16px;
                 }
             }
             &.disabled {
-                padding: 1rem 16px;
+                padding: 1rem 22px;
+                background-color: $euca-extralightgrey;
             }
             a {
                 box-shadow: none;
                 white-space: nowrap;
                 padding: 1rem 16px;
                 background-color: darken($euca-extralightgreen, 10%);
+                &:hover {
+                    background-color: darken($euca-extralightgreen, 20%);
+                }
             }
             .cir {
                 position: relative;
@@ -69,6 +75,10 @@ $wizard-border-width: 16px;
         background-color: white;
         .content {
             width: 100%;
+            .description {
+                font-weight: bold;
+                color: $euca-darkblue;
+            }
         }
     }
 }

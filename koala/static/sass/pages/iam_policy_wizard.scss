@@ -1,0 +1,93 @@
+// @fileOverview IAM Policy Wizard styles
+
+// Import common Foundation variables
+@import "../includes/eucavariables";
+
+// Import common wizard styles
+@import "../includes/wizard";
+
+
+// Select/create policy expandos
+.expando {
+    .content {
+        margin-top: 1rem;
+        .choice {
+            border-bottom: 1px solid $euca-lightgrey;
+            margin-bottom: 1rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            p {
+                line-height: 1.3rem;
+            }
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+
+// Policy preview
+#policy-preview {
+    background-color: white;
+    padding: 1rem;
+    margin-top: 56px;
+    input[type=text], textarea {
+        background-color: white;
+    }
+    h6.title {
+        font-weight: bold;
+        color: $euca-darkblue;
+        margin-bottom: 1rem;
+    }
+}
+
+// Policy generator styles
+#policy-generator {
+    .table {
+        border-color: $euca-lightgrey;
+        border-left: none;
+        border-right: none;
+        width: 100%;
+        tr {
+            &.namespace {
+                border-top: 1px solid $euca-lightgrey;
+                td {
+                    font-size: 1rem;
+                }
+            }
+        }
+        th {
+            &.allow, &.deny {
+                text-transform: uppercase;
+                width: 40px;
+            }
+        }
+        td {
+            font-size: 0.9rem;
+            line-height: 1rem;
+            &.allow, &.deny {
+                text-align: center
+            }
+            i.tick {
+                color: $euca-lightgrey;
+                font-size: 1.2rem;
+                &.fi-check.selected {
+                    color: $euca-green;
+                }
+                &.fi-x.selected {
+                    color: red;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+// CodeMirror styles
+.CodeMirror {
+    border: 1px solid $euca-lightgrey;
+    min-height: 24rem;
+}

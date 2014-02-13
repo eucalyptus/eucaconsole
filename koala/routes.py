@@ -47,7 +47,6 @@ urls = [
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
     Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
-
     # Detail page
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
@@ -208,5 +207,11 @@ urls = [
     Route(name='group_policy_json', pattern='/groups/{name}/policies/{policy}'),
     Route(name='group_update_policy', pattern='/groups/{name}/policy/{policy}/save'),
     Route(name='group_delete_policy', pattern='/groups/{name}/policy/{policy}/delete'),
+
+    # IAM Policies/Permissions #####
+    Route(name='iam_policy_new', pattern='/policies/new'),
+    Route(name='iam_policy_create', pattern='/policies/create'),
+    Route(name='iam_policy_json', pattern='/policies/canned/json'),
 ]
+
 
