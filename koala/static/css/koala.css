@@ -1437,6 +1437,8 @@ a.circle { color: black; display: inline-block; }
 
 textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
+textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "courier new", monospace; font-weight: bold; }
+
 .expando .title a { color: #333; }
 .expando .title a:hover { color: #76b800; border-bottom: 1px solid #76b800; }
 

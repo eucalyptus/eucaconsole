@@ -4,8 +4,10 @@ Pyramid views for Eucalyptus and AWS Groups
 
 """
 import unicodedata
+import simplejson as json
 from urllib import urlencode
 
+from boto.exception import BotoServerError
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -14,8 +16,7 @@ from pyramid.view import view_config
 from ..forms.groups import GroupForm, GroupUpdateForm
 from ..models import Notification
 from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView
-
+from ..views import BaseView, LandingPageView, JSONResponse
 
 class GroupsView(LandingPageView):
     TEMPLATE = '../templates/groups/groups.pt'
@@ -248,4 +249,38 @@ class GroupView(BaseView):
 
         return (msg, queue)
 
+    @view_config(route_name='group_policies_json', renderer='json', request_method='GET')
+    def group_policies_json(self):
+        """Return group policies list"""
+        policies = self.conn.get_all_group_policies(group_name=self.group.group_name)
+        return dict(results=policies.policy_names)
+
+    @view_config(route_name='group_policy_json', renderer='json', request_method='GET')
+    def group_policy_json(self):
+        """Return group policies list"""
+        policy_name = self.request.matchdict.get('policy')
+        policy = self.conn.get_group_policy(group_name=self.group.group_name, policy_name=policy_name)
+        parsed = json.loads(policy.policy_document)
+        return dict(results=json.dumps(parsed, indent=2))
+
+    @view_config(route_name='group_update_policy', request_method='POST', renderer='json')
+    def group_update_policy(self):
+        """ calls iam:PutGroupPolicy """
+        policy = self.request.matchdict.get('policy')
+        try:
+            policy_text = self.request.params.get('policy_text')
+            result = self.conn.put_group_policy(group_name=self.group.group_name, policy_name=policy, policy_json=policy_text)
+            return dict(message=_(u"Successfully updated group policy"), results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='group_delete_policy', request_method='POST', renderer='json')
+    def group_delete_policy(self):
+        """ calls iam:DeleteGroupPolicy """
+        policy = self.request.matchdict.get('policy')
+        try:
+            result = self.conn.delete_group_policy(group_name=self.group.group_name, policy_name=policy)
+            return dict(message=_(u"Successfully deleted group policy"), results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
 

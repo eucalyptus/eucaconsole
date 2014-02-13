@@ -337,6 +337,13 @@ textarea.console-output {
     font-weight: bold;
 }
 
+textarea.policy-area {
+    width: 100%;
+    min-height: 30rem;
+    font-family: Courier, "courier new", monospace;
+    font-weight: bold;
+}
+
 .expando {
     .title {
         a {

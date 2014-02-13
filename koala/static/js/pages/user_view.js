@@ -5,7 +5,7 @@
  */
 
 // user view page includes the User Editor editor
-angular.module('UserView', [])
+angular.module('UserView', ['PolicyList'])
     .controller('UserViewCtrl', function ($scope) {
         $scope.form = $('#user-update-form');
         $scope.ec2_expanded = false;
@@ -302,6 +302,9 @@ angular.module('UserView', [])
                 Notify.failure(errorMsg);
               });
         };
+    })
+    .controller('UserPermissionsCtrl', function($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
     })
 ;
 
