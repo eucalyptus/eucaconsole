@@ -162,6 +162,20 @@ class UserView(BaseView):
             avail_groups.append(_(u"User already a member of all groups"))
         return dict(results=avail_groups)
 
+    @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
+    def user_policies_json(self):
+        """Return user policies list"""
+        policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+        return dict(results=policies.policy_names)
+
+    @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
+    def user_policy_json(self):
+        """Return user policies list"""
+        policy_name = self.request.matchdict.get('policy')
+        policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
+        parsed = json.loads(policy.policy_document)
+        return dict(results=json.dumps(parsed, indent=2))
+
     def getParsedValue(self, vals, key, default):
         try:
             ret = vals[key][0]
@@ -432,3 +446,25 @@ class UserView(BaseView):
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=location)
+
+    @view_config(route_name='user_update_policy', request_method='POST', renderer='json')
+    def user_update_policy(self):
+        """ calls iam:PutUserPolicy """
+        policy = self.request.matchdict.get('policy')
+        try:
+            policy_text = self.request.params.get('policy_text')
+            result = self.conn.put_user_policy(user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
+            return dict(message=_(u"Successfully updated user policy"), results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
+    def user_delete_policy(self):
+        """ calls iam:DeleteUserPolicy """
+        policy = self.request.matchdict.get('policy')
+        try:
+            result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
+            return dict(message=_(u"Successfully deleted user policy"), results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+

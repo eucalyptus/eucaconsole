@@ -180,11 +180,11 @@
                             ${structure:user_form['csrf_token']}
                             <div class="columns field inline">
                                 <div class="row controls-wrapper controls_${field.name}" tal:repeat="field group_form">
-                                    <div class="small-6">
+                                    <div class="column small-6">
                                         ${structure:field()}
                                     </div>
-                                    <div class="small-6">
-                                        <button type="submit" class="button" id="add-user-to-group-btn">
+                                    <div class="column small-6">
+                                        <button type="submit" class="button round small" id="add-user-to-group-btn">
                                             <span tal:condition="user" i18n:translate="">Add user to group</span>
                                         </button>
                                     </div>
@@ -210,8 +210,17 @@
                     </div>
                 </div>
                 <hr/>
-                <div class="section">
-                    <h6 i18n:translate="">Permissions</h6>
+                <div tal:define="policies_url request.route_url('user_policies_json', name=user.user_name);
+                                 policy_url request.route_url('user_policy_json', name=user.user_name, policy='_policy_');
+                                 remove_url request.route_url('user_delete_policy', name=user.user_name, policy='_policy_');
+                                 update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_')">
+                    <div class="section">
+                        <h6 i18n:translate="">Permissions</h6>
+                        <div>
+                            <strong i18n:translate="">User policies</strong>
+                            ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url)}
+                        </div>
+                    </div>
                 </div>
                 <hr/>
                 <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
@@ -239,7 +248,7 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete User</h3>
                 <p>
-                    <span i18n:translate="">Are you sure you want to delete the user <strong>${user.user_name}</strong></span>?
+                    <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong>${user.user_name}</strong></span>?
                 </p>
                 <form method="post" id="delete-form" action="${request.route_url('user_delete', name=user.user_name)}">
                     ${structure:delete_form['csrf_token']}
