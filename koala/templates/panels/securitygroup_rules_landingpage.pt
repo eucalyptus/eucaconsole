@@ -1,15 +1,9 @@
 <!--! Security group rules for landing page display  -->
-<span id="securitygrouprules_landingpage"
-    tal:define="repeat_condition_for_table_view string:rule in item.rules;
-                repeat_condition_for_tile_view string:rule in item.rules | limitTo: 3;
-                repeat_condition repeat_condition_for_tile_view if tile_view else repeat_condition_for_table_view;
-                inner_repeat_condition_for_table_view string:grant in rule.grants;
-                inner_repeat_condition_for_tile_view string:grant in rule.grants | limitTo: 1;
-                inner_repeat_condition inner_repeat_condition_for_tile_view if tile_view else inner_repeat_condition_for_table_view;">
-    <span ng-repeat="${repeat_condition}">
+<span id="securitygrouprules_landingpage">
+    <span ng-repeat="rule in item.rules ${'\| limitTo: 3' if tile_view else ''}">
         {{ rule.ip_protocol.toUpperCase() }}
         ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-        <span ng-repeat="${inner_repeat_condition}">
+        <span ng-repeat="grant in rule.grants ${'\| limitTo: 1' if tile_view else ''}">
             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
             <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
             <span tal:condition="tile_view" ng-show="rule.grants.length > 1"
@@ -17,7 +11,7 @@
         </span>
         <br ng-show="!$last" />
         <span style="display: block;" tal:condition="tile_view" ng-show="$last && item.rules.length > 3">
-            <span data-tooltip="" class="label round has-tip ellipsis" title="{{ item.rules }}">...</span>
+            <span data-tooltip="" class="label round has-tip ellipsis" title="{{ item.rules.length - 3 }} more rules">...</span>
         </span>
     </span>
 </span>
