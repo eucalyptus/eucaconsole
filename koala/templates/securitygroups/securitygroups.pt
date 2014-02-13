@@ -33,7 +33,7 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div ng-show="item.rules">
                     <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
-                    ${panel('securitygroup_rules_landingpage_panel', tile_view=True)}
+                    ${panel('securitygroup_rules_landingpage', tile_view=True)}
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
@@ -54,7 +54,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
                 <td>{{ item.description }}</td>
-                <td>${panel('securitygroup_rules_landingpage_panel', tile_view=False)}</td>
+                <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
                 <td>{{ item.tags }}</td>
                 <td>
                     <span class="actions">
