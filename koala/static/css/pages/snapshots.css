@@ -105,6 +105,7 @@
 .table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }
 .table td.status .progress .meter { padding-left: 4px; color: white; font-weight: bold; }
 .table td.status .progress .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; width: 20px; top: 6px; right: 4px; }
+.table td.description { word-break: break-all; }
 
 .tile .footer .completed { padding: 0 0 0 0; }
 .tile .footer .progress { text-align: left; position: relative; border: none; }

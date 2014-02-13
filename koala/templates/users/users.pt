@@ -27,8 +27,8 @@
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
-                    <li><a i18n:translate="" href="">Disable</a></li>
-                    <li><a i18n:translate="" href="">Delete</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('disable', item)">Disable</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">

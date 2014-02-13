@@ -146,3 +146,16 @@ class DeleteUserForm(BaseSecureForm):
     """CSRF-protected form to delete a user"""
     pass
 
+class AddToGroupForm(BaseSecureForm):
+    group_error_msg = _(u'Group is required')
+    group_name = wtforms.SelectField(
+        validators=[validators.InputRequired(message=group_error_msg)],
+    )
+    def __init__(self, request, groups=None, **kwargs):
+        super(AddToGroupForm, self).__init__(request, **kwargs)
+        if groups is not None:
+            choices = [(group, group) for group in groups]
+            self.group_name.choices = choices
+        else:
+            self.group_name.choices = [('', '')]
+
