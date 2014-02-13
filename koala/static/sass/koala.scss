@@ -682,6 +682,10 @@ textarea.hidden {
     }
 }
 
+.reveal-modal-bg {
+    z-index: 9999998;
+}
+
 .reveal-modal {
     z-index: 9999999;
     h3 {
