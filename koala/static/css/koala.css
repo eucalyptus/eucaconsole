@@ -1530,6 +1530,7 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions .actions-menu .secondary.button.dropdown::before { border-color: white transparent transparent transparent; }
 .panel.has-actions .actions-menu .f-dropdown { box-shadow: 0px 0px 1px 1px #f4a960; min-width: 12rem; width: auto; }
 
+.reveal-modal { z-index: 9999999; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 

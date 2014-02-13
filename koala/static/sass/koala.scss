@@ -683,6 +683,7 @@ textarea.hidden {
 }
 
 .reveal-modal {
+    z-index: 9999999;
     h3 {
         font-weight: bold;
     }
