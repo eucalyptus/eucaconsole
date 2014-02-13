@@ -40,10 +40,11 @@ class IAMPolicyWizardView(BaseView):
     @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
-        location = self.request.route_url('users')
+        target_type = self.request.params.get('type')  # 'user' or 'group'
+        target_route = '{0}s'.format(target_type)  # 'users' or 'groups'
+        location = self.request.route_url(target_route)
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
-            target_type = self.request.params.get('type')  # 'user' or 'group'
             target_name = self.request.params.get('id')  # user or group name
             policy_json = self.request.params.get('policy', '{}')
             try:
