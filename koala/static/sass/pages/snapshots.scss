@@ -22,6 +22,7 @@ $snapshot-status-color-failed: darken(red, 20%);
 .status.failed { background-color: $snapshot-status-color-failed; }
 
 
+// Table view
 .table {
     td.status {
         position: relative;
@@ -40,6 +41,9 @@ $snapshot-status-color-failed: darken(red, 20%);
                 top: 6px; right: 4px;
             }
         }
+    }
+    td.description {
+        word-break: break-all;
     }
 }
 
