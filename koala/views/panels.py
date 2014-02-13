@@ -198,3 +198,9 @@ def quotas_panel(context, request, quota_form=None):
         quota_form=quota_form,
     )
 
+@panel_config('securitygroup_rules_landingpage_panel', renderer='../templates/panels/securitygroup_rules_landingpage.pt')
+def securitygroup_rules_landingpage_panel(context, request, tile_view=False):
+    print "tile_view: " , tile_view
+    return dict(
+        tile_view=tile_view,
+    )
