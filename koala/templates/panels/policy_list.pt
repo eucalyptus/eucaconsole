@@ -7,7 +7,7 @@
         <div class="row userentry controls-wrapper">
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addPolicy($event)" class="button" id="add-policy-btn"
+                    <a ng-href="${add_url}" class="button" id="add-policy-btn"
                        title="Add policy" i18n:translate="">Add policy</a>
                 
                 </div>

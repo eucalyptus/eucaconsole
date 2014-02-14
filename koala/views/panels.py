@@ -96,11 +96,11 @@ def user_editor(context, request, leftcol_width=4, rightcol_width=8):
 
 
 @panel_config('policy_list', renderer='../templates/panels/policy_list.pt')
-def policy_list(context, request, policies_url=None, policy_url=None, remove_url=None, update_url=None):
+def policy_list(context, request, policies_url=None, policy_url=None, remove_url=None, update_url=None, add_url=None):
     """ User list panel.
         Usage example (in Chameleon template): ${panel('policy_list')}
     """
-    return dict(policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url)
+    return dict(policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)
 
 
 @panel_config('autoscale_tag_editor', renderer='../templates/panels/autoscale_tag_editor.pt')

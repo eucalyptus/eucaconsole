@@ -107,16 +107,5 @@ angular.module('PolicyList', [])
                 $('#json-error').css('display', 'block');
             }
         };
-        $scope.addPolicy = function ($event) {
-            $event.preventDefault();
-            // invoke policy wizard
-            
-            // when control is returned
-            //$scope.policyArray.push({
-            //    'name': userNameField.val(),
-            //    'fresh': 'new'
-            //});
-            //$scope.syncPolicies();
-        };
     })
 ;

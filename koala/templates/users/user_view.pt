@@ -222,12 +222,13 @@
                 <div tal:define="policies_url request.route_url('user_policies_json', name=user.user_name);
                                  policy_url request.route_url('user_policy_json', name=user.user_name, policy='_policy_');
                                  remove_url request.route_url('user_delete_policy', name=user.user_name, policy='_policy_');
-                                 update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_')">
+                                 update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_');
+                                 add_url request.route_url('iam_policy_new')+'?type=user&id='+user.user_name">
                     <div class="section">
                         <h6 i18n:translate="">Permissions</h6>
                         <div>
                             <strong i18n:translate="">User policies</strong>
-                            ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url)}
+                            ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                         </div>
                     </div>
                 </div>
