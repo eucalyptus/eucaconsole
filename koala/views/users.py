@@ -149,7 +149,7 @@ class UserView(BaseView):
         """Return user groups list"""
         groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
         for g in groups.groups:
-            g.title = g.group_name
+            g['title'] = g.group_name
         return dict(results=groups.groups)
 
     @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
