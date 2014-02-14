@@ -19,6 +19,11 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
+        <div id="viewpage-title" class="large-12 columns">
+            <span tal:condition="group"><h4 i18n:translate="">Detail for Group ${group.group_name}</h4></span>
+            <span tal:condition="not group and group_route_id == 'new'"><h4 i18n:translate="">Create new group</h4></span>
+        </div>
+
         <div class="large-7 columns"
             tal:define="readonly True if group else False;">
             <div class="panel has-actions">
@@ -35,8 +40,8 @@
                     <form action="${request.route_url('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section">
-                            <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=4, rightcol_width=8)}
+                            <div class="row controls-wrapper readonly create-field-padding">
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11)}
                             </div>
                         </div>
                         <hr />
@@ -49,8 +54,8 @@
                                 </a>
                             </h6>
                             <div class="section" ng-show="expanded">
-                                <div class="row controls-wrapper readonly">
-                                    ${panel('form_field', field=group_form.path, leftcol_width=4, rightcol_width=8)}
+                                <div class="row controls-wrapper readonly general-field-padding">
+                                    ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
                                 </div>
                             </div>
                         </div>
@@ -73,15 +78,15 @@
                         ${structure:group_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
-                            <div class="row controls-wrapper readonly padded-element">
-                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9)}
+                            <div class="row controls-wrapper readonly general-field-padding">
+                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=1, rightcol_width=11)}
                             </div>
-                            <div class="row controls-wrapper readonly padded-element">
-                                <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
-                                <div class="small-9 columns value inline">${group.arn if group.arn else ''}</div>
+                            <div class="row controls-wrapper readonly general-field-padding">
+                                <div class="small-1 columns"><label class="right" i18n:translate="">ARN&nbsp;</label></div>
+                                <div class="small-11 value text-left">${group.arn if group.arn else ''}</div>
                             </div>
-                            <div class="row controls-wrapper readonly padded-element">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9)}
+                            <div class="row controls-wrapper readonly general-field-padding">
+                                ${panel('form_field', field=group_update_form.path, leftcol_width=1, rightcol_width=11)}
                             </div>
                         </div>
                         <hr />
@@ -104,15 +109,12 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" id="save-changes-btn">
-                                        <span tal:condition="group" i18n:translate="">Save changes</span>
-                                    </button>
-                                    <a href="${request.route_url('groups')}"
-                                        class="cancel-link" i18n:translate="">Cancel</a>
-                                </div>
+                            <div class="row controls-wrapper readonly users-select-field-padding">
+                                <button type="submit" class="button" id="save-changes-btn">
+                                    <span tal:condition="group" i18n:translate="">Save changes</span>
+                                </button>
+                                <a href="${request.route_url('groups')}"
+                                    class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
                         </div>
                     </form>
@@ -120,13 +122,15 @@
                     <div tal:define="policies_url request.route_url('group_policies_json', name=group.group_name);
                                      policy_url request.route_url('group_policy_json', name=group.group_name, policy='_policy_');
                                      remove_url request.route_url('group_delete_policy', name=group.group_name, policy='_policy_');
-                                     update_url request.route_url('group_update_policy', name=group.group_name, policy='_policy_')">
+                                     update_url request.route_url('group_update_policy', name=group.group_name, policy='_policy_');">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
+<!--                        
                             <div>
                                 <strong i18n:translate="">Group policies</strong>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url)}
                             </div>
+-->
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('GroupPage', ['PolicyList'])
+angular.module('GroupPage', [])
     .controller('GroupPageCtrl', function ($scope, $timeout) {
         $scope.groupUsers = [];
         $scope.allUsers = [];
