@@ -1,4 +1,4 @@
-/**
+/*
  * @fileOverview user view page JS
  * @requires AngularJS
  *
@@ -227,13 +227,19 @@ angular.module('UserView', ['PolicyList'])
         $scope.removeEndpoint = '';
         $scope.jsonItemsEndpoint = '';
         $scope.jsonGroupsEndpoint = '';
+        $scope.jsonGroupPoliciesEndpoint = '';
+        $scope.jsonGroupPolicyEndpoint = '';
         $scope.items = [];
         $scope.itemsLoading = true;
-        $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint) {
+        $scope.policyName = '';
+        $scope.policyJson = '';
+        $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint, jsonGroupPoliciesEndpoint, jsonGroupPolicyEndpoint) {
             $scope.addEndpoint = addEndpoint;
             $scope.removeEndpoint = removeEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
             $scope.jsonGroupsEndpoint = jsonGroupsEndpoint;
+            $scope.jsonGroupPoliciesEndpoint = jsonGroupPoliciesEndpoint;
+            $scope.jsonGroupPolicyEndpoint = jsonGroupPolicyEndpoint;
             $scope.getItems(jsonItemsEndpoint);
             $scope.getAvailableGroups();
         };
@@ -242,6 +248,21 @@ angular.module('UserView', ['PolicyList'])
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
                 $scope.items = results;
+                for (var i=0; i<results.length; i++) {
+                    $scope.loadPolicies(results[i].group_name, i);
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+            });
+        };
+        $scope.loadPolicies = function (groupName, index) {
+            var url = $scope.jsonGroupPoliciesEndpoint.replace('_name_', groupName);
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.items[index].policies = results;
             }).error(function (oData, status) {
                 var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
@@ -301,6 +322,22 @@ angular.module('UserView', ['PolicyList'])
                 var errorMsg = oData['error'] || '';
                 Notify.failure(errorMsg);
               });
+        };
+        $scope.showPolicy = function ($event, groupName, policyName) {
+            $event.preventDefault();
+            $scope.policyJson = ''; // clear any previous policy
+            $scope.policyName = policyName
+            var url = $scope.jsonGroupPolicyEndpoint.replace('_name_', groupName).replace('_policy_', policyName);
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.policyJson = results;
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+            });
+            $('#policy-view-modal').foundation('reveal', 'open');
         };
     })
     .controller('UserPermissionsCtrl', function($scope, $http, $timeout) {

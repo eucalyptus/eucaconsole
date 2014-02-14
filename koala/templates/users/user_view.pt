@@ -173,7 +173,9 @@
                             '${request.route_url('user_add_to_group', name=user.user_name, group='_group_')}',
                             '${request.route_url('user_remove_from_group', name=user.user_name, group='_group_')}',
                             '${request.route_url('user_groups_json', name=user.user_name)}',
-                            '${request.route_url('user_avail_groups_json', name=user.user_name)}')">
+                            '${request.route_url('user_avail_groups_json', name=user.user_name)}',
+                            '${request.route_url('group_policies_json', name='_name_')}',
+                            '${request.route_url('group_policy_json', name='_name_', policy='_policy_')}')">
                     <div class="section">
                         <h6 i18n:translate="">Groups</h6>
                         <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
@@ -192,21 +194,28 @@
                             </div>
                         </form>
                         <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                            <div metal:fill-slot="tile_header" tal:omit-tag="">
+                                <a ng-href="/groups/{{ item.group_name }}">{{ item.title }}</a>
+                            </div>
                             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                                <ul id="item-dropdown_{{ item.title }}" class="f-dropdown">
+                                <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown">
                                     <li>
                                         <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
                                     </li>
                                 </ul>
                             </div>
                             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                                <div>
-                                    <span class="label" title="Volume ID" i18n:attributes="title" data-tooltip="">ID</span>
-                                    {{ item.group_name }}
+                                <div ng-repeat="policy in item.policies ">
+                                    <a ng-click="showPolicy($event, item.group_name, policy)">{{ policy }}</a>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div id="policy-view-modal" class="reveal-modal medium" data-reveal="">
+                        <h3 i18n:translate="">{{ policyName }} policy</h3>
+                        <textarea id="group-policy-area" class="policy-area" ng-model="policyJson" readonly='readonly'></textarea>
+                        <a class="close-reveal-modal">&#215;</a>
                     </div>
                 </div>
                 <hr/>

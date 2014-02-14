@@ -141,7 +141,7 @@
                 <div class="header">
                     <strong>
                         <metal:block metal:define-slot="tile_header">
-                             <span>{{ item.title }}</span>
+                             <a ng-href="${prefix}/{{ item.title }}">{{ item.title }}</a>
                         </metal:block>
                     </strong>
                     <metal:block metal:define-slot="tile_dropdown_button">
