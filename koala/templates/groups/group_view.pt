@@ -121,7 +121,7 @@
                                      policy_url request.route_url('group_policy_json', name=group.group_name, policy='_policy_');
                                      remove_url request.route_url('group_delete_policy', name=group.group_name, policy='_policy_');
                                      update_url request.route_url('group_update_policy', name=group.group_name, policy='_policy_');
-                                     add_url request.route_url('iam_policy_new')+'?type=group&id='+group.gropu_name">
+                                     add_url request.route_url('iam_policy_new')+'?type=group&amp;id='+group.group_name">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>

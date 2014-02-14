@@ -57,4 +57,4 @@
         </div>
     </div>
     <script src="${request.static_url('koala:static/js/widgets/policy_list.js')}"></script>
-<div>
+</div>

@@ -252,6 +252,7 @@
             </div>
         </div>
         <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <!--! Help goes here -->
         </div>
         <div id="user-dialogs">
