@@ -214,7 +214,7 @@ class SecurityGroupView(TaggedItemView):
 
     def get_security_group(self, group_id=None):
         group_param = group_id or self.request.matchdict.get('id')
-        if group_param is None:
+        if group_param is None or group_param == 'new':
             return None  # If missing, we're going to return an empty security group form
         groupids = [group_param]
         security_groups = self.conn.get_all_security_groups(group_ids=groupids)
