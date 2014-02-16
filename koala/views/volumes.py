@@ -35,7 +35,7 @@ class BaseVolumeView(BaseView):
 
     def get_volume(self, volume_id=None):
         volume_id = volume_id or self.request.matchdict.get('id')
-        if volume_id:
+        if volume_id and volume_id != 'new':
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
             return volumes_list[0] if volumes_list else None
         return None

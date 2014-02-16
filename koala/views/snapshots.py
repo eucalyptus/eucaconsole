@@ -75,7 +75,7 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots_register', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_register(self):
         snapshot_id = self.request.params.get('snapshot_id')
-        snapshot = self.get_snapshot(snapshot_id)
+        snapshot = self.get_snapshot(snapshot_id) if snapshot_id != 'new' else None
         name = self.request.params.get('name')
         description = self.request.params.get('description')
         dot = self.request.params.get('dot')
