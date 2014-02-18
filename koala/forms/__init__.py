@@ -57,7 +57,7 @@ class ChoicesManager(object):
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    def instances(self, instances=None):
+    def instances(self, instances=None, state=None):
         from ..views import TaggedItemView
         choices = [('', _(u'Select instance...'))]
         instances = instances or []
@@ -67,7 +67,8 @@ class ChoicesManager(object):
                 for instance in instances:
                     value = instance.id
                     label = TaggedItemView.get_display_name(instance)
-                    choices.append((value, label))
+                    if( state is None or instance.state == state):
+                        choices.append((value, label))
         return choices
 
     def instance_types(self, cloud_type='euca', add_blank=True, add_description=True):
