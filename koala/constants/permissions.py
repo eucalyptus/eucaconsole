@@ -223,6 +223,22 @@ ELB_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for CloudWatch
+CLOUDWATCH_ACTIONS = [
+    'DeleteAlarms',
+    'DescribeAlarmHistory',
+    'DescribeAlarms',
+    'DescribeAlarmsForMetric',
+    'DisableAlarmActions',
+    'EnableAlarmActions',
+    'GetMetricStatistics',
+    'ListMetrics',
+    'PutMetricAlarm',
+    'PutMetricData',
+    'SetAlarmState',
+]
+
+
 POLICY_ACTIONS = [
     {
         'name': 'ec2',
@@ -238,7 +254,12 @@ POLICY_ACTIONS = [
         'name': 'autoscaling',
         'label': _(u'All Autoscaling actions'),
         'actions': AUTOSCALING_ACTIONS,
-    }
+    },
+    {
+        'name': 'cloudwatch',
+        'label': _(u'All CloudWatch actions'),
+        'actions': CLOUDWATCH_ACTIONS,
+    },
 ]
 
 
