@@ -1488,6 +1488,8 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
+.row.controls-wrapper label.reverse { text-align: left; }
+.row.controls-wrapper div.reverse input { float: right; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
 .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }

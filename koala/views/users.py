@@ -8,6 +8,7 @@ import os, random, string
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
 import simplejson as json
+import sys
 import urlparse
 
 from boto.exception import BotoServerError
@@ -86,6 +87,7 @@ class UserView(BaseView):
     """Views for single User"""
     TEMPLATE = '../templates/users/user_view.pt'
     NEW_TEMPLATE = '../templates/users/user_new.pt'
+    EUCA_DEFAULT_POLICY = 'euca-console-quota-policy'
 
     def __init__(self, request):
         super(UserView, self).__init__(request)
@@ -242,7 +244,7 @@ class UserView(BaseView):
                     self.addQuotaLimit(statements, parsed,
                         's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
                     self.addQuotaLimit(statements, parsed,
-                        's3_bucket_size', 's3:????', 's3:quota-bucketsize')
+                        's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
                     self.addQuotaLimit(statements, parsed,
                         's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
                     ## iam
@@ -268,17 +270,17 @@ class UserView(BaseView):
                     if len(statements) > 0:
                         policy['Statement'] = statements
                         import logging; logging.info("policy being set to = "+json.dumps(policy, indent=2))
-                        self.conn.put_user_policy(name, "user-all-access-plus-quotas", json.dumps(policy))
+                        self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
             # create file to send instead. Since # users is probably small, do it all in memory
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
             for user in user_list:
-                row = [user_data['account'], user_data['username']]
+                row = [user['account'], user['username']]
                 if random_password == 'y':
-                    row.append(user_data['password'])
+                    row.append(user['password'])
                 if access_keys == 'y':
-                    row.append(user_data['access_id'])
-                    row.append(user_data['secret_key'])
+                    row.append(user['access_id'])
+                    row.append(user['secret_key'])
                 csv_w.writerow(row)
             response = Response(content_type='text/csv')
             response.body = string_output.getvalue()
@@ -469,4 +471,123 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully deleted user policy"), results=result)
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
+    def user_update_quotas(self):
+        """ calls iam:PutUserPolicy """
+        if self.user is None:
+            raise HTTPNotFound
+        try:
+            # load all policies for this user
+            policy_list = []
+            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            for policy_name in policies.policy_names:
+                policy_json = self.conn.get_user_policy(user_name=self.user.user_name,
+                                    policy_name=policy_name).policy_document
+                policy = json.loads(policy_json)
+                policy_list.append(policy)
+            # for each form item, update proper policy if needed
+            new_stmts = []
+            ## ec2
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
+            ## s3
+            self.updateQuotaLimit(policy_list, new_stmts,
+                's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
+            ## iam
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
+            ## autoscaling
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
+            ## elb
+            self.updateQuotaLimit(policy_list, new_stmts,
+                'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
+
+            # save policies that were modified
+            for i in range(0, len(policy_list)-1):
+                if 'dirty' in policy_list[i].keys():
+                    del policy_list[i]['dirty']
+                    self.conn.put_user_policy(self.user.user_name, policies.policies_names[i],
+                                              json.dumps(policy_list[i]))
+            if len(new_stmts) > 0:
+                # do we already have the euca default policy?
+                if self.EUCA_DEFAULT_POLICY in policies:
+                    # add the new statments in
+                    default_policy = policy_list[policies.indexOf(self.EUCA_DEFAULT_POLICY)]
+                    default_policy['Statement'].extend(new_stmts)
+                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
+                                              json.dumps(default_policy))
+                else:
+                    # create the default policy
+                    new_policy = {}
+                    new_policy['Version'] = '2011-04-01'
+                    new_policy['Statement'] = new_stmts
+                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
+                                              json.dumps(new_policy))
+            return dict(message=_(u"Successfully updated user policy"), results=result)
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+
+    def updateQuotaLimit(self, policy_list, new_stmts, param, action, condition):
+        new_limit = self.request.params.get(param, '')
+        lowest_val = sys.maxint
+        lowest_policy = None
+        lowest_policy_val = None
+        lowest_stmt = None
+        # scan policies to see if there's a matching condition
+        for policy in policy_list:
+            for s in policy['Statement']:
+                try:    # skip statements without conditions
+                    s['Condition']
+                except KeyError:
+                    continue
+                for cond in s['Condition'].keys():
+                    if cond == "NumericLessThanEquals": 
+                        for policy_val in s['Condition'][cond].keys():
+                            limit = s['Condition'][cond][policy_val]
+                            if policy_val == condition:
+                                # need to see if this was the policy with the lowest value.
+                                if limit < lowest_val:
+                                    lowest_val = limit
+                                    lowest_policy = policy
+                                    lowest_policy_val = policy_val
+                                    lowest_stmt = s
+        if lowest_val == sys.maxint: # was there a statement? If not, we should add one
+            if new_limit != '':
+                new_stmts.append({'Effect': 'Limit', 'Action': action,
+                    'Resource': '*', 'Condition':{'NumericLessThanEquals':{condition: new_limit}}})
+        else:
+            if new_limit != '': # need to remove the value
+                del lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val]
+            else: # need to change the value
+                lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit
+            lowest_policy['dirty'] = True
 

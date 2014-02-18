@@ -506,6 +506,14 @@ form {
             text-align: left;
         }
     }
+    label.reverse {
+        text-align: left;
+    }
+    div.reverse {
+        input {
+            float: right;
+        }
+    }
     .field {
         input {
             display: inline-block;

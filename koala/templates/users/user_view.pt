@@ -233,22 +233,25 @@
                     </div>
                 </div>
                 <hr/>
-                <form action="${request.route_url('user_update_quotas', name=user.user_name)}" method="post" id="user-update-quotas-form">
-                    <div class="section">
-                        <h6 i18n:translate="">Quotas</h6>
-                        ${panel('quotas_panel', quota_form=user_form)}
-                    </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="save-quotas-btn">
-                                <span tal:condition="user" i18n:translate="">Save quotas</span>
-                            </button>
-                            <a href="${request.route_url('users')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
+                <div ng-controller="UserQuotasCtrl" ng-init="initController(
+                            '${request.route_url('user_update_quotas', name=user.user_name)}')">
+                    <form ng-submit="submit($event)" id="user-update-quotas-form">
+                        <div class="section">
+                            <h6 i18n:translate="">Quotas</h6>
+                            ${panel('quotas_panel', quota_form=user_form)}
                         </div>
-                    </div>
-                </form>
+                        <div class="row">
+                            <div class="small-4 columns">&nbsp;</div>
+                            <div class="small-8 columns field inline">
+                                <button type="submit" class="button" id="save-quotas-btn">
+                                    <span tal:condition="user" i18n:translate="">Save quotas</span>
+                                </button>
+                                <a href="${request.route_url('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="large-5 columns">
