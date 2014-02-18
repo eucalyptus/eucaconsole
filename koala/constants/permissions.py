@@ -239,6 +239,51 @@ CLOUDWATCH_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for S3/Walrus
+S3_ACTIONS = [
+    'AbortMultipartUpload',
+    'CreateBucket',
+    'DeleteBucket',
+    'DeleteBucketPolicy',
+    'DeleteBucketWebsite',
+    'DeleteObject',
+    'DeleteObjectVersion',
+    'GetBucketAcl',
+    'GetBucketLocation',
+    'GetBucketLogging',
+    'GetBucketNotification',
+    'GetBucketPolicy',
+    'GetBucketRequestPayment',
+    'GetBucketTagging',
+    'GetBucketVersioning',
+    'GetBucketWebsite',
+    'GetLifecycleConfiguration',
+    'GetObject',
+    'GetObjectAcl',
+    'GetObjectTorrent',
+    'GetObjectVersion',
+    'GetObjectVersionAcl',
+    'GetObjectVersionTorrent',
+    'ListAllMyBuckets',
+    'ListBucket',
+    'ListBucketMultipartUploads',
+    'ListBucketVersions',
+    'ListMultipartUploadParts',
+    'PutBucketAcl',
+    'PutBucketLogging',
+    'PutBucketNotification',
+    'PutBucketPolicy',
+    'PutBucketRequestPayment',
+    'PutBucketTagging',
+    'PutBucketVersioning',
+    'PutBucketWebsite',
+    'PutLifecycleConfiguration',
+    'PutObject',
+    'PutObjectAcl',
+    'PutObjectVersionAcl',
+]
+
+
 POLICY_ACTIONS = [
     {
         'name': 'ec2',
@@ -259,6 +304,11 @@ POLICY_ACTIONS = [
         'name': 'cloudwatch',
         'label': _(u'All CloudWatch actions'),
         'actions': CLOUDWATCH_ACTIONS,
+    },
+    {
+        'name': 's3',
+        'label': _(u'All S3/Walrus actions'),
+        'actions': S3_ACTIONS,
     },
 ]
 
