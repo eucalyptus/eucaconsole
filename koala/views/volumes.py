@@ -50,7 +50,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
         self.json_items_endpoint = self.get_json_endpoint('volumes_json')
-        self.instances = self.conn.get_only_instances() if self.conn else []
+        self.instances = self.get_instances_by_state(self.conn.get_only_instances() if self.conn else [], "running")
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -141,6 +141,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
+
     @staticmethod
     def get_instances_by_zone(instances):
         zones = set(instance.placement for instance in instances)
@@ -153,6 +154,14 @@ class VolumesView(LandingPageView, BaseVolumeView):
                     zone_instances.append({'id': instance.id, 'name': instance_name})
             instances_by_zone[zone] = zone_instances
         return instances_by_zone
+
+    @staticmethod
+    def get_instances_by_state(instances, state="running"):
+        instances_by_state = []
+        for instance in instances:
+            if instance.state == state:
+                instances_by_state.append(instance)
+        return instances_by_state
 
     @staticmethod
     def get_sort_keys():
