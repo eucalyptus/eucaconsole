@@ -37,7 +37,7 @@ class AssociateIPForm(BaseSecureForm):
         super(AssociateIPForm, self).__init__(request, **kwargs)
         self.conn = conn
         self.choices_manager = ChoicesManager(conn=self.conn)
-        self.instance_id.choices = self.choices_manager.instances()
+        self.instance_id.choices = self.choices_manager.instances(state="running")
         self.instance_id.error_msg = self.instance_error_msg
 
 

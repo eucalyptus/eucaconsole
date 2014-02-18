@@ -75,11 +75,15 @@ class IPAddressesView(LandingPageView):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
             public_ip = self.request.params.get('public_ip')
-            elastic_ip = self.get_elastic_ip(public_ip)
-            elastic_ip.associate(instance_id)
-            template = _(u'Successfully associated IP {ip} with instance {instance}')
-            msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
-            queue = Notification.SUCCESS
+            try:
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.associate(instance_id)
+                template = _(u'Successfully associated IP {ip} with instance {instance}')
+                msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
         else:
             msg = _(u'Unable to associate IP with instance')
             queue = Notification.ERROR
@@ -162,7 +166,7 @@ class IPAddressesJsonView(LandingPageView):
         instances = self.conn.get_only_instances(ids)
         ret = {}
         for inst in instances:
-            ret[inst.id] = inst
+                ret[inst.id] = inst
         return ret
 
     def filter_by_assignment(self, items):
@@ -205,11 +209,16 @@ class IPAddressView(BaseView):
     def ipaddress_associate(self):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
-            self.elastic_ip.associate(instance_id)
             location = self.request.route_url('ipaddresses')
-            msg = _(u'Successfully associated IP {ip} with instance {instance}')
-            notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            try:
+                self.elastic_ip.associate(instance_id)
+                msg = _(u'Successfully associated IP {ip} with instance {instance}')
+                notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                notification_msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
