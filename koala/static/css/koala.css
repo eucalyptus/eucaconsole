@@ -1434,6 +1434,8 @@ a.circle { color: black; display: inline-block; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
+#notifications .alert-box .close { color: white; opacity: 1.0; }
+#notifications .alert-box .close:hover { font-weight: bold; }
 
 textarea.console-output { width: 100%; min-height: 30rem; background-color: black; color: white; font-family: Courier, "courier new", monospace; font-weight: bold; }
 
