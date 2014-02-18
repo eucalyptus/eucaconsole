@@ -6,7 +6,7 @@ Constants for IAM Policy permissions (actions)
 from pyramid.i18n import TranslationString as _
 
 
-# Listing of Possible Policy Generator Actions for EC2
+# Policy Generator Actions for EC2
 EC2_ACTIONS = [
     # 'ActivateLicense',
     'AllocateAddress',
@@ -162,6 +162,7 @@ EC2_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for AutoScaling
 AUTOSCALING_ACTIONS = [
     'CreateAutoScalingGroup',
     'CreateLaunchConfiguration',
@@ -201,14 +202,40 @@ AUTOSCALING_ACTIONS = [
     'UpdateAutoScalingGroup',
 ]
 
+# Policy Generator Actions for Elastic Load Balancing
+ELB_ACTIONS = [
+    'ConfigureHealthCheck',
+    'CreateAppCookieStickinessPolicy',
+    'CreateLBCookieStickinessPolicy',
+    'CreateLoadBalancer',
+    'CreateLoadBalancerListeners',
+    'DeleteLoadBalancer',
+    'DeleteLoadBalancerListeners',
+    'DeleteLoadBalancerPolicy',
+    'DeregisterInstancesFromLoadBalancer',
+    'DescribeInstanceHealth',
+    'DescribeLoadBalancers',
+    'DisableAvailabilityZonesForLoadBalancer',
+    'EnableAvailabilityZonesForLoadBalancer',
+    'RegisterInstancesWithLoadBalancer',
+    'SetLoadBalancerListenerSSLCertificate',
+    'SetLoadBalancerPoliciesOfListener',
+]
+
+
 POLICY_ACTIONS = [
     {
-        'name': 'EC2',
+        'name': 'ec2',
         'label': _(u'All EC2 actions'),
-        'actions': EC2_ACTIONS
+        'actions': EC2_ACTIONS,
     },
     {
-        'name': 'AutoScaling',
+        'name': 'elasticloadbalancing',
+        'label': _(u'All Load Balancing actions'),
+        'actions': ELB_ACTIONS,
+    },
+    {
+        'name': 'autoscaling',
         'label': _(u'All Autoscaling actions'),
         'actions': AUTOSCALING_ACTIONS,
     }
