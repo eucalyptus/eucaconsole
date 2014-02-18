@@ -17,16 +17,20 @@
             </div>
         </div>
     </div>
-    <div class="columns" tal:condition="reverse">
-        ${structure:field(**html_attrs)}
-        <label for="${field.name}">
-            ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-        </label>
-        <span tal:condition="getattr(field, 'help_text', None)"
-              class="helptext-icon" data-tooltip="" title="${field.help_text}">?</span>
-        <small class="error" tal:condition="error_msg">${error_msg}</small>
-        <div tal:condition="field.errors" class="server-validation">
-            <span class="error" tal:repeat="error field.errors">${error}</span>
+    <div tal:condition="reverse">
+        <div class="columns small-${leftcol_width} reverse">
+            ${structure:field(**html_attrs)}
+        </div>
+        <div class="columns small-${rightcol_width}">
+            <label for="${field.name}" class="reverse">
+                ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
+            </label>
+            <span tal:condition="getattr(field, 'help_text', None)"
+                  class="helptext-icon" data-tooltip="" title="${field.help_text}">?</span>
+            <small class="error" tal:condition="error_msg">${error_msg}</small>
+            <div tal:condition="field.errors" class="server-validation">
+                <span class="error" tal:repeat="error field.errors">${error}</span>
+            </div>
         </div>
     </div>
 </div>

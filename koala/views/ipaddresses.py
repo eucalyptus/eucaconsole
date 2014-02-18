@@ -75,11 +75,15 @@ class IPAddressesView(LandingPageView):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
             public_ip = self.request.params.get('public_ip')
-            elastic_ip = self.get_elastic_ip(public_ip)
-            elastic_ip.associate(instance_id)
-            template = _(u'Successfully associated IP {ip} with instance {instance}')
-            msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
-            queue = Notification.SUCCESS
+            try:
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.associate(instance_id)
+                template = _(u'Successfully associated IP {ip} with instance {instance}')
+                msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
         else:
             msg = _(u'Unable to associate IP with instance')
             queue = Notification.ERROR
@@ -90,11 +94,15 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_disassociate(self):
         if self.disassociate_form.validate():
             public_ip = self.request.params.get('public_ip')
-            elastic_ip = self.get_elastic_ip(public_ip)
-            elastic_ip.disassociate()
-            template = _(u'Successfully disassociated IP {ip} from instance {instance}')
-            msg = template.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
-            queue = Notification.SUCCESS
+            try:
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.disassociate()
+                template = _(u'Successfully disassociated IP {ip} from instance {instance}')
+                msg = template.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
         else:
             msg = _(u'Unable to disassociate IP from instance')
             queue = Notification.ERROR
@@ -105,11 +113,15 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_release(self):
         if self.release_form.validate():
             public_ip = self.request.params.get('public_ip')
-            elastic_ip = self.get_elastic_ip(public_ip)
-            elastic_ip.release()
-            template = _(u'Successfully released {ip} to the cloud')
-            msg = template.format(ip=elastic_ip.public_ip)
-            queue = Notification.SUCCESS
+            try:
+                elastic_ip = self.get_elastic_ip(public_ip)
+                elastic_ip.release()
+                template = _(u'Successfully released {ip} to the cloud')
+                msg = template.format(ip=elastic_ip.public_ip)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                msg = err.message
+                queue = Notification.ERROR
         else:
             msg = _(u'Unable to release IP address')
             queue = Notification.ERROR
@@ -148,7 +160,7 @@ class IPAddressesJsonView(LandingPageView):
                 public_ip=address.public_ip,
                 instance_id=address.instance_id,
                 instance_name=TaggedItemView.get_display_name(
-                    instances[address.instance_id]) if address.instance_id is not None else address.instance_id,
+                    instances[address.instance_id]) if address.instance_id else address.instance_id,
                 domain=address.domain,
             ))
         return dict(results=ipaddresses)
@@ -158,7 +170,10 @@ class IPAddressesJsonView(LandingPageView):
 
     # return dictionary of instances (by their id)
     def get_instances(self, ipaddresses):
-        ids = [ip.instance_id for ip in ipaddresses if ip.instance_id is not None]
+        ids = []
+        for ip in ipaddresses:
+            if ip.instance_id:
+                ids.append(ip.instance_id)
         instances = self.conn.get_only_instances(ids)
         ret = {}
         for inst in instances:
@@ -205,33 +220,48 @@ class IPAddressView(BaseView):
     def ipaddress_associate(self):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
-            self.elastic_ip.associate(instance_id)
             location = self.request.route_url('ipaddresses')
-            msg = _(u'Successfully associated IP {ip} with instance {instance}')
-            notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            try:
+                self.elastic_ip.associate(instance_id)
+                msg = _(u'Successfully associated IP {ip} with instance {instance}')
+                notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                notification_msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='ipaddress_disassociate', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_disassociate(self):
         if self.disassociate_form.validate():
-            self.elastic_ip.disassociate()
             location = self.request.route_url('ipaddresses')
-            msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
-            notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=self.elastic_ip.instance_id)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            try:
+                self.elastic_ip.disassociate()
+                msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
+                notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=self.elastic_ip.instance_id)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                notification_msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='ipaddress_release', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_release(self):
         if self.release_form.validate():
-            self.elastic_ip.release()
             location = self.request.route_url('ipaddresses')
-            msg = _(u'Successfully released {ip} to the cloud')
-            notification_msg = msg.format(ip=self.elastic_ip.public_ip)
-            self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
+            try:
+                self.elastic_ip.release()
+                msg = _(u'Successfully released {ip} to the cloud')
+                notification_msg = msg.format(ip=self.elastic_ip.public_ip)
+                queue = Notification.SUCCESS
+            except EC2ResponseError as err:
+                notification_msg = err.message
+                queue = Notification.ERROR
+            self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
