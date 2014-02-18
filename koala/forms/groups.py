@@ -71,4 +71,7 @@ class GroupUpdateForm(BaseSecureForm):
             self.group_name.data = group.group_name
             self.path.data = group.path
 
+class DeleteGroupForm(BaseSecureForm):
+    """CSRF-protected form to delete a group"""
+    pass
 

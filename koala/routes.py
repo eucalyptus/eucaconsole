@@ -203,6 +203,7 @@ urls = [
     Route(name='group_create', pattern='/groups/create'),
     Route(name='group_view', pattern='/groups/{name}'),
     Route(name='group_update', pattern='/groups/{name}/update'),
+    Route(name='group_delete', pattern='/groups/{name}/delete'),
     Route(name='group_policies_json', pattern='/groups/{name}/policies_json'),
     Route(name='group_policy_json', pattern='/groups/{name}/policies/{policy}'),
     Route(name='group_update_policy', pattern='/groups/{name}/policy/{policy}/save'),

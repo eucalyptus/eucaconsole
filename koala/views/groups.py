@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.groups import GroupForm, GroupUpdateForm
+from ..forms.groups import GroupForm, GroupUpdateForm, DeleteGroupForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -47,6 +47,7 @@ class GroupsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
+            delete_form=DeleteGroupForm(self.request),
         )
 
 
@@ -168,6 +169,24 @@ class GroupView(BaseView):
             return HTTPFound(location=location)
 
         return self.render_dict
+
+    @view_config(route_name='group_delete', request_method='POST')
+    def group_delete(self):
+        if self.group is None:
+            raise HTTPNotFound
+        try:
+            params = {'GroupName': self.group.group_name, 'IsRecursive': 'true'}
+            self.conn.get_response('DeleteGroup', params)
+            
+            location = self.request.route_url('groups')
+            msg = _(u'Successfully deleted group')
+            queue = Notification.SUCCESS
+        except BotoServerError as err:
+            location = self.location
+            msg = err.message
+            queue = Notification.ERROR
+        self.request.session.flash(msg, queue=queue)
+        return HTTPFound(location=location)
 
     def group_update_name_and_path(self, new_group_name, new_path):
         this_group_name = new_group_name if new_group_name is not None else self.group.group_name
