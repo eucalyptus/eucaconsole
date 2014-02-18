@@ -325,6 +325,13 @@ a.circle {
         &.alert {
             background-color: darkred;
         }
+        .close {
+            color: white;
+            opacity: 1.0; 
+        }
+        .close:hover {
+            font-weight: bold;
+       }
     }
 }
 
