@@ -489,45 +489,45 @@ class UserView(BaseView):
             # for each form item, update proper policy if needed
             new_stmts = []
             ## ec2
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
             ## s3
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
             ## iam
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
             ## autoscaling
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
             ## elb
-            self.updateQuotaLimit(policy_list, new_stmts,
+            self.update_quota_limit(policy_list, new_stmts,
                 'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
 
             # save policies that were modified
@@ -556,7 +556,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message=err.message);
 
 
-    def updateQuotaLimit(self, policy_list, new_stmts, param, action, condition):
+    def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
         new_limit = self.request.params.get(param, '')
         lowest_val = sys.maxint
         lowest_policy = None
