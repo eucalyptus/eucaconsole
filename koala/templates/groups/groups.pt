@@ -27,7 +27,6 @@
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">Edit properties</a></li>
-                    <li><a i18n:translate="" href="">Disable</a></li>
                     <li><a i18n:translate="" href="">Delete</a></li>
                 </ul>
             </div>
@@ -36,35 +35,30 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="NM" i18n:attributes="title" data-tooltip="">NM</span>
-                    {{ item.group_name }}
+                    <span class="label" title="PA" i18n:attributes="title" data-tooltip="">US</span>
+                    {{ item.user_count }}
                 </div>
                 <div>
-                    <span class="label" title="PA" i18n:attributes="title" data-tooltip="">PA</span>
-                    {{ item.path }}
-                </div>
-                <div>
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">ARN</span>
-                    {{ item.arn }}
+                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">PE</span>
+                    {{ item.policy_count }}
                 </div>
             </div>
             <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Group name</th>
-                <th i18n:translate="">Path</th>
-                <th i18n:translate="">ARN</th>
+                <th i18n:translate="">Users</th>
+                <th i18n:translate="">Polcies</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.group_name }}">{{ item.group_name }}</a></td>
-                <td>{{ item.path }}</td>
-                <td>{{ item.arn }}</td>
+                <td>{{ item.user_count }}</td>
+                <td>{{ item.policy_count }}</td>
                 <td>
                   <span class="actions">
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">Edit properties</a></li>
-                        <li><a i18n:translate="" href="">Disable</a></li>
                         <li><a i18n:translate="" href="">Delete</a></li>
                     </ul>
                   </span>

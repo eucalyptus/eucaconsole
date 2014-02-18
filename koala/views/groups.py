@@ -52,23 +52,32 @@ class GroupsView(LandingPageView):
 
 class GroupsJsonView(BaseView):
     """Groups returned as JSON"""
+    def __init__(self, request):
+        super(GroupsJsonView, self).__init__(request)
+        self.conn = self.get_connection(conn_type="iam")
+
     @view_config(route_name='groups_json', renderer='json', request_method='GET')
     def groups_json(self):
         # TODO: take filters into account??
         groups = []
         for group in self.get_items():
+            policies = []
+            try:
+                policies = self.conn.get_all_group_policies(group_name=group.group_name)
+                policies = policies.policy_names
+            except EC2ResponseError as exc:
+                pass
             groups.append(dict(
                 path=group.path,
                 group_name=group.group_name,
-                group_id=group.group_id,
-                arn=group.arn,
+                user_count=len(group.users) if hasattr(group, 'users') else 0,
+                policy_count=len(policies),
             ))
         return dict(results=groups)
 
     def get_items(self):
-        conn = self.get_connection(conn_type="iam")
         try:
-            return conn.get_all_groups().groups
+            return self.conn.get_all_groups().groups
         except EC2ResponseError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
 
