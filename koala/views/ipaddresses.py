@@ -177,7 +177,7 @@ class IPAddressesJsonView(LandingPageView):
         instances = self.conn.get_only_instances(ids)
         ret = {}
         for inst in instances:
-                ret[inst.id] = inst
+            ret[inst.id] = inst
         return ret
 
     def filter_by_assignment(self, items):
