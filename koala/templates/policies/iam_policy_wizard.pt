@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl"
-         ng-init="initController('${policy_json_endpoint}')">
+         ng-init="initController(${controller_options})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Create IAM Policy</a></li>

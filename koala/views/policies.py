@@ -3,6 +3,8 @@
 Pyramid views for IAM Policies (permissions)
 
 """
+import simplejson as json
+
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -28,7 +30,7 @@ class IAMPolicyWizardView(BaseView):
             create_form=self.create_form,
             policy_json_endpoint=self.policy_json_endpoint,
             policy_actions=permissions.POLICY_ACTIONS,
-            resource_type_choices=self.get_resource_type_choices(),
+            controller_options=json.dumps(self.get_controller_options()),
         )
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
@@ -63,6 +65,12 @@ class IAMPolicyWizardView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
+
+    def get_controller_options(self):
+        return {
+            'policyJsonEndpoint': self.policy_json_endpoint,
+            'resourceTypeChoices': self.get_resource_type_choices(),
+        }
 
     @staticmethod
     def get_resource_type_choices():

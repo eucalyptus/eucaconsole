@@ -14,8 +14,8 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
-        $scope.initController = function (policyJsonEndpoint) {
-            $scope.policyJsonEndpoint = policyJsonEndpoint;
+        $scope.initController = function (options) {
+            $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.initCodeMirror();
         };
         $scope.initCodeMirror = function () {
