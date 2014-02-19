@@ -87,7 +87,7 @@ class KeyPairView(BaseView):
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
-        if( keypair_param == "new" or keypair_param == "new2"):
+        if keypair_param == "new" or keypair_param == "new2":
             return None
         keypairs_param = [keypair_param]
         keypairs = []
