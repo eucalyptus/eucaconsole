@@ -140,7 +140,7 @@
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="#" i18n:translate="">Create key pair</a>
+                        <a href="${request.route_url('keypair_view', id='new')}" i18n:translate="">Create key pair</a>
                     </div>
                 </div>
             </li>
