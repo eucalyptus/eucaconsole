@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <hr />
-                        <div class="section" ng-cloak="">
+                        <div class="section" id='group-users'>
                             <h6 i18n:translate="">Users</h6>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-10 columns">

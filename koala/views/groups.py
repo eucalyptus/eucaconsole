@@ -23,7 +23,7 @@ class GroupsView(LandingPageView):
 
     def __init__(self, request):
         super(GroupsView, self).__init__(request)
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'group_name'
         self.prefix = '/groups'
 
     @view_config(route_name='groups', renderer=TEMPLATE)
@@ -36,8 +36,7 @@ class GroupsView(LandingPageView):
         self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Group name')),
-            dict(key='path', name=_(u'Path')),
+            dict(key='group_name', name=_(u'Name')),
         ]
 
         return dict(
@@ -68,10 +67,16 @@ class GroupsJsonView(BaseView):
                 policies = policies.policy_names
             except EC2ResponseError as exc:
                 pass
+            user_count = 0
+            try:
+                group = self.conn.get_group(group_name=group.group_name)
+                user_count=len(group.users) if hasattr(group, 'users') else 0
+            except EC2ResponseError as exc:
+                pass
             groups.append(dict(
                 path=group.path,
                 group_name=group.group_name,
-                user_count=len(group.users) if hasattr(group, 'users') else 0,
+                user_count=user_count,
                 policy_count=len(policies),
             ))
         return dict(results=groups)
