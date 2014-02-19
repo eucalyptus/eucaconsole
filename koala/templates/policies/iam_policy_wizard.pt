@@ -15,7 +15,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div class="large-6 columns">
+        <div class="large-7 columns">
             <div class="wizard no-title">
                 <dl class="tabs" data-tab="">
                     <dd class="active">
@@ -115,7 +115,7 @@
                 <div class="clearfix">&nbsp;</div>
             </div>
         </div>
-        <div class="large-6 columns">
+        <div class="large-5 columns">
             <!--! Preview Policy -->
             <div id="policy-preview">
                 <h6 class="title">View Policy</h6>

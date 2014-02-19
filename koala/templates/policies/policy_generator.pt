@@ -5,6 +5,7 @@
                 <th class="allow" i18n:translate="">Allow</th>
                 <th class="deny" i18n:translate="">Deny</th>
                 <th class="actions">&nbsp;</th>
+                <th class="advanced">&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -17,8 +18,7 @@
                         <a ng-click="toggleAll('deny', '${namespace}', $event)"><i class="fi-x tick"></i></a>
                     </td>
                     <td class="actions-namespace">
-                        <div class="expando"
-                             ng-init="${namespace}Expanded = false" ng-cloak="">
+                        <div class="expando" ng-init="${namespace}Expanded = false" ng-cloak="">
                             <strong class="title" >
                                 <a ng-click="${namespace}Expanded = !${namespace}Expanded">
                                     <i class="fi-plus" ng-show="!${namespace}Expanded"></i>
@@ -28,6 +28,7 @@
                             </strong>
                         </div>
                     </td>
+                    <td>&nbsp;</td>
                 </tr>
                 <tr class="action ${namespace}" tal:define="namespace actions_ns.name"
                     tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
@@ -43,6 +44,21 @@
                     </td>
                     <td>
                         <span class="action-name">${action}</span>
+                        <div class="advanced hide">
+                            <div class="resource-wrapper" tal:condition="namespace not in ['elasticloadbalancing', 'autoscaling']">
+                                <div>&nbsp;</div>
+                                <label i18n:translate="">Resource name (ARN):</label>
+                                <input type="text" value="*" class="resource" />
+                                <span class="helptext-icon" data-tooltip="" title="Use * for all resources">?</span><br />
+                                <a class="button tiny" i18n:translate="" ng-click="updateStatements()" i18n:translate="">
+                                    Add Resource
+                                </a>
+                                <div>&nbsp;</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <a class="button tiny" ng-click="toggleAdvanced($event)">Advanced</a>
                     </td>
                 </tr>
             </metal:block>

@@ -69,6 +69,20 @@
             &.allow, &.deny {
                 text-align: center
             }
+            .button {
+                margin-bottom: 0;
+            }
+            input[type=text] {
+                display: inline-block;
+                width: 70%;
+                height: auto;
+                line-height: 1rem;
+                padding: 4px 8px;
+                margin-bottom: 8px;
+            }
+            label {
+                margin-bottom: 2px;
+            }
             i.tick {
                 color: $euca-lightgrey;
                 font-size: 1.2rem;

@@ -57,8 +57,10 @@ angular.module('IAMPolicyWizard', [])
         $scope.updatePolicy = function() {
             var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
             var formattedResults = JSON.stringify(generatorPolicy, null, 2);
-            $scope.policyText = formattedResults;
-            $scope.codeEditor.setValue(formattedResults);
+            if ($scope.policyStatements.length) {
+                $scope.policyText = formattedResults;
+                $scope.codeEditor.setValue(formattedResults);
+            }
         };
         $scope.updateStatements = function () {
             $scope.policyStatements = [];
@@ -66,10 +68,11 @@ angular.module('IAMPolicyWizard', [])
                 var namespace = item.getAttribute('data-namespace'),
                     action = item.getAttribute('data-action'),
                     effect = item.getAttribute('data-effect'),
-                    nsAction = namespace.toLowerCase() + ':' + action;
+                    nsAction = namespace.toLowerCase() + ':' + action,
+                    resource = $(item).closest('tr').find('.resource').val() || '*';
                 $scope.policyStatements.push({
                     "Action": [nsAction],
-                    "Resource": "*",
+                    "Resource": resource,
                     "Effect": effect
                 });
             });
@@ -94,6 +97,9 @@ angular.module('IAMPolicyWizard', [])
             $timeout(function () {
                 $scope.updateStatements();
             }, 100)
+        };
+        $scope.toggleAdvanced = function ($event) {
+            $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };
     })
 ;

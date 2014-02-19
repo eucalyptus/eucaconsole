@@ -53,6 +53,9 @@
 #policy-generator .table th.allow, #policy-generator .table th.deny { text-transform: uppercase; width: 40px; }
 #policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
 #policy-generator .table td.allow, #policy-generator .table td.deny { text-align: center; }
+#policy-generator .table td .button { margin-bottom: 0; }
+#policy-generator .table td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 4px 8px; margin-bottom: 8px; }
+#policy-generator .table td label { margin-bottom: 2px; }
 #policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
 #policy-generator .table td i.tick.fi-check.selected { color: #76b800; }
 #policy-generator .table td i.tick.fi-x.selected { color: red; }
