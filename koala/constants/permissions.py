@@ -359,6 +359,13 @@ IAM_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for STS (Security Token Service)
+STS_ACTIONS = [
+    'GetFederationToken',
+    'AssumeRole',
+]
+
+
 POLICY_ACTIONS = [
     {
         'name': 'ec2',
@@ -389,6 +396,11 @@ POLICY_ACTIONS = [
         'name': 'iam',
         'label': _(u'All IAM actions'),
         'actions': IAM_ACTIONS,
+    },
+    {
+        'name': 'sts',
+        'label': _(u'All Security Token Service actions'),
+        'actions': STS_ACTIONS,
     },
 ]
 
