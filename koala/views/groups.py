@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
-import unicodedata
 import simplejson as json
 from urllib import urlencode
 
@@ -15,8 +14,8 @@ from pyramid.view import view_config
 
 from ..forms.groups import GroupForm, GroupUpdateForm, DeleteGroupForm
 from ..models import Notification
-from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, JSONResponse
+
 
 class GroupsView(LandingPageView):
     TEMPLATE = '../templates/groups/groups.pt'
