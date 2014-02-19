@@ -47,7 +47,7 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Group name</th>
                 <th i18n:translate="">Users</th>
-                <th i18n:translate="">Polcies</th>
+                <th i18n:translate="">Policies</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">

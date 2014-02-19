@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
-import unicodedata
 import simplejson as json
 from urllib import urlencode
 
@@ -15,15 +14,15 @@ from pyramid.view import view_config
 
 from ..forms.groups import GroupForm, GroupUpdateForm, DeleteGroupForm
 from ..models import Notification
-from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, JSONResponse
+
 
 class GroupsView(LandingPageView):
     TEMPLATE = '../templates/groups/groups.pt'
 
     def __init__(self, request):
         super(GroupsView, self).__init__(request)
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'group_name'
         self.prefix = '/groups'
 
     @view_config(route_name='groups', renderer=TEMPLATE)
@@ -36,8 +35,9 @@ class GroupsView(LandingPageView):
         self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Group name')),
-            dict(key='path', name=_(u'Path')),
+            dict(key='group_name', name=_(u'Name')),
+            dict(key='user_count', name=_(u'User count')),
+            dict(key='policy_count', name=_(u'Policy count')),
         ]
 
         return dict(
