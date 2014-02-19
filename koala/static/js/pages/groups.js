@@ -7,7 +7,9 @@
 angular.module('GroupsPage', ['LandingPage'])
     .controller('GroupsCtrl', function ($scope, $timeout) {
         $scope.group_name = '';
-        $scope.initPage = function () {
+        $scope.group_view_url = '';
+        $scope.initPage = function (group_view_url) {
+            $scope.group_view_url = group_view_url;
         };
         $scope.revealModal = function (action, group) {
             var modal = $('#' + action + '-group-modal');
@@ -16,6 +18,9 @@ angular.module('GroupsPage', ['LandingPage'])
             var form = $('#delete-form');
             var action = form.attr('action').replace("_name_", group['group_name']);
             form.attr('action', action);
+        };
+        $scope.linkGroup = function (group, fragment) {
+            window.location = $scope.group_view_url.replace('_name_', group['group_name'])+fragment;
         };
     })
 ;

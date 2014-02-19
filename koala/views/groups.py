@@ -36,8 +36,6 @@ class GroupsView(LandingPageView):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='group_name', name=_(u'Name')),
-            dict(key='user_count', name=_(u'User count')),
-            dict(key='policy_count', name=_(u'Policy count')),
         ]
 
         return dict(
@@ -68,10 +66,16 @@ class GroupsJsonView(BaseView):
                 policies = policies.policy_names
             except EC2ResponseError as exc:
                 pass
+            user_count = 0
+            try:
+                group = self.conn.get_group(group_name=group.group_name)
+                user_count=len(group.users) if hasattr(group, 'users') else 0
+            except EC2ResponseError as exc:
+                pass
             groups.append(dict(
                 path=group.path,
                 group_name=group.group_name,
-                user_count=len(group.users) if hasattr(group, 'users') else 0,
+                user_count=user_count,
                 policy_count=len(policies),
             ))
         return dict(results=groups)
