@@ -36,19 +36,24 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
-                    {{ item.user_name }}
+                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">GR</span>
+                    <div ng-repeat="group in item.groups ">
+                        <a ng-click="showGroup($event, item)">{{ group }}</a>
+                    </div>
                 </div>
-                <div>
-                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PA</span>
-                    {{ item.path }}
+                <div ng-show="item.has_password">
+                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PW</span>
+                    <i class="fi-check"></i>
                 </div>
-                <div>
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AR</span>
-                    {{ item.arn }}
+                <div ng-show="item.num_keys > 0">
+                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AK</span>
+                    {{ item.num_keys }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer"></div>
+            <div metal:fill-slot="tile_footer">
+                <div ng-show="!item.has_password"><span i18n:translate="">DOES NOT HAVE PASSWORD</span></div>
+                <div ng-show="item.num_keys == 0"><span i18n:translate="">DOES NOT HAVE ACCESS KEYS</span></div>
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">User name</th>
                 <th i18n:translate="">Path</th>
