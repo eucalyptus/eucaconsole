@@ -90,7 +90,10 @@ class KeyPairView(BaseView):
         keypairs_param = [keypair_param]
         keypairs = []
         if self.conn:
-            keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+            try:
+                keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+            except:
+                return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
 
