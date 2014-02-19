@@ -48,8 +48,8 @@
                             <div class="resource-wrapper" tal:condition="namespace not in ['elasticloadbalancing', 'autoscaling']">
                                 <div>&nbsp;</div>
                                 <label i18n:translate="">Resource name (ARN):</label>
-                                <input type="text" value="*" class="resource" />
-                                <span class="helptext-icon" data-tooltip="" title="Use * for all resources">?</span><br />
+                                <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
+                                <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
                                 <a class="button tiny" i18n:translate="" ng-click="updateStatements()" i18n:translate="">
                                     Add Resource
                                 </a>
