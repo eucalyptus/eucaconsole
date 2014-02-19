@@ -87,12 +87,14 @@ class KeyPairView(BaseView):
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
+        if( keypair_param == "new" or keypair_param == "new2"):
+            return None
         keypairs_param = [keypair_param]
         keypairs = []
         if self.conn:
             try:
                 keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
-            except:
+            except EC2ResponseError as err:
                 return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
