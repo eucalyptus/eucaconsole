@@ -3,8 +3,6 @@
 Pyramid views for IAM Policies (permissions)
 
 """
-import simplejson as json
-
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -30,6 +28,7 @@ class IAMPolicyWizardView(BaseView):
             create_form=self.create_form,
             policy_json_endpoint=self.policy_json_endpoint,
             policy_actions=permissions.POLICY_ACTIONS,
+            resource_type_choices=self.get_resource_type_choices(),
         )
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
@@ -41,11 +40,11 @@ class IAMPolicyWizardView(BaseView):
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
         target_type = self.request.params.get('type')  # 'user' or 'group'
-        target_route = '{0}s'.format(target_type)  # 'users' or 'groups'
-        location = self.request.route_url(target_route)
+        target_route = '{0}_view'.format(target_type)  # 'user_view' or 'group_view'
+        target_name = self.request.params.get('id')  # user or group name
+        location = self.request.route_url(target_route, name=target_name)  # redirect to detail page after submit
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
-            target_name = self.request.params.get('id')  # user or group name
             policy_json = self.request.params.get('policy', '{}')
             try:
                 if target_type == 'user':
@@ -53,14 +52,30 @@ class IAMPolicyWizardView(BaseView):
                 else:
                     caller = self.conn.put_group_policy
                 caller(target_name, policy_name, policy_json)
-                msg = _(u'Successfully created IAM policy.')
+                prefix = _(u'Successfully created IAM policy')
+                msg = '{0} {1}'.format(prefix, policy_name)
                 queue = Notification.SUCCESS
             except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
+
+    @staticmethod
+    def get_resource_type_choices():
+        return (
+            ('vm_type', 'VM type'),
+            ('image', 'Image'),
+            ('security_group', 'Security group'),
+            ('ip_address', 'IP address or range'),
+            ('avail_zone', 'Availability zone'),
+            ('key_pair', 'Key pair'),
+            ('volume', 'Volume'),
+            ('snapshot', 'Snapshot'),
+        )
 
 
 class IAMPolicyWizardJsonView(BaseView):

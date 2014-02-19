@@ -53,7 +53,6 @@
                                     <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
                                 </div>
                                 <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
-                                    ${create_form['resource_type']}
                                     <!--! instance, volume, etc chosen widgets here -->
                                 </div>
                                 <a class="button tiny" i18n:translate="" ng-click="updateStatements()" i18n:translate="">
