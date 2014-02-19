@@ -109,7 +109,7 @@
                         <p class="description" i18n:translate="">
                             Define custom access permissions
                         </p>
-                        ${panel('policy_generator', policy_actions=policy_actions)}
+                        ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form)}
                     </div>
                 </div>
                 <div class="clearfix">&nbsp;</div>

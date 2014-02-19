@@ -201,11 +201,12 @@ def image_picker(context, request, image=None, images_json_endpoint=None,
 
 
 @panel_config('policy_generator', renderer='../templates/policies/policy_generator.pt')
-def policy_generator(context, request, policy_actions=None):
+def policy_generator(context, request, policy_actions=None, create_form=None):
     """IAM Policy generator"""
     policy_actions = policy_actions or {}
     return dict(
         policy_actions=policy_actions,
+        create_form=create_form,
     )
 
 
