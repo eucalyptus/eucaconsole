@@ -89,6 +89,17 @@
             .button {
                 margin-bottom: 0;
             }
+            .advanced {
+                select.resource-type {
+                    display: inline-block;
+                    width: 50%;
+                    padding: 4px 2px 4px 4px;
+                }
+                input[type=text] {
+                    display: inline-block;
+                    width: 44%;
+                }
+            }
             input[type=text] {
                 display: inline-block;
                 width: 70%;

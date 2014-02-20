@@ -14,10 +14,15 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
+        $scope.resourceTypeChoices = [];
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
+            $scope.setResourceChoices(options);
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
+        };
+        $scope.setResourceChoices = function (options) {
+            $scope.resourceTypeChoices = options['resourceTypeChoices'];
         };
         $scope.initCodeMirror = function () {
             $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
@@ -92,6 +97,14 @@ angular.module('IAMPolicyWizard', [])
                 });
             });
             $scope.updatePolicy();
+        };
+        $scope.addResource = function ($event) {
+            var allowDenyCount = $($event.target).closest('tr').find('i.selected').length;
+            if (!allowDenyCount) {
+                alert('Select "Allow" or "Deny" to add the statement to the policy');
+            } else {
+                $scope.updateStatements();
+            }
         };
         $scope.handleSelection = function ($event) {
             var tgt = $($event.target);

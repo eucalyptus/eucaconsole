@@ -69,21 +69,7 @@ class IAMPolicyWizardView(BaseView):
     def get_controller_options(self):
         return {
             'policyJsonEndpoint': self.policy_json_endpoint,
-            'resourceTypeChoices': self.get_resource_type_choices(),
         }
-
-    @staticmethod
-    def get_resource_type_choices():
-        return (
-            ('vm_type', 'VM type'),
-            ('image', 'Image'),
-            ('security_group', 'Security group'),
-            ('ip_address', 'IP address or range'),
-            ('avail_zone', 'Availability zone'),
-            ('key_pair', 'Key pair'),
-            ('volume', 'Volume'),
-            ('snapshot', 'Snapshot'),
-        )
 
 
 class IAMPolicyWizardJsonView(BaseView):
