@@ -27,8 +27,8 @@
 #policy-generator .table td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 4px 8px; margin-bottom: 8px; }
 #policy-generator .table td label { margin-bottom: 2px; }
 #policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
-#policy-generator .table td i.tick.fi-check.selected { color: #76b800; }
-#policy-generator .table td i.tick.fi-x.selected { color: red; }
+#policy-generator .table td i.tick.fi-check.selected { color: #00415e; }
+#policy-generator .table td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }
 

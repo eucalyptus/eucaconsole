@@ -104,10 +104,10 @@
                 color: $euca-lightgrey;
                 font-size: 1.2rem;
                 &.fi-check.selected {
-                    color: $euca-green;
+                    color: $euca-darkblue;
                 }
                 &.fi-x.selected {
-                    color: red;
+                    color: darkred;
                 }
             }
         }
