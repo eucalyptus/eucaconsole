@@ -120,8 +120,7 @@
                     <label><strong i18n:translate="">Policy</strong></label>
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
                         leftcol_width=0, rightcol_width=12)}
-                    <hr ng-show="policyText" />
-                    <div ng-show="policyText">
+                    <div>
                         <button type="submit" class="button" id="create-iam-policy-btn">
                             <span i18n:translate="">Create Policy</span>
                         </button>

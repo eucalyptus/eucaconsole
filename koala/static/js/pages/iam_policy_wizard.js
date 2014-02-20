@@ -17,6 +17,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.initCodeMirror();
+            $scope.handlePolicyFileUpload();
         };
         $scope.initCodeMirror = function () {
             $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
@@ -37,6 +38,20 @@ angular.module('IAMPolicyWizard', [])
                 'blank': 'CustomAccessPolicy'
             }
             $scope.policyName = typeNameMapping[policyType] || '';
+        };
+        $scope.handlePolicyFileUpload = function () {
+            $('#policy_file').on('change', function(evt) {
+                var file = evt.target.files[0],
+                    reader = new FileReader();
+                reader.onloadend = function(evt) {
+                    if (evt.target.readyState == FileReader.DONE) {
+                        $scope.policyText = evt.target.result;
+                        $scope.codeEditor.setValue(evt.target.result);
+                        $scope.codeEditor.focus();
+                    }
+                };
+                reader.readAsText(file);
+            });
         };
         $scope.selectPolicy = function(policyType) {
             // Fetch hard-coded canned policies
