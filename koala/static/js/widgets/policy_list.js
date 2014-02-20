@@ -16,6 +16,8 @@ angular.module('PolicyList', [])
         $scope.policyIndex = -1;
         $scope.policyName = '';
         $scope.policyJson = '';
+        $scope.codeEditor = null;
+        $scope.editPolicyArea = null;
         $scope.syncPolicies = function () {
             var policyObj = {};
             $scope.policyArray.forEach(function(policy) {
@@ -28,6 +30,7 @@ angular.module('PolicyList', [])
             $scope.policyUrl = policy_url;
             $scope.removeUrl = remove_url;
             $scope.updateUrl = update_url;
+            $scope.initCodeMirror();
             $http({method:'GET', url:$scope.policiesUrl, data:'',
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -50,6 +53,15 @@ angular.module('PolicyList', [])
             $scope.policyName = $scope.policyArray[index].name;
             $('#delete-modal').foundation('reveal', 'open');
         };
+        $scope.initCodeMirror = function () {
+            $scope.editPolicyArea = $('#policy-area')[0];
+            $scope.codeEditor = CodeMirror.fromTextArea($scope.editPolicyArea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true
+            });
+        };
         $scope.doDelete = function ($event) {
             $event.preventDefault();
             var url = $scope.removeUrl.replace('_policy_', $scope.policyName);
@@ -70,11 +82,14 @@ angular.module('PolicyList', [])
         $scope.editPolicy = function (index, $event) {
             $event.preventDefault();
             $scope.policyJson = ''; // clear any previous policy
+            $scope.codeEditor.setValue('');
             $scope.policyName = $scope.policyArray[index].name;
             var url = $scope.policyUrl.replace('_policy_', $scope.policyName);
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.policyJson = results;
+                $scope.codeEditor.setValue(results);
+                $scope.codeEditor.focus();
             }).error(function (oData, status) {
                 var errorMsg = oData['error'] || '';
                 if (errorMsg && status === 403) {
@@ -86,7 +101,8 @@ angular.module('PolicyList', [])
         $scope.savePolicy = function() {
             try {
                 $('#json-error').css('display', 'none');
-                var policy_json = $('#policy-area').val();
+                var policy_json = $scope.codeEditor.getValue();
+                //var policy_json = $('#policy-area').val();
                 JSON.parse(policy_json);
                 $('#policy-edit-modal').foundation('reveal', 'close');
                 // now, save the policy
