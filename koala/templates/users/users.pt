@@ -4,7 +4,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/users.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage()">
+<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage(
+                '${request.route_url('user_view', name='_name_')}',
+                '${request.route_url('group_view', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -27,7 +29,6 @@
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
-                    <li><a i18n:translate="" ng-click="revealModal('disable', item)">Disable</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a></li>
                 </ul>
             </div>
@@ -36,37 +37,51 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">NM</span>
-                    {{ item.user_name }}
+                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">GR</span>
+                    <div ng-repeat="group in item.groups ">
+                        <a ng-click="showGroup($event, group)">{{ group }}</a>
+                    </div>
                 </div>
-                <div>
-                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PA</span>
-                    {{ item.path }}
+                <div ng-show="item.has_password">
+                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PW</span>
+                    <i class="fi-check"></i>
                 </div>
-                <div>
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AR</span>
-                    {{ item.arn }}
+                <div ng-show="item.num_keys > 0">
+                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AK</span>
+                    {{ item.num_keys }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer"></div>
+            <div metal:fill-slot="tile_footer">
+                <div ng-show="!item.has_password"><a class="link" ng-click="linkUser(item, '#password-section')" i18n:translate="">Does not have password</a></div>
+                <div ng-show="item.num_keys == 0"><a class="link" ng-click="linkUser(item, '#access-keys-section')" i18n:translate="">Does not have access keys</a></div>
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">User name</th>
-                <th i18n:translate="">Path</th>
-                <th i18n:translate="">ARN</th>
-                <th i18n:translate="">Actions</th>
+                <th i18n:translate="">Groups</th>
+                <th i18n:translate="">Password</th>
+                <th i18n:translate="">Access Keys</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
-                <td>{{ item.path }}</td>
-                <td>{{ item.arn }}</td>
+                <td>
+                    <div ng-repeat="group in item.groups ">
+                        <a ng-click="showGroup($event, group)">{{ group }} </a>
+                    </div>
+                </td>
+                <td>
+                    <span ng-show="item.has_password">
+                        <i class="fi-check"></i>
+                    </span>
+                </td>
+                <td>
+                    {{ item.num_keys }}
+                </td>
                 <td>
                   <span class="actions">
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a></li>
-                        <li>
-                            <a i18n:translate="" ng-click="revealModal('disable', item)">Disable</a>
-                        </li>
                         <li>
                             <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                         </li>
