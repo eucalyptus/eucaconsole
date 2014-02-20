@@ -5,11 +5,9 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 from collections import namedtuple
-from urlparse import urlparse
 
 from beaker.cache import cache_region
 from pyramid.decorator import reify
-from pyramid.httpexceptions import HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
@@ -36,8 +34,6 @@ class MasterLayout(object):
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.username_label = self.request.session.get('username_label')
-        self.tableview_url = self.get_datagridview_url('tableview')
-        self.gridview_url = self.get_datagridview_url('gridview')
         self.date_format = _(u'%H:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
         self.tag_pattern = '^(?!aws:).*'
@@ -65,23 +61,6 @@ class MasterLayout(object):
                 notification(message=error, type=queue, style=Notification.FOUNDATION_STYLES.get(queue))
             )
         return notifications
-
-    def get_datagridview_url(self, display):
-        """Convenience property to get tableview or gridview URL for landing pages"""
-        try:
-            current_url = self.request.current_route_url()
-        except ValueError:
-            # Handle "ValueError: Current request matches no route" errors
-            return HTTPNotFound()
-        parsed_url = urlparse(current_url)
-        otherview = 'gridview' if display == 'tableview' else 'tableview'
-        if 'launch' in parsed_url.query:
-            current_url = current_url.replace('?launch=1', '')
-        if 'display' in parsed_url.query:
-            return current_url.replace(otherview, display)
-        else:
-            ampersand = '&' if '?' in current_url else '?'
-            return '{url}{amp}display={view}'.format(url=current_url, amp=ampersand, view=display)
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')
