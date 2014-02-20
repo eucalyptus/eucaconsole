@@ -79,7 +79,7 @@
                             </p>
                             <div ng-show="policyGenExpanded">
                                 ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form,
-                                        instance_choices=instance_choices)}
+                                        resource_choices=resource_choices)}
                             </div>
                         </div>
                         <div class="choice">

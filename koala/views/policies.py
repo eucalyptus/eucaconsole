@@ -32,7 +32,10 @@ class IAMPolicyWizardView(BaseView):
             policy_json_endpoint=self.policy_json_endpoint,
             policy_actions=permissions.POLICY_ACTIONS,
             controller_options=json.dumps(self.get_controller_options()),
-            instance_choices=self.get_instance_choices(),
+            resource_choices=dict(
+                instances=self.get_instance_choices(),
+                images=self.get_image_choices(),
+            ),
         )
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
@@ -76,14 +79,28 @@ class IAMPolicyWizardView(BaseView):
     def get_instance_choices(self):
         choices = [('', _(u'All instances...'))]
         for instance in self.ec2_conn.get_only_instances():
-            cloud_type = self.request.session.get('cloud_type', 'euca')
             region = '*'
-            if cloud_type == 'aws':
-                default_region = self.request.registry.settings.get('aws.default.region')
-                region = self.request.session.get('region', default_region)
-            instance_arn_prefix = 'arn:aws:ec2:{0}:*:instance/'.format(region)
-            value = '{0}{1}'.format(instance_arn_prefix, instance.id)
+            if self.cloud_type == 'aws':
+                region = self.region
+            arn_prefix = 'arn:aws:ec2:{0}:*:instance/'.format(region)
+            value = '{0}{1}'.format(arn_prefix, instance.id)
             label = TaggedItemView.get_display_name(instance)
+            choices.append((value, label))
+        return choices
+
+    def get_image_choices(self):
+        choices = [('', _(u'All images...'))]
+        # Set owner alias to 'self' for AWS
+        owner_alias = 'self' if self.cloud_type == 'aws' else None
+        owners = [owner_alias] if owner_alias else []
+        images = self.ec2_conn.get_all_images(owners=owners, filters={'image-type': 'machine'})
+        for image in images:
+            region = '*'
+            if self.cloud_type == 'aws':
+                region = self.region
+            arn_prefix = 'arn:aws:ec2:{0}:*:image/'.format(region)
+            value = '{0}{1}'.format(arn_prefix, image.id)
+            label = TaggedItemView.get_display_name(image)
             choices.append((value, label))
         return choices
 

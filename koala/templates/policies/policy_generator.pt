@@ -54,7 +54,8 @@
                                 </div>
                                 <div tal:condition="layout.cloud_type == 'euca'">
                                     <select class="resource-type">
-                                        <option value="instance" tal:condition="'Instance' in action">
+                                        <option value="instance"
+                                                tal:condition="'Instance' in action or 'AttachVolume' in action or 'DetachVolume' in action">
                                             Instance
                                         </option>
                                         <option value="vm_type" tal:condition="'Instance' in action">
@@ -69,9 +70,6 @@
                                         <option value="ip_address" tal:condition="'Address' in action">
                                             IP address or range
                                         </option>
-                                        <option value="avail_zone">
-                                            Availability zone
-                                        </option>
                                         <option value="key_pair" tal:condition="'KeyPair' in action">
                                             Key pair
                                         </option>
@@ -81,11 +79,17 @@
                                         <option value="snapshot" tal:condition="'Snapshot' in action">
                                             Snapshot
                                         </option>
+                                        <option value="avail_zone" tal:replace="None">
+                                            Availability zone
+                                        </option>
                                     </select>
                                     <strong class="equal">=</strong>
                                     <input type="text" class="resource" tal:condition="'Address' in action" />
                                     <select class="resource instance chosen" tal:condition="'Instance' in action">
                                         <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
+                                    </select>
+                                    <select class="resource image chosen" tal:condition="'Image' in action">
+                                        <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
                                     </select>
                                 </div>
                                 <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
@@ -96,7 +100,8 @@
                         </div>
                     </td>
                     <td>
-                        <a class="button tiny round" ng-click="toggleAdvanced($event)">Advanced</a>
+                        <a class="button tiny round" ng-click="toggleAdvanced($event)"
+                           tal:condition="namespace not in ['elasticloadbalancing', 'autoscaling']">Advanced</a>
                     </td>
                 </tr>
             </metal:block>
