@@ -77,7 +77,7 @@
                 <div>
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <span ng-repeat="security_group in item.security_groups">
-                        <a ng-href="/securitygroups/{{ security_group }}">{{ security_group }}</a><span ng-show="!$last">, </span>
+                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name }}</a><span ng-show="!$last">, </span>
                     </span>
                 </div>
                 <div>
@@ -115,7 +115,7 @@
                 <td><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a></td>
                 <td>
                     <div ng-repeat="security_group in item.security_groups">
-                        <a ng-href="/securitygroups/{{ security_group }}">{{ security_group }}</a>
+                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name }}</a>
                     </div>
                 </td>
                 <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
