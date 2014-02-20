@@ -46,7 +46,7 @@ class BaseInstanceView(BaseView):
                 if instance.platform is None:
                     instance.platform = _(u"linux")
                 instance.instance_profile_id = None
-                if len(instance.instance_profile.keys()) > 0:
+                if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
                     instance.instance_profile_id = instance.instance_profile.keys()[0]
                 return instance
         return None

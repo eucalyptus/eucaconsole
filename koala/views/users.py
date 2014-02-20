@@ -577,7 +577,7 @@ class UserView(BaseView):
                     new_policy['Statement'] = new_stmts
                     self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
                                               json.dumps(new_policy))
-            return dict(message=_(u"Successfully updated user policy"), results=result)
+            return dict(message=_(u"Successfully updated user policy"))
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
 
