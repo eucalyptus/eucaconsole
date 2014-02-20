@@ -72,11 +72,15 @@ class LaunchConfigsView(LandingPageView):
     @staticmethod
     def get_sort_keys():
         return [
-            dict(key='name', name='Name'),
-            dict(key='-created_time', name='Created time'),
-            dict(key='image_name', name='Image Name'),
-            dict(key='key_name', name='Key pair'),
-            dict(key='instance_monitoring', name='Instance monitoring'),
+            dict(key='name', name='Name: Low to High', reversed='false'),
+            dict(key='name', name='Name: High to Low', reversed='true'),
+            dict(key='-created_time', name='Created time: Low to High', reversed='false'),
+            dict(key='-created_time', name='Created time: High to Low', reversed='true'),
+            dict(key='image_name', name='Image Name: Low to High', reversed='false'),
+            dict(key='image_name', name='Image Name: High to Low', reversed='true'),
+            dict(key='key_name', name='Key pair: Low to High', reversed='false'),
+            dict(key='key_name', name='Key pair: High to Low', reversed='true'),
+            dict(key='instance_monitoring', name='Instance monitoring', reversed='false'),
         ]
 
 

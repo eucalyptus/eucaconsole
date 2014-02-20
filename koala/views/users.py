@@ -31,7 +31,7 @@ class UsersView(LandingPageView):
 
     def __init__(self, request):
         super(UsersView, self).__init__(request)
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'user_name'
         self.prefix = '/users'
 
     @view_config(route_name='users', renderer=TEMPLATE)
@@ -45,9 +45,10 @@ class UsersView(LandingPageView):
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='user_id', name='ID'),
-            dict(key='name', name=_(u'User name')),
-            dict(key='path', name=_(u'Path')),
+            dict(key='user_id', name='ID', reversed='false'),
+            dict(key='user_name', name=_(u'User name: Low to High'), reversed='false'),
+            dict(key='user_name', name=_(u'User name: High to Low'), reversed='true'),
+            dict(key='path', name=_(u'Path'), reversed='false'),
         ]
 
         return dict(

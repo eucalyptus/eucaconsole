@@ -30,8 +30,9 @@ class KeyPairsView(LandingPageView):
         self.filter_keys = ['name', 'fingerprint']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name')),
-            dict(key='fingerprint', name=_(u'Fingerprint')),
+            dict(key='name', name=_(u'Name: Low to High'), reversed='false'),
+            dict(key='name', name=_(u'Name: High to Low'), reversed='true'),
+            dict(key='fingerprint', name=_(u'Fingerprint'), reversed='false'),
         ]
 
         return dict(

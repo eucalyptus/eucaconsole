@@ -138,8 +138,8 @@ class IPAddressesView(LandingPageView):
     def get_sort_keys():
         """sort_keys are passed to sorting drop-down on landing page"""
         return [
-            dict(key='public_ip', name=_(u'IP Address')),
-            dict(key='instance_id', name=_(u'Instance')),
+            dict(key='public_ip', name=_(u'IP Address'), reversed='false'),
+            dict(key='instance_id', name=_(u'Instance'), reversed='false'),
         ]
 
 

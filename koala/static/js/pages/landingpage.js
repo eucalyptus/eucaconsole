@@ -64,13 +64,6 @@ angular.module('LandingPage', ['CustomFilters'])
                 localStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
             $scope.$watch('sortReverse', function(){
-                if ($scope.sortReverse == true) {
-                    sortingReverse.removeClass('down-caret');
-                    sortingReverse.addClass('up-caret');
-                } else {
-                    sortingReverse.removeClass('up-caret');
-                    sortingReverse.addClass('down-caret');
-                }
                 // Set SortReverse in localStorage
                 localStorage.setItem($scope.sortReverseKey, $scope.sortReverse);
             });
@@ -130,9 +123,10 @@ angular.module('LandingPage', ['CustomFilters'])
             });
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
-        $scope.reverseSort = function(){
-            $scope.sortReverse = !$scope.sortReverse
-        };
+        $scope.adjustSort = function(sortKey, sortReversed){
+            $scope.sortBy = sortKey;
+            $scope.sortReverse = sortReversed;
+        }
         $scope.switchView = function(view){
             $scope.landingPageView = view;
         };

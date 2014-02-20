@@ -39,8 +39,9 @@ class SecurityGroupsView(LandingPageView):
         self.filter_keys = ['name', 'description', 'tags']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name')),
-            dict(key='description', name=_(u'Description')),
+            dict(key='name', name=_(u'Name: Low to High'), reversed='false'),
+            dict(key='name', name=_(u'Name: High to Low'), reversed='true'),
+            dict(key='description', name=_(u'Description'), reversed='false'),
         ]
         self.render_dict.update(dict(
             filter_fields=True,

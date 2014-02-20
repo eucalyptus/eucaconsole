@@ -40,11 +40,11 @@
                 <metal:block metal:define-slot="sorting_controls">
                     Sort by
                     <a href="#" data-dropdown="sorting-dropdown">
-                        <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
-                    </a><a ng-click="reverseSort()"><span id="sorting-reverse" class="down-caret"></span></a>
+                        <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}' && sortReverse == ${sort.reversed}">${sort.name}</span>
+                    </a>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="">
-                        <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
-                            <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
+                        <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}' || sortReverse != ${sort.reversed}">
+                            <a ng-click="adjustSort('${sort.key}', ${sort.reversed})">${sort.name}</a>
                         </li>
                     </ul>
                 </metal:block>

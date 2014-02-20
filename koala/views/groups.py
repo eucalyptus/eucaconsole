@@ -23,7 +23,7 @@ class GroupsView(LandingPageView):
 
     def __init__(self, request):
         super(GroupsView, self).__init__(request)
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'group_name'
         self.prefix = '/groups'
 
     @view_config(route_name='groups', renderer=TEMPLATE)
@@ -36,8 +36,9 @@ class GroupsView(LandingPageView):
         self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Group name')),
-            dict(key='path', name=_(u'Path')),
+            dict(key='group_name', name=_(u'Group name: Low to High'), reversed='false'),
+            dict(key='group_name', name=_(u'Group name: High to Low'), reversed='true'),
+            dict(key='path', name=_(u'Path'), reversed='false'),
         ]
 
         return dict(
