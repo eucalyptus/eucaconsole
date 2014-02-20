@@ -13,7 +13,7 @@ from pyramid.view import view_config
 from ..constants import policies, permissions
 from ..forms.policies import IAMPolicyWizardForm
 from ..models import Notification
-from ..views import BaseView, JSONResponse
+from ..views import BaseView, JSONResponse, TaggedItemView
 
 
 class IAMPolicyWizardView(BaseView):
@@ -23,7 +23,8 @@ class IAMPolicyWizardView(BaseView):
     def __init__(self, request):
         super(IAMPolicyWizardView, self).__init__(request)
         self.request = request
-        self.conn = self.get_connection(conn_type='iam')
+        self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
         self.policy_json_endpoint = self.request.route_url('iam_policy_json')
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -31,6 +32,7 @@ class IAMPolicyWizardView(BaseView):
             policy_json_endpoint=self.policy_json_endpoint,
             policy_actions=permissions.POLICY_ACTIONS,
             controller_options=json.dumps(self.get_controller_options()),
+            instance_choices=self.get_instance_choices(),
         )
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
@@ -50,9 +52,9 @@ class IAMPolicyWizardView(BaseView):
             policy_json = self.request.params.get('policy', '{}')
             try:
                 if target_type == 'user':
-                    caller = self.conn.put_user_policy
+                    caller = self.iam_conn.put_user_policy
                 else:
-                    caller = self.conn.put_group_policy
+                    caller = self.iam_conn.put_group_policy
                 caller(target_name, policy_name, policy_json)
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
@@ -70,6 +72,20 @@ class IAMPolicyWizardView(BaseView):
         return {
             'policyJsonEndpoint': self.policy_json_endpoint,
         }
+
+    def get_instance_choices(self):
+        choices = [('', _(u'All instances...'))]
+        for instance in self.ec2_conn.get_only_instances():
+            cloud_type = self.request.session.get('cloud_type', 'euca')
+            region = '*'
+            if cloud_type == 'aws':
+                default_region = self.request.registry.settings.get('aws.default.region')
+                region = self.request.session.get('region', default_region)
+            instance_arn_prefix = 'arn:aws:ec2:{0}:*:instance/'.format(region)
+            value = '{0}{1}'.format(instance_arn_prefix, instance.id)
+            label = TaggedItemView.get_display_name(instance)
+            choices.append((value, label))
+        return choices
 
 
 class IAMPolicyWizardJsonView(BaseView):

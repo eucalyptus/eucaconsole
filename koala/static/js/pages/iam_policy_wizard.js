@@ -20,9 +20,13 @@ angular.module('IAMPolicyWizard', [])
             $scope.setResourceChoices(options);
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
+            $scope.initChosenSelectors();
         };
         $scope.setResourceChoices = function (options) {
             $scope.resourceTypeChoices = options['resourceTypeChoices'];
+        };
+        $scope.initChosenSelectors = function () {
+            $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
         };
         $scope.initCodeMirror = function () {
             $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {

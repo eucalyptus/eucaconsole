@@ -52,7 +52,7 @@
                                     <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
                                     <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
                                 </div>
-                                <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                <div tal:condition="layout.cloud_type == 'euca'">
                                     <select class="resource-type">
                                         <option value="instance" tal:condition="'Instance' in action">
                                             Instance
@@ -83,7 +83,10 @@
                                         </option>
                                     </select>
                                     <strong class="equal">=</strong>
-                                    <input type="text" class="resource" />
+                                    <input type="text" class="resource" tal:condition="'Address' in action" />
+                                    <select class="resource instance chosen" tal:condition="'Instance' in action">
+                                        <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
+                                    </select>
                                 </div>
                                 <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
                                     Add Resource

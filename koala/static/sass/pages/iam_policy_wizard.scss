@@ -86,19 +86,11 @@
             &.allow, &.deny {
                 text-align: center
             }
+            .resource-wrapper {
+                vertical-align: top;
+            }
             .button {
                 margin-bottom: 0;
-            }
-            .advanced {
-                select.resource-type {
-                    display: inline-block;
-                    width: 50%;
-                    padding: 4px 2px 4px 4px;
-                }
-                input[type=text] {
-                    display: inline-block;
-                    width: 44%;
-                }
             }
             input[type=text] {
                 display: inline-block;
@@ -107,6 +99,25 @@
                 line-height: 1rem;
                 padding: 4px 8px;
                 margin-bottom: 8px;
+            }
+            .advanced {
+                select.resource-type {
+                    display: inline-block;
+                    width: 50%;
+                    padding: 7px 2px 7px 4px;
+                    position: relative;
+                    top: 1px;
+                }
+                input[type=text] {
+                    display: inline-block;
+                    width: 44%;
+                }
+                .chosen-container.chosen-container-single .chosen-choices {
+                    line-height: 1rem;
+                }
+                .chosen-search input[type=text] {
+                    width: 100%;
+                }
             }
             label {
                 margin-bottom: 2px;
