@@ -3,12 +3,16 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
-// Import common wizard styles
-@import "../includes/wizard";
 
-
-// Select/create policy expandos
-.expando {
+// Select/create policy choices
+.tabs-content {
+    background-color: white;
+    p {
+        line-height: 1.3rem;
+    }
+    .small-10.columns {
+        padding-left: 0;
+    }
     .content {
         margin-top: 1rem;
         .choice {
@@ -16,11 +20,24 @@
             margin-bottom: 1rem;
             margin-left: 1rem;
             margin-right: 1rem;
-            p {
-                line-height: 1.3rem;
-            }
             &:last-child {
                 border-bottom: none;
+            }
+            .expando {
+                i { margin-right: 8px; }
+                i.fi-minus { margin-right: 7px; }
+                a:hover { border-bottom: none; }
+            }
+            p.has-expando {
+                margin-left: 24px;
+            }
+            .fileupload {
+                margin-left: 2rem;
+            }
+            input[type=file] {
+                display: inline-block;
+                width: 90%;
+                margin-left: 8px;
             }
         }
     }
@@ -31,7 +48,7 @@
 #policy-preview {
     background-color: white;
     padding: 1rem;
-    margin-top: 56px;
+    margin-top: 40px;
     input[type=text], textarea {
         background-color: white;
     }
