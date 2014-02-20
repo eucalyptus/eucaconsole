@@ -32,7 +32,7 @@ class UsersView(LandingPageView):
 
     def __init__(self, request):
         super(UsersView, self).__init__(request)
-        self.initial_sort_key = 'name'
+        self.initial_sort_key = 'user_name'
         self.prefix = '/users'
 
     @view_config(route_name='users', renderer=TEMPLATE)
@@ -46,9 +46,7 @@ class UsersView(LandingPageView):
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='user_id', name='ID'),
-            dict(key='name', name=_(u'User name')),
-            dict(key='path', name=_(u'Path')),
+            dict(key='user_name', name=_(u'Name')),
         ]
 
         return dict(
@@ -72,6 +70,15 @@ class UsersJsonView(BaseView):
     def users_json(self):
     # TODO: take filters into account??
         users = []
+        groups = []
+        try:
+            groups = self.conn.get_all_groups()
+            groups = groups.groups
+            for g in groups:
+                info = self.conn.get_group(group_name=g.group_name)
+                g['users'] = info.users
+        except EC2ResponseError as exc:
+            pass
         for user in self.get_items():
             keys = []
             try:
@@ -79,12 +86,10 @@ class UsersJsonView(BaseView):
                 keys = keys.list_access_keys_result.access_key_metadata
             except EC2ResponseError as exc:
                 pass
-            groups = []
-            try:
-                groups = self.conn.get_groups_for_user(user_name=user.user_name)
-                groups = [group.group_name for group in groups.groups]
-            except EC2ResponseError as exc:
-                pass
+            user_groups = []
+            for g in groups:
+                if user.user_name in [u.user_name for u in g.users]:
+                    user_groups.append(g.group_name)
             has_password = False
             try:
                 profile = self.conn.get_login_profiles(user_name=user.user_name)
@@ -96,7 +101,7 @@ class UsersJsonView(BaseView):
                 path=user.path,
                 user_name=user.user_name,
                 user_id=user.user_id,
-                groups=groups,
+                groups=user_groups,
                 num_keys=len(keys),
                 has_password=has_password,
                 arn=user.arn,

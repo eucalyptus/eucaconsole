@@ -157,6 +157,12 @@ $dropdown-border-color: $euca-green;
             }
         }
     }
+    .link {
+        color: $euca-green;
+        text-transform: capitalize;
+        padding: 1px 3px;
+        margin-bottom: 2px;
+    }
     .footer {
         position: absolute;
         bottom: 0;
