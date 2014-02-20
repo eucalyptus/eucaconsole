@@ -42,6 +42,7 @@
                     <a href="#" data-dropdown="sorting-dropdown">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}' && sortReverse == ${sort.reversed}">${sort.name}</span>
                     </a>
+                    <span class="down-caret"></span>
                     <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="">
                         <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}' || sortReverse != ${sort.reversed}">
                             <a ng-click="adjustSort('${sort.key}', ${sort.reversed})">${sort.name}</a>
