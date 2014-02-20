@@ -36,6 +36,7 @@ class IAMPolicyWizardView(BaseView):
                 instances=self.get_instance_choices(),
                 images=self.get_image_choices(),
                 volumes=self.get_volume_choices(),
+                snapshots=self.get_snapshot_choices(),
             ),
         )
 
@@ -106,7 +107,7 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_volume_choices(self):
-        choices = [('', _(u'All volume choices...'))]
+        choices = [('', _(u'All volumes...'))]
         for volume in self.ec2_conn.get_all_volumes():
             region = '*'
             if self.cloud_type == 'aws':
@@ -114,6 +115,18 @@ class IAMPolicyWizardView(BaseView):
             arn_prefix = 'arn:aws:ec2:{0}:*:volume/'.format(region)
             value = '{0}{1}'.format(arn_prefix, volume.id)
             label = TaggedItemView.get_display_name(volume)
+            choices.append((value, label))
+        return choices
+
+    def get_snapshot_choices(self):
+        choices = [('', _(u'All snapshots...'))]
+        for snapshot in self.ec2_conn.get_all_snapshots():
+            region = '*'
+            if self.cloud_type == 'aws':
+                region = self.region
+            arn_prefix = 'arn:aws:ec2:{0}:*:snapshot/'.format(region)
+            value = '{0}{1}'.format(arn_prefix, snapshot.id)
+            label = TaggedItemView.get_display_name(snapshot)
             choices.append((value, label))
         return choices
 

@@ -97,6 +97,9 @@
                                     <select class="resource volume chosen" tal:condition="volume_condition">
                                         <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
                                     </select>
+                                    <select class="resource snapshot chosen" tal:condition="snapshot_condition">
+                                        <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
+                                    </select>
                                 </div>
                                 <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
                                     Add Resource

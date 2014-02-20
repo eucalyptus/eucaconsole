@@ -211,6 +211,7 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
         instance_choices=resource_choices.get('instances'),
         image_choices=resource_choices.get('images'),
         volume_choices=resource_choices.get('volumes'),
+        snapshot_choices=resource_choices.get('snapshots'),
     )
 
 
