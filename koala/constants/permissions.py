@@ -131,7 +131,7 @@ EC2_ACTIONS = [
     'ImportVolume',
     'ModifyImageAttribute',
     'ModifyInstanceAttribute',
-    'ModifyNetworkInterfaceAttribute',
+    # 'ModifyNetworkInterfaceAttribute',
     # 'ModifyReservedInstances',
     'ModifySnapshotAttribute',
     'ModifyVolumeAttribute',
