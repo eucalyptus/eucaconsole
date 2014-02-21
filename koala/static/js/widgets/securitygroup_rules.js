@@ -19,9 +19,9 @@ angular.module('SecurityGroupRules', [])
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
+            $scope.isDuplicatedRule = false;
             $('.ip-protocol').chosen({'width': '90%', search_contains: true});
         };
-        $scope.resetValues();
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
             $scope.resetValues();
@@ -30,20 +30,54 @@ angular.module('SecurityGroupRules', [])
             // Get existing rules and shove into scope
             $scope.rulesArray = JSON.parse(rulesArray);
             $scope.syncRules();
+            $scope.setWatchers();
+        };
+        $scope.setWatchers = function () {
+            $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
+        };
+        $scope.getAddRuleButtonClass = function () {
+            if( $scope.isDuplicatedRule == true ){
+                return 'disabled';
+            }
+        };
+        $scope.checkForDuplicatedRules = function () {
+            $scope.isDuplicatedRule = false;
+            var thisRuleArrayBlock = $scope.createRuleArrayBlock();
+            for( var i=0; i < $scope.rulesArray.length; i++){
+                if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
+                    $scope.isDuplicatedRule = true;
+                    return;
+                }
+            }
+            return;
+        };
+        $scope.compareRules = function(block1, block2){
+            // IF the ports and the protocol are the same,
+            if( block1.from_port == block2.from_port
+                && block1.to_port == block2.to_port
+                && block1.ip_protocol == block2.ip_protocol){
+                // IF cidr_ip is not null, then compare cidr_ip  
+                if( block1.grants[0].cidr_ip != null ){
+                    if( block1.grants[0].cidr_ip == block2.grants[0].cidr_ip ){ 
+                        return true;
+                    }else{
+                        return false;
+                    }
+                // ELSE IF compare the group name
+                }else if( block1.grants[0].name == block2.grants[0].name ){
+                    return true;
+                }
+            }else{
+                return false;
+            }
         };
         $scope.removeRule = function (index, $event) {
             $event.preventDefault();
             $scope.rulesArray.splice(index, 1);
             $scope.syncRules();
         };
-        $scope.addRule = function ($event) {
-            $event.preventDefault();
-            // Trigger form validation to prevent borked rule entry
-            var form = $($event.currentTarget).closest('form');
-            form.trigger('validate');
-            if (form.find('[data-invalid]').length) {
-                return false;
-            }
+        $scope.adjustIpProtocol = function () {
             if ($scope.selectedProtocol === 'icmp') {
                 $scope.fromPort = $scope.icmpRange;
                 $scope.toPort = $scope.icmpRange;
@@ -51,9 +85,9 @@ angular.module('SecurityGroupRules', [])
             } else if ($scope.selectedProtocol === 'udp') {
                 $scope.ipProtocol = 'udp'
             }
-
-            // Add the rule
-            $scope.rulesArray.push({
+        };
+        $scope.createRuleArrayBlock = function () {
+            return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
                 // Warning: Ugly hack to properly set ip_protocol when 'udp' or 'icmp'
@@ -64,7 +98,23 @@ angular.module('SecurityGroupRules', [])
                     'name': $scope.groupName ? $scope.groupName : null
                 }],
                 'fresh': 'new'
-            });
+            }; 
+        };
+        $scope.addRule = function ($event) {
+            $event.preventDefault();
+            if( $scope.isDuplicatedRule == true ){
+                return false;
+            }
+            // Trigger form validation to prevent borked rule entry
+            var form = $($event.currentTarget).closest('form');
+            form.trigger('validate');
+            if (form.find('[data-invalid]').length) {
+                return false;
+            }
+
+            $scope.adjustIpProtocol();
+            // Add the rule
+            $scope.rulesArray.push($scope.createRuleArrayBlock());
             $scope.syncRules();
         };
         $scope.setPorts = function (port) {
