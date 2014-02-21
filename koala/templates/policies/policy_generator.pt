@@ -32,86 +32,86 @@
                 </tr>
                 <tr class="action ${namespace}" tal:define="namespace actions_ns.name"
                     tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
-                    <td class="allow">
-                        <a ng-click="handleSelection($event)">
-                            <i class="fi-check tick" data-namespace="${namespace}" data-action="${action}" data-effect="Allow"></i>
-                        </a>
-                    </td>
-                    <td class="deny">
-                        <a ng-click="handleSelection($event)">
-                            <i class="fi-x tick" data-namespace="${namespace}" data-action="${action}" data-effect="Deny"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <span class="action-name">${action}</span>
-                        <div class="advanced hide">
-                            <div class="resource-wrapper" tal:condition="namespace not in ['elasticloadbalancing', 'autoscaling']">
-                                <div>&nbsp;</div>
-                                <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
-                                    <label i18n:translate="">Resource name (ARN):</label>
-                                    <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
-                                    <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
+                    <metal:block tal:define="address_condition 'Address' in action;
+                                 resource_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
+                        <td class="allow">
+                            <a ng-click="handleSelection($event)">
+                                <i class="fi-check tick" data-namespace="${namespace}" data-action="${action}" data-effect="Allow"></i>
+                            </a>
+                        </td>
+                        <td class="deny">
+                            <a ng-click="handleSelection($event)">
+                                <i class="fi-x tick" data-namespace="${namespace}" data-action="${action}" data-effect="Deny"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <span class="action-name">${action}</span>
+                            <div class="advanced hide">
+                                <div class="resource-wrapper" tal:condition="resource_condition and not address_condition">
+                                    <div>&nbsp;</div>
+                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
+                                        <label i18n:translate="">Resource name (ARN):</label>
+                                        <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
+                                        <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
+                                    </div>
+                                    <div tal:condition="layout.cloud_type == 'euca'"
+                                         tal:define="instance_condition 'Instance' in action or 'AttachVolume' in action or 'DetachVolume' in action;
+                                                     image_condition 'Image' in action;
+                                                     volume_condition 'Volume' in action;
+                                                     snapshot_condition 'Snapshot' in action;
+                                                     securitygroup_condition 'SecurityGroup' in action">
+                                        <select class="resource-type">
+                                            <option value="instance" tal:condition="instance_condition">
+                                                Instance
+                                            </option>
+                                            <option value="image" tal:condition="image_condition">
+                                                Image
+                                            </option>
+                                            <option value="security_group" tal:condition="'SecurityGroup' in action">
+                                                Security group
+                                            </option>
+                                            <option value="key_pair" tal:condition="'KeyPair' in action">
+                                                Key pair
+                                            </option>
+                                            <option value="volume" tal:condition="volume_condition">
+                                                Volume
+                                            </option>
+                                            <option value="snapshot" tal:condition="snapshot_condition">
+                                                Snapshot
+                                            </option>
+                                        </select>
+                                        <strong class="equal">=</strong>
+                                        <select class="resource instance chosen" tal:condition="instance_condition">
+                                            <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource image chosen" tal:condition="image_condition">
+                                            <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource volume chosen" tal:condition="volume_condition">
+                                            <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource snapshot chosen" tal:condition="snapshot_condition">
+                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource snapshot chosen" tal:condition="snapshot_condition">
+                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource securitygroup chosen" tal:condition="securitygroup_condition">
+                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                    </div>
+                                    <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
+                                        Add Resource
+                                    </a>
+                                    <div>&nbsp;</div>
                                 </div>
-                                <div tal:condition="layout.cloud_type == 'euca'"
-                                     tal:define="instance_condition 'Instance' in action or 'AttachVolume' in action or 'DetachVolume' in action;
-                                                 image_condition 'Image' in action;
-                                                 volume_condition 'Volume' in action;
-                                                 snapshot_condition 'Snapshot' in action;">
-                                    <select class="resource-type">
-                                        <option value="instance" tal:condition="instance_condition">
-                                            Instance
-                                        </option>
-                                        <option value="vm_type" tal:condition="instance_condition">
-                                            VM Type
-                                        </option>
-                                        <option value="image" tal:condition="image_condition">
-                                            Image
-                                        </option>
-                                        <option value="security_group" tal:condition="'SecurityGroup' in action">
-                                            Security group
-                                        </option>
-                                        <option value="ip_address" tal:condition="'Address' in action">
-                                            IP address or range
-                                        </option>
-                                        <option value="key_pair" tal:condition="'KeyPair' in action">
-                                            Key pair
-                                        </option>
-                                        <option value="volume" tal:condition="volume_condition">
-                                            Volume
-                                        </option>
-                                        <option value="snapshot" tal:condition="snapshot_condition">
-                                            Snapshot
-                                        </option>
-                                        <option value="avail_zone" tal:replace="None">
-                                            Availability zone
-                                        </option>
-                                    </select>
-                                    <strong class="equal">=</strong>
-                                    <input type="text" class="resource" tal:condition="'Address' in action" />
-                                    <select class="resource instance chosen" tal:condition="instance_condition">
-                                        <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
-                                    </select>
-                                    <select class="resource image chosen" tal:condition="image_condition">
-                                        <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
-                                    </select>
-                                    <select class="resource volume chosen" tal:condition="volume_condition">
-                                        <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
-                                    </select>
-                                    <select class="resource snapshot chosen" tal:condition="snapshot_condition">
-                                        <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
-                                    </select>
-                                </div>
-                                <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
-                                    Add Resource
-                                </a>
-                                <div>&nbsp;</div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a class="button tiny round" ng-click="toggleAdvanced($event)"
-                           tal:condition="namespace not in ['elasticloadbalancing', 'autoscaling']">Advanced</a>
-                    </td>
+                        </td>
+                        <td>
+                            <a class="button tiny round" ng-click="toggleAdvanced($event)"
+                               tal:condition="resource_condition">Advanced</a>
+                        </td>
+                    </metal:block>
                 </tr>
             </metal:block>
         </tbody>

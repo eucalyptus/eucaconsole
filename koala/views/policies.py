@@ -37,6 +37,7 @@ class IAMPolicyWizardView(BaseView):
                 images=self.get_image_choices(),
                 volumes=self.get_volume_choices(),
                 snapshots=self.get_snapshot_choices(),
+                security_groups=self.get_security_group_choices(),
             ),
         )
 
@@ -127,6 +128,18 @@ class IAMPolicyWizardView(BaseView):
             arn_prefix = 'arn:aws:ec2:{0}:*:snapshot/'.format(region)
             value = '{0}{1}'.format(arn_prefix, snapshot.id)
             label = TaggedItemView.get_display_name(snapshot)
+            choices.append((value, label))
+        return choices
+
+    def get_security_group_choices(self):
+        choices = [('', _(u'All security groups...'))]
+        for security_group in self.ec2_conn.get_all_security_groups():
+            region = '*'
+            if self.cloud_type == 'aws':
+                region = self.region
+            arn_prefix = 'arn:aws:ec2:{0}:*:security-group/'.format(region)
+            value = '{0}{1}'.format(arn_prefix, security_group.name)
+            label = '{0} ({1})'.format(security_group.name, security_group.id)
             choices.append((value, label))
         return choices
 

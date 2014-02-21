@@ -182,7 +182,7 @@ def bdmapping_editor(context, request, image=None, snapshot_choices=None):
                 delete_on_termination=device.delete_on_termination,
             )
     bdm_json = json.dumps(bdm_dict)
-    return dict(image=image, snapshot_choices=snapshot_choices,bdm_json=bdm_json)
+    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json)
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
@@ -212,6 +212,7 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
         image_choices=resource_choices.get('images'),
         volume_choices=resource_choices.get('volumes'),
         snapshot_choices=resource_choices.get('snapshots'),
+        security_group_choices=resource_choices.get('security_groups'),
     )
 
 
