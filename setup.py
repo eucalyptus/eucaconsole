@@ -10,7 +10,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'Babel >= 1.3',  # not required for deployment or tests
-    'beaker >= 1.3.1',
+    'beaker >= 1.6.4',
     'boto >= 2.23.0',
     'chameleon >= 2.5.3',
     'gevent >= 0.13.8',  # gevent 1.0 no longer requires libevent, it bundles libev instead

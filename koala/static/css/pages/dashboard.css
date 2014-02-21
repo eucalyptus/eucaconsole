@@ -2,7 +2,7 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 #maincontent { padding-top: 1rem; background: #eef7e3; }
-#maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
+#maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; margin-bottom: 8px; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }

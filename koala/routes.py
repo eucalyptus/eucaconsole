@@ -178,7 +178,7 @@ urls = [
     Route(name='users_json', pattern='/users/json'),
     Route(name='user_new', pattern='/users/new'),
     Route(name='user_create', pattern='/users/create'),
-    Route(name='user_view', pattern='/users/{name}'), # Pass name='new' to render Create User(s) page
+    Route(name='user_view', pattern='/users/{name}'),  # Pass name='new' to render Create User(s) page
     Route(name='user_access_keys_json', pattern='/users/{name}/keys_json'),
     Route(name='user_groups_json', pattern='/users/{name}/groups_json'),
     Route(name='user_avail_groups_json', pattern='/users/{name}/groups_available_json'),

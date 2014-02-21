@@ -225,6 +225,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     background: $euca-extralightgreen;
     position: relative;
     padding-bottom: 3rem;
+    #pagetitle {
+        h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+    }
 }
 
 #contentwrap {
@@ -773,6 +779,7 @@ footer {
 // Prevent dropdown menus from displaying when viewport height approaches 10k px.
 .f-dropdown {
     left: -99999px;
+    z-index: 9999999;
 }
 
 // Add a show-for-xsmall class to display items only when max-width is 480px
