@@ -54,8 +54,8 @@ angular.module('PolicyList', [])
             $('#delete-modal').foundation('reveal', 'open');
         };
         $scope.initCodeMirror = function () {
-            $scope.editPolicyArea = $('#policy-area')[0];
-            $scope.codeEditor = CodeMirror.fromTextArea($scope.editPolicyArea, {
+            var policyTextarea = document.getElementById('policy-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(policyTextarea, {
                 mode: {name:"javascript", json:true},
                 lineWrapping: true,
                 styleActiveLine: true,

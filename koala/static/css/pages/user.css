@@ -104,5 +104,7 @@
 
 .reveal-modal #device { width: 10rem; }
 
+.CodeMirror { border: 1px solid #cccccc; min-height: 400px; }
+
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
