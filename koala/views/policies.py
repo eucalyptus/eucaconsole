@@ -78,6 +78,7 @@ class IAMPolicyWizardView(BaseView):
     def get_controller_options(self):
         return {
             'policyJsonEndpoint': self.policy_json_endpoint,
+            'cloudType': self.cloud_type,
         }
 
     def get_instance_choices(self):

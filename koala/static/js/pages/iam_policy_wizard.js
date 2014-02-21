@@ -14,16 +14,43 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
-        $scope.resourceTypeChoices = [];
+        $scope.cloudType = 'euca'
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
-            $scope.setResourceChoices(options);
+            $scope.cloudType = options['cloudType'];
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
-            $scope.initChosenSelectors();
+            if ($scope.cloudType === 'euca') {
+                $scope.initChosenSelectors();
+                $scope.limitResourceChoices();
+                $scope.addResourceTypeListener();
+            }
         };
-        $scope.setResourceChoices = function (options) {
-            $scope.resourceTypeChoices = options['resourceTypeChoices'];
+        $scope.limitResourceChoices = function () {
+            // Only display the resource field inputs for the relevant actions
+            var resourceValueInputs = $scope.policyGenerator.find('.resource.chosen');
+            resourceValueInputs.addClass('hide');
+            resourceValueInputs.next('.chosen-container').addClass('hide');
+            resourceValueInputs.each(function(idx, item) {
+                var elem = $(item),
+                    resourceType = elem.closest('.resource-wrapper').find('.resource-type').val();
+                if (elem.hasClass(resourceType)) {
+                    elem.removeClass('hide');
+                    elem.next('.chosen-container').removeClass('hide');
+                }
+            });
+        };
+        $scope.addResourceTypeListener = function () {
+            // Show/hide resource choices based on resource type selection
+            var resourceSelects = $scope.policyGenerator.find('select.resource-type');
+            resourceSelects.on('change', function(evt) {
+                var resourceSelect = $(evt.target),
+                    resourceType = resourceSelect.val(),
+                    resourceSelector = '.resource.' + resourceType,
+                    resourceWrapper = resourceSelect.closest('.resource-wrapper');
+                resourceWrapper.find('.chosen-container').addClass('hide');
+                resourceWrapper.find(resourceSelector).next('.chosen-container').removeClass('hide');
+            });
         };
         $scope.initChosenSelectors = function () {
             $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
@@ -93,7 +120,12 @@ angular.module('IAMPolicyWizard', [])
                     action = item.getAttribute('data-action'),
                     effect = item.getAttribute('data-effect'),
                     nsAction = namespace.toLowerCase() + ':' + action,
-                    resource = $(item).closest('tr').find('.resource').val() || '*';
+                    resource = '*';
+                if ($scope.cloudType === 'euca') {
+                    resource = $(item).closest('tr').find('.chosen-container:visible').prev('.resource').val() || '*';
+                } else {
+                    resource = $(item).closest('tr').find('.resource:visible').val() || '*';
+                }
                 $scope.policyStatements.push({
                     "Action": [nsAction],
                     "Resource": resource,
