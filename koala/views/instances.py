@@ -254,7 +254,7 @@ class InstancesJsonView(LandingPageView):
         transitional_states = ['pending', 'stopping', 'shutting-down']
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
-            security_groups_array = sorted(group.name for group in instance.groups)
+            security_groups_array = sorted({'name':group.name, 'id':group.id} for group in instance.groups)
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),

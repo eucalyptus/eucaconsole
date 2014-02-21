@@ -54,7 +54,7 @@
                         </div>
                     </form>
                 </div>
-                <hr/>
+                <hr id="password-section"/>
                 <div ng-controller="UserPasswordCtrl"
                      ng-init="initController('${request.route_url('user_change_password', name=user.user_name)}')">
                     <form data-abide="abide" id="user-change-password-form" ng-submit="submit($event)">
@@ -100,7 +100,7 @@
                         <a class="close-reveal-modal">&#215;</a>
                     </div>
                 </div>
-                <hr/>
+                <hr id="access-keys-section"/>
                 <div ng-controller="UserAccessKeysCtrl"
                      ng-init="initController(
                             '${request.route_url('user_generate_keys', name=user.user_name)}',

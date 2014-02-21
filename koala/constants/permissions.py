@@ -6,7 +6,7 @@ Constants for IAM Policy permissions (actions)
 from pyramid.i18n import TranslationString as _
 
 
-# Listing of Possible Policy Generator Actions for EC2
+# Policy Generator Actions for EC2
 EC2_ACTIONS = [
     # 'ActivateLicense',
     'AllocateAddress',
@@ -24,7 +24,7 @@ EC2_ACTIONS = [
     # 'CancelBundleTask',
     # 'CancelConversionTask',
     # 'CancelExportTask',
-    'CancelReservedInstancesListing',
+    # 'CancelReservedInstancesListing',
     # 'CancelSpotInstanceRequests',
     # 'ConfirmProductInstance',
     'CopyImage',
@@ -39,7 +39,7 @@ EC2_ACTIONS = [
     # 'CreateNetworkAclEntry',
     # 'CreateNetworkInterface',
     'CreatePlacementGroup',
-    'CreateReservedInstancesListing',
+    # 'CreateReservedInstancesListing',
     # 'CreateRoute',
     # 'CreateRouteTable',
     'CreateSecurityGroup',
@@ -95,10 +95,10 @@ EC2_ACTIONS = [
     # 'DescribeNetworkInterfaces',
     'DescribePlacementGroups',
     'DescribeRegions',
-    'DescribeReservedInstances',
-    'DescribeReservedInstancesListings',
-    'DescribeReservedInstancesModifications',
-    'DescribeReservedInstancesOfferings',
+    # 'DescribeReservedInstances',
+    # 'DescribeReservedInstancesListings',
+    # 'DescribeReservedInstancesModifications',
+    # 'DescribeReservedInstancesOfferings',
     # 'DescribeRouteTables',
     'DescribeSecurityGroups',
     'DescribeSnapshotAttribute',
@@ -131,8 +131,8 @@ EC2_ACTIONS = [
     'ImportVolume',
     'ModifyImageAttribute',
     'ModifyInstanceAttribute',
-    'ModifyNetworkInterfaceAttribute',
-    'ModifyReservedInstances',
+    # 'ModifyNetworkInterfaceAttribute',
+    # 'ModifyReservedInstances',
     'ModifySnapshotAttribute',
     'ModifyVolumeAttribute',
     # 'ModifyVpcAttribute',
@@ -162,6 +162,7 @@ EC2_ACTIONS = [
 ]
 
 
+# Policy Generator Actions for AutoScaling
 AUTOSCALING_ACTIONS = [
     'CreateAutoScalingGroup',
     'CreateLaunchConfiguration',
@@ -201,17 +202,206 @@ AUTOSCALING_ACTIONS = [
     'UpdateAutoScalingGroup',
 ]
 
+# Policy Generator Actions for Elastic Load Balancing
+ELB_ACTIONS = [
+    'ConfigureHealthCheck',
+    'CreateAppCookieStickinessPolicy',
+    'CreateLBCookieStickinessPolicy',
+    'CreateLoadBalancer',
+    'CreateLoadBalancerListeners',
+    'DeleteLoadBalancer',
+    'DeleteLoadBalancerListeners',
+    'DeleteLoadBalancerPolicy',
+    'DeregisterInstancesFromLoadBalancer',
+    'DescribeInstanceHealth',
+    'DescribeLoadBalancers',
+    'DisableAvailabilityZonesForLoadBalancer',
+    'EnableAvailabilityZonesForLoadBalancer',
+    'RegisterInstancesWithLoadBalancer',
+    'SetLoadBalancerListenerSSLCertificate',
+    'SetLoadBalancerPoliciesOfListener',
+]
+
+
+# Policy Generator Actions for CloudWatch
+CLOUDWATCH_ACTIONS = [
+    'DeleteAlarms',
+    'DescribeAlarmHistory',
+    'DescribeAlarms',
+    'DescribeAlarmsForMetric',
+    'DisableAlarmActions',
+    'EnableAlarmActions',
+    'GetMetricStatistics',
+    'ListMetrics',
+    'PutMetricAlarm',
+    'PutMetricData',
+    'SetAlarmState',
+]
+
+
+# Policy Generator Actions for S3/Walrus
+S3_ACTIONS = [
+    'AbortMultipartUpload',
+    'CreateBucket',
+    'DeleteBucket',
+    'DeleteBucketPolicy',
+    'DeleteBucketWebsite',
+    'DeleteObject',
+    'DeleteObjectVersion',
+    'GetBucketAcl',
+    'GetBucketLocation',
+    'GetBucketLogging',
+    'GetBucketNotification',
+    'GetBucketPolicy',
+    'GetBucketRequestPayment',
+    'GetBucketTagging',
+    'GetBucketVersioning',
+    'GetBucketWebsite',
+    'GetLifecycleConfiguration',
+    'GetObject',
+    'GetObjectAcl',
+    'GetObjectTorrent',
+    'GetObjectVersion',
+    'GetObjectVersionAcl',
+    'GetObjectVersionTorrent',
+    'ListAllMyBuckets',
+    'ListBucket',
+    'ListBucketMultipartUploads',
+    'ListBucketVersions',
+    'ListMultipartUploadParts',
+    'PutBucketAcl',
+    'PutBucketLogging',
+    'PutBucketNotification',
+    'PutBucketPolicy',
+    'PutBucketRequestPayment',
+    'PutBucketTagging',
+    'PutBucketVersioning',
+    'PutBucketWebsite',
+    'PutLifecycleConfiguration',
+    'PutObject',
+    'PutObjectAcl',
+    'PutObjectVersionAcl',
+]
+
+
+# Policy Generator Actions for IAM
+IAM_ACTIONS = [
+    # 'AddRoleToInstanceProfile',
+    'AddUserToGroup',
+    'ChangePassword',
+    'CreateAccessKey',
+    'CreateAccountAlias',
+    'CreateGroup',
+    # 'CreateInstanceProfile',
+    # 'CreateLoginProfile',
+    # 'CreateRole',
+    'CreateUser',
+    # 'CreateVirtualMFADevice',
+    # 'DeactivateMFADevice',
+    'DeleteAccessKey',
+    'DeleteAccountAlias',
+    # 'DeleteAccountPasswordPolicy',
+    'DeleteGroup',
+    'DeleteGroupPolicy',
+    # 'DeleteInstanceProfile',
+    # 'DeleteLoginProfile',
+    # 'DeleteRole',
+    # 'DeleteRolePolicy',
+    # 'DeleteServerCertificate',
+    # 'DeleteSigningCertificate',
+    'DeleteUser',
+    'DeleteUserPolicy',
+    # 'DeleteVirtualMFADevice',
+    # 'EnableMFADevice',
+    # 'GetAccountPasswordPolicy',
+    'GetAccountSummary',
+    'GetGroup',
+    'GetGroupPolicy',
+    # 'GetInstanceProfile',
+    # 'GetLoginProfile',
+    # 'GetRole',
+    # 'GetRolePolicy',
+    # 'GetServerCertificate',
+    'GetUser',
+    'GetUserPolicy',
+    'ListAccessKeys',
+    'ListAccountAliases',
+    'ListGroupPolicies',
+    'ListGroups',
+    'ListGroupsForUser',
+    # 'ListInstanceProfiles',
+    # 'ListInstanceProfilesForRole',
+    # 'ListMFADevices',
+    # 'ListRolePolicies',
+    # 'ListRoles',
+    # 'ListServerCertificates',
+    # 'ListSigningCertificates',
+    'ListUserPolicies',
+    'ListUsers',
+    # 'ListVirtualMFADevices',
+    # 'PassRole',
+    'PutGroupPolicy',
+    # 'PutRolePolicy',
+    'PutUserPolicy',
+    # 'RemoveRoleFromInstanceProfile',
+    'RemoveUserFromGroup',
+    # 'ResyncMFADevice',
+    'UpdateAccessKey',
+    # 'UpdateAccountPasswordPolicy',
+    # 'UpdateAssumeRolePolicy',
+    'UpdateGroup',
+    # 'UpdateLoginProfile',
+    # 'UpdateServerCertificate',
+    # 'UpdateSigningCertificate',
+    'UpdateUser',
+    # 'UploadServerCertificate',
+    # 'UploadSigningCertificate',
+]
+
+
+# Policy Generator Actions for STS (Security Token Service)
+STS_ACTIONS = [
+    'GetFederationToken',
+    'AssumeRole',
+]
+
+
 POLICY_ACTIONS = [
     {
-        'name': 'EC2',
+        'name': 'ec2',
         'label': _(u'All EC2 actions'),
-        'actions': EC2_ACTIONS
+        'actions': EC2_ACTIONS,
     },
     {
-        'name': 'AutoScaling',
+        'name': 'elasticloadbalancing',
+        'label': _(u'All Load Balancing actions'),
+        'actions': ELB_ACTIONS,
+    },
+    {
+        'name': 'autoscaling',
         'label': _(u'All Autoscaling actions'),
         'actions': AUTOSCALING_ACTIONS,
-    }
+    },
+    {
+        'name': 'cloudwatch',
+        'label': _(u'All CloudWatch actions'),
+        'actions': CLOUDWATCH_ACTIONS,
+    },
+    {
+        'name': 's3',
+        'label': _(u'All S3/Walrus actions'),
+        'actions': S3_ACTIONS,
+    },
+    {
+        'name': 'iam',
+        'label': _(u'All IAM actions'),
+        'actions': IAM_ACTIONS,
+    },
+    {
+        'name': 'sts',
+        'label': _(u'All Security Token Service actions'),
+        'actions': STS_ACTIONS,
+    },
 ]
 
 

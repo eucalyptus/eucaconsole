@@ -20,7 +20,7 @@ class IAMPolicyWizardForm(BaseSecureForm):
         validators=[validators.InputRequired(message=name_error_msg)],
     )
     policy = wtforms.TextAreaField(label=_(u'Policy'))
-    policy_file = wtforms.FileField(label=_(u''))
+    policy_file = wtforms.FileField(label='')
 
     def __init__(self, request, conn=None, **kwargs):
         super(IAMPolicyWizardForm, self).__init__(request, **kwargs)

@@ -12,6 +12,7 @@ import sys
 import urlparse
 
 from boto.exception import BotoServerError
+from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import exception_response
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -64,23 +65,55 @@ class UsersView(LandingPageView):
 
 class UsersJsonView(BaseView):
     """Users returned as JSON"""
+    def __init__(self, request):
+        super(UsersJsonView, self).__init__(request)
+        self.conn = self.get_connection(conn_type="iam")
+
     @view_config(route_name='users_json', renderer='json', request_method='GET')
     def users_json(self):
     # TODO: take filters into account??
         users = []
+        groups = []
+        try:
+            groups = self.conn.get_all_groups()
+            groups = groups.groups
+            for g in groups:
+                info = self.conn.get_group(group_name=g.group_name)
+                g['users'] = info.users
+        except EC2ResponseError as exc:
+            pass
         for user in self.get_items():
+            keys = []
+            try:
+                keys = self.conn.get_all_access_keys(user_name=user.user_name)
+                keys = keys.list_access_keys_result.access_key_metadata
+            except EC2ResponseError as exc:
+                pass
+            user_groups = []
+            for g in groups:
+                if user.user_name in [u.user_name for u in g.users]:
+                    user_groups.append(g.group_name)
+            has_password = False
+            try:
+                profile = self.conn.get_login_profiles(user_name=user.user_name)
+                # this call returns 404 if no password found
+                has_password = True
+            except BotoServerError as err:
+                pass
             users.append(dict(
                 path=user.path,
                 user_name=user.user_name,
                 user_id=user.user_id,
+                groups=user_groups,
+                num_keys=len(keys),
+                has_password=has_password,
                 arn=user.arn,
             ))
         return dict(results=users)
 
     def get_items(self):
-        conn = self.get_connection(conn_type="iam")
         try:
-            return conn.get_all_users().users
+            return self.conn.get_all_users().users
         except BotoServerError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
 
