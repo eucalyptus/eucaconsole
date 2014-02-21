@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
-import unicodedata
 import simplejson as json
 from urllib import urlencode
 
@@ -15,8 +14,8 @@ from pyramid.view import view_config
 
 from ..forms.groups import GroupForm, GroupUpdateForm, DeleteGroupForm
 from ..models import Notification
-from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, JSONResponse
+
 
 class GroupsView(LandingPageView):
     TEMPLATE = '../templates/groups/groups.pt'
@@ -69,10 +68,16 @@ class GroupsJsonView(BaseView):
                 policies = policies.policy_names
             except EC2ResponseError as exc:
                 pass
+            user_count = 0
+            try:
+                group = self.conn.get_group(group_name=group.group_name)
+                user_count=len(group.users) if hasattr(group, 'users') else 0
+            except EC2ResponseError as exc:
+                pass
             groups.append(dict(
                 path=group.path,
                 group_name=group.group_name,
-                user_count=len(group.users) if hasattr(group, 'users') else 0,
+                user_count=user_count,
                 policy_count=len(policies),
             ))
         return dict(results=groups)

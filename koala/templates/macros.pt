@@ -43,7 +43,7 @@
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                     </a>
                     <span class="down-caret"></span>
-                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <ul id="sorting-dropdown" class="f-dropdown" data-dropdown-content="" tal:condition="len(sort_keys) > 1">
                         <li tal:repeat="sort sort_keys" ng-show="sortBy != '${sort.key}'">
                             <a ng-click="sortBy = '${sort.key}'">${sort.name}</a>
                         </li>

@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/groups.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="GroupsPage" ng-controller="GroupsCtrl" ng-init="initPage()">
+<div metal:fill-slot="main_content" ng-app="GroupsPage" ng-controller="GroupsCtrl" ng-init="initPage('${request.route_url('group_view', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('groups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -21,7 +21,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-group-btn"
-                   href="${request.route_url('group_view', name='new')}">Add group</a>
+                   href="${request.route_url('group_view', name='new')}">Create group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
@@ -34,26 +34,26 @@
                 <a ng-href="${prefix}/{{item.group_name }}">{{ item.group_name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
+                <div ng-show='item.user_count > 0'>
                     <span class="label" title="PA" i18n:attributes="title" data-tooltip="">US</span>
-                    {{ item.user_count }}
+                    <a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a>
                 </div>
-                <div>
+                <div ng-show='item.policy_count > 0'>
                     <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">PE</span>
-                    {{ item.policy_count }}
+                    <a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a>
                 </div>
             </div>
             <div metal:fill-slot="tile_footer"></div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Group name</th>
                 <th i18n:translate="">Users</th>
-                <th i18n:translate="">Polcies</th>
-                <th i18n:translate="">Actions</th>
+                <th i18n:translate="">Permissions</th>
+                <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.group_name }}">{{ item.group_name }}</a></td>
-                <td>{{ item.user_count }}</td>
-                <td>{{ item.policy_count }}</td>
+                <td><a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a></td>
+                <td><a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a></td>
                 <td>
                   <span class="actions">
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
