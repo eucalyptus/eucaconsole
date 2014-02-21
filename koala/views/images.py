@@ -55,7 +55,8 @@ class ImagesView(LandingPageView):
     def get_sort_keys():
         return [
             dict(key='id', name='ID'),
-            dict(key='name', name=_(u'Image name')),
+            dict(key='name', name=_(u'Image name: A to Z')),
+            dict(key='-name', name=_(u'Image name: Z to A')),
             dict(key='architecture', name=_(u'Architecture')),
             dict(key='root_device_type', name=_(u'Root device type')),
             dict(key='platform_name', name=_(u'Platform')),

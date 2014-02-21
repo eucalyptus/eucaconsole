@@ -35,7 +35,9 @@ class GroupsView(LandingPageView):
         self.filter_keys = ['path', 'group_name', 'group_id', 'arn']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='group_name', name=_(u'Name')),
+            dict(key='group_name', name=_(u'Group name: A to Z')),
+            dict(key='-group_name', name=_(u'Group name: Z to A')),
+            dict(key='path', name=_(u'Path')),
         ]
 
         return dict(

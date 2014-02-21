@@ -117,9 +117,11 @@ class SnapshotsView(LandingPageView):
     def get_sort_keys():
         """sort_keys are passed to sorting drop-down on landing page"""
         return [
-            dict(key='-start_time', name=_(u'Start time')),
+            dict(key='start_time', name=_(u'Start time: Oldest to Newest')),
+            dict(key='-start_time', name=_(u'Start time: Newest to Oldest')),
             dict(key='volume_size', name=_(u'Size')),
-            dict(key='name', name=_(u'Name')),
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='status', name=_(u'Status')),
             dict(key='volume_id', name=_(u'Volume ID')),
         ]
