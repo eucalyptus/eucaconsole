@@ -42,7 +42,7 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
-            var storedSort = localStorage.getItem($scope.sortByKey),
+            var storedSort = sessionStorage.getItem($scope.sortByKey),
                 storedLandingPageView = localStorage.getItem($scope.landingPageViewKey);
             $scope.sortBy = storedSort || sortKey;
             $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
@@ -55,7 +55,7 @@ angular.module('LandingPage', ['CustomFilters'])
                     sortingDropdown.removeAttr('style');
                 }
                 // Set sortBy in localStorage
-                localStorage.setItem($scope.sortByKey, $scope.sortBy);
+                sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
             $scope.$watch('landingPageView', function () {
                 var gridviewBtn = $('#gridview-button'),
