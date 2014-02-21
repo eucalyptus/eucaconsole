@@ -14,7 +14,3 @@ form label.protocol { margin-bottom: 1.5rem; }
 #rules-editor .add-label { margin-bottom: 6px; }
 
 .duplicated-rule-error { color: red; padding: 10px 10px; }
-
-.button-disabled { color: white; background-color: grey; }
-
-.button-disabled a:hover { color: white; background-color: grey; }
