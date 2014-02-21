@@ -20,7 +20,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from ..forms.users import UserForm, ChangePasswordForm, DeleteUserForm, AddToGroupForm
+from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm
 from ..models import Notification
 from ..models import LandingPageFilter
 from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
@@ -131,12 +131,14 @@ class UserView(BaseView):
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
+        self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
             user_form=self.user_form,
             change_password_form=self.change_password_form,
+            generate_form=self.generate_form,
             delete_form=self.delete_form,
         )
 
@@ -369,6 +371,55 @@ class UserView(BaseView):
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
                 # if that worked, update the profile
+                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+            except BotoServerError:
+                # if that failed, create the profile
+                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+            # assemble file response
+            account = self.request.session['account']
+            string_output = StringIO.StringIO()
+            csv_w = csv.writer(string_output)
+            row = [account, self.user.user_name, new_pass]
+            csv_w.writerow(row)
+            response = Response(content_type='text/csv')
+            response.body = string_output.getvalue()
+            response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
+                                format(acct=account, user=self.user.user_name)
+            return response
+            #return dict(message=_(u"Successfully set user password"),
+            #            results="true")
+        except BotoServerError as err:  # catch error in password change
+            return JSONResponse(status=400, message=err.message);
+        except HTTPError, err:          # catch error in authentication
+            return JSONResponse(status=401, message=err.message);
+        except URLError, err:           # catch error in authentication
+            return JSONResponse(status=401, message=err.message);
+
+    @view_config(route_name='user_random_password', request_method='POST', renderer='json')
+    def user_random_password(self):
+        """ calls iam:UpdateLoginProfile """
+        try:
+            content = self.request.params.get('content')
+            parsed = urlparse.parse_qs(content)
+            password = parsed['password'][0]
+
+            clchost = self.request.registry.settings.get('clchost')
+            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
+            auth = EucaAuthenticator(host=clchost, duration=duration)
+            session = self.request.session
+            account=session['account']
+            username=session['username']
+            creds = auth.authenticate(account=account, user=username,
+                                      passwd=password, timeout=8)
+            # store new token values in session
+            session['session_token'] = creds.session_token
+            session['access_id'] = creds.access_key
+            session['secret_key'] = creds.secret_key
+            try:
+                # try to fetch login profile.
+                self.conn.get_login_profiles(user_name=self.user.user_name)
+                # if that worked, update the profile
+                new_pass = self.generatePassword()
                 result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
             except BotoServerError:
                 # if that failed, create the profile

@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Snapshots on landing and detail page -->
 <div tal:omit-tag="">
     <div id="quotas-panel" class="section">
-        <p i18n:translate="">Define limits on resource that this user is allowed to create. Leave blank for unlimited rights.</p>
+        <p i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>
         <div class="expando" id="ec2-section" ng-cloak="">
             <h7 class="title" >
                 <a ng-click="toggleEC2Content()">
