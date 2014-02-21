@@ -56,10 +56,12 @@ angular.module('UserView', ['PolicyList'])
     })
     .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-        $scope.jsonEndpoint = '';
+        $scope.jsonRandomEndpoint = '';
+        $scope.jsonChangeEndpoint = '';
         $scope.data = '';
-        $scope.initController = function (jsonEndpoint) {
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.initController = function (jsonRandomEndpoint, jsonChangeEndpoint) {
+            $scope.jsonRandomEndpoint = jsonRandomEndpoint;
+            $scope.jsonChangeEndpoint = jsonChangeEndpoint;
             var newPasswordForm = $('#new_password');
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/>");
@@ -73,7 +75,7 @@ angular.module('UserView', ['PolicyList'])
             });
         };
         // Handles first step in submit.. validation and dialog
-        $scope.submit = function($event) {
+        $scope.submitChange = function($event) {
             $('#passwords-match').css('display', 'none');
             var newpass = $event.target.new_password.value;
             var newpass2 = $event.target.new_password2.value;
@@ -94,7 +96,7 @@ angular.module('UserView', ['PolicyList'])
                 csrf_token: form.find('input[name="csrf_token"]').val(),
                 filename: "not-used", // let the server set this
                 content: data,
-                script: $scope.jsonEndpoint
+                script: $scope.jsonChangeEndpoint
             });
             $('#change-password-modal').foundation('reveal', 'close');
             // same notes about setTimeout apply as below
@@ -103,23 +105,30 @@ angular.module('UserView', ['PolicyList'])
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
             }, 2000);
-            /*
-            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                $('#change-password-modal').foundation('reveal', 'close');
-                // clear form
+        };
+        // Handles first step in submit.. validation and dialog
+        $scope.submitRandom = function($event) {
+            // open modal to get current password
+            $('#random-password-modal').foundation('reveal', 'open');
+        };
+        // handles server call for generating a random password
+        $scope.genPassword = function($event) {
+            // add in current password, then submit the request
+            var data = "password="+$event.target.password.value;
+            var form = $($event.target);
+            $.generateFile({
+                csrf_token: form.find('input[name="csrf_token"]').val(),
+                filename: "not-used", // let the server set this
+                content: data,
+                script: $scope.jsonRandomEndpoint
+            });
+            $('#change-password-modal').foundation('reveal', 'close');
+            // same notes about setTimeout apply as below
+            setTimeout(function() {
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
-                Notify.success(oData.message);
-              }).
-              error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                Notify.failure(errorMsg);
-              });
-              */
+            }, 2000);
         };
     })
     .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
