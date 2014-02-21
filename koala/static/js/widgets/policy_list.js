@@ -4,7 +4,7 @@
  *
  */
 angular.module('PolicyList', [])
-    .controller('PolicyListCtrl', function ($scope, $http, $timeout) {
+    .controller('PolicyListCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.policyList = $('#policy-list');
         $scope.itemsLoading = true;
