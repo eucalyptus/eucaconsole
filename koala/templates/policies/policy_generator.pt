@@ -59,7 +59,8 @@
                                                      image_condition 'Image' in action;
                                                      volume_condition 'Volume' in action;
                                                      snapshot_condition 'Snapshot' in action;
-                                                     securitygroup_condition 'SecurityGroup' in action">
+                                                     securitygroup_condition 'SecurityGroup' in action;
+                                                     keypair_condition 'KeyPair' in action;">
                                         <select class="resource-type">
                                             <option value="instance" tal:condition="instance_condition">
                                                 Instance
@@ -67,10 +68,10 @@
                                             <option value="image" tal:condition="image_condition">
                                                 Image
                                             </option>
-                                            <option value="security_group" tal:condition="'SecurityGroup' in action">
+                                            <option value="security_group" tal:condition="securitygroup_condition">
                                                 Security group
                                             </option>
-                                            <option value="key_pair" tal:condition="'KeyPair' in action">
+                                            <option value="key_pair" tal:condition="keypair_condition">
                                                 Key pair
                                             </option>
                                             <option value="volume" tal:condition="volume_condition">
@@ -87,17 +88,17 @@
                                         <select class="resource image chosen" tal:condition="image_condition">
                                             <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
+                                        <select class="resource security_group chosen" tal:condition="securitygroup_condition">
+                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource key_pair chosen" tal:condition="keypair_condition">
+                                            <option tal:repeat="choice key_pair_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
                                         <select class="resource volume chosen" tal:condition="volume_condition">
                                             <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource snapshot chosen" tal:condition="snapshot_condition">
                                             <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
-                                        </select>
-                                        <select class="resource snapshot chosen" tal:condition="snapshot_condition">
-                                            <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
-                                        </select>
-                                        <select class="resource securitygroup chosen" tal:condition="securitygroup_condition">
-                                            <option tal:repeat="choice security_group_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                     </div>
                                     <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
