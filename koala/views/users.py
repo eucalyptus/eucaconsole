@@ -83,7 +83,7 @@ class UsersJsonView(BaseView):
             keys = []
             try:
                 keys = self.conn.get_all_access_keys(user_name=user.user_name)
-                keys = keys.list_access_keys_result.access_key_metadata
+                keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
             except EC2ResponseError as exc:
                 pass
             user_groups = []
