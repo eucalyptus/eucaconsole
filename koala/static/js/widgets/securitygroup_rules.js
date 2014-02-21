@@ -60,6 +60,10 @@ angular.module('SecurityGroupRules', [])
             return;
         };
         // Compare the rules to determine if they are the same rules
+        // First, compare the three common attributes [from_port, to_port, ip_protocol]
+        // Second, the rule can have a direct IP range value or have an access granted group name
+        // Third, if the rule has the direct IP range value, compare that value and return true if they are same, else return false
+        //        if the rule has the granted gropu, compare that value instead. 
         $scope.compareRules = function(block1, block2){
             // IF the ports and the protocol are the same,
             if( block1.from_port == block2.from_port
@@ -67,16 +71,25 @@ angular.module('SecurityGroupRules', [])
                 && block1.ip_protocol == block2.ip_protocol){
                 // IF cidr_ip is not null, then compare cidr_ip  
                 if( block1.grants[0].cidr_ip != null ){
-                    if( block1.grants[0].cidr_ip == block2.grants[0].cidr_ip ){ 
+                    if( block1.grants[0].cidr_ip == block2.grants[0].cidr_ip ){
+                        // The rules are the same 
                         return true;
                     }else{
+                        // the rules have different IP ranges
                         return false;
                     }
                 // ELSE IF compare the group name
-                }else if( block1.grants[0].name == block2.grants[0].name ){
-                    return true;
+                }else{
+                    if( block1.grants[0].name == block2.grants[0].name ){
+                        // the rules are the same
+                        return true;
+                    }else{
+                        // the rules have different granted group names
+                        return false;
+                    }
                 }
             }else{
+                // the rules have different ports or ip_protocol
                 return false;
             }
         };
