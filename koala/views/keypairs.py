@@ -30,7 +30,8 @@ class KeyPairsView(LandingPageView):
         self.filter_keys = ['name', 'fingerprint']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name')),
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='fingerprint', name=_(u'Fingerprint')),
         ]
 
@@ -87,10 +88,15 @@ class KeyPairView(BaseView):
 
     def get_keypair(self):
         keypair_param = self.request.matchdict.get('id')
+        if keypair_param == "new" or keypair_param == "new2":
+            return None
         keypairs_param = [keypair_param]
         keypairs = []
         if self.conn:
-            keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+            try:
+                keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
+            except EC2ResponseError as err:
+                return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
 

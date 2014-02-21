@@ -35,7 +35,7 @@
 .tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
 .tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; font-family: Verdana, sans-serif; min-width: 22px; text-align: center; }
 .tile .content .label.ellipsis { margin-left: 0; }
-.tile .link { color: #76b800; text-transform: capitalize; padding: 1px 3px; margin-bottom: 2px; }
+.tile .link { color: #76b800; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
 .tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #808285; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
 .tile .footer.has-progress { padding: 0 0 0 0; }
 .tile .footer .completed { padding: 4px 0 4px 10px; }
@@ -103,6 +103,12 @@
 .status.Active { background-color: #00415e; }
 
 .reveal-modal #device { width: 10rem; }
+
+.or-circle { font-size: 1.0rem; position: absolute; top: 30%; right: -22px; width: 35px; height: 35px; padding-top: 4px; background-color: #fff; border: 4px solid #eee; border-radius: 30px; text-align: center; }
+
+.gen-password { position: relative; padding-right: 20px; border-right: 4px solid #eee; }
+
+.set-password { position: relative; padding-left: 35px; }
 
 .CodeMirror { border: 1px solid #cccccc; min-height: 400px; }
 

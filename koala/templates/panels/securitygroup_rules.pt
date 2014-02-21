@@ -81,6 +81,7 @@
                                     value="${groupname}">${groupname}</option>
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
+                        <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</span></div>
                     </label>
                 </div>
             </div>
@@ -88,7 +89,7 @@
         <div class="row" ng-show="selectedProtocol">
             <div class="small-3 columns">&nbsp;</div>
             <div class="small-9 columns">
-                <a href="#" class="button round small" i18n:translate=""
+                <a href="#" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
                         ng-click="addRule($event)">Add rule</a>
             </div>
         </div>

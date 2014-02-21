@@ -3,12 +3,16 @@
 // Import common Foundation variables
 @import "../includes/eucavariables";
 
-// Import common wizard styles
-@import "../includes/wizard";
 
-
-// Select/create policy expandos
-.expando {
+// Select/create policy choices
+.tabs-content {
+    background-color: white;
+    p {
+        line-height: 1.3rem;
+    }
+    .small-10.columns {
+        padding-left: 0;
+    }
     .content {
         margin-top: 1rem;
         .choice {
@@ -16,11 +20,24 @@
             margin-bottom: 1rem;
             margin-left: 1rem;
             margin-right: 1rem;
-            p {
-                line-height: 1.3rem;
-            }
             &:last-child {
                 border-bottom: none;
+            }
+            .expando {
+                i { margin-right: 8px; }
+                i.fi-minus { margin-right: 7px; }
+                a:hover { border-bottom: none; }
+            }
+            p.has-expando {
+                margin-left: 24px;
+            }
+            .fileupload {
+                margin-left: 2rem;
+            }
+            input[type=file] {
+                display: inline-block;
+                width: 90%;
+                margin-left: 8px;
             }
         }
     }
@@ -31,7 +48,7 @@
 #policy-preview {
     background-color: white;
     padding: 1rem;
-    margin-top: 56px;
+    margin-top: 40px;
     input[type=text], textarea {
         background-color: white;
     }
@@ -69,21 +86,65 @@
             &.allow, &.deny {
                 text-align: center
             }
+            .resource-wrapper {
+                vertical-align: top;
+            }
+            .conditions-wrapper {
+                margin-top: 1rem;
+                .conditions {
+                    margin: 1rem 0;
+                }
+            }
+            .button {
+                margin-bottom: 0;
+            }
+            input[type=text] {
+                display: inline-block;
+                width: 70%;
+                height: auto;
+                line-height: 1rem;
+                padding: 4px 8px;
+                margin-bottom: 8px;
+            }
+            .advanced {
+                select.resource-type {
+                    display: inline-block;
+                    width: 50%;
+                    padding: 7px 2px 7px 4px;
+                    position: relative;
+                    top: 1px;
+                }
+                input[type=text] {
+                    display: inline-block;
+                    width: 44%;
+                }
+                .chosen-container.chosen-container-single .chosen-choices {
+                    line-height: 1rem;
+                }
+                .chosen-search input[type=text] {
+                    width: 100%;
+                }
+            }
+            label {
+                margin-bottom: 2px;
+            }
             i.tick {
                 color: $euca-lightgrey;
                 font-size: 1.2rem;
                 &.fi-check.selected {
-                    color: $euca-green;
+                    color: $euca-darkblue;
                 }
                 &.fi-x.selected {
-                    color: red;
+                    color: darkred;
                 }
             }
         }
     }
 }
 
-
+#create-iam-policy-btn {
+    margin-top: 1rem;
+}
 
 
 // CodeMirror styles

@@ -22,12 +22,13 @@
             </div>
             <div class="small-1 columns">
                 <a href="#" class="circle remove has-tip" ng-click="editPolicy($index, $event)"
-                   title="Edit policy"><i class="fi-pencil"></i></a>
+                   title="View/Edit policy"><i class="fi-pencil"></i></a>
             </div>
             <div class="small-10 columns">
                 <span>{{ policy.name }}</span>
             </div>
         </div>
+        <div ng-show="itemsLoading"><span class="dots"></span></div>
         <textarea id="policies" name="policies" class="hidden"></textarea>
         <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">{{ policyName }} policy</h3>

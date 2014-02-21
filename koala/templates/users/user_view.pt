@@ -17,7 +17,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-7 columns" tal:define="readonly True if user else False;">
+        <div class="large-8 columns" tal:define="readonly True if user else False;">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                     <metal:actions metal:fill-slot="actions">
@@ -35,17 +35,17 @@
                         ${structure:user_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
-                            ${panel('form_field', field=user_form['user_name'])}
+                            ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                             <!-- ${panel('form_field', field=user_form['email'])} -->
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">ARN</label></div>
-                                <div class="small-8 columns value">${user.arn if user.arn else ''}</div>
+                                <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
+                                <div class="small-9 columns value">${user.arn if user.arn else ''}</div>
                             </div>
-                            ${panel('form_field', field=user_form['path'])}
+                            ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                         </div>
                         <div class="row">
-                            <div class="small-4 columns">&nbsp;</div>
-                            <div class="small-8 columns field inline">
+                            <div class="small-3 columns">&nbsp;</div>
+                            <div class="small-9 columns field inline">
                                 <button type="submit" class="button" id="save-user-btn">
                                     <span tal:condition="user" i18n:translate="">Save changes</span>
                                 </button>
@@ -57,38 +57,76 @@
                 </div>
                 <hr id="password-section"/>
                 <div ng-controller="UserPasswordCtrl"
-                     ng-init="initController('${request.route_url('user_change_password', name=user.user_name)}')">
-                    <form data-abide="abide" id="user-change-password-form" ng-submit="submit($event)">
-                        ${structure:user_form['csrf_token']}
-                        <div class="section">
-                            <h6 i18n:translate="">Password</h6>
-                            ${panel('form_field', field=user_form['new_password'])}
-                            ${panel('form_field', field=user_form['new_password2'])}
-                        </div>
-                        <div class="row">
-                          <div class="large-4 columns">&nbsp;</div>
-                          <div class="large-8 columns">
-                            <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
-                          </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns">&nbsp;</div>
-                            <div class="small-8 columns field inline">
-                                <button type="submit" class="button" id="save-password-btn">
-                                    <span tal:condition="user" i18n:translate="">Save password</span>
+                     ng-init="initController('${request.route_url('user_random_password', name=user.user_name)}',
+                                             '${request.route_url('user_change_password', name=user.user_name)}')">
+                    <h6 i18n:translate="">Password</h6>
+                    <div class="row">
+                        <div class="small-6 columns gen-password">
+                            <span i18n:translate="">Generate and download a random password</span>
+                            <p>&nbsp;</p>
+                            <form id="user-generate-password-form" ng-submit="submitRandom($event)">
+                                <button type="submit" class="button" id="generatre-password-btn">
+                                    <span tal:condition="user" i18n:translate="">Generate random password</span>
                                 </button>
-                                <a href="${request.route_url('users')}"
-                                   class="cancel-link" i18n:translate="">Cancel</a>
-                            </div>
+                            </form>
+                            <span class="or-circle" i18n:translate="">OR</span>
                         </div>
-                    </form>
+                        <div class="small-6 columns set-password">
+                            <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
+                                <div class="row controls-wrapper controls_new_password">
+                                    <div class="small-12 columns field">
+                                        <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
+                                        ${structure:user_form.new_password}
+                                    </div>
+                                </div>
+                                <div class="row controls-wrapper controls_new_password2">
+                                    <div class="small-12 columns field">
+                                        <label for="top-label" class="left">${user_form.new_password2.label.text}<span class="req">*</span></label>
+                                        ${structure:user_form.new_password2}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                  <div class="columns">
+                                    <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                    <div class="columns field inline">
+                                        <button type="submit" class="button" id="save-password-btn">
+                                            <span tal:condition="user" i18n:translate="">Save password</span>
+                                        </button>
+                                        <a href="${request.route_url('users')}"
+                                           class="cancel-link" i18n:translate="">Cancel</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="random-password-modal" class="reveal-modal small" data-reveal="">
+                        <h3 i18n:translate="">Generate Random Password</h3>
+                        <p>
+                            <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below:</span>?
+                        </p>
+                        <form method="post" id="random-form" data-abide="" ng-submit="genPassword($event)">
+                            ${structure:generate_form['csrf_token']}
+                            ${panel('form_field', field=generate_form['password'])}
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                </div>
+                            </div>
+                        </form>
+                        <a class="close-reveal-modal">&#215;</a>
+                    </div>
                     <div id="change-password-modal" class="reveal-modal small" data-reveal="">
                         <h3 i18n:translate="">Change Password</h3>
                         <p>
                             <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below:</span>?
                         </p>
-                        <form method="post" id="delete-form" data-abide="" ng-submit="changePassword($event)">
-                            ${structure:delete_form['csrf_token']}
+                        <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
+                            ${structure:change_password_form['csrf_token']}
                             ${panel('form_field', field=change_password_form['password'])}
                             <div>&nbsp;</div>
                             <div class="row">
@@ -187,7 +225,7 @@
                                         ${structure:field()}
                                     </div>
                                     <div class="column small-6">
-                                        <button type="submit" class="button round small" id="add-user-to-group-btn">
+                                        <button type="submit" class="button" id="add-user-to-group-btn">
                                             <span tal:condition="user" i18n:translate="">Add user to group</span>
                                         </button>
                                     </div>
@@ -255,7 +293,7 @@
                 </div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-4 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <!--! Help goes here -->
         </div>

@@ -178,7 +178,7 @@ urls = [
     Route(name='users_json', pattern='/users/json'),
     Route(name='user_new', pattern='/users/new'),
     Route(name='user_create', pattern='/users/create'),
-    Route(name='user_view', pattern='/users/{name}'), # Pass name='new' to render Create User(s) page
+    Route(name='user_view', pattern='/users/{name}'),  # Pass name='new' to render Create User(s) page
     Route(name='user_access_keys_json', pattern='/users/{name}/keys_json'),
     Route(name='user_groups_json', pattern='/users/{name}/groups_json'),
     Route(name='user_avail_groups_json', pattern='/users/{name}/groups_available_json'),
@@ -186,6 +186,7 @@ urls = [
     Route(name='user_policy_json', pattern='/users/{name}/policies/{policy}'),
     Route(name='user_update', pattern='/users/{name}/update'),
     Route(name='user_delete', pattern='/users/{name}/delete'),
+    Route(name='user_random_password', pattern='/users/{name}/random'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
     Route(name='user_generate_keys', pattern='/users/{name}/genkeys'),
     Route(name='user_delete_key', pattern='/users/{name}/keys/{key}/delete'),

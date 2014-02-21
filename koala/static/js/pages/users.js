@@ -9,8 +9,10 @@ angular.module('UsersPage', ['LandingPage'])
         $scope.user_name = '';
         $scope.groupName = '';
         $scope.user_view_url = '';
-        $scope.initPage = function (user_view_url) {
+        $scope.group_view_url = '';
+        $scope.initPage = function (user_view_url, group_view_url) {
             $scope.user_view_url = user_view_url;
+            $scope.group_view_url = group_view_url;
         };
         $scope.revealModal = function (action, user) {
             var modal = $('#' + action + '-user-modal');
@@ -23,6 +25,8 @@ angular.module('UsersPage', ['LandingPage'])
         $scope.linkUser = function (user, fragment) {
             window.location = $scope.user_view_url.replace('_name_', user['user_name'])+fragment;
         };
-        
+        $scope.showGroup = function ($event, group) {
+            window.location = $scope.group_view_url.replace('_name_', group);
+        };
     })
 ;

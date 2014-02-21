@@ -138,7 +138,17 @@ class UserForm(BaseSecureForm):
             item.data = val
 
 class ChangePasswordForm(BaseSecureForm):
-    """CSRF-protected form to delete a user"""
+    """CSRF-protected form to change a password """
+    password = wtforms.PasswordField(
+        _(u'Your password'),
+        validators=[
+            validators.InputRequired(message=_(u'A password is required')),
+            validators.Length(min=6, message=_(u'Password must be more than 6 characters'))
+        ],
+        widget=widgets.PasswordInput())
+
+class GeneratePasswordForm(BaseSecureForm):
+    """CSRF-protected form to generate a random password"""
     password = wtforms.PasswordField(
         _(u'Your password'),
         validators=[

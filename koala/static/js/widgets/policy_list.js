@@ -7,6 +7,7 @@ angular.module('PolicyList', [])
     .controller('PolicyListCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.policyList = $('#policy-list');
+        $scope.itemsLoading = true;
         $scope.policyTextarea = $scope.policyList.find('textarea#policies');
         $scope.policiesUrl = '';
         $scope.policyUrl = '';
@@ -35,6 +36,7 @@ angular.module('PolicyList', [])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
+                $scope.itemsLoading = false;
                 for (var i=0; i<results.length; i++) {
                     $scope.policyArray.push({
                         'name': results[i],

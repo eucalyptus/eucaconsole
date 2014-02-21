@@ -4,7 +4,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/users.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage('${request.route_url('user_view', name='_name_')}')">
+<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage(
+                '${request.route_url('user_view', name='_name_')}',
+                '${request.route_url('group_view', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -37,7 +39,7 @@
                 <div>
                     <span class="label" title="Name" i18n:attributes="title" data-tooltip="">GR</span>
                     <div ng-repeat="group in item.groups ">
-                        <a ng-click="showGroup($event, item)">{{ group }}</a>
+                        <a ng-click="showGroup($event, group)">{{ group }}</a>
                     </div>
                 </div>
                 <div ng-show="item.has_password">
@@ -55,12 +57,18 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">User name</th>
+                <th i18n:translate="">Groups</th>
                 <th i18n:translate="">Password</th>
-                <th i18n:translate="">Access Keys</th>
+                <th i18n:translate="">Active Access Keys</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
+                <td>
+                    <div ng-repeat="group in item.groups ">
+                        <a ng-click="showGroup($event, group)">{{ group }} </a>
+                    </div>
+                </td>
                 <td>
                     <span ng-show="item.has_password">
                         <i class="fi-check"></i>

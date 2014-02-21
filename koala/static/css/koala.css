@@ -1403,6 +1403,7 @@ body { position: relative; color: #333; min-height: 100%; font-family: "Helvetic
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
 #maincontent { background: #eef7e3; position: relative; padding-bottom: 3rem; }
+#maincontent #pagetitle h3 { margin-top: 0; margin-bottom: 1rem; }
 
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
@@ -1563,7 +1564,7 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
-.f-dropdown { left: -99999px; }
+.f-dropdown { left: -99999px; z-index: 9999999; }
 
 .show-for-xsmall { display: none !important; }
 

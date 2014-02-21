@@ -159,9 +159,10 @@ $dropdown-border-color: $euca-green;
     }
     .link {
         color: $euca-green;
-        text-transform: capitalize;
+        text-transform: uppercase;
         padding: 1px 3px;
         margin-bottom: 2px;
+        font-size: 0.9em;
     }
     .footer {
         position: absolute;
