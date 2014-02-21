@@ -32,12 +32,14 @@
         <textarea id="policies" name="policies" class="hidden"></textarea>
         <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">{{ policyName }} policy</h3>
-            <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
-            <div>&nbsp;</div>
-            <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
-            <button type="submit" class="button" id="save-policy-btn" ng-click="savePolicy()">
-                <span i18n:translate="">Save changes</span>
-            </button>
+            <form ng-submit="savePolicy($event)">
+                <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
+                <div>&nbsp;</div>
+                <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
+                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                    Save changes
+                </button>
+            </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <div id="delete-modal" class="reveal-modal small" data-reveal="">

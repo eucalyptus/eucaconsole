@@ -3,27 +3,28 @@
 Pyramid views for Eucalyptus and AWS Users
 
 """
-import csv, StringIO
-import os, random, string
-from urllib2 import HTTPError, URLError
-from urllib import urlencode
+import csv
+import os
+import random
+import string
+import StringIO
 import simplejson as json
 import sys
 import urlparse
 
+from urllib2 import HTTPError, URLError
+from urllib import urlencode
+
 from boto.exception import BotoServerError
 from boto.exception import EC2ResponseError
-from pyramid.httpexceptions import exception_response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
-from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 from pyramid.response import Response
 
 from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm
 from ..models import Notification
-from ..models import LandingPageFilter
-from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
+from ..views import BaseView, LandingPageView, JSONResponse
 from ..models.auth import EucaAuthenticator
 
 
@@ -40,8 +41,6 @@ class UsersView(LandingPageView):
         json_items_endpoint = self.request.route_url('users_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
-        conn = self.get_connection(conn_type="iam")
-        group_choices = [] #sorted(set(conn.get_all_groups().groups))
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
@@ -116,6 +115,7 @@ class UsersJsonView(BaseView):
             return self.conn.get_all_users().users
         except BotoServerError as exc:
             return BaseView.handle_403_error(exc, request=self.request)
+
 
 class UserView(BaseView):
     """Views for single User"""
@@ -539,13 +539,14 @@ class UserView(BaseView):
     @view_config(route_name='user_update_policy', request_method='POST', renderer='json')
     def user_update_policy(self):
         """ calls iam:PutUserPolicy """
-        policy = self.request.matchdict.get('policy')
+        policy = str(self.request.matchdict.get('policy'))
         try:
             policy_text = self.request.params.get('policy_text')
-            result = self.conn.put_user_policy(user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
+            result = self.conn.put_user_policy(
+                user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated user policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
     def user_delete_policy(self):
@@ -555,7 +556,7 @@ class UserView(BaseView):
             result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted user policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
     def user_update_quotas(self):
@@ -639,7 +640,6 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully updated user policy"))
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
-
 
     def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
         new_limit = self.request.params.get(param, '')
