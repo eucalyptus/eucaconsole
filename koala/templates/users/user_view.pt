@@ -1,6 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('koala:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/user.css')}" />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/pages/changepassword.css')}" />
 </div>

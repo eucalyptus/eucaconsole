@@ -2,6 +2,7 @@
 <!--! Policy list -->
 <div id="policy-list" class="row controls-wrapper" ng-app="PolicyList"
      ng-controller="PolicyListCtrl" ng-init="initPolicies('${policies_url}', '${policy_url}', '${remove_url}', '${update_url}')">
+     
     <div class="small-12 columns field">
         <div>&nbsp;</div>
         <div class="row userentry controls-wrapper">
@@ -31,12 +32,14 @@
         <textarea id="policies" name="policies" class="hidden"></textarea>
         <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">{{ policyName }} policy</h3>
-            <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
-            <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
-            
-            <button type="submit" class="button" id="save-policy-btn" ng-click="savePolicy()">
-                <span i18n:translate="">Save changes</span>
-            </button>
+            <form ng-submit="savePolicy($event)">
+                <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
+                <div>&nbsp;</div>
+                <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
+                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                    Save changes
+                </button>
+            </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <div id="delete-modal" class="reveal-modal small" data-reveal="">
@@ -57,5 +60,8 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
+    <script src="${request.static_url('koala:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/codemirror/active-line.js')}"></script>
     <script src="${request.static_url('koala:static/js/widgets/policy_list.js')}"></script>
 </div>

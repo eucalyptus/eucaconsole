@@ -48,9 +48,15 @@ $keys-status-color-inactive: $euca-grey;
     padding-left: 35px;
 }
 
+.CodeMirror {
+    border: 1px solid $euca-lightgrey;
+    min-height: 400px;
+}
+
 // *********************
 // User snapshots page
 .tile {
     @include panel-tile-mixin;
 }
+
 
