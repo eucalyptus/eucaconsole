@@ -84,10 +84,7 @@ class IAMPolicyWizardView(BaseView):
     def get_instance_choices(self):
         choices = [('', _(u'All instances...'))]
         for instance in self.ec2_conn.get_only_instances():
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:instance/'.format(region)
+            arn_prefix = self.get_arn_prefix('instance')
             value = '{0}{1}'.format(arn_prefix, instance.id)
             label = TaggedItemView.get_display_name(instance)
             choices.append((value, label))
@@ -100,10 +97,7 @@ class IAMPolicyWizardView(BaseView):
         owners = [owner_alias] if owner_alias else []
         images = self.ec2_conn.get_all_images(owners=owners, filters={'image-type': 'machine'})
         for image in images:
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:image/'.format(region)
+            arn_prefix = self.get_arn_prefix('image')
             value = '{0}{1}'.format(arn_prefix, image.id)
             label = TaggedItemView.get_display_name(image)
             choices.append((value, label))
@@ -112,10 +106,7 @@ class IAMPolicyWizardView(BaseView):
     def get_volume_choices(self):
         choices = [('', _(u'All volumes...'))]
         for volume in self.ec2_conn.get_all_volumes():
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:volume/'.format(region)
+            arn_prefix = self.get_arn_prefix('volume')
             value = '{0}{1}'.format(arn_prefix, volume.id)
             label = TaggedItemView.get_display_name(volume)
             choices.append((value, label))
@@ -124,10 +115,7 @@ class IAMPolicyWizardView(BaseView):
     def get_snapshot_choices(self):
         choices = [('', _(u'All snapshots...'))]
         for snapshot in self.ec2_conn.get_all_snapshots():
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:snapshot/'.format(region)
+            arn_prefix = self.get_arn_prefix('snapshot')
             value = '{0}{1}'.format(arn_prefix, snapshot.id)
             label = TaggedItemView.get_display_name(snapshot)
             choices.append((value, label))
@@ -136,10 +124,7 @@ class IAMPolicyWizardView(BaseView):
     def get_security_group_choices(self):
         choices = [('', _(u'All security groups...'))]
         for security_group in self.ec2_conn.get_all_security_groups():
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:security-group/'.format(region)
+            arn_prefix = self.get_arn_prefix('security-group')
             value = '{0}{1}'.format(arn_prefix, security_group.name)
             label = '{0} ({1})'.format(security_group.name, security_group.id)
             choices.append((value, label))
@@ -148,14 +133,17 @@ class IAMPolicyWizardView(BaseView):
     def get_key_pair_choices(self):
         choices = [('', _(u'All key pairs...'))]
         for key_pair in self.ec2_conn.get_all_key_pairs():
-            region = '*'
-            if self.cloud_type == 'aws':
-                region = self.region
-            arn_prefix = 'arn:aws:ec2:{0}:*:key-pair/'.format(region)
+            arn_prefix = self.get_arn_prefix('key-pair')
             value = '{0}{1}'.format(arn_prefix, key_pair.name)
             label = key_pair.name
             choices.append((value, label))
         return choices
+
+    def get_arn_prefix(self, resource):
+        region = '*'
+        if self.cloud_type == 'aws':
+            region = self.region
+        return 'arn:aws:ec2:{region}:*:{resource}/'.format(region=region, resource=resource)
 
 
 class IAMPolicyWizardJsonView(BaseView):
