@@ -225,6 +225,12 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     background: $euca-extralightgreen;
     position: relative;
     padding-bottom: 3rem;
+    #pagetitle {
+        h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+    }
 }
 
 #contentwrap {

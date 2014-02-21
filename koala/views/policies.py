@@ -27,7 +27,10 @@ class IAMPolicyWizardView(BaseView):
         self.iam_conn = self.get_connection(conn_type='iam')
         self.policy_json_endpoint = self.request.route_url('iam_policy_json')
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
+        self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
+        self.target_name = self.request.params.get('id', '')  # user or group name
         self.render_dict = dict(
+            page_title=self.get_page_title(),
             create_form=self.create_form,
             policy_json_endpoint=self.policy_json_endpoint,
             policy_actions=permissions.POLICY_ACTIONS,
@@ -50,19 +53,17 @@ class IAMPolicyWizardView(BaseView):
     @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
-        target_type = self.request.params.get('type')  # 'user' or 'group'
-        target_route = '{0}_view'.format(target_type)  # 'user_view' or 'group_view'
-        target_name = self.request.params.get('id')  # user or group name
-        location = self.request.route_url(target_route, name=target_name)  # redirect to detail page after submit
+        target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
+        location = self.request.route_url(target_route, name=self.target_name)  # redirect to detail page after submit
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
             try:
-                if target_type == 'user':
+                if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
                     caller = self.iam_conn.put_group_policy
-                caller(target_name, policy_name, policy_json)
+                caller(self.target_name, policy_name, policy_json)
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
                 queue = Notification.SUCCESS
@@ -74,6 +75,10 @@ class IAMPolicyWizardView(BaseView):
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
+
+    def get_page_title(self):
+        prefix = _(u'Add access policy for')
+        return '{0} {1} {2}'.format(prefix, self.target_type.capitalize(), self.target_name)
 
     def get_controller_options(self):
         return {
