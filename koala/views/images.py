@@ -54,13 +54,13 @@ class ImagesView(LandingPageView):
     @staticmethod
     def get_sort_keys():
         return [
-            dict(key='id', name='ID', reversed='false'),
-            dict(key='name', name=_(u'Image name: Low to High'), reversed='false'),
-            dict(key='name', name=_(u'Image name: High to Low'), reversed='true'),
-            dict(key='architecture', name=_(u'Architecture'), reversed='false'),
-            dict(key='root_device_type', name=_(u'Root device type'), reversed='false'),
-            dict(key='platform_name', name=_(u'Platform'), reversed='false'),
-            dict(key='description', name=_(u'Description'), reversed='false'),
+            dict(key='id', name='ID'),
+            dict(key='name', name=_(u'Image name: A to Z')),
+            dict(key='-name', name=_(u'Image name: Z to A')),
+            dict(key='architecture', name=_(u'Architecture')),
+            dict(key='root_device_type', name=_(u'Root device type')),
+            dict(key='platform_name', name=_(u'Platform')),
+            dict(key='description', name=_(u'Description')),
         ]
 
 

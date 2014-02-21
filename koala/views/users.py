@@ -45,10 +45,10 @@ class UsersView(LandingPageView):
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='user_id', name='ID', reversed='false'),
-            dict(key='user_name', name=_(u'User name: Low to High'), reversed='false'),
-            dict(key='user_name', name=_(u'User name: High to Low'), reversed='true'),
-            dict(key='path', name=_(u'Path'), reversed='false'),
+            dict(key='user_id', name='ID'),
+            dict(key='user_name', name=_(u'User name: A to Z')),
+            dict(key='-user_name', name=_(u'User name: Z to A')),
+            dict(key='path', name=_(u'Path')),
         ]
 
         return dict(

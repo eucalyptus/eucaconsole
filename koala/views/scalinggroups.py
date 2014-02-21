@@ -38,12 +38,12 @@ class ScalingGroupsView(LandingPageView):
         self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='name', name=_(u'Name: Low to High'), reversed='false'),
-            dict(key='name', name=_(u'Name: High to Low'), reversed='true'),
-            dict(key='-status', name=_(u'Health status'), reversed='false'),
-            dict(key='-current_instances_count', name=_(u'Current instances'), reversed='false'),
-            dict(key='launch_config', name=_(u'Launch configuration'), reversed='false'),
-            dict(key='availability_zones', name=_(u'Availability zones'), reversed='false'),
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='-status', name=_(u'Health status')),
+            dict(key='-current_instances_count', name=_(u'Current instances')),
+            dict(key='launch_config', name=_(u'Launch configuration')),
+            dict(key='availability_zones', name=_(u'Availability zones')),
         ]
         return dict(
             filter_fields=self.filter_fields,

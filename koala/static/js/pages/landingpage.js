@@ -12,14 +12,12 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.itemsLoading = true;
         $scope.unfilteredItems = [];
         $scope.sortBy = '';
-        $scope.sortReverse = false;
         $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
         $scope.itemsLoading = true;
         $scope.pageResource = '';
         $scope.sortByKey = '';
-        $scope.sortReverseKey = '';
         $scope.landingPageViewKey = '';
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
@@ -41,20 +39,16 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.initLocalStorageKeys = function (pageResource){
             $scope.pageResource = pageResource;
             $scope.sortByKey = $scope.pageResource + "-sortBy";
-            $scope.sortReverseKey = $scope.pageResource + "-sortReverse";
             $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
             var storedSort = localStorage.getItem($scope.sortByKey),
-                storedSortReverse = localStorage.getItem($scope.sortReverseKey),
                 storedLandingPageView = localStorage.getItem($scope.landingPageViewKey);
             $scope.sortBy = storedSort || sortKey;
-            $scope.sortReverse = storedSortReverse == null ? false : (storedSortReverse === 'true');
             $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
         };
         $scope.setWatch = function () {
-            var sortingDropdown = $('#sorting-dropdown'),
-                sortingReverse = $('#sorting-reverse');
+            var sortingDropdown = $('#sorting-dropdown');
             $scope.$watch('sortBy',  function () {
                 if (sortingDropdown.hasClass('open')) {
                     sortingDropdown.removeClass('open');
@@ -62,10 +56,6 @@ angular.module('LandingPage', ['CustomFilters'])
                 }
                 // Set sortBy in localStorage
                 localStorage.setItem($scope.sortByKey, $scope.sortBy);
-            });
-            $scope.$watch('sortReverse', function(){
-                // Set SortReverse in localStorage
-                localStorage.setItem($scope.sortReverseKey, $scope.sortReverse);
             });
             $scope.$watch('landingPageView', function () {
                 var gridviewBtn = $('#gridview-button'),
@@ -123,10 +113,6 @@ angular.module('LandingPage', ['CustomFilters'])
             });
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
-        $scope.adjustSort = function(sortKey, sortReversed){
-            $scope.sortBy = sortKey;
-            $scope.sortReverse = sortReversed;
-        }
         $scope.switchView = function(view){
             $scope.landingPageView = view;
         };

@@ -101,11 +101,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='-launch_time', name=_(u'Launch time: Low to High'), reversed='false'),
-            dict(key='-launch_time', name=_(u'Launch time: High to Low'), reversed='true'),
-            dict(key='id', name=_(u'Instance ID'), reversed='false'),
-            dict(key='placement', name=_(u'Availability zone'), reversed='false'),
-            dict(key='key_name', name=_(u'Key pair'), reversed='false'),
+            dict(key='launch_time', name=_(u'Launch time: Oldest to Newest')),
+            dict(key='-launch_time', name=_(u'Launch time: Newest to Oldest')),
+            dict(key='id', name=_(u'Instance ID')),
+            dict(key='placement', name=_(u'Availability zone')),
+            dict(key='key_name', name=_(u'Key pair')),
         ]
         self.render_dict.update(dict(
             filter_fields=self.filter_fields,

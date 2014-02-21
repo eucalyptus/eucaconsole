@@ -167,13 +167,13 @@ class VolumesView(LandingPageView, BaseVolumeView):
     def get_sort_keys():
         """sort_keys are passed to sorting drop-down on landing page"""
         return [
-            dict(key='-create_time', name=_(u'Create time: Low to High'), reversed='false'),
-            dict(key='-create_time', name=_(u'Create time: High to Low'), reversed='true'),
-            dict(key='name', name=_(u'Name: Low to High'), reversed='false'),
-            dict(key='name', name=_(u'Name: High to Low'), reversed='true'),
-            dict(key='status', name=_(u'Status'), reversed='false'),
-            dict(key='attach_status', name=_(u'Attach status'), reversed='false'),
-            dict(key='zone', name=_(u'Availability zone'), reversed='false'),
+            dict(key='create_time', name=_(u'Create time: Oldest to Newest')),
+            dict(key='-create_time', name=_(u'Create time: Newest to Oldest')),
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='status', name=_(u'Status')),
+            dict(key='attach_status', name=_(u'Attach status')),
+            dict(key='zone', name=_(u'Availability zone')),
         ]
 
 
