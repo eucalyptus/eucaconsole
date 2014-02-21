@@ -81,7 +81,7 @@
                                     value="${groupname}">${groupname}</option>
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
-                        <div class="duplicated-rule-error"><span ng-show="isDuplicatedRule" i18n:translate="">Security group already exists</span></div>
+                        <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Security group already exists</span></div>
                     </label>
                 </div>
             </div>

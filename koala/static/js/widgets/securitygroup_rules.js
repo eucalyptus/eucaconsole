@@ -19,7 +19,7 @@ angular.module('SecurityGroupRules', [])
             $scope.icmpRange = '-1';  // Default to 'All' if ICMP traffic type
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
-            $scope.isDuplicatedRule = false;
+            $scope.hasDuplicatedRule = false;
             $('.ip-protocol').chosen({'width': '90%', search_contains: true});
         };
         $scope.syncRules = function () {
@@ -37,16 +37,16 @@ angular.module('SecurityGroupRules', [])
             $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
         };
         $scope.getAddRuleButtonClass = function () {
-            if( $scope.isDuplicatedRule == true ){
+            if( $scope.hasDuplicatedRule == true ){
                 return 'disabled';
             }
         };
         $scope.checkForDuplicatedRules = function () {
-            $scope.isDuplicatedRule = false;
+            $scope.hasDuplicatedRule = false;
             var thisRuleArrayBlock = $scope.createRuleArrayBlock();
             for( var i=0; i < $scope.rulesArray.length; i++){
                 if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
-                    $scope.isDuplicatedRule = true;
+                    $scope.hasDuplicatedRule = true;
                     return;
                 }
             }
@@ -102,7 +102,7 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.addRule = function ($event) {
             $event.preventDefault();
-            if( $scope.isDuplicatedRule == true ){
+            if( $scope.hasDuplicatedRule == true ){
                 return false;
             }
             // Trigger form validation to prevent borked rule entry
