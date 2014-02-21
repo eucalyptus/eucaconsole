@@ -32,26 +32,34 @@ angular.module('SecurityGroupRules', [])
             $scope.syncRules();
             $scope.setWatchers();
         };
+        // Watch for those two attributes update to trigger the duplicated rule check in real time
         $scope.setWatchers = function () {
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
         };
+        // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.getAddRuleButtonClass = function () {
             if( $scope.hasDuplicatedRule == true ){
                 return 'disabled';
             }
         };
+        // Run through the existing rules with the newly create rule to ensure that the new rule does not exist already
         $scope.checkForDuplicatedRules = function () {
             $scope.hasDuplicatedRule = false;
+            // Create a new array block based on the current user input on the panel
             var thisRuleArrayBlock = $scope.createRuleArrayBlock();
             for( var i=0; i < $scope.rulesArray.length; i++){
+                // Compare the new array block with the existing ones
                 if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
+                    // Detected that the new rule is a dup
+                    // this value will disable the "Add Rule" button to prevent the user from submitting
                     $scope.hasDuplicatedRule = true;
                     return;
                 }
             }
             return;
         };
+        // Compare the rules to determine if they are the same rules
         $scope.compareRules = function(block1, block2){
             // IF the ports and the protocol are the same,
             if( block1.from_port == block2.from_port
@@ -77,6 +85,7 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesArray.splice(index, 1);
             $scope.syncRules();
         };
+        // Adjust the IP Protocol atrributes for specical cases
         $scope.adjustIpProtocol = function () {
             if ($scope.selectedProtocol === 'icmp') {
                 $scope.fromPort = $scope.icmpRange;
@@ -86,6 +95,7 @@ angular.module('SecurityGroupRules', [])
                 $scope.ipProtocol = 'udp'
             }
         };
+        // Create an array block that represents a new security group rule submiitted by user
         $scope.createRuleArrayBlock = function () {
             return {
                 'from_port': $scope.fromPort,
