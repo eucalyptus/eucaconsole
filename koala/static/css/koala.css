@@ -1563,7 +1563,7 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
-.f-dropdown { left: -99999px; }
+.f-dropdown { left: -99999px; z-index: 9999999; }
 
 .show-for-xsmall { display: none !important; }
 
