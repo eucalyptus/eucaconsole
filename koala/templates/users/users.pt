@@ -37,17 +37,17 @@
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
-                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">GR</span>
+                    <span class="label" title="Groups" i18n:attributes="title" data-tooltip="">GR</span>
                     <div ng-repeat="group in item.groups ">
                         <a ng-click="showGroup($event, group)">{{ group }}</a>
                     </div>
                 </div>
                 <div ng-show="item.has_password">
-                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PW</span>
+                    <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
                     <i class="fi-check"></i>
                 </div>
                 <div ng-show="item.num_keys > 0">
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AK</span>
+                    <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
                     {{ item.num_keys }}
                 </div>
             </div>

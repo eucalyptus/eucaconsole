@@ -37,7 +37,6 @@ class GroupsView(LandingPageView):
         self.sort_keys = [
             dict(key='group_name', name=_(u'Group name: A to Z')),
             dict(key='-group_name', name=_(u'Group name: Z to A')),
-            dict(key='path', name=_(u'Path')),
         ]
 
         return dict(
