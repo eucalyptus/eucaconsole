@@ -19,21 +19,21 @@
             <h3 i18n:translate="">${page_title}</h3>
         </div>
         <div class="large-7 columns">
-            <div class="wizard no-title">
+            <div class="wizard no-title" ng-cloak="">
                 <dl class="tabs" data-tab="">
                     <dd class="active">
-                        <a id="tabStep1" href="#step1">
+                        <a id="select-template-tab" href="#step1">
                             <b i18n:translate="">Select a template</b>
                         </a>
                     </dd>
                     <dd>
-                        <a id="tabStep2" href="#step2">
+                        <a id="custom-policy-tab" href="#step2">
                             <b i18n:translate="">Create a custom policy</b>
                         </a>
                     </dd>
                 </dl>
                 <div class="tabs-content">
-                    <!--! Step 1: Choose Policy -->
+                    <!--! Tab 1: Select a template -->
                     <div class="content active" id="step1">
                         <div class="columns">
                             <div class="row choice">
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                     </div>
-                    <!--! Step 2: Create Policy -->
+                    <!--! Tab 2: Create a custom policy -->
                     <div class="content" id="step2">
                         <div class="choice">
                             <div class="expando" ng-init="policyGenExpanded = false" ng-cloak="">

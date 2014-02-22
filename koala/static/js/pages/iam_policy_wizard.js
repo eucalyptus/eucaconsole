@@ -14,10 +14,12 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
-        $scope.cloudType = 'euca'
+        $scope.cloudType = 'euca';
+        $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
+            $scope.initSelectedTab();
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
             if ($scope.cloudType === 'euca') {
@@ -25,6 +27,14 @@ angular.module('IAMPolicyWizard', [])
                 $scope.limitResourceChoices();
                 $scope.addResourceTypeListener();
             }
+        };
+        $scope.initSelectedTab = function () {
+            var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
+            $('#' + lastSelectedTab).click();
+            $('.tabs').find('a').on('click', function (evt) {
+                var tabLinkId = $(evt.target).closest('a').attr('id');
+                localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+            });
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
