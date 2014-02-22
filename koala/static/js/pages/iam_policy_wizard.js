@@ -154,8 +154,12 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.handleSelection = function ($event) {
             var tgt = $($event.target);
-            tgt.closest('tr').find('i').removeClass('selected');
-            tgt.addClass('selected');
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                tgt.closest('tr').find('.fi-x').removeClass('selected');
+            } else {
+                tgt.closest('tr').find('.fi-check').removeClass('selected');
+            }
             $timeout(function () {
                 $scope.updateStatements();
             }, 50);
