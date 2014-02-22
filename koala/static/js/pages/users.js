@@ -25,8 +25,5 @@ angular.module('UsersPage', ['LandingPage'])
         $scope.linkUser = function (user, fragment) {
             window.location = $scope.user_view_url.replace('_name_', user['user_name'])+fragment;
         };
-        $scope.showGroup = function ($event, group) {
-            window.location = $scope.group_view_url.replace('_name_', group);
-        };
     })
 ;
