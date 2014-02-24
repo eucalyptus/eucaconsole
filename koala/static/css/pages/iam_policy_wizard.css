@@ -24,8 +24,8 @@
 #policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
 #policy-generator .table td.allow, #policy-generator .table td.deny { text-align: center; }
 #policy-generator .table td .resource-wrapper { vertical-align: top; }
-#policy-generator .table td .conditions-wrapper { margin-top: 1rem; }
-#policy-generator .table td .conditions-wrapper .conditions { margin: 1rem 0; }
+#policy-generator .table td .conditions-wrapper { margin-bottom: 1rem; }
+#policy-generator .table td .conditions-wrapper .conditions { margin: 0.5rem 0; }
 #policy-generator .table td .button { margin-bottom: 0; }
 #policy-generator .table td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 4px 8px; margin-bottom: 8px; }
 #policy-generator .table td .advanced select.resource-type { display: inline-block; width: 50%; padding: 7px 2px 7px 4px; position: relative; top: 1px; }

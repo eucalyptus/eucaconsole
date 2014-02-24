@@ -11,6 +11,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants import policies, permissions
+from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
 from ..models import Notification
 from ..views import BaseView, JSONResponse, TaggedItemView
@@ -42,6 +43,7 @@ class IAMPolicyWizardView(BaseView):
                 snapshots=self.get_snapshot_choices(),
                 security_groups=self.get_security_group_choices(),
                 key_pairs=self.get_key_pair_choices(),
+                vm_types=self.get_vm_type_choices(),
             ),
         )
 
@@ -95,14 +97,26 @@ class IAMPolicyWizardView(BaseView):
             choices.append((value, label))
         return choices
 
+    def get_vm_type_choices(self):
+        choices_manager = ChoicesManager(conn=self.ec2_conn)
+        choices = [('', _(u'All vm_types...'))]
+        vm_type_choices = choices_manager.instance_types(
+            cloud_type=self.cloud_type, add_blank=False, add_description=False)
+        arn_prefix = self.get_arn_prefix('vmtype')
+        for vm_type_choice in vm_type_choices:
+            label = vm_type_choice[1]
+            value = '{0}{1}'.format(arn_prefix, vm_type_choice[0])
+            choices.append((label, value))
+        return choices
+
     def get_image_choices(self):
         choices = [('', _(u'All images...'))]
         # Set owner alias to 'self' for AWS
         owner_alias = 'self' if self.cloud_type == 'aws' else None
         owners = [owner_alias] if owner_alias else []
         images = self.ec2_conn.get_all_images(owners=owners, filters={'image-type': 'machine'})
+        arn_prefix = self.get_arn_prefix('image')
         for image in images:
-            arn_prefix = self.get_arn_prefix('image')
             value = '{0}{1}'.format(arn_prefix, image.id)
             label = TaggedItemView.get_display_name(image)
             choices.append((value, label))
@@ -110,8 +124,8 @@ class IAMPolicyWizardView(BaseView):
 
     def get_volume_choices(self):
         choices = [('', _(u'All volumes...'))]
+        arn_prefix = self.get_arn_prefix('volume')
         for volume in self.ec2_conn.get_all_volumes():
-            arn_prefix = self.get_arn_prefix('volume')
             value = '{0}{1}'.format(arn_prefix, volume.id)
             label = TaggedItemView.get_display_name(volume)
             choices.append((value, label))
@@ -119,8 +133,8 @@ class IAMPolicyWizardView(BaseView):
 
     def get_snapshot_choices(self):
         choices = [('', _(u'All snapshots...'))]
+        arn_prefix = self.get_arn_prefix('snapshot')
         for snapshot in self.ec2_conn.get_all_snapshots():
-            arn_prefix = self.get_arn_prefix('snapshot')
             value = '{0}{1}'.format(arn_prefix, snapshot.id)
             label = TaggedItemView.get_display_name(snapshot)
             choices.append((value, label))
@@ -128,8 +142,8 @@ class IAMPolicyWizardView(BaseView):
 
     def get_security_group_choices(self):
         choices = [('', _(u'All security groups...'))]
+        arn_prefix = self.get_arn_prefix('security-group')
         for security_group in self.ec2_conn.get_all_security_groups():
-            arn_prefix = self.get_arn_prefix('security-group')
             value = '{0}{1}'.format(arn_prefix, security_group.name)
             label = '{0} ({1})'.format(security_group.name, security_group.id)
             choices.append((value, label))
@@ -137,8 +151,8 @@ class IAMPolicyWizardView(BaseView):
 
     def get_key_pair_choices(self):
         choices = [('', _(u'All key pairs...'))]
+        arn_prefix = self.get_arn_prefix('key-pair')
         for key_pair in self.ec2_conn.get_all_key_pairs():
-            arn_prefix = self.get_arn_prefix('key-pair')
             value = '{0}{1}'.format(arn_prefix, key_pair.name)
             label = key_pair.name
             choices.append((value, label))

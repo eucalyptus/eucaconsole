@@ -214,6 +214,7 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
         snapshot_choices=resource_choices.get('snapshots'),
         security_group_choices=resource_choices.get('security_groups'),
         key_pair_choices=resource_choices.get('key_pairs'),
+        vm_type_choices=resource_choices.get('vm_types'),
     )
 
 

@@ -68,7 +68,7 @@
                     <!--! Tab 2: Create a custom policy -->
                     <div class="content" id="step2">
                         <div class="choice">
-                            <div class="expando" ng-init="policyGenExpanded = false" ng-cloak="">
+                            <div class="expando" ng-init="policyGenExpanded = true" ng-cloak="">
                                 <strong class="title" >
                                     <a ng-click="policyGenExpanded = !policyGenExpanded">
                                         <i class="fi-plus" ng-show="!policyGenExpanded"></i>

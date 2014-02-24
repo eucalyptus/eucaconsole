@@ -47,14 +47,14 @@
                         <td>
                             <span class="action-name">${action}</span>
                             <div class="advanced hide">
-                                <div class="resource-wrapper" tal:condition="namespace_condition and resource_condition">
+                                <div class="resource-wrapper" tal:condition="namespace_condition">
                                     <div>&nbsp;</div>
                                     <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
                                         <label i18n:translate="">Resource name (ARN):</label>
                                         <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
                                         <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
                                     </div>
-                                    <div tal:condition="layout.cloud_type == 'euca'"
+                                    <div tal:condition="layout.cloud_type == 'euca' and resource_condition"
                                          tal:define="instance_condition 'Instance' in action
                                                          or 'AttachVolume' in action or 'DetachVolume' in action
                                                          or 'Console' in action;
@@ -66,6 +66,9 @@
                                         <select class="resource-type">
                                             <option value="instance" tal:condition="instance_condition">
                                                 Instance
+                                            </option>
+                                            <option value="vm_type" tal:condition="instance_condition">
+                                                VM Type
                                             </option>
                                             <option value="image" tal:condition="image_condition">
                                                 Image
@@ -87,6 +90,9 @@
                                         <select class="resource instance chosen" tal:condition="instance_condition">
                                             <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
+                                        <select class="resource vm_type chosen" tal:condition="instance_condition">
+                                            <option tal:repeat="choice vm_type_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
                                         <select class="resource image chosen" tal:condition="image_condition">
                                             <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
@@ -103,25 +109,25 @@
                                             <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                     </div>
+                                    <div class="conditions-wrapper">
+                                        <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
+                                            <strong class="title" >
+                                                <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
+                                                    <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
+                                                    <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
+                                                    &nbsp;<span i18n:translate="">Add conditions (optional)</span>
+                                                </a>
+                                            </strong>
+                                        </div>
+                                        <div ng-show="${action}ConditionsExpanded" class="conditions">
+                                            TBD
+                                        </div>
+                                    </div>
                                     <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
                                         Add Resource
                                     </a>
                                     <div>&nbsp;</div>
                                 </div><!--! /end resource-wrapper -->
-                                <div class="conditions-wrapper">
-                                    <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
-                                        <strong class="title" >
-                                            <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
-                                                <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
-                                                <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
-                                                &nbsp;<span i18n:translate="">Add conditions (optional)</span>
-                                            </a>
-                                        </strong>
-                                    </div>
-                                    <div ng-show="${action}ConditionsExpanded" class="conditions">
-                                        TBD
-                                    </div>
-                                </div>
                             </div>
                         </td>
                         <td>
