@@ -5,10 +5,10 @@ Base Forms
 IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
-from boto.ec2.vmtype import VmType
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 
+from ..vmtypes import VmType
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 
 BLANK_CHOICE = ('', _(u'select...'))
@@ -80,7 +80,7 @@ class ChoicesManager(object):
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
             if self.conn is not None:
-                types = self.conn.get_list('DescribeInstanceTypes', {}, [('euca:item', VmType)], verb='POST')
+                types = self.conn.get_list('DescribeInstanceTypes', {}, [('item', VmType)], verb='POST')
                 for vmtype in types:
                     vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(
                         vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
