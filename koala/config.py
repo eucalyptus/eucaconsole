@@ -10,6 +10,7 @@ from .models import SiteRootFactory
 from .models.auth import groupfinder, User
 from .routes import urls
 from .tweens import setup_tweens
+from .chamext import setup_exts
 
 
 def get_configurator(settings, enable_auth=True):
@@ -26,6 +27,6 @@ def get_configurator(settings, enable_auth=True):
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
+    setup_exts(config)
     config.scan()
     return config
-
