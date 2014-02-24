@@ -206,7 +206,7 @@
                         </div>
                     </div>
                 </div>
-                <hr/>
+                <hr id="group-section"/>
                 <div ng-controller="UserGroupsCtrl"
                      ng-init="initController(
                             '${request.route_url('user_add_to_group', name=user.user_name, group='_group_')}',
