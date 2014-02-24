@@ -30,6 +30,7 @@ class IAMPolicyWizardView(BaseView):
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
+        self.choices_manager = ChoicesManager(conn=self.ec2_conn)
         self.render_dict = dict(
             page_title=self.get_page_title(),
             create_form=self.create_form,
@@ -44,6 +45,7 @@ class IAMPolicyWizardView(BaseView):
                 security_groups=self.get_security_group_choices(),
                 key_pairs=self.get_key_pair_choices(),
                 vm_types=self.get_vm_type_choices(),
+                availability_zones=self.get_availability_zone_choices(),
             ),
         )
 
@@ -98,9 +100,8 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_vm_type_choices(self):
-        choices_manager = ChoicesManager(conn=self.ec2_conn)
         choices = [('', _(u'All vm_types...'))]
-        vm_type_choices = choices_manager.instance_types(
+        vm_type_choices = self.choices_manager.instance_types(
             cloud_type=self.cloud_type, add_blank=False, add_description=False)
         arn_prefix = self.get_arn_prefix('vmtype')
         for vm_type_choice in vm_type_choices:
@@ -146,6 +147,15 @@ class IAMPolicyWizardView(BaseView):
         for security_group in self.ec2_conn.get_all_security_groups():
             value = '{0}{1}'.format(arn_prefix, security_group.name)
             label = '{0} ({1})'.format(security_group.name, security_group.id)
+            choices.append((value, label))
+        return choices
+
+    def get_availability_zone_choices(self):
+        choices = [('', _(u'All zones...'))]
+        arn_prefix = self.get_arn_prefix('availabilityzone')
+        for avail_zone_choice in self.choices_manager.availability_zones(add_blank=False):
+            value = '{0}{1}'.format(arn_prefix, avail_zone_choice[0])
+            label = avail_zone_choice[0]
             choices.append((value, label))
         return choices
 

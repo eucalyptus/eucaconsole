@@ -215,6 +215,7 @@ def policy_generator(context, request, policy_actions=None, create_form=None, re
         security_group_choices=resource_choices.get('security_groups'),
         key_pair_choices=resource_choices.get('key_pairs'),
         vm_type_choices=resource_choices.get('vm_types'),
+        availability_zone_choices=resource_choices.get('availability_zones'),
     )
 
 
