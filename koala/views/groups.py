@@ -129,7 +129,7 @@ class GroupView(BaseView):
     def get_all_users_array(self):
         group_param = self.request.matchdict.get('name')
         if group_param == "new" or group_param is None:
-            return None
+            return []
         users = []
         # Group's path to be used ?
         if self.conn:
