@@ -103,7 +103,7 @@ class UsersJsonView(BaseView):
                 path=user.path,
                 user_name=user.user_name,
                 user_id=user.user_id,
-                groups=user_groups,
+                num_groups=len(user_groups),
                 num_keys=len(keys),
                 has_password=has_password,
                 arn=user.arn,
