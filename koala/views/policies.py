@@ -91,19 +91,21 @@ class IAMPolicyWizardView(BaseView):
         }
 
     def get_instance_choices(self):
-        choices = [('', _(u'All instances...'))]
+        resource_name = 'instance'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All instances...'))]
         for instance in self.ec2_conn.get_only_instances():
-            arn_prefix = self.get_arn_prefix('instance')
             value = '{0}{1}'.format(arn_prefix, instance.id)
             label = TaggedItemView.get_display_name(instance)
             choices.append((value, label))
         return choices
 
     def get_vm_type_choices(self):
-        choices = [('', _(u'All vm_types...'))]
+        resource_name = 'vmtype'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All instance types...'))]
         vm_type_choices = self.choices_manager.instance_types(
             cloud_type=self.cloud_type, add_blank=False, add_description=False)
-        arn_prefix = self.get_arn_prefix('vmtype')
         for vm_type_choice in vm_type_choices:
             label = vm_type_choice[1]
             value = '{0}{1}'.format(arn_prefix, vm_type_choice[0])
@@ -111,12 +113,13 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_image_choices(self):
-        choices = [('', _(u'All images...'))]
+        resource_name = 'image'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All images...'))]
         # Set owner alias to 'self' for AWS
         owner_alias = 'self' if self.cloud_type == 'aws' else None
         owners = [owner_alias] if owner_alias else []
         images = self.ec2_conn.get_all_images(owners=owners, filters={'image-type': 'machine'})
-        arn_prefix = self.get_arn_prefix('image')
         for image in images:
             value = '{0}{1}'.format(arn_prefix, image.id)
             label = TaggedItemView.get_display_name(image)
@@ -124,8 +127,9 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_volume_choices(self):
-        choices = [('', _(u'All volumes...'))]
-        arn_prefix = self.get_arn_prefix('volume')
+        resource_name = 'volume'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All volumes...'))]
         for volume in self.ec2_conn.get_all_volumes():
             value = '{0}{1}'.format(arn_prefix, volume.id)
             label = TaggedItemView.get_display_name(volume)
@@ -133,8 +137,9 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_snapshot_choices(self):
-        choices = [('', _(u'All snapshots...'))]
-        arn_prefix = self.get_arn_prefix('snapshot')
+        resource_name = 'snapshot'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All snapshots...'))]
         for snapshot in self.ec2_conn.get_all_snapshots():
             value = '{0}{1}'.format(arn_prefix, snapshot.id)
             label = TaggedItemView.get_display_name(snapshot)
@@ -142,8 +147,9 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_security_group_choices(self):
-        choices = [('', _(u'All security groups...'))]
-        arn_prefix = self.get_arn_prefix('security-group')
+        resource_name = 'securitygroup'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All security groups...'))]
         for security_group in self.ec2_conn.get_all_security_groups():
             value = '{0}{1}'.format(arn_prefix, security_group.name)
             label = '{0} ({1})'.format(security_group.name, security_group.id)
@@ -151,8 +157,9 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_availability_zone_choices(self):
-        choices = [('', _(u'All zones...'))]
-        arn_prefix = self.get_arn_prefix('availabilityzone')
+        resource_name = 'availabilityzone'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All zones...'))]
         for avail_zone_choice in self.choices_manager.availability_zones(add_blank=False):
             value = '{0}{1}'.format(arn_prefix, avail_zone_choice[0])
             label = avail_zone_choice[0]
@@ -160,19 +167,24 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_key_pair_choices(self):
-        choices = [('', _(u'All key pairs...'))]
-        arn_prefix = self.get_arn_prefix('key-pair')
+        resource_name = 'keypair'
+        arn_prefix = self.get_arn_prefix(resource_name)
+        choices = [(self.get_all_choice(resource_name), _(u'All key pairs...'))]
         for key_pair in self.ec2_conn.get_all_key_pairs():
             value = '{0}{1}'.format(arn_prefix, key_pair.name)
             label = key_pair.name
             choices.append((value, label))
         return choices
 
-    def get_arn_prefix(self, resource):
+    def get_arn_prefix(self, resource, add_all=False):
         region = '*'
         if self.cloud_type == 'aws':
             region = self.region
-        return 'arn:aws:ec2:{region}:*:{resource}/'.format(region=region, resource=resource)
+        return 'arn:aws:ec2:{region}:*:{resource}/{all}'.format(
+            region=region, resource=resource, all='*' if add_all else '')
+
+    def get_all_choice(self, resource):
+        return self.get_arn_prefix(resource, add_all=True)
 
 
 class IAMPolicyWizardJsonView(BaseView):
