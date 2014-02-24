@@ -106,7 +106,7 @@ class IAMPolicyWizardView(BaseView):
         for vm_type_choice in vm_type_choices:
             label = vm_type_choice[1]
             value = '{0}{1}'.format(arn_prefix, vm_type_choice[0])
-            choices.append((label, value))
+            choices.append((value, label))
         return choices
 
     def get_image_choices(self):
