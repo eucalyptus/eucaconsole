@@ -36,12 +36,9 @@
                 <a ng-href="${prefix}/{{item.user_name }}">{{ item.user_name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
+                <div ng-show="item.num_groups > 0">
                     <span class="label" title="Groups" i18n:attributes="title" data-tooltip="">GR</span>
-                    <span ng-repeat="group in item.groups ">
-                        <a ng-click="linkUser(item, '#group-section')">{{ group }}</a>
-                        <br/>
-                    </span>
+                    <a ng-click="linkUser(item, '#group-section')">{{ item.num_groups }}</a>
                 </div>
                 <div ng-show="item.has_password">
                     <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
@@ -66,9 +63,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
                 <td>
-                    <div ng-repeat="group in item.groups ">
-                        <a ng-click="linkUser(item, '#group-section')">{{ group }}</a>
-                    </div>
+                    <a ng-click="linkUser(item, '#group-section')">{{ item.num_groups }}</a>
                 </td>
                 <td>
                     <span ng-show="item.has_password">
