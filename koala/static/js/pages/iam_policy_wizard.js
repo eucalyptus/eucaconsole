@@ -16,9 +16,11 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyAPIVersion = "2012-10-17";
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
+        $scope.actionsList = [];
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
+            $scope.actionsList = options['actionsList'];
             $scope.initSelectedTab();
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
@@ -116,103 +118,89 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.policyStatements = [];
+            // Add namespace (allow/deny all) statements
+            $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
+                var selectedMark = $(elem).find('.tick.selected');
+                if (selectedMark.length > 0) {
+                    $scope.policyStatements.push({
+                        "Action": selectedMark.attr('data-action'),
+                        "Resource": selectedMark.attr('data-resource'),
+                        "Effect": selectedMark.attr('data-effect')
+                    });
+                }
+            });
+            // Add allow/deny statements for each action
+            $scope.actionsList.forEach(function (action) {
+                var actionRow = $scope.policyGenerator.find('tr.action.' + action),
+                    selectedMark = actionRow.find('.tick.selected'),
+                    addedResources = $scope[action + 'Resources'],
+                    resource = null;
+                resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                if (selectedMark.length > 0) {
+                    $scope.policyStatements.push({
+                        "Action": selectedMark.attr('data-action'),
+                        "Resource": resource,
+                        "Effect": selectedMark.attr('data-effect')
+                    });
+                }
+            });
             var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
             var formattedResults = JSON.stringify(generatorPolicy, null, 2);
             $scope.policyText = formattedResults;
             $scope.codeEditor.setValue(formattedResults);
         };
-        $scope.updateStatements = function () {
-            // TODO: remove and replace all calls with $scope.updatePolicy;
-            $scope.policyStatements = [];
-            $scope.policyGenerator.find('.action').find('i.selected').each(function(idx, item) {
-                var namespace = item.getAttribute('data-namespace'),
-                    action = item.getAttribute('data-action'),
-                    effect = item.getAttribute('data-effect'),
-                    nsAction = namespace.toLowerCase() + ':' + action,
-                    actionRow = $(item).closest('tr'),
-                    visibleResource = null,
-                    resource = null;
+        $scope.addResource = function (action, $event) {
+            var resourceBtn = $($event.target),
+                actionRow = resourceBtn.closest('tr'),
+                selectedTick = actionRow.find('i.selected'),
+                allowDenyCount = selectedTick.length,
+                actionResources = $scope[action + 'Resources'],
+                visibleResource = null,
+                statement = null,
+                resourceVal = null;
+            $event.preventDefault();
+            if (!allowDenyCount) {
+                alert('Select "Allow" or "Deny" to add the statement to the policy');
+            } else {
                 visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
                 if (!visibleResource.length) {
                     visibleResource = actionRow.find('.resource:visible');
                 }
-                resource = visibleResource.val() || '*';
-                $scope.policyStatements.push({
-                    "Action": [nsAction],
-                    "Resource": resource,
-                    "Effect": effect
-                });
-            });
-            $scope.updatePolicy();
-        };
-        $scope.addResource = function ($event) {
-            var resourceBtn = $($event.target),
-                actionRow = resourceBtn.closest('tr');
-            var allowDenyCount = actionRow.find('i.selected').length;
-            if (!allowDenyCount) {
-                alert('Select "Allow" or "Deny" to add the statement to the policy');
-            } else {
-                // TODO: replace with updatePolicy()
-                $scope.updateStatements();
+                resourceVal = visibleResource.val();
+                if (actionResources.indexOf(resourceVal === -1)) {
+                    actionResources.push(resourceVal);
+                }
+                $timeout(function () {
+                    $scope.updatePolicy();
+                }, 100);
             }
         };
-        $scope.selectAction = function (effect, namespace, action, $event) {
+        // Handle Allow/Deny selection for a given action
+        $scope.selectAction = function ($event) {
             var tgt = $($event.target),
-                nsAction = namespace.toLowerCase() + ':' + action,
-                actionRow = tgt.closest('tr'),
-                actionStatement = {},
-                resource = '*';
+                actionRow = tgt.closest('tr');
             $event.preventDefault();
-            // Reset policy statements in action to prevent duplicate Allow/Deny statements
-            $scope.policyStatements.forEach(function (item, idx) {
-                if (item['Action'] === action && item['Resource'] === resource) {
-                    $scope.policyStatements.splice(idx, 1);
-                }
-            });
             tgt.toggleClass('selected');
             if (tgt.hasClass('fi-check')) {
                 actionRow.find('.fi-x').removeClass('selected');
             } else {
                 actionRow.find('.fi-check').removeClass('selected');
-            }
-            actionStatement = {
-                "Action": action,
-                "Resource": resource,
-                "Effect": effect
-            };
-            if (tgt.hasClass('selected')) {
-                $scope.policyStatements.push(actionStatement);
             }
             $timeout(function () {
                 $scope.updatePolicy();
-            }, 50);
+            }, 100);
         };
-        $scope.selectAll = function (effect, namespace, $event) {
-            var tgt = $($event.target),
-                actionRow = tgt.closest('tr'),
-                action = namespace + ':*',
-                resource = '*',
-                nsStatement = {};
+        // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
+        $scope.selectAll = function ($event) {
             $event.preventDefault();
-            // Reset policy statements in namespace to prevent duplicate Allow/Deny statements
-            $scope.policyStatements.forEach(function (item, idx) {
-                if (item['Action'] === namespace + ':*') {
-                    $scope.policyStatements.splice(idx, 1);
-                }
-            });
+            var tgt = $($event.target),
+                actionRow = tgt.closest('tr');
             tgt.toggleClass('selected');
             if (tgt.hasClass('fi-check')) {
                 actionRow.find('.fi-x').removeClass('selected');
             } else {
                 actionRow.find('.fi-check').removeClass('selected');
-            }
-            nsStatement = {
-                "Action": action,
-                "Resource": resource,
-                "Effect": effect
-            };
-            if (tgt.hasClass('selected')) {
-                $scope.policyStatements.push(nsStatement);
             }
             $timeout(function () {
                 $scope.updatePolicy();
