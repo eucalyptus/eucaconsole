@@ -46,7 +46,6 @@ angular.module('VolumePage', ['TagEditor'])
             // Instance choices in "Attach to instance" modal dialog
             $('#attach-volume-modal').on('open', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
-                $('#instance_id').val('').trigger('chosen:updated');
             });
         };
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
