@@ -118,24 +118,25 @@ angular.module('IAMPolicyWizard', [])
         $scope.updatePolicy = function() {
             var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
             var formattedResults = JSON.stringify(generatorPolicy, null, 2);
-            if ($scope.policyStatements.length) {
-                $scope.policyText = formattedResults;
-                $scope.codeEditor.setValue(formattedResults);
-            }
+            $scope.policyText = formattedResults;
+            $scope.codeEditor.setValue(formattedResults);
         };
         $scope.updateStatements = function () {
+            // TODO: remove and replace all calls with $scope.updatePolicy;
             $scope.policyStatements = [];
             $scope.policyGenerator.find('.action').find('i.selected').each(function(idx, item) {
                 var namespace = item.getAttribute('data-namespace'),
                     action = item.getAttribute('data-action'),
                     effect = item.getAttribute('data-effect'),
                     nsAction = namespace.toLowerCase() + ':' + action,
-                    resource = '*';
-                if ($scope.cloudType === 'euca') {
-                    resource = $(item).closest('tr').find('.chosen-container:visible').prev('.resource').val() || '*';
-                } else {
-                    resource = $(item).closest('tr').find('.resource:visible').val() || '*';
+                    actionRow = $(item).closest('tr'),
+                    visibleResource = null,
+                    resource = null;
+                visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
+                if (!visibleResource.length) {
+                    visibleResource = actionRow.find('.resource:visible');
                 }
+                resource = visibleResource.val() || '*';
                 $scope.policyStatements.push({
                     "Action": [nsAction],
                     "Resource": resource,
@@ -145,10 +146,13 @@ angular.module('IAMPolicyWizard', [])
             $scope.updatePolicy();
         };
         $scope.addResource = function ($event) {
-            var allowDenyCount = $($event.target).closest('tr').find('i.selected').length;
+            var resourceBtn = $($event.target),
+                actionRow = resourceBtn.closest('tr');
+            var allowDenyCount = actionRow.find('i.selected').length;
             if (!allowDenyCount) {
                 alert('Select "Allow" or "Deny" to add the statement to the policy');
             } else {
+                // TODO: replace with updatePolicy()
                 $scope.updateStatements();
             }
         };
@@ -161,21 +165,44 @@ angular.module('IAMPolicyWizard', [])
                 tgt.closest('tr').find('.fi-check').removeClass('selected');
             }
             $timeout(function () {
+                // TODO: replace with updatePolicy()
                 $scope.updateStatements();
             }, 50);
         };
-        $scope.toggleAll = function (action, namespace, $event) {
-            // action is 'allow' or 'deny'
-            var nsSelector = '.' + namespace,
-                enabledMark = action === 'allow' ? '.fi-check' : '.fi-x',
-                disabledMark = action === 'allow' ? '.fi-x' : '.fi-check';
-            $($event.target).addClass('selected');
-            $scope.policyGenerator.find(nsSelector).find(enabledMark).addClass('selected');
-            $scope.policyGenerator.find(nsSelector).find(disabledMark).removeClass('selected');
+        $scope.selectAll = function (effect, namespace, $event) {
+            // effect is 'Allow' or 'Deny'
+            $event.preventDefault();
+            $scope.resetNamespacePolicyStatements(namespace);
+            var tgt = $($event.target),
+                action = namespace + ':*',
+                resource = '*',
+                nsStatement = {};
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                tgt.closest('tr').find('.fi-x').removeClass('selected');
+            } else {
+                tgt.closest('tr').find('.fi-check').removeClass('selected');
+            }
+            nsStatement = {
+                "Action": action,
+                "Resource": resource,
+                "Effect": effect
+            };
+            if (tgt.hasClass('selected')) {
+                $scope.policyStatements.push(nsStatement);
+            }
             $timeout(function () {
-                $scope.updateStatements();
+                $scope.updatePolicy();
             }, 100)
         };
+        $scope.resetNamespacePolicyStatements = function (namespace) {
+            $scope.policyStatements.forEach(function (item, idx) {
+                if (item['Action'] === namespace + ':*') {
+                    $scope.policyStatements.splice(idx, 1);
+                }
+            });
+            console.log($scope.policyStatements)
+        }
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };

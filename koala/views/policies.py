@@ -88,6 +88,7 @@ class IAMPolicyWizardView(BaseView):
         return {
             'policyJsonEndpoint': self.policy_json_endpoint,
             'cloudType': self.cloud_type,
+            'actionsList': self.get_all_actions(),
         }
 
     def get_instance_choices(self):
@@ -185,6 +186,13 @@ class IAMPolicyWizardView(BaseView):
 
     def get_all_choice(self, resource):
         return self.get_arn_prefix(resource, add_all=True)
+
+    @staticmethod
+    def get_all_actions():
+        actions = []
+        for namespace in permissions.POLICY_ACTIONS:
+            actions.extend(namespace.get('actions'))
+        return actions
 
 
 class IAMPolicyWizardJsonView(BaseView):
