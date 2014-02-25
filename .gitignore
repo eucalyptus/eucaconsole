@@ -27,3 +27,4 @@ venv/
 .sass-cache
 *.scssc
 console.ini
+session-keys.ini
