@@ -1,4 +1,4 @@
-<div id="policy-generator" tal:define="show_resource_for_action import: koala.utils.show_resource_for_action">
+<div id="policy-generator">
     <table class="table actions-wrapper">
         <thead>
             <tr>
@@ -12,10 +12,16 @@
             <metal:block tal:repeat="actions_ns policy_actions">
                 <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
                     <td class="allow">
-                        <a ng-click="toggleAll('allow', '${namespace}', $event)"><i class="fi-check tick"></i></a>
+                        <a ng-click="selectAll($event)">
+                            <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
+                               data-action="${namespace}:*" data-resource="*"></i>
+                        </a>
                     </td>
                     <td class="deny">
-                        <a ng-click="toggleAll('deny', '${namespace}', $event)"><i class="fi-x tick"></i></a>
+                        <a ng-click="selectAll($event)">
+                            <i class="fi-x tick" data-namespace="${namespace}" data-effect="Deny"
+                               data-action="${namespace}:*" data-resource="*"></i>
+                        </a>
                     </td>
                     <td class="actions-namespace">
                         <div class="expando" ng-init="${namespace}Expanded = false" ng-cloak="">
@@ -30,24 +36,25 @@
                     </td>
                     <td>&nbsp;</td>
                 </tr>
-                <tr class="action ${namespace}" tal:define="namespace actions_ns.name"
+                <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name" ng-init="${action}Resources = []"
                     tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
-                    <metal:block tal:define="resource_condition show_resource_for_action(action);
-                                 namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
+                    <div tal:define="namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
                         <td class="allow">
-                            <a ng-click="handleSelection($event)">
-                                <i class="fi-check tick" data-namespace="${namespace}" data-action="${action}" data-effect="Allow"></i>
+                            <a ng-click="selectAction($event)">
+                                <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
+                                   data-action="${action}" data-resource="*"></i>
                             </a>
                         </td>
                         <td class="deny">
-                            <a ng-click="handleSelection($event)">
-                                <i class="fi-x tick" data-namespace="${namespace}" data-action="${action}" data-effect="Deny"></i>
+                            <a ng-click="selectAction($event)">
+                                <i class="fi-x tick" data-namespace="${namespace}" data-effect="Deny"
+                                   data-action="${action}" data-resource="*"></i>
                             </a>
                         </td>
                         <td>
                             <span class="action-name">${action}</span>
                             <div class="advanced hide">
-                                <div class="resource-wrapper" tal:condition="namespace_condition and resource_condition">
+                                <div class="resource-wrapper" tal:condition="namespace_condition">
                                     <div>&nbsp;</div>
                                     <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
                                         <label i18n:translate="">Resource name (ARN):</label>
@@ -62,16 +69,34 @@
                                                      volume_condition 'Volume' in action;
                                                      snapshot_condition 'Snapshot' in action;
                                                      securitygroup_condition 'SecurityGroup' in action;
-                                                     keypair_condition 'KeyPair' in action;">
+                                                     keypair_condition 'KeyPair' in action;
+                                                     ipaddress_condition 'Address' in action;">
+                                        <div class="added-resources">
+                                            <span class="label radius secondary resentry" ng-cloak=""
+                                                  ng-repeat="resource in ${action}Resources track by $index">
+                                                {{ resource.split(':::')[1] }}
+                                                <a href="#" class="remove" ng-click="removeResource('${action}', $index)"
+                                                   title="Remove resource"><i class="fi-x"></i></a>
+                                            </span>
+                                        </div>
                                         <select class="resource-type">
                                             <option value="instance" tal:condition="instance_condition">
                                                 Instance
+                                            </option>
+                                            <option value="vm_type" tal:condition="instance_condition">
+                                                VM Type
                                             </option>
                                             <option value="image" tal:condition="image_condition">
                                                 Image
                                             </option>
                                             <option value="security_group" tal:condition="securitygroup_condition">
                                                 Security group
+                                            </option>
+                                            <option value="ip_address" tal:condition="ipaddress_condition">
+                                                IP Address or range
+                                            </option>
+                                            <option value="availability_zone">
+                                                Availability zone
                                             </option>
                                             <option value="key_pair" tal:condition="keypair_condition">
                                                 Key pair
@@ -84,8 +109,12 @@
                                             </option>
                                         </select>
                                         <strong class="equal">=</strong>
+                                        <input type="text" class="resource ip_address" tal:condition="ipaddress_condition" />
                                         <select class="resource instance chosen" tal:condition="instance_condition">
                                             <option tal:repeat="choice instance_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
+                                        <select class="resource vm_type chosen" tal:condition="instance_condition">
+                                            <option tal:repeat="choice vm_type_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource image chosen" tal:condition="image_condition">
                                             <option tal:repeat="choice image_choices" value="${choice[0]}">${choice[1]}</option>
@@ -93,42 +122,46 @@
                                         <select class="resource security_group chosen" tal:condition="securitygroup_condition">
                                             <option tal:repeat="choice security_group_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
+                                        <select class="resource availability_zone chosen">
+                                            <option tal:repeat="choice availability_zone_choices" value="${choice[0]}">${choice[1]}</option>
+                                        </select>
                                         <select class="resource key_pair chosen" tal:condition="keypair_condition">
                                             <option tal:repeat="choice key_pair_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
-                                        <select class="resource volume chosen" tal:condition="volume_condition" ng-show="${action}Resource == 'volume'">
+                                        <select class="resource volume chosen" tal:condition="volume_condition">
                                             <option tal:repeat="choice volume_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                         <select class="resource snapshot chosen" tal:condition="snapshot_condition">
                                             <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                     </div>
-                                    <a class="button tiny round" i18n:translate="" ng-click="addResource($event)" i18n:translate="">
+                                    <div class="conditions-wrapper">
+                                        <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
+                                            <strong class="title" >
+                                                <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
+                                                    <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
+                                                    <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
+                                                    &nbsp;<span i18n:translate="">Add conditions (optional)</span>
+                                                </a>
+                                            </strong>
+                                        </div>
+                                        <div ng-show="${action}ConditionsExpanded" class="conditions">
+                                            TBD
+                                        </div>
+                                    </div>
+                                    <a class="button tiny round" i18n:translate=""
+                                       ng-click="addResource('${action}', $event)">
                                         Add Resource
                                     </a>
                                     <div>&nbsp;</div>
                                 </div><!--! /end resource-wrapper -->
-                                <div class="conditions-wrapper">
-                                    <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
-                                        <strong class="title" >
-                                            <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
-                                                <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
-                                                <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
-                                                &nbsp;<span i18n:translate="">Add conditions (optional)</span>
-                                            </a>
-                                        </strong>
-                                    </div>
-                                    <div ng-show="${action}ConditionsExpanded" class="conditions">
-                                        TBD
-                                    </div>
-                                </div>
                             </div>
                         </td>
                         <td>
                             <a class="button tiny round" ng-click="toggleAdvanced($event)"
                                tal:condition="namespace_condition">Advanced</a>
                         </td>
-                    </metal:block>
+                    </div>
                 </tr>
             </metal:block>
         </tbody>

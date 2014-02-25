@@ -88,11 +88,17 @@
             }
             .resource-wrapper {
                 vertical-align: top;
+                .resentry {
+                    margin-bottom: 8px; margin-right: 8px;
+                    .remove i {
+                        color: white;
+                    }
+                }
             }
             .conditions-wrapper {
-                margin-top: 1rem;
+                margin-bottom: 1rem;
                 .conditions {
-                    margin: 1rem 0;
+                    margin: 0.5rem 0;
                 }
             }
             .button {
@@ -103,7 +109,7 @@
                 width: 70%;
                 height: auto;
                 line-height: 1rem;
-                padding: 4px 8px;
+                padding: 8px 8px;
                 margin-bottom: 8px;
             }
             .advanced {

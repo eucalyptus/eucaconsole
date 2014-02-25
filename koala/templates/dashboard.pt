@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="groups">
+            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca'">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Groups</h5>
                     <div class="content">
@@ -159,7 +159,7 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="users">
+            <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca'">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Users</h5>
                     <div class="content">

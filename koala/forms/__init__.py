@@ -67,7 +67,7 @@ class ChoicesManager(object):
                 for instance in instances:
                     value = instance.id
                     label = TaggedItemView.get_display_name(instance)
-                    if( state is None or instance.state == state):
+                    if state is None or instance.state == state:
                         choices.append((value, label))
         return choices
 
