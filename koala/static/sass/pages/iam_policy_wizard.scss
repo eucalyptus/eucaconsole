@@ -88,6 +88,12 @@
             }
             .resource-wrapper {
                 vertical-align: top;
+                .resentry {
+                    margin-bottom: 8px; margin-right: 8px;
+                    .remove i {
+                        color: white;
+                    }
+                }
             }
             .conditions-wrapper {
                 margin-bottom: 1rem;

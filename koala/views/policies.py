@@ -178,10 +178,10 @@ class IAMPolicyWizardView(BaseView):
         return choices
 
     def get_arn_prefix(self, resource, add_all=False):
-        region = '*'
+        region = ''
         if self.cloud_type == 'aws':
             region = self.region
-        return 'arn:aws:ec2:{region}:*:{resource}/{all}'.format(
+        return 'arn:aws:ec2:{region}::{resource}/{all}'.format(
             region=region, resource=resource, all='*' if add_all else '')
 
     def get_all_choice(self, resource):

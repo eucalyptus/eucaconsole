@@ -119,36 +119,38 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.updatePolicy = function() {
             $scope.policyStatements = [];
-            // Add namespace (allow/deny all) statements
-            $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
-                var selectedMark = $(elem).find('.tick.selected');
-                if (selectedMark.length > 0) {
-                    $scope.policyStatements.push({
-                        "Action": selectedMark.attr('data-action'),
-                        "Resource": selectedMark.attr('data-resource'),
-                        "Effect": selectedMark.attr('data-effect')
-                    });
-                }
-            });
-            // Add allow/deny statements for each action
-            $scope.actionsList.forEach(function (action) {
-                var actionRow = $scope.policyGenerator.find('tr.action.' + action),
-                    selectedMark = actionRow.find('.tick.selected'),
-                    addedResources = $scope[action + 'Resources'],
-                    resource = null;
-                resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
-                if (selectedMark.length > 0) {
-                    $scope.policyStatements.push({
-                        "Action": selectedMark.attr('data-action'),
-                        "Resource": resource,
-                        "Effect": selectedMark.attr('data-effect')
-                    });
-                }
-            });
-            var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
-            var formattedResults = JSON.stringify(generatorPolicy, null, 2);
-            $scope.policyText = formattedResults;
-            $scope.codeEditor.setValue(formattedResults);
+            $timeout(function () {
+                // Add namespace (allow/deny all) statements
+                $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
+                    var selectedMark = $(elem).find('.tick.selected');
+                    if (selectedMark.length > 0) {
+                        $scope.policyStatements.push({
+                            "Action": selectedMark.attr('data-action'),
+                            "Resource": selectedMark.attr('data-resource'),
+                            "Effect": selectedMark.attr('data-effect')
+                        });
+                    }
+                });
+                // Add allow/deny statements for each action
+                $scope.actionsList.forEach(function (action) {
+                    var actionRow = $scope.policyGenerator.find('tr.action.' + action),
+                        selectedMark = actionRow.find('.tick.selected'),
+                        addedResources = $scope[action + 'Resources'],
+                        resource = null;
+                    resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                    if (selectedMark.length > 0) {
+                        $scope.policyStatements.push({
+                            "Action": selectedMark.attr('data-action'),
+                            "Resource": resource,
+                            "Effect": selectedMark.attr('data-effect')
+                        });
+                    }
+                });
+                var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
+                var formattedResults = JSON.stringify(generatorPolicy, null, 2);
+                $scope.policyText = formattedResults;
+                $scope.codeEditor.setValue(formattedResults);
+            }, 100);
         };
         $scope.addResource = function (action, $event) {
             var resourceBtn = $($event.target),
@@ -171,10 +173,12 @@ angular.module('IAMPolicyWizard', [])
                 if (actionResources.indexOf(resourceVal === -1)) {
                     actionResources.push(resourceVal);
                 }
-                $timeout(function () {
-                    $scope.updatePolicy();
-                }, 100);
+                $scope.updatePolicy();
             }
+        };
+        $scope.removeResource = function (action, index) {
+            $scope[action + 'Resources'].splice(index, 1);
+            $scope.updatePolicy();
         };
         // Handle Allow/Deny selection for a given action
         $scope.selectAction = function ($event) {
@@ -187,9 +191,7 @@ angular.module('IAMPolicyWizard', [])
             } else {
                 actionRow.find('.fi-check').removeClass('selected');
             }
-            $timeout(function () {
-                $scope.updatePolicy();
-            }, 100);
+            $scope.updatePolicy();
         };
         // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
         $scope.selectAll = function ($event) {
@@ -202,9 +204,7 @@ angular.module('IAMPolicyWizard', [])
             } else {
                 actionRow.find('.fi-check').removeClass('selected');
             }
-            $timeout(function () {
-                $scope.updatePolicy();
-            }, 100)
+            $scope.updatePolicy();
         };
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');

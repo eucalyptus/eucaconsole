@@ -71,7 +71,14 @@
                                                      securitygroup_condition 'SecurityGroup' in action;
                                                      keypair_condition 'KeyPair' in action;
                                                      ipaddress_condition 'Address' in action;">
-                                        <div class="added-resources"></div>
+                                        <div class="added-resources">
+                                            <span class="label radius secondary resentry" ng-cloak=""
+                                                  ng-repeat="resource in ${action}Resources track by $index">
+                                                {{ resource.split(':::')[1] }}
+                                                <a href="#" class="remove" ng-click="removeResource('${action}', $index)"
+                                                   title="Remove resource"><i class="fi-x"></i></a>
+                                            </span>
+                                        </div>
                                         <select class="resource-type">
                                             <option value="instance" tal:condition="instance_condition">
                                                 Instance
