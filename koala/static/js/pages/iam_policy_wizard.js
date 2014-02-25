@@ -156,32 +156,55 @@ angular.module('IAMPolicyWizard', [])
                 $scope.updateStatements();
             }
         };
-        $scope.handleSelection = function ($event) {
-            var tgt = $($event.target);
+        $scope.selectAction = function (effect, namespace, action, $event) {
+            var tgt = $($event.target),
+                nsAction = namespace.toLowerCase() + ':' + action,
+                actionRow = tgt.closest('tr'),
+                actionStatement = {},
+                resource = '*';
+            $event.preventDefault();
+            // Reset policy statements in action to prevent duplicate Allow/Deny statements
+            $scope.policyStatements.forEach(function (item, idx) {
+                if (item['Action'] === action && item['Resource'] === resource) {
+                    $scope.policyStatements.splice(idx, 1);
+                }
+            });
             tgt.toggleClass('selected');
             if (tgt.hasClass('fi-check')) {
-                tgt.closest('tr').find('.fi-x').removeClass('selected');
+                actionRow.find('.fi-x').removeClass('selected');
             } else {
-                tgt.closest('tr').find('.fi-check').removeClass('selected');
+                actionRow.find('.fi-check').removeClass('selected');
+            }
+            actionStatement = {
+                "Action": action,
+                "Resource": resource,
+                "Effect": effect
+            };
+            if (tgt.hasClass('selected')) {
+                $scope.policyStatements.push(actionStatement);
             }
             $timeout(function () {
-                // TODO: replace with updatePolicy()
-                $scope.updateStatements();
+                $scope.updatePolicy();
             }, 50);
         };
         $scope.selectAll = function (effect, namespace, $event) {
-            // effect is 'Allow' or 'Deny'
-            $event.preventDefault();
-            $scope.resetNamespacePolicyStatements(namespace);
             var tgt = $($event.target),
+                actionRow = tgt.closest('tr'),
                 action = namespace + ':*',
                 resource = '*',
                 nsStatement = {};
+            $event.preventDefault();
+            // Reset policy statements in namespace to prevent duplicate Allow/Deny statements
+            $scope.policyStatements.forEach(function (item, idx) {
+                if (item['Action'] === namespace + ':*') {
+                    $scope.policyStatements.splice(idx, 1);
+                }
+            });
             tgt.toggleClass('selected');
             if (tgt.hasClass('fi-check')) {
-                tgt.closest('tr').find('.fi-x').removeClass('selected');
+                actionRow.find('.fi-x').removeClass('selected');
             } else {
-                tgt.closest('tr').find('.fi-check').removeClass('selected');
+                actionRow.find('.fi-check').removeClass('selected');
             }
             nsStatement = {
                 "Action": action,
@@ -195,14 +218,6 @@ angular.module('IAMPolicyWizard', [])
                 $scope.updatePolicy();
             }, 100)
         };
-        $scope.resetNamespacePolicyStatements = function (namespace) {
-            $scope.policyStatements.forEach(function (item, idx) {
-                if (item['Action'] === namespace + ':*') {
-                    $scope.policyStatements.splice(idx, 1);
-                }
-            });
-            console.log($scope.policyStatements)
-        }
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };
