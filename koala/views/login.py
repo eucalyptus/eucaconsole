@@ -13,7 +13,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
-from ..forms.login import EucaLoginForm, AWSLoginForm
+from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
 from ..views import BaseView
 
@@ -143,11 +143,13 @@ class LogoutView(BaseView):
         super(LogoutView, self).__init__(request)
         self.request = request
         self.login_url = request.route_url('login')
+        self.euca_logout_form = EucaLogoutForm(self.request, formdata=self.request.params or None)
 
     @view_config(route_name='logout', request_method='POST')
     def logout(self):
-        forget(self.request)
-        self.request.session.invalidate()
-        self.invalidate_cache()
-        return HTTPFound(location=self.login_url)
+        if self.euca_logout_form.validate():
+            forget(self.request)
+            self.request.session.invalidate()
+            self.invalidate_cache()
+            return HTTPFound(location=self.login_url)
 
