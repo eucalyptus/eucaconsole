@@ -92,8 +92,8 @@
            <h6 class="copyright subheader">
                © 2014 Eucalyptus Systems, Inc. <span i18n:translate="">All rights reserved</span>.</h6>
         </div>
-        <form id="euca-logout-form" method="post"
-              action="${request.route_url('logout')}">
+        <form id="euca-logout-form" method="post" action="${request.route_url('logout')}">
+            ${structure:layout.euca_logout_form['csrf_token']}
             <input type="submit" style="display:none;" id="euca-logout-button"/>
         </form>
     </footer>

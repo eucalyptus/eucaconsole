@@ -13,6 +13,7 @@ from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
+from .forms.login import EucaLogoutForm
 from .models import Notification
 
 
@@ -34,6 +35,7 @@ class MasterLayout(object):
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.username_label = self.request.session.get('username_label')
+        self.euca_logout_form = EucaLogoutForm(request=self.request)
         self.date_format = _(u'%H:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
         self.tag_pattern = '^(?!aws:).*'
