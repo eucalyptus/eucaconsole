@@ -656,21 +656,21 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             try:
-                for idx in range(num_instances):
-                    reservation = self.conn.run_instances(
-                        image_id,
-                        key_name=key_name,
-                        user_data=self.get_user_data(),
-                        addressing_type=addressing_type,
-                        instance_type=instance_type,
-                        placement=availability_zone,
-                        kernel_id=kernel_id,
-                        ramdisk_id=ramdisk_id,
-                        monitoring_enabled=monitoring_enabled,
-                        block_device_map=block_device_map,
-                        security_group_ids=security_groups,
-                    )
-                    instance = reservation.instances[0]
+                reservation = self.conn.run_instances(
+                    image_id,
+                    max_count=num_instances,
+                    key_name=key_name,
+                    user_data=self.get_user_data(),
+                    addressing_type=addressing_type,
+                    instance_type=instance_type,
+                    placement=availability_zone,
+                    kernel_id=kernel_id,
+                    ramdisk_id=ramdisk_id,
+                    monitoring_enabled=monitoring_enabled,
+                    block_device_map=block_device_map,
+                    security_group_ids=security_groups,
+                )
+                for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
                     input_field_name = 'name_{0}'.format(idx)
@@ -682,7 +682,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                         tags = json.loads(tags_json)
                         for tagname, tagvalue in tags.items():
                             instance.add_tag(tagname, tagvalue)
-                time.sleep(2)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 queue = Notification.SUCCESS
