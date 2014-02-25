@@ -682,8 +682,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                         tags = json.loads(tags_json)
                         for tagname, tagvalue in tags.items():
                             instance.add_tag(tagname, tagvalue)
-                # commenting this out.. why do we need sleep here? - dak
-                #time.sleep(2)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 queue = Notification.SUCCESS
