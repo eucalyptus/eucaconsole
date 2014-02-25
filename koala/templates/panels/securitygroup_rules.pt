@@ -30,7 +30,7 @@
                     <label class="protocol" i18n:translate="">Protocol</label>
                 </div>
                 <div class="small-9 columns">
-                    <select name="ip_protocol" class="ip-protocol"
+                    <select id="ip-protocol-select" name="ip_protocol" class="ip-protocol"
                             ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)">
                         <option value="" i18n:translate="">select...</option>
                         <option tal:repeat="choice protocol_choices" value="${choice[0]}">${choice[1]}</option>
@@ -74,7 +74,7 @@
                     <label class="securitygroupname">
                         <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
                         <span i18n:translate="" class="sg-label">Security group</span>
-                        <select name="groupname" class="groupname" ng-model="groupName"
+                        <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                 ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'">
                             <option value="" i18n:translate="">select...</option>
                             <option tal:repeat="groupname groupnames"
