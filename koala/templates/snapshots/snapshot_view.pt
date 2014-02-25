@@ -24,7 +24,7 @@
              tal:define="form_action request.route_url('snapshot_update', id=snapshot.id)
                          if snapshot else request.route_url('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
-                         html_attrs {'disabled': 'disabled'} if snapshot else {};">
+                         html_attrs {'disabled': 'disabled'} if snapshot else {'data-placeholder': 'select...'};">
             <div class="panel ${'has-actions' if snapshot else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
                     <metal:actions metal:fill-slot="actions">

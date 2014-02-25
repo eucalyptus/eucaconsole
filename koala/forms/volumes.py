@@ -131,7 +131,7 @@ class AttachForm(BaseSecureForm):
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
         if self.volume:
-            choices = [('', _(u'select...'))]
+            choices = []
             for instance in self.instances:
                 if instance.state == "running" and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
