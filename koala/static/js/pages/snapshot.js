@@ -23,6 +23,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
                 $('#volume_id').chosen({'width': '75%', search_contains: true});
+                $('#volume_id').val('').trigger('chosen:updated'); 
                 if ($('#volume_id').children().length == 1) {
                     var modal = $('#create-warn-modal');
                     modal.foundation('reveal', 'open');
