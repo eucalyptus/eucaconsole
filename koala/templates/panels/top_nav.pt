@@ -29,7 +29,7 @@
             <li><a id="resource-menuitem-eips" href="${request.route_url('ipaddresses')}">IP Addresses</a></li>
         </ul>
     </li>
-    <li class="has-dropdown" tal:condition="layout.username == 'admin'">
+    <li class="has-dropdown" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
         <a id="resource-menu-iam">IAM</a>
         <ul class="dropdown">
             <li><a id="resource-menuitem-users" href="${request.route_url('users')}">IAM Users</a></li>
