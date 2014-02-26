@@ -11,7 +11,9 @@ angular.module('CustomFilters', [])
 })
 .filter('ellipsis', function () {
     return function (line, num) {
-        if( line.length <= num ){
+        if( line.length == 0 ){
+            return "";
+        }else if( line.length <= num ){
             return line;
         }
         return line.substring(0, num) + "...";
