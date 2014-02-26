@@ -217,6 +217,9 @@ angular.module('IAMPolicyWizard', [])
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };
+        $scope.hasConditions = function (obj) {
+            return Object.keys(obj).length > 0;
+        }
     })
 ;
 

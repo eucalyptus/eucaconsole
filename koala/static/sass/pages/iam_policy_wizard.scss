@@ -85,10 +85,13 @@
         &.allow, &.deny {
             text-align: center
         }
+        h6 {
+            margin-bottom: 4px;
+        }
         .resource-wrapper {
             vertical-align: top;
+            margin-bottom: 1rem;
             .resentry {
-                margin-bottom: 8px; margin-right: 8px;
                 .remove {
                     position: relative;
                     top: 3px;
@@ -140,6 +143,7 @@
         }
         label {
             margin-bottom: 2px;
+            margin-top: 6px;
         }
         i.tick {
             color: $euca-lightgrey;

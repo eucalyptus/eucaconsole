@@ -23,8 +23,8 @@
 #policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; width: 40px; }
 #policy-generator td { font-size: 0.9rem; line-height: 1rem; }
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
-#policy-generator td .resource-wrapper { vertical-align: top; }
-#policy-generator td .resource-wrapper .resentry { margin-bottom: 8px; margin-right: 8px; }
+#policy-generator td h6 { margin-bottom: 4px; }
+#policy-generator td .resource-wrapper { vertical-align: top; margin-bottom: 1rem; }
 #policy-generator td .resource-wrapper .resentry .remove { position: relative; top: 3px; margin-right: 0.2rem; }
 #policy-generator td .conditions-wrapper { margin-bottom: 1rem; }
 #policy-generator td .conditions-wrapper .conditions { margin: 0.5rem 0; }
@@ -36,7 +36,7 @@
 #policy-generator td .advanced input[type=text].hide { display: none; }
 #policy-generator td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
-#policy-generator td label { margin-bottom: 2px; }
+#policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
 #policy-generator td i.tick { color: #cccccc; font-size: 1.2rem; }
 #policy-generator td i.tick.fi-check.selected { color: #00415e; }
 #policy-generator td i.tick.fi-x.selected { color: darkred; }
