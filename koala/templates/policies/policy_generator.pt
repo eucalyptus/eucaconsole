@@ -55,6 +55,7 @@
                         <div class="advanced hide">
                             <div class="resource-wrapper" tal:condition="namespace_condition">
                                 <div>&nbsp;</div>
+                                <h6 i18n:translate="">Resources</h6>
                                 <div tal:condition="layout.cloud_type == 'euca'"
                                      tal:define="instance_condition 'Instance' in action
                                                      or 'AttachVolume' in action or 'DetachVolume' in action
@@ -74,7 +75,12 @@
                                         </span>
                                     </div>
                                     <div tal:condition="namespace != 'ec2'" tal:omit-tag="">
-                                        <label i18n:translate="">Resource name (ARN):</label>
+                                        <label i18n:translate="" ng-show="${action}Resources.length === 0">
+                                            Set a specific resource (ARN):
+                                        </label>
+                                        <label i18n:translate="" ng-show="${action}Resources.length > 0">
+                                            Set another resource (ARN):
+                                        </label>
                                         <input type="text" placeholder="All resources" i18n:attributes="placeholder"
                                                class="resource arn" value="arn:aws:${namespace}:::" />
                                     </div>
@@ -138,20 +144,12 @@
                                 </div>
                                 <a class="button tiny round" i18n:translate=""
                                    ng-click="addResource('${action}', $event)">
-                                    Add Resource
+                                    Set Resource
                                 </a>
                                 <div>&nbsp;</div>
                             </div><!--! /end resource-wrapper -->
                             <div class="conditions-wrapper">
-                                <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
-                                    <strong class="title" >
-                                        <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
-                                            <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
-                                            <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
-                                            &nbsp;<span i18n:translate="">Add conditions (optional)</span>
-                                        </a>
-                                    </strong>
-                                </div>
+                                <h6 i18n:translate="">Conditions</h6>
                                 <div ng-show="${action}ConditionsExpanded" class="conditions">
                                     TBD
                                 </div>
