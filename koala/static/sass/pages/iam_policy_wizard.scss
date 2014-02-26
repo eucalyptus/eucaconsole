@@ -61,88 +61,92 @@
 
 // Policy generator styles
 #policy-generator {
-    .table {
-        border-color: $euca-lightgrey;
-        border-left: none;
-        border-right: none;
-        width: 100%;
-        tr {
-            &.namespace {
-                border-top: 1px solid $euca-lightgrey;
-                td {
-                    font-size: 1rem;
+    border-color: $euca-lightgrey;
+    border-left: none;
+    border-right: none;
+    width: 100%;
+    tr {
+        &.namespace {
+            border-top: 1px solid $euca-lightgrey;
+            td {
+                font-size: 1rem;
+            }
+        }
+    }
+    th {
+        &.allow, &.deny {
+            text-transform: uppercase;
+            width: 40px;
+        }
+    }
+    td {
+        font-size: 0.9rem;
+        line-height: 1rem;
+        &.allow, &.deny {
+            text-align: center
+        }
+        .resource-wrapper {
+            vertical-align: top;
+            .resentry {
+                margin-bottom: 8px; margin-right: 8px;
+                .remove i {
+                    color: white;
                 }
             }
         }
-        th {
-            &.allow, &.deny {
-                text-transform: uppercase;
-                width: 40px;
+        .conditions-wrapper {
+            margin-bottom: 1rem;
+            .conditions {
+                margin: 0.5rem 0;
             }
         }
-        td {
-            font-size: 0.9rem;
+        .button {
+            margin-bottom: 0;
+        }
+        input[type=text] {
+            display: inline-block;
+            width: 70%;
+            height: auto;
             line-height: 1rem;
-            &.allow, &.deny {
-                text-align: center
-            }
-            .resource-wrapper {
-                vertical-align: top;
-                .resentry {
-                    margin-bottom: 8px; margin-right: 8px;
-                    .remove i {
-                        color: white;
-                    }
-                }
-            }
-            .conditions-wrapper {
-                margin-bottom: 1rem;
-                .conditions {
-                    margin: 0.5rem 0;
-                }
-            }
-            .button {
-                margin-bottom: 0;
+            padding: 8px 8px;
+            margin-bottom: 8px;
+        }
+        .advanced {
+            select.resource-type {
+                display: inline-block;
+                width: 50%;
+                padding: 7px 2px 7px 4px;
+                position: relative;
+                top: 1px;
             }
             input[type=text] {
                 display: inline-block;
-                width: 70%;
-                height: auto;
-                line-height: 1rem;
-                padding: 8px 8px;
-                margin-bottom: 8px;
-            }
-            .advanced {
-                select.resource-type {
-                    display: inline-block;
-                    width: 50%;
-                    padding: 7px 2px 7px 4px;
-                    position: relative;
-                    top: 1px;
-                }
-                input[type=text] {
-                    display: inline-block;
-                    width: 44%;
-                }
-                .chosen-container.chosen-container-single .chosen-choices {
-                    line-height: 1rem;
-                }
-                .chosen-search input[type=text] {
+                width: 44%;
+                &.arn {
                     width: 100%;
                 }
-            }
-            label {
-                margin-bottom: 2px;
-            }
-            i.tick {
-                color: $euca-lightgrey;
-                font-size: 1.2rem;
-                &.fi-check.selected {
-                    color: $euca-darkblue;
+                &.hide {
+                    display: none;
                 }
-                &.fi-x.selected {
-                    color: darkred;
-                }
+            }
+            .chosen-container.chosen-container-single .chosen-choices {
+                line-height: 1rem;
+            }
+            .chosen-search input[type=text] {
+                width: 100%;
+            }
+        }
+        label {
+            margin-bottom: 2px;
+        }
+        i.tick {
+            color: $euca-lightgrey;
+            font-size: 1.2rem;
+            &.fi-check.selected {
+                color: $euca-darkblue;
+            }
+            &.fi-x.selected {
+                color: darkred;
             }
         }
     }

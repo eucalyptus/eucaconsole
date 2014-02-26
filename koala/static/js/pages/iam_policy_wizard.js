@@ -61,7 +61,9 @@ angular.module('IAMPolicyWizard', [])
                     resourceSelector = '.resource.' + resourceType,
                     resourceWrapper = resourceSelect.closest('.resource-wrapper');
                 resourceWrapper.find('.chosen-container').addClass('hide');
+                resourceWrapper.find('input').addClass('hide');
                 resourceWrapper.find(resourceSelector).next('.chosen-container').removeClass('hide');
+                resourceWrapper.find(resourceSelector).removeClass('hide');
             });
         };
         $scope.initChosenSelectors = function () {
@@ -133,11 +135,10 @@ angular.module('IAMPolicyWizard', [])
                 });
                 // Add allow/deny statements for each action
                 $scope.actionsList.forEach(function (action) {
-                    var actionRow = $scope.policyGenerator.find('tr.action.' + action),
+                    var actionRow = $scope.policyGenerator.find('.action.' + action),
                         selectedMark = actionRow.find('.tick.selected'),
-                        addedResources = $scope[action + 'Resources'],
-                        resource = null;
-                    resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                        addedResources = $scope[action + 'Resources'];
+                    var resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
                     if (selectedMark.length > 0) {
                         $scope.policyStatements.push({
                             "Action": selectedMark.attr('data-action'),
@@ -150,7 +151,7 @@ angular.module('IAMPolicyWizard', [])
                 var formattedResults = JSON.stringify(generatorPolicy, null, 2);
                 $scope.policyText = formattedResults;
                 $scope.codeEditor.setValue(formattedResults);
-            }, 100);
+            }, 50);
         };
         $scope.addResource = function (action, $event) {
             var resourceBtn = $($event.target),
@@ -169,14 +170,16 @@ angular.module('IAMPolicyWizard', [])
                 if (!visibleResource.length) {
                     visibleResource = actionRow.find('.resource:visible');
                 }
-                resourceVal = visibleResource.val();
+                resourceVal = visibleResource.val() || '*';
                 if (actionResources.indexOf(resourceVal === -1)) {
                     actionResources.push(resourceVal);
                 }
+                actionRow.find('input').focus();
                 $scope.updatePolicy();
             }
         };
-        $scope.removeResource = function (action, index) {
+        $scope.removeResource = function (action, index, $event) {
+            $event.preventDefault();
             $scope[action + 'Resources'].splice(index, 1);
             $scope.updatePolicy();
         };
