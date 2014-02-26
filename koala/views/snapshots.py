@@ -16,6 +16,7 @@ from pyramid.view import view_config
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views.images import ImagesView
 
 
 class SnapshotsView(LandingPageView):
@@ -93,10 +94,11 @@ class SnapshotsView(LandingPageView):
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm
                 )
-                time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
+                # Clear images cache
+                ImagesView.clear_images_cache()
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
@@ -311,10 +313,11 @@ class SnapshotView(TaggedItemView):
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
-                time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
+                # Clear images cache
+                ImagesView.clear_images_cache()
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
