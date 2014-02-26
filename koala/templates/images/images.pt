@@ -87,9 +87,9 @@
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 20 }}</a></td>
-                <td class="breakword"><span>{{ item.name | ellipsis: 20 }}</span></td>
-                <td class="breakword"><span>{{ item.description | ellipsis: 20 }}</span></td>
+                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
+                <td class="breakword"><span>{{ item.name | ellipsis: 30 }}</span></td>
+                <td class="breakword"><span>{{ item.description | ellipsis: 64 }}</span></td>
                 <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
                 <td><span class="label radius {{ item.root_device_type }}">{{ item.root_device_type }}</span></td>
                 <td>{{ item.platform_name }}</td>

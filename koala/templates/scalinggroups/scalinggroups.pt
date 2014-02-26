@@ -83,8 +83,8 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 20 }}</a></td>
-                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config | ellipsis: 20 }}</a></td>
+                <td class="breakword"><a ng-href="${prefix}/{{ item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td class="breakword"><a ng-href="/launchconfigs/{{ item.launch_config | escapeURL }}">{{ item.launch_config | ellipsis: 30 }}</a></td>
                 <td>
                     <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances">
                         &nbsp;{{ item.current_instances_count }}&nbsp;
