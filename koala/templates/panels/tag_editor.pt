@@ -6,7 +6,7 @@
     <div class="columns field">
         <div class="items">
             <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
-                <span>{{ tag.name }} <em>=</em> {{ tag.value }}</span>
+                <span title="{{ tag.name }} = {{tag.value}}">{{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}</span>
                 <a href="#" class="remove" ng-click="removeTag($index, $event)"
                    title="Remove tag"><i class="fi-x"></i></a>
             </span>
