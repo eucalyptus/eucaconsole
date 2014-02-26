@@ -54,7 +54,7 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id"><a ng-href="${prefix}/{{ item.group_name }}">{{ item.group_name }}</a></td>
+                <td class="id breakword"><a ng-href="${prefix}/{{ item.group_name }}">{{ item.group_name | ellipsis: 20 }}</a></td>
                 <td><a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a></td>
                 <td><a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a></td>
                 <td>
