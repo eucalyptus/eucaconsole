@@ -25,7 +25,7 @@
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
 #policy-generator td .resource-wrapper { vertical-align: top; }
 #policy-generator td .resource-wrapper .resentry { margin-bottom: 8px; margin-right: 8px; }
-#policy-generator td .resource-wrapper .resentry .remove i { color: white; }
+#policy-generator td .resource-wrapper .resentry .remove { position: relative; top: 3px; margin-right: 0.2rem; }
 #policy-generator td .conditions-wrapper { margin-bottom: 1rem; }
 #policy-generator td .conditions-wrapper .conditions { margin: 0.5rem 0; }
 #policy-generator td .button { margin-bottom: 0; }

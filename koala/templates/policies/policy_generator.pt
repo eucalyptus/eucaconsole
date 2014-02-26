@@ -66,13 +66,14 @@
                                                  securitygroup_condition 'SecurityGroup' in action;
                                                  keypair_condition 'KeyPair' in action;
                                                  ipaddress_condition 'Address' in action;">
-                                    <div class="added-resources">
-                                        <span class="label radius secondary resentry" ng-cloak=""
-                                              ng-repeat="resource in ${action}Resources track by $index">
+                                    <div class="added-resources" ng-cloak="">
+                                        <div class="resentry" ng-repeat="resource in ${action}Resources track by $index">
+                                            <a class="circle remove" ng-click="removeResource('${action}', $index, $event)"
+                                               title="Remove resource">
+                                                <i class="fi-minus-circle"></i>
+                                            </a>
                                             {{ resource }}
-                                            <a class="remove" ng-click="removeResource('${action}', $index, $event)"
-                                               title="Remove resource"><i class="fi-x"></i></a>
-                                        </span>
+                                        </div>
                                     </div>
                                     <div tal:condition="namespace != 'ec2'" tal:omit-tag="">
                                         <label i18n:translate="" ng-show="${action}Resources.length === 0">

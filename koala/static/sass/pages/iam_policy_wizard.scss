@@ -89,8 +89,10 @@
             vertical-align: top;
             .resentry {
                 margin-bottom: 8px; margin-right: 8px;
-                .remove i {
-                    color: white;
+                .remove {
+                    position: relative;
+                    top: 3px;
+                    margin-right: 0.2rem;
                 }
             }
         }

@@ -162,10 +162,18 @@ angular.module('IAMPolicyWizard', [])
                 resourceVal = null;
             $event.preventDefault();
             visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
-            if (!visibleResource.length) {
+            if (visibleResource.length) {
+                resourceVal = visibleResource.val();
+            } else {
                 visibleResource = actionRow.find('.resource:visible');
+                if (visibleResource.hasClass('ip_address')) {
+                    // IP Address requires prefix to be set here since it's an input field
+                    resourceVal = 'arn:aws:ec2:::address/' + visibleResource.val();
+                } else {
+                    resourceVal = visibleResource.val();
+                }
             }
-            resourceVal = visibleResource.val() || '*';
+            resourceVal = resourceVal || '*';
             if (actionResources.indexOf(resourceVal === -1)) {
                 actionResources.push(resourceVal);
             }
