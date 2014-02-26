@@ -61,8 +61,6 @@
 .gridwrapper .table .button.dropdown:hover + .f-dropdown::before, .gridwrapper .table .f-dropdown:hover::before { border-color: transparent transparent white transparent; }
 .gridwrapper .table .button.dropdown:hover + .f-dropdown::after, .gridwrapper .table .f-dropdown:hover::after { border-color: transparent transparent #cccccc transparent; }
 
-.table-layout-fixed { table-layout: fixed; }
-
 .sort-search { font-size: 0.9rem; }
 .sort-search form { margin-bottom: 0; position: relative; }
 .sort-search form input { background-color: transparent; border-color: #808285; }
