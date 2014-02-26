@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage(
                 '${request.route_url('user_view', name='_name_')}',
-                '${request.route_url('group_view', name='_name_')}')">
+                '${request.route_url('group_view', name='_name_')}',
+                '${request.route_url('user_summary_json', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -71,7 +72,9 @@
                     </span>
                 </td>
                 <td>
-                    <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
+                    <span ng-show="item.num_keys">
+                        <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
+                    </span>
                 </td>
                 <td>
                   <span class="actions">
