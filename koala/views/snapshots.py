@@ -282,6 +282,8 @@ class SnapshotView(TaggedItemView):
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
+                    # Clear images cache
+                    ImagesView.clear_images_cache()
                 self.snapshot.delete()
                 time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot.')
