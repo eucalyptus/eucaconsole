@@ -70,7 +70,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns field inline">${snapshot.tags.get('Name')}</div>
+                        <div class="small-8 columns field inline breakword">${snapshot.tags.get('Name')}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
                         <div class="small-4 columns"><label i18n:translate="">Description</label></div>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
-                        <div class="small-8 columns value">
+                        <div class="small-8 columns value breakword">
                             <a href="${request.route_url('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
                         </div>
                     </div>

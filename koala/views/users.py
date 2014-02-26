@@ -70,7 +70,6 @@ class UsersJsonView(BaseView):
 
     @view_config(route_name='users_json', renderer='json', request_method='GET')
     def users_json(self):
-    # TODO: take filters into account??
         users = []
         groups = []
         try:
@@ -82,33 +81,42 @@ class UsersJsonView(BaseView):
         except EC2ResponseError as exc:
             pass
         for user in self.get_items():
-            keys = []
-            try:
-                keys = self.conn.get_all_access_keys(user_name=user.user_name)
-                keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-            except EC2ResponseError as exc:
-                pass
             user_groups = []
             for g in groups:
                 if user.user_name in [u.user_name for u in g.users]:
                     user_groups.append(g.group_name)
-            has_password = False
-            try:
-                profile = self.conn.get_login_profiles(user_name=user.user_name)
-                # this call returns 404 if no password found
-                has_password = True
-            except BotoServerError as err:
-                pass
             users.append(dict(
                 path=user.path,
                 user_name=user.user_name,
                 user_id=user.user_id,
                 num_groups=len(user_groups),
-                num_keys=len(keys),
-                has_password=has_password,
                 arn=user.arn,
             ))
         return dict(results=users)
+
+    @view_config(route_name='user_summary_json', renderer='json', request_method='GET')
+    def user_summary_json(self):
+        user_param = self.request.matchdict.get('name')
+        user = self.conn.get_user(user_name=user_param)
+        keys = []
+        try:
+            keys = self.conn.get_all_access_keys(user_name=user.user_name)
+            keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
+        except EC2ResponseError as exc:
+            pass
+        has_password = False
+        try:
+            profile = self.conn.get_login_profiles(user_name=user.user_name)
+            # this call returns 404 if no password found
+            has_password = True
+        except BotoServerError as err:
+            pass
+
+        return dict(results=dict(
+                user_name=user.user_name,
+                num_keys=len(keys),
+                has_password=has_password,
+            ))
 
     def get_items(self):
         try:
@@ -131,7 +139,6 @@ class UserView(BaseView):
             self.location = self.request.route_url('users')
         else:
             self.location = self.request.route_url('user_view', name=self.user.user_name)
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.prefix = '/users'
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
@@ -139,7 +146,6 @@ class UserView(BaseView):
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
-            user_form=self.user_form,
             change_password_form=self.change_password_form,
             generate_form=self.generate_form,
             delete_form=self.delete_form,
@@ -168,12 +174,18 @@ class UserView(BaseView):
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
-        self.group_form = AddToGroupForm(self.request)
-        self.render_dict['group_form'] = self.group_form
+        group_form = AddToGroupForm(self.request)
+        self.render_dict['group_form'] = group_form
+        user_form = UserForm(self.request, user=self.user, conn=self.conn,
+                             formdata=self.request.params or None)
+        self.render_dict['user_form'] = user_form
         return self.render_dict
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
+        user_form = UserForm(self.request, user=self.user, conn=self.conn,
+                             formdata=self.request.params or None)
+        self.render_dict['user_form'] = user_form
         return self.render_dict
  
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')

@@ -52,10 +52,10 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
-                <td>{{ item.description }}</td>
+                <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td class="breakword">{{ item.description | ellipsis: 64 }}</td>
                 <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
-                <td>{{ item.tags }}</td>
+                <td class="breakword">{{ item.tags }}</td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>

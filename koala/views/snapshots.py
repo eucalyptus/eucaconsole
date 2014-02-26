@@ -16,6 +16,7 @@ from pyramid.view import view_config
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views.images import ImagesView
 
 
 class SnapshotsView(LandingPageView):
@@ -93,10 +94,11 @@ class SnapshotsView(LandingPageView):
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm
                 )
-                time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
+                # Clear images cache
+                ImagesView.clear_images_cache()
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
@@ -280,6 +282,8 @@ class SnapshotView(TaggedItemView):
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
+                    # Clear images cache
+                    ImagesView.clear_images_cache()
                 self.snapshot.delete()
                 time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot.')
@@ -304,20 +308,21 @@ class SnapshotView(TaggedItemView):
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
         bdm['/dev/sda'] = root_vol
+        location = self.request.route_url('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             try:
                 self.snapshot.connection.register_image(
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
-                time.sleep(1)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 queue = Notification.SUCCESS
+                # Clear images cache
+                ImagesView.clear_images_cache()
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('snapshots')
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
@@ -325,6 +330,8 @@ class SnapshotView(TaggedItemView):
     def get_snapshot(self):
         snapshot_id = self.request.matchdict.get('id')
         if snapshot_id:
+            if snapshot_id == 'new':
+                return None
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
         return None

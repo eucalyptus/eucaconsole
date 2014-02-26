@@ -15,7 +15,6 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.landingPageView = "tableview";
         $scope.jsonEndpoint = '';
         $scope.searchFilter = '';
-        $scope.itemsLoading = true;
         $scope.pageResource = '';
         $scope.sortByKey = '';
         $scope.landingPageViewKey = '';
@@ -87,6 +86,7 @@ angular.module('LandingPage', ['CustomFilters'])
                 if (transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
+                $scope.$emit('itemsLoaded', $scope.items);
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
