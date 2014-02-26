@@ -38,7 +38,8 @@ class MasterLayout(object):
         self.euca_logout_form = EucaLogoutForm(request=self.request)
         self.date_format = _(u'%H:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
-        self.tag_pattern = '^(?!aws:).*'
+        self.tag_pattern_key = '^(?!aws:).{0,128}$'
+        self.tag_pattern_value = '^(?!aws:).{0,256}$'
         self.cidr_pattern = '{0}{1}'.format(
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
