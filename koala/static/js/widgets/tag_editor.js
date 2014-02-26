@@ -4,6 +4,14 @@
  *
  */
 angular.module('TagEditor', [])
+    .filter('ellipsis', function () {
+        return function (line, num) {
+            if( line.length <= num ){
+                return line;
+            }
+            return line.substring(0, num) + "...";
+        };
+    })
     .controller('TagEditorCtrl', function ($scope) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
