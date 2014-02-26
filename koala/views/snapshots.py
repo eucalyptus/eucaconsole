@@ -304,6 +304,7 @@ class SnapshotView(TaggedItemView):
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
         bdm['/dev/sda'] = root_vol
+        location = self.request.route_url('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             try:
                 self.snapshot.connection.register_image(
@@ -317,7 +318,6 @@ class SnapshotView(TaggedItemView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('snapshots')
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
