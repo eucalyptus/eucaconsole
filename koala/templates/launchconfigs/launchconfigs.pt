@@ -61,10 +61,10 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
-                <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id }}</a></td>
-                <td><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a></td>
-                <td>
+                <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td class="breakword"><a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id | ellipsis: 30 }}</a></td>
+                <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
+                <td class="breakword">
                     <a ng-repeat="sgroup_id in item.security_groups"
                        ng-href="/securitygroups/{{ sgroup_id }}">{{ sgroup_id }}</a>
                 </td>
