@@ -330,6 +330,8 @@ class SnapshotView(TaggedItemView):
     def get_snapshot(self):
         snapshot_id = self.request.matchdict.get('id')
         if snapshot_id:
+            if snapshot_id == 'new':
+                return None
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
         return None
