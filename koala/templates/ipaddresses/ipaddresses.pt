@@ -61,7 +61,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
-                <td><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name }}</a></td>
+                <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 20 }}</a></td>
                 <td>
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>

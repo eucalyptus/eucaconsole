@@ -51,7 +51,7 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name }}</a></td>
+                <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 20 }}</a></td>
                 <td>{{ item.fingerprint }}</td>
                 <td>
                     <span class="actions">
