@@ -28,7 +28,6 @@ angular.module('UsersPage', ['LandingPage'])
             window.location = $scope.user_view_url.replace('_name_', user['user_name'])+fragment;
         };
         $scope.$on('itemsLoaded', function($event, items) {
-            console.log("items loaded!");
             for (var i=0; i < items.length; i++) {
                 var url = $scope.user_summary_url.replace('_name_', items[i].user_name);
                 var theItems = items;
