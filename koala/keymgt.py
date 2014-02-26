@@ -44,7 +44,6 @@ def main(args):
         return
 
     generate_keyini(args[0])
-    print 'Successfully generated %s' % args[0]
 
 
 if __name__ == '__main__':
