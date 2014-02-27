@@ -22,14 +22,25 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 from pyramid.response import Response
 
-from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm
+from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from ..models.auth import EucaAuthenticator
 
 
+class PasswordGeneration(object):
+    @staticmethod
+    def generatePassword():
+        """
+        Generates a simple 12 character password.
+        """
+        chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+        random.seed = (os.urandom(1024))
+        return ''.join(random.choice(chars) for i in range(12))
+
 class UsersView(LandingPageView):
     TEMPLATE = '../templates/users/users.pt'
+    EUCA_DENY_POLICY = 'euca-console-deny-access-policy'
 
     def __init__(self, request):
         super(UsersView, self).__init__(request)
@@ -45,10 +56,8 @@ class UsersView(LandingPageView):
         self.filter_keys = ['user_name', 'user_id', 'arn', 'path']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
-            dict(key='user_id', name='ID'),
             dict(key='user_name', name=_(u'User name: A to Z')),
             dict(key='-user_name', name=_(u'User name: Z to A')),
-            dict(key='path', name=_(u'Path')),
         ]
 
         return dict(
@@ -59,10 +68,60 @@ class UsersView(LandingPageView):
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
             delete_form=DeleteUserForm(self.request),
+            disable_form=DisableUserForm(self.request),
+            enable_form=EnableUserForm(self.request),
         )
 
+    @view_config(route_name='user_disable', request_method='POST', renderer='json')
+    def user_disable(self):
+        """ calls iam:DeleteLoginProfile and iam:PutUserPolicy """
+        self.conn = self.get_connection(conn_type="iam")
+        try:
+            user_name = self.request.matchdict.get('name')
+            result = self.conn.delete_login_profile(user_name=user_name)
+            policy = {}
+            policy['Version'] = '2011-04-01'
+            statements = []
+            statements.append({'Effect': 'Deny', 'Action': '*', 'Resource': '*'})
+            policy['Statement'] = statements
+            result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
+            return dict(message=_(u"Successfully disabled user"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
+
+    @view_config(route_name='user_enable', request_method='POST', renderer='json')
+    def user_enable(self):
+        """ calls iam:CreateLoginProfile and iam:DeleteUserPolicy """
+        self.conn = self.get_connection(conn_type="iam")
+        try:
+            user_name = self.request.matchdict.get('name')
+            result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
+            content = self.request.params.get('content')
+            # content is only present if we're doing a file download,
+            # which means generate a password!
+            if content is not None:
+                password = PasswordGeneration.generatePassword()
+                result = self.conn.create_login_profile(user_name, password)
+
+                # assemble file response
+                account = self.request.session['account']
+                string_output = StringIO.StringIO()
+                csv_w = csv.writer(string_output)
+                row = [account, user_name, password]
+                csv_w.writerow(row)
+                response = Response(content_type='text/csv')
+                response.body = string_output.getvalue()
+                response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
+                                    format(acct=account, user=user_name)
+                return response
+            else:
+                return dict(message=_(u"Successfully enabled user"))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
 
 class UsersJsonView(BaseView):
+    EUCA_DENY_POLICY = 'euca-console-deny-access-policy'
+
     """Users returned as JSON"""
     def __init__(self, request):
         super(UsersJsonView, self).__init__(request)
@@ -90,6 +149,7 @@ class UsersJsonView(BaseView):
                 user_name=user.user_name,
                 user_id=user.user_id,
                 num_groups=len(user_groups),
+    #            user_enabled=False,     # start with disabled till summary data is sent
                 arn=user.arn,
             ))
         return dict(results=users)
@@ -98,12 +158,6 @@ class UsersJsonView(BaseView):
     def user_summary_json(self):
         user_param = self.request.matchdict.get('name')
         user = self.conn.get_user(user_name=user_param)
-        keys = []
-        try:
-            keys = self.conn.get_all_access_keys(user_name=user.user_name)
-            keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-        except EC2ResponseError as exc:
-            pass
         has_password = False
         try:
             profile = self.conn.get_login_profiles(user_name=user.user_name)
@@ -111,11 +165,27 @@ class UsersJsonView(BaseView):
             has_password = True
         except BotoServerError as err:
             pass
+        user_enabled = True
+        try:
+            policies = self.conn.get_all_user_policies(user_name=user.user_name)
+            for policy in policies.policy_names:
+                if policy == self.EUCA_DENY_POLICY and has_password is False:
+                    user_enabled = False
+        except BotoServerError as err:
+            pass
+        keys = []
+        if user_enabled: # we won't spend time fetching the keys if the user is disabled
+            try:
+                keys = self.conn.get_all_access_keys(user_name=user.user_name)
+                keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
+            except EC2ResponseError as exc:
+                pass
 
         return dict(results=dict(
                 user_name=user.user_name,
                 num_keys=len(keys),
                 has_password=has_password,
+                user_enabled=user_enabled,
             ))
 
     def get_items(self):
@@ -158,11 +228,6 @@ class UserView(BaseView):
             return user
         else:
             return None
-
-    def generatePassword(self):
-        chars = string.ascii_letters + string.digits + '!@#$%^&*()'
-        random.seed = (os.urandom(1024))
-        return ''.join(random.choice(chars) for i in range(12))
 
     def addQuotaLimit(self, statements, parsed, param, action, condition):
         val = self.getParsedValue(parsed, param, None)
@@ -261,7 +326,7 @@ class UserView(BaseView):
                     policy['Version'] = '2011-04-01'
                     statements = []
                     if random_password == 'y':
-                        password = self.generatePassword()
+                        password = PasswordGeneration.generatePassword()
                         self.conn.create_login_profile(name, password)
                         user_data['password'] = password
                     if access_keys == 'y':
@@ -317,7 +382,6 @@ class UserView(BaseView):
 
                     if len(statements) > 0:
                         policy['Statement'] = statements
-                        import logging; logging.info("policy being set to = "+json.dumps(policy, indent=2))
                         self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
             # create file to send instead. Since # users is probably small, do it all in memory
             string_output = StringIO.StringIO()
@@ -434,7 +498,7 @@ class UserView(BaseView):
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
                 # if that worked, update the profile
-                new_pass = self.generatePassword()
+                new_pass = PasswordGeneration.generatePassword()
                 result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
             except BotoServerError:
                 # if that failed, create the profile

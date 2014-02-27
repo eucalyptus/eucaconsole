@@ -137,6 +137,14 @@ class UserForm(BaseSecureForm):
         if item.data is None or item.data > val:
             item.data = val
 
+class DisableUserForm(BaseSecureForm):
+    """CSRF-protected form to disable a user"""
+    pass
+
+class EnableUserForm(BaseSecureForm):
+    """CSRF-protected form to enable a user"""
+    random_password = wtforms.BooleanField(label=_(u"Create and download random password"))
+
 class ChangePasswordForm(BaseSecureForm):
     """CSRF-protected form to change a password """
     password = wtforms.PasswordField(
