@@ -32,11 +32,11 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.initSelectedTab = function () {
             var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
-            $('#' + lastSelectedTab).click();
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
             });
+            $('#' + lastSelectedTab).click();
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
@@ -67,7 +67,9 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initChosenSelectors = function () {
-            $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
+            $timeout(function () {
+                $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
+            }, 100);
         };
         $scope.initCodeMirror = function () {
             $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
