@@ -95,7 +95,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
     def instances_landing(self):
         filter_keys = [
-            'id', 'name', 'instance_type', 'ip_address', 'key_name', 'placement',
+            'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
             'root_device', 'security_groups_string', 'state', 'tags']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
