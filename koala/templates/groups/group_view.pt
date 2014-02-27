@@ -84,7 +84,7 @@
                             </div>
                             <div class="row controls-wrapper readonly general-field-padding">
                                 <div class="small-1 columns"><label class="right" i18n:translate="">ARN&nbsp;</label></div>
-                                <div class="small-11 value text-left">${group.arn if group.arn else ''}</div>
+                                <div class="small-11 columns field inline breakword no-left-padding">${group.arn if group.arn else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly general-field-padding">
                                 ${panel('form_field', field=group_update_form.path, leftcol_width=1, rightcol_width=11)}
