@@ -3,4 +3,5 @@
 
 @import "../includes/landingpage";
 
-
+.status.active { background-color: $euca-darkblue; }
+.status.disabled { background-color: $euca-grey;}
