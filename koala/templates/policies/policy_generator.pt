@@ -170,7 +170,7 @@
                                     <label i18n:translate="" ng-show="hasConditions(${action}Conditions)">
                                         Add another condition:
                                     </label>
-                                    <select class="condition-key">
+                                    <select class="condition-keys">
                                         <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
                                         <option value="EbsOptimizedKey">EbsOptimizedKey</option>
                                         <option value="InstanceProfileKey">InstanceProfileKey</option>
@@ -193,7 +193,7 @@
                                         <option value="QuotaKey">QuotaKey</option>
                                         <option value="SourceIp">SourceIp</option>
                                     </select>
-                                    <select class="condition-operator">
+                                    <select class="condition-operators">
                                         <option value="ArnEquals">ArnEquals</option>
                                         <option value="ArnNotEquals">ArnNotEquals</option>
                                         <option value="ArnLike">ArnLike</option>

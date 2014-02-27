@@ -136,14 +136,20 @@ angular.module('IAMPolicyWizard', [])
             $scope.actionsList.forEach(function (action) {
                 var actionRow = $scope.policyGenerator.find('.action.' + action),
                     selectedMark = actionRow.find('.tick.selected'),
-                    addedResources = $scope[action + 'Resources'];
-                var resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                    addedResources = $scope[action + 'Resources'],
+                    addedConditions = $scope[action + 'Conditions'],
+                    statement, resource;
+                resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                statement = {
+                    "Action": selectedMark.attr('data-action'),
+                    "Resource": resource,
+                    "Effect": selectedMark.attr('data-effect')
+                };
+                if (Object.keys(addedConditions).length > 0) {
+                    statement["Conditions"] = addedConditions;
+                }
                 if (selectedMark.length > 0) {
-                    $scope.policyStatements.push({
-                        "Action": selectedMark.attr('data-action'),
-                        "Resource": resource,
-                        "Effect": selectedMark.attr('data-effect')
-                    });
+                    $scope.policyStatements.push(statement);
                 }
             });
             var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
@@ -158,7 +164,6 @@ angular.module('IAMPolicyWizard', [])
                 allowDenyCount = selectedTick.length,
                 actionResources = $scope[action + 'Resources'],
                 visibleResource = null,
-                statement = null,
                 resourceVal = null;
             $event.preventDefault();
             visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
@@ -186,6 +191,24 @@ angular.module('IAMPolicyWizard', [])
         $scope.removeResource = function (action, index, $event) {
             $event.preventDefault();
             $scope[action + 'Resources'].splice(index, 1);
+            $scope.updatePolicy();
+        };
+        $scope.addCondition = function (action, $event) {
+            var conditionBtn = $($event.target),
+                actionRow = conditionBtn.closest('tr'),
+                selectedTick = actionRow.find('i.selected'),
+                allowDenyCount = selectedTick.length,
+                actionConditions = $scope[action + 'Conditions'],
+                conditionKey, conditionOperator, conditionValue;
+            $event.preventDefault();
+            conditionKey = actionRow.find('.condition-keys').val();
+            conditionOperator = actionRow.find('.condition-operators').val();
+            conditionValue = actionRow.find('.condition-value').val();
+            actionConditions[conditionKey] = {};
+            actionConditions[conditionKey][conditionOperator] = conditionValue;
+            if (allowDenyCount === 0) {
+                actionRow.find('i.fi-check').addClass('selected');
+            }
             $scope.updatePolicy();
         };
         // Handle Allow/Deny selection for a given action
