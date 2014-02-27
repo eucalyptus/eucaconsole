@@ -11,7 +11,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
-                <li><a href="${request.route_url('volume_view', id=volume.id)}">${volume_name}</a></li>
+                <li><a href="${request.route_url('volume_view', id=volume.id)}" ng-non-bindable="">${volume_name}</a></li>
                 <li class="current"><a href="#">Snapshots</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -80,7 +80,7 @@
             <div id="create-snapshot-modal" class="reveal-modal small" data-reveal=""
                 tal:define="snapshot_tags {};">
                 <h3 i18n:translate="">Create snapshot from volume</h3>
-                <p><span i18n:translate="">Add a snapshot for</span> <strong>${volume_name}</strong></p>
+                <p><span i18n:translate="">Add a snapshot for</span> <strong ng-non-bindable="">${volume_name}</strong></p>
                 <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
                       id="create-snapshot-form" data-abide="">
                     ${structure:create_form['csrf_token']}
