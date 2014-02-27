@@ -11,7 +11,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('ipaddresses')}" i18n:translate="">IP Addresses</a></li>
-                <li class="current"><a href="#">${eip.public_ip if eip else ''}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <div class="large-7 columns">
@@ -41,7 +41,7 @@
                 <div tal:condition="eip.instance_id">
                     <p>
                         <span i18n:translate="">The IP address is associated with instance</span>
-                        <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>.
+                        <a href="/instances/${eip.instance_id}" ng-non-bindable="">${eip.instance_name}</a>.
                     </p>
                 </div>
             </div>
