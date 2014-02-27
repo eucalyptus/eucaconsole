@@ -28,15 +28,15 @@
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
                             <a href="#" id="reboot-instance-action"
-                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot instance</a>
+                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
                         <li ng-show="instanceState == 'stopped'">
                             <a href="#" id="start-instance-action"
-                               data-reveal-id="start-instance-modal" i18n:translate="">Start instance</a>
+                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
                         </li>
                         <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
                             <a href="#" id="stop-instance-action"
-                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop instance</a>
+                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
                         </li>
                         <li>
                             <a href="${request.route_url('instance_more', id=instance.id)}"
@@ -47,7 +47,7 @@
                         <li>
                             <a i18n:translate="" id="create-launchconfig-action"
                                href="/launchconfigs/new?image_id=${instance.image_id}&instance_type=${instance.instance_type}">
-                                Create scaling group launch configuration like this
+                                Create launch configuration
                             </a>
                         </li>
                         <li ng-show="instanceState == 'running'">
@@ -57,7 +57,7 @@
                         </li>
                         <li ng-show="instanceState != 'terminated'">
                             <a href="#" id="terminate-instance-action"
-                               data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate instance</a>
+                               data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
                         </li>
                     </metal:actions>
                 </metal:block>
@@ -87,7 +87,7 @@
                         ${panel('form_field', field=instance_form.instance_type, ng_attrs={'disabled':'isNotStopped'})}
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">OS</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
                         <div class="small-8 columns value">${instance.platform}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
@@ -194,7 +194,7 @@
                     <div>
                         <button type="submit" class="button" id="save-changes-btn"
                                 tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
-                            <span i18n:translate="">Save changes</span>
+                            <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_url('instances')}" id="cancel-update-link"
                            class="cancel-link" i18n:translate="">Cancel</a>

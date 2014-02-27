@@ -18,7 +18,7 @@
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, reboot" i18n:attributes="value" />
+                        <input type="submit" class="button" value="Yes, Reboot" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, start instance" i18n:attributes="value" />
+                        <input type="submit" class="button" value="Yes, Start Instance" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
@@ -62,7 +62,7 @@
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, stop instance" i18n:attributes="value" />
+                        <input type="submit" class="button" value="Yes, Stop Instance" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
@@ -94,7 +94,7 @@
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, terminate" i18n:attributes="value" />
+                        <input type="submit" class="button" value="Yes, Terminate" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
