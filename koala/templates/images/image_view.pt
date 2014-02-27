@@ -5,7 +5,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('images')}" i18n:translate="">Images</a></li>
-                <li class="current"><a href="#">${image_display_name}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -41,11 +41,11 @@
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'euca'">EMI Name</label>
                                     <label i18n:translate="" tal:condition="layout.cloud_type == 'aws'">AMI Name</label>
                                 </div>
-                                <div class="small-8 columns value">${image.name if image.name else ''}</div>
+                                <div class="small-8 columns value" ng-non-bindable="">${image.name if image.name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner Alias</label></div>
-                                <div class="small-8 columns value">${image.owner_alias if image.owner_alias else ''}</div>
+                                <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
@@ -69,11 +69,11 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Manifest Path</label></div>
-                                <div class="small-8 columns value breakword">${image.location if image.location else ''}</div>
+                                <div class="small-8 columns value breakword" ng-non-bindable="">${image.location if image.location else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                                <div class="small-8 columns value">${image.description if image.description else ''}</div>
+                                <div class="small-8 columns value" ng-non-bindable="">${image.description if image.description else ''}</div>
                             </div>
                         </div>
                         <div class="section" tal:condition="image.kernel_id">
@@ -98,7 +98,7 @@
                             <div tal:repeat="row image.block_device_names">
                                 <div class="row controls-wrapper readonly">
                                     <div class="small-4 columns"><label i18n:translate="">Device</label></div>
-                                    <div class="small-8 columns">${row.name if row.name else ''}</div>
+                                    <div class="small-8 columns" ng-non-bindable="">${row.name if row.name else ''}</div>
                                 </div>
                                 <div class="row controls-wrapper readonly" tal:condition="row.value.status">
                                     <div class="small-4 columns"><label i18n:translate="">Status</label></div>
@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="row controls-wrapper readonly" tal:condition="row.value.ephemeral_name">
                                     <div class="small-4 columns"><label i18n:translate="">Ephemeral name</label></div>
-                                    <div class="small-8 columns value">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
+                                    <div class="small-8 columns value" ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
                                 </div>
                             </div>
                         </div>
