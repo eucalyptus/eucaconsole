@@ -23,13 +23,13 @@
                 <a class="button" i18n:translate="" id="launch-instance-btn"
                    href="${request.route_url('instance_create')}">Launch New Instance</a>
                 <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
-                   href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} instances</a>
+                   href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} Instances</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li>
-                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
+                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>
                     </li>
                     <li>
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
@@ -98,8 +98,8 @@
                 <th i18n:translate="">Image ID</th>
                 <th i18n:translate="">Zone</th>
                 <th i18n:translate="">Public IP</th>
-                <th i18n:translate="">Key Name</th>
-                <th i18n:translate="">Sec Group</th>
+                <th i18n:translate="">Key name</th>
+                <th i18n:translate="">Sec group</th>
                 <th i18n:translate="">Launched</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -124,7 +124,7 @@
                         <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li>
-                                <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">Edit properties</a>
+                                <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>
                             </li>
                             <li>
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
