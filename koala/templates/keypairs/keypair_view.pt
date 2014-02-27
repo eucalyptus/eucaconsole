@@ -8,7 +8,7 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
                 <li class="current">
-                    <a tal:condition="keypair">${keypair.name }</a>
+                    <a tal:condition="keypair" ng-non-bindable="">${keypair.name }</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create new keypair</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import public key</a>
                 </li>
@@ -45,7 +45,7 @@
                     <h6 i18n:translate="">Key Pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${keypair.name if keypair.name else ''}</div>
+                        <div class="small-9 columns value" ng-non-bindable="">${keypair.name if keypair.name else ''}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>
