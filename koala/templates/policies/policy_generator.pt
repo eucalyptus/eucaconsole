@@ -164,6 +164,15 @@
                                     </a>
                                 </h6>
                                 <div class="content" ng-show="${action}ConditionsExpanded">
+                                    <div class="added-conditions" ng-cloak="">
+                                        <div class="condentry" ng-repeat="(operator, value) in ${action}Conditions">
+                                            <a class="circle remove" ng-click="removeCondition('${action}', operator, $event)"
+                                               title="Remove condition">
+                                                <i class="fi-minus-circle"></i>
+                                            </a>
+                                            {{ getConditionKey(value) }}: {{ operator }}: {{ getConditionValue(value) }}
+                                        </div>
+                                    </div>
                                     <label i18n:translate="" ng-show="!hasConditions(${action}Conditions)">
                                         Add a condition:
                                     </label>

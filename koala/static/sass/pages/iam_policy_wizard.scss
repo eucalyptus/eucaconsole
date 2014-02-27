@@ -91,13 +91,6 @@
         .resource-wrapper {
             vertical-align: top;
             margin-bottom: 1rem;
-            .resentry {
-                .remove {
-                    position: relative;
-                    top: 3px;
-                    margin-right: 0.2rem;
-                }
-            }
             input[type=text] {
                 display: inline-block;
                 width: 44%;
@@ -130,6 +123,11 @@
             margin-bottom: 8px;
         }
         .advanced {
+            .remove {
+                position: relative;
+                top: 3px;
+                margin-right: 0.2rem;
+            }
             select.resource-type {
                 display: inline-block;
                 width: 50%;

@@ -204,10 +204,18 @@ angular.module('IAMPolicyWizard', [])
             conditionKey = actionRow.find('.condition-keys').val();
             conditionOperator = actionRow.find('.condition-operators').val();
             conditionValue = actionRow.find('.condition-value').val();
-            actionConditions[conditionKey] = {};
-            actionConditions[conditionKey][conditionOperator] = conditionValue;
+            actionConditions[conditionOperator] = {};
+            actionConditions[conditionOperator][conditionKey] = conditionValue;
             if (allowDenyCount === 0) {
                 actionRow.find('i.fi-check').addClass('selected');
+            }
+            $scope.updatePolicy();
+        };
+        $scope.removeCondition = function (action, operator, $event) {
+            $event.preventDefault();
+            var actionConditions = $scope[action + 'Conditions'];
+            if (actionConditions[operator]) {
+                delete actionConditions[operator];
             }
             $scope.updatePolicy();
         };
@@ -242,7 +250,13 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.hasConditions = function (obj) {
             return Object.keys(obj).length > 0;
-        }
+        };
+        $scope.getConditionKey = function (obj) {
+            return Object.keys(obj)[0];
+        };
+        $scope.getConditionValue = function (obj) {
+            return obj[Object.keys(obj)[0]];
+        };
     })
 ;
 

@@ -25,7 +25,6 @@
 #policy-generator td.allow, #policy-generator td.deny { text-align: center; }
 #policy-generator td h6 { margin-bottom: 4px; }
 #policy-generator td .resource-wrapper { vertical-align: top; margin-bottom: 1rem; }
-#policy-generator td .resource-wrapper .resentry .remove { position: relative; top: 3px; margin-right: 0.2rem; }
 #policy-generator td .resource-wrapper input[type=text] { display: inline-block; width: 44%; }
 #policy-generator td .resource-wrapper input[type=text].arn { width: 100%; }
 #policy-generator td .resource-wrapper input[type=text].hide { display: none; }
@@ -34,6 +33,7 @@
 #policy-generator td .conditions-wrapper input[type=text] { width: 100%; }
 #policy-generator td .button { margin-bottom: 0; }
 #policy-generator td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 8px 8px; margin-bottom: 8px; }
+#policy-generator td .advanced .remove { position: relative; top: 3px; margin-right: 0.2rem; }
 #policy-generator td .advanced select.resource-type { display: inline-block; width: 50%; padding: 7px 2px 7px 4px; position: relative; top: 1px; }
 #policy-generator td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
 #policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
