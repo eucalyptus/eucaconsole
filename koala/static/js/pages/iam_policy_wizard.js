@@ -206,7 +206,9 @@ angular.module('IAMPolicyWizard', [])
             conditionKey = actionRow.find('.condition-keys').val();
             conditionOperator = actionRow.find('.condition-operators').val();
             conditionValue = actionRow.find('.condition-value').val();
-            actionConditions[conditionOperator] = {};
+            if (!actionConditions[conditionOperator]) {
+                actionConditions[conditionOperator] = {};
+            }
             actionConditions[conditionOperator][conditionKey] = conditionValue;
             if (allowDenyCount === 0) {
                 actionRow.find('i.fi-check').addClass('selected');
