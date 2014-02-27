@@ -20,13 +20,13 @@
                         <li>
                             <a href="${request.route_url('instance_create')}?image_id=${image.id}"
                                id="launch-instance-action" i18n:translate="">
-                                Launch Instance from this image
+                                Launch instance
                             </a>
                         </li>
                         <li>
                             <a href="${request.route_url('launchconfig_new')}?image_id=${image.id}"
                                id="create-launchconfig-action" i18n:translate="">
-                                Create scaling group launch configuration from this image
+                                Create launch configuration
                             </a>
                         </li>
                     </metal:actions>
