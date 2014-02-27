@@ -36,19 +36,16 @@
                 <a ng-href="${prefix}/{{item.user_name }}">{{ item.user_name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
-                    <span class="label" title="Name" i18n:attributes="title" data-tooltip="">GR</span>
-                    <span ng-repeat="group in item.groups ">
-                        <a ng-click="linkUser(item, '#group-section')">{{ group }}</a>
-                        <br/>
-                    </span>
+                <div ng-show="item.num_groups > 0">
+                    <span class="label" title="Groups" i18n:attributes="title" data-tooltip="">GR</span>
+                    <a ng-click="linkUser(item, '#group-section')">{{ item.num_groups }}</a>
                 </div>
                 <div ng-show="item.has_password">
-                    <span class="label" title="Path" i18n:attributes="title" data-tooltip="">PW</span>
+                    <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
                     <a ng-click="linkUser(item, '#password-section')"><i class="fi-check"></i></a>
                 </div>
                 <div ng-show="item.num_keys > 0">
-                    <span class="label" title="ARN" i18n:attributes="title" data-tooltip="">AK</span>
+                    <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
                     <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }}</a>
                 </div>
             </div>
@@ -66,9 +63,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id"><a ng-href="${prefix}/{{ item.user_name }}">{{ item.user_name }}</a></td>
                 <td>
-                    <div ng-repeat="group in item.groups ">
-                        <a ng-click="linkUser(item, '#group-section')">{{ group }}</a>
-                    </div>
+                    <a ng-click="linkUser(item, '#group-section')">{{ item.num_groups }}</a>
                 </td>
                 <td>
                     <span ng-show="item.has_password">

@@ -45,7 +45,7 @@ class SnapshotForm(BaseSecureForm):
             self.set_volume_choices()
 
     def set_volume_choices(self):
-        choices = [('', _(u'select...'))]
+        choices = []
         for volume in self.conn.get_all_volumes():
             value = volume.id
             vol_name_tag = volume.tags.get('Name', '')

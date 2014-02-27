@@ -37,7 +37,6 @@ class GroupsView(LandingPageView):
         self.sort_keys = [
             dict(key='group_name', name=_(u'Group name: A to Z')),
             dict(key='-group_name', name=_(u'Group name: Z to A')),
-            dict(key='path', name=_(u'Path')),
         ]
 
         return dict(
@@ -130,7 +129,7 @@ class GroupView(BaseView):
     def get_all_users_array(self):
         group_param = self.request.matchdict.get('name')
         if group_param == "new" or group_param is None:
-            return None
+            return []
         users = []
         # Group's path to be used ?
         if self.conn:

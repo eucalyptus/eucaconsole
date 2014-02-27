@@ -9,7 +9,7 @@ def setup_tweens(config):
 def xframe_tween_factory(handler, registry):
     def tween(request):
         response = handler(request)
-        if response.content_type.strip().lower() == 'text/html':
+        if response.content_type and response.content_type.strip().lower() == 'text/html':
             response.headers['X_FRAME_OPTIONS'] = 'SAMEORIGIN'
         return response
     return tween

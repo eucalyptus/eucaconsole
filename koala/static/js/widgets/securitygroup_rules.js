@@ -20,7 +20,8 @@ angular.module('SecurityGroupRules', [])
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
             $scope.hasDuplicatedRule = false;
-            $('.ip-protocol').chosen({'width': '90%', search_contains: true});
+            $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
+            $('#ip-protocol-select').val('').trigger('chosen:updated');
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
@@ -147,7 +148,8 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            $('.groupname').chosen({'width': '50%', search_contains: true});
+            $('#groupname-select').chosen({'width': '50%', search_contains: true});
+            $('#groupname-select').val('').trigger('chosen:updated');
         };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";

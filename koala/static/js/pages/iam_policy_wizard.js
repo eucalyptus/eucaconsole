@@ -14,10 +14,14 @@ angular.module('IAMPolicyWizard', [])
         $scope.policyStatements = [];
         $scope.addedStatements = [];
         $scope.policyAPIVersion = "2012-10-17";
-        $scope.cloudType = 'euca'
+        $scope.cloudType = 'euca';
+        $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
+        $scope.actionsList = [];
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
+            $scope.actionsList = options['actionsList'];
+            $scope.initSelectedTab();
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
             if ($scope.cloudType === 'euca') {
@@ -25,6 +29,14 @@ angular.module('IAMPolicyWizard', [])
                 $scope.limitResourceChoices();
                 $scope.addResourceTypeListener();
             }
+        };
+        $scope.initSelectedTab = function () {
+            var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
+            $('#' + lastSelectedTab).click();
+            $('.tabs').find('a').on('click', function (evt) {
+                var tabLinkId = $(evt.target).closest('a').attr('id');
+                localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+            });
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
@@ -106,61 +118,93 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
-            var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
-            var formattedResults = JSON.stringify(generatorPolicy, null, 2);
-            if ($scope.policyStatements.length) {
+            $scope.policyStatements = [];
+            $timeout(function () {
+                // Add namespace (allow/deny all) statements
+                $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
+                    var selectedMark = $(elem).find('.tick.selected');
+                    if (selectedMark.length > 0) {
+                        $scope.policyStatements.push({
+                            "Action": selectedMark.attr('data-action'),
+                            "Resource": selectedMark.attr('data-resource'),
+                            "Effect": selectedMark.attr('data-effect')
+                        });
+                    }
+                });
+                // Add allow/deny statements for each action
+                $scope.actionsList.forEach(function (action) {
+                    var actionRow = $scope.policyGenerator.find('tr.action.' + action),
+                        selectedMark = actionRow.find('.tick.selected'),
+                        addedResources = $scope[action + 'Resources'],
+                        resource = null;
+                    resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                    if (selectedMark.length > 0) {
+                        $scope.policyStatements.push({
+                            "Action": selectedMark.attr('data-action'),
+                            "Resource": resource,
+                            "Effect": selectedMark.attr('data-effect')
+                        });
+                    }
+                });
+                var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
+                var formattedResults = JSON.stringify(generatorPolicy, null, 2);
                 $scope.policyText = formattedResults;
                 $scope.codeEditor.setValue(formattedResults);
-            }
+            }, 100);
         };
-        $scope.updateStatements = function () {
-            $scope.policyStatements = [];
-            $scope.policyGenerator.find('.action').find('i.selected').each(function(idx, item) {
-                var namespace = item.getAttribute('data-namespace'),
-                    action = item.getAttribute('data-action'),
-                    effect = item.getAttribute('data-effect'),
-                    nsAction = namespace.toLowerCase() + ':' + action,
-                    resource = '*';
-                if ($scope.cloudType === 'euca') {
-                    resource = $(item).closest('tr').find('.chosen-container:visible').prev('.resource').val() || '*';
-                } else {
-                    resource = $(item).closest('tr').find('.resource:visible').val() || '*';
-                }
-                $scope.policyStatements.push({
-                    "Action": [nsAction],
-                    "Resource": resource,
-                    "Effect": effect
-                });
-            });
-            $scope.updatePolicy();
-        };
-        $scope.addResource = function ($event) {
-            var allowDenyCount = $($event.target).closest('tr').find('i.selected').length;
+        $scope.addResource = function (action, $event) {
+            var resourceBtn = $($event.target),
+                actionRow = resourceBtn.closest('tr'),
+                selectedTick = actionRow.find('i.selected'),
+                allowDenyCount = selectedTick.length,
+                actionResources = $scope[action + 'Resources'],
+                visibleResource = null,
+                statement = null,
+                resourceVal = null;
+            $event.preventDefault();
             if (!allowDenyCount) {
                 alert('Select "Allow" or "Deny" to add the statement to the policy');
             } else {
-                $scope.updateStatements();
+                visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
+                if (!visibleResource.length) {
+                    visibleResource = actionRow.find('.resource:visible');
+                }
+                resourceVal = visibleResource.val();
+                if (actionResources.indexOf(resourceVal === -1)) {
+                    actionResources.push(resourceVal);
+                }
+                $scope.updatePolicy();
             }
         };
-        $scope.handleSelection = function ($event) {
-            var tgt = $($event.target);
-            tgt.closest('tr').find('i').removeClass('selected');
-            tgt.addClass('selected');
-            $timeout(function () {
-                $scope.updateStatements();
-            }, 50);
+        $scope.removeResource = function (action, index) {
+            $scope[action + 'Resources'].splice(index, 1);
+            $scope.updatePolicy();
         };
-        $scope.toggleAll = function (action, namespace, $event) {
-            // action is 'allow' or 'deny'
-            var nsSelector = '.' + namespace,
-                enabledMark = action === 'allow' ? '.fi-check' : '.fi-x',
-                disabledMark = action === 'allow' ? '.fi-x' : '.fi-check';
-            $($event.target).addClass('selected');
-            $scope.policyGenerator.find(nsSelector).find(enabledMark).addClass('selected');
-            $scope.policyGenerator.find(nsSelector).find(disabledMark).removeClass('selected');
-            $timeout(function () {
-                $scope.updateStatements();
-            }, 100)
+        // Handle Allow/Deny selection for a given action
+        $scope.selectAction = function ($event) {
+            var tgt = $($event.target),
+                actionRow = tgt.closest('tr');
+            $event.preventDefault();
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                actionRow.find('.fi-x').removeClass('selected');
+            } else {
+                actionRow.find('.fi-check').removeClass('selected');
+            }
+            $scope.updatePolicy();
+        };
+        // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
+        $scope.selectAll = function ($event) {
+            $event.preventDefault();
+            var tgt = $($event.target),
+                actionRow = tgt.closest('tr');
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                actionRow.find('.fi-x').removeClass('selected');
+            } else {
+                actionRow.find('.fi-check').removeClass('selected');
+            }
+            $scope.updatePolicy();
         };
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');
