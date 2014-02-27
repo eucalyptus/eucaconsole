@@ -45,7 +45,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline">${security_group.name}</div>
+                        <div class="small-9 columns field inline breakword">${security_group.name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9)}

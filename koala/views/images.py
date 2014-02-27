@@ -5,12 +5,11 @@ Pyramid views for Eucalyptus and AWS images
 """
 import re
 
-from beaker.cache import cache_region
+from beaker.cache import cache_region, cache_managers
 from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
@@ -62,6 +61,12 @@ class ImagesView(LandingPageView):
             dict(key='platform_name', name=_(u'Platform')),
             dict(key='description', name=_(u'Description')),
         ]
+
+    @staticmethod
+    def clear_images_cache():
+        for manager in cache_managers.values():
+            if '_get_images_cache' in manager.namespace_name:
+                manager.clear()
 
 
 class ImagesJsonView(LandingPageView):

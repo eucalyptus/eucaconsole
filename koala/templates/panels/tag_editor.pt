@@ -6,7 +6,7 @@
     <div class="columns field">
         <div class="items">
             <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
-                <span>{{ tag.name }} <em>=</em> {{ tag.value }}</span>
+                <span title="{{ tag.name }} = {{tag.value}}" data-tooltip="">{{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}</span>
                 <a href="#" class="remove" ng-click="removeTag($index, $event)"
                    title="Remove tag"><i class="fi-x"></i></a>
             </span>
@@ -18,12 +18,12 @@
         <div class="row tagentry controls-wrapper">
             <div>
                 <div class="small-4 columns">
-                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern}" />
-                    <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
+                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div class="small-8 columns">
-                    <input class="taginput value" placeholder="value..." pattern="${layout.tag_pattern}" />
-                    <small class="error" i18n:translate="">Tag may not begin with "aws:"</small>
+                    <input class="taginput value" placeholder="value..." pattern="${layout.tag_pattern_value}" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                 </div>
             </div>
             <div>&nbsp;</div>

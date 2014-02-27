@@ -25,6 +25,9 @@ $keys-status-color-inactive: $euca-grey;
     }
 }
 
+// Hide "?" help icon in breadcrumbs
+#breadcrumbs .icon-block { display: none; }
+
 .or-circle {
     font-size: 1.0rem;
     position: absolute;

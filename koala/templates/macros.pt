@@ -102,7 +102,7 @@
             <table class="table" ng-show="!itemsLoading" ng-cloak="true">
                 <thead><tr><metal:block metal:define-slot="tableview_headers" /></tr></thead>
                 <tbody>
-                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy:sortReverse | limitTo:displayCount">
+                    <tr ng-cloak="true" ng-repeat="item in items | orderBy: sortBy | limitTo:displayCount">
                         <metal:block metal:define-slot="tableview_columns" />
                     </tr>
                     <tr ng-show="!itemsLoading"></tr>
