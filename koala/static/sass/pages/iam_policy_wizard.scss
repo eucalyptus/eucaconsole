@@ -98,11 +98,24 @@
                     margin-right: 0.2rem;
                 }
             }
+            input[type=text] {
+                display: inline-block;
+                width: 44%;
+                &.arn {
+                    width: 100%;
+                }
+                &.hide {
+                    display: none;
+                }
+            }
         }
         .conditions-wrapper {
             margin-bottom: 1rem;
-            .conditions {
-                margin: 0.5rem 0;
+            select {
+                margin-bottom: 4px;
+            }
+            input[type=text] {
+                width: 100%;
             }
         }
         .button {
@@ -123,16 +136,6 @@
                 padding: 7px 2px 7px 4px;
                 position: relative;
                 top: 1px;
-            }
-            input[type=text] {
-                display: inline-block;
-                width: 44%;
-                &.arn {
-                    width: 100%;
-                }
-                &.hide {
-                    display: none;
-                }
             }
             .chosen-container.chosen-container-single .chosen-choices {
                 line-height: 1rem;
