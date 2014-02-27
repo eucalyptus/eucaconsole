@@ -26,7 +26,6 @@ angular.module('IAMPolicyWizard', [])
             $scope.handlePolicyFileUpload();
             if ($scope.cloudType === 'euca') {
                 $scope.initChosenSelectors();
-                $scope.limitResourceChoices();
                 $scope.addResourceTypeListener();
             }
         };
@@ -69,6 +68,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.initChosenSelectors = function () {
             $timeout(function () {
                 $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
+                $scope.limitResourceChoices();
             }, 100);
         };
         $scope.initCodeMirror = function () {
