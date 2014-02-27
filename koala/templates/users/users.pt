@@ -79,9 +79,9 @@
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td class="id">
-                    <a ng-href="${prefix}/{{ item.user_name }}" ng-show="item.user_enabled">{{ item.user_name }}</a>
-                    <span ng-show="!item.user_enabled">{{ item.user_name }}</span>
+                <td class="id breakword">
+                    <a ng-href="${prefix}/{{ item.user_name }}" ng-show="item.user_enabled">{{ item.user_name | ellipsis: 30 }}</a>
+                    <span ng-show="!item.user_enabled">{{ item.user_name | ellipsis: 30 }}</span>
                 </td>
                 <td>
                     <span class="label radius item status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
