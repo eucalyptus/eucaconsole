@@ -97,7 +97,7 @@
             <form action="${request.route_url('scalinggroup_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="${scaling_group.name}">
-                <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
             </form>
             <a class="close-reveal-modal">&#215;</a>
         </div>
