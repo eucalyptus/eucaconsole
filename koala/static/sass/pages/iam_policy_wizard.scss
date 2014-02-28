@@ -93,7 +93,7 @@
             margin-bottom: 1rem;
             input[type=text] {
                 display: inline-block;
-                width: 44%;
+                width: 50%;
                 &.arn {
                     width: 100%;
                 }
@@ -122,6 +122,9 @@
             padding: 8px 8px;
             margin-bottom: 8px;
         }
+        .advanced-button {
+            float: right;
+        }
         .advanced {
             .remove {
                 position: relative;
@@ -130,7 +133,7 @@
             }
             select.resource-type {
                 display: inline-block;
-                width: 50%;
+                width: 44%;
                 padding: 7px 2px 7px 4px;
                 position: relative;
                 top: 1px;

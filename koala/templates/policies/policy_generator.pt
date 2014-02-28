@@ -4,7 +4,6 @@
             <th class="allow" i18n:translate="">Allow</th>
             <th class="deny" i18n:translate="">Deny</th>
             <th class="actions">&nbsp;</th>
-            <th class="advanced">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -33,7 +32,6 @@
                         </strong>
                     </div>
                 </td>
-                <td>&nbsp;</td>
             </tr>
             <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name"
                 ng-init="${action}Resources = []; ${action}Conditions = {}; ${action}ParsedConditions = [];"
@@ -53,6 +51,7 @@
                     </td>
                     <td>
                         <span class="action-name">${action}</span>
+                        <a class="button tiny round advanced-button" ng-click="toggleAdvanced($event)">Advanced</a>
                         <div class="advanced hide">
                             <div class="resource-wrapper" tal:condition="namespace_condition">
                                 <div>&nbsp;</div>
@@ -180,59 +179,65 @@
                                     <label i18n:translate="" ng-show="hasConditions(${action}Conditions)">
                                         Add another condition:
                                     </label>
-                                    <select class="condition-keys">
-                                        <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
-                                        <option value="EbsOptimizedKey">EbsOptimizedKey</option>
-                                        <option value="InstanceProfileKey">InstanceProfileKey</option>
-                                        <option value="InstanceTypeKey">InstanceTypeKey</option>
-                                        <option value="PlacementGroupKey">PlacementGroupKey</option>
-                                        <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
-                                        <option value="TenancyKey">TenancyKey</option>
-                                        <option value="RegionKey">RegionKey</option>
-                                        <option value="TargetImageKey">TargetImageKey</option>
-                                        <option value="ParentSnapshotKey">ParentSnapshotKey</option>
-                                        <option value="VolumeIopsKey">VolumeIopsKey</option>
-                                        <option value="VolumeSizeKey">VolumeSizeKey</option>
-                                        <option value="VolumeTypeKey">VolumeTypeKey</option>
-                                        <option value="VpcKey">VpcKey</option>
-                                        <option value="ExpirationTime">ExpirationTime</option>
-                                        <option value="KeepAlive">KeepAlive</option>
-                                        <option value="MaxKeys">MaxKeys</option>
-                                        <option value="CurrentTime">CurrentTime</option>
-                                        <option value="ExternalIdKey">ExternalIdKey</option>
-                                        <option value="QuotaKey">QuotaKey</option>
-                                        <option value="SourceIp">SourceIp</option>
-                                    </select>
-                                    <select class="condition-operators">
-                                        <option value="ArnEquals">ArnEquals</option>
-                                        <option value="ArnNotEquals">ArnNotEquals</option>
-                                        <option value="ArnLike">ArnLike</option>
-                                        <option value="ArnNotLike">ArnNotLike</option>
-                                        <option value="BinaryEquals">BinaryEquals</option>
-                                        <option value="BinaryNotEquals">BinaryNotEquals</option>
-                                        <option value="StringEquals">StringEquals</option>
-                                        <option value="StringNotEquals">StringNotEquals</option>
-                                        <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
-                                        <option value="StringNotEqualsIgnoreCase">StringNotEqualsIgnoreCase</option>
-                                        <option value="StringLike">StringLike</option>
-                                        <option value="StringNotLike">StringNotLike</option>
-                                        <option value="Null">Null</option>
-                                        <option value="NumericEquals">NumericEquals</option>
-                                        <option value="NumericNotEquals">NumericNotEquals</option>
-                                        <option value="NumericLessThan">NumericLessThan</option>
-                                        <option value="NumericLessThanEquals">NumericLessThanEquals</option>
-                                        <option value="NumericGreaterThan">NumericGreaterThan</option>
-                                        <option value="NumericGreaterThanEquals">NumericGreaterThanEquals</option>
-                                        <option value="DateEquals">DateEquals</option>
-                                        <option value="DateNotEquals">DateNotEquals</option>
-                                        <option value="DateLessThan">DateLessThan</option>
-                                        <option value="DateLessThanEquals">DateLessThanEquals</option>
-                                        <option value="DateGreaterThan">DateGreaterThan</option>
-                                        <option value="DateGreaterThanEquals">DateGreaterThanEquals</option>
-                                        <option value="Bool">Bool</option>
-                                        <option value="IpAddress">IpAddress</option>
-                                        <option value="NotIpAddress">NotIpAddress</option>
-                                    </select>
+                                    <div class="row">
+                                        <div class="small-6 columns">
+                                            <select class="condition-keys">
+                                                <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
+                                                <option value="EbsOptimizedKey">EbsOptimizedKey</option>
+                                                <option value="InstanceProfileKey">InstanceProfileKey</option>
+                                                <option value="InstanceTypeKey">InstanceTypeKey</option>
+                                                <option value="PlacementGroupKey">PlacementGroupKey</option>
+                                                <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
+                                                <option value="TenancyKey">TenancyKey</option>
+                                                <option value="RegionKey">RegionKey</option>
+                                                <option value="TargetImageKey">TargetImageKey</option>
+                                                <option value="ParentSnapshotKey">ParentSnapshotKey</option>
+                                                <option value="VolumeIopsKey">VolumeIopsKey</option>
+                                                <option value="VolumeSizeKey">VolumeSizeKey</option>
+                                                <option value="VolumeTypeKey">VolumeTypeKey</option>
+                                                <option value="VpcKey">VpcKey</option>
+                                                <option value="ExpirationTime">ExpirationTime</option>
+                                                <option value="KeepAlive">KeepAlive</option>
+                                                <option value="MaxKeys">MaxKeys</option>
+                                                <option value="CurrentTime">CurrentTime</option>
+                                                <option value="ExternalIdKey">ExternalIdKey</option>
+                                                <option value="QuotaKey">QuotaKey</option>
+                                                <option value="SourceIp">SourceIp</option>
+                                            </select>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <select class="condition-operators">
+                                                <option value="ArnEquals">ArnEquals</option>
+                                                <option value="ArnNotEquals">ArnNotEquals</option>
+                                                <option value="ArnLike">ArnLike</option>
+                                                <option value="ArnNotLike">ArnNotLike</option>
+                                                <option value="BinaryEquals">BinaryEquals</option>
+                                                <option value="BinaryNotEquals">BinaryNotEquals</option>
+                                                <option value="StringEquals">StringEquals</option>
+                                                <option value="StringNotEquals">StringNotEquals</option>
+                                                <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
+                                                <option value="StringNotEqualsIgnoreCase">StringNotEqualsIgnoreCase</option>
+                                                <option value="StringLike">StringLike</option>
+                                                <option value="StringNotLike">StringNotLike</option>
+                                                <option value="Null">Null</option>
+                                                <option value="NumericEquals">NumericEquals</option>
+                                                <option value="NumericNotEquals">NumericNotEquals</option>
+                                                <option value="NumericLessThan">NumericLessThan</option>
+                                                <option value="NumericLessThanEquals">NumericLessThanEquals</option>
+                                                <option value="NumericGreaterThan">NumericGreaterThan</option>
+                                                <option value="NumericGreaterThanEquals">NumericGreaterThanEquals</option>
+                                                <option value="DateEquals">DateEquals</option>
+                                                <option value="DateNotEquals">DateNotEquals</option>
+                                                <option value="DateLessThan">DateLessThan</option>
+                                                <option value="DateLessThanEquals">DateLessThanEquals</option>
+                                                <option value="DateGreaterThan">DateGreaterThan</option>
+                                                <option value="DateGreaterThanEquals">DateGreaterThanEquals</option>
+                                                <option value="Bool">Bool</option>
+                                                <option value="IpAddress">IpAddress</option>
+                                                <option value="NotIpAddress">NotIpAddress</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <input type="text" class="condition-value" />
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
@@ -241,9 +246,6 @@
                                 </div>
                             </div><!--! end conditions-wrapper -->
                         </div>
-                    </td>
-                    <td>
-                        <a class="button tiny round" ng-click="toggleAdvanced($event)">Advanced</a>
                     </td>
                 </div>
             </tr>
