@@ -97,7 +97,7 @@
                                                 Instance
                                             </option>
                                             <option value="vm_type" tal:condition="instance_condition">
-                                                VM Type
+                                                VM type
                                             </option>
                                             <option value="image" tal:condition="image_condition">
                                                 Image
@@ -182,27 +182,21 @@
                                     <div class="row">
                                         <div class="small-6 columns">
                                             <select class="condition-keys">
-                                                <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
-                                                <option value="EbsOptimizedKey">EbsOptimizedKey</option>
-                                                <option value="InstanceProfileKey">InstanceProfileKey</option>
-                                                <option value="InstanceTypeKey">InstanceTypeKey</option>
-                                                <option value="PlacementGroupKey">PlacementGroupKey</option>
-                                                <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
-                                                <option value="TenancyKey">TenancyKey</option>
-                                                <option value="RegionKey">RegionKey</option>
-                                                <option value="TargetImageKey">TargetImageKey</option>
-                                                <option value="ParentSnapshotKey">ParentSnapshotKey</option>
-                                                <option value="VolumeIopsKey">VolumeIopsKey</option>
-                                                <option value="VolumeSizeKey">VolumeSizeKey</option>
-                                                <option value="VolumeTypeKey">VolumeTypeKey</option>
-                                                <option value="VpcKey">VpcKey</option>
-                                                <option value="ExpirationTime">ExpirationTime</option>
-                                                <option value="KeepAlive">KeepAlive</option>
-                                                <option value="MaxKeys">MaxKeys</option>
-                                                <option value="CurrentTime">CurrentTime</option>
-                                                <option value="ExternalIdKey">ExternalIdKey</option>
-                                                <option value="QuotaKey">QuotaKey</option>
-                                                <option value="SourceIp">SourceIp</option>
+                                                <option value="ec2:AvailabilityZone">Availability zone</option>
+                                                <option value="ec2:EbsOptimized">EBS optimized</option>
+                                                <option value="ec2:InstanceProfile">Instance profile</option>
+                                                <option value="ec2:InstanceType">Instance type</option>
+                                                <option value="ec2:PlacementGroup">Placement group</option>
+                                                <option value="ec2:RootDeviceType">Root device type</option>
+                                                <option value="ec2:Tenancy">Tenancy</option>
+                                                <option value="ec2:targetimage">Target image</option>
+                                                <option value="ec2:ParentSnapshot">Parent snapshot</option>
+                                                <option value="ec2:VolumeIops">Volume IOPS</option>
+                                                <option value="ec2:VolumeSize">Volume size</option>
+                                                <option value="ec2:VolumeType">Volume type</option>
+                                                <option value="ec2:CurrentTime">Current time</option>
+                                                <option value="ec2:ExternalId">External ID</option>
+                                                <option value="ec2:SourceIp">Source IP</option>
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
@@ -211,8 +205,6 @@
                                                 <option value="ArnNotEquals">ArnNotEquals</option>
                                                 <option value="ArnLike">ArnLike</option>
                                                 <option value="ArnNotLike">ArnNotLike</option>
-                                                <option value="BinaryEquals">BinaryEquals</option>
-                                                <option value="BinaryNotEquals">BinaryNotEquals</option>
                                                 <option value="StringEquals">StringEquals</option>
                                                 <option value="StringNotEquals">StringNotEquals</option>
                                                 <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>

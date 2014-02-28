@@ -9,7 +9,7 @@
          ng-init="initController('groups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM Groups</a></li>
+                <li class="current"><a href="#" i18n:translate="">IAM groups</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -21,12 +21,12 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-group-btn"
-                   href="${request.route_url('group_view', name='new')}">Create group</a>
+                   href="${request.route_url('group_view', name='new')}">Create Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">Edit properties</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">View details</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a></li>
                 </ul>
             </div>
@@ -39,7 +39,7 @@
                     <a ng-click="linkGroup(item, '#group-users')">{{ item.user_count }}</a>
                 </div>
                 <div ng-show='item.policy_count > 0'>
-                    <span class="label" title="Policies" i18n:attributes="title" data-tooltip="">PE</span>
+                    <span class="label" title="Permissions" i18n:attributes="title" data-tooltip="">PE</span>
                     <a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                   <span class="actions">
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">Edit properties</a></li>
+                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">View details</a></li>
                         <li>
                             <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                         </li>
@@ -70,16 +70,9 @@
                 </td>
             </metal:block>
         </div>
-        <div id="help-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Help</h3>
-            <p>
-                Need some content
-            </p>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
         <div id="group-dialogs">
             <div id="delete-group-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete Group</h3>
+                <h3 i18n:translate="">Delete group</h3>
                 <p>
                     <span i18n:translate="">Deleting a group also deletes all permissions associated with that group. Are you sure you want to delete group <strong>{{ group_name }}</strong></span>?
                 </p>
@@ -89,7 +82,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Yes, Delete" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
