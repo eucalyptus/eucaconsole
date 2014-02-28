@@ -7,6 +7,8 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 """
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
+import boto
+from boto.exception import BotoServerError
 
 from ..vmtypes import VmType
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
@@ -189,7 +191,7 @@ class ChoicesManager(object):
                 load_balancers = self.get_all_load_balancers()
             for load_balancer in load_balancers:
                 choices.append((load_balancer.name, load_balancer.name))
-        except Exception as ex:
+        except BotoServerError as ex:
             if ex.reason == "Service Unavailable":
                 logging.info("ELB service not available, disabling polling")
             else:
@@ -220,10 +222,7 @@ class ChoicesManager(object):
             obj = boto.resultset.ResultSet([('member', boto.ec2.elb.loadbalancer.LoadBalancer)])
             h = boto.handler.XmlHandler(obj, self.conn)
             import xml.sax;
-
             xml.sax.parseString(body, h)
-            if self.saveclcdata:
-                self.__save_json__(obj, "mockdata/ELB_Balancers.json")
             return obj
         else:
             boto.log.error('%s %s' % (response.status, response.reason))
