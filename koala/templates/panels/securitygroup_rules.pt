@@ -32,7 +32,7 @@
                 <div class="small-9 columns">
                     <select id="ip-protocol-select" name="ip_protocol" class="ip-protocol"
                             ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)" data-placeholder="select...">
-                        <option tal:repeat="choice protocol_choices" value="${choice[0]}">${choice[1]}</option>
+                        <option tal:repeat="choice protocol_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                     </select>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                     </div>
                     <div ng-show="selectedProtocol == 'icmp'">
                         <select name="icmp_range" ng-model="icmpRange" data-placeholder="select...">
-                            <option tal:repeat="choice icmp_choices" value="${choice[0]}">${choice[1]}</option>
+                            <option tal:repeat="choice icmp_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                         </select>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                         <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                 ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
                             <option tal:repeat="groupname groupnames"
-                                    value="${groupname}">${groupname}</option>
+                                    value="${groupname}" ng-non-bindable="">${groupname}</option>
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
                         <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</span></div>
