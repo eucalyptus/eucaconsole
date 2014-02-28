@@ -32,7 +32,7 @@ $snapshot-status-color-failed: darken(red, 20%);
             margin-bottom: 0;
             .meter {
                 padding-left: 4px;
-                color: white;
+                color: black;
                 font-weight: bold;
             }
             .dots {
@@ -58,9 +58,10 @@ $snapshot-status-color-failed: darken(red, 20%);
             position: relative;
             border: none;
             .meter {
+                color: black;
                 position: relative;
                 top: -2px; left: -2px;
-                padding: 1px 0 1px 0;
+                padding: 1px 0 1px 8px;
                 display: inline-block;
                 white-space: nowrap;
                 font-weight: bold;
