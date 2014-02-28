@@ -5,7 +5,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
-                <li class="current"><a href="#">${launch_config.name}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${launch_config.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -36,14 +36,14 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_url('keypair_view', id=launch_config.key_name)}">${launch_config.key_name}</a>
+                            <a href="${request.route_url('keypair_view', id=launch_config.key_name)}" ng-non-bindable="">${launch_config.key_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
                             <span tal:repeat="security_group launch_config.security_groups">
-                                <a href="${request.route_url('securitygroup_view', id=security_group)}">${security_group}</a>
+                                <a href="${request.route_url('securitygroup_view', id=security_group)}" ng-non-bindable="">${security_group}</a>
                             </span>
                         </div>
                     </div>
@@ -69,12 +69,12 @@
                     <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
-                        <div class="small-9 columns value">${launch_config.instance_type}</div>
+                        <div class="small-9 columns value" ng-non-bindable="">${launch_config.instance_type}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_url('image_view', id=image.id)}">${image.name or image.id}</a>
+                            <a href="${request.route_url('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
@@ -87,7 +87,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                        <div class="small-9 columns value">${image.platform.name}</div>
+                        <div class="small-9 columns value" ng-non-bindable="">${image.platform.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
                         <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-9 columns value breakword">${image.location}</div>
+                        <div class="small-9 columns value breakword" ng-non-bindable="">${image.location}</div>
                     </div>
                 </form>
                 <div>&nbsp;</div>

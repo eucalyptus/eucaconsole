@@ -165,11 +165,11 @@
                 <div class="section">
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Image:</label></div>
-                        <div class="small-8 columns value">${image.name or image.id}</div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.name or image.id}</div>
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
-                        <div class="small-8 columns value">${image.platform_name}</div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.platform_name}</div>
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Root device:</label></div>
@@ -177,7 +177,7 @@
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Manifest:</label></div>
-                        <div class="small-8 columns value">${image.location}</div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.location}</div>
                     </div>
                 </div>
                 <div class="section step2 hide">
