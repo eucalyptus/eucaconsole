@@ -3,7 +3,7 @@
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }
 .tabs-content .small-10.columns { padding-left: 0; }
-.tabs-content .content { margin-top: 1rem; }
+.tabs-content .content { margin-top: 8px; }
 .tabs-content .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .tabs-content .content .choice:last-child { border-bottom: none; }
 .tabs-content .content .choice .expando i { margin-right: 8px; }

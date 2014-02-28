@@ -213,15 +213,33 @@ angular.module('IAMPolicyWizard', [])
             if (allowDenyCount === 0) {
                 actionRow.find('i.fi-check').addClass('selected');
             }
+            $scope.updateParsedConditions(action, actionConditions);
             $scope.updatePolicy();
         };
-        $scope.removeCondition = function (action, operator, $event) {
+        $scope.removeCondition = function (action, operator, key, $event) {
             $event.preventDefault();
             var actionConditions = $scope[action + 'Conditions'];
-            if (actionConditions[operator]) {
-                delete actionConditions[operator];
+            if (actionConditions[operator] && actionConditions[operator][key]) {
+                delete actionConditions[operator][key];
             }
+            if (Object.keys(actionConditions[operator]).length === 0) {
+                delete actionConditions[operator];  // Prevent empty operators in conditions
+            }
+            $scope.updateParsedConditions(action, actionConditions);
             $scope.updatePolicy();
+        };
+        $scope.updateParsedConditions = function (action, conditionsObj) {
+            // Flatten conditions object into an array of conditions with unique key/operator values
+            $scope[action + 'ParsedConditions'] = [];
+            Object.keys(conditionsObj).forEach(function (operator) {
+                Object.keys(conditionsObj[operator]).forEach(function (conditionKey) {
+                    $scope[action + 'ParsedConditions'].push({
+                        'operator': operator,
+                        'key': conditionKey,
+                        'value': conditionsObj[operator][conditionKey]
+                    });
+                });
+            });
         };
         // Handle Allow/Deny selection for a given action
         $scope.selectAction = function ($event) {
@@ -254,12 +272,6 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.hasConditions = function (obj) {
             return Object.keys(obj).length > 0;
-        };
-        $scope.getConditionKey = function (obj) {
-            return Object.keys(obj)[0];
-        };
-        $scope.getConditionValue = function (obj) {
-            return obj[Object.keys(obj)[0]];
         };
     })
 ;
