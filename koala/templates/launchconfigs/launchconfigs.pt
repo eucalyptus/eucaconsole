@@ -39,16 +39,16 @@
                     <a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id }}</a>
                 </div>
                 <div ng-show="item.key_name">
-                    <span class="label" title="Key Pair" i18n:attributes="title" data-tooltip="">KP</span>
+                    <span class="label" title="Key pair" i18n:attributes="title" data-tooltip="">KP</span>
                     <a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
                 </div>
                 <div ng-show="item.security_groups">
-                    <span class="label" title="Security Groups" i18n:attributes="title" data-tooltip="">SG</span>
+                    <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <a ng-repeat="sgroup_id in item.security_groups"
                        ng-href="/securitygroups/{{ sgroup_id }}">{{ sgroup_id }}</a>
                 </div>
                 <div ng-show="item.created_time">
-                    <span class="label" title="Creation Time" i18n:attributes="title" data-tooltip="">CT</span>
+                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.created_time | date:'${layout.angular_date_format}' }}
                 </div>
             </div>
