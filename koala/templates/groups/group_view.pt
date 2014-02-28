@@ -10,10 +10,10 @@
          ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('groups')}" i18n:translate="">IAM Groups</a></li>
+                <li><a href="${request.route_url('groups')}" i18n:translate="">IAM groups</a></li>
                 <li class="current">
                     <a tal:condition="group" href="#" ng-non-bindable="">${group.group_name}</a>
-                    <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
+                    <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create New Group</a>
                 </li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -21,7 +21,7 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div id="viewpage-title" class="large-12 columns">
-            <span tal:condition="group"><h4 i18n:translate="">Detail for Group ${group.group_name}</h4></span>
+            <span tal:condition="group"><h4 i18n:translate="">Details for group ${group.group_name}</h4></span>
             <span tal:condition="not group and group_route_id == 'new'"><h4 i18n:translate="">Create new group</h4></span>
         </div>
 
@@ -115,7 +115,7 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
                                     <button type="submit" class="button" id="save-changes-btn">
-                                        <span tal:condition="group" i18n:translate="">Save changes</span>
+                                        <span tal:condition="group" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_url('groups')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>

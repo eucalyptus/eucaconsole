@@ -97,7 +97,7 @@
                                                 Instance
                                             </option>
                                             <option value="vm_type" tal:condition="instance_condition">
-                                                VM Type
+                                                VM type
                                             </option>
                                             <option value="image" tal:condition="image_condition">
                                                 Image
@@ -182,11 +182,11 @@
                                     <div class="row">
                                         <div class="small-6 columns">
                                             <select class="condition-keys">
-                                                <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
-                                                <option value="EbsOptimizedKey">EbsOptimizedKey</option>
-                                                <option value="InstanceProfileKey">InstanceProfileKey</option>
-                                                <option value="InstanceTypeKey">InstanceTypeKey</option>
-                                                <option value="PlacementGroupKey">PlacementGroupKey</option>
+                                                <option value="AvailabilityZoneKey">Availability zone</option>
+                                                <option value="EbsOptimizedKey">EBS optimized</option>
+                                                <option value="InstanceProfileKey">Instance profile</option>
+                                                <option value="InstanceTypeKey">Instance type</option>
+                                                <option value="PlacementGroupKey">Placement group</option>
                                                 <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
                                                 <option value="TenancyKey">TenancyKey</option>
                                                 <option value="RegionKey">RegionKey</option>

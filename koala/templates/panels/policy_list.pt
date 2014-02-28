@@ -9,7 +9,7 @@
             <div>
                 <div class="columns">
                     <a ng-href="${add_url}" class="button" id="add-policy-btn"
-                       title="Add policy" i18n:translate="">Add policy</a>
+                       title="Add policy" i18n:translate="">Add Policy</a>
                 
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 <div>&nbsp;</div>
                 <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
                 <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
-                    Save changes
+                    Save Changes
                 </button>
             </form>
             <a class="close-reveal-modal">&#215;</a>
@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        <input type="submit" class="button" value="Yes, Delete" i18n:attributes="value" />
                     </div>
                 </div>
             </form>

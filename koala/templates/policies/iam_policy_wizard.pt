@@ -10,7 +10,7 @@
          ng-init="initController(${controller_options})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Create IAM Policy</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create IAM policy</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -112,7 +112,7 @@
         <div class="large-5 columns">
             <!--! Preview Policy -->
             <div id="policy-preview" ng-cloak="">
-                <h6 class="title">View/Edit Policy</h6>
+                <h6 class="title">View/Edit policy</h6>
                 <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
