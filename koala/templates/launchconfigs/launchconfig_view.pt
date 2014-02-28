@@ -18,7 +18,7 @@
                         <li>
                             <a href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}"
                                id="create-scalinggroup-action" i18n:translate="">
-                                Create scaling group with this launch configuration
+                                Use to create scaling group
                             </a>
                         </li>
                         <li>
@@ -28,7 +28,7 @@
                     </metal:actions>
                 </metal:block>
                 <form>
-                    <h6 i18n:translate="">Launch Configuration</h6>
+                    <h6 i18n:translate="">Launch configuration</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">In use?</label></div>
                         <div class="small-9 columns value">${'yes' if in_use else 'no'}</div>

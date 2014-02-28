@@ -10,7 +10,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a href="#" i18n:translate="">Create Scaling group</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create scaling group</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -76,7 +76,7 @@
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="create-scalinggroup-btn">
-                                        <span i18n:translate="">Create scaling group</span>
+                                        <span i18n:translate="">Create Scaling Group</span>
                                     </button>
                                 </div>
                             </div>
