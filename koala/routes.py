@@ -180,6 +180,8 @@ urls = [
     Route(name='user_create', pattern='/users/create'),
     Route(name='user_view', pattern='/users/{name}'),  # Pass name='new' to render Create User(s) page
     Route(name='user_summary_json', pattern='/users/{name}/summary'),
+    Route(name='user_enable', pattern='/users/{name}/enable'),
+    Route(name='user_disable', pattern='/users/{name}/disable'),
     Route(name='user_access_keys_json', pattern='/users/{name}/keys_json'),
     Route(name='user_groups_json', pattern='/users/{name}/groups_json'),
     Route(name='user_avail_groups_json', pattern='/users/{name}/groups_available_json'),

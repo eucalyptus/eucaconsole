@@ -26,17 +26,16 @@ angular.module('IAMPolicyWizard', [])
             $scope.handlePolicyFileUpload();
             if ($scope.cloudType === 'euca') {
                 $scope.initChosenSelectors();
-                $scope.limitResourceChoices();
                 $scope.addResourceTypeListener();
             }
         };
         $scope.initSelectedTab = function () {
             var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
-            $('#' + lastSelectedTab).click();
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
             });
+            $('#' + lastSelectedTab).click();
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
@@ -61,11 +60,16 @@ angular.module('IAMPolicyWizard', [])
                     resourceSelector = '.resource.' + resourceType,
                     resourceWrapper = resourceSelect.closest('.resource-wrapper');
                 resourceWrapper.find('.chosen-container').addClass('hide');
+                resourceWrapper.find('input').addClass('hide');
                 resourceWrapper.find(resourceSelector).next('.chosen-container').removeClass('hide');
+                resourceWrapper.find(resourceSelector).removeClass('hide');
             });
         };
         $scope.initChosenSelectors = function () {
-            $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
+            $timeout(function () {
+                $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
+                $scope.limitResourceChoices();
+            }, 100);
         };
         $scope.initCodeMirror = function () {
             $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
@@ -119,38 +123,41 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.updatePolicy = function() {
             $scope.policyStatements = [];
-            $timeout(function () {
-                // Add namespace (allow/deny all) statements
-                $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
-                    var selectedMark = $(elem).find('.tick.selected');
-                    if (selectedMark.length > 0) {
-                        $scope.policyStatements.push({
-                            "Action": selectedMark.attr('data-action'),
-                            "Resource": selectedMark.attr('data-resource'),
-                            "Effect": selectedMark.attr('data-effect')
-                        });
-                    }
-                });
-                // Add allow/deny statements for each action
-                $scope.actionsList.forEach(function (action) {
-                    var actionRow = $scope.policyGenerator.find('tr.action.' + action),
-                        selectedMark = actionRow.find('.tick.selected'),
-                        addedResources = $scope[action + 'Resources'],
-                        resource = null;
-                    resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
-                    if (selectedMark.length > 0) {
-                        $scope.policyStatements.push({
-                            "Action": selectedMark.attr('data-action'),
-                            "Resource": resource,
-                            "Effect": selectedMark.attr('data-effect')
-                        });
-                    }
-                });
-                var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
-                var formattedResults = JSON.stringify(generatorPolicy, null, 2);
-                $scope.policyText = formattedResults;
-                $scope.codeEditor.setValue(formattedResults);
-            }, 100);
+            // Add namespace (allow/deny all) statements
+            $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
+                var selectedMark = $(elem).find('.tick.selected');
+                if (selectedMark.length > 0) {
+                    $scope.policyStatements.push({
+                        "Action": selectedMark.attr('data-action'),
+                        "Resource": selectedMark.attr('data-resource'),
+                        "Effect": selectedMark.attr('data-effect')
+                    });
+                }
+            });
+            // Add allow/deny statements for each action
+            $scope.actionsList.forEach(function (action) {
+                var actionRow = $scope.policyGenerator.find('.action.' + action),
+                    selectedMark = actionRow.find('.tick.selected'),
+                    addedResources = $scope[action + 'Resources'],
+                    addedConditions = $scope[action + 'Conditions'],
+                    statement, resource;
+                resource = addedResources.length > 0 ? addedResources : selectedMark.attr('data-resource');
+                statement = {
+                    "Action": selectedMark.attr('data-action'),
+                    "Resource": resource,
+                    "Effect": selectedMark.attr('data-effect')
+                };
+                if (Object.keys(addedConditions).length > 0) {
+                    statement["Conditions"] = addedConditions;
+                }
+                if (selectedMark.length > 0) {
+                    $scope.policyStatements.push(statement);
+                }
+            });
+            var generatorPolicy = { "Version": $scope.policyAPIVersion, "Statement": $scope.policyStatements };
+            var formattedResults = JSON.stringify(generatorPolicy, null, 2);
+            $scope.policyText = formattedResults;
+            $scope.codeEditor.setValue(formattedResults);
         };
         $scope.addResource = function (action, $event) {
             var resourceBtn = $($event.target),
@@ -159,26 +166,80 @@ angular.module('IAMPolicyWizard', [])
                 allowDenyCount = selectedTick.length,
                 actionResources = $scope[action + 'Resources'],
                 visibleResource = null,
-                statement = null,
                 resourceVal = null;
             $event.preventDefault();
-            if (!allowDenyCount) {
-                alert('Select "Allow" or "Deny" to add the statement to the policy');
-            } else {
-                visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
-                if (!visibleResource.length) {
-                    visibleResource = actionRow.find('.resource:visible');
-                }
+            visibleResource = actionRow.find('.chosen-container:visible').prev('.resource');
+            if (visibleResource.length) {
                 resourceVal = visibleResource.val();
-                if (actionResources.indexOf(resourceVal === -1)) {
-                    actionResources.push(resourceVal);
+            } else {
+                visibleResource = actionRow.find('.resource:visible');
+                if (visibleResource.hasClass('ip_address')) {
+                    // IP Address requires prefix to be set here since it's an input field
+                    resourceVal = 'arn:aws:ec2:::address/' + visibleResource.val();
+                } else {
+                    resourceVal = visibleResource.val();
                 }
-                $scope.updatePolicy();
             }
+            resourceVal = resourceVal || '*';
+            if (actionResources.indexOf(resourceVal === -1)) {
+                actionResources.push(resourceVal);
+            }
+            if (allowDenyCount === 0) {
+                actionRow.find('i.fi-check').addClass('selected');
+            }
+            actionRow.find('input').focus();
+            $scope.updatePolicy();
         };
-        $scope.removeResource = function (action, index) {
+        $scope.removeResource = function (action, index, $event) {
+            $event.preventDefault();
             $scope[action + 'Resources'].splice(index, 1);
             $scope.updatePolicy();
+        };
+        $scope.addCondition = function (action, $event) {
+            var conditionBtn = $($event.target),
+                actionRow = conditionBtn.closest('tr'),
+                selectedTick = actionRow.find('i.selected'),
+                allowDenyCount = selectedTick.length,
+                actionConditions = $scope[action + 'Conditions'],
+                conditionKey, conditionOperator, conditionValue;
+            $event.preventDefault();
+            conditionKey = actionRow.find('.condition-keys').val();
+            conditionOperator = actionRow.find('.condition-operators').val();
+            conditionValue = actionRow.find('.condition-value').val();
+            if (!actionConditions[conditionOperator]) {
+                actionConditions[conditionOperator] = {};
+            }
+            actionConditions[conditionOperator][conditionKey] = conditionValue;
+            if (allowDenyCount === 0) {
+                actionRow.find('i.fi-check').addClass('selected');
+            }
+            $scope.updateParsedConditions(action, actionConditions);
+            $scope.updatePolicy();
+        };
+        $scope.removeCondition = function (action, operator, key, $event) {
+            $event.preventDefault();
+            var actionConditions = $scope[action + 'Conditions'];
+            if (actionConditions[operator] && actionConditions[operator][key]) {
+                delete actionConditions[operator][key];
+            }
+            if (Object.keys(actionConditions[operator]).length === 0) {
+                delete actionConditions[operator];  // Prevent empty operators in conditions
+            }
+            $scope.updateParsedConditions(action, actionConditions);
+            $scope.updatePolicy();
+        };
+        $scope.updateParsedConditions = function (action, conditionsObj) {
+            // Flatten conditions object into an array of conditions with unique key/operator values
+            $scope[action + 'ParsedConditions'] = [];
+            Object.keys(conditionsObj).forEach(function (operator) {
+                Object.keys(conditionsObj[operator]).forEach(function (conditionKey) {
+                    $scope[action + 'ParsedConditions'].push({
+                        'operator': operator,
+                        'key': conditionKey,
+                        'value': conditionsObj[operator][conditionKey]
+                    });
+                });
+            });
         };
         // Handle Allow/Deny selection for a given action
         $scope.selectAction = function ($event) {
@@ -208,6 +269,9 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.toggleAdvanced = function ($event) {
             $($event.target).closest('tr').find('.advanced').toggleClass('hide');
+        };
+        $scope.hasConditions = function (obj) {
+            return Object.keys(obj).length > 0;
         };
     })
 ;

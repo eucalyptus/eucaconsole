@@ -180,12 +180,53 @@ class ChoicesManager(object):
     def load_balancers(self, load_balancers=None, add_blank=True):
         """Returns a list of load balancer choices.  Will fetch load balancers if not passed"""
         choices = []
-        load_balancers = load_balancers or []
-        if add_blank:
-            choices.append(BLANK_CHOICE)
-        # Note: self.conn is an ELBConnection
-        if not load_balancers and self.conn is not None:
-            load_balancers = self.conn.get_all_load_balancers()
-        for load_balancer in load_balancers:
-            choices.append((load_balancer.name, load_balancer.name))
+        try:
+            load_balancers = load_balancers or []
+            if add_blank:
+                choices.append(BLANK_CHOICE)
+            # Note: self.conn is an ELBConnection
+            if not load_balancers and self.conn is not None:
+                load_balancers = self.get_all_load_balancers()
+            for load_balancer in load_balancers:
+                choices.append((load_balancer.name, load_balancer.name))
+        except Exception as ex:
+            if ex.reason == "Service Unavailable":
+                logging.info("ELB service not available, disabling polling")
+            else:
+                raise ex
+            
         return sorted(choices)
+
+    ### Special version of this to handle case where back end doesn't have ELB configured
+    ##
+
+    def get_all_load_balancers(self, load_balancer_names=None):
+        params = {}
+        if load_balancer_names:
+            self.build_list_params(params, load_balancer_names,
+                                   'LoadBalancerNames.member.%d')
+        http_request = self.conn.build_base_http_request('GET', '/', None,
+                                                         params, {}, '',
+                                                         self.conn.server_name())
+        http_request.params['Action'] = 'DescribeLoadBalancers'
+        http_request.params['Version'] = self.conn.APIVersion
+        response = self.conn._mexe(http_request, override_num_retries=2)
+        body = response.read()
+        boto.log.debug(body)
+        if not body:
+            boto.log.error('Null body %s' % body)
+            raise self.conn.ResponseError(response.status, response.reason, body)
+        elif response.status == 200:
+            obj = boto.resultset.ResultSet([('member', boto.ec2.elb.loadbalancer.LoadBalancer)])
+            h = boto.handler.XmlHandler(obj, self.conn)
+            import xml.sax;
+
+            xml.sax.parseString(body, h)
+            if self.saveclcdata:
+                self.__save_json__(obj, "mockdata/ELB_Balancers.json")
+            return obj
+        else:
+            boto.log.error('%s %s' % (response.status, response.reason))
+            boto.log.error('%s' % body)
+            raise self.conn.ResponseError(response.status, response.reason, body)
+        

@@ -10,7 +10,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
-                <li class="current"><a href="#" i18n:translate="">Create Launch configuration</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create launch configuration</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -50,7 +50,7 @@
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
                             <p class="description" i18n:translate="">
-                                Machine image for your virtual machine
+                                Please specify a machine image for your virtual machine.
                             </p>
                             <div class="row">
                                 <div class="small-4 columns">
@@ -77,7 +77,7 @@
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
                             <p class="description" i18n:translate="">
-                                Specify the launch configuration name and the instance size/type.
+                                Please specify the launch configuration name and the instance size/type.
                             </p>
                             ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
                             ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
@@ -95,7 +95,7 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">
-                                Specify the key pair and security group.
+                                Please specify the key pair and security group.
                             </p>
                             ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9,
                                     ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
@@ -132,7 +132,7 @@
                         <!--! Step 4: Advanced tab content -->
                         <div class="content" id="step4">
                             <p class="description" i18n:translate="">
-                                User data and other advanced options (optional).
+                                Please specify user data and other advanced options (optional).
                             </p>
                             ${panel('form_field', field=create_form['userdata'], ng_attrs={'model': 'userData'})}
                             ${panel('form_field', field=create_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}

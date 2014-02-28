@@ -37,7 +37,7 @@
                         <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action, volume.name)">Detach Volume</a>
+                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action, volume.name)">Detach volume</a>
                             </li>
                         </ul>
                     </div>
@@ -102,7 +102,7 @@
                 </p>
                 <p>
                   <span i18n:translate="">
-                      Are you sure you want to detach volume <b>{{ detachVolumeName }}</b> from the instance
+                      Are you sure you want to detach volume <b>{{ detachVolumeName }}</b> from instance
                   </span>
                   <strong ng-non-bindable="">${instance_name}</strong>?
                 </p>

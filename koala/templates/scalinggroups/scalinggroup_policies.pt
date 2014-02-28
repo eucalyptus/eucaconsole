@@ -59,7 +59,7 @@
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="{{ policyName }}" />
                 <button type="submit" class="button" i18n:translate="" id="delete-policy-dialog-btn">
-                    Yes, delete policy
+                    Yes, Delete Policy
                 </button>
             </form>
             <a class="close-reveal-modal">&#215;</a>

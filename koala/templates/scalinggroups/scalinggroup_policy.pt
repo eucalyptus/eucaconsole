@@ -41,7 +41,7 @@
                     <hr />
                     <div>
                         <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
-                            Add policy
+                            Add Policy
                         </button>
                         <a class="cancel-link" i18n:translate=""
                            href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">Cancel</a>
