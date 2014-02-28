@@ -20,7 +20,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
-                <li class="current"><a href="#">${volume_name or 'Create volume'}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${volume_name or 'Create volume'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -66,7 +66,7 @@
                          tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_url('instance_view', id=instance_id)}">${instance_name}</a>
+                            <a href="${request.route_url('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
                         </div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
@@ -77,7 +77,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
                         <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
-                        <div class="small-8 columns field inline">${volume.snapshot_id}</div>
+                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.snapshot_id}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['size'], **html_attrs)}
@@ -93,7 +93,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="small-8 columns field inline">${volume.zone}</div>
+                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.zone}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>

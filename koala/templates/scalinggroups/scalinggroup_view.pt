@@ -10,7 +10,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a href="#">${scaling_group.name}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -93,7 +93,7 @@
                 Deleting a scaling group also terminates all instances within that scaling group.
             </p>
             <p><span i18n:translate="">Are you sure you want to delete the scaling group</span>
-               <b>${scaling_group.name}</b><span tal:condition="scaling_group.instances"> and terminate its instances</span>?</p>
+               <b ng-non-bindable="">${scaling_group.name}</b><span tal:condition="scaling_group.instances"> and terminate its instances</span>?</p>
             <form action="${request.route_url('scalinggroup_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="${scaling_group.name}">

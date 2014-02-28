@@ -15,7 +15,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('securitygroups')}" i18n:translate="">Security Groups</a></li>
-                <li class="current"><a href="#">${security_group.name if security_group else 'Create'}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -45,14 +45,14 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline breakword">${security_group.name}</div>
+                        <div class="small-9 columns field inline breakword" ng-non-bindable="">${security_group.name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-9 columns field inline">${security_group.description}</div>
+                        <div class="small-9 columns field inline" ng-non-bindable="">${security_group.description}</div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}

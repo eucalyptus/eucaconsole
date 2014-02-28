@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="small-5 columns">
                             <select name="owner_alias" ng-model="ownerAlias" ng-change="getItems()">
-                                <option tal:repeat="alias owner_choices" value="${alias.key}">${alias.label}</option>
+                                <option tal:repeat="alias owner_choices" value="${alias.key}" ng-non-bindable="">${alias.label}</option>
                             </select>
                         </div>
                         <div class="small-7 columns">
