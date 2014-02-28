@@ -194,12 +194,8 @@
                                                 <option value="VolumeIopsKey">Volume IOPS</option>
                                                 <option value="VolumeSizeKey">Volume size</option>
                                                 <option value="VolumeTypeKey">Volume type</option>
-                                                <option value="ExpirationTime">Expiration time</option>
-                                                <option value="KeepAlive">Keep alive</option>
-                                                <option value="MaxKeys">Max keys</option>
                                                 <option value="CurrentTime">Current time</option>
                                                 <option value="ExternalIdKey">External ID</option>
-                                                <option value="QuotaKey">Quota</option>
                                                 <option value="SourceIp">Source IP</option>
                                             </select>
                                         </div>
@@ -209,8 +205,6 @@
                                                 <option value="ArnNotEquals">ArnNotEquals</option>
                                                 <option value="ArnLike">ArnLike</option>
                                                 <option value="ArnNotLike">ArnNotLike</option>
-                                                <option value="BinaryEquals">BinaryEquals</option>
-                                                <option value="BinaryNotEquals">BinaryNotEquals</option>
                                                 <option value="StringEquals">StringEquals</option>
                                                 <option value="StringNotEquals">StringNotEquals</option>
                                                 <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
