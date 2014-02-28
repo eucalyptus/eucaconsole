@@ -22,12 +22,12 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-launchconfig-btn"
-                   href="${request.route_url('launchconfig_new')}">Create new launch configuration</a>
+                   href="${request.route_url('launchconfig_new')}">Create New Launch Configuration</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                     <li><a i18n:translate=""
                            ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
@@ -56,7 +56,7 @@
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Image</th>
                 <th i18n:translate="">Key</th>
-                <th i18n:translate="">Security Group</th>
+                <th i18n:translate="">Security group</th>
                 <th i18n:translate="">Creation time</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
@@ -73,7 +73,7 @@
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                             <li><a i18n:translate=""
                                    ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
