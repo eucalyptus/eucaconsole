@@ -39,9 +39,12 @@
         </p>
         <p>
           <span i18n:translate="">
-              Are you sure you want to detach volume <b>${volume_name if volume else '{{ volumeID }}'}</b> from the instance
+              Are you sure you want to detach volume 
+              <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
+              <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
+              from the instance
           </span>
-          <strong>${instance_name}</strong>?
+          <strong ng-non-bindable="">${instance_name}</strong>?
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
@@ -65,7 +68,9 @@
         <h3 i18n:translate="">Delete volume</h3>
         <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
         <p><span i18n:translate="">Are you sure you want to delete the volume</span><br />
-            <b>${volume_name if volume_name else '{{ volumeID }}'}</b>?</p>
+           <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
+           <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
+           ?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
