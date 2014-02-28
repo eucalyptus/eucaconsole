@@ -172,7 +172,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
             dict(key='name', name=_(u'Name: A to Z')),
             dict(key='-name', name=_(u'Name: Z to A')),
             dict(key='status', name=_(u'Status')),
-            dict(key='attach_status', name=_(u'Attach status')),
             dict(key='zone', name=_(u'Availability zone')),
         ]
 
