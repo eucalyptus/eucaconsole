@@ -25,12 +25,16 @@
     <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_url('ipaddresses_disassociate');
                      detailpage_action request.route_url('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
-                     action landingpage_action if landingpage else detailpage_action;">
+                     action landingpage_action if landingpage else detailpage_action;
+                     instance_name eip.instance_name if eip else '';">
         <h3 i18n:translate="">Disassociate IP Address</h3>
         <p i18n:translate="">If you disassociate an IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
         <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b><br />
-            from instance <b>${eip.instance_name if eip else '{{ instanceID }}'}</b>?</p>
+            from instance
+            <span tal:condition="eip"><b ng-non-bindable="">${instance_name}</b></span>
+            <span tal:condition="not eip"><b>{{ instanceID }}</b></span>
+            ?</p>
         <form action="${action}" method="post">
             ${structure:disassociate_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
