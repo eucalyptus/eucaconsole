@@ -38,7 +38,7 @@
                         <strong><a ng-href="/instances/{{ item.id }}">{{ item.id }}</a></strong>
                         <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                            <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View details</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('markunhealthy', item)">Mark unhealthy</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a></li>
                         </ul>
@@ -77,7 +77,7 @@
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns">
                     <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
-                        Yes, mark unhealthy
+                        Yes, Mark Unhealthy
                     </button>
                 </div>
             </form>
@@ -95,7 +95,7 @@
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns">
                     <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
-                        Yes, terminate
+                        Yes, Terminate
                     </button>
                 </div>
             </form>

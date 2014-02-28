@@ -21,13 +21,13 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-scalinggroup-btn"
-                   href="${request.route_url('scalinggroup_new')}">Create new scaling group</a>
+                   href="${request.route_url('scalinggroup_new')}">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li>
-                        <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                        <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
                     </li>
                     <li>
                         <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
@@ -74,7 +74,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
-                <th i18n:translate="">Launch Config</th>
+                <th i18n:translate="">Launch config</th>
                 <th i18n:translate="">Instances</th>
                 <th i18n:translate="">Avail zones</th>
                 <th i18n:translate="">Load balancers</th>
@@ -109,7 +109,7 @@
                         <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li>
-                                <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">Edit properties</a>
+                                <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
                             </li>
                             <li>
                                 <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>

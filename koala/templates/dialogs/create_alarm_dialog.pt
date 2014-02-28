@@ -114,7 +114,7 @@
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns">
                     <button type="submit" class="button" i18n:translate="" id="create-alarm-btn">
-                        Create alarm
+                        Create Alarm
                     </button>
                 </div>
             </div>
