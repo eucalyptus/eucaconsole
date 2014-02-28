@@ -187,22 +187,20 @@
                                                 <option value="InstanceProfileKey">Instance profile</option>
                                                 <option value="InstanceTypeKey">Instance type</option>
                                                 <option value="PlacementGroupKey">Placement group</option>
-                                                <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
-                                                <option value="TenancyKey">TenancyKey</option>
-                                                <option value="RegionKey">RegionKey</option>
-                                                <option value="TargetImageKey">TargetImageKey</option>
-                                                <option value="ParentSnapshotKey">ParentSnapshotKey</option>
-                                                <option value="VolumeIopsKey">VolumeIopsKey</option>
-                                                <option value="VolumeSizeKey">VolumeSizeKey</option>
-                                                <option value="VolumeTypeKey">VolumeTypeKey</option>
-                                                <option value="VpcKey">VpcKey</option>
-                                                <option value="ExpirationTime">ExpirationTime</option>
-                                                <option value="KeepAlive">KeepAlive</option>
-                                                <option value="MaxKeys">MaxKeys</option>
-                                                <option value="CurrentTime">CurrentTime</option>
-                                                <option value="ExternalIdKey">ExternalIdKey</option>
-                                                <option value="QuotaKey">QuotaKey</option>
-                                                <option value="SourceIp">SourceIp</option>
+                                                <option value="RootDeviceTypeKey">Root device type</option>
+                                                <option value="TenancyKey">Tenancy</option>
+                                                <option value="TargetImageKey">Target image</option>
+                                                <option value="ParentSnapshotKey">Parent snapshot</option>
+                                                <option value="VolumeIopsKey">Volume IOPS</option>
+                                                <option value="VolumeSizeKey">Volume size</option>
+                                                <option value="VolumeTypeKey">Volume type</option>
+                                                <option value="ExpirationTime">Expiration time</option>
+                                                <option value="KeepAlive">Keep alive</option>
+                                                <option value="MaxKeys">Max keys</option>
+                                                <option value="CurrentTime">Current time</option>
+                                                <option value="ExternalIdKey">External ID</option>
+                                                <option value="QuotaKey">Quota</option>
+                                                <option value="SourceIp">Source IP</option>
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
