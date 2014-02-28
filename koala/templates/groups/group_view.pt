@@ -12,7 +12,7 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('groups')}" i18n:translate="">IAM Groups</a></li>
                 <li class="current">
-                    <a tal:condition="group" href="#">${group.group_name}</a>
+                    <a tal:condition="group" href="#" ng-non-bindable="">${group.group_name}</a>
                     <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
                 </li>
             </metal:crumbs>

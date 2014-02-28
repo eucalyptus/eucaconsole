@@ -11,7 +11,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
-                <li class="current"><a href="#">${user.user_name}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -76,13 +76,13 @@
                             <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
                                 <div class="row controls-wrapper controls_new_password">
                                     <div class="small-12 columns field">
-                                        <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
+                                        <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
                                         ${structure:user_form.new_password}
                                     </div>
                                 </div>
                                 <div class="row controls-wrapper controls_new_password2">
                                     <div class="small-12 columns field">
-                                        <label for="top-label" class="left">${user_form.new_password2.label.text}<span class="req">*</span></label>
+                                        <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password2.label.text}<span class="req">*</span></label>
                                         ${structure:user_form.new_password2}
                                     </div>
                                 </div>
@@ -303,7 +303,7 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete User</h3>
                 <p>
-                    <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong>${user.user_name}</strong></span>?
+                    <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
                 </p>
                 <form method="post" id="delete-form" action="${request.route_url('user_delete', name=user.user_name)}">
                     ${structure:delete_form['csrf_token']}

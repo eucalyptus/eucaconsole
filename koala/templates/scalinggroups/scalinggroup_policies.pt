@@ -9,7 +9,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a>${scaling_group.name}</a></li>
+                <li class="current"><a ng-non-bindable="">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -30,7 +30,7 @@
                 </div>
                 <div class="tile item" tal:repeat="policy policies">
                     <div class="header">
-                        <strong><a href="#">${policy.name}</a></strong>
+                        <strong><a href="#" ng-non-bindable="">${policy.name}</a></strong>
                         <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_${policy.name}" class="f-dropdown">
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
@@ -40,10 +40,10 @@
                          tal:define="scale_text scale_down_text if policy.scaling_adjustment < 0 else scale_up_text;
                                      scale_type ' instances' if policy.adjustment_type == 'ChangeInCapacity' else '%'">
                         <strong i18n:translate="">Policy:</strong><br/>
-                        ${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}<br />
+                        <span ng-non-bindable="">${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}</span><br />
                         <br />
                         <strong i18n:translate="">Alarms:</strong><br/>
-                        ${', '.join([alarm.name for alarm in getattr(policy, 'alarms', [])])}
+                        <span ng-non-bindable="">${', '.join([alarm.name for alarm in getattr(policy, 'alarms', [])])}</span>
                     </div>
                 </div>
             </div>

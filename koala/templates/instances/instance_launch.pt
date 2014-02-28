@@ -190,7 +190,7 @@
                 <div class="section">
                     <div class="row">
                         <label i18n:translate="">Image:</label>
-                        <div class="columns value">${image.name or image.id}</div>
+                        <div class="columns value" ng-non-bindable="">${image.name or image.id}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Platform:</label>

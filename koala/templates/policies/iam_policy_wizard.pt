@@ -16,7 +16,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div id="pagetitle" class="columns">
-            <h3 i18n:translate="">${page_title}</h3>
+            <h3 i18n:translate="" ng-non-bindable="">${page_title}</h3>
         </div>
         <div class="large-7 columns">
             <div class="wizard no-title" ng-cloak="">

@@ -66,7 +66,7 @@
             <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label i18n:translate="">Create from snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
-                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                 </select>
             </div>
             <div class="medium-1 columns" ng-show="newVolumeType !== 'ephemeral'">

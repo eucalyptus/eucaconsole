@@ -15,7 +15,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
-                <li class="current"><a href="#">${snapshot_name or 'Create snapshot'}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${snapshot_name or 'Create snapshot'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -70,11 +70,11 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns field inline breakword">${snapshot.tags.get('Name')}</div>
+                        <div class="small-8 columns field inline breakword" ng-non-bindable="">${snapshot.tags.get('Name')}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
                         <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-8 columns field inline breakword">${snapshot.description}</div>
+                        <div class="small-8 columns field inline breakword" ng-non-bindable="">${snapshot.description}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
@@ -87,7 +87,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value breakword">
-                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}">${volume_name}</a>
+                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}" ng-non-bindable="">${volume_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
