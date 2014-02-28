@@ -74,8 +74,8 @@ class LaunchConfigsView(LandingPageView):
         return [
             dict(key='name', name='Name: A to Z'),
             dict(key='-name', name='Name: Z to A'),
-            dict(key='created_time', name='Created time: Oldest to Newest'),
-            dict(key='-created_time', name='Created time: Newest to Oldest'),
+            dict(key='created_time', name='Creation time: Oldest to Newest'),
+            dict(key='-created_time', name='Creation time: Newest to Oldest'),
             dict(key='image_name', name='Image Name: A to Z'),
             dict(key='-image_name', name='Image Name: Z to A'),
             dict(key='key_name', name='Key pair: A to Z'),
