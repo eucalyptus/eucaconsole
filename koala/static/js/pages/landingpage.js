@@ -20,6 +20,7 @@ angular.module('LandingPage', ['CustomFilters'])
         $scope.landingPageViewKey = '';
         $scope.limitCount = 100;  // Beyond this number a "show ___ more" button will appear.
         $scope.displayCount = $scope.limitCount;
+        $scope.transitionalRefresh = true;
         $scope.initController = function (pageResource, sortKey, jsonItemsEndpoint) {
             $scope.initChosenFilters();
             pageResource = pageResource || window.location.pathname.split('/')[0];
@@ -83,7 +84,7 @@ angular.module('LandingPage', ['CustomFilters'])
                     }
                 });
                 // Auto-refresh items if any are in a transitional state
-                if (transitionalCount > 0) {
+                if ($scope.transitionalRefresh && transitionalCount > 0) {
                     $timeout(function() { $scope.getItems(); }, 5000);  // Poll every 5 seconds
                 }
                 $scope.$emit('itemsLoaded', $scope.items);

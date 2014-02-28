@@ -63,7 +63,6 @@
                     </div>
                     <div class="progress" ng-show="item.status != 'completed'"><span
                             class="meter" style="width: {{ item.progress }}">{{ item.progress }}</span>
-                        <span class="dots">&nbsp;</span>
                     </div>
                 </div>
             </div>
@@ -84,7 +83,6 @@
                 <td class="status">
                     <div class="progress round" ng-show="item.status !== 'completed'"><span
                             class="meter" style="width: {{ item.progress }}">{{ item.progress }}</span>
-                        &nbsp;<span class="dots">&nbsp;</span>
                     </div>
                     <span ng-show="item.status === 'completed'">
                         <span class="label radius status completed">{{ item.status }}</span>
