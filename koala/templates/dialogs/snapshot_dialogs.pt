@@ -6,7 +6,9 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete snapshot</h3>
         <p><span i18n:translate="">Are you sure you want to delete the snapshot</span><br />
-            <b>${snapshot_name if snapshot else '{{ snapshotID }}'}</b>?</p>
+           <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
+           <span tal:condition="not snapshot"><b>{{ snapshotID }}</b></span>
+           ?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
