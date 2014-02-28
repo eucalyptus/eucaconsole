@@ -58,10 +58,12 @@ angular.module('UserView', ['PolicyList'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonRandomEndpoint = '';
         $scope.jsonChangeEndpoint = '';
+        $scope.getFileEndpoint = '';
         $scope.data = '';
-        $scope.initController = function (jsonRandomEndpoint, jsonChangeEndpoint) {
+        $scope.initController = function (jsonRandomEndpoint, jsonChangeEndpoint, getFileEndpoint) {
             $scope.jsonRandomEndpoint = jsonRandomEndpoint;
             $scope.jsonChangeEndpoint = jsonChangeEndpoint;
+            $scope.getFileEndpoint = getFileEndpoint;
             var newPasswordForm = $('#new_password');
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/>");
@@ -89,22 +91,32 @@ angular.module('UserView', ['PolicyList'])
         };
         // handles server call for changing the password
         $scope.changePassword = function($event) {
-            // add in current password, then submit the request
-            var data = $scope.data+"&password="+$event.target.password.value;
             var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: "not-used", // let the server set this
-                content: data,
-                script: $scope.jsonChangeEndpoint
-            });
-            $('#change-password-modal').foundation('reveal', 'close');
-            // same notes about setTimeout apply as below
-            setTimeout(function() {
+            var csrf_token = form.find('input[name="csrf_token"]').val();
+            // add in current password, then submit the request
+            var data = $scope.data+"&password="+$event.target.password.value+"&csrf="+csrf_token;
+            $http({method:'POST', url:$scope.jsonChangeEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                Notify.success(oData.message);
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
-            }, 2000);
+                $.generateFile({
+                    csrf_token: csrf_token,
+                    filename: 'not-used', // let the server set this
+                    content: 'none',
+                    script: $scope.getFileEndpoint
+                });
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+                Notify.failure(errorMsg);
+            });
+            $('#change-password-modal').foundation('reveal', 'close');
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitRandom = function($event) {
@@ -114,34 +126,46 @@ angular.module('UserView', ['PolicyList'])
         // handles server call for generating a random password
         $scope.genPassword = function($event) {
             // add in current password, then submit the request
-            var data = "password="+$event.target.password.value;
             var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: "not-used", // let the server set this
-                content: data,
-                script: $scope.jsonRandomEndpoint
-            });
-            $('#change-password-modal').foundation('reveal', 'close');
-            // same notes about setTimeout apply as below
-            setTimeout(function() {
+            var csrf_token = form.find('input[name="csrf_token"]').val();
+            var data = "password="+$event.target.password.value+"&csrf="+csrf_token;
+            $http({method:'POST', url:$scope.jsonRandomEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                Notify.success(oData.message);
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
-            }, 2000);
+                $.generateFile({
+                    csrf_token: csrf_token,
+                    filename: 'not-used', // let the server set this
+                    content: 'none',
+                    script: $scope.getFileEndpoint
+                });
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+                Notify.failure(errorMsg);
+            });
+            $('#change-password-modal').foundation('reveal', 'close');
         };
     })
     .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.jsonItemsEndpoint = '';
+        $scope.getFileEndpoint = '';
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.userWithKey = '';
         $scope.keyToDelete = '';
-        $scope.initController = function (jsonEndpoint, jsonItemsEndpoint) {
+        $scope.initController = function (jsonEndpoint, jsonItemsEndpoint, getFileEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
+            $scope.getFileEndpoint = getFileEndpoint;
             $scope.getItems(jsonItemsEndpoint);
         };
         $scope.getItems = function (jsonItemsEndpoint) {
@@ -158,35 +182,29 @@ angular.module('UserView', ['PolicyList'])
         };
         $scope.generateKeys = function ($event) {
             var form = $($event.target);
-            $.generateFile({
-                csrf_token: form.find('input[name="csrf_token"]').val(),
-                filename: "not-used", // let the server set this
-                content: "no-content",
-                script: $scope.jsonEndpoint
-            });
-            // this is clearly a hack. We'd need to bake callbacks into the generateFile
-            // stuff to do this properly. Probably should open an issue. TODO
-            setTimeout(function() {
-                $scope.itemsLoading = true;
-                $scope.items = [];
-                $scope.getItems($scope.jsonItemsEndpoint);
-            }, 2000);
-            /* keeping this stuff in case we do the callbacks in generateFile
-            $http({method:'POST', url:$scope.jsonEndpoint, data:'',
+            var csrf_token = form.find('input[name="csrf_token"]').val();
+            var data = "csrf="+csrf_token;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
+                Notify.success(oData.message);
                 $scope.itemsLoading = true;
                 $scope.items = [];
                 $scope.getItems($scope.jsonItemsEndpoint);
-                Notify.success(oData.message);
-              }).
-              error(function (oData, status) {
-                if (status == 403) window.location = '/';
+                $.generateFile({
+                    csrf_token: csrf_token,
+                    filename: 'not-used', // let the server set this
+                    content: 'none',
+                    script: $scope.getFileEndpoint
+                });
+            }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
                 Notify.failure(errorMsg);
-              });
-              */
+            });
         };
         $scope.makeAjaxCall = function (url, item) {
             url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);
