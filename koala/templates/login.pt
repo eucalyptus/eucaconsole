@@ -19,7 +19,7 @@
         </div>
         <div tal:condition="login_form_errors">
           <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
-                  tal:repeat="login_error login_form_errors">
+                  tal:repeat="login_error login_form_errors" ng-non-bindable="">
               ${ login_error }
               <a href="#" class="close">&times;</a>
           </div>
@@ -52,7 +52,7 @@
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     ${structure:field}
                                     <div tal:condition="field.errors" class="server-validation">
-                                        <span class="error" tal:repeat="error field.errors">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
                                         </span>
                                     </div>
@@ -83,7 +83,7 @@
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     ${structure:field}
                                     <div tal:condition="field.errors" class="server-validation">
-                                        <span class="error" tal:repeat="error field.errors">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
                                         </span>
                                     </div>
