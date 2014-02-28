@@ -3,7 +3,7 @@
 .tabs-content { background-color: white; }
 .tabs-content p { line-height: 1.3rem; }
 .tabs-content .small-10.columns { padding-left: 0; }
-.tabs-content .content { margin-top: 1rem; }
+.tabs-content .content { margin-top: 8px; }
 .tabs-content .content .choice { border-bottom: 1px solid #cccccc; margin-bottom: 1rem; margin-left: 1rem; margin-right: 1rem; }
 .tabs-content .content .choice:last-child { border-bottom: none; }
 .tabs-content .content .choice .expando i { margin-right: 8px; }
@@ -17,27 +17,31 @@
 #policy-preview input[type=text], #policy-preview textarea { background-color: white; }
 #policy-preview h6.title { font-weight: bold; color: #00415e; margin-bottom: 1rem; }
 
-#policy-generator .table { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
-#policy-generator .table tr.namespace { border-top: 1px solid #cccccc; }
-#policy-generator .table tr.namespace td { font-size: 1rem; }
-#policy-generator .table th.allow, #policy-generator .table th.deny { text-transform: uppercase; width: 40px; }
-#policy-generator .table td { font-size: 0.9rem; line-height: 1rem; }
-#policy-generator .table td.allow, #policy-generator .table td.deny { text-align: center; }
-#policy-generator .table td .resource-wrapper { vertical-align: top; }
-#policy-generator .table td .resource-wrapper .resentry { margin-bottom: 8px; margin-right: 8px; }
-#policy-generator .table td .resource-wrapper .resentry .remove i { color: white; }
-#policy-generator .table td .conditions-wrapper { margin-bottom: 1rem; }
-#policy-generator .table td .conditions-wrapper .conditions { margin: 0.5rem 0; }
-#policy-generator .table td .button { margin-bottom: 0; }
-#policy-generator .table td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 8px 8px; margin-bottom: 8px; }
-#policy-generator .table td .advanced select.resource-type { display: inline-block; width: 50%; padding: 7px 2px 7px 4px; position: relative; top: 1px; }
-#policy-generator .table td .advanced input[type=text] { display: inline-block; width: 44%; }
-#policy-generator .table td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
-#policy-generator .table td .advanced .chosen-search input[type=text] { width: 100%; }
-#policy-generator .table td label { margin-bottom: 2px; }
-#policy-generator .table td i.tick { color: #cccccc; font-size: 1.2rem; }
-#policy-generator .table td i.tick.fi-check.selected { color: #00415e; }
-#policy-generator .table td i.tick.fi-x.selected { color: darkred; }
+#policy-generator { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
+#policy-generator tr.namespace { border-top: 1px solid #cccccc; }
+#policy-generator tr.namespace td { font-size: 1rem; }
+#policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; width: 40px; }
+#policy-generator td { font-size: 0.9rem; line-height: 1rem; }
+#policy-generator td.allow, #policy-generator td.deny { text-align: center; }
+#policy-generator td h6 { margin-bottom: 4px; }
+#policy-generator td .resource-wrapper { vertical-align: top; margin-bottom: 1rem; }
+#policy-generator td .resource-wrapper input[type=text] { display: inline-block; width: 50%; }
+#policy-generator td .resource-wrapper input[type=text].arn { width: 100%; }
+#policy-generator td .resource-wrapper input[type=text].hide { display: none; }
+#policy-generator td .conditions-wrapper { margin-bottom: 1rem; }
+#policy-generator td .conditions-wrapper select { margin-bottom: 4px; }
+#policy-generator td .conditions-wrapper input[type=text] { width: 100%; }
+#policy-generator td .button { margin-bottom: 0; }
+#policy-generator td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 8px 8px; margin-bottom: 8px; }
+#policy-generator td .advanced-button { float: right; }
+#policy-generator td .advanced .remove { position: relative; top: 3px; margin-right: 0.2rem; }
+#policy-generator td .advanced select.resource-type { display: inline-block; width: 44%; padding: 7px 2px 7px 4px; position: relative; top: 1px; }
+#policy-generator td .advanced .chosen-container.chosen-container-single .chosen-choices { line-height: 1rem; }
+#policy-generator td .advanced .chosen-search input[type=text] { width: 100%; }
+#policy-generator td label { margin-bottom: 2px; margin-top: 6px; }
+#policy-generator td i.tick { color: #cccccc; font-size: 1.2rem; }
+#policy-generator td i.tick.fi-check.selected { color: #00415e; }
+#policy-generator td i.tick.fi-x.selected { color: darkred; }
 
 #create-iam-policy-btn { margin-top: 1rem; }
 

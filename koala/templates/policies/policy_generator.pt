@@ -1,84 +1,97 @@
-<div id="policy-generator">
-    <table class="table actions-wrapper">
-        <thead>
-            <tr>
-                <th class="allow" i18n:translate="">Allow</th>
-                <th class="deny" i18n:translate="">Deny</th>
-                <th class="actions">&nbsp;</th>
-                <th class="advanced">&nbsp;</th>
+<table id="policy-generator" class="table actions-wrapper">
+    <thead>
+        <tr>
+            <th class="allow" i18n:translate="">Allow</th>
+            <th class="deny" i18n:translate="">Deny</th>
+            <th class="actions">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <metal:block tal:repeat="actions_ns policy_actions">
+            <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
+                <td class="allow">
+                    <a ng-click="selectAll($event)">
+                        <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
+                           data-action="${namespace}:*" data-resource="*"></i>
+                    </a>
+                </td>
+                <td class="deny">
+                    <a ng-click="selectAll($event)">
+                        <i class="fi-x tick" data-namespace="${namespace}" data-effect="Deny"
+                           data-action="${namespace}:*" data-resource="*"></i>
+                    </a>
+                </td>
+                <td class="actions-namespace">
+                    <div class="expando" ng-init="${namespace}Expanded = false" ng-cloak="">
+                        <strong class="title" >
+                            <a ng-click="${namespace}Expanded = !${namespace}Expanded">
+                                <i class="fi-plus" ng-show="!${namespace}Expanded"></i>
+                                <i class="fi-minus" ng-show="${namespace}Expanded"></i>
+                                &nbsp;<span i18n:translate="">${actions_ns.label}</span>
+                            </a>
+                        </strong>
+                    </div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            <metal:block tal:repeat="actions_ns policy_actions">
-                <tr class="namespace ${namespace}" tal:define="namespace actions_ns.name">
+            <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name"
+                ng-init="${action}Resources = []; ${action}Conditions = {}; ${action}ParsedConditions = [];"
+                tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
+                <div tal:define="namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
                     <td class="allow">
-                        <a ng-click="selectAll($event)">
+                        <a ng-click="selectAction($event)">
                             <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
-                               data-action="${namespace}:*" data-resource="*"></i>
+                               data-action="${namespace}:${action}" data-resource="*"></i>
                         </a>
                     </td>
                     <td class="deny">
-                        <a ng-click="selectAll($event)">
+                        <a ng-click="selectAction($event)">
                             <i class="fi-x tick" data-namespace="${namespace}" data-effect="Deny"
-                               data-action="${namespace}:*" data-resource="*"></i>
+                               data-action="${namespace}:${action}" data-resource="*"></i>
                         </a>
                     </td>
-                    <td class="actions-namespace">
-                        <div class="expando" ng-init="${namespace}Expanded = false" ng-cloak="">
-                            <strong class="title" >
-                                <a ng-click="${namespace}Expanded = !${namespace}Expanded">
-                                    <i class="fi-plus" ng-show="!${namespace}Expanded"></i>
-                                    <i class="fi-minus" ng-show="${namespace}Expanded"></i>
-                                    &nbsp;<span i18n:translate="">${actions_ns.label}</span>
-                                </a>
-                            </strong>
-                        </div>
-                    </td>
-                    <td>&nbsp;</td>
-                </tr>
-                <tr class="action ${namespace} ${action}" tal:define="namespace actions_ns.name" ng-init="${action}Resources = []"
-                    tal:repeat="action actions_ns.actions" ng-show="${namespace}Expanded">
-                    <div tal:define="namespace_condition namespace not in ['elasticloadbalancing', 'autoscaling']">
-                        <td class="allow">
-                            <a ng-click="selectAction($event)">
-                                <i class="fi-check tick" data-namespace="${namespace}" data-effect="Allow"
-                                   data-action="${action}" data-resource="*"></i>
-                            </a>
-                        </td>
-                        <td class="deny">
-                            <a ng-click="selectAction($event)">
-                                <i class="fi-x tick" data-namespace="${namespace}" data-effect="Deny"
-                                   data-action="${action}" data-resource="*"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <span class="action-name">${action}</span>
-                            <div class="advanced hide">
-                                <div class="resource-wrapper" tal:condition="namespace_condition">
-                                    <div>&nbsp;</div>
-                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
-                                        <label i18n:translate="">Resource name (ARN):</label>
-                                        <input type="text" placeholder="All resources" i18n:attributes="placeholder" class="resource" />
-                                        <span class="helptext-icon" data-tooltip="" title="Leave blank for all resources">?</span><br />
-                                    </div>
-                                    <div tal:condition="layout.cloud_type == 'euca'"
-                                         tal:define="instance_condition 'Instance' in action
-                                                         or 'AttachVolume' in action or 'DetachVolume' in action
-                                                         or 'Console' in action;
-                                                     image_condition 'Image' in action;
-                                                     volume_condition 'Volume' in action;
-                                                     snapshot_condition 'Snapshot' in action;
-                                                     securitygroup_condition 'SecurityGroup' in action;
-                                                     keypair_condition 'KeyPair' in action;
-                                                     ipaddress_condition 'Address' in action;">
-                                        <div class="added-resources">
-                                            <span class="label radius secondary resentry" ng-cloak=""
-                                                  ng-repeat="resource in ${action}Resources track by $index">
-                                                {{ resource.split(':::')[1] }}
-                                                <a href="#" class="remove" ng-click="removeResource('${action}', $index)"
-                                                   title="Remove resource"><i class="fi-x"></i></a>
-                                            </span>
+                    <td>
+                        <span class="action-name">${action}</span>
+                        <a class="button tiny round advanced-button" ng-click="toggleAdvanced($event)">Advanced</a>
+                        <div class="advanced hide">
+                            <div class="resource-wrapper" tal:condition="namespace_condition">
+                                <div>&nbsp;</div>
+                                <h6 i18n:translate="">Resources</h6>
+                                <div tal:condition="layout.cloud_type == 'euca'"
+                                     tal:define="instance_condition 'Instance' in action
+                                                     or 'AttachVolume' in action or 'DetachVolume' in action
+                                                     or 'Console' in action;
+                                                 image_condition 'Image' in action;
+                                                 volume_condition 'Volume' in action;
+                                                 snapshot_condition 'Snapshot' in action;
+                                                 securitygroup_condition 'SecurityGroup' in action;
+                                                 keypair_condition 'KeyPair' in action;
+                                                 ipaddress_condition 'Address' in action;">
+                                    <div class="added-resources" ng-cloak="">
+                                        <div class="resentry" ng-repeat="resource in ${action}Resources track by $index">
+                                            <a class="circle remove" ng-click="removeResource('${action}', $index, $event)"
+                                               title="Remove resource">
+                                                <i class="fi-minus-circle"></i>
+                                            </a>
+                                            {{ resource }}
                                         </div>
+                                    </div>
+                                    <div tal:condition="namespace != 'ec2'" tal:omit-tag="">
+                                        <label i18n:translate="" ng-show="${action}Resources.length === 0">
+                                            Set a specific resource (ARN):
+                                        </label>
+                                        <label i18n:translate="" ng-show="${action}Resources.length > 0">
+                                            Set another resource (ARN):
+                                        </label>
+                                        <input type="text" placeholder="All resources" i18n:attributes="placeholder"
+                                               class="resource arn" value="arn:aws:${namespace}:::" />
+                                    </div>
+                                    <div tal:condition="namespace == 'ec2'" tal:omit-tag="">
+                                        <label i18n:translate="" ng-show="${action}Resources.length === 0">
+                                            Set a specific resource:
+                                        </label>
+                                        <label i18n:translate="" ng-show="${action}Resources.length > 0">
+                                            Set another resource:
+                                        </label>
                                         <select class="resource-type">
                                             <option value="instance" tal:condition="instance_condition">
                                                 Instance
@@ -135,36 +148,108 @@
                                             <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                                         </select>
                                     </div>
-                                    <div class="conditions-wrapper">
-                                        <div class="expando" ng-init="${action}ConditionsExpanded = false" ng-cloak="">
-                                            <strong class="title" >
-                                                <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
-                                                    <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
-                                                    <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
-                                                    &nbsp;<span i18n:translate="">Add conditions (optional)</span>
-                                                </a>
-                                            </strong>
-                                        </div>
-                                        <div ng-show="${action}ConditionsExpanded" class="conditions">
-                                            TBD
+                                </div>
+                                <a class="button tiny round" i18n:translate=""
+                                   ng-click="addResource('${action}', $event)">
+                                    Set Resource
+                                </a>
+                            </div><!--! /end resource-wrapper -->
+                            <div class="conditions-wrapper expando" ng-init="${action}ConditionsExpanded = false">
+                                <h6 class="title">
+                                    <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
+                                        <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
+                                        <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
+                                        <span i18n:translate="">Conditions (optional)</span>
+                                    </a>
+                                </h6>
+                                <div class="content" ng-show="${action}ConditionsExpanded">
+                                    <div class="added-conditions" ng-cloak="">
+                                        <div class="condentry" ng-repeat="condition in ${action}ParsedConditions">
+                                            <a class="circle remove"
+                                               ng-click="removeCondition('${action}', condition.operator, condition.key, $event)"
+                                               title="Remove condition">
+                                                <i class="fi-minus-circle"></i>
+                                            </a>
+                                            {{ condition.key }}: {{ condition.operator }}: {{ condition['value'] }}
                                         </div>
                                     </div>
+                                    <label i18n:translate="" ng-show="!hasConditions(${action}Conditions)">
+                                        Add a condition:
+                                    </label>
+                                    <label i18n:translate="" ng-show="hasConditions(${action}Conditions)">
+                                        Add another condition:
+                                    </label>
+                                    <div class="row">
+                                        <div class="small-6 columns">
+                                            <select class="condition-keys">
+                                                <option value="AvailabilityZoneKey">AvailabilityZoneKey</option>
+                                                <option value="EbsOptimizedKey">EbsOptimizedKey</option>
+                                                <option value="InstanceProfileKey">InstanceProfileKey</option>
+                                                <option value="InstanceTypeKey">InstanceTypeKey</option>
+                                                <option value="PlacementGroupKey">PlacementGroupKey</option>
+                                                <option value="RootDeviceTypeKey">RootDeviceTypeKey</option>
+                                                <option value="TenancyKey">TenancyKey</option>
+                                                <option value="RegionKey">RegionKey</option>
+                                                <option value="TargetImageKey">TargetImageKey</option>
+                                                <option value="ParentSnapshotKey">ParentSnapshotKey</option>
+                                                <option value="VolumeIopsKey">VolumeIopsKey</option>
+                                                <option value="VolumeSizeKey">VolumeSizeKey</option>
+                                                <option value="VolumeTypeKey">VolumeTypeKey</option>
+                                                <option value="VpcKey">VpcKey</option>
+                                                <option value="ExpirationTime">ExpirationTime</option>
+                                                <option value="KeepAlive">KeepAlive</option>
+                                                <option value="MaxKeys">MaxKeys</option>
+                                                <option value="CurrentTime">CurrentTime</option>
+                                                <option value="ExternalIdKey">ExternalIdKey</option>
+                                                <option value="QuotaKey">QuotaKey</option>
+                                                <option value="SourceIp">SourceIp</option>
+                                            </select>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <select class="condition-operators">
+                                                <option value="ArnEquals">ArnEquals</option>
+                                                <option value="ArnNotEquals">ArnNotEquals</option>
+                                                <option value="ArnLike">ArnLike</option>
+                                                <option value="ArnNotLike">ArnNotLike</option>
+                                                <option value="BinaryEquals">BinaryEquals</option>
+                                                <option value="BinaryNotEquals">BinaryNotEquals</option>
+                                                <option value="StringEquals">StringEquals</option>
+                                                <option value="StringNotEquals">StringNotEquals</option>
+                                                <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
+                                                <option value="StringNotEqualsIgnoreCase">StringNotEqualsIgnoreCase</option>
+                                                <option value="StringLike">StringLike</option>
+                                                <option value="StringNotLike">StringNotLike</option>
+                                                <option value="Null">Null</option>
+                                                <option value="NumericEquals">NumericEquals</option>
+                                                <option value="NumericNotEquals">NumericNotEquals</option>
+                                                <option value="NumericLessThan">NumericLessThan</option>
+                                                <option value="NumericLessThanEquals">NumericLessThanEquals</option>
+                                                <option value="NumericGreaterThan">NumericGreaterThan</option>
+                                                <option value="NumericGreaterThanEquals">NumericGreaterThanEquals</option>
+                                                <option value="DateEquals">DateEquals</option>
+                                                <option value="DateNotEquals">DateNotEquals</option>
+                                                <option value="DateLessThan">DateLessThan</option>
+                                                <option value="DateLessThanEquals">DateLessThanEquals</option>
+                                                <option value="DateGreaterThan">DateGreaterThan</option>
+                                                <option value="DateGreaterThanEquals">DateGreaterThanEquals</option>
+                                                <option value="Bool">Bool</option>
+                                                <option value="IpAddress">IpAddress</option>
+                                                <option value="NotIpAddress">NotIpAddress</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <input type="text" class="condition-value" />
                                     <a class="button tiny round" i18n:translate=""
-                                       ng-click="addResource('${action}', $event)">
-                                        Add Resource
+                                       ng-click="addCondition('${action}', $event)">
+                                        Add Condition
                                     </a>
-                                    <div>&nbsp;</div>
-                                </div><!--! /end resource-wrapper -->
-                            </div>
-                        </td>
-                        <td>
-                            <a class="button tiny round" ng-click="toggleAdvanced($event)"
-                               tal:condition="namespace_condition">Advanced</a>
-                        </td>
-                    </div>
-                </tr>
-            </metal:block>
-        </tbody>
-    </table>
-</div>
+                                </div>
+                            </div><!--! end conditions-wrapper -->
+                        </div>
+                    </td>
+                </div>
+            </tr>
+        </metal:block>
+    </tbody>
+</table>
 
