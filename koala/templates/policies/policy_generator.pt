@@ -182,21 +182,21 @@
                                     <div class="row">
                                         <div class="small-6 columns">
                                             <select class="condition-keys">
-                                                <option value="AvailabilityZoneKey">Availability zone</option>
-                                                <option value="EbsOptimizedKey">EBS optimized</option>
-                                                <option value="InstanceProfileKey">Instance profile</option>
-                                                <option value="InstanceTypeKey">Instance type</option>
-                                                <option value="PlacementGroupKey">Placement group</option>
-                                                <option value="RootDeviceTypeKey">Root device type</option>
-                                                <option value="TenancyKey">Tenancy</option>
-                                                <option value="TargetImageKey">Target image</option>
-                                                <option value="ParentSnapshotKey">Parent snapshot</option>
-                                                <option value="VolumeIopsKey">Volume IOPS</option>
-                                                <option value="VolumeSizeKey">Volume size</option>
-                                                <option value="VolumeTypeKey">Volume type</option>
-                                                <option value="CurrentTime">Current time</option>
-                                                <option value="ExternalIdKey">External ID</option>
-                                                <option value="SourceIp">Source IP</option>
+                                                <option value="ec2:AvailabilityZone">Availability zone</option>
+                                                <option value="ec2:EbsOptimized">EBS optimized</option>
+                                                <option value="ec2:InstanceProfile">Instance profile</option>
+                                                <option value="ec2:InstanceType">Instance type</option>
+                                                <option value="ec2:PlacementGroup">Placement group</option>
+                                                <option value="ec2:RootDeviceType">Root device type</option>
+                                                <option value="ec2:Tenancy">Tenancy</option>
+                                                <option value="ec2:targetimage">Target image</option>
+                                                <option value="ec2:ParentSnapshot">Parent snapshot</option>
+                                                <option value="ec2:VolumeIops">Volume IOPS</option>
+                                                <option value="ec2:VolumeSize">Volume size</option>
+                                                <option value="ec2:VolumeType">Volume type</option>
+                                                <option value="ec2:CurrentTime">Current time</option>
+                                                <option value="ec2:ExternalId">External ID</option>
+                                                <option value="ec2:SourceIp">Source IP</option>
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
