@@ -80,7 +80,6 @@ class LaunchConfigsView(LandingPageView):
             dict(key='-image_name', name='Image Name: Z to A'),
             dict(key='key_name', name='Key pair: A to Z'),
             dict(key='-key_name', name='Key pair: Z to A'),
-            dict(key='instance_monitoring', name='Instance monitoring'),
         ]
 
 
