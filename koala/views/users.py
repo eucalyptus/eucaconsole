@@ -75,6 +75,8 @@ class UsersView(LandingPageView):
     @view_config(route_name='user_disable', request_method='POST', renderer='json')
     def user_disable(self):
         """ calls iam:DeleteLoginProfile and iam:PutUserPolicy """
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         self.conn = self.get_connection(conn_type="iam")
         try:
             user_name = self.request.matchdict.get('name')
@@ -92,14 +94,14 @@ class UsersView(LandingPageView):
     @view_config(route_name='user_enable', request_method='POST', renderer='json')
     def user_enable(self):
         """ calls iam:CreateLoginProfile and iam:DeleteUserPolicy """
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         self.conn = self.get_connection(conn_type="iam")
         try:
             user_name = self.request.matchdict.get('name')
             result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
-            content = self.request.params.get('content')
-            # content is only present if we're doing a file download,
-            # which means generate a password!
-            if content is not None:
+            random_password = self.request.params.get('random_password')
+            if random_password == 'y':
                 password = PasswordGeneration.generatePassword()
                 result = self.conn.create_login_profile(user_name, password)
 
@@ -109,11 +111,9 @@ class UsersView(LandingPageView):
                 csv_w = csv.writer(string_output)
                 row = [account, user_name, password]
                 csv_w.writerow(row)
-                response = Response(content_type='text/csv')
-                response.body = string_output.getvalue()
-                response.content_disposition = 'attachment; filename="{acct}-{user}-login.csv"'.\
-                                    format(acct=account, user=user_name)
-                return response
+                self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=user_name),
+                            'text/csv', string_output.getvalue())
+                return dict(message=_(u"Successfully added users"), results="true")
             else:
                 return dict(message=_(u"Successfully enabled user"))
         except BotoServerError as err:
@@ -210,6 +210,7 @@ class UserView(BaseView):
         else:
             self.location = self.request.route_url('user_view', name=self.user.user_name)
         self.prefix = '/users'
+        self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
@@ -248,9 +249,9 @@ class UserView(BaseView):
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
-        user_form = UserForm(self.request, user=self.user, conn=self.conn,
+        self.user_form = UserForm(self.request, user=self.user, conn=self.conn,
                              formdata=self.request.params or None)
-        self.render_dict['user_form'] = user_form
+        self.render_dict['user_form'] = self.user_form
         return self.render_dict
  
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
@@ -293,9 +294,8 @@ class UserView(BaseView):
 
     @view_config(route_name='user_create', renderer='json', request_method='POST')
     def user_create(self):
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         # can't use regular form validation here. We allow empty values and the validation
         # code does not, so we need to roll our own below.
         # get user list
@@ -391,18 +391,13 @@ class UserView(BaseView):
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully added users"), results="true")
         except BotoServerError as err:
-            msg = err.message
-            queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
-            return HTTPFound(location=self.location)
-
+            return JSONResponse(status=400, message=err.message)
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
         """ calls iam:UpdateUser """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         try:
             new_name = self.request.params.get('user_name', None)
             path = self.request.params.get('path', None)
@@ -420,9 +415,8 @@ class UserView(BaseView):
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
         """ calls iam:UpdateLoginProfile """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         try:
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
@@ -466,9 +460,8 @@ class UserView(BaseView):
     @view_config(route_name='user_random_password', request_method='POST', renderer='json')
     def user_random_password(self):
         """ calls iam:UpdateLoginProfile """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         try:
             password = self.request.params.get('password')
 
@@ -512,9 +505,8 @@ class UserView(BaseView):
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
         """ calls iam:CreateAccessKey """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         try:
             result = self.conn.create_access_key(user_name=self.user.user_name)
             account = self.request.session['account']
@@ -531,9 +523,8 @@ class UserView(BaseView):
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):
         """ calls iam:DeleteAccessKey """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         try:
             result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
@@ -544,9 +535,8 @@ class UserView(BaseView):
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
     def user_deactivate_key(self):
         """ calls iam:UpdateAccessKey """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         try:
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
@@ -557,9 +547,8 @@ class UserView(BaseView):
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
     def user_activate_key(self):
         """ calls iam:UpdateAccessKey """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         try:
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
@@ -570,9 +559,8 @@ class UserView(BaseView):
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
         """ calls iam:AddUserToGroup """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
         try:
             result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
@@ -584,9 +572,8 @@ class UserView(BaseView):
     @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
     def user_remove_from_group(self):
         """ calls iam:RemoveUserToGroup """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
         try:
             result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
@@ -597,9 +584,8 @@ class UserView(BaseView):
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
-        if not(self.delete_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
         try:
@@ -619,9 +605,8 @@ class UserView(BaseView):
     @view_config(route_name='user_update_policy', request_method='POST', renderer='json')
     def user_update_policy(self):
         """ calls iam:PutUserPolicy """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         policy = str(self.request.matchdict.get('policy'))
         try:
             policy_text = self.request.params.get('policy_text')
@@ -634,9 +619,8 @@ class UserView(BaseView):
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
     def user_delete_policy(self):
         """ calls iam:DeleteUserPolicy """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         policy = self.request.matchdict.get('policy')
         try:
             result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
@@ -647,9 +631,8 @@ class UserView(BaseView):
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
     def user_update_quotas(self):
         """ calls iam:PutUserPolicy """
-        if not(self.user_form.validate_csrf_token()):
-            self.request.session.flash("missing CSRF token", queue=Notification.ERROR)
-            return HTTPFound(location=self.location)
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
         try:

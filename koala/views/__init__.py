@@ -58,6 +58,9 @@ class BaseView(object):
 
         return conn
 
+    def is_csrf_valid(self):
+        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+
     def _store_file_(self, filename, mime_type, contents):
         session = self.request.session
         session['file_cache'] = (filename, mime_type, contents)

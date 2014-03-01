@@ -191,8 +191,7 @@
                                     <span i18n:translate="">Are you sure you want to delete the access key?</span>
                                 </p>
                                 <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
-                                    <input type="hidden" name="user-with-key" value="{{ userWithKey }}" />
-                                    <input type="hidden" name="key-to-delete" value="{{ keyToDelete }}" />
+                                    ${structure:user_form['csrf_token']}
                                     <div>&nbsp;</div>
                                     <div class="row">
                                         <div class="small-4 columns">&nbsp;</div>
@@ -279,6 +278,7 @@
                     <form ng-submit="submit($event)" id="user-update-quotas-form">
                         <div class="section">
                             <h6 i18n:translate="">Quotas</h6>
+                            ${structure:user_form['csrf_token']}
                             ${panel('quotas_panel', quota_form=user_form)}
                         </div>
                         <div class="row">

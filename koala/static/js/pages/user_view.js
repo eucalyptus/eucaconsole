@@ -94,7 +94,7 @@ angular.module('UserView', ['PolicyList'])
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             // add in current password, then submit the request
-            var data = $scope.data+"&password="+$event.target.password.value+"&csrf="+csrf_token;
+            var data = $scope.data+"&password="+$event.target.password.value+"&csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonChangeEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -128,7 +128,7 @@ angular.module('UserView', ['PolicyList'])
             // add in current password, then submit the request
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
-            var data = "password="+$event.target.password.value+"&csrf="+csrf_token;
+            var data = "password="+$event.target.password.value+"&csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonRandomEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -183,7 +183,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.generateKeys = function ($event) {
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
-            var data = "csrf="+csrf_token;
+            var data = "csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -208,7 +208,8 @@ angular.module('UserView', ['PolicyList'])
         };
         $scope.makeAjaxCall = function (url, item) {
             url = url.replace("_name_", item['user_name']).replace("_key_", item['access_key_id']);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
@@ -231,7 +232,8 @@ angular.module('UserView', ['PolicyList'])
         };
         $scope.deleteKey = function (url) {
             url = url.replace("_name_", $scope.userWithKey).replace("_key_", $scope.keyToDelete);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
@@ -317,7 +319,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.addUserToGroup = function ($event) {
             group_name = $('#group_name').val();
             url = $scope.addEndpoint.replace("_group_", group_name);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
@@ -335,7 +338,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.removeUserFromGroup = function (item) {
             group_name = item.group_name;
             url = $scope.removeEndpoint.replace("_group_", group_name);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];

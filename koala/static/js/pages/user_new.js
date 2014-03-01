@@ -47,10 +47,11 @@ angular.module('UserNew', ['UserEditor'])
         }
         $scope.submit = function($event) {
             var form = $($event.target);
-            var singleUser = JSON.parse(form.find('textarea[name="users"]').val())
-            singleUser = Object.keys(singleUser).length == 1;
+            var users = JSON.parse(form.find('textarea[name="users"]').val())
+            var singleUser = Object.keys(users)[0]
+            var isSingleUser = Object.keys(users).length == 1;
             var csrf_token = form.find('input[name="csrf_token"]').val();
-            var data = $($event.target).serialize()+"&csrf="+csrf_token;
+            var data = $($event.target).serialize();
             $http({method:'POST', url:$scope.submitEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -68,10 +69,10 @@ angular.module('UserNew', ['UserEditor'])
                 // this is clearly a hack. We'd need to bake callbacks into the generateFile
                 // stuff to do this properly.
                 setTimeout(function() {
-                    if (!singleUser) {
-                        window.location = $scope.allUsersRedirect;
+                    if (isSingleUser) {
+                        window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                     } else {
-                        window.location = $scope.singleUserRedirect;
+                        window.location = $scope.allUsersRedirect;
                     }
                 }, 3000);
             }).error(function (oData, status) {

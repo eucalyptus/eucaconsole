@@ -9,7 +9,8 @@
                 '${request.route_url('group_view', name='_name_')}',
                 '${request.route_url('user_summary_json', name='_name_')}',
                 '${request.route_url('user_disable', name='_name_')}',
-                '${request.route_url('user_enable', name='_name_')}')">
+                '${request.route_url('user_enable', name='_name_')}',
+                '${request.route_url('file_download')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
