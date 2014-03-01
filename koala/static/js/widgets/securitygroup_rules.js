@@ -153,6 +153,7 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
+            $('#input-cidr-ip').focus();
         };
     })
 ;
