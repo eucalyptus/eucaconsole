@@ -12,7 +12,6 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
                 <li><a href="${request.route_url('volume_view', id=volume.id)}" ng-non-bindable="">${volume_name}</a></li>
-                <li class="current"><a href="#">Snapshots</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!--! Notifications -->
