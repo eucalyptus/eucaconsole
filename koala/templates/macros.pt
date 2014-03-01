@@ -249,6 +249,19 @@
     </div>
 </metal:helpexpando>
 
+<!--! Help content expando for dialogs ===== -->
+<metal:helpexpando metal:define-macro="dialog_help_expando">
+    <div class="expando" id="help-expando" ng-cloak="" ng-init="isDialogHelpExpanded = false">
+        <h6 class="title" >
+            <a ng-click="isDialogHelpExpanded = !isDialogHelpExpanded">
+                <i class="fi-plus" ng-show="!isDialogHelpExpanded"></i>
+                <i class="fi-minus" ng-show="isDialogHelpExpanded"></i>
+                &nbsp;<span i18n:translate="">Help</span>
+            </a>
+        </h6>
+    </div>
+</metal:helpexpando>
+
 <!-- Tag editor help -->
 <metal:tageditorhelp metal:define-macro="tageditor_help">
     <div class="help-content" id="tag-editor-help">
