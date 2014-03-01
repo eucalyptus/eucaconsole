@@ -9,8 +9,8 @@
         <div ng-show="!!launchConfigInUse" tal:condition="in_use if launch_config else True">
             <p>
                 <span i18n:translate="">Launch configuration</span>
-                <span tal:condition="launch_config"><b ng-non-bindable="">${launch_config_name}</b></span>
-                <span tal:condition="not launch_config"><b>{{ launchConfigName }}</b></span>
+                <span tal:condition="launch_config" class="breakword"><b ng-non-bindable="">${launch_config_name}</b></span>
+                <span tal:condition="not launch_config" class="breakword"><b>{{ launchConfigName }}</b></span>
                 <span i18n:translate="">is in use and may not be deleted.</span>
             </p>
             <p i18n:translate="">
@@ -20,8 +20,8 @@
         </div>
         <p ng-show="!launchConfigInUse" tal:condition="not in_use if launch_config else True">
             <span i18n:translate="">Are you sure you want to delete the launch configuration</span>
-            <span tal:condition="launch_config"><b ng-non-bindable="">${launch_config_name}</b></span>
-            <span tal:condition="not launch_config"><b>{{ launchConfigName }}</b></span>
+            <span tal:condition="launch_config" class="breakword"><b ng-non-bindable="">${launch_config_name}</b></span>
+            <span tal:condition="not launch_config" class="breakword"><b>{{ launchConfigName }}</b></span>
             ?
         </p>
         <form action="${action}" method="post" ng-show="!launchConfigInUse"
