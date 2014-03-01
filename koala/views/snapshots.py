@@ -146,7 +146,7 @@ class SnapshotsJsonView(LandingPageView):
                 description=snapshot.description,
                 name=snapshot.tags.get('Name', snapshot.id),
                 progress=snapshot.progress,
-                transitional=self.is_transitional(snapshot.progress),
+                transitional=self.is_transitional(snapshot),
                 start_time=snapshot.start_time,
                 status=snapshot.status,
                 tags=TaggedItemView.get_tags_display(snapshot.tags, wrap_width=36),
@@ -169,8 +169,10 @@ class SnapshotsJsonView(LandingPageView):
         return None
 
     @staticmethod
-    def is_transitional(progress):
-        return int(progress.replace('%', '')) < 100
+    def is_transitional(snapshot):
+        if snapshot.status.lower() == 'completed':
+            return False
+        return int(snapshot.progress.replace('%', '')) < 100
 
 
 class SnapshotView(TaggedItemView):
