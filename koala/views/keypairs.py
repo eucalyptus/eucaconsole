@@ -32,7 +32,6 @@ class KeyPairsView(LandingPageView):
         self.sort_keys = [
             dict(key='name', name=_(u'Name: A to Z')),
             dict(key='-name', name=_(u'Name: Z to A')),
-            dict(key='fingerprint', name=_(u'Fingerprint')),
         ]
 
         return dict(
