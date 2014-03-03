@@ -3,7 +3,7 @@
     <div class="row">
         <div class="small-${leftcol_width} columns">&nbsp;</div>
         <div class="small-${rightcol_width} columns rules-title" ng-show="selectedGroupRules.length > 0">
-            <span i18n:translate="">Incoming rules for security group</span>
+            <span i18n:translate="">Incoming traffic rules for security group</span>
             <b>{{ securityGroup }}</b>:
         </div>
         <div class="small-${rightcol_width} columns rules-title" ng-show="selectedGroupRules.length === 0">
