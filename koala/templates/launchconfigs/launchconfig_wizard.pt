@@ -79,7 +79,8 @@
                             <p class="description" i18n:translate="">
                                 Please specify the launch configuration name and the instance size/type.
                             </p>
-                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'launchconfigName'})}
                             ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
                                     ng_attrs={'model': 'instanceType'})}
                             <hr />
@@ -181,6 +182,10 @@
                     </div>
                 </div>
                 <div class="section step2 hide">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
+                        <div class="small-8 columns value">{{ launchconfigName }}</div>
+                    </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
                         <div class="small-8 columns value">{{ instanceType }}</div>
