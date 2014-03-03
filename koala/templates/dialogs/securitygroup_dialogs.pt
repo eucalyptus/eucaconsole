@@ -6,7 +6,7 @@
                      action landingpage_action if landingpage else detailpage_action;
                      security_group_name security_group.name if security_group else '';">
         <h3 i18n:translate="">Delete security group</h3>
-        <p><span i18n:translate="">Are you sure you want to delete the security group</span>
+        <p><span i18n:translate="">Are you sure you want to delete security group</span>
            <span tal:condition="security_group"><b ng-non-bindable="">${security_group_name}</b></span>
            <span tal:condition="not security_group"><b>{{ securitygroupName }}</b></span>
            ?</p>
@@ -15,7 +15,7 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="securitygroup_id" value="{{ securitygroupID }}" />
             </div>
-            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+            <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
         </form>
         <a class="close-reveal-modal">&#215;</a>
     </div>

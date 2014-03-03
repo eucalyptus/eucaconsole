@@ -19,7 +19,7 @@
 
         <!-- New Keypair Material Download -->
         <div tal:condition="keypair_created ">
-           <form id="download-keypair-form" action="${request.route_url('keypair_download')}" method="post">
+           <form id="download-keypair-form" action="${request.route_url('file_download')}" method="post">
                ${structure:keypair_form['csrf_token']}
            </form>
            <script language="Javascript">

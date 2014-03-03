@@ -24,9 +24,12 @@
             </div>
         </form>
         <a class="close-reveal-modal">&#215;</a>
+        <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
         <hr />
-        <!--! Volume device help -->
-        <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+        <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+            <!--! Volume device help -->
+            <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+        </div>
     </div>
     <div id="detach-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_url('volumes_detach');

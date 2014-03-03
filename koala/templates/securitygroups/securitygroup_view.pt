@@ -14,7 +14,7 @@
     <div class="row" id="contentwrap" ng-app="SecurityGroupPage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('securitygroups')}" i18n:translate="">Security Groups</a></li>
+                <li><a href="${request.route_url('securitygroups')}" i18n:translate="">Security groups</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -39,7 +39,7 @@
                 </metal:block>
                 <form tal:attributes="action form_action" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
-                    <h6 i18n:translate="">Security Group</h6>
+                    <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9)}
                     </div>
@@ -61,9 +61,9 @@
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-securitygroup-btn">
-                            <span tal:condition="security_group" i18n:translate="">Save changes</span>
+                            <span tal:condition="security_group" i18n:translate="">Save Changes</span>
                             <span tal:condition="not security_group" i18n:translate="">
-                                Create security group
+                                Create Security Group
                             </span>
                         </button>
                         <a href="${request.route_url('securitygroups')}"

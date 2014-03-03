@@ -37,6 +37,7 @@ angular.module('SecurityGroupRules', [])
         $scope.setWatchers = function () {
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.getAddRuleButtonClass = function () {
@@ -71,7 +72,7 @@ angular.module('SecurityGroupRules', [])
                 && block1.to_port == block2.to_port
                 && block1.ip_protocol == block2.ip_protocol){
                 // IF cidr_ip is not null, then compare cidr_ip  
-                if( block1.grants[0].cidr_ip != null ){
+                if( $scope.trafficType == "ip" && block1.grants[0].cidr_ip != null ){
                     if( block1.grants[0].cidr_ip == block2.grants[0].cidr_ip ){
                         // The rules are the same 
                         return true;
@@ -80,7 +81,7 @@ angular.module('SecurityGroupRules', [])
                         return false;
                     }
                 // ELSE IF compare the group name
-                }else{
+                }else if( block1.grants[0].name != null ){
                     if( block1.grants[0].name == block2.grants[0].name ){
                         // the rules are the same
                         return true;
@@ -89,10 +90,9 @@ angular.module('SecurityGroupRules', [])
                         return false;
                     }
                 }
-            }else{
-                // the rules have different ports or ip_protocol
-                return false;
             }
+            // the rules have different ports or ip_protocol, or incomplete.
+            return false;
         };
         $scope.removeRule = function (index, $event) {
             $event.preventDefault();
@@ -117,9 +117,9 @@ angular.module('SecurityGroupRules', [])
                 // Warning: Ugly hack to properly set ip_protocol when 'udp' or 'icmp'
                 'ip_protocol': $scope.ipProtocol,
                 'grants': [{
-                    'cidr_ip': $scope.cidrIp ? $scope.cidrIp : null,
+                    'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
                     'group_id': null,
-                    'name': $scope.groupName ? $scope.groupName : null
+                    'name': $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null
                 }],
                 'fresh': 'new'
             }; 

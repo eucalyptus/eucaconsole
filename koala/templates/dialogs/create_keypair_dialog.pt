@@ -23,7 +23,7 @@
                 </div>
             </div>
         </form>
-        <form ng-show="showKeyPairMaterial" ng-submit="downloadKeyPair($event, '${request.route_url('generate_file')}')">
+        <form ng-show="showKeyPairMaterial" ng-submit="downloadKeyPair($event, '${request.route_url('file_download')}')">
             ${structure:generate_file_form['csrf_token']}
             <textarea id="keypair-material" name="content"></textarea>
             <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">

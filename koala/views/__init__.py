@@ -58,6 +58,17 @@ class BaseView(object):
 
         return conn
 
+    def is_csrf_valid(self):
+        return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
+
+    def _store_file_(self, filename, mime_type, contents):
+        session = self.request.session
+        session['file_cache'] = (filename, mime_type, contents)
+
+    def _has_file_(self):
+        session = self.request.session
+        return 'file_cache' in session
+
     @staticmethod
     def invalidate_cache():
         """Empty Beaker cache to clear connection objects"""
@@ -276,26 +287,6 @@ class LandingPageView(BaseView):
         return '{0}'.format(self.request.route_url(route))
 
 
-class GenerateFileView(BaseView):
-    """Generate file based on given content, used for key pair download et. al."""
-    @view_config(route_name='generate_file', request_method='POST')
-    def generate_file(self):
-        generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        if generate_file_form.validate():
-            resp_body = self.request.params.get('content', '')
-            filename = self.request.params.get('filename', 'file')
-            response = Response(
-                content_type='application/octet-stream',
-                charset='UTF-8',
-                body=resp_body,
-            )
-            response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
-            return response
-        else:
-            form_errors = ', '.join(generate_file_form.get_errors_list())
-            return Response(status=400, body=dict(message=form_errors))  # Validation failure = bad request
-
-
 @notfound_view_config(renderer='../templates/notfound.pt')
 def notfound_view(request):
     """404 Not Found view"""
@@ -312,3 +303,18 @@ def ec2conn_error(exc, request):
 def autoscale_error(exc, request):
     """Handle autoscale connection session timeout by redirecting to login page with notice."""
     return BaseView.handle_403_error(exc, request=request)
+
+@view_config(route_name='file_download', request_method='POST')
+def file_download(request):
+    session = request.session
+    if session.get('file_cache'):
+        (filename, mime_type, contents) = session['file_cache']
+        # Clean the session information regrading the new keypair
+        del session['file_cache']
+        response = Response(content_type=mime_type)
+        response.body = str(contents)
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        return response
+    # this isn't handled on on client anyway, so we can return pretty much anything
+    return Response(body='BaseView:file not found', status=500)
+

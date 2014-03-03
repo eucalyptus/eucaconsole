@@ -18,7 +18,7 @@
                 <div class="small-9 columns field inline">
                     <button type="submit" class="button" id="create-securitygroup-btn"
                             i18n:translate="" ng-disabled="isLoadingSecurityGroup">
-                        Create security group
+                        Create Security Group
                     </button>
                 </div>
             </div>
