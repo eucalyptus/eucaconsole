@@ -104,6 +104,8 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='launch_time', name=_(u'Launch time: Oldest to Newest')),
             dict(key='-launch_time', name=_(u'Launch time: Newest to Oldest')),
             dict(key='id', name=_(u'Instance ID')),
+            dict(key='name', name=_(u'Instance name: A to Z')),
+            dict(key='-name', name=_(u'Instance name: Z to A')),
             dict(key='placement', name=_(u'Availability zone')),
             dict(key='key_name', name=_(u'Key pair')),
         ]
