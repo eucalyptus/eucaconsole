@@ -1431,7 +1431,7 @@ a.circle { color: black; display: inline-block; }
 .up-caret { position: relative; top: -1px; display: inline-block; border-right: 6px solid transparent; border-bottom: 6px solid #76b800; border-left: 6px solid transparent; content: ''; }
 
 #notifications { margin-left: 1rem; margin-right: 1rem; margin-top: -1rem; font-weight: bold; }
-#notifications .alert-box { background-color: #40a8c6; }
+#notifications .alert-box { background-color: #40a8c6; position: fixed; top: 10px; left: 10px; z-index: 9999999; width: 99%; }
 #notifications .alert-box.success { background-color: #40a8c6; border-color: #ecf4f7; }
 #notifications .alert-box.warning { color: #333; background-color: lightyellow; border-color: gray; }
 #notifications .alert-box.alert { background-color: darkred; }
@@ -1535,9 +1535,9 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions .actions-menu .secondary.button.dropdown::before { border-color: white transparent transparent transparent; }
 .panel.has-actions .actions-menu .f-dropdown { box-shadow: 0px 0px 1px 1px #f4a960; min-width: 12rem; width: auto; }
 
-.reveal-modal-bg { z-index: 9999998; }
+.reveal-modal-bg { z-index: 9999990; }
 
-.reveal-modal { z-index: 9999999; }
+.reveal-modal { z-index: 9999995; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 
@@ -1564,7 +1564,7 @@ footer .copyright { font-size: 0.9em; }
 
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
-.f-dropdown { left: -99999px; z-index: 9999999; }
+.f-dropdown { left: -99999px; z-index: 9999997; }
 
 .show-for-xsmall { display: none !important; }
 

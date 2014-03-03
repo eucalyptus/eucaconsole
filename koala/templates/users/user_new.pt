@@ -73,7 +73,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
-    <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/user_new.js')}"></script>
 </div>
 

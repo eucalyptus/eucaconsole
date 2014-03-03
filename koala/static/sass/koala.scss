@@ -316,6 +316,11 @@ a.circle {
     font-weight: bold;
     .alert-box {
         background-color: $euca-notificationblue;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 9999999;
+        width:99%;
         &.success {
             background-color: $euca-notificationblue;
             border-color: $euca-extralightblue;
@@ -701,11 +706,11 @@ textarea.hidden {
 }
 
 .reveal-modal-bg {
-    z-index: 9999998;
+    z-index: 9999990;
 }
 
 .reveal-modal {
-    z-index: 9999999;
+    z-index: 9999995;
     h3 {
         font-weight: bold;
     }
@@ -776,7 +781,7 @@ footer {
 // Prevent dropdown menus from displaying when viewport height approaches 10k px.
 .f-dropdown {
     left: -99999px;
-    z-index: 9999999;
+    z-index: 9999997;
 }
 
 // Add a show-for-xsmall class to display items only when max-width is 480px
