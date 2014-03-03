@@ -15,7 +15,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${snapshot_name or 'Create snapshot'}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${snapshot_name or 'Create new snapshot'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -81,7 +81,7 @@
                         <div class="small-8 columns value">${snapshot.id}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
-                        <div class="small-4 columns"><label i18n:translate="">Snapshot size</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Size</label></div>
                         <div class="small-8 columns field inline">${snapshot.volume_size} GB</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
@@ -109,7 +109,7 @@
                     </div>
                     <div>
                         <button type="submit" class="button">
-                            <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save changes</span>
+                            <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
                             <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
                         </button>
                         <a href="${request.route_url('snapshots')}"
@@ -144,7 +144,7 @@
             <form method="get" action="/volumes/new" id="update-form">
                 <div class="row">
                     <div class="small-6 columns field inline">
-                        <input type="submit" class="button" value="Create new volume"
+                        <input type="submit" class="button" value="Create New Volume"
                                i18n:attributes="value"/>
                     </div>
                 </div>
