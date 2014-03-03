@@ -9,7 +9,7 @@
          ng-init="initController('ipaddresses', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IP Addresses</a></li>
+                <li class="current"><a href="#" i18n:translate="">Elastic IP addresses</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -22,7 +22,7 @@
             <div metal:fill-slot="new_button">
                 <a class="button" id="allocate-ipaddresses-btn"
                    data-reveal-id="allocate-ip-modal" i18n:translate="">
-                    Allocate IP address
+                    Allocate Elastic IP Addresses
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
@@ -55,8 +55,8 @@
                 </ul>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Public IP Address</th>
-                <th i18n:translate="">Assigned to Instance</th>
+                <th i18n:translate="">Public IP address</th>
+                <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -84,9 +84,9 @@
         </div>
         <!--! Modal dialogs -->
         <div id="allocate-ip-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Allocate IP addresses</h3>
-            <p> Once you allocate addresses from the cloud, you may associate them with your instances.
-                The number of addresses allocated from the cloud will be limited to the maximum number
+            <h3 i18n:translate="">Allocate elastic IP addresses</h3>
+            <p> Once you allocate elastic IP addresses from the cloud, you may associate them with your instances.
+                The number of addresses allocated from the cloud may be fewer than you request, and will be limited to the maximum number
                 you are allowed to manage.
             </p>
             <p i18n:translate="">How may IP addresses would you like to allocate?</p>
@@ -98,7 +98,7 @@
                     <div class="small-8 columns">
                         <button type="submit" class="button radius" id="allocate-ipaddresses-dialog-btn"
                                 i18n:translate="">
-                            Allocate addresses from cloud
+                            Allocate Addresses From Cloud
                         </button>
                     </div>
                 </div>
