@@ -31,7 +31,6 @@ urls = [
     # Common #####
     Route(name='region_select', pattern='/region/select'),
     Route(name='file_download', pattern='/_getfile'),
-    #Route(name='generate_file', pattern='/_genfile'),
 
     # Images #####
     Route(name='images', pattern='/images'),

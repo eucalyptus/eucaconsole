@@ -514,7 +514,8 @@ class UserView(BaseView):
             csv_w = csv.writer(string_output)
             row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-{key}-creds.csv".format(acct=account, user=self.user.user_name, key=result.access_key.access_key_id),
+            self._store_file_("{acct}-{user}-{key}-creds.csv".format(acct=account, \
+                        user=self.user.user_name, key=result.access_key.access_key_id),
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated access keys"), results="true")
         except BotoServerError as err:
