@@ -79,12 +79,20 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="image.root_device_type != 'ebs'">
-                        <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                    <div tal:condition="image.root_device_type != 'ebs'" tal:omit-tag="">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
+                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                        </div>
                     </div>
                     <div tal:condition="image.root_device_type == 'ebs'" tal:omit-tag="">
-                        ${panel('form_field', field=instance_form.instance_type, ng_attrs={'disabled':'isNotStopped'})}
+                        <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
+                            <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
+                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                        </div>
+                        <div ng-if="instanceState == 'stopped'">
+                            ${panel('form_field', field=instance_form.instance_type)}
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
