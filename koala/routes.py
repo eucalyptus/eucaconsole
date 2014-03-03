@@ -30,7 +30,7 @@ urls = [
 
     # Common #####
     Route(name='region_select', pattern='/region/select'),
-    Route(name='generate_file', pattern='/_genfile'),
+    Route(name='file_download', pattern='/_getfile'),
 
     # Images #####
     Route(name='images', pattern='/images'),
@@ -147,7 +147,6 @@ urls = [
     Route(name='keypairs', pattern='/keypairs'),
     Route(name='keypairs_json', pattern='/keypairs/json'),
     # Detail page
-    Route(name='keypair_download', pattern='/keypairs/download'),
     Route(name='keypair_create', pattern='/keypairs/create'),
     Route(name='keypair_import', pattern='/keypairs/import'),
     Route(name='keypair_delete', pattern='/keypairs/delete'),

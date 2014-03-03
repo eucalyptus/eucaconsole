@@ -7,7 +7,8 @@
     <div class="row" id="contentwrap" ng-app="UserNew" ng-controller="UserNewCtrl"
             ng-init="initController('${request.route_url('user_create')}',
                                     '${request.route_url('users')}',
-                                    '${request.route_url('user_view', name='_name_')}')">
+                                    '${request.route_url('user_view', name='_name_')}',
+                                    '${request.route_url('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>

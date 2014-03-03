@@ -72,7 +72,8 @@ angular.module('PolicyList', [])
         $scope.doDelete = function ($event) {
             $event.preventDefault();
             var url = $scope.removeUrl.replace('_policy_', $scope.policyName);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
             ).success(function(oData) {
                 $scope.policyArray.splice($scope.policyIndex, 1);
@@ -120,7 +121,7 @@ angular.module('PolicyList', [])
                 $('#policy-edit-modal').foundation('reveal', 'close');
                 // now, save the policy
                 var url = $scope.updateUrl.replace('_policy_', $scope.policyName);
-                var data = "policy_text=" + policy_json;
+                var data = "csrf_token="+$('#csrf_token').val()+"&policy_text="+policy_json;
                 $http({
                     method:'POST', url:url, data:data,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}}

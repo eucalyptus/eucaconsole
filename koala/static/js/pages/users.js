@@ -13,12 +13,14 @@ angular.module('UsersPage', ['LandingPage'])
         $scope.user_summary_url = '';
         $scope.disable_url = '';
         $scope.enable_url = '';
-        $scope.initPage = function (user_view_url, group_view_url, user_summary_url, disable_url, enable_url) {
+        $scope.getFileEndpoint = '';
+        $scope.initPage = function (user_view_url, group_view_url, user_summary_url, disable_url, enable_url, getFileEndpoint) {
             $scope.user_view_url = user_view_url;
             $scope.group_view_url = group_view_url;
             $scope.user_summary_url = user_summary_url;
             $scope.disable_url = disable_url;
             $scope.enable_url = enable_url;
+            $scope.getFileEndpoint = getFileEndpoint;
         };
         $scope.revealModal = function (action, user) {
             var modal = $('#' + action + '-user-modal');
@@ -36,7 +38,8 @@ angular.module('UsersPage', ['LandingPage'])
         $scope.disableUser = function ($event) {
             $event.preventDefault();
             var url = $scope.disable_url.replace('_name_', $scope.user['user_name']);
-            $http({method:'POST', url:url, data:'',
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
@@ -68,20 +71,31 @@ angular.module('UsersPage', ['LandingPage'])
             $event.preventDefault();
             var generate = $event.target.random_password.checked;
             var url = $scope.enable_url.replace('_name_', $scope.user['user_name']);
+            var csrf_token = $('#csrf_token').val();
             if (generate == true) { // handle file return
-                var data = "random_password="+(generate==true?'y':'n');
-                var form = $($event.target);
-                $.generateFile({
-                    csrf_token: form.find('input[name="csrf_token"]').val(),
-                    filename: "not-used", // let the server set this
-                    content: data,
-                    script: url
-                });
-                setTimeout(function() {
+                var data = "random_password=y&csrf_token="+csrf_token;
+                $http({method:'POST', url:url, data:data,
+                       headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                  success(function(oData) {
+                    var results = oData ? oData.results : [];
+                    Notify.success(oData.message);
                     $scope.updateUser();
-                }, 1000);
+                    $.generateFile({
+                        csrf_token: csrf_token,
+                        filename: 'not-used', // let the server set this
+                        content: 'none',
+                        script: $scope.getFileEndpoint
+                    });
+                }).error(function (oData, status) {
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#euca-logout-form').submit();
+                    }
+                    Notify.failure(errorMsg);
+                });
             } else { // deal with normal REST call
-                $http({method:'POST', url:url, data:'',
+                var data = "csrf_token="+csrf_token;
+                $http({method:'POST', url:url, data:data,
                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                   success(function(oData) {
                     var results = oData ? oData.results : [];

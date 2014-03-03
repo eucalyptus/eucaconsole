@@ -105,7 +105,7 @@ class KeyPairView(BaseView):
         session = self.request.session
         new_keypair_created = False
         # Check if the session contains the new keypair material information
-        if 'new_keypair_name' in session and session['new_keypair_name'] is not '':
+        if self._has_file_():
             new_keypair_created = True
 
         self.render_dict['keypair_created'] = new_keypair_created
@@ -117,21 +117,6 @@ class KeyPairView(BaseView):
             keypairs = [k.name for k in self.conn.get_all_key_pairs()]
         return sorted(set(keypairs))
 
-    @view_config(route_name='keypair_download', request_method='POST', renderer=TEMPLATE)
-    def keypair_download(self):
-        session = self.request.session
-        if session.get('new_keypair_name'):
-            name = session['new_keypair_name']
-            material = session['material']
-            # Clean the session information regrading the new keypair
-            del session['new_keypair_name']
-            del session['material']
-            response = Response(content_type='application/x-pem-file;charset=ISO-8859-1')
-            response.body = str(material)
-            response.content_disposition = 'attachment; filename="{name}.pem"'.format(name=name)
-            return response
-        return self.render_dict
-
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
     def keypair_create(self):
         if self.keypair_form.validate():
@@ -141,8 +126,9 @@ class KeyPairView(BaseView):
             try:
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
-                session['new_keypair_name'] = new_keypair.name 
-                session['material'] = new_keypair.material
+                self._store_file_(new_keypair.name+".pem",
+                                  'application/x-pem-file;charset=ISO-8859-1',
+                                  new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 queue = Notification.SUCCESS
@@ -152,6 +138,7 @@ class KeyPairView(BaseView):
                 queue = Notification.ERROR
                 status = getattr(err, 'status', 400)
             if self.request.is_xhr:
+                import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
