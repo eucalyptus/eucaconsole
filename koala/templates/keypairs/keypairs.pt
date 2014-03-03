@@ -9,7 +9,7 @@
          ng-init="initController('keypairs', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Key Pairs</a></li>
+                <li class="current"><a href="#" i18n:translate="">Key pairs</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -21,10 +21,10 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="" id="create-keypair-btn"
-                    href="${request.route_url('keypair_view', id='new')}">Create new key pair</a>
+                    href="${request.route_url('keypair_view', id='new')}">Create New Key Pair</a>
                 &nbsp;&nbsp;
                 <a class="button small" i18n:translate=""
-                    href="${request.route_url('keypair_view', id='new2')}">Import public key</a>
+                    href="${request.route_url('keypair_view', id='new2')}">Import Public Key</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -41,7 +41,7 @@
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                     <li ng-show="item.name">
                         <a i18n:translate=""
-                           ng-click="revealModal('delete', item.name)">Delete</a>
+                           ng-click="revealModal('delete', item.name)">Delete key</a>
                     </li>
                 </ul>
             </div>
@@ -59,7 +59,7 @@
                         <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
                             <li ng-show="item.name">
                                 <a i18n:translate=""
-                                   ng-click="revealModal('delete', item.name)">Delete</a>
+                                   ng-click="revealModal('delete', item.name)">Delete key</a>
                             </li>
                         </ul>
                     </span>
