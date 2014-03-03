@@ -65,6 +65,10 @@ class BaseView(object):
         session = self.request.session
         session['file_cache'] = (filename, mime_type, contents)
 
+    def _has_file_(self):
+        session = self.request.session
+        return 'file_cache' in session
+
     @staticmethod
     def invalidate_cache():
         """Empty Beaker cache to clear connection objects"""
