@@ -70,7 +70,6 @@
                         </div>
                         <small class="error" i18n:translate="">Valid CIDR entry required</small>
                     </div>
-                    <div>
                     <div class="securitygroupname">
                         <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
                         <label><span i18n:translate="" class="sg-label">Security group</span></label>
@@ -81,7 +80,6 @@
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
                         <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</span></div>
-                    </div>
                     </div>
                 </div>
             </div>
