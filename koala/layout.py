@@ -16,6 +16,11 @@ from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
 from .models import Notification
 
+try:
+    from version import __version__
+except ImportError:
+    __version__ = 'DEVELOPMENT'
+
 
 class MasterLayout(object):
     site_title = "Eucalyptus Management Console"
@@ -23,6 +28,7 @@ class MasterLayout(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.version = __version__
         self.home_url = request.application_url
         self.help_url = request.registry.settings.get('help.url')
         self.support_url = request.registry.settings.get('support.url')

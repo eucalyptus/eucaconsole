@@ -51,6 +51,9 @@
                     <li tal:condition="layout.cloud_type == 'euca'">
                         <a href="${request.route_url('changepassword')}" i18n:translate="">Change password</a>
                     </li>
+                    <li>
+                        <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
+                    </li>
                     <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
                 </ul>
             </section>
@@ -109,6 +112,13 @@
             <input type="submit" style="display:none;" id="euca-logout-button"/>
         </form>
     </footer>
+    <div id="about-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">About your cloud</h3>
+        <p>
+            <span i18n:translate="">Eucalyptus cloud software version: <strong>${layout.version}</strong></span>?
+        </p>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
 
     <a class="exit-off-canvas"></a>
 
