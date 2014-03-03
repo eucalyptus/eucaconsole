@@ -10,7 +10,7 @@
     <div class="row" id="contentwrap" ng-app="">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('ipaddresses')}" i18n:translate="">Elastic IPs</a></li>
+                <li><a href="${request.route_url('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -36,17 +36,17 @@
                     </metal:actions>
                 </metal:block>
                 <div tal:condition="not eip.instance_id">
-                    <p i18n:translate="">This IP address is not associated with any instances.</p>
+                    <p i18n:translate="">This elastic IP address is not associated with any instances.</p>
                 </div>
                 <div tal:condition="eip.instance_id">
                     <p>
-                        <span i18n:translate="">This IP address is associated with instance</span>
+                        <span i18n:translate="">This elastic IP address is associated with instance</span>
                         <a href="/instances/${eip.instance_id}" ng-non-bindable="">${eip.instance_name}</a>.
                     </p>
                 </div>
             </div>
             <div tal:condition="not eip">
-                <p>This IP Address is no longer available in this cloud.</p>
+                <p>This elastic IP Address is no longer available in this cloud.</p>
             </div>
         </div>
         <div class="large-5 columns">
