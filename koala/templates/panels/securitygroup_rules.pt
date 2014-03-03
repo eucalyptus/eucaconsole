@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="${request.static_url('koala:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
     <div class="columns">
-        <h6 i18n:translate="">Inbound Rules</h6>
+        <h6 i18n:translate="">Inbound rules</h6>
     </div>
     <div class="columns field" ng-cloak="cloak">
         <div class="items">
@@ -87,7 +87,7 @@
             <div class="small-3 columns">&nbsp;</div>
             <div class="small-9 columns">
                 <a href="#" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
-                        ng-click="addRule($event)">Add rule</a>
+                        ng-click="addRule($event)">Add Rule</a>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->

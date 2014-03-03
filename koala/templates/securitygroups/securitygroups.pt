@@ -9,7 +9,7 @@
          ng-init="initController('securitygroups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Security Groups</a></li>
+                <li class="current"><a href="#" i18n:translate="">Security groups</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -21,12 +21,12 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-securitygroup-btn"
-                   href="${request.route_url('securitygroup_view', id='new')}">Create new security group</a>
+                   href="${request.route_url('securitygroup_view', id='new')}">Create New Security Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
                 </ul>
             </div>
@@ -60,7 +60,7 @@
                     <span class="actions">
                         <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete security group</a></li>
                         </ul>
                     </span>
