@@ -36,8 +36,8 @@
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addUser($event)" class="button round secondary tiny" id="add-user-btn"
-                       title="Add user" i18n:translate="">Add user</a>
+                    <a href="#" ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
+                       title="Add user" i18n:translate="">Add User</a>
                 
             </div>
         </div>

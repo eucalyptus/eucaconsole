@@ -11,7 +11,7 @@
                                     '${request.route_url('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
+                <li><a href="${request.route_url('users')}" i18n:translate="">IAM users</a></li>
                 <li class="current" i18n:translate="">Create new users</li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -59,7 +59,7 @@
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
                             <button type="submit" class="button" id="create-user-btn">
-                                <span i18n:translate="">Create</span>
+                                <span i18n:translate="">Create Users</span>
                             </button>
                             <a href="${request.route_url('users')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
