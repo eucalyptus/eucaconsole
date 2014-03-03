@@ -44,10 +44,6 @@ class KeyPairViewTests(BaseViewTestCase):
         self.assertTrue(itemview.get('delete_form') is not None)
         self.assertTrue(itemview.get('keypair_created') is False)
 
-    def test_keypair_download(self):
-        downloadview = KeyPairView(self.request).keypair_download()
-        self.assertEqual(downloadview.get('keypair'), None)
-
     def test_keypair_create(self):
         createview = KeyPairView(self.request).keypair_create()
         self.assertTrue(createview is not None)
