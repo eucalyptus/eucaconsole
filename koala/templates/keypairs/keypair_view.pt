@@ -6,11 +6,11 @@
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key Pairs</a></li>
+                <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key pairs</a></li>
                 <li class="current">
                     <a tal:condition="keypair" ng-non-bindable="">${keypair.name }</a>
-                    <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create new keypair</a>
-                    <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import public key</a>
+                    <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create New Key Pair</a>
+                    <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import Public Key</a>
                 </li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -36,13 +36,13 @@
                     <metal:actions metal:fill-slot="actions">
                         <li>
                             <a data-reveal-id="delete-keypair-modal" i18n:translate="" id="delete-keypair-action">
-                                Delete keypair
+                                Delete key pair
                             </a>
                         </li>
                     </metal:actions>
                 </metal:block>
                 <div tal:condition="keypair">
-                    <h6 i18n:translate="">Key Pair</h6>
+                    <h6 i18n:translate="">Key pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
                         <div class="small-9 columns value" ng-non-bindable="">${keypair.name if keypair.name else ''}</div>
@@ -64,7 +64,7 @@
                         <div class="row">
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field inline">
-                                <button type="submit" class="button" i18n:translate="">Create and download</button>
+                                <button type="submit" class="button" i18n:translate="">Create and Download</button>
                                 <a href="${request.route_url('keypairs')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
