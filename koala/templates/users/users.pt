@@ -15,7 +15,7 @@
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM Users</a></li>
+                <li class="current"><a href="#" i18n:translate="">IAM users</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -27,13 +27,13 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-user-btn"
-                   href="${request.route_url('user_view', name='new')}">Create user</a>
+                   href="${request.route_url('user_view', name='new')}">Create New Users</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li ng-show="item.user_enabled">
-                        <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                     </li>
                     <li ng-show="item.user_enabled">
                         <a i18n:translate="" ng-click="revealModalXHR('disable', item)">Disable</a>
@@ -107,7 +107,7 @@
                     <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
                     <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                         <li ng-show="item.user_enabled">
-                            <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">Edit properties</a>
+                            <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                         </li>
                         <li ng-show="item.user_enabled">
                             <a i18n:translate="" ng-click="revealModalXHR('disable', item)">Disable</a>
@@ -132,7 +132,7 @@
         </div>
         <div id="user-dialogs">
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete User {{ user_name }}</h3>
+                <h3 i18n:translate="">Delete user {{ user_name }}</h3>
                 <p>
                     <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong>{{ user_name }}</strong></span>?
                 </p>
@@ -149,7 +149,7 @@
                 <a class="close-reveal-modal">&#215;</a>
             </div>
             <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Disable User {{ user_name }}</h3>
+                <h3 i18n:translate="">Disable user {{ user_name }}</h3>
                 <p>
                     <span i18n:translate="">Disabling a user deletes their password and prevents them from executing any actions against the cloud. The user's other information is maintained until you either make the user active again or delete them.</span>
                     <p>&nbsp;</p>
@@ -161,19 +161,19 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, disable" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Yes, Disable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
             <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Enable User {{ user_name }}</h3>
+                <h3 i18n:translate="">Enable user {{ user_name }}</h3>
                 <p>
                     <span i18n:translate="">When this user is active, they will be able to execute actions against the cloud.</span>
                 </p>
                 <p>
-                    <span i18n:translate="">The user will need a new password only to access the cloud from the management console. If you want to set a specific password rather than let the system generate a random one, you can do that form the user's detail page once they are active.</span>
+                    <span i18n:translate="">The user will need a new password only to access the cloud from the management console. If you want to set a specific password rather than let the system generate a random one, you can do that from the user's detail page once they are active.</span>
                 </p>
                 <form id="enable-form" ng-submit="enableUser($event)">
                     ${structure:enable_form['csrf_token']}
@@ -182,7 +182,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Enable user" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Enable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>

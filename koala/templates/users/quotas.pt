@@ -39,7 +39,7 @@
                 <a ng-click="toggleAutoscaleContent()">
                     <i class="fi-plus" ng-show="!autoscale_expanded"></i>
                     <i class="fi-minus" ng-show="autoscale_expanded"></i>
-                    &nbsp;<span i18n:translate="">Autoscaling</span>
+                    &nbsp;<span i18n:translate="">Auto scaling</span>
                 </a>
             </h7>
             <div class="autoscale-content" ng-show="autoscale_expanded">

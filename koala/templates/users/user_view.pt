@@ -10,7 +10,7 @@
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('users')}" i18n:translate="">IAM Users</a></li>
+                <li><a href="${request.route_url('users')}" i18n:translate="">IAM users</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -47,7 +47,7 @@
                             <div class="small-2 columns">&nbsp;</div>
                             <div class="small-10 columns field inline">
                                 <button type="submit" class="button" id="save-user-btn">
-                                    <span tal:condition="user" i18n:translate="">Save changes</span>
+                                    <span tal:condition="user" i18n:translate="">Save Changes</span>
                                 </button>
                                 <a href="${request.route_url('users')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
@@ -67,7 +67,7 @@
                             <p>&nbsp;</p>
                             <form id="user-generate-password-form" ng-submit="submitRandom($event)">
                                 <button type="submit" class="button" id="generatre-password-btn">
-                                    <span tal:condition="user" i18n:translate="">Generate random password</span>
+                                    <span tal:condition="user" i18n:translate="">Generate Random Password</span>
                                 </button>
                             </form>
                             <span class="or-circle" i18n:translate="">OR</span>
@@ -94,7 +94,7 @@
                                 <div class="row">
                                     <div class="columns field inline">
                                         <button type="submit" class="button" id="save-password-btn">
-                                            <span tal:condition="user" i18n:translate="">Save password</span>
+                                            <span tal:condition="user" i18n:translate="">Save Password</span>
                                         </button>
                                         <a href="${request.route_url('users')}"
                                            class="cancel-link" i18n:translate="">Cancel</a>
@@ -104,7 +104,7 @@
                         </div>
                     </div>
                     <div id="random-password-modal" class="reveal-modal small" data-reveal="">
-                        <h3 i18n:translate="">Generate Random Password</h3>
+                        <h3 i18n:translate="">Generate random password</h3>
                         <p>
                             <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
                         </p>
@@ -122,7 +122,7 @@
                         <a class="close-reveal-modal">&#215;</a>
                     </div>
                     <div id="change-password-modal" class="reveal-modal small" data-reveal="">
-                        <h3 i18n:translate="">Change Password</h3>
+                        <h3 i18n:translate="">Change password</h3>
                         <p>
                             <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
                         </p>
@@ -186,7 +186,7 @@
                         </div>
                         <div id="user-dialogs">
                             <div id="delete-key-modal" class="reveal-modal small" data-reveal="">
-                                <h3 i18n:translate="">Delete Access Key</h3>
+                                <h3 i18n:translate="">Delete access key</h3>
                                 <p>
                                     <span i18n:translate="">Are you sure you want to delete the access key?</span>
                                 </p>
@@ -197,7 +197,7 @@
                                         <div class="small-4 columns">&nbsp;</div>
                                         <div class="small-8 columns field inline">
                                             <button type="submit" class="button" id="delete-key-btn">
-                                                <span i18n:translate="">Yes, delete</span>
+                                                <span i18n:translate="">Yes, Delete</span>
                                             </button>
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                     </div>
                                     <div class="column small-6">
                                         <button type="submit" class="button" id="add-user-to-group-btn">
-                                            <span tal:condition="user" i18n:translate="">Add user to group</span>
+                                            <span tal:condition="user" i18n:translate="">Add User to Group</span>
                                         </button>
                                     </div>
                                 </div>
@@ -285,7 +285,7 @@
                             <div class="small-4 columns">&nbsp;</div>
                             <div class="small-8 columns field inline">
                                 <button type="submit" class="button" id="save-quotas-btn">
-                                    <span tal:condition="user" i18n:translate="">Save quotas</span>
+                                    <span tal:condition="user" i18n:translate="">Save Quotas</span>
                                 </button>
                                 <a href="${request.route_url('users')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
@@ -301,7 +301,7 @@
         </div>
         <div id="user-dialogs">
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete User</h3>
+                <h3 i18n:translate="">Delete user</h3>
                 <p>
                     <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
                 </p>
@@ -311,7 +311,7 @@
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                            <input type="submit" class="button" value="Yes, Delete User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
