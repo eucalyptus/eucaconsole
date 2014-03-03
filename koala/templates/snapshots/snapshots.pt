@@ -20,14 +20,15 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a href="${request.route_url('snapshot_view', id='new')}" id="create-snapshot-btn"
-                   class="button" i18n:translate="">Create snapshot</a>
+                   class="button" i18n:translate="">Create New Snapshot</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
+                                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
-                    <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
+
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -101,9 +102,10 @@
                     <span class="actions">
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id}}" class="f-dropdown">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
+                                                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
-                            <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register snapshot</a></li>
+
                         </ul>
                     </span>
                 </td>
