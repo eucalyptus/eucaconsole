@@ -108,8 +108,8 @@
                     </div>
                     <div>
                         <button type="submit" class="button">
-                            <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save changes</span>
-                            <span tal:condition="not volume" i18n:translate="">Create volume</span>
+                            <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save Changes</span>
+                            <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_url('volumes')}"
                            class="cancel-link" i18n:translate="">Cancel</a>

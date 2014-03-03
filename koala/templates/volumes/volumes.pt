@@ -20,19 +20,19 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-volume-btn"
-                   href="${request.route_url('volume_view', id='new')}">Create new volume</a>
+                   href="${request.route_url('volume_view', id='new')}">Create New Volume</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                     <li ng-show="item.status !== 'deleted'">
-                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
                     </li>
                     <li ng-show="item.status === 'available'">
-                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
+                        <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
                     <li ng-show="item.status === 'in-use'">
-                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
@@ -57,7 +57,7 @@
                     {{ item.zone }}
                 </div>
                 <div>
-                    <span class="label" title="Create time" i18n:attributes="title" data-tooltip="">CT</span>
+                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.create_time | date:'${layout.angular_date_format}' }}
                 </div>
                 <div ng-show="item.instance">
@@ -110,13 +110,13 @@
                         <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
                             <li ng-show="item.status !== 'deleted'">
-                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a>
+                                <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
                             </li>
                             <li ng-show="item.status === 'available'">
-                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach volume</a>
+                                <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                             </li>
                             <li ng-show="item.status === 'in-use'">
-                                <a i18n:translate="" ng-click="revealModal('detach', item)">Detach volume</a>
+                                <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
