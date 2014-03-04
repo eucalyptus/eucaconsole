@@ -334,9 +334,21 @@
                                                 <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
                                             </select>
                                         </div>
+                                        <!--! InstanceType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:InstanceType'">
+                                            <select class="condition-value instance_type chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice vm_type_choices">
+                                                    <option value="${choice[0].split('/')[1]}"
+                                                            tal:condition="'All' not in choice[1]">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                            <input type="text" class="condition-value"
+                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <input type="text" class="condition-value"
+                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1" />
                                     </div>
-                                    <input type="text" class="condition-value"
-                                           ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1" />
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
                                         Add Condition
