@@ -134,7 +134,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = err.message
                 queue = Notification.ERROR
         else:
-            msg = _(u'Unable to start instance')  # Prolly due to missing CSRF token here
+            msg = _(u'Unable to start instance')
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
@@ -158,7 +158,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = _(u'Only EBS-backed instances can be stopped')
                 queue = Notification.ERROR
         else:
-            msg = _(u'Unable to stop instance')  # Prolly due to missing CSRF token here
+            msg = _(u'Unable to stop instance')
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
@@ -180,7 +180,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = err.message
                 queue = Notification.ERROR
         else:
-            msg = _(u'Unable to reboot instance')  # Prolly due to missing CSRF token here
+            msg = _(u'Unable to reboot instance')
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
@@ -200,7 +200,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 msg = err.message
                 queue = Notification.ERROR
         else:
-            msg = _(u'Unable to terminate instance')  # Prolly due to missing CSRF token here
+            msg = _(u'Unable to terminate instance')
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
@@ -446,7 +446,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     @view_config(route_name='instance_get_password', request_method='POST', renderer='json')
     def instance_get_password(self):
-        if not(self.is_csrf_valid()):
+        if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         instance_id = self.request.matchdict.get('instance')
         try:

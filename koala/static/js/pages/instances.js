@@ -47,7 +47,7 @@ angular.module('InstancesPage', ['LandingPage'])
                 if (evt.target.readyState == FileReader.DONE) {
                     var key_contents = evt.target.result;
                     url = $scope.password_url.replace("_id_", $scope.instanceID);
-                    var data = "csrf_token="+$('#csrf_token').val()+"&key="+key_contents;
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + key_contents;
                     $http({method:'POST', url:url, data:data,
                            headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
                       success(function(oData) {
