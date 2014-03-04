@@ -29,24 +29,11 @@ angular.module('UsersPage', ['LandingPage'])
             var form = $('#' + action + '-form');
             var action = form.attr('action').replace("_name_", user['user_name']);
             form.attr('action', action);
-            $scope.setFocus();
         };
         $scope.revealModalXHR = function (action, user) {
             var modal = $('#' + action + '-user-modal');
             $scope.user = user
             modal.foundation('reveal', 'open');
-            $scope.setFocus();
-        };
-        $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
-                var modal = $(this);
-                var inputElement = modal.find('input[type!=hidden]').get(0);
-                if( inputElement != undefined ){
-                    inputElement.focus()
-                }else{
-                    modal.find('button').get(0).focus();
-                }
-            });
         };
         $scope.disableUser = function ($event) {
             $event.preventDefault();
