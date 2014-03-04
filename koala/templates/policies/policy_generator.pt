@@ -315,7 +315,7 @@
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
                                         </div>
-                                        <!--! Availability zone choices -->
+                                        <!--! AvailabilityZone choices -->
                                         <div ng-if="${cond_key} == 'ec2:AvailabilityZone'">
                                             <select class="condition-value availability_zone chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
@@ -326,6 +326,13 @@
                                             </select>
                                             <input type="text" class="condition-value"
                                                    ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <!--! ImageType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:ImageType'">
+                                            <select class="condition-value"
+                                                    tal:define="choices ['emi', 'eki', 'eri'] if layout.cloud_type == 'euca' else ['ami', 'aki', 'ari']">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
