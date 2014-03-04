@@ -83,6 +83,9 @@ angular.module('LandingPage', ['CustomFilters'])
                     modal.find('button').get(0).focus();
                 }
             });
+            $(document).on('closed', '[data-reveal]', function () {
+                $('#search-filter').focus();
+            });
         }
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
