@@ -23,14 +23,18 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.instanceID = instance['id'];
             $scope.rootDevice = instance['root_device'];
             modal.foundation('reveal', 'open');
-            setTimeout(function(){ 
-                    var inputElement = modal.find('input[type!=hidden]').get(0); 
-                    if( inputElement != undefined ){ 
-                        inputElement.focus() 
-                    }else{ 
-                        modal.find('button').get(0).focus(); 
-                    } 
-               }, 1000); 
+            $scope.setFocus();
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
         $scope.unterminatedInstancesCount = function (items) {
             return items.filter(function (item) {
