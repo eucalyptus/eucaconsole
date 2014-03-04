@@ -12,27 +12,24 @@ angular.module('ScalingGroupAlarms', [])
         $scope.revealCreateModal = function () {
             var modal = $scope.createModal;
             modal.foundation('reveal', 'open');
-            setTimeout(function(){
-                    var inputElement = modal.find('input[type!=hidden]').get(0);
-                    if( inputElement != undefined ){
-                        inputElement.focus()
-                    }else{
-                        modal.find('button').get(0).focus();
-                    }
-               }, 1000);
+            $scope.setFocus();
         };
         $scope.revealDeleteModal = function (alarmName) {
             var modal = $scope.deleteModal;
             $scope.alarmName = alarmName;
             modal.foundation('reveal', 'open');
-            setTimeout(function(){
-                    var inputElement = modal.find('input[type!=hidden]').get(0);
-                    if( inputElement != undefined ){
-                        inputElement.focus()
-                    }else{
-                        modal.find('button').get(0).focus();
-                    }
-               }, 1000);
+            $scope.setFocus();         // SHOULDN'T BE TWO EVENT HANDLDERS
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
     })
 ;

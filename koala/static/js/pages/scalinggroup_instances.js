@@ -15,6 +15,7 @@ angular.module('ScalingGroupInstances', [])
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getItems();
+            $scope.setFocus();
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -42,14 +43,17 @@ angular.module('ScalingGroupInstances', [])
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = item['id'];
             modal.foundation('reveal', 'open');
-            setTimeout(function(){
-                    var inputElement = modal.find('input[type!=hidden]').get(0);
-                    if( inputElement != undefined ){
-                        inputElement.focus()
-                    }else{
-                        modal.find('button').get(0).focus();
-                    }
-               }, 1000);
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
     })
 ;
