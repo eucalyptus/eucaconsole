@@ -72,8 +72,20 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.updateSelectedSecurityGroupRules();
             $scope.watchTags();
             $scope.focusEnterImageID();
+            $scope.setFocus();
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -112,14 +124,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.showKeyPairMaterial = false;
             var modal = $scope.keyPairModal;
             modal.foundation('reveal', 'close');
-            setTimeout(function(){
-                    var inputElement = modal.find('input[type!=hidden]').get(0);
-                    if( inputElement != undefined ){
-                        inputElement.focus()
-                    }else{
-                        modal.find('button').get(0).focus();
-                    }
-               }, 1000);
             $scope.newKeyPairName = '';
         };
         $scope.handleKeyPairCreate = function ($event, url) {
@@ -171,14 +175,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $('textarea#rules').val('');
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
-                setTimeout(function(){
-                        var inputElement = modal.find('input[type!=hidden]').get(0);
-                        if( inputElement != undefined ){
-                            inputElement.focus()
-                        }else{
-                            modal.find('button').get(0).focus();
-                        }
-                    }, 1000);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {
