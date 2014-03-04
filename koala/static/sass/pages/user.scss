@@ -56,6 +56,12 @@ $keys-status-color-inactive: $euca-grey;
     min-height: 400px;
 }
 
+.content {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 // *********************
 // User snapshots page
 .tile {
