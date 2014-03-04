@@ -16,9 +16,10 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.initChosenSelectors();
         };
         $scope.revealModal = function (action, eip) {
+            var modal = $('#' + action + '-ip-modal');
             $scope.instanceID = eip['instance_name'] || '';
             $scope.publicIP = eip['public_ip'];
-            $('#' + action + '-ip-modal').foundation('reveal', 'open');
+            modal.foundation('reveal', 'open');
         };
     });
 

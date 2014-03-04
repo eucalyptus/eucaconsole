@@ -12,7 +12,6 @@ angular.module('KeypairsPage', ['LandingPage'])
             keypair_name = keypair_name || '';
             var modal = $('#' + action + '-keypair-modal');
             $scope.keypairName = keypair_name;
-            modal.foundation('reveal', 'open');
         };
     });
 
