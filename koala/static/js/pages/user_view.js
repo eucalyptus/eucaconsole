@@ -127,7 +127,6 @@ angular.module('UserView', ['PolicyList'])
         $scope.submitRandom = function($event) {
             // open modal to get current password
             $('#random-password-modal').foundation('reveal', 'open');
-            console.log("has password = "+$scope.has_password);
         };
         // handles server call for generating a random password
         $scope.genPassword = function($event) {
