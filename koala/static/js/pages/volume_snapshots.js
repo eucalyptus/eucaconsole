@@ -15,12 +15,12 @@ angular.module('VolumeSnapshots', ['TagEditor'])
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getVolumeSnapshots();
+            $scope.setFocus();
         };
         $scope.revealDeleteModal = function (action) {
             var modal = $('#delete-snapshot-modal');
             $scope.deleteFormAction = action;
             modal.foundation('reveal', 'open');
-            $scope.setFocus();
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
