@@ -8,10 +8,12 @@
 angular.module('ScalingGroupPolicy', ['CreateAlarm'])
     .controller('ScalingGroupPolicyCtrl', function ($scope) {
         $scope.alarmModal = $('#create-alarm-modal');
+        $scope.initPage = function (){
+            $scope.setFocus();
+        };
         $scope.revealAlarmModal = function () {
             var modal = $scope.alarmModal;
             modal.foundation('reveal', 'open');
-            $scope.setFocus();
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
