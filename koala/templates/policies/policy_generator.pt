@@ -258,6 +258,7 @@
                                         </div>
                                         <div class="small-6 columns">
                                             <select class="condition-operators" ng-model="${cond_operator}">
+                                                <option value="" i18n:translate="">select...</option>
                                                 <optgroup label="ARN Conditions"
                                                           ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'ARN'">
                                                     <option value="ArnEquals">ArnEquals</option>
@@ -309,9 +310,22 @@
                                         <input type="text" class="condition-value" />
                                     </div>
                                     <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                        <!--! Boolean/Null conditions -->
                                         <div ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL' || ${cond_operator} === 'Null'">
                                             <input type="checkbox" class="condition-value" />
                                             <span i18n:translate="">True</span>
+                                        </div>
+                                        <!--! Availability zone choices -->
+                                        <div ng-if="${cond_key} == 'ec2:AvailabilityZone'">
+                                            <select class="condition-value availability_zone chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice availability_zone_choices">
+                                                    <option value="${choice[0].split('/')[1]}" tal:condition="'zones' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                            <input type="text" class="condition-value"
+                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                     </div>
                                     <a class="button tiny round" i18n:translate=""

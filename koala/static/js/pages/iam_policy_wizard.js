@@ -39,7 +39,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
-            var resourceValueInputs = $scope.policyGenerator.find('.resource.chosen');
+            var resourceValueInputs = $scope.policyGenerator.find('.chosen');
             resourceValueInputs.addClass('hide');
             resourceValueInputs.next('.chosen-container').addClass('hide');
             resourceValueInputs.each(function(idx, item) {
@@ -234,14 +234,18 @@ angular.module('IAMPolicyWizard', [])
             $event.preventDefault();
             conditionKey = actionRow.find('.condition-keys').val();
             conditionOperator = actionRow.find('.condition-operators').val();
+            if (!conditionKey || !conditionOperator) {
+                return false;
+            }
             conditionValueField = actionRow.find('.condition-value');
             conditionValue = conditionValueField.val();
             // Handle Boolen/Null conditions
-            if ($scope.cloudType == 'aws' && conditionOperator == 'Bool' || conditionOperator == 'Null') {
-                conditionValue = conditionValue === 'false' ? false : !!conditionValue;
-            }
-            if ($scope.cloudType == 'euca' && conditionOperator == 'Boo' || conditionOperator == 'Null') {
-                conditionValue = conditionValueField.is(':checked');
+            if (conditionOperator == 'Bool' || conditionOperator == 'Null') {
+                if ($scope.cloudType == 'aws') {
+                    conditionValue = conditionValue === 'false' ? false : !!conditionValue;
+                } else {
+                    conditionValue = conditionValueField.is(':checked');
+                }
             }
             if (!actionConditions[conditionOperator]) {
                 actionConditions[conditionOperator] = {};
