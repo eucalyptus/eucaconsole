@@ -24,6 +24,7 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
             $scope.getInstanceState();
+            $scope.setFocus();
         };
         $scope.revealConsoleOutputModal = function() {
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
@@ -32,20 +33,23 @@ angular.module('InstancePage', ['TagEditor'])
                     $scope.consoleOutput = results;
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
-                    setTimeout(function(){
-                            var inputElement = modal.find('input[type!=hidden]').get(0);
-                            if( inputElement != undefined ){
-                                inputElement.focus()
-                            }else{
-                                modal.find('button').get(0).focus();
-                            }
-                        }, 1000);
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['error'] || null;
                 if (errorMsg && status === 403) {
                     alert(errorMsg);
                     $('#euca-logout-form').submit();
+                }
+            });
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
                 }
             });
         };
