@@ -288,7 +288,7 @@ angular.module('IAMPolicyWizard', [])
             }
             var EC2_STRING_KEYS = [
                 'ec2:AvailabilityZone', 'ec2:ImageType', 'ec2:TargetImage', 'ec2:InstanceType',
-                'ec2:RootDeviceType', 'ec2:VolumeType'
+                'ec2:RootDeviceType', 'ec2:Tenancy', 'ec2:VolumeType'
             ];
             var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
