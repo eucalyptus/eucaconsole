@@ -335,6 +335,8 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <input type="text" class="condition-value"
+                                           ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1" />
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
                                         Add Condition
