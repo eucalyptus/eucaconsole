@@ -31,6 +31,7 @@ class ScalingGroupsView(LandingPageView):
         super(ScalingGroupsView, self).__init__(request)
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
+        self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
 
     @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
@@ -52,7 +53,30 @@ class ScalingGroupsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
+            delete_form=self.delete_form,
         )
+
+    @view_config(route_name='scalinggroups_delete', request_method='POST', renderer=TEMPLATE)
+    def scalinggroups_delete(self):
+        if self.delete_form.validate():
+            location = self.request.route_url('scalinggroups')
+            name = self.request.params.get('name')
+            try:
+                # Need to shut down instances prior to scaling group deletion
+                self.scaling_group.shutdown_instances()
+                time.sleep(3)
+                self.autoscale_conn.delete_auto_scaling_group(name)
+                time.sleep(1)
+                prefix = _(u'Successfully deleted scaling group')
+                msg = '{0} {1}'.format(prefix, name)
+                queue = Notification.SUCCESS
+            except BotoServerError as err:
+                msg = err.message
+                queue = Notification.ERROR
+            notification_msg = msg
+            self.request.session.flash(notification_msg, queue=queue)
+            return HTTPFound(location=location)
+        return self.render_dict
 
 
 class ScalingGroupsJsonView(BaseView):

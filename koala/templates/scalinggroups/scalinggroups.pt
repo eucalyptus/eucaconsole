@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroups.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ScalinggroupsPage" ng-controller="ScalinggroupsCtrl">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('scalinggroups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -34,6 +34,9 @@
                     </li>
                     <li>
                         <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
                     </li>
                 </ul>
             </div>
@@ -117,11 +120,16 @@
                             <li>
                                 <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
                             </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
+                            </li>
                         </ul>
                     </span>
                 </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('scalinggroup_dialogs', landingpage=True, delete_form=delete_form)}
     </div>
 </div>
 
@@ -134,6 +142,8 @@
 <div metal:fill-slot="tail_js">
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('koala:static/js/pages/scalinggroups.js')}"></script>
+
 </div>
 
 </metal:block>
