@@ -5,7 +5,7 @@
                      detailpage_action request.route_url('snapshot_delete', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete snapshot</h3>
-        <p><span i18n:translate="">Are you sure you want to delete the snapshot</span><br />
+        <p><span i18n:translate="">Are you sure you want to delete snapshot</span><br />
            <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
            <span tal:condition="not snapshot"><b>{{ snapshotID }}</b></span>
            ?</p>
@@ -16,7 +16,7 @@
             </div>
             <div class="large-4 columns">&nbsp;</div>
             <div class="large-8 columns">
-                <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+                <button type="submit" class="button" i18n:translate="">Yes, Delete Snapshot</button>
             </div>
         </form>
         <a class="close-reveal-modal">&#215;</a>
@@ -36,7 +36,7 @@
             ${panel('form_field', field=register_form['reg_as_windows'])}
             <div class="large-4 columns">&nbsp;</div>
             <div class="large-8 columns">
-                <button type="submit" class="button" i18n:translate="">Register</button>
+                <button type="submit" class="button" i18n:translate="">Register as Image</button>
             </div>
         </form>
         <a class="close-reveal-modal">&#215;</a>

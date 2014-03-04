@@ -206,6 +206,9 @@ angular.module('IAMPolicyWizard', [])
             conditionKey = actionRow.find('.condition-keys').val();
             conditionOperator = actionRow.find('.condition-operators').val();
             conditionValue = actionRow.find('.condition-value').val();
+            if (conditionOperator == 'Bool') {
+                conditionValue = conditionValue === 'false' ? false : !!conditionValue;
+            }
             if (!actionConditions[conditionOperator]) {
                 actionConditions[conditionOperator] = {};
             }
@@ -219,7 +222,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.removeCondition = function (action, operator, key, $event) {
             $event.preventDefault();
             var actionConditions = $scope[action + 'Conditions'];
-            if (actionConditions[operator] && actionConditions[operator][key]) {
+            if (actionConditions[operator] && actionConditions[operator].hasOwnProperty(key)) {
                 delete actionConditions[operator][key];
             }
             if (Object.keys(actionConditions[operator]).length === 0) {
@@ -272,6 +275,38 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.hasConditions = function (obj) {
             return Object.keys(obj).length > 0;
+        };
+        $scope.getConditionType = function (conditionKey) {
+            /* Given a condition key, return a condition type (e.g. 'DATE' for Date Conditions)
+               AWS condition types documented at
+               http://docs.aws.amazon.com/IAM/latest/UserGuide/AccessPolicyLanguage_ElementDescriptions.html
+               EC2 condition types documented at
+               http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html#ec2-supported-iam-actions-resources*/
+            conditionKey = conditionKey || '';
+            if (!conditionKey) {
+                return '';
+            }
+            var EC2_STRING_KEYS = [
+                'ec2:AvailabilityZone', 'ec2:ImageType', 'ec2:TargetImage', 'ec2:InstanceType',
+                'ec2:RootDeviceType', 'ec2:VolumeType'
+            ];
+            var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
+            var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
+
+            // AWS conditions
+            if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }
+            if (conditionKey.indexOf('Time') !== -1) { return 'DATE'; }
+            if (conditionKey.indexOf('Ip') !== -1) { return 'IP'; }
+            if (conditionKey.toLowerCase().indexOf('user') !== -1) { return 'STRING'; }
+            if (conditionKey.indexOf('Secure') !== -1) { return 'BOOL'; }
+
+            // EC2-specific conditions
+            if (conditionKey.indexOf('EbsOptimized') !== -1) { return 'BOOL'; }
+            if (EC2_STRING_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
+            if (EC2_ARN_KEYS.indexOf(conditionKey) !== -1) { return 'ARN'; }
+            if (EC2_NUMERIC_KEYS.indexOf(conditionKey) !== -1) { return 'NUMERIC'; }
+
+            return '';
         };
     })
 ;
