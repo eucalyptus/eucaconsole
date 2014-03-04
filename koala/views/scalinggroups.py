@@ -61,11 +61,14 @@ class ScalingGroupsView(LandingPageView):
         if self.delete_form.validate():
             location = self.request.route_url('scalinggroups')
             name = self.request.params.get('name')
+            print "NAme: " , name
             try:
+                conn = self.get_connection(conn_type='autoscale')
+                scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
-                self.scaling_group.shutdown_instances()
+                scaling_group.shutdown_instances()
                 time.sleep(3)
-                self.autoscale_conn.delete_auto_scaling_group(name)
+                conn.delete_auto_scaling_group(name)
                 time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
@@ -77,6 +80,12 @@ class ScalingGroupsView(LandingPageView):
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
+
+    def get_scaling_group_by_name(self, name):
+        conn = self.get_connection(conn_type='autoscale')
+        names = []
+        names.append(name)
+        return conn.get_all_groups(names)[0] if conn else []
 
 
 class ScalingGroupsJsonView(BaseView):

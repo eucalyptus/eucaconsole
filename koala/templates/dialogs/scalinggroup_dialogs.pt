@@ -19,12 +19,14 @@
         </span>
         <p><span i18n:translate="">Are you sure you want to delete the scaling group</span>
             <b tal:condition="scaling_group" ng-non-bindable="">${scaling_group.name}</b>
-            <b tal:condition="not scaling_group">{{scalinggroupName || scalinggroupID}}</b>
-           <span tal:condition="has_instances"> and terminate its instances</span>?</p>
+            <b tal:condition="not scaling_group">{{ scalinggroupName }}</b>
+           <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0"> and terminate its instances</span>
+           <span tal:condition="has_instances"> and terminate its instances</span>
+           ?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
             <input tal:condition="scaling_group" type="hidden" name="name" value="${scaling_group.name}">
-            <input tal:condition="not scaling_group" type="hidden" name="name" value="{{scalinggroupName||scalinggroupID}}">
+            <input tal:condition="not scaling_group" type="hidden" name="name" value="{{ scalinggroupName }}">
             <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
         </form>
         <a class="close-reveal-modal">&#215;</a>
