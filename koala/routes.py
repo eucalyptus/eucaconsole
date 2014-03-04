@@ -70,6 +70,7 @@ urls = [
     # Landing page
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    Route(name='scalinggroups_delete', pattern='/scalinggroups/delete'),
     # Detail page
     Route(name='scalinggroup_new', pattern='/scalinggroups/new'),
     Route(name='scalinggroup_create', pattern='/scalinggroups/create'),

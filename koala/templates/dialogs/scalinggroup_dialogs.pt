@@ -1,0 +1,36 @@
+<!--! Modal dialogs for Scaling Group landing and detail page -->
+<div tal:omit-tag="">
+    <!--! Delete dialogs -->
+    <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal=""
+        tal:define="landingpage_action request.route_url('scalinggroups_delete');
+                    detailpage_action request.route_url('scalinggroup_delete', id=scaling_group.name) if scaling_group else '';
+                    action landingpage_action if landingpage else detailpage_action;
+                    has_instances scaling_group.instances if scaling_group else '';">
+        <h3 i18n:translate="">Delete scaling group</h3>
+        <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0">
+            <p>
+                Deleting a scaling group also terminates all instances within that scaling group.
+            </p>
+        </span>
+        <span tal:condition="has_instances">
+            <p>
+                Deleting a scaling group also terminates all instances within that scaling group.
+            </p>
+        </span>
+        <p><span i18n:translate="">Are you sure you want to delete the scaling group</span>
+            <b tal:condition="scaling_group" ng-non-bindable="">${scaling_group.name}</b>
+            <b tal:condition="not scaling_group">{{ scalinggroupName }}</b>
+           <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0"> and terminate its instances</span>
+           <span tal:condition="has_instances"> and terminate its instances</span>
+           ?</p>
+        <form action="${action}" method="post">
+            ${structure:delete_form['csrf_token']}
+            <input tal:condition="scaling_group" type="hidden" name="name" value="${scaling_group.name}">
+            <input tal:condition="not scaling_group" type="hidden" name="name" value="{{ scalinggroupName }}">
+            <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
+        </form>
+        <a class="close-reveal-modal">&#215;</a>
+    </div>
+    <!--! /end modal dialogs -->
+</div>
+
