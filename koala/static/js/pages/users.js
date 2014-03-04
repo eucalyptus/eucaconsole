@@ -29,6 +29,14 @@ angular.module('UsersPage', ['LandingPage'])
             var form = $('#' + action + '-form');
             var action = form.attr('action').replace("_name_", user['user_name']);
             form.attr('action', action);
+            setTimeout(function(){ 
+                    var inputElement = modal.find('input[type!=hidden]').get(0); 
+                    if( inputElement != undefined ){ 
+                        inputElement.focus() 
+                    }else{ 
+                        modal.find('button').get(0).focus(); 
+                    } 
+               }, 1000); 
         };
         $scope.revealModalXHR = function (action, user) {
             var modal = $('#' + action + '-user-modal');

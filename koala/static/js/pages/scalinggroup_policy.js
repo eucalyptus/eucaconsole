@@ -9,7 +9,16 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
     .controller('ScalingGroupPolicyCtrl', function ($scope) {
         $scope.alarmModal = $('#create-alarm-modal');
         $scope.revealAlarmModal = function () {
-            $scope.alarmModal.foundation('reveal', 'open');
+            var modal = $scope.alarmModal;
+            modal.foundation('reveal', 'open');
+            setTimeout(function(){
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    if( inputElement != undefined ){
+                        inputElement.focus()
+                    }else{
+                        modal.find('button').get(0).focus();
+                    }
+               }, 1000);
         };
     })
 ;

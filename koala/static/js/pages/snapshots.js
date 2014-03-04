@@ -11,6 +11,14 @@ angular.module('SnapshotsPage', ['LandingPage'])
             var modal = $('#' + action + '-snapshot-modal');
             $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
+            setTimeout(function(){ 
+                    var inputElement = modal.find('input[type!=hidden]').get(0); 
+                    if( inputElement != undefined ){ 
+                        inputElement.focus() 
+                    }else{ 
+                        modal.find('button').get(0).focus(); 
+                    } 
+               }, 1000); 
         };
     })
 ;

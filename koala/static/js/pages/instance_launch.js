@@ -110,7 +110,16 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 script: downloadUrl
             });
             $scope.showKeyPairMaterial = false;
-            $scope.keyPairModal.foundation('reveal', 'close');
+            var modal = $scope.keyPairModal;
+            modal.foundation('reveal', 'close');
+            setTimeout(function(){
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    if( inputElement != undefined ){
+                        inputElement.focus()
+                    }else{
+                        modal.find('button').get(0).focus();
+                    }
+               }, 1000);
             $scope.newKeyPairName = '';
         };
         $scope.handleKeyPairCreate = function ($event, url) {
@@ -160,7 +169,16 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
-                $scope.securityGroupModal.foundation('reveal', 'close');
+                var modal = $scope.securityGroupModal;
+                modal.foundation('reveal', 'close');
+                setTimeout(function(){
+                        var inputElement = modal.find('input[type!=hidden]').get(0);
+                        if( inputElement != undefined ){
+                            inputElement.focus()
+                        }else{
+                            modal.find('button').get(0).focus();
+                        }
+                    }, 1000);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {

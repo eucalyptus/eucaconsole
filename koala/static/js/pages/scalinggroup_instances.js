@@ -42,6 +42,14 @@ angular.module('ScalingGroupInstances', [])
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = item['id'];
             modal.foundation('reveal', 'open');
+            setTimeout(function(){
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    if( inputElement != undefined ){
+                        inputElement.focus()
+                    }else{
+                        modal.find('button').get(0).focus();
+                    }
+               }, 1000);
         };
     })
 ;

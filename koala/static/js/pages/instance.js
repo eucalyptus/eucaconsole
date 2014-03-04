@@ -32,6 +32,14 @@ angular.module('InstancePage', ['TagEditor'])
                     $scope.consoleOutput = results;
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
+                    setTimeout(function(){
+                            var inputElement = modal.find('input[type!=hidden]').get(0);
+                            if( inputElement != undefined ){
+                                inputElement.focus()
+                            }else{
+                                modal.find('button').get(0).focus();
+                            }
+                        }, 1000);
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['error'] || null;

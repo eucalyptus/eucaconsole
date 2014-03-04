@@ -20,6 +20,14 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             var modal = $('#delete-snapshot-modal');
             $scope.deleteFormAction = action;
             modal.foundation('reveal', 'open');
+            setTimeout(function(){ 
+                    var inputElement = modal.find('input[type!=hidden]').get(0); 
+                    if( inputElement != undefined ){ 
+                        inputElement.focus() 
+                    }else{ 
+                        modal.find('button').get(0).focus(); 
+                    } 
+               }, 1000); 
         };
         $scope.getVolumeSnapshots = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

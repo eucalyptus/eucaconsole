@@ -10,11 +10,29 @@ angular.module('ScalingGroupAlarms', [])
         $scope.createModal = $('#create-alarm-modal');
         $scope.deleteModal = $('#delete-alarm-modal');
         $scope.revealCreateModal = function () {
-            $scope.createModal.foundation('reveal', 'open');
+            var modal = $scope.createModal;
+            modal.foundation('reveal', 'open');
+            setTimeout(function(){
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    if( inputElement != undefined ){
+                        inputElement.focus()
+                    }else{
+                        modal.find('button').get(0).focus();
+                    }
+               }, 1000);
         };
         $scope.revealDeleteModal = function (alarmName) {
+            var modal = $scope.deleteModal;
             $scope.alarmName = alarmName;
-            $scope.deleteModal.foundation('reveal', 'open');
+            modal.foundation('reveal', 'open');
+            setTimeout(function(){
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    if( inputElement != undefined ){
+                        inputElement.focus()
+                    }else{
+                        modal.find('button').get(0).focus();
+                    }
+               }, 1000);
         };
     })
 ;
