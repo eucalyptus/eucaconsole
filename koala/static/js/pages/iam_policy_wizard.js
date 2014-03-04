@@ -222,7 +222,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.removeCondition = function (action, operator, key, $event) {
             $event.preventDefault();
             var actionConditions = $scope[action + 'Conditions'];
-            if (actionConditions[operator] && actionConditions[operator][key]) {
+            if (actionConditions[operator] && actionConditions[operator].hasOwnProperty(key)) {
                 delete actionConditions[operator][key];
             }
             if (Object.keys(actionConditions[operator]).length === 0) {
