@@ -139,9 +139,16 @@
                     </metal:block>
                     <div id="password-section" ng-controller="UserPasswordCtrl"
                          ng-init="initController('${request.route_url('user_random_password', name=user.user_name)}',
+                                                 '${request.route_url('user_delete_password', name=user.user_name)}',
                                                  '${request.route_url('user_change_password', name=user.user_name)}',
-                                                 '${request.route_url('file_download')}')">
+                                                 '${request.route_url('file_download')}', '${has_password}')">
                         <h6 i18n:translate="">Password</h6>
+                        <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p> ${has_password}
+                        <p i18n:translate="">Password set?:
+                            <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span>
+                            <span ng-show="!has_password">No</span>
+                        </p>
+                        <h6 i18n:translate="">Create new password:</h6>
                         <div class="row">
                             <div class="small-6 columns gen-password">
                                 <span i18n:translate="">Generate and download a random password</span>
@@ -183,6 +190,24 @@
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                        <div id="delete-password-modal" class="reveal-modal small" data-reveal="">
+                            <h3 i18n:translate="">Delete password</h3>
+                            <p>
+                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
+                            </p>
+                            <form method="post" id="random-form" data-abide="" ng-submit="deletePassword($event)">
+                                ${structure:generate_form['csrf_token']}
+                                ${panel('form_field', field=generate_form['password'])}
+                                <div>&nbsp;</div>
+                                <div class="row">
+                                    <div class="small-4 columns">&nbsp;</div>
+                                    <div class="small-8 columns field inline">
+                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    </div>
+                                </div>
+                            </form>
+                            <a class="close-reveal-modal">&#215;</a>
                         </div>
                         <div id="random-password-modal" class="reveal-modal small" data-reveal="">
                             <h3 i18n:translate="">Generate random password</h3>
@@ -229,6 +254,7 @@
                                 '${request.route_url('file_download')}')">
                         <div class="section">
                             <h6 i18n:translate="">Access keys</h6>
+                            <p i18n:translate="">Users managing their cloud with other tools than the Management Console require access keys.</p>
                             <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
                                 ${structure:user_form['csrf_token']}
                                 <div class="columns field inline">

@@ -240,11 +240,19 @@ class UserView(BaseView):
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
+        has_password = False
+        try:
+            profile = self.conn.get_login_profiles(user_name=self.user.user_name)
+            # this call returns 404 if no password found
+            has_password = True
+        except BotoServerError as err:
+            pass
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn,
                              formdata=self.request.params or None)
         self.render_dict['user_form'] = self.user_form
+        self.render_dict['has_password'] = 'true' if has_password else 'false'
         return self.render_dict
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
@@ -495,6 +503,36 @@ class UserView(BaseView):
             self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated user password"), results="true")
+        except BotoServerError as err:  # catch error in password change
+            return JSONResponse(status=400, message=err.message);
+        except HTTPError, err:          # catch error in authentication
+            return JSONResponse(status=401, message=err.message);
+        except URLError, err:           # catch error in authentication
+            return JSONResponse(status=401, message=err.message);
+
+    @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
+    def user_delete_password(self):
+        """ calls iam:DeleteLoginProfile """
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        try:
+            password = self.request.params.get('password')
+
+            clchost = self.request.registry.settings.get('clchost')
+            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
+            auth = EucaAuthenticator(host=clchost, duration=duration)
+            session = self.request.session
+            account=session['account']
+            username=session['username']
+            creds = auth.authenticate(account=account, user=username,
+                                      passwd=password, timeout=8)
+            # store new token values in session
+            session['session_token'] = creds.session_token
+            session['access_id'] = creds.access_key
+            session['secret_key'] = creds.secret_key
+            new_pass = PasswordGeneration.generatePassword()
+            self.conn.delete_login_profile(user_name=self.user.user_name)
+            return dict(message=_(u"Successfully deleted user password"), results="true")
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
