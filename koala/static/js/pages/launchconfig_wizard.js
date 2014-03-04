@@ -37,10 +37,22 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
             $scope.setInitialValues();
+            $scope.setFocus();
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.updateSelectedSecurityGroupRules();
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
         $scope.inputImageID = function (url) {
             url += '?image_id=' + $scope.imageID;
@@ -74,14 +86,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.showKeyPairMaterial = false;
             var modal = $scope.keyPairModal;
             modal.foundation('reveal', 'close');
-            setTimeout(function(){ 
-                    var inputElement = modal.find('input[type!=hidden]').get(0); 
-                    if( inputElement != undefined ){ 
-                        inputElement.focus() 
-                    }else{ 
-                        modal.find('button').get(0).focus(); 
-                    } 
-               }, 1000); 
             $scope.newKeyPairName = '';
         };
         $scope.handleKeyPairCreate = function ($event, url) {
@@ -133,14 +137,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $('textarea#rules').val('');
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
-                setTimeout(function(){ 
-                        var inputElement = modal.find('input[type!=hidden]').get(0); 
-                        if( inputElement != undefined ){ 
-                            inputElement.focus() 
-                        }else{ 
-                            modal.find('button').get(0).focus(); 
-                        } 
-                    }, 1000); 
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {
