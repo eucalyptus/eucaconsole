@@ -20,14 +20,18 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.instanceID = eip['instance_name'] || '';
             $scope.publicIP = eip['public_ip'];
             modal.foundation('reveal', 'open');
-            setTimeout(function(){ 
-                    var inputElement = modal.find('input[type!=hidden]').get(0); 
-                    if( inputElement != undefined ){ 
-                        inputElement.focus() 
-                    }else{ 
-                        modal.find('button').get(0).focus(); 
-                    } 
-               }, 1000); 
+            $scope.setFocus();
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
     });
 
