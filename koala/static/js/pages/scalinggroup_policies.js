@@ -8,11 +8,13 @@ angular.module('ScalingGroupPolicies', [])
     .controller('ScalingGroupPoliciesCtrl', function ($scope) {
         $scope.policyName = '';
         $scope.deleteModal = $('#delete-policy-modal');
+        $scope.initPage = function () {
+            $scope.setFocus();
+        };
         $scope.revealDeleteModal = function (policyName) {
             var modal = $scope.deleteModal;
             $scope.policyName = policyName;
             modal.foundation('reveal', 'open');
-            $scope.setFocus();
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
