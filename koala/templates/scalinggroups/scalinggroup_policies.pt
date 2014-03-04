@@ -48,6 +48,12 @@
                 </div>
             </div>
         </div>
+        <div class="large-4 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                 <!--! Help goes here -->
+            </div>
+        </div>
         <!--! Modal dialogs -->
         <div id="delete-policy-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Delete scaling group policy</h3>
