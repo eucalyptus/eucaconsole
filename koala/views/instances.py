@@ -3,11 +3,14 @@
 Pyramid views for Eucalyptus and AWS instances
 
 """
+import base64
 from dateutil import parser
 from operator import attrgetter
 import simplejson as json
 import time
+from M2Crypto import RSA
 
+from boto.exception import BotoServerError
 from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -257,14 +260,18 @@ class InstancesJsonView(LandingPageView):
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({'name':group.name, 'id':group.id} for group in instance.groups)
+            if instance.platform is None:
+                instance.platform = _(u"linux")
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
+                public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
+                platform=instance.platform,
                 root_device=instance.root_device_type,
                 security_groups=security_groups_array,
                 key_name=instance.key_name,
@@ -436,6 +443,21 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=self.location)
         return self.render_dict
+
+    @view_config(route_name='instance_get_password', request_method='POST', renderer='json')
+    def instance_get_password(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        instance_id = self.request.matchdict.get('instance')
+        try:
+            passwd_data = self.conn.get_password_data(instance_id)
+            priv_key_string = self.request.params.get('key')
+            user_priv_key = RSA.load_key_string(priv_key_string)
+            string_to_decrypt = base64.b64decode(passwd_data)
+            ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
+            return dict(result=dict(instance=instance_id, password=ret))
+        except BotoServerError as err:
+            return JSONResponse(status=400, message=err.message);
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""

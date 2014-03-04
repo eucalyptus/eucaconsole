@@ -27,6 +27,10 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
+                            <a href="#" id="connect-action"
+                               data-reveal-id="connect-modal" i18n:translate="">Connect</a>
+                        </li>
+                        <li ng-show="instanceState == 'running'">
                             <a href="#" id="reboot-instance-action"
                                data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
