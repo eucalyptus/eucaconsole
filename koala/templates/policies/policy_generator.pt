@@ -194,31 +194,36 @@
                                                     <option value="ec2:PlacementGroup">Placement group</option>
                                                     <option value="ec2:RootDeviceType">Root device type</option>
                                                     <option value="ec2:Tenancy">Tenancy</option>
-                                                    <option value="ec2:TargetImage">Target image</option>
+                                                    <option value="ec2:TargetImage"
+                                                            tal:condition="layout.cloud_type == 'euca'">Target image</option>
                                                     <option value="ec2:VolumeIops">Volume IOPS</option>
                                                     <option value="ec2:VolumeSize">Volume size</option>
                                                     <option value="ec2:VolumeType">Volume type</option>
                                                 </optgroup>
-                                                <option value="aws:CurrentTime">Current time</option>
-                                                <option value="aws:EpochTime">Epoch time</option>
-                                                <option value="aws:SecureTransport">Secure transport</option>
-                                                <option value="aws:SourceArn">Source ARN</option>
-                                                <option value="aws:SourceIp">Source IP</option>
-                                                <option value="aws:UserAgent">User agent</option>
-                                                <option value="aws:userid">User ID</option>
-                                                <option value="aws:username">Username</option>
+                                                <optgroup label="AWS Conditions">
+                                                    <option value="aws:CurrentTime">Current time</option>
+                                                    <option value="aws:EpochTime">Epoch time</option>
+                                                    <option value="aws:SecureTransport">Secure transport</option>
+                                                    <option value="aws:SourceArn">Source ARN</option>
+                                                    <option value="aws:SourceIp">Source IP</option>
+                                                    <option value="aws:UserAgent">User agent</option>
+                                                    <option value="aws:userid">User ID</option>
+                                                    <option value="aws:username">Username</option>
+                                                <optgroup>
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
                                             <select class="condition-operators"
                                                     tal:define="cond_key '{0}ConditionKey'.format(action);">
-                                                <optgroup label="ARN Conditions" ng-if="getConditionType(${cond_key}) == 'ARN'">
+                                                <optgroup label="ARN Conditions"
+                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'ARN'">
                                                     <option value="ArnEquals">ArnEquals</option>
                                                     <option value="ArnNotEquals">ArnNotEquals</option>
                                                     <option value="ArnLike">ArnLike</option>
                                                     <option value="ArnNotLike">ArnNotLike</option>
                                                 </optgroup>
-                                                <optgroup label="String Conditions" ng-if="getConditionType(${cond_key}) == 'STRING'">
+                                                <optgroup label="String Conditions"
+                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'STRING'">
                                                     <option value="StringEquals">StringEquals</option>
                                                     <option value="StringNotEquals">StringNotEquals</option>
                                                     <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
@@ -226,8 +231,9 @@
                                                     <option value="StringLike">StringLike</option>
                                                     <option value="StringNotLike">StringNotLike</option>
                                                 </optgroup>
-                                                <!--<option value="Null">Null</option>--> <!--! Seems to be used only with MFA -->
-                                                <optgroup label="Numeric Conditions" ng-if="getConditionType(${cond_key}) == 'NUMERIC'">
+                                                <!--<option value="Null">Null</option>-->
+                                                <optgroup label="Numeric Conditions"
+                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'">
                                                     <option value="NumericEquals">NumericEquals</option>
                                                     <option value="NumericNotEquals">NumericNotEquals</option>
                                                     <option value="NumericLessThan">NumericLessThan</option>
@@ -235,7 +241,8 @@
                                                     <option value="NumericGreaterThan">NumericGreaterThan</option>
                                                     <option value="NumericGreaterThanEquals">NumericGreaterThanEquals</option>
                                                 </optgroup>
-                                                <optgroup label="Date Conditions" ng-if="getConditionType(${cond_key}) == 'DATE'">
+                                                <optgroup label="Date Conditions"
+                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'DATE'">
                                                     <option value="DateEquals">DateEquals</option>
                                                     <option value="DateNotEquals">DateNotEquals</option>
                                                     <option value="DateLessThan">DateLessThan</option>
@@ -243,11 +250,13 @@
                                                     <option value="DateGreaterThan">DateGreaterThan</option>
                                                     <option value="DateGreaterThanEquals">DateGreaterThanEquals</option>
                                                 </optgroup>
-                                                <optgroup label="IP Conditions" ng-if="getConditionType(${cond_key}) == 'IP'">
+                                                <optgroup label="IP Conditions"
+                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'IP'">
                                                     <option value="IpAddress">IpAddress</option>
                                                     <option value="NotIpAddress">NotIpAddress</option>
                                                 </optgroup>
-                                                <option value="Bool" ng-if="getConditionType(${cond_key}) == 'BOOL'">
+                                                <option value="Bool"
+                                                        ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL'">
                                                     Bool
                                                 </option>
                                             </select>
