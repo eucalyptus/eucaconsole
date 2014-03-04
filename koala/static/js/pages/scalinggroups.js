@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('ScalinggroupsPage', ['LandingPage'])
-    .controller('ScalinggroupsCtrl', function ($scope) {
+angular.module('ScalingGroupsPage', ['LandingPage'])
+    .controller('ScalingGroupsCtrl', function ($scope) {
         $scope.scalinggroupID = '';
         $scope.scalinggroupName = '';
         $scope.scalinggroupInstances = '';

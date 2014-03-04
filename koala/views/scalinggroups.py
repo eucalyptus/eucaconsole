@@ -61,7 +61,6 @@ class ScalingGroupsView(LandingPageView):
         if self.delete_form.validate():
             location = self.request.route_url('scalinggroups')
             name = self.request.params.get('name')
-            print "NAme: " , name
             try:
                 conn = self.get_connection(conn_type='autoscale')
                 scaling_group = self.get_scaling_group_by_name(name)

@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/pages/scalinggroups.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="ScalinggroupsPage" ng-controller="ScalinggroupsCtrl">
+<div metal:fill-slot="main_content" ng-app="ScalingGroupsPage" ng-controller="ScalingGroupsCtrl">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('scalinggroups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
