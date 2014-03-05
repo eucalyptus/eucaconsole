@@ -1555,6 +1555,7 @@ footer .copyright { font-size: 0.9em; }
 .button { box-shadow: 1px 1px 5px 0px #9a9c9e; background-color: #f18f30; }
 .button.secondary { background-color: #808285; color: white; }
 .button:hover { background-color: #df750f; }
+.button:focus { background-color: #f18f30; }
 
 /* ----------------------------------------- Tabs
 ----------------------------------------- */
