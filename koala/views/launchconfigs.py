@@ -97,7 +97,7 @@ class LaunchConfigsJsonView(BaseView):
         launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
         scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
         for launchconfig in self.launch_configs:
-            security_groups = launchconfig.security_groups
+            security_groups = self.get_launchconfig_security_groups(launchconfig)
             image_id = launchconfig.image_id
             name=launchconfig.name
             launchconfigs_array.append(dict(
@@ -125,6 +125,15 @@ class LaunchConfigsJsonView(BaseView):
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return []
 
+    def get_launchconfig_security_groups(self, launch_config):
+        if self.ec2_conn:
+            groupids = launch_config.security_groups
+            security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
+            security_groups_array = []
+            for sgroup in security_groups:
+                security_groups_array.append(dict(id=sgroup.id, name=sgroup.name or sgroup.id))
+            return security_groups_array
+        return []
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
