@@ -189,6 +189,7 @@ urls = [
     Route(name='user_policy_json', pattern='/users/{name}/policies/{policy}'),
     Route(name='user_update', pattern='/users/{name}/update'),
     Route(name='user_delete', pattern='/users/{name}/delete'),
+    Route(name='user_delete_password', pattern='/users/{name}/deletepwd'),
     Route(name='user_random_password', pattern='/users/{name}/random'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
     Route(name='user_generate_keys', pattern='/users/{name}/genkeys'),

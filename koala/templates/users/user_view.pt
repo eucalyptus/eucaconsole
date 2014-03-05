@@ -17,281 +17,334 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
-        <div class="large-8 columns" tal:define="readonly True if user else False;">
-            <div class="panel has-actions">
-                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
-                    <metal:actions metal:fill-slot="actions">
-                        <li>
-                            <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
-                                Delete user
-                            </a>
-                        </li>
-                    </metal:actions>
-                </metal:block>
-                <div ng-controller="UserUpdateCtrl"
-                     ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
+        <div class="large-8 columns">
+            <dl class="tabs" data-tab="">
+                <dd class="active"><a href="#general-tab" i18n:translate="">General</a></dd>
+                <dd><a href="#security-tab" i18n:translate="">Security credentials</a></dd>
+                <dd><a href="#quotas-tab" i18n:translate="">Quotas</a></dd>
+            </dl>
+            <div class="tabs-content">
+                <div class="content active panel has-actions" id="general-tab">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                    Delete user
+                                </a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <div ng-controller="UserUpdateCtrl"
+                         ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
 
-                    <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
-                        ${structure:user_form['csrf_token']}
-                        <div class="section">
-                            <h6 i18n:translate="">General</h6>
-                            ${panel('form_field', field=user_form['user_name'], leftcol_width=2, rightcol_width=10)}
-                            <!-- ${panel('form_field', field=user_form['email'])} -->
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-2 columns"><label i18n:translate="">ARN</label></div>
-                                <div class="small-10 columns value">${user.arn if user.arn else ''}</div>
-                            </div>
-                            ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
-                        </div>
-                        <div class="row">
-                            <div class="small-2 columns">&nbsp;</div>
-                            <div class="small-10 columns field inline">
-                                <button type="submit" class="button" id="save-user-btn">
-                                    <span tal:condition="user" i18n:translate="">Save Changes</span>
-                                </button>
-                                <a href="${request.route_url('users')}"
-                                   class="cancel-link" i18n:translate="">Cancel</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <hr id="password-section"/>
-                <div ng-controller="UserPasswordCtrl"
-                     ng-init="initController('${request.route_url('user_random_password', name=user.user_name)}',
-                                             '${request.route_url('user_change_password', name=user.user_name)}',
-                                             '${request.route_url('file_download')}')">
-                    <h6 i18n:translate="">Password</h6>
-                    <div class="row">
-                        <div class="small-6 columns gen-password">
-                            <span i18n:translate="">Generate and download a random password</span>
-                            <p>&nbsp;</p>
-                            <form id="user-generate-password-form" ng-submit="submitRandom($event)">
-                                <button type="submit" class="button" id="generatre-password-btn">
-                                    <span tal:condition="user" i18n:translate="">Generate Random Password</span>
-                                </button>
-                            </form>
-                            <span class="or-circle" i18n:translate="">OR</span>
-                        </div>
-                        <div class="small-6 columns set-password">
-                            <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
-                                <div class="row controls-wrapper controls_new_password">
-                                    <div class="small-12 columns field">
-                                        <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
-                                        ${structure:user_form.new_password}
-                                    </div>
-                                </div>
-                                <div class="row controls-wrapper controls_new_password2">
-                                    <div class="small-12 columns field">
-                                        <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password2.label.text}<span class="req">*</span></label>
-                                        ${structure:user_form.new_password2}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                  <div class="columns">
-                                    <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
-                                  </div>
-                                </div>
-                                <div class="row">
-                                    <div class="columns field inline">
-                                        <button type="submit" class="button" id="save-password-btn">
-                                            <span tal:condition="user" i18n:translate="">Save Password</span>
-                                        </button>
-                                        <a href="${request.route_url('users')}"
-                                           class="cancel-link" i18n:translate="">Cancel</a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div id="random-password-modal" class="reveal-modal small" data-reveal="">
-                        <h3 i18n:translate="">Generate random password</h3>
-                        <p>
-                            <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
-                        </p>
-                        <form method="post" id="random-form" data-abide="" ng-submit="genPassword($event)">
-                            ${structure:generate_form['csrf_token']}
-                            ${panel('form_field', field=generate_form['password'])}
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <input type="submit" class="button" value="OK" i18n:attributes="value" />
-                                </div>
-                            </div>
-                        </form>
-                        <a class="close-reveal-modal">&#215;</a>
-                    </div>
-                    <div id="change-password-modal" class="reveal-modal small" data-reveal="">
-                        <h3 i18n:translate="">Change password</h3>
-                        <p>
-                            <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
-                        </p>
-                        <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
-                            ${structure:change_password_form['csrf_token']}
-                            ${panel('form_field', field=change_password_form['password'])}
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <input type="submit" class="button" value="OK" i18n:attributes="value" />
-                                </div>
-                            </div>
-                        </form>
-                        <a class="close-reveal-modal">&#215;</a>
-                    </div>
-                </div>
-                <hr id="access-keys-section"/>
-                <div ng-controller="UserAccessKeysCtrl"
-                     ng-init="initController(
-                            '${request.route_url('user_generate_keys', name=user.user_name)}',
-                            '${request.route_url('user_access_keys_json', name=user.user_name)}',
-                            '${request.route_url('file_download')}')">
-                    <div class="section">
-                        <h6 i18n:translate="">Access keys</h6>
-                        <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
+                        <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
-                            <div class="columns field inline">
-                                <button type="submit" class="button" id="gen-keys-btn">
-                                    <span tal:condition="user" i18n:translate="">Generate Access Key</span>
-                                </button>
+                            <div class="section">
+                                <h6 i18n:translate="">User</h6>
+                                ${panel('form_field', field=user_form['user_name'], leftcol_width=2, rightcol_width=10)}
+                                <!-- ${panel('form_field', field=user_form['email'])} -->
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-2 columns"><label i18n:translate="">ARN</label></div>
+                                    <div class="small-10 columns value">${user.arn if user.arn else ''}</div>
+                                </div>
+                                ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
                             </div>
-                            ${panel('form_field_rev', field=user_form['download_keys'])}
+                            <div class="row">
+                                <div class="small-2 columns">&nbsp;</div>
+                                <div class="small-10 columns field inline">
+                                    <button type="submit" class="button" id="save-user-btn">
+                                        <span tal:condition="user" i18n:translate="">Save Changes</span>
+                                    </button>
+                                    <a href="${request.route_url('users')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
                         </form>
-                        <div metal:use-macro="layout.global_macros['plain_tableview']">
-                            <metal:block metal:fill-slot="tableview_headers">
-                                <th i18n:translate="">ACCESS KEY ID</th>
-                                <th i18n:translate="">STATUS</th>
-                                <th i18n:translate="">ACTIONS</th>
-                            </metal:block>
-                            <metal:block metal:fill-slot="tableview_columns">
-                                <td>{{ item.access_key_id }}</td>
-                                <td>{{ item.status }}</td>
-                                <td>
-                                    <span class="actions">
-                                        <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
-                                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
-                                            <li ng-show="item.status === 'Active'">
-                                                <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
-                                            </li>
-                                            <li ng-show="item.status === 'Inactive'">
-                                                <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_activate_key', name='_name_', key='_key_')}', item)">Activate</a>
-                                            </li>
-                                            <li>
-                                                <a i18n:translate="" ng-click="confirmDelete(item)">Delete</a>
-                                            </li>
-                                        </ul>
-                                    </span>
-                                </td>
-                            </metal:block>
-                        </div>
-                        <div id="user-dialogs">
-                            <div id="delete-key-modal" class="reveal-modal small" data-reveal="">
-                                <h3 i18n:translate="">Delete access key</h3>
-                                <p>
-                                    <span i18n:translate="">Are you sure you want to delete the access key?</span>
-                                </p>
-                                <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
-                                    ${structure:user_form['csrf_token']}
-                                    <div>&nbsp;</div>
-                                    <div class="row">
-                                        <div class="small-4 columns">&nbsp;</div>
-                                        <div class="small-8 columns field inline">
-                                            <button type="submit" class="button" id="delete-key-btn">
-                                                <span i18n:translate="">Yes, Delete</span>
+                    </div>
+                    <hr id="group-section"/>
+                    <div ng-controller="UserGroupsCtrl"
+                         ng-init="initController(
+                                '${request.route_url('user_add_to_group', name=user.user_name, group='_group_')}',
+                                '${request.route_url('user_remove_from_group', name=user.user_name, group='_group_')}',
+                                '${request.route_url('user_groups_json', name=user.user_name)}',
+                                '${request.route_url('user_avail_groups_json', name=user.user_name)}',
+                                '${request.route_url('group_policies_json', name='_name_')}',
+                                '${request.route_url('group_policy_json', name='_name_', policy='_policy_')}')">
+                        <div class="section">
+                            <h6 i18n:translate="">Groups</h6>
+                            <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
+                                ${structure:user_form['csrf_token']}
+                                <div class="columns field inline">
+                                    <div class="row controls-wrapper controls_${field.name}" tal:repeat="field group_form">
+                                        <div class="column small-6">
+                                            ${structure:field()}
+                                        </div>
+                                        <div class="column small-6">
+                                            <button type="submit" class="button" id="add-user-to-group-btn">
+                                                <span tal:condition="user" i18n:translate="">Add User to Group</span>
                                             </button>
                                         </div>
                                     </div>
-                                </form>
-                                <a class="close-reveal-modal">&#215;</a>
+                                </div>
+                            </form>
+                            <div metal:use-macro="layout.global_macros['plain_datagrid']">
+                                <div metal:fill-slot="tile_header" tal:omit-tag="">
+                                    <a ng-href="/groups/{{ item.group_name }}">{{ item.title }}</a>
+                                </div>
+                                <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                                    <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
+                                    <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown">
+                                        <li>
+                                            <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div metal:fill-slot="tile_content" tal:omit-tag="">
+                                    <div ng-repeat="policy in item.policies ">
+                                        <a ng-click="showPolicy($event, item.group_name, policy)">{{ policy }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="policy-view-modal" class="reveal-modal medium" data-reveal="">
+                            <h3 i18n:translate="">{{ policyName }} policy</h3>
+                            <textarea id="group-policy-area" class="policy-area" ng-model="policyJson" readonly='readonly'></textarea>
+                            <a class="close-reveal-modal">&#215;</a>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div tal:define="policies_url request.route_url('user_policies_json', name=user.user_name);
+                                     policy_url request.route_url('user_policy_json', name=user.user_name, policy='_policy_');
+                                     remove_url request.route_url('user_delete_policy', name=user.user_name, policy='_policy_');
+                                     update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_');
+                                     add_url request.route_url('iam_policy_new')+'?type=user&id='+user.user_name">
+                        <div class="section">
+                            <h6 i18n:translate="">Permissions</h6>
+                            <div>
+                                <strong i18n:translate="">User policies</strong>
+                                ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>
                     </div>
                 </div>
-                <hr id="group-section"/>
-                <div ng-controller="UserGroupsCtrl"
-                     ng-init="initController(
-                            '${request.route_url('user_add_to_group', name=user.user_name, group='_group_')}',
-                            '${request.route_url('user_remove_from_group', name=user.user_name, group='_group_')}',
-                            '${request.route_url('user_groups_json', name=user.user_name)}',
-                            '${request.route_url('user_avail_groups_json', name=user.user_name)}',
-                            '${request.route_url('group_policies_json', name='_name_')}',
-                            '${request.route_url('group_policy_json', name='_name_', policy='_policy_')}')">
-                    <div class="section">
-                        <h6 i18n:translate="">Groups</h6>
-                        <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
-                            ${structure:user_form['csrf_token']}
-                            <div class="columns field inline">
-                                <div class="row controls-wrapper controls_${field.name}" tal:repeat="field group_form">
-                                    <div class="column small-6">
-                                        ${structure:field()}
+                <div class="content panel has-actions" id="security-tab">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                    Delete user
+                                </a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <div id="password-section" ng-controller="UserPasswordCtrl"
+                         ng-init="initController('${request.route_url('user_random_password', name=user.user_name)}',
+                                                 '${request.route_url('user_delete_password', name=user.user_name)}',
+                                                 '${request.route_url('user_change_password', name=user.user_name)}',
+                                                 '${request.route_url('file_download')}', '${has_password}')">
+                        <h6 i18n:translate="">Password</h6>
+                        <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p> ${has_password}
+                        <p i18n:translate="">Password set?:
+                            <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span>
+                            <span ng-show="!has_password">No</span>
+                        </p>
+                        <h6 i18n:translate="">Create new password:</h6>
+                        <div class="row">
+                            <div class="small-6 columns gen-password">
+                                <span i18n:translate="">Generate and download a random password</span>
+                                <p>&nbsp;</p>
+                                <form id="user-generate-password-form" ng-submit="submitRandom($event)">
+                                    <button type="submit" class="button" id="generatre-password-btn">
+                                        <span tal:condition="user" i18n:translate="">Generate Random Password</span>
+                                    </button>
+                                </form>
+                                <span class="or-circle" i18n:translate="">OR</span>
+                            </div>
+                            <div class="small-6 columns set-password">
+                                <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
+                                    <div class="row controls-wrapper controls_new_password">
+                                        <div class="small-12 columns field">
+                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
+                                            ${structure:user_form.new_password}
+                                        </div>
                                     </div>
-                                    <div class="column small-6">
-                                        <button type="submit" class="button" id="add-user-to-group-btn">
-                                            <span tal:condition="user" i18n:translate="">Add User to Group</span>
-                                        </button>
+                                    <div class="row controls-wrapper controls_new_password2">
+                                        <div class="small-12 columns field">
+                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password2.label.text}<span class="req">*</span></label>
+                                            ${structure:user_form.new_password2}
+                                        </div>
                                     </div>
+                                    <div class="row">
+                                      <div class="columns">
+                                        <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="columns field inline">
+                                            <button type="submit" class="button" id="save-password-btn">
+                                                <span tal:condition="user" i18n:translate="">Save Password</span>
+                                            </button>
+                                            <a href="${request.route_url('users')}"
+                                               class="cancel-link" i18n:translate="">Cancel</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="delete-password-modal" class="reveal-modal small" data-reveal="">
+                            <h3 i18n:translate="">Delete password</h3>
+                            <p>
+                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
+                            </p>
+                            <form method="post" id="random-form" data-abide="" ng-submit="deletePassword($event)">
+                                ${structure:generate_form['csrf_token']}
+                                ${panel('form_field', field=generate_form['password'])}
+                                <div>&nbsp;</div>
+                                <div class="row">
+                                    <div class="small-4 columns">&nbsp;</div>
+                                    <div class="small-8 columns field inline">
+                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    </div>
+                                </div>
+                            </form>
+                            <a class="close-reveal-modal">&#215;</a>
+                        </div>
+                        <div id="random-password-modal" class="reveal-modal small" data-reveal="">
+                            <h3 i18n:translate="">Generate random password</h3>
+                            <p>
+                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
+                            </p>
+                            <form method="post" id="random-form" data-abide="" ng-submit="genPassword($event)">
+                                ${structure:generate_form['csrf_token']}
+                                ${panel('form_field', field=generate_form['password'])}
+                                <div>&nbsp;</div>
+                                <div class="row">
+                                    <div class="small-4 columns">&nbsp;</div>
+                                    <div class="small-8 columns field inline">
+                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    </div>
+                                </div>
+                            </form>
+                            <a class="close-reveal-modal">&#215;</a>
+                        </div>
+                        <div id="change-password-modal" class="reveal-modal small" data-reveal="">
+                            <h3 i18n:translate="">Change password</h3>
+                            <p>
+                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
+                            </p>
+                            <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
+                                ${structure:change_password_form['csrf_token']}
+                                ${panel('form_field', field=change_password_form['password'])}
+                                <div>&nbsp;</div>
+                                <div class="row">
+                                    <div class="small-4 columns">&nbsp;</div>
+                                    <div class="small-8 columns field inline">
+                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    </div>
+                                </div>
+                            </form>
+                            <a class="close-reveal-modal">&#215;</a>
+                        </div>
+                    </div>
+                    <hr id="access-keys-section"/>
+                    <div ng-controller="UserAccessKeysCtrl"
+                         ng-init="initController(
+                                '${request.route_url('user_generate_keys', name=user.user_name)}',
+                                '${request.route_url('user_access_keys_json', name=user.user_name)}',
+                                '${request.route_url('file_download')}')">
+                        <div class="section">
+                            <h6 i18n:translate="">Access keys</h6>
+                            <p i18n:translate="">Users managing their cloud with other tools than the Management Console require access keys.</p>
+                            <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
+                                ${structure:user_form['csrf_token']}
+                                <div class="columns field inline">
+                                    <button type="submit" class="button" id="gen-keys-btn">
+                                        <span tal:condition="user" i18n:translate="">Generate Access Key</span>
+                                    </button>
+                                </div>
+                                ${panel('form_field_rev', field=user_form['download_keys'])}
+                            </form>
+                            <div metal:use-macro="layout.global_macros['plain_tableview']">
+                                <metal:block metal:fill-slot="tableview_headers">
+                                    <th i18n:translate="">ACCESS KEY ID</th>
+                                    <th i18n:translate="">STATUS</th>
+                                    <th i18n:translate="">ACTIONS</th>
+                                </metal:block>
+                                <metal:block metal:fill-slot="tableview_columns">
+                                    <td>{{ item.access_key_id }}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>
+                                        <span class="actions">
+                                            <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
+                                            <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                                                <li ng-show="item.status === 'Active'">
+                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
+                                                </li>
+                                                <li ng-show="item.status === 'Inactive'">
+                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_activate_key', name='_name_', key='_key_')}', item)">Activate</a>
+                                                </li>
+                                                <li>
+                                                    <a i18n:translate="" ng-click="confirmDelete(item)">Delete</a>
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </td>
+                                </metal:block>
+                            </div>
+                            <div id="user-dialogs">
+                                <div id="delete-key-modal" class="reveal-modal small" data-reveal="">
+                                    <h3 i18n:translate="">Delete access key</h3>
+                                    <p>
+                                        <span i18n:translate="">Are you sure you want to delete the access key?</span>
+                                    </p>
+                                    <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
+                                        ${structure:user_form['csrf_token']}
+                                        <div>&nbsp;</div>
+                                        <div class="row">
+                                            <div class="small-4 columns">&nbsp;</div>
+                                            <div class="small-8 columns field inline">
+                                                <button type="submit" class="button" id="delete-key-btn">
+                                                    <span i18n:translate="">Yes, Delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <a class="close-reveal-modal">&#215;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content panel has-actions" id="quotas-tab">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                    Delete user
+                                </a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <div ng-controller="UserQuotasCtrl" ng-init="initController(
+                                '${request.route_url('user_update_quotas', name=user.user_name)}')">
+                        <form ng-submit="submit($event)" id="user-update-quotas-form">
+                            <div class="section">
+                                <h6 i18n:translate="">Quotas</h6>
+                                ${structure:user_form['csrf_token']}
+                                ${panel('quotas_panel', quota_form=user_form)}
+                            </div>
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="save-quotas-btn">
+                                        <span tal:condition="user" i18n:translate="">Save Quotas</span>
+                                    </button>
+                                    <a href="${request.route_url('users')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </form>
-                        <div metal:use-macro="layout.global_macros['plain_datagrid']">
-                            <div metal:fill-slot="tile_header" tal:omit-tag="">
-                                <a ng-href="/groups/{{ item.group_name }}">{{ item.title }}</a>
-                            </div>
-                            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                                <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown">
-                                    <li>
-                                        <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div metal:fill-slot="tile_content" tal:omit-tag="">
-                                <div ng-repeat="policy in item.policies ">
-                                    <a ng-click="showPolicy($event, item.group_name, policy)">{{ policy }}</a>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div id="policy-view-modal" class="reveal-modal medium" data-reveal="">
-                        <h3 i18n:translate="">{{ policyName }} policy</h3>
-                        <textarea id="group-policy-area" class="policy-area" ng-model="policyJson" readonly='readonly'></textarea>
-                        <a class="close-reveal-modal">&#215;</a>
-                    </div>
-                </div>
-                <hr/>
-                <div tal:define="policies_url request.route_url('user_policies_json', name=user.user_name);
-                                 policy_url request.route_url('user_policy_json', name=user.user_name, policy='_policy_');
-                                 remove_url request.route_url('user_delete_policy', name=user.user_name, policy='_policy_');
-                                 update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_');
-                                 add_url request.route_url('iam_policy_new')+'?type=user&id='+user.user_name">
-                    <div class="section">
-                        <h6 i18n:translate="">Permissions</h6>
-                        <div>
-                            <strong i18n:translate="">User policies</strong>
-                            ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-                <div ng-controller="UserQuotasCtrl" ng-init="initController(
-                            '${request.route_url('user_update_quotas', name=user.user_name)}')">
-                    <form ng-submit="submit($event)" id="user-update-quotas-form">
-                        <div class="section">
-                            <h6 i18n:translate="">Quotas</h6>
-                            ${structure:user_form['csrf_token']}
-                            ${panel('quotas_panel', quota_form=user_form)}
-                        </div>
-                        <div class="row">
-                            <div class="small-4 columns">&nbsp;</div>
-                            <div class="small-8 columns field inline">
-                                <button type="submit" class="button" id="save-quotas-btn">
-                                    <span tal:condition="user" i18n:translate="">Save Quotas</span>
-                                </button>
-                                <a href="${request.route_url('users')}"
-                                   class="cancel-link" i18n:translate="">Cancel</a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

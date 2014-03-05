@@ -57,13 +57,17 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserPasswordCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonRandomEndpoint = '';
+        $scope.jsonDeleteEndpoint = '';
         $scope.jsonChangeEndpoint = '';
         $scope.getFileEndpoint = '';
         $scope.data = '';
-        $scope.initController = function (jsonRandomEndpoint, jsonChangeEndpoint, getFileEndpoint) {
+        $scope.has_password = false;
+        $scope.initController = function (jsonRandomEndpoint, jsonDeleteEndpoint, jsonChangeEndpoint, getFileEndpoint, has_password) {
             $scope.jsonRandomEndpoint = jsonRandomEndpoint;
+            $scope.jsonDeleteEndpoint = jsonDeleteEndpoint;
             $scope.jsonChangeEndpoint = jsonChangeEndpoint;
             $scope.getFileEndpoint = getFileEndpoint;
+            $scope.has_password = has_password;
             var newPasswordForm = $('#new_password');
             // add password strength meter to first new password field
             newPasswordForm.after("<hr id='password-strength'/>");
@@ -103,6 +107,7 @@ angular.module('UserView', ['PolicyList'])
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
+                $scope.has_password = true;
                 $.generateFile({
                     csrf_token: csrf_token,
                     filename: 'not-used', // let the server set this
@@ -134,9 +139,7 @@ angular.module('UserView', ['PolicyList'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
-                $('#new_password').val("");
-                $('#new_password2').val("");
-                $('#password-strength').removeAttr('class');
+                $scope.has_password = true;
                 $.generateFile({
                     csrf_token: csrf_token,
                     filename: 'not-used', // let the server set this
@@ -151,6 +154,26 @@ angular.module('UserView', ['PolicyList'])
                 Notify.failure(errorMsg);
             });
             $('#change-password-modal').foundation('reveal', 'close');
+        };
+        $scope.deletePassword = function($event) {
+            var form = $($event.target);
+            var csrf_token = form.find('input[name="csrf_token"]').val();
+            // add in current password, then submit the request
+            var data = $scope.data+"&password="+$event.target.password.value+"&csrf_token="+csrf_token;
+            $http({method:'POST', url:$scope.jsonDeleteEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.has_password = false;
+                Notify.success(oData.message);
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                if (errorMsg && status === 403) {
+                    $('#euca-logout-form').submit();
+                }
+                Notify.failure(errorMsg);
+            });
+            $('#delete-password-modal').foundation('reveal', 'close');
         };
     })
     .controller('UserAccessKeysCtrl', function($scope, $http, $timeout) {
