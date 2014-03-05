@@ -122,6 +122,7 @@
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
                                 <strong i18n:translate="">User policies</strong>
+                                <p i18n:translate="">Best practice: Only define user policies when group policies do not meet your needs.</p>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>
@@ -146,10 +147,10 @@
                         <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p>
                         <span class='password-set' i18n:translate="">Password set?: </span> <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span> <span ng-hide="has_password">No</span>
                         <p>&nbsp;</p>
-                        <h7 i18n:translate="">Create new password:</h7>
+                        <div class="subsection-label" i18n:translate="">Create new password:</div>
                         <div class="row">
                             <div class="small-6 columns gen-password">
-                                <span i18n:translate="">Generate and download a random password</span>
+                                <span i18n:translate="">Generate and download a random password.</span>
                                 <p>&nbsp;</p>
                                 <form id="user-generate-password-form" ng-submit="submitRandom($event)">
                                     <button type="submit" class="button" id="generatre-password-btn">
@@ -159,6 +160,7 @@
                                 <span class="or-circle" i18n:translate="">OR</span>
                             </div>
                             <div class="small-6 columns set-password">
+                                <span i18n:translate="">Manually enter a password.</span>
                                 <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
