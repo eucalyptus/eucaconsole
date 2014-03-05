@@ -58,16 +58,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div>&nbsp;</div>
-                            <div class="row">
-                                <div class="small-12 columns">
-                                    <a href="#" i18n:translate="">Forgot your password?</a>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="small-12 columns">
                                     <input type="submit" class="submit button"
                                            id="euca-login-button" value="Log in to Eucalyptus" />
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <a href="#" i18n:translate="">Forgot your password?</a>
                                 </div>
                             </div>
                         </form>
@@ -89,18 +89,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <input type="submit" class="submit button"
+                                           id="aws-login-button" value="Log in to AWS" />
+                                </div>
+                            </div>
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-12 columns">
                                     <span i18n:translate="">Need access to an IAM account?</span><br />
                                     <span i18n:translate="">Contact your</span>
                                     <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="small-12 columns">
-                                    <input type="submit" class="submit button"
-                                           id="aws-login-button" value="Log in to AWS" />
                                 </div>
                             </div>
                         </form>

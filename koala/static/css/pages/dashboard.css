@@ -7,7 +7,7 @@
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
 .panel .tile { background-color: white; position: relative; height: 200px; padding: 4px 8px; }
-.panel .tile .subheader { font-size: 1rem; font-weight: 500; color: #333; margin: 0 0 0 0; }
+.panel .tile .subheader { font-size: 1rem; font-weight: 500; margin: 0 0 0 0; }
 .panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -40px; display: inline-block; width: 80px; height: 80px; border-radius: 100px; text-align: center; background: #00415e; color: white; font-size: 3rem; }
 .panel .tile .icon em { font-size: 1.5rem; position: absolute; bottom: -50%; left: 0; right: 0; text-align: center; color: black; font-style: normal; }
 .panel .tile .footer { position: absolute; height: 30px; left: 1rem; right: 1rem; bottom: 8px; text-align: center; }

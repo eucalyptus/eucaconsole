@@ -25,6 +25,17 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div id="pagetitle" class="columns">
+            <h3 ng-non-bindable="">
+                <metal:block tal:condition="volume_name">
+                    <strong i18n:translate="">Details for volume:</strong>
+                    <em>${volume_name}</em>
+                </metal:block>
+                <metal:block tal:condition="not volume_name">
+                    <strong i18n:translate="">Create new volume</strong>
+                </metal:block>
+            </h3>
+        </div>
         <div class="large-8 columns"
              tal:define="form_action request.route_url('volume_update', id=volume.id)
                          if volume else request.route_url('volume_create');

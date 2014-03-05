@@ -14,6 +14,7 @@
     padding: 10px;
     label {
         font-weight: bold;
+        color: $euca-darkgrey;
         white-space: nowrap;
         vertical-align: middle;
         position: relative;
@@ -30,9 +31,11 @@
         padding: 1rem;
         padding-bottom: 2rem;
         background-color: white;
-        box-shadow: 3px 3px 5px 0px $euca-grey;
+        box-shadow: 3px 3px 5px 0px $euca-lightgrey;
     }
     .button {
+        display: block;
+        width: 100%;
         margin-top: 12px;
         margin-bottom: 12px;
         background-color: $euca-orange;

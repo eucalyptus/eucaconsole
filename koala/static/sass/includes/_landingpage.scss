@@ -118,7 +118,7 @@ $dropdown-border-color: $euca-green;
             @include ellipsis-overflow;
             display: block;
             padding: 6px 30px 4px 10px;
-            color: black;
+            color: $euca-darkblue;
             font-weight: bold;
             &:hover {
                 color: $euca-green;
