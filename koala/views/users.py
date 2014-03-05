@@ -461,9 +461,9 @@ class UserView(BaseView):
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
         except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
 
     @view_config(route_name='user_random_password', request_method='POST', renderer='json')
     def user_random_password(self):
@@ -506,9 +506,9 @@ class UserView(BaseView):
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
         except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
 
     @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
     def user_delete_password(self):
@@ -536,9 +536,9 @@ class UserView(BaseView):
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
         except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.message);
+            return JSONResponse(status=401, message=err.msg);
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
