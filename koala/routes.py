@@ -71,6 +71,7 @@ urls = [
     # Landing page
     Route(name='scalinggroups', pattern='/scalinggroups'),
     Route(name='scalinggroups_json', pattern='/scalinggroups/json'),
+    Route(name='scalinggroups_delete', pattern='/scalinggroups/delete'),
     # Detail page
     Route(name='scalinggroup_new', pattern='/scalinggroups/new'),
     Route(name='scalinggroup_create', pattern='/scalinggroups/create'),
@@ -94,7 +95,7 @@ urls = [
     # Detail page
     Route(name='launchconfig_new', pattern='/launchconfigs/new'),
     Route(name='launchconfig_create', pattern='/launchconfigs/create'),
-    Route(name='launchconfig_delete', pattern='/launchconfigs/delete'),
+    Route(name='launchconfig_delete', pattern='/launchconfigs/{id}/delete'),
     Route(name='launchconfig_view', pattern='/launchconfigs/{id}'),
 
     # Volumes #####
@@ -189,6 +190,7 @@ urls = [
     Route(name='user_policy_json', pattern='/users/{name}/policies/{policy}'),
     Route(name='user_update', pattern='/users/{name}/update'),
     Route(name='user_delete', pattern='/users/{name}/delete'),
+    Route(name='user_delete_password', pattern='/users/{name}/deletepwd'),
     Route(name='user_random_password', pattern='/users/{name}/random'),
     Route(name='user_change_password', pattern='/users/{name}/password'),
     Route(name='user_generate_keys', pattern='/users/{name}/genkeys'),

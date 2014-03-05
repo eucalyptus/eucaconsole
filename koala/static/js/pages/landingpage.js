@@ -29,6 +29,7 @@ angular.module('LandingPage', ['CustomFilters'])
             $scope.setInitialSort(sortKey);
             $scope.getItems(jsonItemsEndpoint);
             $scope.setWatch();
+            $scope.setFocus();
             $scope.enableInfiniteScroll();
         };
         $scope.initChosenFilters = function () {
@@ -71,6 +72,21 @@ angular.module('LandingPage', ['CustomFilters'])
                localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             }); 
         };
+        $scope.setFocus = function () {
+            $('#search-filter').focus();
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
+            $(document).on('closed', '[data-reveal]', function () {
+                $('#search-filter').focus();
+            });
+        }
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];

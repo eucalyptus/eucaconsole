@@ -18,6 +18,7 @@ angular.module('InstanceVolumes', [])
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.initChosenSelector();
             $scope.getInstanceVolumes();
+            $scope.setFocus();
         };
         $scope.initChosenSelector = function () {
             $(document).ready(function() {
@@ -31,6 +32,17 @@ angular.module('InstanceVolumes', [])
             $scope.detachFormAction = action;
             $scope.detachVolumeName = name;
             modal.foundation('reveal', 'open');
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var inputElement = modal.find('input[type!=hidden]').get(0);
+                if( inputElement != undefined ){
+                    inputElement.focus()
+                }else{
+                    modal.find('button').get(0).focus();
+                }
+            });
         };
         $scope.getInstanceVolumes = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

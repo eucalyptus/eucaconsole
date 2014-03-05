@@ -130,3 +130,12 @@ def launchconfig_dialogs(context, request, launch_config=None, in_use=False, lan
         delete_form=delete_form,
     )
 
+@panel_config('scalinggroup_dialogs', renderer='../templates/dialogs/scalinggroup_dialogs.pt')
+def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False, delete_form=None):
+    """Modal dialogs for Scaling group landing and detail page."""
+    return dict(
+        scaling_group=scaling_group,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+

@@ -183,24 +183,66 @@
                                         <div class="small-6 columns">
                                             <select class="condition-keys" ng-model="${action}ConditionKey">
                                                 <option value="" i18n:translate="">Select key...</option>
-                                                <optgroup label="EC2 Conditions" tal:condition="namespace == 'ec2'">
-                                                    <option value="ec2:AvailabilityZone">Availability zone</option>
-                                                    <option value="ec2:EbsOptimized">EBS optimized</option>
-                                                    <option value="ec2:ImageType">Image type</option>
-                                                    <option value="ec2:InstanceProfile">Instance profile</option>
-                                                    <option value="ec2:InstanceType">Instance type</option>
-                                                    <option value="ec2:ParentSnapshot">Parent snapshot</option>
-                                                    <option value="ec2:ParentVolume">Parent volume</option>
-                                                    <option value="ec2:PlacementGroup">Placement group</option>
-                                                    <option value="ec2:RootDeviceType">Root device type</option>
-                                                    <option value="ec2:Tenancy">Tenancy</option>
+                                                <optgroup label="EC2 Conditions" tal:condition="namespace == 'ec2'" tal:omit-tag="">
+                                                    <option value="ec2:AvailabilityZone"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Availability zone
+                                                    </option>
+                                                    <option value="ec2:EbsOptimized"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        EBS optimized
+                                                    </option>
+                                                    <option value="ec2:ImageType"
+                                                            tal:condition="action == 'RunInstances'">
+                                                        Image type
+                                                    </option>
+                                                    <option value="ec2:InstanceProfile"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Instance profile
+                                                    </option>
+                                                    <option value="ec2:InstanceType"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Instance type
+                                                    </option>
+                                                    <option value="ec2:ParentSnapshot"
+                                                            tal:condition="'Volume' in action">
+                                                        Parent snapshot
+                                                    </option>
+                                                    <option value="ec2:ParentVolume"
+                                                            tal:condition="action == 'RunInstances'">
+                                                        Parent volume
+                                                    </option>
+                                                    <option value="ec2:PlacementGroup"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Placement group
+                                                    </option>
+                                                    <option value="ec2:RootDeviceType"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Root device type
+                                                    </option>
+                                                    <option value="ec2:Tenancy"
+                                                            tal:condition="'Instance' in action or 'Volume' in action">
+                                                        Tenancy
+                                                    </option>
+                                                    <!--! ec2:TargetImage is Eucalyptus-specific -->
                                                     <option value="ec2:TargetImage"
-                                                            tal:condition="layout.cloud_type == 'euca'">Target image</option>
-                                                    <option value="ec2:VolumeIops">Volume IOPS</option>
-                                                    <option value="ec2:VolumeSize">Volume size</option>
-                                                    <option value="ec2:VolumeType">Volume type</option>
+                                                            tal:condition="layout.cloud_type == 'euca' and 'Image' in action">
+                                                        Target image
+                                                    </option>
+                                                    <option value="ec2:VolumeIops"
+                                                            tal:condition="'Volume' in action or action == 'RunInstances'">
+                                                        Volume IOPS
+                                                    </option>
+                                                    <option value="ec2:VolumeSize"
+                                                            tal:condition="'Volume' in action or action == 'RunInstances'">
+                                                        Volume size
+                                                    </option>
+                                                    <option value="ec2:VolumeType"
+                                                            tal:condition="'Volume' in action or action == 'RunInstances'">
+                                                        Volume type
+                                                    </option>
                                                 </optgroup>
-                                                <optgroup label="AWS Conditions">
+                                                <optgroup label="AWS Conditions" tal:omit-tag="">
                                                     <option value="aws:CurrentTime">Current time</option>
                                                     <option value="aws:EpochTime">Epoch time</option>
                                                     <option value="aws:SecureTransport">Secure transport</option>

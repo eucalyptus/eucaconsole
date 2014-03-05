@@ -86,21 +86,8 @@
                  <!--! Help goes here -->
             </div>
         </div>
-        <!--! Modal dialogs -->
-        <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Delete scaling group</h3>
-            <p tal:condition="scaling_group.instances">
-                Deleting a scaling group also terminates all instances within that scaling group.
-            </p>
-            <p><span i18n:translate="">Are you sure you want to delete the scaling group</span>
-               <b ng-non-bindable="">${scaling_group.name}</b><span tal:condition="scaling_group.instances"> and terminate its instances</span>?</p>
-            <form action="${request.route_url('scalinggroup_delete', id=scaling_group.name)}" method="post">
-                ${structure:delete_form['csrf_token']}
-                <input type="hidden" name="name" value="${scaling_group.name}">
-                <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
-            </form>
-            <a class="close-reveal-modal">&#215;</a>
-        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('scalinggroup_dialogs', scaling_group=scaling_group, landingpage=False, delete_form=delete_form)}
     </div>
 </div>
 
