@@ -41,7 +41,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
     html_attrs = {}
-    error_msg = getattr(field, 'error_msg', None) or kwargs.get('error_msg')
+    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
 
     # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required:
