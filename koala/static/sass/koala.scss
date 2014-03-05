@@ -753,6 +753,9 @@ footer {
     &:hover {
         background-color: darken($euca-orange, 10%);
     }
+    &:focus {
+        background-color: $euca-orange;
+    }
 }
 
 /* -----------------------------------------

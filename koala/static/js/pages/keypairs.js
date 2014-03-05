@@ -8,10 +8,11 @@
 angular.module('KeypairsPage', ['LandingPage'])
     .controller('KeypairsCtrl', function ($scope) {
         $scope.keypairName= '';
-        $scope.revealModal = function (action, keypair_name) {
-            keypair_name = keypair_name || '';
+        $scope.revealModal = function (action, keypairName) {
+            keypairName = keypairName || '';
             var modal = $('#' + action + '-keypair-modal');
-            $scope.keypairName = keypair_name;
+            $scope.keypairName = keypairName;
+            modal.foundation('reveal', 'open');
         };
     });
 
