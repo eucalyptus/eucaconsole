@@ -88,7 +88,7 @@ class SnapshotsView(LandingPageView):
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             try:
-                snapshot.connection.register_image(
+                image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
                     kernel_id=('windows' if reg_as_windows else None),
@@ -99,6 +99,7 @@ class SnapshotsView(LandingPageView):
                 queue = Notification.SUCCESS
                 # Clear images cache
                 ImagesView.clear_images_cache()
+                location = self.request.route_url('image_view', id=image_id)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
