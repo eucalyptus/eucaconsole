@@ -346,7 +346,7 @@
                                             <input type="text" class="condition-value"
                                                    ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
-                                        <!--! ParentSnapshot choices -->
+                                        <!--! ParentSnapshot choices (expects ARN)-->
                                         <div ng-if="${cond_key} == 'ec2:ParentSnapshot'">
                                             <select class="condition-value parent_snapshot chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
@@ -355,8 +355,16 @@
                                                             ng-non-bindable="">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
-                                            <input type="text" class="condition-value"
-                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <!--! ParentVolume choices (expects ARN) -->
+                                        <div ng-if="${cond_key} == 'ec2:ParentVolume'">
+                                            <select class="condition-value parent_volume chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice volume_choices">
+                                                    <option value="${choice[0]}" tal:condition="'volumes' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
                                         </div>
                                         <input type="text" class="condition-value"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
