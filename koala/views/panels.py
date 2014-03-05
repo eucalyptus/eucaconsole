@@ -33,7 +33,7 @@ def landingpage_filters(context, request, filters_form=None):
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8, inline='', abide_error_msg=None, ng_attrs=None, **kwargs):
+def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
@@ -41,7 +41,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
     html_attrs = {}
-    error_msg = getattr(field, 'error_msg', None)
+    error_msg = getattr(field, 'error_msg', None) or kwargs.get('error_msg')
 
     # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required:
@@ -73,7 +73,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             html_attrs['ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, abide_error_msg=abide_error_msg,
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, 
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 

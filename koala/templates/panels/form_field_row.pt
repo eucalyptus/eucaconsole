@@ -9,7 +9,6 @@
         </div>
         <div class="small-${rightcol_width} columns field">
             ${structure:field(**html_attrs)}
-            <small tal:condition="abide_error_msg" class="error" i18n:translate="" ng-non-bindable="">${abide_error_msg}</small>
             <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
                   data-tooltip="" title="${field.help_text}">?</span>
             <small class="error" tal:condition="error_msg" ng-non-bindable="">${error_msg}</small>
