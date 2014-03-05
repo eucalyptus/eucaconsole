@@ -316,7 +316,7 @@
                                             <span i18n:translate="">True</span>
                                         </div>
                                         <!--! AvailabilityZone choices -->
-                                        <div ng-if="${cond_key} == 'ec2:AvailabilityZone'">
+                                        <div ng-if="${cond_key} == 'ec2:AvailabilityZone' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value availability_zone chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice availability_zone_choices">
@@ -328,7 +328,7 @@
                                                    ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! ImageType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:ImageType'">
+                                        <div ng-if="${cond_key} == 'ec2:ImageType' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value" ng-if="${cond_operator}.indexOf('Equals') !== -1"
                                                     tal:define="choices ['emi', 'eki', 'eri'] if layout.cloud_type == 'euca' else ['ami', 'aki', 'ari']">
                                                 <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
@@ -336,7 +336,7 @@
                                             <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! InstanceType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:InstanceType'">
+                                        <div ng-if="${cond_key} == 'ec2:InstanceType' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value instance_type chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice vm_type_choices">
@@ -348,7 +348,7 @@
                                                    ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! ParentSnapshot choices (expects ARN)-->
-                                        <div ng-if="${cond_key} == 'ec2:ParentSnapshot'">
+                                        <div ng-if="${cond_key} == 'ec2:ParentSnapshot' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value parent_snapshot chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice snapshot_choices">
@@ -358,7 +358,7 @@
                                             </select>
                                         </div>
                                         <!--! ParentVolume choices (expects ARN) -->
-                                        <div ng-if="${cond_key} == 'ec2:ParentVolume'">
+                                        <div ng-if="${cond_key} == 'ec2:ParentVolume' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value parent_volume chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice volume_choices">
@@ -368,7 +368,7 @@
                                             </select>
                                         </div>
                                         <!--! RootDeviceType choices -->
-                                        <div ng-if="${cond_key} == 'ec2:RootDeviceType'">
+                                        <div ng-if="${cond_key} == 'ec2:RootDeviceType' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value" tal:define="choices ['ebs', 'instance-store']"
                                                     ng-if="${cond_operator}.indexOf('Equals') !== -1">
                                                 <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>

@@ -31,6 +31,7 @@
 #policy-generator td .conditions-wrapper { margin-bottom: 1rem; }
 #policy-generator td .conditions-wrapper select { margin-bottom: 4px; }
 #policy-generator td .conditions-wrapper input[type=text] { width: 100%; }
+#policy-generator td .conditions-wrapper .button { margin-top: 10px; }
 #policy-generator td .button { margin-bottom: 0; }
 #policy-generator td input[type=text] { display: inline-block; width: 70%; height: auto; line-height: 1rem; padding: 8px 8px; margin-bottom: 8px; }
 #policy-generator td .advanced-button { float: right; }
