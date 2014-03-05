@@ -62,6 +62,13 @@ $keys-status-color-inactive: $euca-grey;
     padding-right: 10px;
 }
 
+.password-set {
+    font-size: 0.875rem;
+    padding-top: 4px;
+    font-weight: bold;
+    line-height: 1rem;
+}
+
 // *********************
 // User snapshots page
 .tile {

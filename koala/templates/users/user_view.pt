@@ -143,12 +143,10 @@
                                                  '${request.route_url('user_change_password', name=user.user_name)}',
                                                  '${request.route_url('file_download')}', '${has_password}')">
                         <h6 i18n:translate="">Password</h6>
-                        <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p> ${has_password}
-                        <p i18n:translate="">Password set?:
-                            <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span>
-                            <span ng-show="!has_password">No</span>
-                        </p>
-                        <h6 i18n:translate="">Create new password:</h6>
+                        <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p>
+                        <span class='password-set' i18n:translate="">Password set?: </span> <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span> <span ng-hide="has_password">No</span>
+                        <p>&nbsp;</p>
+                        <h7 i18n:translate="">Create new password:</h7>
                         <div class="row">
                             <div class="small-6 columns gen-password">
                                 <span i18n:translate="">Generate and download a random password</span>
