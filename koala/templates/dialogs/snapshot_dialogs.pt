@@ -24,13 +24,15 @@
     <div id="register-snapshot-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_url('snapshots_register');
                      detailpage_action request.route_url('snapshot_register', id=snapshot.id) if snapshot else '';
-                     action landingpage_action if landingpage else detailpage_action;">
+                     action landingpage_action if landingpage else detailpage_action;
+                     html_attrs {'pattern': '^[a-zA-Z0-9\-\_\(\)\.\/]{3,128}$',
+                         'error_msg': 'AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\''};">
         <h3 i18n:translate="">Register snapshot as image</h3>
         <p><span i18n:translate="">You can register a snapshot as an image if it was created from a volume containing a root file system. The image can then be used to launch EBS-backed instances.</span></p>
-        <form action="${action}" method="post">
+        <form action="${action}" method="post" data-abide="">
             ${structure:delete_form['csrf_token']}
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
-            ${panel('form_field', field=register_form['name'])}
+            ${panel('form_field', field=register_form['name'], **html_attrs)}
             ${panel('form_field', field=register_form['description'])}
             ${panel('form_field', reverse='true', field=register_form['dot'])}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
