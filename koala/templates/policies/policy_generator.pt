@@ -375,9 +375,13 @@
                                             </select>
                                             <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
-                                        <input type="text" class="condition-value fallback"
+                                        <!--! Input field for Arn*Like -->
+                                        <input type="text" class="condition-value arnlike"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
                                                       &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
+                                        <!--! Input field for Numeric inputs -->
+                                        <input type="number" class="condition-value numeric"
+                                               ng-if="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
