@@ -136,11 +136,13 @@ class LaunchConfigView(BaseView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.launch_config = self.get_launch_config()
         self.image = self.get_image()
+        self.security_groups = self.get_security_groups()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
             in_use=self.is_in_use(),
             image=self.image,
+            security_groups=self.security_groups,
             delete_form=self.delete_form,
         )
 
@@ -183,6 +185,12 @@ class LaunchConfigView(BaseView):
             image.platform = ImageView.get_platform(image)
             return image
         return None
+
+    def get_security_groups(self):
+        if self.ec2_conn:
+            groupids = self.launch_config.security_groups
+            return self.ec2_conn.get_all_security_groups(group_ids=groupids)
+        return []
 
     def is_in_use(self):
         """Returns whether or not the launch config is in use (i.e. in any scaling group).
