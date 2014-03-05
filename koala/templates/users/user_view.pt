@@ -101,6 +101,8 @@
                                 </div>
                                 <div metal:fill-slot="tile_content" tal:omit-tag="">
                                     <div ng-repeat="policy in item.policies ">
+                                        <span class="label" title="Policy" i18n:attributes="title" data-tooltip="">PO</span>
+                                        
                                         <a ng-click="showPolicy($event, item.group_name, policy)">{{ policy }}</a>
                                     </div>
                                 </div>
