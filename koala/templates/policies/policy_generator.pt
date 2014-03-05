@@ -346,8 +346,21 @@
                                             <input type="text" class="condition-value"
                                                    ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
+                                        <!--! ParentSnapshot choices -->
+                                        <div ng-if="${cond_key} == 'ec2:ParentSnapshot'">
+                                            <select class="condition-value parent_snapshot chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice snapshot_choices">
+                                                    <option value="${choice[0]}" tal:condition="'snapshots' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                            <input type="text" class="condition-value"
+                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
                                         <input type="text" class="condition-value"
-                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1" />
+                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
+                                                      &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
