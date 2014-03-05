@@ -329,10 +329,11 @@
                                         </div>
                                         <!--! ImageType choices -->
                                         <div ng-if="${cond_key} == 'ec2:ImageType'">
-                                            <select class="condition-value"
+                                            <select class="condition-value" ng-if="${cond_operator}.indexOf('Equals') !== -1"
                                                     tal:define="choices ['emi', 'eki', 'eri'] if layout.cloud_type == 'euca' else ['ami', 'aki', 'ari']">
                                                 <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
                                             </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Like') !== -1" />
                                         </div>
                                         <!--! InstanceType choices -->
                                         <div ng-if="${cond_key} == 'ec2:InstanceType'">
@@ -366,7 +367,15 @@
                                                 </metal:block>
                                             </select>
                                         </div>
-                                        <input type="text" class="condition-value"
+                                        <!--! RootDeviceType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:RootDeviceType'">
+                                            <select class="condition-value" tal:define="choices ['ebs', 'instance-store']"
+                                                    ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <input type="text" class="condition-value fallback"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
                                                       &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
                                     </div>
