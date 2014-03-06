@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-         ng-init="initController('${request.route_url('dashboard_json')}')" ng-cloak="cloak">
+         ng-init="initController('${request.route_url('dashboard_json')}')">
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
             <div id="zone-selector">
@@ -26,12 +26,12 @@
             </div>
         </div>
         <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
-            <li class="panel" id="instance-running">
+            <li class="panel" id="instances-running">
                 <div class="tile" id="running">
                     <h5 class="subheader" i18n:translate="">Running instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?state=running">
-                            <i class="fi-cloud icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="running-instances-count">{{ totals.instances_running }}</span></em>
                             </i>
                         </a>
@@ -46,7 +46,7 @@
                     <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                     <div class="content">
                         <a href="${request.route_url('instances')}?state=stopped">
-                            <i class="fi-prohibited icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="stopped-instances-count">{{ totals.instances_stopped }}</span></em>
                             </i>
                         </a>
@@ -61,7 +61,7 @@
                     </h5>
                     <div class="content">
                         <a href="${request.route_url('scalinggroups')}">
-                            <i class="fi-graph-trend icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="scalinggroup-instances-count">{{ totals.instances_scaling }}</span></em>
                             </i>
                         </a>
@@ -76,7 +76,7 @@
                     <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
                     <div class="content">
                         <a href="${request.route_url('ipaddresses')}">
-                            <i class="fi-thumbnails icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="ipaddresses-count">{{ totals.eips }}</span></em>
                             </i>
                         </a>
@@ -89,7 +89,7 @@
                     <h5 class="subheader" i18n:translate="">Volumes</h5>
                     <div class="content">
                         <a href="${request.route_url('volumes')}">
-                            <i class="fi-list icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="volumes-count">{{ totals.volumes }}</span></em>
                             </i>
                         </a>
@@ -104,7 +104,7 @@
                     <h5 class="subheader" i18n:translate="">Snapshots</h5>
                     <div class="content">
                         <a href="${request.route_url('snapshots')}">
-                            <i class="fi-camera icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="snapshots-count">{{ totals.snapshots }}</span></em>
                             </i>
                         </a>
@@ -119,7 +119,7 @@
                     <h5 class="subheader" i18n:translate="">Security groups</h5>
                     <div class="content">
                         <a href="${request.route_url('securitygroups')}">
-                            <i class="fi-lock icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="securitygroups-count">{{ totals.securitygroups }}</span></em>
                             </i>
                         </a>
@@ -134,7 +134,7 @@
                     <h5 class="subheader" i18n:translate="">Key pairs</h5>
                     <div class="content">
                         <a href="${request.route_url('keypairs')}">
-                            <i class="fi-key icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="keypairs-count">{{ totals.keypairs }}</span></em>
                             </i>
                         </a>
@@ -149,7 +149,7 @@
                     <h5 class="subheader" i18n:translate="">IAM Groups</h5>
                     <div class="content">
                         <a href="${request.route_url('groups')}">
-                            <i class="fi-torsos-all icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="groups-count">{{ totals.groups }}</span></em>
                             </i>
                         </a>
@@ -164,7 +164,7 @@
                     <h5 class="subheader" i18n:translate="">IAM Users</h5>
                     <div class="content">
                         <a href="${request.route_url('users')}">
-                            <i class="fi-torso icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="users-count">{{ totals.users }}</span></em>
                             </i>
                         </a>

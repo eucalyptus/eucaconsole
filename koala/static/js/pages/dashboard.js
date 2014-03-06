@@ -11,6 +11,7 @@ angular.module('Dashboard', [])
         $scope.selectedZone = '';
         $scope.storedZoneKey = 'dashboard_availability_zone';
         $scope.zoneDropdown = $('#zone-dropdown');
+        $scope.itemsLoading = true;
         $scope.setInitialZone = function () {
             var storedZone = localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
@@ -22,7 +23,6 @@ angular.module('Dashboard', [])
         };
         $scope.getItemCounts = function() {
             var jsonUrl = $scope.jsonEndpoint;
-            $scope.itemsLoading = true;
             if ($scope.selectedZone) {
                 jsonUrl += '?zone=' + $scope.selectedZone;
             }
