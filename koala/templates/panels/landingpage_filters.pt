@@ -11,7 +11,7 @@
         <div>&nbsp;</div>
         <div>
             <button type="submit" class="small button round" i18n:translate="">Apply</button>
-            &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}">Clear</a>
+            &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}" class="clear-link">Clear</a>
         </div>
     </form>
 </div>

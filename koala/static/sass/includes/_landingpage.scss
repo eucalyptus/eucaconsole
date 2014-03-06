@@ -27,6 +27,13 @@ $dropdown-border-color: $euca-green;
     padding-left: 1rem;
 }
 
+.clear-link {
+    color: $euca-grey;
+    &:hover {
+        color: $euca-green;
+    }
+}
+
 #breadcrumbs {
     .icon-block {
         display: inline-block;
@@ -380,11 +387,15 @@ $dropdown-border-color: $euca-green;
 }
 
 #sorting-controls {
-    padding-top: 1rem;
+    padding-top: 22px;
 }
 
 #results-count {
     padding-top: 1rem;
+    .items-found {
+        position: relative;
+        top: -6px;
+    }
     em {
         color: #555;
         font-style: normal;
@@ -393,7 +404,7 @@ $dropdown-border-color: $euca-green;
 
 #refresh-btn {
     background-image: url(../../img/icon_reload.svg);
-    background-color: $euca-green;
+    background-color: transparent;
     width: 24px;
     height: 24px;
 }

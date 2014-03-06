@@ -24,7 +24,7 @@
             </div>
             <div class="small-3 columns displayicons">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
-                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list"></i></a>
+                <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
                 <label i18n:translate="" class="hide-for-medium-down">View:</label>
             </div>
         </div>
@@ -33,9 +33,11 @@
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
                    ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"></a>
                 &nbsp;
-                <span ng-show="!itemsLoading" ><strong>{{ items.length }}</strong>
-                    <span class="hide-for-small">items</span> found</span>
-                <em ng-if="items.length > displayCount">&nbsp;(<span i18n:translate="">Displaying</span> {{ displayCount }})</em>
+                <span ng-show="!itemsLoading" class="items-found">
+                    <strong>{{ items.length }}</strong>
+                    <span class="hide-for-small">items</span> found
+                    <em ng-if="items.length > displayCount">&nbsp;(<span i18n:translate="">Displaying</span> {{ displayCount }})</em>
+                </span>
             </div>
             <div class="small-4 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">

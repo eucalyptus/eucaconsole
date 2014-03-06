@@ -6,6 +6,9 @@
 
 .large-12.columns.datagrid { padding-left: 1rem; }
 
+.clear-link { color: #777777; }
+.clear-link:hover { color: #8dc943; }
+
 #breadcrumbs .icon-block { display: inline-block; }
 
 #primary-buttons .button { padding: 8px 3rem; }
@@ -87,12 +90,13 @@
 #filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 #filters form button { box-shadow: none; }
 
-#sorting-controls { padding-top: 1rem; }
+#sorting-controls { padding-top: 22px; }
 
 #results-count { padding-top: 1rem; }
+#results-count .items-found { position: relative; top: -6px; }
 #results-count em { color: #555; font-style: normal; }
 
-#refresh-btn { background-image: url(../../img/icon_reload.svg); background-color: #8dc943; width: 24px; height: 24px; }
+#refresh-btn { background-image: url(../../img/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
