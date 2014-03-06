@@ -42,9 +42,9 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
-                            <span tal:repeat="security_group security_groups">
+                            <div tal:repeat="security_group security_groups">
                                 <a href="${request.route_url('securitygroup_view', id=security_group.id)}" ng-non-bindable="">${security_group.name}</a>
-                            </span>
+                            </div>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly"
