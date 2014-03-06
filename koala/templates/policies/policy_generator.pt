@@ -154,7 +154,9 @@
                                     Set Resource
                                 </a>
                             </div><!--! /end resource-wrapper -->
-                            <div class="conditions-wrapper expando" ng-init="${action}ConditionsExpanded = false">
+                            <div class="conditions-wrapper expando" ng-init="${action}ConditionsExpanded = false"
+                                 tal:define="cond_key '{0}ConditionKey'.format(action);
+                                             cond_operator '{0}ConditionOperator'.format(action)">
                                 <h6 class="title">
                                     <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
                                         <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
@@ -181,7 +183,7 @@
                                     </label>
                                     <div class="row">
                                         <div class="small-6 columns">
-                                            <select class="condition-keys" ng-model="${action}ConditionKey">
+                                            <select class="condition-keys" ng-model="${cond_key}">
                                                 <option value="" i18n:translate="">Select key...</option>
                                                 <optgroup label="EC2 Conditions" tal:condition="namespace == 'ec2'" tal:omit-tag="">
                                                     <option value="ec2:AvailabilityZone"
@@ -251,12 +253,12 @@
                                                     <option value="aws:UserAgent">User agent</option>
                                                     <option value="aws:userid">User ID</option>
                                                     <option value="aws:username">Username</option>
-                                                <optgroup>
+                                                </optgroup>
                                             </select>
                                         </div>
                                         <div class="small-6 columns">
-                                            <select class="condition-operators"
-                                                    tal:define="cond_key '{0}ConditionKey'.format(action);">
+                                            <select class="condition-operators" ng-model="${cond_operator}">
+                                                <option value="" i18n:translate="">select...</option>
                                                 <optgroup label="ARN Conditions"
                                                           ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'ARN'">
                                                     <option value="ArnEquals">ArnEquals</option>
@@ -273,7 +275,7 @@
                                                     <option value="StringLike">StringLike</option>
                                                     <option value="StringNotLike">StringNotLike</option>
                                                 </optgroup>
-                                                <!--<option value="Null">Null</option>-->
+                                                <option value="Null">Null</option>
                                                 <optgroup label="Numeric Conditions"
                                                           ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'">
                                                     <option value="NumericEquals">NumericEquals</option>
@@ -304,7 +306,99 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <input type="text" class="condition-value" />
+                                    <div tal:condition="layout.cloud_type == 'aws'" tal:omit-tag="">
+                                        <input type="text" class="condition-value" />
+                                    </div>
+                                    <div tal:condition="layout.cloud_type == 'euca'" tal:omit-tag="">
+                                        <!--! Boolean/Null conditions -->
+                                        <div ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL' || ${cond_operator} === 'Null'">
+                                            <input type="checkbox" class="condition-value" />
+                                            <span i18n:translate="">True</span>
+                                        </div>
+                                        <!--! AvailabilityZone choices -->
+                                        <div ng-if="${cond_key} == 'ec2:AvailabilityZone' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice availability_zone_choices">
+                                                    <option value="${choice[0].split('/')[1]}" tal:condition="'zones' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                            <input type="text" class="condition-value"
+                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <!--! ImageType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:ImageType' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1"
+                                                    tal:define="choices ['emi', 'eki', 'eri'] if layout.cloud_type == 'euca' else ['ami', 'aki', 'ari']">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <!--! InstanceType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:InstanceType' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice vm_type_choices">
+                                                    <option value="${choice[0].split('/')[1]}"
+                                                            tal:condition="'All' not in choice[1]">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                            <input type="text" class="condition-value"
+                                                   ng-if="${cond_operator}.indexOf('Like') !== -1" />
+                                        </div>
+                                        <!--! ParentSnapshot choices (expects ARN)-->
+                                        <div ng-if="${cond_key} == 'ec2:ParentSnapshot' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice snapshot_choices">
+                                                    <option value="${choice[0]}" tal:condition="'snapshots' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                        </div>
+                                        <!--! ParentVolume choices (expects ARN) -->
+                                        <div ng-if="${cond_key} == 'ec2:ParentVolume' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen"
+                                                    ng-if="${cond_operator}.indexOf('Like') === -1">
+                                                <metal:block tal:repeat="choice volume_choices">
+                                                    <option value="${choice[0]}" tal:condition="'volumes' not in choice[1]"
+                                                            ng-non-bindable="">${choice[1]}</option>
+                                                </metal:block>
+                                            </select>
+                                        </div>
+                                        <!--! RootDeviceType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:RootDeviceType' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" tal:define="choices ['ebs', 'instance-store']"
+                                                    ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice.upper()}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <!--! Tenancy choices -->
+                                        <div ng-if="${cond_key} == 'ec2:Tenancy' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" tal:define="choices ['default', 'dedicated']"
+                                                    ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <!--! VolumeType choices -->
+                                        <div ng-if="${cond_key} == 'ec2:VolumeType' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" tal:define="choices ['standard', 'io1']"
+                                                    ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option tal:repeat="choice choices" value="${choice}">${choice}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <!--! Input field for Arn*Like -->
+                                        <input type="text" class="condition-value arnlike"
+                                               ng-if="${cond_operator} &amp;&amp; ${cond_operator}.indexOf('Arn') !== -1
+                                                      &amp;&amp; ${cond_operator}.indexOf('Like') !== -1" />
+                                        <!--! Input field for Numeric inputs -->
+                                        <input type="number" class="condition-value numeric"
+                                               ng-if="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'" />
+                                    </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
                                         Add Condition
