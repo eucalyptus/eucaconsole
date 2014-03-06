@@ -41,7 +41,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
     html_attrs = {}
-    error_msg = getattr(field, 'error_msg', None)
+    error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
 
     # Add required="required" HTML attribute to form field if any "required" validators
     if field.flags.required:
@@ -73,7 +73,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
             html_attrs['ng-{0}'.format(ngkey)] = ngvalue
 
     return dict(
-        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline,
+        field=field, error_msg=error_msg, html_attrs=html_attrs, inline=inline, 
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 

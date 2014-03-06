@@ -65,10 +65,21 @@ body {
     position: relative;
     color: #333;
     min-height: 100%;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Lato, Helvetica, Arial, sans-serif;
     overflow-y: scroll;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: Oswald, Helvetica, Arial, sans-serif;
+    color: $euca-darkblue;
+}
+
+.panel {
+    h1, h2, h3, h4, h5, h6 {
+        color: $euca-darkblue;
+    }
+
+}
 
 /* -----------------------------------------
    Header
@@ -104,6 +115,8 @@ body {
         }
     }
     .f-dropdown {
+        border-color: $euca-lightgreen;
+        box-shadow: 2px 2px 5px $euca-grey;
         width: auto;
         min-width: 8rem;
         &.open {
@@ -133,11 +146,18 @@ body {
 
 // Nav bar styles
 #navbar {
+    .top-bar-section ul li > a {
+        font-family: Oswald, Helvetica, Arial, sans-serif;
+        font-size: 1.2rem;
+    }
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     a {
         text-transform: uppercase;
         font-size: 0.9rem;
+    }
+    .top-bar-section ul.dropdown li > a {
+        font-family: Lato, Helvetica, Arial, sans-serif;
     }
     .dropdown {
         box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
@@ -248,6 +268,14 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 /* -----------------------------------------
    Misc
 ----------------------------------------- */
+#pagetitle {
+    em {
+        font-style: normal;
+        font-weight: bold;
+        font-family: Lato, Helvetica, Arial, sans-serif;
+        color: $euca-grey;
+    }
+}
 
 .dots {
     display: inline-block;
@@ -454,6 +482,8 @@ textarea.policy-area {
 
 form {
     label {
+        color: $euca-grey;
+        font-weight: bold;
         cursor: default;
         .req {
             color: darkred;
@@ -685,7 +715,6 @@ textarea.hidden {
             margin-bottom: 8px;
         }
         .actions-menu {
-            @include button-shadow-mixin;
             position: absolute;
             top: 10px; right: 10px;
             .secondary.button.dropdown {
@@ -744,7 +773,6 @@ footer {
    Buttons
 ----------------------------------------- */
 .button {
-    @include button-shadow-mixin;
     background-color: $euca-orange;
     &.secondary {
         background-color: $euca-grey;
@@ -752,6 +780,9 @@ footer {
     }
     &:hover {
         background-color: darken($euca-orange, 10%);
+    }
+    &:focus {
+        background-color: $euca-orange;
     }
 }
 
@@ -764,6 +795,7 @@ footer {
             box-shadow: none;
         }
         a {
+            color: $euca-darkblue;
             box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2);
             padding: 10px 32px 6px 24px;
             font-weight: bold;

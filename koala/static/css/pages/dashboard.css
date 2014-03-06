@@ -6,15 +6,35 @@
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
-.panel .tile { background-color: white; position: relative; height: 200px; padding: 4px 8px; }
-.panel .tile .subheader { font-size: 1rem; font-weight: 500; color: #333; margin: 0 0 0 0; }
-.panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -40px; display: inline-block; width: 80px; height: 80px; border-radius: 100px; text-align: center; background: #00415e; color: white; font-size: 3rem; }
-.panel .tile .icon em { font-size: 1.5rem; position: absolute; bottom: -50%; left: 0; right: 0; text-align: center; color: black; font-style: normal; }
+.panel .tile { background-color: white; position: relative; height: 240px; padding: 4px 8px; }
+.panel .tile .subheader { font-size: 1rem; font-weight: 500; margin: 0 0 0 0; }
+.panel .tile .icon { position: absolute; top: 20%; left: 50%; margin-left: -50px; display: inline-block; width: 100px; height: 100px; border-radius: 100px; text-align: center; background: #00415e; color: white; font-size: 3rem; }
+.panel .tile .icon em { font-size: 1.3rem; font-weight: bold; position: absolute; bottom: -40%; left: 0; right: 0; text-align: center; color: black; font-style: normal; }
 .panel .tile .footer { position: absolute; height: 30px; left: 1rem; right: 1rem; bottom: 8px; text-align: center; }
 .panel .tile .footer a { font-weight: bold; }
 .panel .tile .footer a:hover { text-decoration: underline; }
 .panel .tile .footer .button { display: inline-block; font-weight: bold; }
 .panel .tile .footer .button:hover { text-decoration: none; }
 .panel .tile a:hover .icon { background-color: #0088c4; }
+
+#instances-running .icon { background-image: url(../../img/icon_running_instances.svg); }
+
+#instances-stopped .icon { background-image: url(../../img/icon_stopped_instances.svg); }
+
+#scaling-groups .icon { background-image: url(../../img/icon_instances_scaling_groups.svg); }
+
+#elastic-ips .icon { background-image: url(../../img/icon_elastic_IP.svg); }
+
+#volumes .icon { background-image: url(../../img/icon_volumes.svg); }
+
+#snapshots .icon { background-image: url(../../img/icon_snapshot.svg); }
+
+#security-groups .icon { background-image: url(../../img/icon_security_groups.svg); }
+
+#key-pairs .icon { background-image: url(../../img/icon_key-pair.svg); }
+
+#users .icon { background-image: url(../../img/icon_IAM_users.svg); }
+
+#groups .icon { background-image: url(../../img/IAM_group.svg); }
 
 /* Small screen */

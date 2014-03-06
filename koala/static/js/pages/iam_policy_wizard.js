@@ -39,7 +39,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.limitResourceChoices = function () {
             // Only display the resource field inputs for the relevant actions
-            var resourceValueInputs = $scope.policyGenerator.find('.resource.chosen');
+            var resourceValueInputs = $scope.policyGenerator.find('.chosen');
             resourceValueInputs.addClass('hide');
             resourceValueInputs.next('.chosen-container').addClass('hide');
             resourceValueInputs.each(function(idx, item) {
@@ -159,6 +159,35 @@ angular.module('IAMPolicyWizard', [])
             $scope.policyText = formattedResults;
             $scope.codeEditor.setValue(formattedResults);
         };
+        // Handle Allow/Deny selection for a given action
+        $scope.selectAction = function ($event) {
+            var tgt = $($event.target),
+                actionRow = tgt.closest('tr');
+            $event.preventDefault();
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                actionRow.find('.fi-x').removeClass('selected');
+            } else {
+                actionRow.find('.fi-check').removeClass('selected');
+            }
+            $scope.updatePolicy();
+        };
+        // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
+        $scope.selectAll = function ($event) {
+            $event.preventDefault();
+            var tgt = $($event.target),
+                actionRow = tgt.closest('tr');
+            tgt.toggleClass('selected');
+            if (tgt.hasClass('fi-check')) {
+                actionRow.find('.fi-x').removeClass('selected');
+            } else {
+                actionRow.find('.fi-check').removeClass('selected');
+            }
+            $scope.updatePolicy();
+        };
+        $scope.toggleAdvanced = function ($event) {
+            $($event.target).closest('tr').find('.advanced').toggleClass('hide');
+        };
         $scope.addResource = function (action, $event) {
             var resourceBtn = $($event.target),
                 actionRow = resourceBtn.closest('tr'),
@@ -201,13 +230,22 @@ angular.module('IAMPolicyWizard', [])
                 selectedTick = actionRow.find('i.selected'),
                 allowDenyCount = selectedTick.length,
                 actionConditions = $scope[action + 'Conditions'],
-                conditionKey, conditionOperator, conditionValue;
+                conditionKey, conditionOperator, conditionValueField, conditionValue;
             $event.preventDefault();
             conditionKey = actionRow.find('.condition-keys').val();
             conditionOperator = actionRow.find('.condition-operators').val();
-            conditionValue = actionRow.find('.condition-value').val();
-            if (conditionOperator == 'Bool') {
-                conditionValue = conditionValue === 'false' ? false : !!conditionValue;
+            if (!conditionKey || !conditionOperator) {
+                return false;
+            }
+            conditionValueField = actionRow.find('.condition-value');
+            conditionValue = conditionValueField.val();
+            // Handle Boolen/Null conditions
+            if (conditionOperator == 'Bool' || conditionOperator == 'Null') {
+                if ($scope.cloudType == 'aws') {
+                    conditionValue = conditionValue === 'false' ? false : !!conditionValue;
+                } else {
+                    conditionValue = conditionValueField.is(':checked');
+                }
             }
             if (!actionConditions[conditionOperator]) {
                 actionConditions[conditionOperator] = {};
@@ -243,35 +281,6 @@ angular.module('IAMPolicyWizard', [])
                     });
                 });
             });
-        };
-        // Handle Allow/Deny selection for a given action
-        $scope.selectAction = function ($event) {
-            var tgt = $($event.target),
-                actionRow = tgt.closest('tr');
-            $event.preventDefault();
-            tgt.toggleClass('selected');
-            if (tgt.hasClass('fi-check')) {
-                actionRow.find('.fi-x').removeClass('selected');
-            } else {
-                actionRow.find('.fi-check').removeClass('selected');
-            }
-            $scope.updatePolicy();
-        };
-        // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
-        $scope.selectAll = function ($event) {
-            $event.preventDefault();
-            var tgt = $($event.target),
-                actionRow = tgt.closest('tr');
-            tgt.toggleClass('selected');
-            if (tgt.hasClass('fi-check')) {
-                actionRow.find('.fi-x').removeClass('selected');
-            } else {
-                actionRow.find('.fi-check').removeClass('selected');
-            }
-            $scope.updatePolicy();
-        };
-        $scope.toggleAdvanced = function ($event) {
-            $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };
         $scope.hasConditions = function (obj) {
             return Object.keys(obj).length > 0;

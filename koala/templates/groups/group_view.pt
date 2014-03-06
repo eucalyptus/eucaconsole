@@ -37,12 +37,14 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <div tal:condition="not group and group_route_id == 'new'" i18n:translate="">
+                <div tal:condition="not group and group_route_id == 'new'" i18n:translate=""
+                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
+                         'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_url('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section">
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11)}
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, **html_attrs)}
                             </div>
                         </div>
                         <hr />
