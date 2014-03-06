@@ -154,8 +154,8 @@
                             <div class="small-6 columns gen-password">
                                 <span i18n:translate="">Generate and download a random password.</span>
                                 <p>&nbsp;</p>
-                                <form id="user-generate-password-form" ng-submit="submitRandom($event)">
-                                    <button type="submit" class="button" id="generatre-password-btn">
+                                <form id="user-generate-password-form" ng-submit="genPassword($event)">
+                                    <button type="submit" class="button" id="generate-password-btn">
                                         <span tal:condition="user" i18n:translate="">Generate Random Password</span>
                                     </button>
                                 </form>
@@ -196,29 +196,10 @@
                         <div id="delete-password-modal" class="reveal-modal small" data-reveal="">
                             <h3 i18n:translate="">Delete password</h3>
                             <p>
-                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
+                                <span i18n:translate="">Are you sure you want to delete this user's password</span>?
                             </p>
-                            <form method="post" id="random-form" data-abide="" ng-submit="deletePassword($event)">
+                            <form method="post" id="delete-form" data-abide="" ng-submit="deletePassword($event)">
                                 ${structure:generate_form['csrf_token']}
-                                ${panel('form_field', field=generate_form['password'])}
-                                <div>&nbsp;</div>
-                                <div class="row">
-                                    <div class="small-4 columns">&nbsp;</div>
-                                    <div class="small-8 columns field inline">
-                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
-                                    </div>
-                                </div>
-                            </form>
-                            <a class="close-reveal-modal">&#215;</a>
-                        </div>
-                        <div id="random-password-modal" class="reveal-modal small" data-reveal="">
-                            <h3 i18n:translate="">Generate random password</h3>
-                            <p>
-                                <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
-                            </p>
-                            <form method="post" id="random-form" data-abide="" ng-submit="genPassword($event)">
-                                ${structure:generate_form['csrf_token']}
-                                ${panel('form_field', field=generate_form['password'])}
                                 <div>&nbsp;</div>
                                 <div class="row">
                                     <div class="small-4 columns">&nbsp;</div>

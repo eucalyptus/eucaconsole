@@ -123,17 +123,11 @@ angular.module('UserView', ['PolicyList'])
             });
             $('#change-password-modal').foundation('reveal', 'close');
         };
-        // Handles first step in submit.. validation and dialog
-        $scope.submitRandom = function($event) {
-            // open modal to get current password
-            $('#random-password-modal').foundation('reveal', 'open');
-        };
         // handles server call for generating a random password
         $scope.genPassword = function($event) {
-            // add in current password, then submit the request
             var form = $($event.target);
-            var csrf_token = form.find('input[name="csrf_token"]').val();
-            var data = "password="+$event.target.password.value+"&csrf_token="+csrf_token;
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonRandomEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -156,10 +150,10 @@ angular.module('UserView', ['PolicyList'])
             $('#change-password-modal').foundation('reveal', 'close');
         };
         $scope.deletePassword = function($event) {
+            $event.preventDefault();
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
-            // add in current password, then submit the request
-            var data = $scope.data+"&password="+$event.target.password.value+"&csrf_token="+csrf_token;
+            var data = $scope.data+"&csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonDeleteEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {

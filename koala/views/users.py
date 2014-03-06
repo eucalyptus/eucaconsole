@@ -471,20 +471,6 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         try:
-            password = self.request.params.get('password')
-
-            clchost = self.request.registry.settings.get('clchost')
-            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
-            auth = EucaAuthenticator(host=clchost, duration=duration)
-            session = self.request.session
-            account=session['account']
-            username=session['username']
-            creds = auth.authenticate(account=account, user=username,
-                                      passwd=password, timeout=8)
-            # store new token values in session
-            session['session_token'] = creds.session_token
-            session['access_id'] = creds.access_key
-            session['secret_key'] = creds.secret_key
             new_pass = PasswordGeneration.generatePassword()
             try:
                 # try to fetch login profile.
@@ -505,10 +491,6 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully generated user password"), results="true")
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
-        except HTTPError, err:          # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
-        except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
 
     @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
     def user_delete_password(self):
@@ -516,29 +498,10 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         try:
-            password = self.request.params.get('password')
-
-            clchost = self.request.registry.settings.get('clchost')
-            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
-            auth = EucaAuthenticator(host=clchost, duration=duration)
-            session = self.request.session
-            account=session['account']
-            username=session['username']
-            creds = auth.authenticate(account=account, user=username,
-                                      passwd=password, timeout=8)
-            # store new token values in session
-            session['session_token'] = creds.session_token
-            session['access_id'] = creds.access_key
-            session['secret_key'] = creds.secret_key
-            new_pass = PasswordGeneration.generatePassword()
             self.conn.delete_login_profile(user_name=self.user.user_name)
             return dict(message=_(u"Successfully deleted user password"), results="true")
-        except BotoServerError as err:  # catch error in password change
+        except BotoServerError as err:  # catch error in password delete
             return JSONResponse(status=400, message=err.message);
-        except HTTPError, err:          # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
-        except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
