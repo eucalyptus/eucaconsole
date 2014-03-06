@@ -202,7 +202,12 @@ class LaunchConfigView(BaseView):
     def get_security_groups(self):
         if self.ec2_conn:
             groupids = self.launch_config.security_groups
-            return self.ec2_conn.get_all_security_groups(group_ids=groupids)
+            security_groups = []
+            if groupids[0][:3] == "sg-":
+                security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
+            else:
+                security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
+            return security_groups
         return []
 
     def is_in_use(self):
