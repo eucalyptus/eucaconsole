@@ -1,11 +1,11 @@
 /* @fileOverview Dashboard CSS */
 @import "../includes/eucavariables";
 
-$dashboard-panel-tile-height: 200px;
+$dashboard-panel-tile-height: 240px;
 $dashboard-panel-padding: 4px;
 $dashboard-panel-border-width: 4px;
 $dashboard-panel-border-color: $euca-lightgrey;
-$dashboard-panel-icon-size: 80px;
+$dashboard-panel-icon-size: 100px;
 
 
 #maincontent {
@@ -46,16 +46,18 @@ $dashboard-panel-icon-size: 80px;
             position: absolute;
             top: 20%; left: 50%; margin-left: -($dashboard-panel-icon-size/2);
             display: inline-block;
-            width: $dashboard-panel-icon-size; height: $dashboard-panel-icon-size;
+            width: $dashboard-panel-icon-size;
+            height: $dashboard-panel-icon-size;
             border-radius: 100px;
             text-align: center;
             background: $euca-darkblue;
             color: white;
             font-size: 3rem;
             em {  // Item counts
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+                font-weight: bold;
                 position: absolute;
-                bottom: -50%; left: 0; right: 0;
+                bottom: -40%; left: 0; right: 0;
                 text-align: center;
                 color: black;
                 font-style: normal;
@@ -86,7 +88,17 @@ $dashboard-panel-icon-size: 80px;
     }
 }
 
-
+// SVG icons
+#instances-running .icon { background-image: url(../../img/icon_running_instances.svg); }
+#instances-stopped .icon { background-image: url(../../img/icon_stopped_instances.svg); }
+#scaling-groups .icon { background-image: url(../../img/icon_instances_scaling_groups.svg); }
+#elastic-ips .icon { background-image: url(../../img/icon_elastic_IP.svg); }
+#volumes .icon { background-image: url(../../img/icon_volumes.svg); }
+#snapshots .icon { background-image: url(../../img/icon_snapshot.svg); }
+#security-groups .icon { background-image: url(../../img/icon_security_groups.svg); }
+#key-pairs .icon { background-image: url(../../img/icon_key-pair.svg); }
+#users .icon { background-image: url(../../img/icon_IAM_users.svg); }
+#groups .icon { background-image: url(../../img/IAM_group.svg); }
 
 // --- Media queries
 // --------------------
