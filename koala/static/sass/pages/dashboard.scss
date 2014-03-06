@@ -54,9 +54,10 @@ $dashboard-panel-icon-size: 100px;
             color: white;
             font-size: 3rem;
             em {  // Item counts
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+                font-weight: bold;
                 position: absolute;
-                bottom: -35%; left: 0; right: 0;
+                bottom: -40%; left: 0; right: 0;
                 text-align: center;
                 color: black;
                 font-style: normal;
