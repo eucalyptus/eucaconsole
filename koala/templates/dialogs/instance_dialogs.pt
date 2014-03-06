@@ -105,6 +105,38 @@
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
             <a class="close-reveal-modal">&#215;</a>
         </div>
+        <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Connect to {{ instanceID }}</h3>
+            <div ng-show="!(platform == 'windows')">
+                <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
+                <ol>
+                    <li i18n:translate="">Open an SSH terminal window.</li>
+                    <li i18n:translate="">Change your directory to the one where you stored your key file "{{ keyName }}.pem"</li>
+                    <li i18n:translate="">Run the following command to set the correct permissions for your key file:<br/>
+                        <strong>chmod 400 {{ keyName }}.pem</strong></li>
+                    <li i18n:translate="">Connect to your instance via its public IP address by running the following command: <br/><strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong></li>
+                </ol>
+            </div>
+            <div ng-show="platform == 'windows'">
+                <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 3389 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
+                <ol>
+                    <li><a ng-click="promptFile('${request.route_url('instance_get_password', id='_id_')}')" i18n:translate="">Browse to your key file "{{ keyName }}.pem" in your local file system and use it to retrieve your instance password. </a></li>
+                    <li i18n:translate="">Open a remote desktop client. </li>
+                    <li i18n:translate="">Use the following for your username and password: </li>
+                </ol>
+                <div class="row">
+                    <div class="small-6 columns connect-center"> <span i18n:translate="">USERNAME</span> </div>
+                    <div class="small-6 columns connect-center"> <span i18n:translate="">PASSWORD</span> </div>
+                    <div class="small-6 columns connect-center"> <span> {{ publicDNS }}\\Administrator </span> </div>
+                    <div class="small-6 columns connect-center">
+                        <span id="the-password"> <a id="password-link" ng-click="promptFile('${request.route_url('instance_get_password', id='_id_')}')" i18n:translate="">get password for {{ keyName }}</a></span>
+                    </div>
+                    <input type="file" id="file" name="file" class="ng-hide"/>
+                </div>
+            </div>
+                
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

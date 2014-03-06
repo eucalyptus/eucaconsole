@@ -117,7 +117,7 @@
     <div id="about-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">About your cloud</h3>
         <p>
-            <span i18n:translate="">Eucalyptus cloud software version: <strong>${layout.version}</strong></span>?
+            <span i18n:translate="">Eucalyptus cloud software version: <strong>${layout.version}</strong></span>
         </p>
         <a class="close-reveal-modal">&#215;</a>
     </div>

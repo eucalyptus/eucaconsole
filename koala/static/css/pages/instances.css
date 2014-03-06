@@ -118,3 +118,5 @@
 .table .label.shutting-down { background-color: lightgrey; }
 
 #terminate-instances-btn { margin-left: 1rem; border: none; }
+
+.connect-center { text-align: center; }
