@@ -8,7 +8,8 @@
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}',
                                      '${request.route_url('instance_console_output_json', id=instance.id)}',
-                                     '${instance.state}')">
+                                     '${instance.state}', '${instance_name}', '${instance.groups[0].name}',
+                                     '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('instances')}" i18n:translate="">Instances</a></li>
@@ -32,8 +33,8 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
-                            <a href="#" id="connect-action"
-                               data-reveal-id="connect-modal" i18n:translate="">Connect</a>
+                            <a href="#" id="connect-action" data-reveal-id="connect-instance-modal"
+                               i18n:translate="">Connect</a>
                         </li>
                         <li ng-show="instanceState == 'running'">
                             <a href="#" id="reboot-instance-action"
