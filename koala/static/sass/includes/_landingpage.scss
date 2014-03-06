@@ -64,10 +64,15 @@ $dropdown-border-color: $euca-green;
         &::before {
             border: none;
         }
-        i {
+        .fi-widget {
             position: relative;
-            top: 2px;
-            font-size: 1.3rem;
+            top: 4px;
+            background-image: url(../../img/gear.svg);
+            display: inline-block;
+            width: 20px; height: 20px;
+            &::before {
+                content: " "
+            }
         }
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
@@ -222,7 +227,7 @@ $dropdown-border-color: $euca-green;
     border: none;
     width: $gridwrapper-table-width;
     thead tr {
-        background-color: lighten($euca-lightgreen, 10%);
+        background-color: $euca-green;
         th {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
@@ -243,6 +248,9 @@ $dropdown-border-color: $euca-green;
             vertical-align: top;
             &.status {
                 text-transform: capitalize;
+                .label {
+                    color: black;
+                }
             }
             a {
                 color: $euca-darkgreen;
@@ -384,15 +392,10 @@ $dropdown-border-color: $euca-green;
 }
 
 #refresh-btn {
+    background-image: url(../../img/icon_reload.svg);
     background-color: $euca-green;
-    padding: 3px 6px;
-    &:hover {
-        color: white;
-        background-color: darken($euca-green, 10%);
-    }
-    i {
-        font-size: 1rem;
-    }
+    width: 24px;
+    height: 24px;
 }
 
 

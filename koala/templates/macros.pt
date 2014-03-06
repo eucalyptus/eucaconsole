@@ -31,7 +31,7 @@
         <div class="row sort-search" ng-cloak="cloak">
             <div class="small-4 columns" id="results-count" ng-cloak="cloak" metal:define-slot="results_count">
                 <a class="label radius" ng-show="!itemsLoading" ng-cloak="" id="refresh-btn"
-                   ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"><i class="fi-refresh"></i></a>
+                   ng-click="itemsLoading=true; getItems('${json_items_endpoint}')"></a>
                 &nbsp;
                 <span ng-show="!itemsLoading" ><strong>{{ items.length }}</strong>
                     <span class="hide-for-small">items</span> found</span>
@@ -39,7 +39,7 @@
             </div>
             <div class="small-4 columns" id="sorting-controls" ng-show="!itemsLoading">
                 <metal:block metal:define-slot="sorting_controls">
-                    Sort by
+                    <strong>Sort by</strong>
                     <a href="#" data-dropdown="sorting-dropdown">
                         <span tal:repeat="sort sort_keys" ng-show="sortBy == '${sort.key}'">${sort.name}</span>
                         <span class="down-caret"></span>
@@ -229,7 +229,6 @@
     <div class="actions-menu">
         <span class="small secondary button dropdown" data-dropdown="actions-dropdown">
             <span i18n:translate="">Actions</span>
-            <i class="fi-widget"></i>
         </span>
         <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">
             <metal:block metal:define-slot="actions" />
@@ -240,13 +239,13 @@
 <!--! Help content expando ===== -->
 <metal:helpexpando metal:define-macro="help_expando">
     <div class="expando" id="help-expando" ng-cloak="" ng-init="isHelpExpanded = false">
-        <h6 class="title" >
+        <div class="title" >
             <a ng-click="isHelpExpanded = !isHelpExpanded">
                 <i class="fi-plus" ng-show="!isHelpExpanded"></i>
                 <i class="fi-minus" ng-show="isHelpExpanded"></i>
                 &nbsp;<span i18n:translate="">Help</span>
             </a>
-        </h6>
+        </div>
     </div>
 </metal:helpexpando>
 
