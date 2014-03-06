@@ -27,10 +27,28 @@ $dropdown-border-color: $euca-green;
     padding-left: 1rem;
 }
 
+.clear-link {
+    color: $euca-grey;
+    &:hover {
+        color: $euca-green;
+    }
+}
+
 #breadcrumbs {
     .icon-block {
         display: inline-block;
     }
+}
+
+// Primary buttons
+#primary-buttons {
+    .button {
+        padding: 8px 3rem;
+    }
+}
+
+#pagetitle {
+    padding-left: 0;
 }
 
 // Dropdown buttons on landing page tile/table view
@@ -53,10 +71,15 @@ $dropdown-border-color: $euca-green;
         &::before {
             border: none;
         }
-        i {
+        .fi-widget {
             position: relative;
-            top: 2px;
-            font-size: 1.3rem;
+            top: 4px;
+            background-image: url(../../img/gear.svg);
+            display: inline-block;
+            width: 20px; height: 20px;
+            &::before {
+                content: " "
+            }
         }
     }
     .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
@@ -176,9 +199,11 @@ $dropdown-border-color: $euca-green;
         text-transform: capitalize;
         &.has-progress {
             padding: 0 0 0 0;
+            text-align: left;
         }
         .completed {
             padding: 4px 0 4px 10px;
+            text-align: center;
         }
         .progress {
             position: relative;
@@ -211,8 +236,7 @@ $dropdown-border-color: $euca-green;
     border: none;
     width: $gridwrapper-table-width;
     thead tr {
-        border-top: 2px solid $euca-darkgrey;
-        border-bottom: 2px solid $euca-darkgrey;
+        background-color: $euca-green;
         th {
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
@@ -228,8 +252,14 @@ $dropdown-border-color: $euca-green;
         width: $gridwrapper-table-width;
         border-bottom: 1px solid #ddd;
         td {
+            position: relative;
+            padding: 8px 4px 8px 6px;
+            vertical-align: top;
             &.status {
                 text-transform: capitalize;
+                .label {
+                    color: black;
+                }
             }
             a {
                 color: $euca-darkgreen;
@@ -237,10 +267,6 @@ $dropdown-border-color: $euca-green;
                     text-decoration: underline;
                 }
             }
-            position: relative;
-            padding-top: 12px;
-            padding-bottom: 12px;
-            vertical-align: top;
             &.id {
                 max-width: 120px;
             }
@@ -260,10 +286,10 @@ $dropdown-border-color: $euca-green;
         top: 8px; right: 20px;
         padding-left: 10px;
         padding-right: 24px;
-        background-color: #eee;
-        @include button-shadow-mixin;
+        // background-color: $euca-extralightgrey;
+        // border: 1px solid $euca-lightgrey;
         i {
-            font-size: 1rem;
+            font-size: 1.2rem;
             top: 0;
         }
     }
@@ -313,22 +339,27 @@ $dropdown-border-color: $euca-green;
     a {
         float: right;
         border-bottom: none;
-        color: black;
+        color: $euca-grey;
         &:hover {
             border-bottom: none;
             color: $euca-green;
         }
     }
+    label {
+        float: right;
+        line-height: 2.5rem;
+        margin-right: 5px;
+    }
     .selected {
         background-color: white;
+        color: $euca-green;
         :hover {
-            color: black;
             cursor: default;
         }
     }
     i {
         display: inline-block;
-        padding: 4px 12px;
+        padding: 2px 8px;
     }
 }
 
@@ -336,7 +367,7 @@ $dropdown-border-color: $euca-green;
 #filters {
     background-color: white;
     padding: 8px;
-    margin-top: 113px;
+    margin-top: 108px;
     font-size: 0.8rem;
     form {
         label {
@@ -358,11 +389,15 @@ $dropdown-border-color: $euca-green;
 }
 
 #sorting-controls {
-    padding-top: 1rem;
+    padding-top: 22px;
 }
 
 #results-count {
     padding-top: 1rem;
+    .items-found {
+        position: relative;
+        top: -6px;
+    }
     em {
         color: #555;
         font-style: normal;
@@ -370,15 +405,10 @@ $dropdown-border-color: $euca-green;
 }
 
 #refresh-btn {
-    background-color: $euca-orange;
-    padding: 3px 6px;
-    &:hover {
-        color: white;
-        background-color: darken($euca-orange, 10%);
-    }
-    i {
-        font-size: 1rem;
-    }
+    background-image: url(../../img/icon_reload.svg);
+    background-color: transparent;
+    width: 24px;
+    height: 24px;
 }
 
 

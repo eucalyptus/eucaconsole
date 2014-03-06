@@ -71,6 +71,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: Oswald, Helvetica, Arial, sans-serif;
+    letter-spacing: 1px;
     color: $euca-darkblue;
 }
 
@@ -158,6 +159,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     .top-bar-section ul.dropdown li > a {
         font-family: Lato, Helvetica, Arial, sans-serif;
+        font-size: 1rem;
     }
     .dropdown {
         box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
@@ -179,7 +181,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     position: relative;
     overflow: hidden;
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     padding-left: 14px;
     padding-top: 6px;
     padding-bottom: 1px;
@@ -269,12 +271,23 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Misc
 ----------------------------------------- */
 #pagetitle {
+    font-weight: bold;
     em {
         font-style: normal;
         font-weight: bold;
         font-family: Lato, Helvetica, Arial, sans-serif;
         color: $euca-grey;
     }
+}
+
+.subsection-label {
+    color: $euca-darkblue;
+    margin-bottom: 6px;
+}
+
+hr {
+    border: 1px solid $euca-grey;
+    border-width: 1px 0 0;
 }
 
 .dots {
@@ -388,9 +401,13 @@ textarea.policy-area {
 }
 
 .expando {
+    i {
+        color: $euca-green;
+    }
     .title {
+        font-size: 1.1rem;
         a {
-            color: #333;
+            color: $euca-darkblue;
             &:hover {
                 color: $euca-green;
                 border-bottom: 1px solid $euca-green;
@@ -411,7 +428,7 @@ textarea.policy-area {
         margin-bottom: 6px;
         .tagentry {
             color: #333;
-            background-color: $euca-lightgrey;
+            background-color: $euca-extralightgrey;
             margin-right: 8px;
             a {
                 color: white;
@@ -424,6 +441,7 @@ textarea.policy-area {
     }
     .add-label {
         margin-bottom: 6px;
+        color: $euca-darkblue;
     }
     #add-tag-btn {
         margin-bottom: 0;
@@ -527,6 +545,10 @@ form {
     }
     .cancel-link {
         margin-left: 2rem;
+        color: $euca-grey;
+        &:hover {
+            color: $euca-green;
+        }
     }
     .controls_csrf_token {
         display: none;
@@ -567,6 +589,8 @@ form {
         select {
             margin-bottom: 0.3rem;
             margin-top: 0.3rem;
+            padding-top: 6px;
+            padding-bottom: 6px;
         }
         textarea {
             margin-top: 0.3rem;

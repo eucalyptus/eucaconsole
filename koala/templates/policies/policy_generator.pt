@@ -154,17 +154,11 @@
                                     Set Resource
                                 </a>
                             </div><!--! /end resource-wrapper -->
-                            <div class="conditions-wrapper expando" ng-init="${action}ConditionsExpanded = false"
+                            <div class="conditions-wrapper"
                                  tal:define="cond_key '{0}ConditionKey'.format(action);
                                              cond_operator '{0}ConditionOperator'.format(action)">
-                                <h6 class="title">
-                                    <a ng-click="${action}ConditionsExpanded = !${action}ConditionsExpanded">
-                                        <i class="fi-plus" ng-show="!${action}ConditionsExpanded"></i>
-                                        <i class="fi-minus" ng-show="${action}ConditionsExpanded"></i>
-                                        <span i18n:translate="">Conditions (optional)</span>
-                                    </a>
-                                </h6>
-                                <div class="content" ng-show="${action}ConditionsExpanded">
+                                <h6 class="title" i18n:translate="">Conditions (optional)</h6>
+                                <div class="content">
                                     <div class="added-conditions" ng-cloak="">
                                         <div class="condentry" ng-repeat="condition in ${action}ParsedConditions">
                                             <a class="circle remove"

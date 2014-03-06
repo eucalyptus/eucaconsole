@@ -12,7 +12,7 @@ $euca-extralightblue: #ecf4f7;
 $euca-notificationblue: #40a8c6;
 $euca-orange: #f18f30;
 
-$euca-green: #76b800;
+$euca-green: #8dc943;
 $euca-lightgreen: #8dc640;
 $euca-extralightgreen: #eef7e3;
 $euca-darkgreen: #468400;
@@ -20,7 +20,7 @@ $euca-darkgreen: #468400;
 $euca-grey: #777777;
 $euca-darkgrey: #444;
 $euca-lightgrey: #ccc;
-$euca-extralightgrey: #eee;
+$euca-extralightgrey: #e6e7e8;
 
 $aws-orange: #ff9900;
 
@@ -118,6 +118,9 @@ $button-med: rem-calc(10);
 $button-lrg: rem-calc(12);
 $button-border-width: 1px;
 $button-border-style: solid;
+
+// Tables
+$table-even-row-bg: #ebebec;
 
 // Tabs
 $tabs-navigation-padding: rem-calc(4) !default;
