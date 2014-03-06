@@ -144,21 +144,6 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca'">
-                <div class="tile">
-                    <h5 class="subheader" i18n:translate="">IAM Groups</h5>
-                    <div class="content">
-                        <a href="${request.route_url('groups')}">
-                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
-                                <span ng-show="!itemsLoading" id="groups-count">{{ totals.groups }}</span></em>
-                            </i>
-                        </a>
-                    </div>
-                    <div class="footer">
-                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Create group</a>
-                    </div>
-                </div>
-            </li>
             <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca'">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM Users</h5>
@@ -171,6 +156,21 @@
                     </div>
                     <div class="footer">
                         <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Create users</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca'">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">IAM Groups</h5>
+                    <div class="content">
+                        <a href="${request.route_url('groups')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="groups-count">{{ totals.groups }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Create group</a>
                     </div>
                 </div>
             </li>
