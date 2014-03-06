@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="${request.static_url('koala:static/fonts/foundation/foundation-icons.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="${request.static_url('koala:static/css/thirdparty/chosen.min.css')}" />
-    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700|Oswald:400,300' rel='stylesheet' type='text/css' />
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700|Oswald:300,400,700' rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="${request.static_url('koala:static/css/koala.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" />
