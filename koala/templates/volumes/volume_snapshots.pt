@@ -63,7 +63,6 @@
                         </div>
                         <div class="progress" ng-show="snapshot.status != 'completed'"><span
                                 class="meter" style="width: {{ snapshot.progress }}">{{ snapshot.progress }}</span>
-                            <span class="dots">&nbsp;</span>
                         </div>
                     </div>
                 </div>

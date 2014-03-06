@@ -199,9 +199,11 @@ $dropdown-border-color: $euca-green;
         text-transform: capitalize;
         &.has-progress {
             padding: 0 0 0 0;
+            text-align: left;
         }
         .completed {
             padding: 4px 0 4px 10px;
+            text-align: center;
         }
         .progress {
             position: relative;
