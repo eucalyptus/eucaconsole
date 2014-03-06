@@ -39,9 +39,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
-                        <div class="small-8 columns value">
-                            <a href="${request.route_url('image_view', id=image.id)}">${image.id}</a>
-                        </div>
+                        <div class="small-8 columns value">${image.id}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
@@ -62,9 +60,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
-                            <div tal:repeat="group instance.groups">
-                                <a href="/securitygroups/${group.id}" ng-non-bindable="">${group.name}</a>
-                            </div>
+                            <div tal:repeat="group instance.groups" ng-non-bindable="">${group.name}</div>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
