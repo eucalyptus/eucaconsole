@@ -945,7 +945,7 @@ table { background: white; margin-bottom: 1.25rem; border: solid 1px #dddddd; }
 table thead, table tfoot { background: whitesmoke; font-weight: bold; }
 table thead tr th, table thead tr td, table tfoot tr th, table tfoot tr td { padding: 0.5rem 0.625rem 0.625rem; font-size: 0.875rem; color: #222222; text-align: left; }
 table tr th, table tr td { padding: 0.5625rem 0.625rem; font-size: 0.875rem; color: #222222; }
-table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #f9f9f9; }
+table tr.even, table tr.alt, table tr:nth-of-type(even) { background: #ebebec; }
 table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoot tr td { display: table-cell; line-height: 1.125rem; }
 
 .tabs { *zoom: 1; margin-bottom: 0 !important; }
@@ -1389,12 +1389,12 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; colo
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; }
 #navbar a { text-transform: uppercase; font-size: 0.9rem; }
-#navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; }
+#navbar .top-bar-section ul.dropdown li > a { font-family: Lato, Helvetica, Arial, sans-serif; font-size: 1rem; }
 #navbar .dropdown { box-shadow: 0px 0px 1px 1px #f4a960; }
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 1.5rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 1rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { font-size: 0.9rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
@@ -1417,6 +1417,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; colo
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
+#pagetitle { font-weight: bold; }
 #pagetitle em { font-style: normal; font-weight: bold; font-family: Lato, Helvetica, Arial, sans-serif; color: #777777; }
 
 .dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
