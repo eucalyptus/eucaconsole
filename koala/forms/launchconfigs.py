@@ -78,7 +78,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = 'default'
         if len(self.keypair.choices) > 1:
-            self.keypair.data = 'None'
+            self.keypair.data = ''
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
