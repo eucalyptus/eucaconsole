@@ -93,8 +93,8 @@ To have Pyramid automatically detect modifications to templates and views,
 
 The `--reload` flag instructs Pyramid to automatically watch for changes in the view callables.
 
-The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
-
+The Pyramid Debug Toolbar can be enabled by installing pyramid_debugtoolbar (via easy_install or pip) and
+adding pyramid_debugtoolbar to the app:main section of console.ini
 
 ::
 
