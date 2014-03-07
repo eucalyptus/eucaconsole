@@ -51,10 +51,11 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
-                if( inputElement != undefined ){
-                    inputElement.focus()
-                }else{
-                    modal.find('button').get(0).focus();
+                var modalButton = modal.find('button').get(0);
+                if (!!inputElement) {
+                    inputElement.focus();
+                } else if (!!modalButton) {
+                    modalButton.focus();
                 }
             });
         };
