@@ -34,7 +34,6 @@ class CreateLaunchConfigForm(BaseSecureForm):
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
-        validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
@@ -70,16 +69,16 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
-        self.keypair.choices = self.choices_manager.keypairs()
-        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
+        self.keypair.choices = self.choices_manager.keypairs(add_blank=False, no_keypair_option=True)
+        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = self.securitygroup.choices[1][0]
+            self.securitygroup.data = 'default'
         if len(self.keypair.choices) > 1:
-            self.keypair.data = self.keypair.choices[1][0]
+            self.keypair.data = 'None'
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg

@@ -107,10 +107,12 @@ class ChoicesManager(object):
             choices.append(('default', 'default'))
         return sorted(set(choices))
 
-    def keypairs(self, keypairs=None, add_blank=True):
+    def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
+        if no_keypair_option:
+            choices.append(('', _(u'No Keypair')))
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
