@@ -18,7 +18,6 @@ requires = [
     'gunicorn >= 18.0',
     # 'lingua >= 1.5',  # Only required for generating i18n translations
     'M2Crypto >= 0.20.2',
-    'ordereddict == 1.1',  # Required by Chameleon for Python 2.6 compatibility
     'pycrypto >= 2.6',
     'Paste >= 1.5',
     'pyramid >= 1.4',
