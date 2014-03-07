@@ -86,10 +86,11 @@ class ChangePasswordView(object):
                     headers = remember(self.request, user_account)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
-                    import pdb; pdb.set_trace()
+                    logging.info("http error "+str(vars(err)))
                     if err.msg == u'Unauthorized':
                         self.changepassword_form_errors.append(u'Invalid user/account name and/or password.')
                 except URLError, err:
+                    logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
                         self.changepassword_form_errors.append(u'No response from host ' + clchost)
         return dict(

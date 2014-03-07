@@ -212,7 +212,7 @@ class AWSQuery(object):
 
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    TEMPLATE = 'https://{host}:8773/{service}?Action={action}&DurationSeconds={dur}&Version={ver}'
+    TEMPLATE = 'https://{host}:8773/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
     def __init__(self, host, duration):
         """
@@ -227,18 +227,16 @@ class EucaAuthenticator(object):
         """
         self.host = host
         self.duration = duration
-        self.auth_url = self.TEMPLATE.format(
-            host=self.host,
-            dur=duration,
-            service='services/Tokens',
-            action='GetAccessToken',
-            ver='2011-06-15'
-        )
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
         duration = self.duration
         if user == 'admin':  # admin cannot have more than 1 hour duration
             duration = 3600
+        # because of the variability, we need to keep this here, not in __init__
+        self.auth_url = self.TEMPLATE.format(
+            host=self.host,
+            dur=duration,
+        )
         req = urllib2.Request(self.auth_url)
 
         if new_passwd:
