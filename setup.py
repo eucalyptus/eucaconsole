@@ -27,7 +27,7 @@ requires = [
     # 'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
     'pyramid_layout >= 0.8',
     # 'pyramid_mailer >= 0.13',
-    'pyramid_tm >= 0.7',
+    # 'pyramid_tm >= 0.7',
     'python-dateutil <= 1.5',  # Don't use 2.x series unless on Python 3
     'simplejson >= 2.0.9',
     # 'SQLAlchemy == 0.8.3',
