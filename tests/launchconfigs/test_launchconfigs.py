@@ -39,7 +39,6 @@ class CreateLaunchConfigFormTestCase(BaseFormTestCase):
     def test_required_fields(self):
         self.assert_required('name')
         self.assert_required('instance_type')
-        self.assert_required('keypair')
         self.assert_required('securitygroup')
 
 
