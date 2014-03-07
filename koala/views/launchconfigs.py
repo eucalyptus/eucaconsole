@@ -128,11 +128,16 @@ class LaunchConfigsJsonView(BaseView):
     def get_launchconfig_security_groups(self, launch_config):
         if self.ec2_conn:
             groupids = launch_config.security_groups
-            security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
-            security_groups_array = []
+            security_groups = []
+            sgroup_name_map_array = []
+            if groupids:
+                if groupids[0].startswith('sg-'):
+                    security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
+                else:
+                    security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
             for sgroup in security_groups:
-                security_groups_array.append(dict(id=sgroup.id, name=sgroup.name or sgroup.id))
-            return security_groups_array
+                sgroup_name_map_array.append(dict(id=sgroup.id, name=sgroup.name or sgroup.id))
+            return sgroup_name_map_array
         return []
 
 class LaunchConfigView(BaseView):
@@ -198,7 +203,13 @@ class LaunchConfigView(BaseView):
     def get_security_groups(self):
         if self.ec2_conn:
             groupids = self.launch_config.security_groups
-            return self.ec2_conn.get_all_security_groups(group_ids=groupids)
+            security_groups = []
+            if groupids:
+                if groupids[0].startswith('sg-'):
+                    security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
+                else:
+                    security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
+            return security_groups
         return []
 
     def is_in_use(self):
