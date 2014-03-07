@@ -17,6 +17,7 @@ from datetime import datetime
 from beaker.cache import cache_region
 from boto import ec2
 from boto.ec2.connection import EC2Connection
+#from boto.requestlog import RequestLogger
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
 import boto.ec2.elb
@@ -151,6 +152,8 @@ class ConnectionManager(object):
             setattr(conn, 'APIVersion', api_version)
             conn.https_validate_certificates = False
             conn.http_connection_kwargs['timeout'] = 30
+            # uncomment to enable boto request logger. Use only for development
+            #conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
@@ -253,20 +256,7 @@ class EucaAuthenticator(object):
             )
         encoded_auth = base64.b64encode(auth_string)
         req.add_header('Authorization', "Basic %s" % encoded_auth)
-        try:
-            response = urllib2.urlopen(req, timeout=timeout)
-        except Exception:
-            auth_url = self.TEMPLATE.format(
-                host=self.host,
-                dur=duration,
-                service='services/Tokens',
-                action='GetSessionToken',
-                ver='2011-06-15'
-            )
-            req = urllib2.Request(auth_url)
-            req.add_header('Authorization', "Basic %s" % encoded_auth)
-            response = urllib2.urlopen(req, timeout=timeout)
-
+        response = urllib2.urlopen(req, timeout=timeout)
         body = response.read()
 
         # parse AccessKeyId, SecretAccessKey and SessionToken
