@@ -188,7 +188,7 @@ class SnapshotView(TaggedItemView):
         self.volume_name = TaggedItemView.get_display_name(
             self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
         if self.volume_name == '':
-            self.volume_name = self.snapshot.volume_id
+            self.volume_name = self.snapshot.volume_id if self.snapshot else ''
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
