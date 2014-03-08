@@ -6,6 +6,7 @@ Pyramid views for Change password
 import logging
 
 from urllib2 import HTTPError, URLError
+from urlparse import urlparse
 
 from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
@@ -28,14 +29,15 @@ class ChangePasswordView(object):
         changepassword_url = self.request.route_url('changepassword')
         if referrer_root in [changepassword_url]:
             referrer = '/'  # never use the changepassword form itself as came_from
-        self.came_from = self.request.params.get('came_from', referrer)
+        came_from_param = self.request.params.get('came_from', referrer)
+        self.came_from = urlparse(came_from_param).path or '/'
         self.changepassword_form_errors = []
 
     @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)
     def changepassword_page(self):
         session = self.request.session
         try:
-            account=session['account'],
+            account=session['account']
             username=session['username']
         except KeyError:
             account = self.request.params.get('account')
@@ -84,9 +86,11 @@ class ChangePasswordView(object):
                     headers = remember(self.request, user_account)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
+                    logging.info("http error "+str(vars(err)))
                     if err.msg == u'Unauthorized':
                         self.changepassword_form_errors.append(u'Invalid user/account name and/or password.')
                 except URLError, err:
+                    logging.info("url error "+str(vars(err)))
                     if str(err.reason) == 'timed out':
                         self.changepassword_form_errors.append(u'No response from host ' + clchost)
         return dict(

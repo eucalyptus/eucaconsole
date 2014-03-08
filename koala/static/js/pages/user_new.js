@@ -40,10 +40,10 @@ angular.module('UserNew', ['UserEditor'])
             $scope.iam_expanded = !$scope.iam_expanded;
         };
         $scope.initController = function(submitEndpoint, allRedirect, singleRedirect, getFileEndpoint) {
-            $scope.submitEndpoint = submitEndpoint
-            $scope.allUsersRedirect = allRedirect
-            $scope.singleUserRedirect = singleRedirect
-            $scope.getFileEndpoint = getFileEndpoint
+            $scope.submitEndpoint = submitEndpoint;
+            $scope.allUsersRedirect = allRedirect;
+            $scope.singleUserRedirect = singleRedirect;
+            $scope.getFileEndpoint = getFileEndpoint;
         }
         $scope.submit = function($event) {
             var form = $($event.target);
