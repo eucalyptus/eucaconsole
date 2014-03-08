@@ -16,6 +16,10 @@
         </metal:breadcrumbs>
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Snapshots for volume:</strong>
+            <em ng-non-bindable="">${volume_name}</em>
+        </h3>
 
         <div class="large-8 columns">
             <dl class="tabs" id="volume-subnav">
@@ -82,16 +86,13 @@
                 <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
                       id="create-snapshot-form" data-abide="">
                     ${structure:create_form['csrf_token']}
-                    ${panel('form_field', field=create_form.name)}
-                    ${panel('form_field', field=create_form.description)}
+                    ${panel('form_field', field=create_form.name, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=create_form.description, leftcol_width=3, rightcol_width=9)}
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags)}
-                    <div>&nbsp;</div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Create Snapshot" i18n:attributes="value" />
-                        </div>
+                    <hr />
+                    <div>
+                        <input type="submit" class="button" value="Create Snapshot" i18n:attributes="value" />
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>

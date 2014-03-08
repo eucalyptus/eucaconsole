@@ -16,7 +16,16 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <metal:block tal:condition="keypair">
+                <strong i18n:translate="">Details for key pair:</strong>
+                <em ng-non-bindable="">${keypair.name}</em>
+            </metal:block>
+            <metal:block tal:condition="not keypair">
+                <strong i18n:translate="" tal:condition="keypair_route_id == 'new'">Create new key pair</strong>
+                <strong i18n:translate="" tal:condition="keypair_route_id == 'new2'">Import public key</strong>
+            </metal:block>
+        </h3>
         <!-- New Keypair Material Download -->
         <div tal:condition="keypair_created ">
            <form id="download-keypair-form" action="${request.route_url('file_download')}" method="post">

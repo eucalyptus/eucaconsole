@@ -20,6 +20,15 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block tal:condition="snapshot">
+                <strong i18n:translate="">Details for snapshot:</strong>
+                <em ng-non-bindable="">${snapshot_name}</em>
+            </metal:block>
+            <metal:block tal:condition="not snapshot">
+                <strong i18n:translate="">Create new snapshot</strong>
+            </metal:block>
+        </h3>
         <div class="large-7 columns"
              tal:define="form_action request.route_url('snapshot_update', id=snapshot.id)
                          if snapshot else request.route_url('snapshot_create');

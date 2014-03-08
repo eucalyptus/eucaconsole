@@ -20,7 +20,15 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <metal:block tal:condition="security_group">
+                <strong i18n:translate="">Details for security group:</strong>
+                <em ng-non-bindable="">${security_group.name}</em>
+            </metal:block>
+            <metal:block tal:condition="not security_group">
+                <strong i18n:translate="">Create new security group</strong>
+            </metal:block>
+        </h3>
         <div class="large-7 columns"
                 tal:define="form_action request.route_url('securitygroup_update', id=security_group.id)
                         if security_group else request.route_url('securitygroup_create')">

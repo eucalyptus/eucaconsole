@@ -181,8 +181,8 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     position: relative;
     overflow: hidden;
     margin-top: 0;
-    margin-bottom: 1rem;
-    padding-left: 14px;
+    margin-bottom: 0.7rem;
+    padding-left: 16px;
     padding-top: 6px;
     padding-bottom: 1px;
     color: $euca-darkgrey;
@@ -247,12 +247,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     background: $euca-extralightgreen;
     position: relative;
     padding-bottom: 3rem;
-    #pagetitle {
-        h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-    }
 }
 
 #contentwrap {
@@ -271,12 +265,20 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
    Misc
 ----------------------------------------- */
 #pagetitle {
+    font-size: 1.3rem;
     font-weight: bold;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+    &.landingpage {
+        margin-left: 0;
+        position: absolute;
+        top: 0; left: 1rem;
+    }
     em {
         font-style: normal;
-        font-weight: bold;
+        font-weight: 700;
         font-family: Lato, Helvetica, Arial, sans-serif;
-        color: $euca-grey;
+        color: $euca-darkgrey;
     }
 }
 
@@ -741,13 +743,8 @@ textarea.hidden {
         .actions-menu {
             position: absolute;
             top: 10px; right: 10px;
-            .secondary.button.dropdown {
-                background-color: $euca-orange;
-                border: none;
-                margin-bottom: 0;
-                &::before {
-                    border-color: white transparent transparent transparent;
-                }
+            .button.dropdown {
+                padding: 12px 38px 12px 22px;
             }
             .f-dropdown {
                 box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);
