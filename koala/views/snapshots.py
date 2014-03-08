@@ -187,6 +187,8 @@ class SnapshotView(TaggedItemView):
         self.snapshot_name = self.get_snapshot_name()
         self.volume_name = TaggedItemView.get_display_name(
             self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
+        if self.volume_name == '':
+            self.volume_name = self.snapshot.volume_id
         self.snapshot_form = SnapshotForm(
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
@@ -340,7 +342,11 @@ class SnapshotView(TaggedItemView):
         return None
 
     def get_volume(self, volume_id):
-        volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+        volumes_list = []
+        try:
+            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+        except EC2ResponseError as err:
+            return None
         return volumes_list[0] if volumes_list else None
 
 
