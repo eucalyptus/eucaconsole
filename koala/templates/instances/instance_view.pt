@@ -32,19 +32,7 @@
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
                             <a href="#" id="connect-action" data-reveal-id="connect-instance-modal"
-                               i18n:translate="">Connect</a>
-                        </li>
-                        <li ng-show="instanceState == 'running'">
-                            <a href="#" id="reboot-instance-action"
-                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
-                        </li>
-                        <li ng-show="instanceState == 'stopped'">
-                            <a href="#" id="start-instance-action"
-                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
-                        </li>
-                        <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
-                            <a href="#" id="stop-instance-action"
-                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
+                               i18n:translate="">Connect to instance</a>
                         </li>
                         <li>
                             <a href="${request.route_url('instance_more', id=instance.id)}"
@@ -62,6 +50,18 @@
                             <a i18n:translate="" id="view-consoleoutput-action" ng-click="revealConsoleOutputModal()">
                                 View console output
                             </a>
+                        </li>
+                        <li ng-show="instanceState == 'stopped'">
+                            <a href="#" id="start-instance-action"
+                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
+                        </li>
+                        <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                            <a href="#" id="stop-instance-action"
+                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
+                        </li>
+                        <li ng-show="instanceState == 'running'">
+                            <a href="#" id="reboot-instance-action"
+                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
                         <li ng-show="instanceState != 'terminated'">
                             <a href="#" id="terminate-instance-action"
