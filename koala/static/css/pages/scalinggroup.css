@@ -15,8 +15,6 @@
 
 #primary-buttons .button { padding: 8px 3rem; }
 
-#pagetitle { padding-left: 0; }
-
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8dc943; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #8dc943; }
 .gridwrapper .dropdown.button.tiny::before { border: none; }
@@ -87,7 +85,7 @@
 .displayicons .selected :hover { cursor: default; }
 .displayicons i { display: inline-block; padding: 2px 8px; }
 
-#filters { background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
+#filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
 #filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
 #filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 #filters form button { box-shadow: none; }

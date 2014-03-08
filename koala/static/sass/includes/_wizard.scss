@@ -35,10 +35,6 @@ $wizard-border-width: 16px;
                         background-color: white;
                     }
                 }
-                .cir {
-                    background-color: $euca-darkblue;
-                    color: white;
-                }
             }
             &.disabled {
                 padding: 1rem 22px;
@@ -47,11 +43,7 @@ $wizard-border-width: 16px;
             a {
                 box-shadow: none;
                 white-space: nowrap;
-                padding: 1rem 16px;
-                background-color: darken($euca-extralightgreen, 10%);
-                &:hover {
-                    background-color: darken($euca-extralightgreen, 20%);
-                }
+                padding: 8px 1rem;
             }
             .cir {
                 position: relative;
@@ -63,7 +55,7 @@ $wizard-border-width: 16px;
                 padding: 0 0 0 0;
                 text-align: center;
                 vertical-align: middle;
-                background-color: $euca-grey;
+                background-color: $euca-darkblue;
                 color: white;
             }
         }

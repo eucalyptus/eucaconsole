@@ -18,12 +18,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div id="pagetitle" class="columns">
-            <h3 ng-non-bindable="">
-                <strong i18n:translate="">Details for instance:</strong>
-                <em>${instance_name}</em>
-            </h3>
-        </div>
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for instance:</strong>
+            <em ng-non-bindable="">${instance_name}</em>
+        </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="instance-subnav">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>

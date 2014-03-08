@@ -47,10 +47,6 @@ $dropdown-border-color: $euca-green;
     }
 }
 
-#pagetitle {
-    padding-left: 0;
-}
-
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -365,6 +361,7 @@ $dropdown-border-color: $euca-green;
 
 // Filters at left
 #filters {
+    position: relative;
     background-color: white;
     padding: 8px;
     margin-top: 108px;

@@ -12,10 +12,11 @@ $dashboard-panel-icon-size: 100px;
     padding-top: 1rem;
     background: #eef7e3;
     #pagetitle {
+        margin-bottom: 0.5rem;
+        margin-left: 0;
         h3 {
             font-weight: bold;
             margin-top: 0;
-            margin-bottom: 8px;
             display: inline-block;
         }
         #zone-selector {

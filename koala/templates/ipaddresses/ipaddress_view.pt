@@ -14,6 +14,12 @@
                 <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for IP address:</strong>
+            <em ng-non-bindable="">${eip.public_ip if eip else request.matchdict.get('public_ip')}</em>
+        </h3>
         <div class="large-7 columns">
             <div class="panel has-actions" tal:condition="eip">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">

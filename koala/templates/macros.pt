@@ -18,7 +18,7 @@
 <!-- Landing page datagrid macro ===== -->
 <metal:datagrid_macro metal:define-macro="landing_page_datagrid">
     <div class="large-${'10' if filter_fields else '12'} columns datagrid" id="landing-page-items">
-        <div class="row display-switcher">
+        <div class="row" id="buttons-row">
             <div class="small-9 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
@@ -229,7 +229,7 @@
 <!-- Detail page actions menu ===== -->
 <metal:actionsmenu metal:define-macro="actions_menu">
     <div class="actions-menu">
-        <span class="small secondary button dropdown" data-dropdown="actions-dropdown">
+        <span class="button dropdown" data-dropdown="actions-dropdown">
             <span i18n:translate="">Actions</span>
         </span>
         <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">

@@ -15,7 +15,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-2 columns" id="landing-page-filters">
-            <h3 id="pagetitle" class="columns" i18n:translate="">Instances</h3>
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Instances</h3>
             ${panel('landingpage_filters', filters_form=filters_form)}
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">

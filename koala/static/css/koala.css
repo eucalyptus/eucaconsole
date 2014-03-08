@@ -1394,7 +1394,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 1rem; padding-left: 14px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
 #breadcrumbs li { font-size: 0.9rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
@@ -1409,7 +1409,6 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 /* ----------------------------------------- Main Content
 ----------------------------------------- */
 #maincontent { background: #eef7e3; position: relative; padding-bottom: 3rem; }
-#maincontent #pagetitle h3 { margin-top: 0; margin-bottom: 1rem; }
 
 #contentwrap { position: relative; padding-bottom: 3rem; min-height: 30rem; }
 
@@ -1417,8 +1416,9 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
-#pagetitle { font-weight: bold; }
-#pagetitle em { font-style: normal; font-weight: bold; font-family: Lato, Helvetica, Arial, sans-serif; color: #777777; }
+#pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
+#pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
+#pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444444; }
 
 .subsection-label { color: #00415e; margin-bottom: 6px; }
 
@@ -1547,8 +1547,7 @@ textarea.hidden.debug { display: block; }
 .panel.has-actions h6.title { position: absolute; top: 0; left: 0; right: 0; line-height: 2rem; padding-left: 8px; background-color: #00415e; color: white; font-weight: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .panel.has-actions .label.status { margin-bottom: 8px; }
 .panel.has-actions .actions-menu { position: absolute; top: 10px; right: 10px; }
-.panel.has-actions .actions-menu .secondary.button.dropdown { background-color: #f18f30; border: none; margin-bottom: 0; }
-.panel.has-actions .actions-menu .secondary.button.dropdown::before { border-color: white transparent transparent transparent; }
+.panel.has-actions .actions-menu .button.dropdown { padding: 12px 38px 12px 22px; }
 .panel.has-actions .actions-menu .f-dropdown { box-shadow: 0px 0px 1px 1px #f4a960; min-width: 12rem; width: auto; }
 
 .reveal-modal-bg { z-index: 9999990; }

@@ -15,7 +15,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Instances in scaling group:</strong>
+            <em ng-non-bindable="">${scaling_group.name}</em>
+        </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
