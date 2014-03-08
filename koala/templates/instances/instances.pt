@@ -46,7 +46,7 @@
                     <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                     </li>
-                    <li ng-show="!item.transitional">
+                    <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
@@ -147,7 +147,7 @@
                             <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                             </li>
-                            <li ng-show="!item.transitional">
+                            <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
