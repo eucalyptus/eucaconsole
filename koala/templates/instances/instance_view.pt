@@ -8,7 +8,7 @@
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}',
                                      '${request.route_url('instance_console_output_json', id=instance.id)}',
-                                     '${instance.state}', '${instance_name}', '${instance.groups[0].name}',
+                                     '${instance.state}', '${instance.id}', '${instance.groups[0].name}',
                                      '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -258,6 +258,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
 </div>
 

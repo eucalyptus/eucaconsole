@@ -25,7 +25,7 @@ from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView
+from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 
@@ -448,15 +448,17 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_get_password(self):
         if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
-        instance_id = self.request.matchdict.get('instance')
+        instance_id = self.request.matchdict.get('id')
         try:
             passwd_data = self.conn.get_password_data(instance_id)
             priv_key_string = self.request.params.get('key')
+            priv_key_string = base64.b64decode(priv_key_string)
             user_priv_key = RSA.load_key_string(priv_key_string)
             string_to_decrypt = base64.b64decode(passwd_data)
             ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
-            return dict(result=dict(instance=instance_id, password=ret))
+            return dict(results=dict(instance=instance_id, password=ret))
         except BotoServerError as err:
+            logging.info("err = "+str(vars(err)))
             return JSONResponse(status=400, message=err.message);
 
     def get_launch_time(self):

@@ -131,6 +131,8 @@ form .row.controls-wrapper { margin-bottom: 0; }
 
 #current-status { position: relative; top: 2px; }
 
+.connect-center { text-align: center; }
+
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
 .tile .footer.attached { background-color: #8dc943; }
