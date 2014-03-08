@@ -32,6 +32,7 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.setFocus();
         };
         $scope.revealConsoleOutputModal = function() {
+            $('.actions-menu').trigger('click');
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
