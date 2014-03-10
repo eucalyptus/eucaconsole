@@ -10,7 +10,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle" class="columns">
+        <h3 id="pagetitle">
             <strong i18n:translate="">Details for image:</strong>
             <em ng-non-bindable="">${image_display_name}</em>
         </h3>

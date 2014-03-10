@@ -460,6 +460,13 @@ textarea.policy-area {
     padding: 10px;
 }
 
+// Padding for help expando if on a page with tabs
+.help-padding {
+    display: block;
+    height: 2.5rem;
+}
+
+
 .help-content {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;

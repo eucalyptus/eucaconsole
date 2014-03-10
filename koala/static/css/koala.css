@@ -1474,6 +1474,8 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 ----------------------------------------- */
 .right-off-canvas-menu { background-color: white; padding: 10px; }
 
+.help-padding { display: block; height: 2.5rem; }
+
 .help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
 .help-content p { margin-bottom: 0.5rem; }
 .help-content ol { list-style-position: inside; }

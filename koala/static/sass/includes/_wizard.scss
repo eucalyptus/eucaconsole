@@ -3,6 +3,8 @@
 
 
 $wizard-border-width: 16px;
+$wizard-tab-padding: 8px 1rem;
+
 
 /* @section Wizard styles */
 .wizard {
@@ -37,13 +39,13 @@ $wizard-border-width: 16px;
                 }
             }
             &.disabled {
-                padding: 1rem 22px;
+                padding: $wizard-tab-padding;
                 background-color: $euca-extralightgrey;
             }
             a {
                 box-shadow: none;
                 white-space: nowrap;
-                padding: 8px 1rem;
+                padding: $wizard-tab-padding;
             }
             .cir {
                 position: relative;

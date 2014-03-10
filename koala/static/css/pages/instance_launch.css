@@ -9,7 +9,7 @@
 .wizard .row.controls-wrapper.readonly { margin-bottom: 0.5rem; }
 .wizard .tabs dd.active a { background-color: white; }
 .wizard .tabs dd.active a:hover { background-color: white; }
-.wizard .tabs dd.disabled { padding: 1rem 22px; background-color: #e6e7e8; }
+.wizard .tabs dd.disabled { padding: 8px 1rem; background-color: #e6e7e8; }
 .wizard .tabs dd a { box-shadow: none; white-space: nowrap; padding: 8px 1rem; }
 .wizard .tabs dd .cir { position: relative; top: -2px; font-size: 0.825rem; display: inline-block; border-radius: 60px; width: 20px; height: 20px; padding: 0 0 0 0; text-align: center; vertical-align: middle; background-color: #00415e; color: white; }
 .wizard .tabs-content { min-height: 400px; margin: 0 0 0 0; padding: 1rem; background-color: white; }
