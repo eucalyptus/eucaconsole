@@ -57,11 +57,11 @@
                 </div>
                 <div ng-show="item.has_password && item.user_enabled">
                     <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
-                    <a ng-click="linkUser(item, '#password-section')"><i class="fi-check"></i></a>
+                    <a ng-click="linkUser(item, '#security-tab')"><i class="fi-check"></i></a>
                 </div>
                 <div ng-show="item.num_keys > 0 && item.user_enabled">
                     <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
-                    <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }}</a>
+                    <a ng-click="linkUser(item, '#security-tab')">{{ item.num_keys }}</a>
                 </div>
                 <div>
                     <span class="label" title="Creation Time" i18n:attributes="title" data-tooltip="">CT</span>
@@ -69,8 +69,8 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_footer">
-                <div ng-show="!item.has_password && item.user_enabled"><a class="link" ng-click="linkUser(item, '#password-section')" i18n:translate="">Does not have password</a></div>
-                <div ng-show="item.num_keys == 0 && item.user_enabled"><a class="link" ng-click="linkUser(item, '#access-keys-section')" i18n:translate="">Does not have access keys</a></div>
+                <div ng-show="!item.has_password && item.user_enabled"><a class="link" ng-click="linkUser(item, '#security-tab')" i18n:translate="">Does not have password</a></div>
+                <div ng-show="item.num_keys == 0 && item.user_enabled"><a class="link" ng-click="linkUser(item, '#security-tab')" i18n:translate="">Does not have access keys</a></div>
                  <span class="footer status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
                  <span class="footer status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
                  <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
@@ -99,12 +99,12 @@
                 </td>
                 <td>
                     <span ng-show="item.has_password && item.user_enabled">
-                        <a ng-click="linkUser(item, '#password-section')"><i class="fi-check"></i></a>
+                        <a ng-click="linkUser(item, '#security-tab')"><i class="fi-check"></i></a>
                     </span>
                 </td>
                 <td>
                     <span ng-show="item.num_keys && item.user_enabled">
-                        <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
+                        <a ng-click="linkUser(item, '#security-tab')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
                     </span>
                 </td>
                 <td>
