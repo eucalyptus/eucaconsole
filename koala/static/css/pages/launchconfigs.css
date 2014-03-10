@@ -94,7 +94,7 @@
 #results-count .items-found { position: relative; top: -6px; }
 #results-count em { color: #555; font-style: normal; }
 
-#refresh-btn { background-image: url(../../img/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
+#refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
