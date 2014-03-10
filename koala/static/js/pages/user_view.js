@@ -4,6 +4,23 @@
  *
  */
 
+$(document).ready(function () {
+    var idx = document.URL.indexOf("#");
+    if (idx != -1) {
+        var hash = document.URL.substring(idx + 1);
+        $(".tabs").children("dd").each(function() {
+            var id = $(this).find("a").attr("href").substring(1);
+            var $container = $("#" + id);
+            $(this).removeClass("active");
+            $container.removeClass("active");
+            if (id == hash || $container.find("#" + hash).length) {
+                $(this).addClass("active");
+                $container.addClass("active");
+            }
+        });
+    }
+});
+
 // user view page includes the User Editor editor
 angular.module('UserView', ['PolicyList'])
     .controller('UserViewCtrl', function ($scope) {
