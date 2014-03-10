@@ -43,7 +43,7 @@
                     <a ng-click="linkGroup(item, '#policy-list')">{{ item.policy_count }}</a>
                 </div>
                 <div>
-                    <span class="label" title="Permissions" i18n:attributes="title" data-tooltip="">CT</span>
+                    <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
                     {{ item.create_date | date:'${layout.angular_date_format}' }}
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 <th i18n:translate="">Group name</th>
                 <th i18n:translate="">Users</th>
                 <th i18n:translate="">Permissions</th>
-                <th i18n:translate="">Create Time</th>
+                <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
