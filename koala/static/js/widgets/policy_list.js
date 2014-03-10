@@ -51,6 +51,7 @@ angular.module('PolicyList', [])
               }
             ).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
+                $scope.itemsLoading = false;
                 Notify.failure(errorMsg);
             });
         };
