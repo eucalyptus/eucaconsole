@@ -5,8 +5,8 @@
  */
 
 
-angular.module('LandingPage', ['CustomFilters'])
-    .controller('ItemsCtrl', function ($scope, $http, $timeout) {
+angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
+    .controller('ItemsCtrl', function ($scope, $http, $timeout, $sanitize) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -146,5 +146,8 @@ angular.module('LandingPage', ['CustomFilters'])
                 }
             });
         };
+        $scope.sanitizeContent = function (content) {
+            return $sanitize(content);
+        }
     })
 ;
