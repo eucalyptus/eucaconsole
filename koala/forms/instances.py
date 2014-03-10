@@ -71,8 +71,7 @@ class LaunchInstanceForm(BaseSecureForm):
     zone = wtforms.SelectField(label=_(u'Availability zone'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
-        label=_(u'Key name'),
-        validators=[validators.InputRequired(message=keypair_error_msg)],
+        label=_(u'Key name')
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
@@ -108,20 +107,21 @@ class LaunchInstanceForm(BaseSecureForm):
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self):
-        self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
+        self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         self.zone.choices = self.get_availability_zone_choices()
         self.keypair.choices = self.get_keypair_choices()
-        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups)
+        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
+        # Set the defailt option to be "No Keypair" and "Default" security group
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = self.securitygroup.choices[1][0]
+            self.securitygroup.data = "default"
         if len(self.keypair.choices) > 1:
-            self.keypair.data = self.keypair.choices[1][0]
+            self.keypair.data = ""
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -130,8 +130,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
     def get_keypair_choices(self):
-        choices = self.choices_manager.keypairs()
-        choices.append(('none', _(u'None (advanced option)')))
+        choices = self.choices_manager.keypairs(add_blank=False, no_keypair_option=True)
         return choices
 
     def get_availability_zone_choices(self):
