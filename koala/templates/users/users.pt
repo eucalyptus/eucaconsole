@@ -63,6 +63,10 @@
                     <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
                     <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }}</a>
                 </div>
+                <div>
+                    <span class="label" title="Create Time" i18n:attributes="title" data-tooltip="">CT</span>
+                    {{ item.create_date | date:'${layout.angular_date_format}' }}
+                </div>
             </div>
             <div metal:fill-slot="tile_footer">
                 <div ng-show="!item.has_password && item.user_enabled"><a class="link" ng-click="linkUser(item, '#password-section')" i18n:translate="">Does not have password</a></div>
@@ -77,6 +81,7 @@
                 <th i18n:translate="">Groups</th>
                 <th i18n:translate="">Password</th>
                 <th i18n:translate="">Access Keys</th>
+                <th i18n:translate="">Create Time</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
@@ -101,6 +106,9 @@
                     <span ng-show="item.num_keys && item.user_enabled">
                         <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
                     </span>
+                </td>
+                <td>
+                    {{ item.create_date | date:'${layout.angular_date_format}' }}
                 </td>
                 <td>
                   <span class="actions">

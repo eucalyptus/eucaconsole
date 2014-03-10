@@ -41,17 +41,23 @@
                             ${structure:user_form['csrf_token']}
                             <div class="section">
                                 <h6 i18n:translate="">User</h6>
-                                ${panel('form_field', field=user_form['user_name'], leftcol_width=2, rightcol_width=10)}
+                                ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly">
-                                    <div class="small-2 columns"><label i18n:translate="">ARN</label></div>
-                                    <div class="small-10 columns value">${user.arn if user.arn else ''}</div>
+                                    <div class="small-3 columns"><label class="right" i18n:translate="">Creation time:&nbsp;</label></div>
+                                    <div class="small-9 columns field inline breakword">
+                                        ${user_create_date.strftime(layout.date_format)}
+                                    </div>
                                 </div>
-                                ${panel('form_field', field=user_form['path'], leftcol_width=2, rightcol_width=10)}
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
+                                    <div class="small-9 columns value">${user.arn if user.arn else ''}</div>
+                                </div>
+                                ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                             <div class="row">
-                                <div class="small-2 columns">&nbsp;</div>
-                                <div class="small-10 columns field inline">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
                                     <button type="submit" class="button" id="save-user-btn">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
