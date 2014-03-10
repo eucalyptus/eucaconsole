@@ -158,7 +158,7 @@ class ChoicesManager(object):
         for ramdisk_image in ramdisk_images:
             if ramdisk_image.id:
                 choices.append((ramdisk_image.id, ramdisk_image.id))
-        if image:
+        if image and image.ramdisk_id is not None:
             choices.append((image.ramdisk_id, image.ramdisk_id))
         return sorted(set(choices))
 
