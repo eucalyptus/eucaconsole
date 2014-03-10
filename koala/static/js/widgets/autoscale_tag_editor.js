@@ -3,8 +3,16 @@
  * @requires AngularJS
  *
  */
-angular.module('AutoScaleTagEditor', [])
-    .controller('AutoScaleTagEditorCtrl', function ($scope) {
+angular.module('AutoScaleTagEditor', ['ngSanitize'])
+    .filter('ellipsis', function () {
+        return function (line, num) {
+            if (line.length <= num) {
+                return line;
+            }
+            return line.substring(0, num) + "...";
+        };
+    })
+    .controller('AutoScaleTagEditorCtrl', function ($scope, $sanitize) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -25,6 +33,9 @@ angular.module('AutoScaleTagEditor', [])
                 }
             });
             $scope.syncTags();
+        };
+        $scope.getSafeTitle = function (tag) {
+            return $sanitize(tag.name + ' = ' + tag.value);
         };
         $scope.removeTag = function (index, $event) {
             $event.preventDefault();

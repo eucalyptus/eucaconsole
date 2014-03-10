@@ -62,7 +62,7 @@
                     {{ item.description | limitTo: 64 }}
                     <span ng-show="item.description.length > 64"
                             data-tooltip="tooltip" class="label round has-tip ellipsis"
-                            title="{{item.description}}">...</span>
+                            title="{{ sanitizeContent(item.description) }}">...</span>
                 </div>
                 <div>
                     <span class="label" title="Architecture" i18n:attributes="title" data-tooltip="">AR</span>
