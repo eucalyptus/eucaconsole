@@ -57,11 +57,11 @@
                 </div>
                 <div ng-show="item.has_password && item.user_enabled">
                     <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
-                    <a ng-click="linkUser(item, '#password-section')"><i class="fi-check"></i></a>
+                    <a ng-click="linkUser(item, '#security-tab')"><i class="fi-check"></i></a>
                 </div>
                 <div ng-show="item.num_keys > 0 && item.user_enabled">
                     <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
-                    <a ng-click="linkUser(item, '#access-keys-section')">{{ item.num_keys }}</a>
+                    <a ng-click="linkUser(item, '#security-tab')">{{ item.num_keys }}</a>
                 </div>
                 <div>
                     <span class="label" title="Create Time" i18n:attributes="title" data-tooltip="">CT</span>
