@@ -132,7 +132,7 @@ class ChoicesManager(object):
                 choices.append((eip.public_ip, eip.public_ip))
         if instance and instance.ip_address:
             choices.append((instance.ip_address, instance.ip_address))
-        if instance and instance.ip_address is '' and instance.state == 'stopped':
+        if instance and instance.ip_address is None and instance.state == 'stopped':
             choices.append(('none', _(u'no address in stopped state')))
         return sorted(set(choices))
 
