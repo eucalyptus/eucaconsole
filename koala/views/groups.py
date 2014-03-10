@@ -3,13 +3,14 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
+from datetime import datetime
 from dateutil import parser
 import simplejson as json
 from urllib import urlencode
 
 from boto.exception import BotoServerError
 from boto.exception import EC2ResponseError
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
@@ -103,7 +104,7 @@ class GroupView(BaseView):
         self.all_users = self.get_all_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
-        create_date = parser.parse(self.group.create_date)
+        create_date = parser.parse(self.group.create_date) if self.group else datetime.now()
         self.render_dict = dict(
             group=self.group,
             group_create_date=create_date,
@@ -124,7 +125,8 @@ class GroupView(BaseView):
             group = self.conn.get_group(group_name=group_param)
         return group
 
-    def get_users_array(self, group):
+    @staticmethod
+    def get_users_array(group):
         if group is None:
             return []
         users = [u.user_name.encode('ascii', 'ignore') for u in group.users]
@@ -167,7 +169,8 @@ class GroupView(BaseView):
     def group_update(self):
         if self.group_update_form.validate():
             new_users = self.request.params.getall('input-users-select')
-            new_group_name = self.request.params.get('group_name') if self.group.group_name != self.request.params.get('group_name') else None
+            group_name_param = self.request.params.get('group_name')
+            new_group_name = group_name_param if self.group.group_name != group_name_param else None
             new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
             if new_users is not None:
@@ -181,17 +184,15 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_delete', request_method='POST')
     def group_delete(self):
+        location = self.request.route_url('groups')
         if self.group is None:
-            raise HTTPNotFound
+            raise HTTPNotFound()
         try:
             params = {'GroupName': self.group.group_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteGroup', params)
-            
-            location = self.request.route_url('groups')
             msg = _(u'Successfully deleted group')
             queue = Notification.SUCCESS
         except BotoServerError as err:
-            location = self.location
             msg = err.message
             queue = Notification.ERROR
         self.request.session.flash(msg, queue=queue)
@@ -229,7 +230,7 @@ class GroupView(BaseView):
             if is_new:
                 (msg, queue) = self.group_add_user(group_name, new_user)
                 if queue is Notification.SUCCESS:
-                    success_msg +=  msg + " "
+                    success_msg += msg + " "
                 else:
                     error_msg += msg + " "
 
@@ -251,7 +252,7 @@ class GroupView(BaseView):
             if is_deleted:
                 (msg, queue) = self.group_remove_user(group_name, user)
                 if queue is Notification.SUCCESS:
-                    success_msg +=  msg + " "
+                    success_msg += msg + " "
                 else:
                     error_msg += msg + " "
 
@@ -272,7 +273,7 @@ class GroupView(BaseView):
             msg = err.message
             queue = Notification.ERROR
 
-        return (msg, queue)
+        return msg, queue
 
     def group_remove_user(self, group_name, user):
         try:
@@ -284,7 +285,7 @@ class GroupView(BaseView):
             msg = err.message
             queue = Notification.ERROR
 
-        return (msg, queue)
+        return msg, queue
 
     @view_config(route_name='group_policies_json', renderer='json', request_method='GET')
     def group_policies_json(self):
@@ -306,10 +307,11 @@ class GroupView(BaseView):
         policy = self.request.matchdict.get('policy')
         try:
             policy_text = self.request.params.get('policy_text')
-            result = self.conn.put_group_policy(group_name=self.group.group_name, policy_name=policy, policy_json=policy_text)
+            result = self.conn.put_group_policy(
+                group_name=self.group.group_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated group policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='group_delete_policy', request_method='POST', renderer='json')
     def group_delete_policy(self):
@@ -319,5 +321,5 @@ class GroupView(BaseView):
             result = self.conn.delete_group_policy(group_name=self.group.group_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted group policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return JSONResponse(status=400, message=err.message)
 
