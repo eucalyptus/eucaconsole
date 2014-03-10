@@ -15,7 +15,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Instances in scaling group:</strong>
+            <em ng-non-bindable="">${scaling_group.name}</em>
+        </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
@@ -65,6 +68,7 @@
             </div>
         </div>
         <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
              <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
@@ -73,7 +77,7 @@
         <!--! Modal dialogs -->
         <div id="markunhealthy-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Mark instance unhealthy</h3>
-            <p><span i18n:translate="">Are you sure you want to mark the following instance as unhealthy?</span>
+            <p><span i18n:translate="">Marking an instance unhealthy will cause the system to terminate it. Are you sure you want to mark the following instance as unhealthy?</span>
                <b>{{ instanceID }}</b>?</p>
             <form action="${request.route_url('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
                 ${structure:markunhealthy_form['csrf_token']}
@@ -91,13 +95,13 @@
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Terminate instance</h3>
-            <p><span i18n:translate="">Are you sure you want to terminate the following instance?</span>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
                <b>{{ instanceID }}</b>?</p>
             <form action="${request.route_url('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
                 ${structure:terminate_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=terminate_form['decrement_capacity'],
-                        leftcol_width=8, rightcol_width=4, reverse=True)}
+                        leftcol_width=4, rightcol_width=8, reverse='true')}
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns">
                     <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">

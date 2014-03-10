@@ -30,8 +30,10 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.platform = platform;
             $scope.getInstanceState();
             $scope.setFocus();
+            $('#file').on('change', $scope.getPassword);
         };
         $scope.revealConsoleOutputModal = function() {
+            $('.actions-menu').trigger('click');
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
@@ -84,6 +86,34 @@ angular.module('InstancePage', ['TagEditor'])
             $('a.close-reveal-modal').trigger('click');
             $scope.instanceForm.submit();
         };
+        $scope.promptFile = function (url) {
+            $('#file').trigger('click');
+            $scope.password_url = url;
+        };
+        $scope.getPassword = function (evt) {
+            $('#file').attr('display', 'none');
+            var file = evt.target.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function(evt) {
+                if (evt.target.readyState == FileReader.DONE) {
+                    var key_contents = evt.target.result;
+                    var url = $scope.password_url.replace("_id_", $scope.instanceID);
+                    var data = "csrf_token=" + $('#csrf_token').val() + "&key=" + $.base64.encode(key_contents);
+                    $http({method:'POST', url:url, data:data,
+                           headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+                      success(function(oData) {
+                        var results = oData ? oData.results : [];
+                        $('#the-password').text(results.password);
+                      }).
+                      error(function (oData, status) {
+                        if (status == 403) window.location = '/';
+                        var errorMsg = oData['message'] || '';
+                        Notify.failure(errorMsg);
+                      });
+                }
+            }
+            reader.readAsText(file);
+        }
     })
 ;
 

@@ -15,7 +15,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for scaling group:</strong>
+            <em ng-non-bindable="">${scaling_group.name}</em>
+        </h3>
         <div class="large-7 columns">
             <dl class="tabs" id="scalinggroup-subnav">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
@@ -81,6 +84,7 @@
             </div>
         </div>
         <div class="large-5 columns">
+            <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
              <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->

@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="large-2 columns" id="landing-page-filters">
-            <h3 id="pagetitle" class="columns" i18n:translate="">Images</h3>
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Images</h3>
             ${panel('landingpage_filters', filters_form=filters_form)}
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
@@ -62,7 +62,7 @@
                     {{ item.description | limitTo: 64 }}
                     <span ng-show="item.description.length > 64"
                             data-tooltip="tooltip" class="label round has-tip ellipsis"
-                            title="{{item.description}}">...</span>
+                            title="{{ sanitizeContent(item.description) }}">...</span>
                 </div>
                 <div>
                     <span class="label" title="Architecture" i18n:attributes="title" data-tooltip="">AR</span>

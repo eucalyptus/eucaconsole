@@ -82,14 +82,18 @@
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
                             <div>
-                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=1, rightcol_width=11)}
+                                ${panel('form_field', field=group_update_form.group_name, leftcol_width=3, rightcol_width=9)}
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-1 columns"><label class="right" i18n:translate="">ARN&nbsp;</label></div>
-                                <div class="small-11 columns field inline breakword">${group.arn if group.arn else ''}</div>
+                                <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                                <div class="small-9 columns value">${group_create_date.strftime(layout.date_format)}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
+                                <div class="small-9 columns value inline breakword">${group.arn if group.arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=1, rightcol_width=11)}
+                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9)}
                             </div>
                         </div>
                         <hr />

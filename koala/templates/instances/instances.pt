@@ -15,7 +15,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div class="large-2 columns" id="landing-page-filters">
-            <h3 id="pagetitle" class="columns" i18n:translate="">Instances</h3>
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Instances</h3>
             ${panel('landingpage_filters', filters_form=filters_form)}
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
@@ -40,13 +40,13 @@
                     <li>
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                     </li>
-                    <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
-                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
-                    </li>
                     <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                     </li>
-                    <li ng-show="!item.transitional">
+                    <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
+                    </li>
+                    <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
@@ -147,7 +147,7 @@
                             <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                             </li>
-                            <li ng-show="!item.transitional">
+                            <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
@@ -173,6 +173,7 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/landingpage.js')}"></script>

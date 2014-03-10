@@ -2,7 +2,8 @@
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
 #maincontent { padding-top: 1rem; background: #eef7e3; }
-#maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; margin-bottom: 8px; display: inline-block; }
+#maincontent #pagetitle { margin-bottom: 0.5rem; margin-left: 0; }
+#maincontent #pagetitle h3 { font-weight: bold; margin-top: 0; display: inline-block; }
 #maincontent #pagetitle #zone-selector { display: inline-block; margin-left: 1rem; }
 
 .panel { background-color: transparent; border: none; margin-bottom: 0; box-sizing: border-box; position: relative; font-size: 0.825rem; }
@@ -17,24 +18,24 @@
 .panel .tile .footer .button:hover { text-decoration: none; }
 .panel .tile a:hover .icon { background-color: #0088c4; }
 
-#instances-running .icon { background-image: url(../../img/icon_running_instances.svg); }
+#instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }
 
-#instances-stopped .icon { background-image: url(../../img/icon_stopped_instances.svg); }
+#instances-stopped .icon { background-image: url(../../img/svg/icon_stopped_instances.svg); }
 
-#scaling-groups .icon { background-image: url(../../img/icon_instances_scaling_groups.svg); }
+#scaling-groups .icon { background-image: url(../../img/svg/icon_instances_scaling_groups.svg); }
 
-#elastic-ips .icon { background-image: url(../../img/icon_elastic_IP.svg); }
+#elastic-ips .icon { background-image: url(../../img/svg/icon_elastic_IP.svg); }
 
-#volumes .icon { background-image: url(../../img/icon_volumes.svg); }
+#volumes .icon { background-image: url(../../img/svg/icon_volumes.svg); }
 
-#snapshots .icon { background-image: url(../../img/icon_snapshot.svg); }
+#snapshots .icon { background-image: url(../../img/svg/icon_snapshot.svg); }
 
-#security-groups .icon { background-image: url(../../img/icon_security_groups.svg); }
+#security-groups .icon { background-image: url(../../img/svg/icon_security_groups.svg); }
 
-#key-pairs .icon { background-image: url(../../img/icon_key-pair.svg); }
+#key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }
 
-#users .icon { background-image: url(../../img/icon_IAM_users.svg); }
+#users .icon { background-image: url(../../img/svg/icon_IAM_users.svg); }
 
-#groups .icon { background-image: url(../../img/IAM_group.svg); }
+#groups .icon { background-image: url(../../img/svg/IAM_group.svg); }
 
 /* Small screen */

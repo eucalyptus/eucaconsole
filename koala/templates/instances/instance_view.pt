@@ -8,7 +8,7 @@
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_url('instance_state_json', id=instance.id)}',
                                      '${request.route_url('instance_console_output_json', id=instance.id)}',
-                                     '${instance.state}', '${instance_name}', '${instance.groups[0].name}',
+                                     '${instance.state}', '${instance.id}', '${instance.groups[0].name}',
                                      '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -18,12 +18,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <div id="pagetitle" class="columns">
-            <h3 ng-non-bindable="">
-                <strong i18n:translate="">Details for instance:</strong>
-                <em>${instance_name}</em>
-            </h3>
-        </div>
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for instance:</strong>
+            <em ng-non-bindable="">${instance_name}</em>
+        </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="instance-subnav">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
@@ -34,19 +32,7 @@
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
                             <a href="#" id="connect-action" data-reveal-id="connect-instance-modal"
-                               i18n:translate="">Connect</a>
-                        </li>
-                        <li ng-show="instanceState == 'running'">
-                            <a href="#" id="reboot-instance-action"
-                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
-                        </li>
-                        <li ng-show="instanceState == 'stopped'">
-                            <a href="#" id="start-instance-action"
-                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
-                        </li>
-                        <li tal:condition="image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
-                            <a href="#" id="stop-instance-action"
-                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
+                               i18n:translate="">Connect to instance</a>
                         </li>
                         <li>
                             <a href="${request.route_url('instance_more', id=instance.id)}"
@@ -65,13 +51,25 @@
                                 View console output
                             </a>
                         </li>
+                        <li ng-show="instanceState == 'stopped'">
+                            <a href="#" id="start-instance-action"
+                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
+                        </li>
+                        <li tal:condition="image and image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
+                            <a href="#" id="stop-instance-action"
+                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
+                        </li>
+                        <li ng-show="instanceState == 'running'">
+                            <a href="#" id="reboot-instance-action"
+                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
+                        </li>
                         <li ng-show="instanceState != 'terminated'">
                             <a href="#" id="terminate-instance-action"
                                data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
                         </li>
                     </metal:actions>
                 </metal:block>
-                <p tal:condition="image.root_device_type == 'ebs'" class="note">
+                <p tal:condition="image and image.root_device_type == 'ebs'" class="note">
                     Instance type, user data, kernel ID and RAM disk ID (ramfs) may only be updated for instances with an EBS root device.
                     To update any of these attributes, stop the instance first.
                 </p>
@@ -89,13 +87,13 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div tal:condition="image.root_device_type != 'ebs'" tal:omit-tag="">
+                    <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
                             <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
                         </div>
                     </div>
-                    <div tal:condition="image.root_device_type == 'ebs'" tal:omit-tag="">
+                    <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
                             <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
@@ -114,7 +112,8 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Architecture</label></div>
-                        <div class="small-8 columns value">${instance.architecture or image.architecture}</div>
+                        <div tal:condition="instance.architecture" class="small-8 columns value">${instance.architecture}</div>
+                        <div tal:condition="not instance.architecture and image" class="small-8 columns value">${image.architecture}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Instance ID</label></div>
@@ -182,27 +181,27 @@
                     <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
-                        <div class="small-8 columns value">${image.id}</div>
+                        <div tal:condition="image" class="small-8 columns value">${image.id}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${image.name}</div>
+                        <div tal:condition="image" class="small-8 columns value" ng-non-bindable="">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-8 columns value breakword" ng-non-bindable="">${image.location}</div>
+                        <div tal:condition="image" class="small-8 columns value breakword" ng-non-bindable="">${image.location}</div>
                     </div>
-                    <div tal:condition="image.root_device_type != 'ebs'" tal:omit-tag="">
+                    <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">Kernel ID</label></div>
-                            <div class="small-8 columns value">${image.kernel_id}</div>
+                            <div tal:condition="image" class="small-8 columns value">${image.kernel_id}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
-                            <div class="small-8 columns value">${image.ramdisk_id}</div>
+                            <div tal:condition="image" class="small-8 columns value">${image.ramdisk_id}</div>
                         </div>
                     </div>
-                    <div tal:condition="image.root_device_type == 'ebs'" tal:omit-tag="">
+                    <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
                         ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
                         ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
                     </div
@@ -222,6 +221,7 @@
             </div>
         </div>
         <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_instances', 'connect_instance',
@@ -258,6 +258,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
     <script src="${request.static_url('koala:static/js/pages/instance.js')}"></script>
 </div>
 

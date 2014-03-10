@@ -47,10 +47,6 @@ $dropdown-border-color: $euca-green;
     }
 }
 
-#pagetitle {
-    padding-left: 0;
-}
-
 // Dropdown buttons on landing page tile/table view
 .gridwrapper {
     .dropdown.button.tiny {
@@ -74,7 +70,7 @@ $dropdown-border-color: $euca-green;
         .fi-widget {
             position: relative;
             top: 4px;
-            background-image: url(../../img/gear.svg);
+            background-image: url(../../img/svg/gear.svg);
             display: inline-block;
             width: 20px; height: 20px;
             &::before {
@@ -365,6 +361,7 @@ $dropdown-border-color: $euca-green;
 
 // Filters at left
 #filters {
+    position: relative;
     background-color: white;
     padding: 8px;
     margin-top: 108px;
@@ -405,7 +402,7 @@ $dropdown-border-color: $euca-green;
 }
 
 #refresh-btn {
-    background-image: url(../../img/icon_reload.svg);
+    background-image: url(../../img/svg/icon_reload.svg);
     background-color: transparent;
     width: 24px;
     height: 24px;

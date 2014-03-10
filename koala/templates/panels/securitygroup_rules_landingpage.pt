@@ -6,8 +6,6 @@
         <span ng-repeat="grant in rule.grants ${'\| limitTo: 1' if tile_view else ''}">
             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
             <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
-            <span tal:condition="tile_view" ng-show="rule.grants.length > 1"
-                data-tooltip="" class="label round has-tip ellipsis" title="{{ rule.grants }}">...</span>
         </span>
         <br ng-show="!$last" />
         <span style="display: block;" tal:condition="tile_view" ng-show="$last && item.rules.length > 3">

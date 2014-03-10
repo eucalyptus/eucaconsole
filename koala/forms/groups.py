@@ -10,6 +10,7 @@ from pyramid.i18n import TranslationString as _
 
 from . import BaseSecureForm
 
+
 class GroupForm(BaseSecureForm):
     """Group form
     """
@@ -70,6 +71,7 @@ class GroupUpdateForm(BaseSecureForm):
         if group is not None:
             self.group_name.data = group.group_name
             self.path.data = group.path
+
 
 class DeleteGroupForm(BaseSecureForm):
     """CSRF-protected form to delete a group"""

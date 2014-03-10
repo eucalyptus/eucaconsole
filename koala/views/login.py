@@ -4,6 +4,7 @@ Pyramid views for Login/Logout
 
 """
 import base64
+import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
@@ -97,6 +98,7 @@ class LoginView(BaseView):
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
+                logging.info("http error "+str(vars(err)))
                 if err.code == 403:  # password expired
                     changepwd_url = self.request.route_url('changepassword')
                     return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s" % (account, username)))
@@ -104,6 +106,7 @@ class LoginView(BaseView):
                     msg = _(u'Invalid user/account name and/or password.')
                     self.login_form_errors.append(msg)
             except URLError, err:
+                logging.info("url error "+str(vars(err)))
                 if str(err.reason) == 'timed out':
                     msg = _(u'No response from host ')
                     self.login_form_errors.append(msg + clchost)

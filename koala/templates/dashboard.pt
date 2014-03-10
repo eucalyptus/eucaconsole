@@ -144,9 +144,9 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca'">
+            <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
                 <div class="tile">
-                    <h5 class="subheader" i18n:translate="">IAM Users</h5>
+                    <h5 class="subheader" i18n:translate="">IAM users</h5>
                     <div class="content">
                         <a href="${request.route_url('users')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -159,9 +159,9 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca'">
+            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
                 <div class="tile">
-                    <h5 class="subheader" i18n:translate="">IAM Groups</h5>
+                    <h5 class="subheader" i18n:translate="">IAM groups</h5>
                     <div class="content">
                         <a href="${request.route_url('groups')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>

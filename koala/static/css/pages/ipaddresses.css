@@ -13,12 +13,10 @@
 
 #primary-buttons .button { padding: 8px 3rem; }
 
-#pagetitle { padding-left: 0; }
-
 .gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8dc943; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
 .gridwrapper .dropdown.button.tiny:hover { color: #8dc943; }
 .gridwrapper .dropdown.button.tiny::before { border: none; }
-.gridwrapper .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/gear.svg); display: inline-block; width: 20px; height: 20px; }
+.gridwrapper .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
 .gridwrapper .dropdown.button.tiny .fi-widget::before { content: " "; }
 .gridwrapper .button.dropdown:hover + .f-dropdown, .gridwrapper .f-dropdown:hover { z-index: 9999; width: auto; display: block; border-color: #8dc640; box-shadow: 2px 2px 5px #777777; top: -1px; left: auto; right: -1px; padding-top: 24px; }
 .gridwrapper .button.dropdown:hover + .f-dropdown::before, .gridwrapper .button.dropdown:hover + .f-dropdown::after, .gridwrapper .f-dropdown:hover::before, .gridwrapper .f-dropdown:hover::after { border-color: transparent; }
@@ -85,7 +83,7 @@
 .displayicons .selected :hover { cursor: default; }
 .displayicons i { display: inline-block; padding: 2px 8px; }
 
-#filters { background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
+#filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
 #filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
 #filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
 #filters form button { box-shadow: none; }
@@ -96,7 +94,7 @@
 #results-count .items-found { position: relative; top: -6px; }
 #results-count em { color: #555; font-style: normal; }
 
-#refresh-btn { background-image: url(../../img/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
+#refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
 
 /* ----------------------------------------- Media Queries
 ----------------------------------------- */
