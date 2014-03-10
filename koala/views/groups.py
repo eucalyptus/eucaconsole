@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS Groups
 
 """
+from dateutil import parser
 import simplejson as json
 from urllib import urlencode
 
@@ -76,6 +77,7 @@ class GroupsJsonView(BaseView):
             groups.append(dict(
                 path=group.path,
                 group_name=group.group_name,
+                create_date=group.create_date,
                 user_count=user_count,
                 policy_count=len(policies),
             ))
@@ -101,8 +103,10 @@ class GroupView(BaseView):
         self.all_users = self.get_all_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
+        create_date = parser.parse(self.group.create_date)
         self.render_dict = dict(
             group=self.group,
+            group_create_date=create_date,
             group_route_id=self.group_route_id,
             group_users=self.group_users,
             all_users=self.all_users,
