@@ -3,7 +3,7 @@
  * @requires AngularJS
  *
  */
-angular.module('TagEditor', [])
+angular.module('TagEditor', ['ngSanitize'])
     .filter('ellipsis', function () {
         return function (line, num) {
             if( line.length <= num ){
@@ -12,7 +12,7 @@ angular.module('TagEditor', [])
             return line.substring(0, num) + "...";
         };
     })
-    .controller('TagEditorCtrl', function ($scope) {
+    .controller('TagEditorCtrl', function ($scope, $sanitize) {
         $scope.tagEditor = $('#tag-editor');
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
@@ -36,6 +36,9 @@ angular.module('TagEditor', [])
                 }
             });
             $scope.syncTags();
+        };
+        $scope.getSafeTitle = function (tag) {
+            return $sanitize(tag.name + ' = ' + tag.value);
         };
         $scope.removeTag = function (index, $event) {
             $event.preventDefault();

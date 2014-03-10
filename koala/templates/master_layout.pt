@@ -18,6 +18,7 @@
     <script src="${request.static_url('koala:static/js/thirdparty/modernizr/custom.modernizr.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/jquery/jquery-2.0.3.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-1.2.9.min.js')}"></script>
+    <script src="${request.static_url('koala:static/js/thirdparty/angular/angular-sanitize-1.2.9.min.js')}"></script>
     <script src="${request.static_url('koala:static/js/widgets/notify.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
