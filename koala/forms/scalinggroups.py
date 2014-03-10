@@ -328,5 +328,5 @@ class ScalingGroupInstancesMarkUnhealthyForm(BaseSecureForm):
 
 class ScalingGroupInstancesTerminateForm(BaseSecureForm):
     """Scaling Group instance terminate form"""
-    decrement_capacity = wtforms.BooleanField(label=_(u'Decrement capacity of scaling group?'))
+    decrement_capacity = wtforms.BooleanField(label=_(u'Also decrement desired capacity of scaling group'))
 

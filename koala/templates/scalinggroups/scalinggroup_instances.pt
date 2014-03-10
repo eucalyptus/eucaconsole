@@ -76,7 +76,7 @@
         <!--! Modal dialogs -->
         <div id="markunhealthy-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Mark instance unhealthy</h3>
-            <p><span i18n:translate="">Are you sure you want to mark the following instance as unhealthy?</span>
+            <p><span i18n:translate="">Marking an instance unhealthy will cause the system to terminate it. Are you sure you want to mark the following instance as unhealthy?</span>
                <b>{{ instanceID }}</b>?</p>
             <form action="${request.route_url('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
                 ${structure:markunhealthy_form['csrf_token']}
@@ -94,7 +94,7 @@
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Terminate instance</h3>
-            <p><span i18n:translate="">Are you sure you want to terminate the following instance?</span>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
                <b>{{ instanceID }}</b>?</p>
             <form action="${request.route_url('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
                 ${structure:terminate_form['csrf_token']}
