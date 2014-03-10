@@ -5,6 +5,7 @@ Base Forms
 IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
+import logging
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 import boto
@@ -194,7 +195,7 @@ class ChoicesManager(object):
             for load_balancer in load_balancers:
                 choices.append((load_balancer.name, load_balancer.name))
         except BotoServerError as ex:
-            if ex.reason == "Service Unavailable":
+            if ex.reason == "ServiceUnavailable":
                 logging.info("ELB service not available, disabling polling")
             else:
                 raise ex
