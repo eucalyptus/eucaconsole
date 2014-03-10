@@ -29,15 +29,21 @@ class BaseVolumeView(BaseView):
 
     def get_instance(self, instance_id):
         if instance_id:
-            instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-            return instances_list[0] if instances_list else None
+            try:
+                instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
+                return instances_list[0] if instances_list else None
+            except EC2ResponseError as err:
+                return None
         return None
 
     def get_volume(self, volume_id=None):
         volume_id = volume_id or self.request.matchdict.get('id')
         if volume_id and volume_id != 'new':
-            volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-            return volumes_list[0] if volumes_list else None
+            try:
+                volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
+                return volumes_list[0] if volumes_list else None
+            except EC2ResponseError as err:
+                return None
         return None
 
 
