@@ -98,8 +98,8 @@
                                     <a ng-href="/groups/{{ item.group_name }}">{{ item.title }}</a>
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                                    <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                                    <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown">
+                                    <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.group_name }}"><i class="fi-widget"></i></a>
+                                    <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
                                         </li>
@@ -264,8 +264,8 @@
                                     <td>{{ item.status }}</td>
                                     <td>
                                         <span class="actions">
-                                            <a class="tiny secondary button dropdown round"><i class="fi-widget"></i></a>
-                                            <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                                            <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li ng-show="item.status === 'Active'">
                                                     <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
                                                 </li>

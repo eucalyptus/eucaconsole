@@ -24,8 +24,8 @@
                    href="${request.route_url('scalinggroup_new')}">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span class="tiny secondary button dropdown"><i class="fi-widget"></i></span>
-                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
                     </li>
@@ -109,8 +109,8 @@
                 </td>
                 <td>
                     <span class="actions">
-                        <span class="tiny secondary button dropdown round"><i class="fi-widget"></i></span>
-                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
                             </li>

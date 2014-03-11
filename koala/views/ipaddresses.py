@@ -158,6 +158,7 @@ class IPAddressesJsonView(LandingPageView):
         for address in items:
             ipaddresses.append(dict(
                 public_ip=address.public_ip,
+                ngid=address.public_ip.replace('.', '_'),  # Remove dots for AngularJS/Foundation compatibility
                 instance_id=address.instance_id,
                 instance_name=TaggedItemView.get_display_name(
                     instances[address.instance_id]) if address.instance_id else address.instance_id,

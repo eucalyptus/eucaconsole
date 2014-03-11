@@ -78,22 +78,12 @@ $dropdown-border-color: $euca-green;
             }
         }
     }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        z-index: 9999;
-        width: auto;
-        display: block;
-        border-color: $euca-lightgreen;
-        box-shadow: 2px 2px 5px $euca-grey;
-        top: -1px; left: auto; right: -1px;
-        padding-top: $tile-row-height;
-        &::before, &::after {
-            border-color: transparent;
-        }
-        li a {
-            color: #333;
-            &:hover {
-                text-decoration: none;
-            }
+    .f-dropdown {
+        @include dropdown-shadow-mixin;
+        &.open {
+            top: 34px;
+            min-width: 10rem;
+            padding-top: 0;
         }
     }
 }
@@ -147,8 +137,7 @@ $dropdown-border-color: $euca-green;
             font-weight: normal;
         }
         .f-dropdown a {
-            white-space: pre-wrap;
-            overflow: visible;
+            color: $euca-darkgreen;
             font-weight: normal;
         }
     }
@@ -222,9 +211,6 @@ $dropdown-border-color: $euca-green;
             top: 8px; right: 8px;
         }
     }
-    .f-dropdown::before, .f-dropdown::after {
-        left: $grid-dropdown-width - 22px;
-    }
 }
 
 // Table view
@@ -287,21 +273,6 @@ $dropdown-border-color: $euca-green;
         i {
             font-size: 1.2rem;
             top: 0;
-        }
-    }
-    .f-dropdown::before, .f-dropdown::after {
-        left: $grid-dropdown-width - 22px;
-    }
-    .button.dropdown:hover + .f-dropdown, .f-dropdown:hover {
-        top: 28px;
-        left: auto; right: 22px;
-        min-width: 10rem;
-        padding-top: 0;
-        &::before {
-            border-color: transparent transparent white transparent;
-        }
-        &::after {
-            border-color: transparent transparent #cccccc transparent;
         }
     }
 }

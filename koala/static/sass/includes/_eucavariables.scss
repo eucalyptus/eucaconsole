@@ -154,3 +154,8 @@ $tooltip-padding: rem-calc(5);
     box-shadow: 1px 1px 5px 0px lighten($euca-grey, 10%);
 }
 
+@mixin dropdown-shadow-mixin {
+    border-color: $euca-lightgreen;
+    box-shadow: 2px 2px 5px $euca-grey;
+}
+

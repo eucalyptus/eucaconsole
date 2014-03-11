@@ -37,8 +37,8 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.name">
                         <a i18n:translate=""
                            ng-click="revealModal('delete', item.name)">Delete key</a>
@@ -55,8 +55,8 @@
                 <td>{{ item.fingerprint }}</td>
                 <td>
                     <span class="actions">
-                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown">
+                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.name">
                                 <a i18n:translate=""
                                    ng-click="revealModal('delete', item.name)">Delete key</a>

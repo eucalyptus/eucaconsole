@@ -39,8 +39,8 @@
                 <div class="tile item" ng-repeat="item in items" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/instances/{{ item.id }}">{{ item.id }}</a></strong>
-                        <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View details</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('markunhealthy', item)">Mark unhealthy</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a></li>
