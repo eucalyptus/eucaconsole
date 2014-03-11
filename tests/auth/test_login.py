@@ -40,21 +40,15 @@ class AWSLoginFormTestCase(BaseFormTestCase):
 
 class EucaAuthTestCase(BaseTestCase):
     host = 'unknown_host'
-    duration = 3600
-    auth = EucaAuthenticator(host=host, duration=duration)
+    port = 8773
+    auth = EucaAuthenticator(host=host, port=port)
     account = 'foo_account'
     username = 'foo'
     password = 'pw'
-
-    def test_euca_authenticator(self):
-        expected_url = ''.join([
-            'https://{host}:8773/services/Tokens?Action=GetAccessToken'.format(host=self.host),
-            '&DurationSeconds=3600&Version=2011-06-15'
-        ])
-        self.assertEqual(self.auth.auth_url, expected_url)
+    duration = 3600
 
     def test_euca_authentication_failure(self):
-        kwargs = dict(account=self.account, user=self.username, passwd=self.password)
+        kwargs = dict(account=self.account, user=self.username, passwd=self.password, duration=self.duration)
         self.assertRaises(URLError, self.auth.authenticate, **kwargs)
 
 
