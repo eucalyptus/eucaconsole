@@ -4,12 +4,8 @@ Authentication and Authorization models
 
 """
 import base64
-import hashlib
-import hmac
 import logging
-import urllib
 import urllib2
-import urlparse
 import xml
 
 from datetime import datetime
@@ -17,6 +13,7 @@ from datetime import datetime
 from beaker.cache import cache_region
 from boto import ec2
 from boto.ec2.connection import EC2Connection
+# uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
 #from boto.requestlog import RequestLogger
 import boto.ec2.autoscale
 import boto.ec2.cloudwatch
@@ -126,17 +123,19 @@ class ConnectionManager(object):
                 api_version = '2011-01-01'
                 conn_class = boto.ec2.autoscale.AutoScaleConnection
                 path = '/services/AutoScaling'
-            if conn_type == 'cloudwatch':
+            elif conn_type == 'cloudwatch':
                 path = '/services/CloudWatch'
                 conn_class = boto.ec2.cloudwatch.CloudWatchConnection
-            if conn_type == 'elb':
+            elif conn_type == 'elb':
                 path = '/services/LoadBalancing'
                 conn_class = boto.ec2.elb.ELBConnection
-            if conn_type == 'iam':
+            elif conn_type == 'iam':
                 path = '/services/Euare'
                 conn_class = boto.iam.IAMConnection
 
-            if conn_type != 'iam':
+            if conn_type == 'sts':
+                conn = EucaAuthenticator(_clchost, _port)
+            elif conn_type != 'iam':
                 conn = conn_class(
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
@@ -149,11 +148,12 @@ class ConnectionManager(object):
             if conn_type == 'autoscale':
                 conn.auth_region_name = 'Eucalyptus'
 
-            setattr(conn, 'APIVersion', api_version)
-            conn.https_validate_certificates = False
-            conn.http_connection_kwargs['timeout'] = 30
-            # uncomment to enable boto request logger. Use only for development
-            #conn.set_request_hook(RequestLogger())
+            if conn_type != 'sts':  # this is the only non-boto connection
+                setattr(conn, 'APIVersion', api_version)
+                conn.https_validate_certificates = False
+                conn.http_connection_kwargs['timeout'] = 30
+                # uncomment to enable boto request logger. Use only for development
+                #conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
@@ -165,76 +165,31 @@ def groupfinder(user_id, request):
     return []
 
 
-class AWSQuery(object):
-    """
-    Build a signed request to an Amazon AWS endpoint.
-    Credit: https://github.com/kesor/amazon-queries
-
-    :type endpoint: string
-    :param endpoint: from http://docs.amazonwebservices.com/general/latest/gr/rande.html
-
-    :type key_id: string
-    :param key_id: The Access Key ID for the request sender.
-
-    :type secret_key: string
-    :param secret_key: Secret Access Key used for request signature.
-
-    :type parameters: dict
-    :param parameters: Optional additional request parameters.
-
-    """
-    def __init__(self, endpoint, key_id, secret_key, parameters=None):
-        parameters = parameters or dict()
-        parsed = urlparse.urlparse(endpoint)
-        self.host = parsed.hostname
-        self.path = parsed.path or '/'
-        self.endpoint = endpoint
-        self.secret_key = secret_key
-        self.parameters = dict({
-            'AWSAccessKeyId': key_id,
-            'SignatureVersion': 2,
-            'SignatureMethod': 'HmacSHA256',
-        }, **parameters)
-
-    @property
-    def signed_parameters(self):
-        self.parameters['Timestamp'] = datetime.utcnow().isoformat()
-        params = dict(self.parameters, **{'Signature': self.signature})
-        return urllib.urlencode(params)
-
-    @property
-    def signature(self):
-        params = urllib.urlencode(sorted(self.parameters.items()))
-        text = "\n".join(['POST', self.host, self.path, params])
-        auth = hmac.new(str(self.secret_key), msg=text, digestmod=hashlib.sha256)
-        return base64.b64encode(auth.digest())
-
-
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    TEMPLATE = 'https://{host}:8773/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    TEMPLATE = 'https://{host}:{port}/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
-    def __init__(self, host, duration):
+    def __init__(self, host, port):
         """
         Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
 
         :type host: string
         :param host: IP address or FQDN of CLC host
 
-        :type duration: int
-        :param duration: Duration of the session token (in seconds)
+        :type port: integer
+        :param port: port number to use when making the connection
 
         """
         self.host = host
-        self.duration = duration
+        self.port = port
 
-    def authenticate(self, account, user, passwd, new_passwd=None, timeout=15):
-        duration = self.duration
+    def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
         if user == 'admin':  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
         self.auth_url = self.TEMPLATE.format(
             host=self.host,
+            port=self.port,
             dur=duration,
         )
         req = urllib2.Request(self.auth_url)

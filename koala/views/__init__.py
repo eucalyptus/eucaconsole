@@ -41,20 +41,41 @@ class BaseView(object):
         self.access_key = request.session.get('access_id')
         self.secret_key = request.session.get('secret_key')
         self.cloud_type = request.session.get('cloud_type')
-        self.clchost = request.registry.settings.get('clchost') if request.registry.settings else 'localhost'
-        self.clcport = int(request.registry.settings.get('clcport', 8773)) if request.registry.settings else 8773
         self.security_token = request.session.get('session_token')
         self.euca_logout_form = EucaLogoutForm(self.request)
 
-    def get_connection(self, conn_type='ec2'):
+    def get_connection(self, conn_type='ec2', cloud_type=None):
         conn = None
+        if cloud_type is None:
+            cloud_type = self.cloud_type
 
-        if self.cloud_type == 'aws':
+        if cloud_type == 'aws':
             conn = ConnectionManager.aws_connection(
                 self.region, self.access_key, self.secret_key, self.security_token, conn_type)
-        elif self.cloud_type == 'euca':
+        elif cloud_type == 'euca':
+            host = self.request.registry.settings.get('clchost')
+            port = int(self.request.registry.settings.get('clcport', 8773))
+            if conn_type == 'ec2':
+                host = self.request.registry.settings.get('ec2.host', host)
+                port = self.request.registry.settings.get('ec2.port', port)
+            elif conn_type == 'autoscale':
+                host = self.request.registry.settings.get('autoscale.host', host)
+                port = self.request.registry.settings.get('autoscale.port', port)
+            elif conn_type == 'cloudwatch':
+                host = self.request.registry.settings.get('cloudwatch.host', host)
+                port = self.request.registry.settings.get('cloudwatch.port', port)
+            elif conn_type == 'elb':
+                host = self.request.registry.settings.get('elb.host', host)
+                port = self.request.registry.settings.get('elb.port', port)
+            elif conn_type == 'iam':
+                host = self.request.registry.settings.get('iam.host', host)
+                port = self.request.registry.settings.get('iam.port', port)
+            elif conn_type == 'sts':
+                host = self.request.registry.settings.get('sts.host', host)
+                port = self.request.registry.settings.get('sts.port', port)
+
             conn = ConnectionManager.euca_connection(
-                self.clchost, self.clcport, self.access_key, self.secret_key, self.security_token, conn_type)
+                host, port, self.access_key, self.secret_key, self.security_token, conn_type)
 
         return conn
 
