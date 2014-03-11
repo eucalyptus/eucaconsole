@@ -2,7 +2,7 @@
 <div id="filters">
     <strong i18n:translate="">Filter by:</strong>
     <form method="get" action="${request.current_route_url()}" ng-cloak="">
-        <div tal:repeat="field filters_form">
+        <div tal:repeat="field filters_form" id="filterfieldwrapper_${field.short_name}">
             <div tal:condition="field.short_name != 'csrf_token'" tal:omit-tag="">
                 <label>${field.label}</label>
                 ${structure:field()}

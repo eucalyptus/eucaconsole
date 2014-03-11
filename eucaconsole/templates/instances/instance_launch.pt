@@ -16,7 +16,7 @@
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
-            <strong i18n:translate="">Launch new instances</strong>
+            <strong i18n:translate="">Launch new instance</strong>
         </h3>
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard no-title">
@@ -56,19 +56,17 @@
                                 Specify a machine image for your virtual machine instance
                             </p>
                             <div class="row">
-                                <div class="small-4 columns">
+                                <div class="small-3 columns">
                                     <label i18n:translate="" class="right inline-label">Enter an image ID</label>
                                 </div>
-                                <div class="small-8 columns value">
+                                <div class="small-9 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
-                                    <a class="button secondary small" i18n:translate="" id="image-id-btn"
+                                    <a class="button small" i18n:translate="" id="image-id-btn"
                                        ng-click="inputImageID('${request.route_url('instance_create')}')">Next</a>
                                     <a class="cancel-link" href="${request.route_url('instances')}">Cancel</a>
                                 </div>
                             </div>
-                            <p>OR select an image below</p>
-                            ${panel('image_picker', image=image, owner_choices=owner_choices,
-                                    images_json_endpoint=images_json_endpoint)}
+                            ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">

@@ -121,6 +121,8 @@ class ImagesJsonView(LandingPageView):
         filtered_items = []
         for item in items:
             for platform in self.request.params.getall('platform'):
+                if self.cloud_type == 'euca' and platform == 'linux':
+                    platform = ''
                 if item.platform == platform:
                     filtered_items.append(item)
         return filtered_items
