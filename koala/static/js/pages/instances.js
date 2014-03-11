@@ -62,7 +62,25 @@ angular.module('InstancesPage', ['LandingPage'])
                 }
             }
             reader.readAsText(file);
-        }
+        };
+        $scope.revealConsoleOutputModal = function(instanceID) {
+            $(document).trigger('click');
+            var consoleOutputEndpoint = "/instances/" + instanceID + "/consoleoutput/json";
+            $http.get(consoleOutputEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $scope.consoleOutput = results;
+                    var modal = $('#console-output-modal');
+                    modal.foundation('reveal', 'open');
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['error'] || null;
+                if (errorMsg && status === 403) {
+                    alert(errorMsg);
+                    $('#euca-logout-form').submit();
+                }
+            });
+        };
     })
 ;
 
