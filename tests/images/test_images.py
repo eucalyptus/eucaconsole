@@ -6,9 +6,9 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
-from koala.forms.images import ImageForm
-from koala.views import TaggedItemView
-from koala.views.images import ImagesView, ImageView
+from eucaconsole.forms.images import ImageForm
+from eucaconsole.views import TaggedItemView
+from eucaconsole.views.images import ImagesView, ImageView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

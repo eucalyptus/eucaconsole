@@ -1,0 +1,241 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/launchconfig_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LaunchConfigWizard" ng-controller="LaunchConfigWizardCtrl"
+         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create launch configuration</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new launch configuration</strong>
+        </h3>
+        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
+            <div class="wizard no-title">
+                <form action="${request.route_url('launchconfig_create')}" id="launch-config-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    ${structure:create_form['image_id']}
+                    <dl class="tabs" data-tab="">
+                        <dd class="${'active' if not image else ''}">
+                            <a id="tabStep1" href="#step1">
+                                <span class="cir">1</span> <b>Image</b>
+                            </a>
+                        </dd>
+                        <dd class="${'active' if image else 'disabled'}">
+                            <a id="tabStep2" ng-click="visitNextStep(2, $event)"
+                               tal:attributes="href '#step2' if image else None" tal:omit-tag="not image">
+                                <span class="cir">2</span> <b>Type</b>
+                            </a>
+                        </dd>
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep3" ng-click="visitNextStep(3, $event)"
+                               tal:attributes="href '#step3' if image else None" tal:omit-tag="not image">
+                                <span class="cir">3</span> <b>Security</b>
+                            </a>
+                        </dd>
+                        <dd class="${'' if image else 'disabled'}">
+                            <a id="tabStep4" href="#step4" ng-click="visitNextStep(4, $event)"
+                               tal:attributes="href '#step4' if image else None" tal:omit-tag="not image">
+                                <span class="cir">4</span> <b>Advanced</b>
+                            </a>
+                        </dd>
+                    </dl>
+                    <div class="tabs-content">
+                        <!--! Step 1: Image tab content -->
+                        <div class="content ${'active' if not image else ''}" id="step1">
+                            <p class="description" i18n:translate="">
+                                Please specify a machine image for your virtual machine.
+                            </p>
+                            <div class="row">
+                                <div class="small-4 columns">
+                                    <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
+                                </div>
+                                <div class="small-8 columns value">
+                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                                    <a class="button secondary small" i18n:translate="" id="image-id-btn"
+                                       ng-click="inputImageID('${request.route_url('launchconfig_new')}')">Next</a>
+                                </div>
+                            </div>
+                            <p>OR select an image below</p>
+                            ${panel('image_picker', image=image, owner_choices=owner_choices,
+                                    images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
+                            <div class="row" tal:condition="image">
+                                <div class="small-6 columns">&nbsp;</div>
+                                <div class="small-6 columns field inline">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 2: Type tab content -->
+                        <div class="content ${'active' if image else ''}" id="step2">
+                            <p class="description" i18n:translate="">
+                                Please specify the launch configuration name and the instance size/type.
+                            </p>
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'launchconfigName'})}
+                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'instanceType'})}
+                            <hr />
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                        <span i18n:translate="">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 3: Security tab content -->
+                        <div class="content" id="step3">
+                            <p class="description" i18n:translate="">
+                                Please specify the key pair and security group.
+                            </p>
+                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9,
+                                    ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            <div class="row">
+                                <div class="small-9 columns right">
+                                    <a data-reveal-id="create-keypair-modal" i18n:translate=""
+                                       id="create-keypair-link">Create key pair</a>
+                                </div>
+                            </div>
+                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9,
+                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()',
+                                          'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            <div class="row">
+                                <div class="small-9 columns right">
+                                    <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
+                                       id="create-securitygroup-link">Create security group</a>
+                                </div>
+                            </div>
+                            ${panel('securitygroup_rules_preview')}
+                            <hr />
+                            <div class="row">
+                                <div class="small-3 columns">&nbsp;</div>
+                                <div class="small-9 columns field inline">
+                                    <button type="submit" class="button" id="create-launchconfig-btn-step3">
+                                        <span i18n:translate="">Create Launch Configuration</span>
+                                    </button><br />
+                                    <span class="or">Or:</span>
+                                    <a id="visit-step-4" ng-click="visitNextStep(4, $event)">
+                                        <span i18n:translate="">Select advanced options</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--! Step 4: Advanced tab content -->
+                        <div class="content" id="step4">
+                            <p class="description" i18n:translate="">
+                                Please specify user data and other advanced options (optional).
+                            </p>
+                            ${panel('form_field', field=create_form['userdata'], ng_attrs={'model': 'userData'})}
+                            ${panel('form_field', field=create_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
+                            ${panel('form_field', field=create_form['kernel_id'])}
+                            ${panel('form_field', field=create_form['ramdisk_id'])}
+                            <div class="small-8 columns right">
+                                ${panel('form_field', field=create_form['monitoring_enabled'], reverse=True,
+                                        ng_attrs={'model': 'monitoringEnabled'})}
+                            </div>
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                            <div class="row" tal:condition="image">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="create-launchconfig-btn-step4">
+                                        <span i18n:translate="">Create Launch Configuration</span>
+                                    </button>
+                                    <a href="${request.route_url('launchconfigs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+           <div class="summary" ng-cloak="" tal:condition="image">
+                <h5 i18n:translate="" class="title">Summary</h5>
+                <div class="section">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Image:</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.name or image.id}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.platform_name}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Root device:</label></div>
+                        <div class="small-8 columns value">${image.root_device_type}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Manifest:</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.location}</div>
+                    </div>
+                </div>
+                <div class="section step2 hide">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Name:</label></div>
+                        <div class="small-8 columns value">{{ launchconfigName }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Type:</label></div>
+                        <div class="small-8 columns value">{{ instanceType }}</div>
+                    </div>
+                </div>
+                <div class="section step3 hide">
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Key pair:</label></div>
+                        <div class="small-8 columns value">{{ keyPair }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
+                        <div class="small-8 columns value">{{ securityGroup }}</div>
+                    </div>
+                </div>
+                <div class="section step4 hide">
+                    <div class="row">
+                        <div class="columns value" ng-show="userData || userDataFile">
+                            <i class="fi-check"></i> User data added
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="columns value" ng-show="monitoringEnabled">
+                            <i class="fi-check"></i> Monitoring enabled
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+                <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                    <!-- HELP CONTENT -->
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('create_keypair_dialog', keypair_form=keypair_form, generate_file_form=generate_file_form)}
+        ${panel('create_securitygroup_dialog', securitygroup_form=securitygroup_form, security_group_names=security_group_names)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/launchconfig_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

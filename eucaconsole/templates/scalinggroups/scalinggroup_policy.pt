@@ -1,0 +1,69 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/scalinggroup.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicy" ng-controller="ScalingGroupPolicyCtrl" ng-init="initPage()">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" ng-non-bindable="">${scaling_group.name}</a></li>
+                <li class="current"><a href="#">Create policy</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-7 columns">
+            <dl class="tabs" id="scalinggroup-subnav">
+                <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
+                <dd class="active"><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
+            </dl>
+            <div class="panel no-title">
+                <form action="${request.route_url('scalinggroup_policy_create', id=scaling_group.name)}" method="post" data-abide="">
+                    ${structure:policy_form['csrf_token']}
+                    <h6 i18n:translate="">New policy</h6>
+                    ${panel('form_field', field=policy_form['name'])}
+                    ${panel('form_field', field=policy_form['adjustment_direction'])}
+                    ${panel('form_field', field=policy_form['adjustment_amount'])}
+                    ${panel('form_field', field=policy_form['adjustment_type'])}
+                    ${panel('form_field', field=policy_form['cooldown'])}
+                    ${panel('form_field', field=policy_form['alarm'])}
+                    <div class="row controls-wrapper">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns">
+                            <a ng-click="revealAlarmModal()">Create alarm</a>
+                        </div>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
+                            Add Policy
+                        </button>
+                        <a class="cancel-link" i18n:translate=""
+                           href="${request.route_url('scalinggroup_view', id=scaling_group.name)}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+            </div>
+        </div>
+        <!--! Create Alarm modal dialog -->
+        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect)}
+        <!--! /end modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/pages/scalinggroup_policy.js')}"></script>
+</div>
+
+</metal:block>
+

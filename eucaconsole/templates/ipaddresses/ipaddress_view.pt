@@ -1,0 +1,86 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <style type="text/css">
+        #contentwrap { padding-bottom: 10rem; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for IP address:</strong>
+            <em ng-non-bindable="">${eip.public_ip if eip else request.matchdict.get('public_ip')}</em>
+        </h3>
+        <div class="large-7 columns">
+            <div class="panel has-actions" tal:condition="eip">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">
+                    <metal:actions metal:fill-slot="actions">
+                        <li tal:condition="not eip.instance_id">
+                            <a id="associate-ip-action" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
+                                Associate with an instance
+                            </a>
+                        </li>
+                        <li tal:condition="eip.instance_id">
+                            <a id="disassociate-ip-action" data-reveal-id="disassociate-ip-modal" i18n:translate="">
+                                Disassociate from instance
+                            </a>
+                        </li>
+                        <li>
+                            <a id="release-ip-action" data-reveal-id="release-ip-modal"
+                               i18n:translate="">Release IP address to cloud
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <div tal:condition="not eip.instance_id">
+                    <p i18n:translate="">This elastic IP address is not associated with any instances.</p>
+                </div>
+                <div tal:condition="eip.instance_id">
+                    <p>
+                        <span i18n:translate="">This elastic IP address is associated with instance</span>
+                        <a href="/instances/${eip.instance_id}" ng-non-bindable="">${eip.instance_name}</a>.
+                    </p>
+                </div>
+            </div>
+            <div tal:condition="not eip">
+                <p>This elastic IP Address is no longer available in this cloud.</p>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" tal:condition="eip" ng-show="isHelpExpanded" ng-cloak="">
+                <div tal:condition="not eip.instance_id">
+                    ${panel('help_ipaddresses', 'associate_ip')}
+                </div>
+                <div tal:condition="eip.instance_id">
+                    ${panel('help_ipaddresses', 'disassociate_ip')}
+                    ${panel('help_ipaddresses', 'release_ip')}
+                </div>
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        ${panel('ipaddress_dialogs', eip=eip, associate_form=associate_form,
+                disassociate_form=disassociate_form, release_form=release_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#instance_id').chosen({'width': '80%'});
+        });
+    </script>
+</div>
+
+</metal:block>
+

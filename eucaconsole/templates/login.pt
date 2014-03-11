@@ -1,0 +1,130 @@
+<metal:block use-macro="main_template">
+
+<div metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/css/pages/login.css')}" />
+</div>
+
+<div metal:fill-slot="main_content">
+
+    <!-- Notifications -->
+    <div id="notifications-wrapper" class="row">
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
+             tal:condition="https_required and request.scheme != 'https'">
+            <span i18n:translate="">
+                HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
+                in the configuration file.
+            </span>
+            <a href="#" class="close">&times;</a>
+        </div>
+        <div tal:condition="login_form_errors">
+          <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
+                  tal:repeat="login_error login_form_errors" ng-non-bindable="">
+              ${ login_error }
+              <a href="#" class="close">&times;</a>
+          </div>
+        </div>
+    </div>
+
+    <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
+         ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
+        <div class="large-12 large-centered columns">
+            <div class="row" id="login-forms">
+                <dl class="tabs" id="login-tabs" data-tab="">
+                    <dd id="euca-tab" class="active">
+                        <a href="#eucalyptus">
+                            <span class="hide-for-small" i18n:translate="">Log in to</span>&nbsp;<span i18n:translate="">Eucalyptus</span>
+                        </a>
+                    </dd>
+                    <dd id="aws-tab" tal:condition="layout.aws_enabled">
+                        <a href="#aws">
+                            <span i18n:translate="" class="hide-for-small">Log in to</span>&nbsp;<span i18n:translate="">AWS</span>
+                        </a>
+                    </dd>
+                </dl>
+                <div class="tabs-content">
+                    <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
+                        <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
+                              action="${request.route_url('login')}?login_type=Eucalyptus">
+                            <input type="hidden" name="came_from" value="${came_from}" />
+                            <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    ${structure:field}
+                                    <div tal:condition="field.errors" class="server-validation">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
+                                            ${error}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <input type="submit" class="submit button"
+                                           id="euca-login-button" value="Log in to Eucalyptus" />
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <a href="#" i18n:translate="">Forgot your password?</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="content large-10 medium-10 columns large-centered medium-centered"
+                         tal:condition="layout.aws_enabled" id="aws">
+                        <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
+                              action="${request.route_url('login')}?login_type=AWS">
+                            <input type="hidden" name="came_from" value="${came_from}" />
+                            <input type="hidden" id="duration" name="duration" value="${duration}" />
+                            <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
+                                <div class="small-12 columns field">
+                                    <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    ${structure:field}
+                                    <div tal:condition="field.errors" class="server-validation">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
+                                            ${error}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <input type="submit" class="submit button"
+                                           id="aws-login-button" value="Log in to AWS" />
+                                </div>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="row">
+                                <div class="small-12 columns">
+                                    <span i18n:translate="">Need access to an IAM account?</span><br />
+                                    <span i18n:translate="">Contact your</span>
+                                    <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
+                                </div>
+                            </div>
+                        </form>
+                        <form id="false-aws-login-form" method="post" name="aws_login_form"
+                              action="${request.route_url('login')}?login_type=AWS">
+                            <input type="hidden" id="aws_csrf_token" name="csrf_token"/>
+                            <input type="hidden" name="came_from" value="${came_from}"/>
+                            <input type="hidden" id="package" name="package"/>
+                            <input type="submit" id="false-aws-login-button" style="display:none;"/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix">&nbsp;</div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.cookie.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/hmac-sha256.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/enc-base64.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/login.js')}"></script>
+</div>
+
+</metal:block>

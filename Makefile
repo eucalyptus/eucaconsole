@@ -2,7 +2,7 @@
 
 # Add Compass watcher (Converts Sass .scss files to .css)
 watch:
-	compass watch koala/static
+	compass watch eucaconsole/static
 
 # Make i18n translations from Python and XHTML files
 translations:

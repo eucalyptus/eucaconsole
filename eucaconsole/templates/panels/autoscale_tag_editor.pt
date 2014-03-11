@@ -1,0 +1,50 @@
+
+<!--! Tag editor for Scaling Groups -->
+<div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor"
+     ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
+    <div class="columns"><h6 i18n:translate="">Tags</h6></div>
+    <div class="columns field">
+        <div class="items">
+            <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
+                <span title="{{ getSafeTitle(tag) }}" data-tooltip="">
+                    {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
+                </span>
+                <small ng-show="tag.propagate_at_launch" class="propagates">&nbsp;(<small i18n:translate="">propagate</small>)</small>
+                <a href="#" class="remove" ng-click="removeTag($index, $event)"
+                   title="Remove tag"><i class="fi-x"></i></a>
+            </span>
+        </div>
+        <div class="add-label">
+            <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
+                  ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
+        </div>
+        <div class="row tagentry controls-wrapper">
+            <div>
+                <div class="small-3 columns">
+                    <input id="propagate-checkbox" class="taginput propagate" type="checkbox" ng-model="newTagPropagate" />
+                    <span class="secondary" i18n:translate="" ng-click="togglePropagateCheckbox()"
+                          data-tooltip="" title="Propagate to instances launched by this scaling group"
+                          i18n:attributes="title">Propagate</span>
+                </div>
+                <div class="small-4 columns">
+                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
+                </div>
+                <div class="small-5 columns">
+                    <input class="taginput value" placeholder="value..." pattern="${layout.tag_pattern_value}" />
+                    <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length be longer than 128 chars</small>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div>
+                <div class="columns">
+                    <a href="#" ng-click="addTag($event)" class="button round tiny" id="add-tag-btn"
+                       title="Add tag" i18n:translate="">Add Tag</a>
+                </div>
+            </div>
+        </div>
+        <!--! Add class="debug" to textarea to view tags data posted by form -->
+        <textarea id="tags" name="tags" class="hidden"></textarea>
+    </div>
+    <script src="${request.static_url('eucaconsole:static/js/widgets/autoscale_tag_editor.js')}"></script>
+</div>

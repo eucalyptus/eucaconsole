@@ -1,0 +1,206 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/instances.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('instances', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Instances</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-2 columns" id="landing-page-filters">
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Instances</h3>
+            ${panel('landingpage_filters', filters_form=filters_form)}
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="launch-instance-btn"
+                   href="${request.route_url('instance_create')}">Launch New Instance</a>
+                <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
+                   href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} Instances</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>
+                    </li>
+                    <li ng-show="item.status == 'running'">
+                        <a i18n:translate="" ng-click="revealModal('connect', item)">Connect to instance</a>
+                    </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}/more" i18n:translate="">Launch more like this</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" id="create-launchconfig-action-gridview-{{item.id}}"
+                            ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}">
+                            Create launch configuration
+                        </a>
+                    </li>
+                    <li ng-show="item.status == 'running'">
+                        <a i18n:translate="" id="view-consoleoutput-action-gridview-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
+                            View console output
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
+                    </li>
+                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
+                    </li>
+                    <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                        <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
+                    </li>
+                    <li ng-show="item.status == 'running'">
+                        <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
+                    </li>
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                        <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">IM</span>
+                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a>
+                </div>
+                <div>
+                    <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
+                    <a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a>
+                </div>
+                <div>
+                    <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                    {{ item.placement }}
+                </div>
+                <div>
+                    <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">RD</span>
+                    {{ item.root_device }}
+                </div>
+                <div>
+                    <span class="label" title="Key name" i18n:attributes="title" data-tooltip="">KN</span>
+                    <a ng-show="item.key_name" ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name }}</a>
+                    <span ng-show="!item.key_name">None</span>
+                </div>
+                <div>
+                    <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
+                    <span ng-repeat="security_group in item.security_groups">
+                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name }}</a><span ng-show="!$last">, </span>
+                    </span>
+                </div>
+                <div>
+                    <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
+                    {{ item.launch_time | date:'${layout.angular_date_format}' }}
+                </div>
+            </div>
+            <metal:block metal:fill-slot="tile_footer">
+                <div ng-show="item.status"
+                     class="footer status {{ item.status.replace('-', '') }}">
+                    {{ item.status.replace('-', ' ') }}
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                </div>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name (ID)</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Image ID</th>
+                <th i18n:translate="">Zone</th>
+                <th i18n:translate="">Public IP</th>
+                <th i18n:translate="">Key name</th>
+                <th i18n:translate="">Sec group</th>
+                <th i18n:translate="">Launched</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
+                <td class="status">
+                    <span class="label radius {{ item.status }}">{{ item.status }}</span>
+                    <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                </td>
+                <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
+                <td>{{ item.placement }}</td>
+                <td><a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a></td>
+                <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
+                <td class="breakword">
+                    <div ng-repeat="security_group in item.security_groups">
+                        <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
+                    </div>
+                </td>
+                <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
+                <td>
+                   <span class="actions">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>
+                            </li>
+                            <li ng-show="item.status == 'running'">
+                                <a i18n:translate="" ng-click="revealModal('connect', item)">Connect to instance</a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}/more" i18n:translate="">Launch more like this</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" id="create-launchconfig-action-tileview-{{item.id}}"
+                                    ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}">
+                                    Create launch configuration
+                                </a>
+                            </li>
+                            <li ng-show="item.status == 'running'">
+                                <a i18n:translate="" id="view-consoleoutput-action-tileview-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
+                                    View console output
+                                </a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
+                            </li>
+                            <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
+                                <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
+                            </li>
+                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
+                            </li>
+                            <li ng-show="item.status == 'running'">
+                                <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
+                            </li>
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
+                                <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
+                            </li>
+                        </ul>
+                   </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form,
+                reboot_form=reboot_form, terminate_form=terminate_form)}
+        <!--! Batch-terminate instance modal dialog -->
+        ${panel('terminate_instances_dialog', batch_terminate_form=batch_terminate_form)}
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_instances', 'instance_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/instances.js')}"></script>
+</div>
+
+</metal:block>
+

@@ -7,10 +7,10 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from koala.forms.ipaddresses import AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm
-from koala.views import BaseView
-from koala.views.panels import form_field_row
-from koala.views.ipaddresses import IPAddressesView, IPAddressView
+from eucaconsole.forms.ipaddresses import AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm
+from eucaconsole.views import BaseView
+from eucaconsole.views.panels import form_field_row
+from eucaconsole.views.ipaddresses import IPAddressesView, IPAddressView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

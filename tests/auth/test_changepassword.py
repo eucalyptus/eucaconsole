@@ -6,8 +6,8 @@ from urllib2 import URLError
 
 from pyramid.testing import DummyRequest
 
-from koala.forms.login import EucaChangePasswordForm
-from koala.models.auth import EucaAuthenticator
+from eucaconsole.forms.login import EucaChangePasswordForm
+from eucaconsole.models.auth import EucaAuthenticator
 from tests import BaseTestCase, BaseFormTestCase
 
 

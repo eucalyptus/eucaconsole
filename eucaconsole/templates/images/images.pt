@@ -1,0 +1,136 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/images.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Images</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <!--! Notification to select image for Launch Instance wizard, (step 1).  Append ?launch=1 to url to display -->
+        <div id="notifications" tal:condition="request.params.get('launch')">
+            <div data-alert="alert" class="alert-box">
+                <span i18n:translate="">Select the image to launch your instance from below</span>
+                <a href="#" class="close">&times;</a>
+            </div>
+        </div>
+        <div class="large-2 columns" id="landing-page-filters">
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Images</h3>
+            ${panel('landingpage_filters', filters_form=filters_form)}
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                &nbsp;
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                    <li><a i18n:translate="" ng-href="${request.route_url('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
+                    <li><a ng-href="${request.route_url('launchconfig_new')}?image_id={{ item.id }}"
+                           i18n:translate="">Create scaling group launch configuration</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.id }}
+                </div>
+                <div>
+                    <span class="label" title="EMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'euca'">EM</span>
+                    <span class="label" title="AMI Name" i18n:attributes="title" data-tooltip="" tal:condition="layout.cloud_type == 'aws'">AM</span>
+                    {{ item.name }}
+                </div>
+                <div ng-show="item.platform_name">
+                    <span class="label" title="Platform" i18n:attributes="title" data-tooltip="">PL</span>
+                    {{ item.platform_name }}
+                </div>
+                <div ng-show="item.description">
+                    <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                    {{ item.description | limitTo: 64 }}
+                    <span ng-show="item.description.length > 64"
+                            data-tooltip="tooltip" class="label round has-tip ellipsis"
+                            title="{{ sanitizeContent(item.description) }}">...</span>
+                </div>
+                <div>
+                    <span class="label" title="Architecture" i18n:attributes="title" data-tooltip="">AR</span>
+                    {{ item.architecture }}
+                </div>
+                <div ng-show="item.owner_alias">
+                    <span class="label" title="Owner Alias" i18n:attributes="title" data-tooltip="">OW</span>
+                    {{ item.owner_alias }}
+                </div>
+                <div ng-show="item.root_device_type">
+                    <span class="label" title="Root Device Type" i18n:attributes="title" data-tooltip="">RD</span>
+                    {{ item.root_device_type }}
+                </div>
+            </div>
+            <div metal:fill-slot="tile_footer"></div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name (ID)</th>
+                <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
+                <th i18n:translate="">Description</th>
+                <th i18n:translate="">Arch</th>
+                <th i18n:translate="">Root Device</th>
+                <th i18n:translate="">Platform</th>
+                <th i18n:translate="">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
+                <td class="breakword"><span>{{ item.name | ellipsis: 64 }}</span></td>
+                <td class="breakword"><span>{{ item.description | ellipsis: 128 }}</span></td>
+                <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
+                <td><span class="label radius {{ item.root_device_type }}">{{ item.root_device_type }}</span></td>
+                <td>{{ item.platform_name }}</td>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View properties</a></li>
+                            <li><a i18n:translate="" ng-href="${request.route_url('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
+                            <li><a ng-href="${request.route_url('launchconfig_new')}?image_id={{ item.id }}"
+                                   i18n:translate="">Create scaling group launch configuration</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_images', 'image_landing_page', request.route_url('instance_create') )}
+    </div>
+</metal:block>
+
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script tal:condition="layout.cloud_type == 'aws'">
+        // Set "owned by Amazon" as default filter if on AWS
+        $(document).ready(function () {
+            if (document.URL.indexOf('owner_alias') === -1) {
+                $('select[name="owner_alias"]').find('option[value="amazon"]').prop('selected', true);
+            }
+        });
+    </script>
+</div>
+
+</metal:block>
+

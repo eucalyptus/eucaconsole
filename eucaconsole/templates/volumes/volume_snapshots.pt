@@ -1,0 +1,125 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/volume.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="VolumeSnapshots"
+         ng-controller="VolumeSnapshotsCtrl"
+         ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${volume_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!--! Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Snapshots for volume:</strong>
+            <em ng-non-bindable="">${volume_name}</em>
+        </h3>
+
+        <div class="large-8 columns">
+            <dl class="tabs" id="volume-subnav">
+                <dd><a href="${request.route_url('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
+                <dd class="active"><a href="#" i18n:translate="">Snapshots</a></dd>
+            </dl>
+            <div class="panel gridwrapper no-title">
+                <div class="tile add" id="create-snapshot">
+                    <a href="#" data-reveal-id="create-snapshot-modal">
+                        <div class="plus">+</div>
+                        <div i18n:translate="">Create a snapshot</div>
+                    </a>
+                </div>
+                <span class="dots" ng-show="initialLoading">&nbsp;</span>
+                <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
+                    <div class="header">
+                        <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.name || snapshot.id }}</a></strong>
+                        <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ snapshot.id }}"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a></li>
+                            <li><a ng-click="revealDeleteModal()" i18n:translate="">Delete snapshot</a></li>
+                        </ul>
+                    </div>
+                    <div class="content">
+                        <div>
+                            <span class="label" title="Size" i18n:attributes="title" data-tooltip="">GB</span>
+                            {{ snapshot.volume_size }} GB
+                        </div>
+                        <div>
+                            <span class="label" title="Snapshot ID" i18n:attributes="title" data-tooltip="">ID</span>
+                            {{ snapshot.id }}
+                        </div>
+                        <div>
+                            <span class="label" title="Start time" i18n:attributes="title" data-tooltip="">ST</span>
+                            {{ snapshot.start_time | date: '${layout.angular_date_format}' }}
+                        </div>
+                        <div>
+                            <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
+                            {{ snapshot.description | limitTo: 44 }}
+                        </div>
+                    </div>
+                    <div class="footer status has-progress {{ snapshot.status }}">
+                        <div class="completed" ng-show="snapshot.status == 'completed'">
+                            <span>{{ snapshot.status }}</span>
+                        </div>
+                        <div class="progress" ng-show="snapshot.status != 'completed'"><span
+                                class="meter" style="width: {{ snapshot.progress }}">{{ snapshot.progress }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-content">
+                <!--! Help goes here -->
+            </div>
+        </div>
+        <!--! modal dialogs -->
+        <div id="snapshot-dialogs">
+            <div id="create-snapshot-modal" class="reveal-modal small" data-reveal=""
+                tal:define="snapshot_tags {};">
+                <h3 i18n:translate="">Create snapshot from volume</h3>
+                <p><span i18n:translate="">Add a snapshot for</span> <strong ng-non-bindable="">${volume_name}</strong></p>
+                <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
+                      id="create-snapshot-form" data-abide="">
+                    ${structure:create_form['csrf_token']}
+                    ${panel('form_field', field=create_form.name, leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=create_form.description, leftcol_width=3, rightcol_width=9)}
+                    <hr />
+                    ${panel('tag_editor', tags=snapshot_tags)}
+                    <hr />
+                    <div>
+                        <input type="submit" class="button" value="Create Snapshot" i18n:attributes="value" />
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete snapshot</h3>
+                <p>
+                    <span i18n:translate="">Are you sure you want to delete snapshot</span>?
+                </p>
+                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, Delete Snapshot" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/pages/volume_snapshots.js')}"></script>
+</div>
+
+</metal:block>

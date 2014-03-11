@@ -6,7 +6,7 @@ import ConfigParser
 
 class TestKeyMgt(unittest.TestCase):
     def test_generate_keyini(self):
-        from koala.keymgt import generate_keyini
+        from eucaconsole.keymgt import generate_keyini
         ignored, filename = tempfile.mkstemp()
         try:
             generate_keyini(filename)
@@ -17,7 +17,7 @@ class TestKeyMgt(unittest.TestCase):
             os.remove(filename)
 
     def test_ensure_session_keys(self):
-        from koala.keymgt import ensure_session_keys
+        from eucaconsole.keymgt import ensure_session_keys
         ignored, filename = tempfile.mkstemp()
         os.remove(filename)
         settings = {'session.keyini': filename}

@@ -6,9 +6,9 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
-from koala.forms import BaseSecureForm
-from koala.forms.launchconfigs import CreateLaunchConfigForm
-from koala.views.launchconfigs import LaunchConfigsView
+from eucaconsole.forms import BaseSecureForm
+from eucaconsole.forms.launchconfigs import CreateLaunchConfigForm
+from eucaconsole.views.launchconfigs import LaunchConfigsView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

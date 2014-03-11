@@ -55,7 +55,7 @@ The CSS files are pre-processed using Sass, so you'll need to set up a Sass-to-C
 To set up Compass as the file watcher...
 
     sudo gem install compass
-    cd koala/static
+    cd eucaconsole/static
     compass watch .
 
 Once you have installed compass, there's a handy shortcut to enable the watcher.  From the repo root...

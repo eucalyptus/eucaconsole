@@ -1,0 +1,128 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/ipaddresses.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="ElasticIPsPage" ng-controller="ElasticIPsCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('ipaddresses', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Elastic IP addresses</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div class="large-2 columns" id="landing-page-filters">
+            <h3 id="pagetitle" class="landingpage" i18n:translate="">Elastic IPs</h3>
+            ${panel('landingpage_filters', filters_form=filters_form)}
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" id="allocate-ipaddresses-btn"
+                   data-reveal-id="allocate-ip-modal" i18n:translate="">
+                    Allocate Elastic IP Addresses
+                </a>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">IN</span>
+                    <span ng-show="item.instance_id" i18n:translate="">Associated with
+                        <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name }}</a></b>
+                    </span>
+                    <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('disassociate', item)">Disassociate from instance</a>
+                    </li>
+                    <li ng-show="!item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('associate', item)">Associate with instance</a>
+                    </li>
+                    <li ng-show="!item.instance_id">
+                        <a i18n:translate=""
+                           ng-click="revealModal('release', item)">Release to cloud</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Public IP address</th>
+                <th i18n:translate="">Assigned to instance</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
+                <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.ngid }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.ngid }}" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="item.instance_id">
+                                <a i18n:translate=""
+                                   ng-click="revealModal('disassociate', item)">Disassociate from instance</a>
+                            </li>
+                            <li ng-show="!item.instance_id">
+                                <a i18n:translate=""
+                                   ng-click="revealModal('associate', item)">Associate with instance</a>
+                            </li>
+                            <li><a i18n:translate=""
+                                   ng-click="revealModal('release', item)">Release to cloud</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="allocate-ip-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Allocate elastic IP addresses</h3>
+            <p> Once you allocate elastic IP addresses from the cloud, you may associate them with your instances.
+                The number of addresses allocated from the cloud may be fewer than you request, and will be limited to the maximum number
+                you are allowed to manage.
+            </p>
+            <p i18n:translate="">How may IP addresses would you like to allocate?</p>
+            <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
+                ${structure:allocate_form['csrf_token']}
+                ${panel('form_field', field=allocate_form.ipcount)}
+                <div class="row">
+                    <div class="small-4 columns"></div>
+                    <div class="small-8 columns">
+                        <button type="submit" class="button radius" id="allocate-ipaddresses-dialog-btn"
+                                i18n:translate="">
+                            Allocate Addresses From Cloud
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('ipaddress_dialogs', associate_form=associate_form,
+                disassociate_form=disassociate_form, release_form=release_form, landingpage=True)}
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_ipaddresses', 'ipaddress_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/ipaddresses.js')}"></script>
+</div>
+
+</metal:block>
+

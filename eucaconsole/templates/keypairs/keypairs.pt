@@ -1,0 +1,87 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/keypairs.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="KeypairsPage" ng-controller="KeypairsCtrl">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('keypairs', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Key pairs</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-2 columns" id="landing-page-filters">
+            <!--! Filters go here -->
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button small" i18n:translate="" id="create-keypair-btn"
+                    href="${request.route_url('keypair_view', id='new')}">Create New Key Pair</a>
+                &nbsp;&nbsp;
+                <a class="button small" i18n:translate=""
+                    href="${request.route_url('keypair_view', id='new2')}">Import Public Key</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Keypair Name" i18n:attributes="title" data-tooltip="">NM</span>
+                    {{ item.name }}
+                </div>
+                <div>
+                    <span class="label" title="Keypair Fingerprint" i18n:attributes="title" data-tooltip="">FP</span>
+                    {{ item.fingerprint }}
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.name">
+                        <a i18n:translate=""
+                           ng-click="revealModal('delete', item.name)">Delete key</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Fingerprint</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td>{{ item.fingerprint }}</td>
+                <td>
+                    <span class="actions">
+                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="item.name">
+                                <a i18n:translate=""
+                                   ng-click="revealModal('delete', item.name)">Delete key</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('keypair_dialogs', delete_form=delete_form, landingpage=True)}
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_keypairs', 'keypair_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/keypairs.js')}"></script>
+</div>
+
+</metal:block>
+

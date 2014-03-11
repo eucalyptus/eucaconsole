@@ -1,0 +1,129 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/instance_launch_more.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="LaunchMoreInstances"
+         ng-controller="LaunchMoreInstancesCtrl" ng-init="initController()">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('instances')}" i18n:translate="">Instances</a></li>
+                <li class="current"><a i18n:translate="" ng-non-bindable="">Launch more instances like ${instance_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-8 columns">
+            <div class="panel">
+                <form action="${request.route_url('instance_more_launch', id=instance.id)}" method="post"
+                      data-abide="abide" enctype="multipart/form-data" id="launch-more-form">
+                    ${structure:launch_more_form['csrf_token']}
+                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2,
+                            leftcol_width=8, rightcol_width=4, ng_attrs={'model': 'instanceNumber'})}
+                    <hr />
+                    <div class="row controls-wrapper" ng-cloak="">
+                        <div class="small-4 columns">
+                            <label i18n:translate="">Names</label>
+                        </div>
+                        <div class="small-8 columns field inline">
+                            <input class="name" ng-repeat="name in buildNumberList(instanceNumber)"
+                                   name="name_{{ $index }}" placeholder="instance{{ $index + 1 }}" />
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${image.name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
+                        <div class="small-8 columns value">${image.id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
+                        <div class="small-8 columns value">${image.platform_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Type</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Zone</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Key pair</label></div>
+                        <div class="small-8 columns value" ng-non-bindable="">${instance.key_name or 'None'}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
+                        <div class="small-8 columns value">
+                            <div tal:repeat="group instance.groups" ng-non-bindable="">${group.name}</div>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Tags</label></div>
+                        <div class="small-8 columns value">
+                            <div tal:repeat="(tagname, tagvalue) instance.tags.items()">
+                                <span tal:condition="all([tagname != 'Name', not tagname.startswith('aws:')])" ng-non-bindable="">
+                                    ${tagname} = ${tagvalue}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="expando" id="advanced-section" ng-cloak="">
+                        <h6 class="title" >
+                            <a ng-click="toggleContent()">
+                                <i class="fi-plus" ng-show="!expanded"></i>
+                                <i class="fi-minus" ng-show="expanded"></i>
+                                &nbsp;<span i18n:translate="">Advanced</span>
+                            </a>
+                        </h6>
+                        <div class="content" ng-show="expanded">
+                            ${panel('form_field', field=launch_more_form['userdata'])}
+                            ${panel('form_field', field=launch_more_form['userdata_file'])}
+                            ${panel('form_field', field=launch_more_form['kernel_id'])}
+                            ${panel('form_field', field=launch_more_form['ramdisk_id'])}
+                            ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
+                            ${panel('form_field', field=launch_more_form['private_addressing'])}
+                            <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
+                                Storage
+                            </h6>
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <button type="submit" class="button" id="save-changes-btn">
+                                <span i18n:translate="">Launch Instance</span><span ng-show="instanceNumber > 1">s</span>
+                            </button>
+                            <a href="${request.route_url('instance_view', id=instance.id)}" id="cancel-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                ${panel('help_instances', 'launch_more_like_this')}
+            </div>
+            <div class="help-content" ng-show="expanded && isHelpExpanded" ng-cloak="">
+                ${panel('help_instances', 'launch_more_like_this_advanced_option')}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/instance_launch_more.js')}"></script>
+</div>
+
+</metal:block>

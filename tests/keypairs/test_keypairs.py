@@ -6,10 +6,10 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 """
 from pyramid import testing
 
-from koala.forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
-from koala.views import BaseView
-from koala.views.panels import form_field_row
-from koala.views.keypairs import KeyPairsView, KeyPairView
+from eucaconsole.forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
+from eucaconsole.views import BaseView
+from eucaconsole.views.panels import form_field_row
+from eucaconsole.views.keypairs import KeyPairsView, KeyPairView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
