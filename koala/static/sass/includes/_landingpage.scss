@@ -139,6 +139,9 @@ $dropdown-border-color: $euca-green;
         .f-dropdown a {
             color: $euca-darkgreen;
             font-weight: normal;
+            overflow: visible;
+            white-space: normal;
+            text-overflow: inherit;
         }
     }
     .content {
