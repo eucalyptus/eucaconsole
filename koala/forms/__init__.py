@@ -146,7 +146,7 @@ class ChoicesManager(object):
         for kernel_image in kernel_images:
             if kernel_image.id:
                 choices.append((kernel_image.id, kernel_image.id))
-        if image:
+        if image and image.kernel_id is not None:
             choices.append((image.kernel_id, image.kernel_id))
         return sorted(set(choices))
 
