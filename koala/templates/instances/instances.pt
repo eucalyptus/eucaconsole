@@ -38,13 +38,13 @@
                         <a ng-href="${prefix}/{{ item.id }}/more" i18n:translate="">Launch more like this</a>
                     </li>
                     <li>
-                        <a i18n:translate="" id="create-launchconfig-action-gridview"
+                        <a i18n:translate="" id="create-launchconfig-action-gridview-{{item.id}}"
                             ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}">
                             Create launch configuration
                         </a>
                     </li>
                     <li ng-show="item.status == 'running'">
-                        <a i18n:translate="" id="view-consoleoutput-action-gridview" ng-click="revealConsoleOutputModal(item.id)">
+                        <a i18n:translate="" id="view-consoleoutput-action-gridviewi-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
                             View console output
                         </a>
                     </li>
@@ -150,13 +150,13 @@
                                 <a ng-href="${prefix}/{{ item.id }}/more" i18n:translate="">Launch more like this</a>
                             </li>
                             <li>
-                                <a i18n:translate="" id="create-launchconfig-action-tileview"
+                                <a i18n:translate="" id="create-launchconfig-action-tileview-{{item.id}}"
                                     ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}">
                                     Create launch configuration
                                 </a>
                             </li>
                             <li ng-show="item.status == 'running'">
-                                <a i18n:translate="" id="view-consoleoutput-action-tileview" ng-click="revealConsoleOutputModal(item.id)">
+                                <a i18n:translate="" id="view-consoleoutput-action-tileview-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
                                     View console output
                                 </a>
                             </li>
