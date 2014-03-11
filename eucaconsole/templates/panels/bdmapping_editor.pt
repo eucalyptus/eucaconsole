@@ -1,0 +1,90 @@
+<!--! Block Device Mapping editor -->
+<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
+     ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
+    <div class="columns" tal:condition="image and image.root_device_type == 'ebs'">
+        <hr />
+        <h6 i18n:translate="" class="storage-label">Storage</h6>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th i18n:translate="" class="volume">Volume</th>
+                    <th i18n:translate="" class="mapping">Mapping</th>
+                    <th i18n:translate="" class="snapshot">Snapshot</th>
+                    <th class="size">
+                        <span i18n:translate="">Size</span>
+                        <span i18n:translate="" class="hide-for-small">(GB)</span>
+                    </th>
+                    <th class="delete-on-terminate">
+                        <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
+                        <span i18n:translate="" class="show-for-small"
+                              title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
+                    </th>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(key, val) in bdMapping">
+                    <td>
+                        <span ng-show="key === '/dev/sda'">Root</span>
+                        <span ng-show="key !== '/dev/sda'">{{ val.volume_type }}</span>
+                    </td>
+                    <td>{{ key }}</td>
+                    <td>{{ val.snapshot_id }}</td>
+                    <td>
+                        <input class="number" value="{{ val.size }}" required="required" pattern="integer"
+                               ng-keyup="updateRootDevice(key, $event)" ng-show="val.volume_type !== 'ephemeral'">
+                        <small class="error" i18n:translate="">Size is required</small>
+                    </td>
+                    <td>
+                        <span ng-show="val.volume_type !== 'ephemeral'">
+                            <input type="checkbox" ng-checked="val.delete_on_termination === true" ng-show="key !== '/dev/sda'" />
+                        </span>
+                    </td>
+                    <td>
+                        <a ng-show="key !== '/dev/sda'" class="circle remove has-tip" ng-click="removeDevice(key)"
+                           title="Remove device" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row" id="new-blockdevice-entry">
+            <div class="medium-2 columns">
+                <label i18n:translate="">Volume:</label>
+                <select name="volume_type" ng-model="newVolumeType">
+                    <option value="EBS">EBS</option>
+                    <!--! There can be only one ephemeral device in Eucalyptus -->
+                    <option value="ephemeral"
+                            tal:attributes="ng-disabled 'ephemeralCount &gt;= 1' if layout.cloud_type=='euca' else None">
+                        Ephemeral ${'0' if layout.cloud_type == 'euca' else '{{ ephemeralCount }}'}
+                    </option>
+                </select>
+            </div>
+            <div class="medium-2 columns">
+                <label i18n:translate="">Mapping:</label>
+                <input type="text" name="path" id="new-mapping-path" ng-model="newMappingPath" />
+            </div>
+            <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
+                <label i18n:translate="">Create from snapshot:</label>
+                <select name="snapshot_id" ng-model="newSnapshotID">
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                </select>
+            </div>
+            <div class="medium-1 columns" ng-show="newVolumeType !== 'ephemeral'">
+                <label i18n:translate="">Size:</label>
+                <input class="number" id="new-size" ng-model="newSize" />
+            </div>
+            <div class="medium-3 columns" ng-show="newVolumeType !== 'ephemeral'">
+                <label i18n:translate="">Delete on terminate:</label>
+                <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
+            </div>
+        </div>
+        <div>
+            <a class="button secondary round tiny" ng-click="addDevice()" i18n:translate="">
+                Add device
+            </a>
+        </div>
+        <hr />
+        <textarea id="bdmapping" name="block_device_mapping" class="hidden"></textarea>
+    </div>
+    <script src="${request.static_url('eucaconsole:static/js/widgets/bdmapping_editor.js')}"></script>
+</div>

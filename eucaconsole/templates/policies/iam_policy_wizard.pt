@@ -1,0 +1,153 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/iam_policy_wizard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl"
+         ng-init="initController(${controller_options})">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Create IAM policy</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <div id="pagetitle">
+            <h3 ng-non-bindable="">
+                <strong i18n:translate="">Add access policy for:</strong>
+                <em>
+                    <span>${request.params.get('type', '').capitalize()}</span>
+                    <span>${request.params.get('id', '')}</span>
+                </em>
+            </h3>
+        </div>
+        <div class="large-7 columns">
+            <div class="wizard no-title" ng-cloak="">
+                <dl class="tabs" data-tab="">
+                    <dd class="active">
+                        <a id="select-template-tab" href="#step1">
+                            <b i18n:translate="">Select a template</b>
+                        </a>
+                    </dd>
+                    <dd>
+                        <a id="custom-policy-tab" href="#step2">
+                            <b i18n:translate="">Create a custom policy</b>
+                        </a>
+                    </dd>
+                </dl>
+                <div class="tabs-content">
+                    <!--! Tab 1: Select a template -->
+                    <div class="content active" id="step1">
+                        <div class="columns">
+                            <div class="row choice">
+                                <div class="small-10 columns">
+                                    <strong i18n:translate="">Account administrator access</strong>
+                                    <p i18n:translate="">Provides full access to all resources, including users and groups</p>
+                                </div>
+                                <div class="small-2 columns">
+                                    <a ng-click="selectPolicy('admin_access')" class="button small round" i18n:translate="">Select</a>
+                                </div>
+                            </div>
+                            <div class="row choice">
+                                <div class="small-10 columns">
+                                    <strong i18n:translate="">User access</strong>
+                                    <p i18n:translate="">Provides full access to all resources, but not users and groups</p>
+                                </div>
+                                <div class="small-2 columns">
+                                    <a ng-click="selectPolicy('user_access')" class="button small round" i18n:translate="">Select</a>
+                                </div>
+                            </div>
+                            <div class="row choice">
+                                <div class="small-10 columns">
+                                    <strong i18n:translate="">Monitor access</strong>
+                                    <p i18n:translate="">Provides read-only access to all resources, with no access to users and groups</p>
+                                </div>
+                                <div class="small-2 columns">
+                                    <a ng-click="selectPolicy('monitor_access')" class="button small round" i18n:translate="">Select</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--! Tab 2: Create a custom policy -->
+                    <div class="content" id="step2">
+                        <div class="choice">
+                            <div class="expando" ng-init="policyGenExpanded = true" ng-cloak="">
+                                <strong class="title" >
+                                    <a ng-click="policyGenExpanded = !policyGenExpanded">
+                                        <i class="fi-plus" ng-show="!policyGenExpanded"></i>
+                                        <i class="fi-minus" ng-show="policyGenExpanded"></i>
+                                        <strong i18n:translate="">Use the policy generator</strong>
+                                    </a>
+                                </strong>
+                            </div>
+                            <p class="has-expando" i18n:translate="">
+                                This tool helps you easily create a policy without needing to understand policy language
+                            </p>
+                            <div ng-show="policyGenExpanded">
+                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form,
+                                        resource_choices=resource_choices)}
+                            </div>
+                        </div>
+                        <div class="choice">
+                            <div class="expando" ng-init="fileUploadExpanded = false" ng-cloak="">
+                                <strong class="title" >
+                                    <a ng-click="fileUploadExpanded = !fileUploadExpanded">
+                                        <i class="fi-plus" ng-show="!fileUploadExpanded"></i>
+                                        <i class="fi-minus" ng-show="fileUploadExpanded"></i>
+                                        <strong i18n:translate="">Upload or write a file (advanced)</strong>
+                                    </a>
+                                </strong>
+                            </div>
+                            <p class="has-expando" i18n:translate="">
+                                You may write a policy using policy syntax by simply copy/pasting or typing directly
+                                into the Policy box in the panel on the right.
+                            </p>
+                            <div ng-show="fileUploadExpanded" class="fileupload">
+                                <span>Or:</span>
+                                ${create_form['policy_file']}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix">&nbsp;</div>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <!--! Preview Policy -->
+            <div id="policy-preview" ng-cloak="">
+                <h6 class="title">View/Edit policy</h6>
+                <form action="${request.route_url('iam_policy_create')}" id="iam-policy-form"
+                      method="post" data-abide="abide" enctype="multipart/form-data">
+                    ${structure:create_form['csrf_token']}
+                    <input type="hidden" name="type" value="${request.params.get('type', '')}" />
+                    <input type="hidden" name="id" value="${request.params.get('id', '')}" />
+                    <label><strong i18n:translate="">Name</strong></label>
+                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
+                        leftcol_width=0, rightcol_width=12)}
+                    <label><strong i18n:translate="">Policy</strong></label>
+                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
+                        leftcol_width=0, rightcol_width=12)}
+                    <div>
+                        <button type="submit" class="button" id="create-iam-policy-btn">
+                            <span i18n:translate="">Create Policy</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/iam_policy_wizard.js')}"></script>
+</div>
+
+</metal:block>
+

@@ -7,11 +7,11 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from koala.forms import BaseSecureForm
-from koala.forms.volumes import (
+from eucaconsole.forms import BaseSecureForm
+from eucaconsole.forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm)
-from koala.views import TaggedItemView
-from koala.views.volumes import VolumesView, VolumesJsonView, VolumeView
+from eucaconsole.views import TaggedItemView
+from eucaconsole.views.volumes import VolumesView, VolumesJsonView, VolumeView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

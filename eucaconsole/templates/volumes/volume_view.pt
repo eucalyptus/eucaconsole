@@ -1,0 +1,159 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/volume.css')}" />
+    <style type="text/css">
+        input#size { width: 4rem; }
+        input#name { width: 50%; }
+        select#zone { width: 75%; }
+    </style>
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="VolumePage" ng-controller="VolumePageCtrl"
+         ng-init="initController('${request.route_url(
+                 'volume_state_json', id=volume.id) if volume else ''}',
+                 '${volume.status if volume else ''}',
+                 '${volume.attach_data.status if volume else ''}'
+                 )">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${volume_name or 'Create volume'}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block tal:condition="volume">
+                <strong i18n:translate="">Details for volume:</strong>
+                <em ng-non-bindable="">${volume_name}</em>
+            </metal:block>
+            <metal:block tal:condition="not volume">
+                <strong i18n:translate="">Create new volume</strong>
+            </metal:block>
+        </h3>
+        <div class="large-8 columns"
+             tal:define="form_action request.route_url('volume_update', id=volume.id)
+                         if volume else request.route_url('volume_create');
+                         volume_tags volume.tags if volume else {};
+                         html_attrs {'disabled': 'disabled'} if volume else {};">
+            <dl class="tabs" id="volume-subnav" tal:condition="volume">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+            </dl>
+            <div class="panel ${'has-actions' if volume else ''}">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
+                    <metal:actions metal:fill-slot="actions">
+                        <li ng-show="volumeStatus == 'available'">
+                            <a href="#" data-reveal-id="attach-volume-modal"
+                               id="attach-volume-action" i18n:translate="">Attach to instance</a>
+                        </li>
+                        <li ng-show="volumeStatus == 'in-use'">
+                            <a href="#" data-reveal-id="detach-volume-modal"
+                               id="detach-volume-action" i18n:translate="">Detach from instance</a>
+                        </li>
+                        <li ng-show="volumeStatus == 'available'">
+                            <a id="delete-volume-action" data-reveal-id="delete-volume-modal" i18n:translate="">
+                                Delete volume
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                    ${structure:volume_form['csrf_token']}
+                    <h6 i18n:translate="">Volume</h6>
+                    <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <span class="label radius status {{ volumeStatus }}">{{ volumeAttachStatus || volumeStatus }}</span>
+                            &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
+                         tal:condition="instance_id">
+                        <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
+                        <div class="small-8 columns value">
+                            <a href="${request.route_url('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
+                        </div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
+                        <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
+                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.snapshot_id}</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Volume size</label></div>
+                        <div class="small-8 columns field inline">${volume.size} GB</div>
+                    </div>
+                    <div tal:condition="not volume" tal:omit-tag="">
+                        <p><span i18n:translate="">You should create your volume in the same availability zone as the instance with which you want to use it.</span>
+                        </p>
+                        ${panel('form_field', field=volume_form['zone'], **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
+                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.zone}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="volume">
+                        <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
+                        <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
+                    </div>
+                    <hr />
+                    ${panel('tag_editor', tags=volume_tags)}
+                    <hr />
+                    <div ng-show="volumeStatus == 'deleted'">
+                        <span i18n:translate="">Volume was successfully deleted.</span>
+                        <a href="${request.route_url('volumes')}" i18n:translate="">Return to volumes page</a>
+                    </div>
+                    <div>
+                        <button type="submit" class="button">
+                            <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save Changes</span>
+                            <span tal:condition="not volume" i18n:translate="">Create Volume</span>
+                        </button>
+                        <a href="${request.route_url('volumes')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded" ng-cloak="">
+                ${panel('help_volumes', 'create_volume')}
+            </div>
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
+                ${panel('help_volumes', 'manage_snapshot', request.route_url('volume_snapshots', id=volume.id))}
+            </div>
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
+                ${panel('help_volumes', 'delete_volume')}
+            </div>
+            <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak=""> 
+                <!--! Tag editor help content -->
+                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
+                    <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
+                </metal:block>
+            </div>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('volume_dialogs', volume=volume, volume_name=volume_name, instance_name=instance_name,
+                attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/volume.js')}"></script>
+</div>
+</metal:block>

@@ -1,0 +1,216 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/users.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage(
+                '${request.route_url('user_view', name='_name_')}',
+                '${request.route_url('group_view', name='_name_')}',
+                '${request.route_url('user_summary_json', name='_name_')}',
+                '${request.route_url('user_disable', name='_name_')}',
+                '${request.route_url('user_enable', name='_name_')}',
+                '${request.route_url('file_download')}')">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">IAM users</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-2 columns" id="landing-page-filters">
+            <!--! Filters go here -->
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="add-user-btn"
+                   href="${request.route_url('user_view', name='new')}">Create New Users</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.user_enabled">
+                        <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
+                    </li>
+                    <li ng-show="item.user_enabled">
+                        <a i18n:translate="" ng-click="revealModalXHR('disable', item)">Disable</a>
+                    </li>
+                    <li ng-show="item.user_enabled == false">
+                        <a i18n:translate="" ng-click="revealModalXHR('enable', item)">Enable</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{ item.user_name }}" ng-show="item.user_enabled">{{ item.user_name }}</a>
+                <span ng-show="!item.user_enabled">{{ item.user_name }}</span>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div ng-show="item.num_groups > 0">
+                    <span class="label" title="Groups" i18n:attributes="title" data-tooltip="">GR</span>
+                    <a ng-click="linkUser(item, '#group-section')">{{ item.num_groups }}</a>
+                </div>
+                <div ng-show="item.has_password && item.user_enabled">
+                    <span class="label" title="Password Set" i18n:attributes="title" data-tooltip="">PW</span>
+                    <a ng-click="linkUser(item, '#security-tab')"><i class="fi-check"></i></a>
+                </div>
+                <div ng-show="item.num_keys > 0 && item.user_enabled">
+                    <span class="label" title="Access Keys" i18n:attributes="title" data-tooltip="">AK</span>
+                    <a ng-click="linkUser(item, '#security-tab')">{{ item.num_keys }}</a>
+                </div>
+                <div>
+                    <span class="label" title="Creation Time" i18n:attributes="title" data-tooltip="">CT</span>
+                    {{ item.create_date | date:'${layout.angular_date_format}' }}
+                </div>
+            </div>
+            <div metal:fill-slot="tile_footer">
+                <div ng-show="!item.has_password && item.user_enabled"><a class="link" ng-click="linkUser(item, '#security-tab')" i18n:translate="">Does not have password</a></div>
+                <div ng-show="item.num_keys == 0 && item.user_enabled"><a class="link" ng-click="linkUser(item, '#security-tab')" i18n:translate="">Does not have access keys</a></div>
+                 <span class="footer status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
+                 <span class="footer status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
+                 <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">User name</th>
+                <th i18n:translate="">Status</th>
+                <th i18n:translate="">Groups</th>
+                <th i18n:translate="">Password</th>
+                <th i18n:translate="">Access Keys</th>
+                <th i18n:translate="">Creation Time</th>
+                <th class="actions" i18n:translate="">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id breakword">
+                    <a ng-href="${prefix}/{{ item.user_name }}" ng-show="item.user_enabled">{{ item.user_name | ellipsis: 30 }}</a>
+                    <span ng-show="!item.user_enabled">{{ item.user_name | ellipsis: 30 }}</span>
+                </td>
+                <td>
+                    <span class="label radius item status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
+                    <span class="label radius item status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
+                    <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
+                </td>
+                <td>
+                    <a ng-click="linkUser(item, '#group-section')" ng-show="item.user_enabled">{{ item.num_groups }}</a>
+                </td>
+                <td>
+                    <span ng-show="item.has_password && item.user_enabled">
+                        <a ng-click="linkUser(item, '#security-tab')"><i class="fi-check"></i></a>
+                    </span>
+                </td>
+                <td>
+                    <span ng-show="item.num_keys && item.user_enabled">
+                        <a ng-click="linkUser(item, '#security-tab')">{{ item.num_keys }} <span i18n:translate="">active</span></a>
+                    </span>
+                </td>
+                <td>
+                    {{ item.create_date | date:'${layout.angular_date_format}' }}
+                </td>
+                <td>
+                  <span class="actions">
+                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                        <li ng-show="item.user_enabled">
+                            <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
+                        </li>
+                        <li ng-show="item.user_enabled">
+                            <a i18n:translate="" ng-click="revealModalXHR('disable', item)">Disable</a>
+                        </li>
+                        <li ng-show="item.user_enabled == false">
+                            <a i18n:translate="" ng-click="revealModalXHR('enable', item)">Enable</a>
+                        </li>
+                        <li>
+                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                        </li>
+                    </ul>
+                  </span>
+                </td>
+            </metal:block>
+        </div>
+        <div id="help-modal" class="reveal-modal medium" data-reveal="">
+            <h3 i18n:translate="">Help</h3>
+            <p>
+                Need some content
+            </p>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="user-dialogs">
+            <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Delete user {{ user_name }}</h3>
+                <p>
+                    <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong>{{ user_name }}</strong></span>?
+                </p>
+                <form method="post" id="delete-form" action="${request.route_url('user_delete', name='_name_')}">
+                    ${structure:delete_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Disable user {{ user_name }}</h3>
+                <p>
+                    <span i18n:translate="">Disabling a user deletes their password and prevents them from executing any actions against the cloud. The user's other information is maintained until you either make the user active again or delete them.</span>
+                    <p>&nbsp;</p>
+                    <span i18n:translate="">Are you sure you want to disable <strong>{{ user_name }}</strong></span>?
+                </p>
+                <form id="disable-form" ng-submit="disableUser($event)">
+                    ${structure:disable_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Yes, Disable User" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Enable user {{ user_name }}</h3>
+                <p>
+                    <span i18n:translate="">When this user is active, they will be able to execute actions against the cloud.</span>
+                </p>
+                <p>
+                    <span i18n:translate="">The user will need a new password only to access the cloud from the management console. If you want to set a specific password rather than let the system generate a random one, you can do that from the user's detail page once they are active.</span>
+                </p>
+                <form id="enable-form" ng-submit="enableUser($event)">
+                    ${structure:enable_form['csrf_token']}
+                    ${panel('form_field', field=enable_form['random_password'], reverse="true", leftcol_width=2, rightcol_width=10)}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div class="small-4 columns">&nbsp;</div>
+                        <div class="small-8 columns field inline">
+                            <input type="submit" class="button" value="Enable User" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
+    </div>
+</div>
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_users', 'user_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/users.js')}"></script>
+</div>
+
+</metal:block>
+

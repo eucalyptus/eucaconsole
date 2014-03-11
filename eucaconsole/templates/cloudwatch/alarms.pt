@@ -1,0 +1,85 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/alarms.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="AlarmsPage" ng-controller="AlarmsCtrl">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('alarms', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">CloudWatch Alarms</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+
+        <div class="large-2 columns" id="landing-page-filters">
+            <!--! Filters go here -->
+        </div>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="">Create alarm</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                    <li>
+                        <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                    </li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="Trigger" i18n:translate="">TR</span>
+                    <span i18n:translate="">When the</span>
+                    {{ item.statistic }}
+                    {{ item.metric }}
+                    <span i18n:translate="">is</span>
+                    {{ item.comparison }}
+                    {{ item.threshold }}
+                    {{ item.unit || 'instances' }}
+                </div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">ID</th>
+                <th i18n:translate="">Triggered</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id">{{ item.name || item.id }}</td>
+                <td>
+                    <span i18n:translate="">When the</span>
+                    {{ item.statistic }}
+                    {{ item.metric }}
+                    <span i18n:translate="">is</span>
+                    {{ item.comparison }}
+                    {{ item.threshold }}
+                    {{ item.unit }}
+                </td>
+                <td>
+                   <span class="actions">
+                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
+                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
+                            </li>
+                        </ul>
+                   </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs -->
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_url('eucaconsole:static/js/pages/alarms.js')}"></script>
+</div>
+
+</metal:block>
+

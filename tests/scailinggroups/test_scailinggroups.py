@@ -7,11 +7,11 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from koala.forms.scalinggroups import (
+from eucaconsole.forms.scalinggroups import (
     BaseScalingGroupForm, ScalingGroupCreateForm, ScalingGroupEditForm, ScalingGroupDeleteForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm, ScalingGroupInstancesMarkUnhealthyForm, ScalingGroupInstancesTerminateForm)
-from koala.views import BaseView
-from koala.views.panels import form_field_row
-from koala.views.scalinggroups import ScalingGroupsView, BaseScalingGroupView, ScalingGroupView
+from eucaconsole.views import BaseView
+from eucaconsole.views.panels import form_field_row
+from eucaconsole.views.scalinggroups import ScalingGroupsView, BaseScalingGroupView, ScalingGroupView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

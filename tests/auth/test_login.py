@@ -8,8 +8,8 @@ import boto
 from pyramid.security import Authenticated
 from pyramid.testing import DummyRequest
 
-from koala.forms.login import AWSLoginForm, EucaLoginForm
-from koala.models.auth import AWSAuthenticator, EucaAuthenticator, User, groupfinder
+from eucaconsole.forms.login import AWSLoginForm, EucaLoginForm
+from eucaconsole.models.auth import AWSAuthenticator, EucaAuthenticator, User, groupfinder
 from tests import BaseTestCase, BaseFormTestCase
 
 

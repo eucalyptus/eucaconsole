@@ -40,9 +40,9 @@ message_extractors = {'.': [
 ]}
 
 setup(
-    name='koala',
-    version='4.0.0-prealpha',
-    description='Koala, the Eucalyptus Management Console',
+    name='eucaconsole',
+    version='4.0.0',
+    description='Eucalyptus Management Console',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
         "Programming Language :: Python",
@@ -63,6 +63,6 @@ setup(
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
-    main = koala:main
+    main = eucaconsole:main
     """,
 )

@@ -8,7 +8,7 @@ class Mock(object):
 
 class TestBraces(unittest.TestCase):
     def test_it(self):
-        from koala.chamext import escape_double_braces
+        from eucaconsole.chamext import escape_double_braces
         f = escape_double_braces('{{ hello world }}')
         res = f(None, None)
         self.assertEqual(len(res), 1)

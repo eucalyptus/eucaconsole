@@ -8,10 +8,10 @@ from collections import namedtuple
 
 from pyramid import testing
 
-from koala.forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
-from koala.views import TaggedItemView
-from koala.views.panels import form_field_row, tag_editor, securitygroup_rules
-from koala.views.securitygroups import SecurityGroupsView, SecurityGroupView
+from eucaconsole.forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm
+from eucaconsole.views import TaggedItemView
+from eucaconsole.views.panels import form_field_row, tag_editor, securitygroup_rules
+from eucaconsole.views.securitygroups import SecurityGroupsView, SecurityGroupView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 

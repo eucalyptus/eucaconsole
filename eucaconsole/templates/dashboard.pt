@@ -1,0 +1,185 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/dashboard.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
+         ng-init="initController('${request.route_url('dashboard_json')}')">
+        <div id="pagetitle">
+            <h3 i18n:translate="">Dashboard</h3>
+            <div id="zone-selector">
+                <a href="#" data-dropdown="zone-dropdown">
+                    <span ng-if="selectedZone">{{ selectedZone }}</span>
+                    <span ng-if="!selectedZone" i18n:translate="">All availability zones</span>
+                    <span class="down-caret"></span>
+                </a>
+                <ul id="zone-dropdown" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="selectedZone !== ''">
+                        <a ng-click="setZone('')" i18n:translate="">All availability zones</a>
+                    </li>
+                    <li tal:repeat="zone availability_zones" ng-show="selectedZone !== '${zone.name}'">
+                        <a ng-click="setZone('${zone.name}')" ng-non-bindable="">${zone.name}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+            <li class="panel" id="instances-running">
+                <div class="tile" id="running">
+                    <h5 class="subheader" i18n:translate="">Running instances</h5>
+                    <div class="content">
+                        <a href="${request.route_url('instances')}?state=running">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="running-instances-count" ng-cloak="">{{ totals.instances_running }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a class="button small round primary" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="instances-stopped">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Stopped instances</h5>
+                    <div class="content">
+                        <a href="${request.route_url('instances')}?state=stopped">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="stopped-instances-count" ng-cloak="">{{ totals.instances_stopped }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+            </li>
+            <li class="panel" id="scaling-groups">
+                <div class="tile" id="in-scaling-group">
+                    <h5 class="subheader" i18n:translate="">
+                        <span i18n:translate=""> Instances in scaling groups</span>
+                    </h5>
+                    <div class="content">
+                        <a href="${request.route_url('scalinggroups')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="scalinggroup-instances-count" ng-cloak="">{{ totals.instances_scaling }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('scalinggroup_new')}" i18n:translate="">Create scaling group</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="elastic-ips">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
+                    <div class="content">
+                        <a href="${request.route_url('ipaddresses')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="ipaddresses-count" ng-cloak="">{{ totals.eips }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer"></div>
+                </div>
+            </li>
+            <li class="panel" id="volumes">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Volumes</h5>
+                    <div class="content">
+                        <a href="${request.route_url('volumes')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="volumes-count" ng-cloak="">{{ totals.volumes }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('volume_view', id='new')}" i18n:translate="">Create volume</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="snapshots">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Snapshots</h5>
+                    <div class="content">
+                        <a href="${request.route_url('snapshots')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="snapshots-count" ng-cloak="">{{ totals.snapshots }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('snapshot_view', id='new')}" i18n:translate="">Create snapshot</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="security-groups">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Security groups</h5>
+                    <div class="content">
+                        <a href="${request.route_url('securitygroups')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="securitygroups-count" ng-cloak="">{{ totals.securitygroups }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('securitygroup_view', id='new')}" i18n:translate="">Create security group</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="key-pairs">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">Key pairs</h5>
+                    <div class="content">
+                        <a href="${request.route_url('keypairs')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="keypairs-count" ng-cloak="">{{ totals.keypairs }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('keypair_view', id='new')}" i18n:translate="">Create key pair</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">IAM users</h5>
+                    <div class="content">
+                        <a href="${request.route_url('users')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="users-count" ng-cloak="">{{ totals.users }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Create users</a>
+                    </div>
+                </div>
+            </li>
+            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+                <div class="tile">
+                    <h5 class="subheader" i18n:translate="">IAM groups</h5>
+                    <div class="content">
+                        <a href="${request.route_url('groups')}">
+                            <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                <span ng-show="!itemsLoading" id="groups-count" ng-cloak="">{{ totals.groups }}</span></em>
+                            </i>
+                        </a>
+                    </div>
+                    <div class="footer">
+                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Create group</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/pages/dashboard.js')}"></script>
+</div>
+
+</metal:block>

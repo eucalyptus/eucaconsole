@@ -1,0 +1,122 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/scalinggroup.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupInstances" ng-controller="ScalingGroupInstancesCtrl"
+         ng-init="initController('${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li class="current"><a ng-non-bindable="">${scaling_group.name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Instances in scaling group:</strong>
+            <em ng-non-bindable="">${scaling_group.name}</em>
+        </h3>
+        <div class="large-8 columns">
+            <dl class="tabs" id="scalinggroup-subnav">
+                <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_url('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
+                <dd class="active"><a href="#">Instances</a></dd>
+            </dl>
+            <div class="panel gridwrapper no-title">
+                <p tal:condition="not policies">
+                    <span i18n:translate="">To automatically scale your group up or down, please</span>
+                    <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
+                </p>
+                <div ng-show="initialLoading">
+                    <span class="dots">&nbsp;</span>
+                </div>
+                <div class="alert alert-info" ng-show="!initialLoading &amp;&amp; instances.length === 0" ng-cloak="">
+                    There are no instances in this scaling group
+                </div>
+                <div class="tile item" ng-repeat="item in items" ng-cloak="">
+                    <div class="header">
+                        <strong><a ng-href="/instances/{{ item.id }}">{{ item.id }}</a></strong>
+                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                            <li><a i18n:translate="" ng-href="/instances/{{ item.id }}">View details</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('markunhealthy', item)">Mark unhealthy</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a></li>
+                        </ul>
+                    </div>
+                    <div class="content">
+                        <div>
+                            <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
+                            {{ item.availability_zone }}
+                        </div>
+                        <div>
+                            <span class="label" title="Launch configuration" i18n:attributes="title" data-tooltip="">LC</span>
+                            <a ng-href="/launchconfigs/{{ item.launch_config }}">{{ item.launch_config }}</a>
+                        </div>
+                        <div>
+                            <span class="label" title="State" i18n:attributes="title" data-tooltip="">LS</span>
+                            {{ item.lifecycle_state }}
+                        </div>
+                    </div>
+                    <div class="footer status {{ item.status.toLowerCase() }} {{ item.lifecycle_statue.toLowerCase() }}">
+                        {{ item.status }} ({{ item.lifecycle_state }})
+                        <span class="dots" ng-show="item.transitional">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                 <!--! Help goes here -->
+            </div>
+        </div>
+        <!--! Modal dialogs -->
+        <div id="markunhealthy-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Mark instance unhealthy</h3>
+            <p><span i18n:translate="">Marking an instance unhealthy will cause the system to terminate it. Are you sure you want to mark the following instance as unhealthy?</span>
+               <b>{{ instanceID }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
+                ${structure:markunhealthy_form['csrf_token']}
+                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
+                        leftcol_width=6, rightcol_width=6)}
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns">
+                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                        Yes, Mark Unhealthy
+                    </button>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Terminate instance</h3>
+            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
+               <b>{{ instanceID }}</b>?</p>
+            <form action="${request.route_url('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
+                ${structure:terminate_form['csrf_token']}
+                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                ${panel('form_field', field=terminate_form['decrement_capacity'],
+                        leftcol_width=4, rightcol_width=8, reverse='true')}
+                <div class="small-3 columns">&nbsp;</div>
+                <div class="small-9 columns">
+                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                        Yes, Terminate
+                    </button>
+                </div>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_url('eucaconsole:static/js/pages/scalinggroup_instances.js')}"></script>
+</div>
+
+</metal:block>
+

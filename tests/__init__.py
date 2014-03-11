@@ -11,7 +11,7 @@ from pyramid import testing
 from wtforms import Field
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
 
-from koala.routes import urls
+from eucaconsole.routes import urls
 
 
 class BaseViewTestCase(unittest.TestCase):

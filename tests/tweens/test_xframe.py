@@ -8,12 +8,12 @@ class Mock(object):
 
 class TestXFrame(unittest.TestCase):
     def test_factory(self):
-        from koala.tweens import xframe_tween_factory
+        from eucaconsole.tweens import xframe_tween_factory
         tween = xframe_tween_factory(None, None)
         self.assertTrue(callable(tween))
 
     def test_tween(self):
-        from koala.tweens import xframe_tween_factory
+        from eucaconsole.tweens import xframe_tween_factory
 
         class MockHandler(object):
             def __init__(self, content_type):

@@ -1,0 +1,99 @@
+
+<!--! Security group rules editor -->
+<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
+     ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
+    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
+          type="text/css" charset="utf-8" />
+    <div class="columns">
+        <h6 i18n:translate="">Inbound rules</h6>
+    </div>
+    <div class="columns field" ng-cloak="cloak">
+        <div class="items">
+            <span class="label radius secondary rulesentry" ng-repeat="rule in rulesArray">
+                {{ rule.ip_protocol.toUpperCase() }}
+                ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                <span ng-repeat="grant in rule.grants">
+                    <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                </span>
+                <a class="remove" ng-click="removeRule($index, $event)"
+                        title="Remove rule"><i class="fi-x"></i></a>
+            </span>
+        </div>
+        <div class="row rulesentry inline controls-wrapper">
+            <div class=" columns add-label">
+                <span ng-show="!rulesArray.length"><span i18n:translate="">Add a rule</span>:</span>
+                <span ng-show="rulesArray.length"><span i18n:translate="">Add another rule</span>:</span>
+            </div>
+            <div class="row">
+                <div class="small-3 columns">
+                    <label class="protocol" i18n:translate="">Protocol</label>
+                </div>
+                <div class="small-9 columns">
+                    <select id="ip-protocol-select" name="ip_protocol" class="ip-protocol"
+                            ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)" data-placeholder="select...">
+                        <option tal:repeat="choice protocol_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" ng-show="selectedProtocol">
+                <div class="small-3 columns">
+                    <label class="right" i18n:translate="">Port range</label>
+                </div>
+                <div class="small-9 columns">
+                    <div ng-show="selectedProtocol !== 'icmp'">
+                        <input class="port from" name="from_port" ng-model="fromPort" pattern="integer"
+                               ng-readonly="selectedProtocol &lt; 99999" />&nbsp;-
+                        <input class="port to" name="to_port" ng-model="toPort" pattern="integer"
+                               ng-readonly="selectedProtocol &lt; 99999" />
+                        <small class="error" i18n:translate="">Valid port range required</small>
+                    </div>
+                    <div ng-show="selectedProtocol == 'icmp'">
+                        <select name="icmp_range" ng-model="icmpRange" data-placeholder="select...">
+                            <option tal:repeat="choice icmp_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row trafficfrom" ng-show="selectedProtocol">
+                <div class="small-3 columns">
+                    <label class="right" i18n:translate="">Allow traffic from</label>
+                </div>
+                <div class="small-9 columns">
+                    <div class="ipaddress">
+                        <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
+                        <label><span i18n:translate="" class="ip-label">IP address</span></label>
+                        <input type="text" name="cidr_ip" id="input-cidr-ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
+                            ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="${layout.cidr_pattern}" placeholder="0.0.0.0/32"/>
+                        <div>
+                            <a id="sgroup-use-my-ip" ng-click="useMyIP('${remote_addr}')">Use my IP address</a>
+                        </div>
+                        <small class="error" i18n:translate="">Valid CIDR entry required</small>
+                    </div>
+                    <div class="securitygroupname">
+                        <input type="radio" name="traffictype" value="securitygroup" ng-model="trafficType" />
+                        <label><span i18n:translate="" class="sg-label">Security group</span></label>
+                        <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
+                                ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
+                            <option tal:repeat="groupname groupnames"
+                                    value="${groupname}" ng-non-bindable="">${groupname}</option>
+                        </select>
+                        <div><small class="error" i18n:translate="">Security group is required</small></div>
+                        <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="selectedProtocol">
+            <div class="small-3 columns">&nbsp;</div>
+            <div class="small-9 columns">
+                <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
+                        ng-click="addRule($event)">Add Rule</a>
+            </div>
+        </div>
+        <!--! Add class="debug" to textarea to view tags data posted by form -->
+        <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
+    </div>
+    <script src="${request.static_url('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
+    <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>
+</div>

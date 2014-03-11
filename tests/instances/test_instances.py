@@ -7,11 +7,11 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from koala.forms import BaseSecureForm
-from koala.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
-from koala.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
-from koala.views import TaggedItemView
-from koala.views.instances import InstancesView, InstancesJsonView, InstanceView
+from eucaconsole.forms import BaseSecureForm
+from eucaconsole.forms.instances import StartInstanceForm, StopInstanceForm, RebootInstanceForm, TerminateInstanceForm
+from eucaconsole.forms.instances import AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm
+from eucaconsole.views import TaggedItemView
+from eucaconsole.views.instances import InstancesView, InstancesJsonView, InstanceView
 
 from tests import BaseViewTestCase, BaseFormTestCase
 
