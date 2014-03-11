@@ -15,7 +15,7 @@ from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
-from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
+from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 
 
@@ -30,7 +30,6 @@ class LoginView(BaseView):
 
     def __init__(self, request):
         super(LoginView, self).__init__(request)
-        self.request = request
         self.euca_login_form = EucaLoginForm(self.request, formdata=self.request.params or None)
         self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
@@ -74,8 +73,7 @@ class LoginView(BaseView):
 
     def handle_euca_login(self):
         new_passwd = None
-        clchost = self.request.registry.settings.get('clchost')
-        auth = EucaAuthenticator(host=clchost, duration=self.duration)
+        auth = self.get_connection(conn_type='sts', cloud_type='euca')
         session = self.request.session
 
         if self.euca_login_form.validate():
@@ -83,8 +81,8 @@ class LoginView(BaseView):
             username = self.request.params.get('username')
             password = self.request.params.get('password')
             try:
-                creds = auth.authenticate(
-                    account=account, user=username, passwd=password, new_passwd=new_passwd, timeout=8)
+                creds = auth.authenticate(account=account, user=username,
+                                passwd=password, new_passwd=new_passwd, timeout=8, duration=self.duration)
                 user_account = '{user}@{account}'.format(user=username, account=account)
                 self.invalidate_cache()  # Clear connection objects from cache
                 session.invalidate()  # Refresh session
@@ -107,9 +105,10 @@ class LoginView(BaseView):
                     self.login_form_errors.append(msg)
             except URLError, err:
                 logging.info("url error "+str(vars(err)))
-                if str(err.reason) == 'timed out':
-                    msg = _(u'No response from host ')
-                    self.login_form_errors.append(msg + clchost)
+                #if str(err.reason) == 'timed out':
+                # opened this up since some other errors should be reported as well.
+                msg = _(u'No response from host')
+                self.login_form_errors.append(msg)
         return self.render_dict
 
     def handle_aws_login(self):

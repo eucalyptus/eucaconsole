@@ -15,14 +15,14 @@ from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaChangePasswordForm
-from ..models.auth import EucaAuthenticator, ConnectionManager
+from ..views import BaseView
 
 
-class ChangePasswordView(object):
+class ChangePasswordView(BaseView):
     template = '../templates/changepassword.pt'
 
     def __init__(self, request):
-        self.request = request
+        super(ChangePasswordView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
         referrer = self.request.url
         referrer_root = referrer.split('?',1)[0] if referrer.find('?') > -1 else referrer
@@ -62,7 +62,7 @@ class ChangePasswordView(object):
         account="huh?"
         username="what?"
 
-        auth = EucaAuthenticator(host=clchost, duration=duration)
+        auth = self.get_connection(conn_type='sts', cloud_type='euca')
         changepassword_form = EucaChangePasswordForm(self.request, formdata=self.request.params)
         if changepassword_form.validate():
             account = self.request.params.get('account')
@@ -74,8 +74,8 @@ class ChangePasswordView(object):
                 self.changepassword_form_errors.append(u'New passwords must match.')
             else:
                 try:
-                    creds = auth.authenticate(
-                        account=account, user=username, passwd=password, new_passwd=new_password, timeout=8)
+                    creds = auth.authenticate(account=account, user=username,
+                                passwd=password, new_passwd=new_password, timeout=8, duration=duration)
                     #logging.debug("auth creds = "+str(creds.__dict__))
                     user_account = '{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
