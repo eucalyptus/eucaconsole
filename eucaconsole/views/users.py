@@ -26,7 +26,6 @@ from pyramid.response import Response
 from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
-from ..models.auth import EucaAuthenticator
 
 
 class PasswordGeneration(object):
@@ -432,18 +431,13 @@ class UserView(BaseView):
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
 
-            clchost = self.request.registry.settings.get('clchost')
-            duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
-            auth = EucaAuthenticator(host=clchost, duration=duration)
+            auth = self.get_connection(conn_type='sts')
             session = self.request.session
             account=session['account']
             username=session['username']
+            # 900 is minimum duration for session creds
             creds = auth.authenticate(account=account, user=username,
-                                      passwd=password, timeout=8)
-            # store new token values in session
-            session['session_token'] = creds.session_token
-            session['access_id'] = creds.access_key
-            session['secret_key'] = creds.secret_key
+                                      passwd=password, timeout=8, duration=900)
             try:
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
