@@ -87,8 +87,7 @@
                                 This tool helps you easily create a policy without needing to understand policy language
                             </p>
                             <div ng-show="policyGenExpanded">
-                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form,
-                                        resource_choices=resource_choices)}
+                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form, resource_choices=resource_choices)}
                             </div>
                         </div>
                         <div class="choice">
@@ -125,11 +124,9 @@
                     <input type="hidden" name="type" value="${request.params.get('type', '')}" />
                     <input type="hidden" name="id" value="${request.params.get('id', '')}" />
                     <label><strong i18n:translate="">Name</strong></label>
-                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'},
-                        leftcol_width=0, rightcol_width=12)}
+                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12)}
                     <label><strong i18n:translate="">Policy</strong></label>
-                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'},
-                        leftcol_width=0, rightcol_width=12)}
+                    ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
                     <div>
                         <button type="submit" class="button" id="create-iam-policy-btn">
                             <span i18n:translate="">Create Policy</span>
