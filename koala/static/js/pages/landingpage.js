@@ -70,7 +70,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                }
                // Set landingPageView in localStorage
                localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
-            }); 
+            });
         };
         $scope.setFocus = function () {
             $('#search-filter').focus();
@@ -87,7 +87,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $(document).on('closed', '[data-reveal]', function () {
                 $('#search-filter').focus();
             });
-        }
+        };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];

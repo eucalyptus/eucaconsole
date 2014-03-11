@@ -24,8 +24,8 @@
                    class="button" i18n:translate="">Create New Snapshot</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                                         <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
@@ -101,8 +101,8 @@
                 <td class="starttime">{{ item.start_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
-                        <a class="tiny secondary button dropdown right round"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ item.id}}" class="f-dropdown">
+                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.id}}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                                                         <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
