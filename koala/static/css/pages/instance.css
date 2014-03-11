@@ -32,7 +32,7 @@
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #00415e; font-weight: bold; }
 .tile .header a:hover { color: #8dc943; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown a { color: #468400; font-weight: normal; }
+.tile .header .f-dropdown a { color: #468400; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content a { color: #468400; }
 .tile .content a:hover { text-decoration: underline; }
