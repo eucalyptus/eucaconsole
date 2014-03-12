@@ -146,8 +146,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('volume_dialogs', volume=volume, volume_name=volume_name, instance_name=instance_name,
-                attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
+        ${panel('volume_dialogs', volume=volume, volume_name=volume_name, instance_name=instance_name, attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
     </div>
 </div>
 

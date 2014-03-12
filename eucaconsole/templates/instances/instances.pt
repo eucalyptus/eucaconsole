@@ -181,8 +181,7 @@
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form,
-                reboot_form=reboot_form, terminate_form=terminate_form)}
+        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
         <!--! Batch-terminate instance modal dialog -->
         ${panel('terminate_instances_dialog', batch_terminate_form=batch_terminate_form)}
     </div>

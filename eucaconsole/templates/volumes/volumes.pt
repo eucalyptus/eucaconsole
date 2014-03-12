@@ -128,8 +128,7 @@
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('volume_dialogs', landingpage=True,
-                attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
+        ${panel('volume_dialogs', landingpage=True, attach_form=attach_form, detach_form=detach_form, delete_form=delete_form)}
     </div>
 </div>
 

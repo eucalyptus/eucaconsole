@@ -224,8 +224,7 @@
             <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                ${panel('help_instances', 'connect_instance',
-                        instance.groups[0].name if instance.groups else 'default', instance.key_name, instance.ip_address)}
+                ${panel('help_instances', 'connect_instance', instance.groups[0].name if instance.groups else 'default', instance.key_name, instance.ip_address)}
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
@@ -233,8 +232,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form,
-                stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
+        ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form)}
         <div id="update-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Update instance</h3>
             <p i18n:translate="">
