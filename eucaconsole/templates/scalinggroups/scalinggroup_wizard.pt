@@ -43,12 +43,9 @@
                                     <h6 i18n:translate="">Capacity</h6>
                                 </div>
                                 <div class="medium-10 columns">
-                                    ${panel('form_field', field=create_form['min_size'], maxlength=2,
-                                            ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
-                                    ${panel('form_field', field=create_form['desired_capacity'], maxlength=2,
-                                            ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
-                                    ${panel('form_field', field=create_form['max_size'], maxlength=2,
-                                            ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['min_size'], maxlength=2, ng_attrs={'model': 'minSize', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['desired_capacity'], maxlength=2, ng_attrs={'model': 'desiredCapacity', 'change': 'handleSizeChange()'})}
+                                    ${panel('form_field', field=create_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                                 </div>
                             </div>
                             <hr />
@@ -68,8 +65,7 @@
                         <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
-                            ${panel('form_field', field=create_form['availability_zones'],
-                                    ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                            ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             <div>&nbsp;</div>
                             <hr />
                             <div class="row">

@@ -67,8 +67,7 @@
                                 </div>
                             </div>
                             <p>OR select an image below</p>
-                            ${panel('image_picker', image=image, owner_choices=owner_choices,
-                                    images_json_endpoint=images_json_endpoint)}
+                            ${panel('image_picker', image=image, owner_choices=owner_choices, images_json_endpoint=images_json_endpoint)}
                             <div class="row" tal:condition="image">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
@@ -84,8 +83,7 @@
                             <p class="description" i18n:translate="">
                                 Specify the number, name(s), size, availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9,
-                                    min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'})}
+                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'})}
                             <div class="row controls-wrapper" ng-cloak="">
                                 <div class="small-3 columns">
                                     <label>
@@ -99,10 +97,8 @@
                                     </span>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'instanceType'})}
-                            ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'instanceZone'})}
+                            ${panel('form_field', field=launch_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=launch_form['zone'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceZone'})}
                             <hr />
                             ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                             <hr />
@@ -119,17 +115,14 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">Specify key pair and security group.</p>
-                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right">
                                     <a data-reveal-id="create-keypair-modal" i18n:translate=""
                                        id="create-keypair-link">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9,
-                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()',
-                                          'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right">
                                     <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
@@ -163,12 +156,10 @@
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['monitoring_enabled'], reverse=True,
-                                        ng_attrs={'model': 'monitoringEnabled'})}
+                                ${panel('form_field', field=launch_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
                             </div>
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['private_addressing'], reverse=True,
-                                    ng_attrs={'model': 'privateAddressing'})}
+                                ${panel('form_field', field=launch_form['private_addressing'], reverse=True, ng_attrs={'model': 'privateAddressing'})}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">

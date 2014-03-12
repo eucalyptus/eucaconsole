@@ -10,8 +10,7 @@
         <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial" id="create-keypair-form"
               ng-submit="handleKeyPairCreate($event, '${request.route_url('keypair_create')}')">
             ${structure:keypair_form['csrf_token']}
-            ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'},
-                    leftcol_width=3, rightcol_width=9)}
+            ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'}, leftcol_width=3, rightcol_width=9)}
             <hr>
             <div class="row">
                 <div class="small-3 columns">&nbsp;</div>

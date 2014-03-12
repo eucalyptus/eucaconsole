@@ -66,8 +66,7 @@
                                 </div>
                             </div>
                             <p>OR select an image below</p>
-                            ${panel('image_picker', image=image, owner_choices=owner_choices,
-                                    images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
+                            ${panel('image_picker', image=image, owner_choices=owner_choices, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
                             <div class="row" tal:condition="image">
                                 <div class="small-6 columns">&nbsp;</div>
                                 <div class="small-6 columns field inline">
@@ -82,10 +81,8 @@
                             <p class="description" i18n:translate="">
                                 Please specify the launch configuration name and the instance size/type.
                             </p>
-                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'launchconfigName'})}
-                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'instanceType'})}
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'launchconfigName'})}
+                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
                             <hr />
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
@@ -101,17 +98,14 @@
                             <p class="description" i18n:translate="">
                                 Please specify the key pair and security group.
                             </p>
-                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9,
-                                    ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right">
                                     <a data-reveal-id="create-keypair-modal" i18n:translate=""
                                        id="create-keypair-link">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9,
-                                ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()',
-                                          'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right">
                                     <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
@@ -143,8 +137,7 @@
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=create_form['monitoring_enabled'], reverse=True,
-                                        ng_attrs={'model': 'monitoringEnabled'})}
+                                ${panel('form_field', field=create_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">

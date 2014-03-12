@@ -68,8 +68,7 @@
             </div>
         </div>
         <!--! Modal dialogs -->
-        ${panel('ipaddress_dialogs', eip=eip, associate_form=associate_form,
-                disassociate_form=disassociate_form, release_form=release_form)}
+        ${panel('ipaddress_dialogs', eip=eip, associate_form=associate_form, disassociate_form=disassociate_form, release_form=release_form)}
     </div>
 </div>
 
