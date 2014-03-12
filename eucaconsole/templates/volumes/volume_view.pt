@@ -12,8 +12,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
-         ng-init="initController('${request.route_url(
-                 'volume_state_json', id=volume.id) if volume else ''}',
+         ng-init="initController('${request.route_url('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
                  '${volume.attach_data.status if volume else ''}'
                  )">
