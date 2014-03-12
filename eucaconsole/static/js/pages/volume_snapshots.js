@@ -18,13 +18,14 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             $scope.setFocus();
             $scope.setDropdownMenusListener();
         };
-        $scope.revealRegisterSnapshotModal = function () {
+        $scope.revealRegisterSnapshotModal = function (snapshot_id) {
             var modal = $('#register-snapshot-modal');
+            $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
-        $scope.revealDeleteModal = function (action) {
+        $scope.revealDeleteModal = function (snapshot_id) {
             var modal = $('#delete-snapshot-modal');
-            $scope.deleteFormAction = action;
+            $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
