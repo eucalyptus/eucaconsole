@@ -458,6 +458,8 @@ class UserView(BaseView):
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
+            if err.msg == 'Unauthorized':
+                err.msg = _(u"The password you entered is incorrect.")
             return JSONResponse(status=401, message=err.msg);
         except URLError, err:           # catch error in authentication
             return JSONResponse(status=401, message=err.msg);
