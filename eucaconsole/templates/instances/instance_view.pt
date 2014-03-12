@@ -209,8 +209,7 @@
                     ${panel('tag_editor', tags=instance.tags)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn"
-                                tal:attributes="data-reveal-id 'update-instance-modal' if instance.state == 'stopped' else None">
+                        <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_url('instances')}" id="cancel-update-link"

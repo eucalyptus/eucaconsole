@@ -75,6 +75,14 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotStopped = $scope.instanceState != 'stopped';
             });
         };
+        $scope.submitSaveChanges = function($event){
+            $event.preventDefault();
+            if( $scope.instanceState == 'stopped' ){
+                $('#update-instance-modal').foundation('reveal', 'open');
+            }else{
+                $scope.instanceForm.submit();
+            }
+        };
         $scope.submitUpdateInstance = function ($event) {
             $event.preventDefault();
             $('a.close-reveal-modal').trigger('click');
