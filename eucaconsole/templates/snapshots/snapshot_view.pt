@@ -8,7 +8,7 @@
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_url('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
-         '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}')">
+                 ${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
