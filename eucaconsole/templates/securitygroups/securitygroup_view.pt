@@ -15,7 +15,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_url('securitygroups')}" i18n:translate="">Security groups</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create'}</a></li>
+                <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create security group'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
