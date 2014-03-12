@@ -45,6 +45,16 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
+        $scope.setDropdownMenusListener = function () {
+            var modals = $('[data-reveal]');
+            modals.on('open', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
+            });
+            modals.on('close', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
+            })
+        };
+        $scope.setDropdownMenusListener();
     })
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
