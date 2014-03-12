@@ -16,7 +16,7 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.volumes import (
-    VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
+    VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 
@@ -428,11 +428,13 @@ class VolumeSnapshotsView(BaseVolumeView):
         self.add_form = None
         self.create_form = CreateSnapshotForm(self.request, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
+        self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
             create_form=self.create_form,
             delete_form=self.delete_form,
+            register_form=self.register_form,
         )
 
     @view_config(route_name='volume_snapshots', renderer=VIEW_TEMPLATE, request_method='GET')
