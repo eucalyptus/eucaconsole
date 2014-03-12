@@ -350,7 +350,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
             # Update assigned IP address
             new_ip = self.request.params.get('ip_address')
-            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none':
+            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
                 self.instance.use_ip(new_ip)
                 time.sleep(1)  # Give backend time to allocate IP address
 
