@@ -15,6 +15,9 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new scaling group</strong>
+        </h3>
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard no-title">
                 <form action="${request.route_url('scalinggroup_create')}" id="scalinggroup-wizard-form"
