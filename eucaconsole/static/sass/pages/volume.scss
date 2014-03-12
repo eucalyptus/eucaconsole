@@ -38,6 +38,11 @@ $volume-status-color-attached: darkorange;
 // Volume snapshots page
 .tile {
     @include panel-tile-mixin;
+    .footer.has-progress {
+        .progress {
+            color: black;
+        }
+    }
 }
 
 .status.pending { background-color: lighten($euca-green, 10%); }
