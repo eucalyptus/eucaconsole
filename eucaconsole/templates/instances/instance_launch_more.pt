@@ -15,7 +15,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Launch more instances like:</strong>
+            <em ng-non-bindable="">${instance_name}</em>
+        </h3>
         <div class="large-8 columns">
             <div class="panel">
                 <form action="${request.route_url('instance_more_launch', id=instance.id)}" method="post"
