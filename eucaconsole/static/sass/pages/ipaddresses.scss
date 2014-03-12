@@ -5,3 +5,10 @@ form #ipcount {
     width: 3rem;
 }
 
+.reveal-modal {
+    .button[type=submit] {
+        display: block;
+        margin: 0 auto 0 auto;
+    }
+}
+
