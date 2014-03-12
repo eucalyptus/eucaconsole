@@ -12,8 +12,8 @@
         <div data-alert="alert" class="alert-box alert large-10 columns large-centered"
              tal:condition="https_required and request.scheme != 'https'">
             <span i18n:translate="">
-                HTTPS not detected.  You will not be able to log in unless you disable the session.secure setting
-                in the configuration file.
+                HTTPS not detected.  You will not be able to log in unless the session.secure setting is disabled
+                in the configuration file. Please contact your cloud administrator.
             </span>
             <a href="#" class="close">&times;</a>
         </div>
@@ -98,7 +98,7 @@
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-12 columns">
-                                    <span i18n:translate="">Need access to an IAM account?</span><br />
+                                    <span i18n:translate="">Need to access an IAM account?</span><br />
                                     <span i18n:translate="">Contact your</span>
                                     <a href="${layout.support_url}" i18n:translate="">cloud administrator</a>
                                 </div>
