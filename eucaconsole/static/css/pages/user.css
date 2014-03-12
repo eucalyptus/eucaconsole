@@ -45,7 +45,7 @@
 .tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
 .tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
-.tile .footer .dots { position: absolute; width: 32px; height: 10px; top: 8px; right: 8px; }
+.tile .footer .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; }
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: #8dc943; }

@@ -1375,7 +1375,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar a { font-size: 0.9rem; color: #333; }
 #logobar section { position: relative; line-height: 1rem; display: inline-block; float: right; margin-top: 4px; }
 #logobar section .icon { font-size: 1.5rem; }
-#logobar .dropdown { display: inline-block; margin-left: 2rem; color: #8dc943; }
+#logobar .dropdown { display: inline-block; margin-left: 1.3rem; color: #8dc943; }
 #logobar .dropdown .icon { display: inline-block; }
 #logobar .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; width: auto; min-width: 8rem; }
 #logobar .f-dropdown.open { width: auto !important; }
@@ -1385,6 +1385,8 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
 
 #region-dropdown li[data-selected] { display: none; }
+
+#region-logo { width: 16px; height: 16px; top: 16px; left: 6px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; }
@@ -1424,7 +1426,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 
 hr { border: 1px solid #777777; border-width: 1px 0 0; }
 
-.dots { display: inline-block; width: 32px; height: 10px; background-image: url(/static/img/dots32.gif); }
+.dots { display: inline-block; width: 16px; height: 11px; background-image: url(/static/img/ajax-loader.gif); }
 
 a.has-tip { border-bottom: none !important; }
 

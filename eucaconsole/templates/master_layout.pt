@@ -60,10 +60,12 @@
                 </ul>
             </section>
             <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
-                <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
-                    <span>${layout.selected_region_label}</span>
-                    <span class="down-caret"></span>
-                </a>
+                <span id="region-logo">
+                    <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
+                        <span>${layout.selected_region_label}</span>
+                        <span class="down-caret"></span>
+                    </a>
+                </span>
                 <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
                         <a href="${request.route_url('region_select')}?region=${region.name}&amp;returnto=${request.url}">
