@@ -3,68 +3,65 @@
 <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/widgets/image_picker.css')}" />
 <div id="image-picker" ng-app="ImagePicker"
      ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
+
     <!--! Image picker widget -->
-    <table class="table" ng-cloak="">
-        <thead>
-            <tr>
-                <th colspan="2">
-                    <div class="row">
-                        <div class="small-5 columns">
-                            <select name="owner_alias" ng-model="ownerAlias" ng-change="getItems()">
-                                <option tal:repeat="alias owner_choices" value="${alias.key}" ng-non-bindable="">${alias.label}</option>
-                            </select>
+    <div class="row">
+        <div class="medium-7 columns">
+            <p i18n:translate="">OR select an image below</p>
+        </div>
+        <div class="medium-5 columns">
+            <div class="row sort-search" ng-cloak="cloak">
+                <div class="small-12 columns search-filter">
+                    <div class="row collapse">
+                        <div class="small-10 columns">
+                            <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
                         </div>
-                        <div class="small-7 columns">
-                            <div class="row sort-search" ng-cloak="cloak">
-                                <div class="small-9 columns search-filter">
-                                    <div class="row collapse">
-                                        <div class="small-10 columns">
-                                            <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
-                                        </div>
-                                        <div class="small-2 columns">
-                                            <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="small-3 columns right" id="results-count" ng-show="!itemsLoading">
-                                    {{ items.length }} <span class="hide-for-small" i18n:translate="">images</span>
-                                </div>
+                        <div class="small-2 columns">
+                            <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-3 columns" ng-cloak="">
+            ${panel('landingpage_filters', filters_form=filters_form)}
+        </div>
+        <div class="large-9 columns">
+            <table class="table" ng-cloak="">
+                <tbody style="max-height: ${maxheight}">
+                    <tr>
+                        <td colspan="2">
+                            <div i18n:translate="" ng-show="itemsLoading">Loading...</div>
+                            <div ng-show="!itemsLoading &amp;&amp; items.length == 0">
+                                <span i18n:translate="">No images were found matching the criteria.</span>
                             </div>
-                        </div>
-                    </div>
-                </th>
-            </tr>
-        </thead>
-        <tbody style="max-height: ${maxheight}">
-            <tr>
-                <td colspan="2">
-                    <div i18n:translate="" ng-show="itemsLoading">Loading...</div>
-                    <div ng-show="!itemsLoading &amp;&amp; items.length == 0">
-                        <span i18n:translate="">No images were found matching the criteria.</span>
-                    </div>
-                </td>
-            </tr>
-            <tr ng-show="!itemsLoading" ng-repeat="item in items">
-                <td class="icon">
-                    <span class="image {{ item.platform_key }}"></span>
-                </td>
-                <td>
-                    <div class="name">
-                        <a href="${request.route_url(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
-                        <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
-                    </div>
-                    <div ng-show="item.name">
-                        <b>{{ item.id }}</b>
-                        <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
-                    </div>
-                    <div ng-show="item.description">
-                        {{ item.description }}
-                    </div>
-                    <div class="clearfix"></div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                    <tr ng-show="!itemsLoading" ng-repeat="item in items">
+                        <td class="icon">
+                            <span class="image {{ item.platform_key }}"></span>
+                        </td>
+                        <td>
+                            <div class="name">
+                                <a href="${request.route_url(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                                <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
+                            </div>
+                            <div ng-show="item.name">
+                                <b>{{ item.id }}</b>
+                                <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
+                            </div>
+                            <div ng-show="item.description">
+                                {{ item.description }}
+                            </div>
+                            <div class="clearfix"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <script src="${request.static_url('eucaconsole:static/js/widgets/image_picker.js')}"></script>
 </div>
 

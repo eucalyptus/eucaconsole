@@ -186,13 +186,14 @@ def bdmapping_editor(context, request, image=None, snapshot_choices=None):
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
-def image_picker(context, request, image=None, images_json_endpoint=None,
+def image_picker(context, request, image=None, images_json_endpoint=None, filters_form=None,
                  maxheight='800px', owner_choices=None, prefix_route='instance_create'):
     """ Reusable Image picker widget (e.g. for Launch Instance page, step 1).
         Usage example (in Chameleon template): ${panel('image_picker')}
     """
     return dict(
         image=image,
+        filters_form=filters_form,
         images_json_endpoint=images_json_endpoint,
         maxheight=maxheight,
         owner_choices=owner_choices,

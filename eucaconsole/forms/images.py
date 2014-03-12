@@ -44,12 +44,14 @@ class ImagesFiltersForm(BaseSecureForm):
             owner_choices = AWS_IMAGE_OWNER_ALIAS_CHOICES
         return owner_choices
 
-    @staticmethod
-    def get_platform_choices():
-        return (
-            ('', 'Linux'),
-            ('windows', 'Windows'),
-        )
+    def get_platform_choices(self):
+        if self.cloud_type == 'euca':
+            return (
+                ('linux', 'Linux'),
+                ('windows', 'Windows'),
+            )
+        else:
+            return ('windows', 'Windows'),
 
     @staticmethod
     def get_root_device_type_choices():

@@ -15,6 +15,7 @@ from pyramid.view import view_config
 import time
 
 from ..forms import GenerateFileForm
+from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -140,6 +141,7 @@ class LaunchConfigsJsonView(BaseView):
             return sgroup_name_map_array
         return []
 
+
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
@@ -234,6 +236,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
+        self.filters_form = ImagesFiltersForm(
+            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
@@ -246,6 +250,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
+            filters_form=self.filters_form,
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,

@@ -9,31 +9,65 @@ angular.module('ImagePicker', [])
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
         $scope.ownerAlias = '';
+        $scope.jsonEndpointPrefix = '';
         $scope.jsonEndpoint = '';
         $scope.itemsLoading = false;
         $scope.cloudType = 'euca';
-        $scope.filterProps = ['architecture', 'id', 'description'];  // Properties for search input filter
-        $scope.setInitialOwnerChoice = function () {
-            if ($scope.cloudType == 'euca') {
-                $scope.ownerAlias = ''
-            } else {
-                $scope.ownerAlias = 'amazon'
-            }
-        };
-        $scope.initImagePicker = function (jsonEndpoint, cloudType) {
-            $scope.jsonEndpoint = jsonEndpoint;
+        $scope.filtersForm = $('#filters');
+        // Properties for search input filter
+        $scope.filterProps = [
+            'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_devite_type'
+        ];
+        $scope.initImagePicker = function (jsonEndpointPrefix, cloudType) {
+            $scope.jsonEndpointPrefix = jsonEndpointPrefix;
+            $scope.jsonEndpoint = jsonEndpointPrefix;
             $scope.cloudType = cloudType;
-            $scope.setInitialOwnerChoice();
+            $scope.initChosenSelectors();
+            $scope.initFilters();
             $scope.getItems();
+        };
+        $scope.initChosenSelectors = function () {
+            $scope.filtersForm.find('select').chosen({
+                'width': '100%',
+                'search_contains': true,
+                'placeholder_text_single': ' ',
+                'placeholder_text_multiple': ' '
+            });
+        };
+        $scope.initFilters = function () {
+            var form = $scope.filtersForm,
+                submitBtn = form.find('button[type=submit]'),
+                clearLink = form.find('.clear-link');
+            submitBtn.on('click', function (evt) {
+                evt.preventDefault();
+                var architecture, ownerAlias, platform, rootDeviceType;
+                var params = {};
+                platform = form.find('#platform').val();
+                if ($scope.cloudType === 'euca') {
+                    params['platform'] = platform;
+                } else if ($scope.cloudType === 'aws' && platform) {
+                    params['platform'] = platform;
+                }
+                ownerAlias = form.find('#owner_alias').val();
+                rootDeviceType = form.find('#root_device_type').val();
+                architecture = form.find('#architecture').val();
+                if (ownerAlias) { params['owner_alias'] = ownerAlias; }
+                if (rootDeviceType) { params['root_device_type'] = rootDeviceType; }
+                if (architecture) { params['architecture'] = architecture; }
+                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "?" + $.param(params, true));
+                $scope.getItems();
+            });
+            clearLink.on('click', function (evt) {
+                evt.preventDefault();
+                form.find("select").val('').trigger("chosen:updated");
+                $scope.jsonEndpoint = $scope.jsonEndpointPrefix;
+                $scope.getItems();
+            });
         };
         $scope.getItems = function () {
             $scope.searchFilter = '';
             $scope.itemsLoading = true;
-            var jsonURL = $scope.jsonEndpoint;
-            if ($scope.ownerAlias) {
-               jsonURL += '?owner_alias=' + $scope.ownerAlias;
-            }
-            $http.get(jsonURL).success(function(oData) {
+            $http.get($scope.jsonEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
                 $scope.items = results;

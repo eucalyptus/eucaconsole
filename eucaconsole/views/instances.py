@@ -17,6 +17,7 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
@@ -631,6 +632,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
             conn=self.conn, formdata=self.request.params or None)
+        self.filters_form = ImagesFiltersForm(
+            self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
@@ -642,6 +645,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
+            filters_form=self.filters_form,
             keypair_form=self.keypair_form,
             securitygroup_form=self.securitygroup_form,
             generate_file_form=self.generate_file_form,

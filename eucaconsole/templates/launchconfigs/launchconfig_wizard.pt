@@ -61,12 +61,11 @@
                                 </div>
                                 <div class="small-8 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
-                                    <a class="button secondary small" i18n:translate="" id="image-id-btn"
+                                    <a class="button small" i18n:translate="" id="image-id-btn"
                                        ng-click="inputImageID('${request.route_url('launchconfig_new')}')">Next</a>
                                 </div>
                             </div>
-                            <p>OR select an image below</p>
-                            ${panel('image_picker', image=image, owner_choices=owner_choices, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
+                            ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
                             <div class="row" tal:condition="image">
                                 <div class="small-6 columns">&nbsp;</div>
                                 <div class="small-6 columns field inline">
