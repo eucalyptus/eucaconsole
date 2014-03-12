@@ -17,7 +17,7 @@
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
-            <strong i18n:translate="">Snapshots for volume:</strong>
+            <strong i18n:translate="">Details for volume:</strong>
             <em ng-non-bindable="">${volume_name}</em>
         </h3>
 
