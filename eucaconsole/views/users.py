@@ -697,9 +697,9 @@ class UserView(BaseView):
                                               json.dumps(policy_list[i]))
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
-                if self.EUCA_DEFAULT_POLICY in policies:
+                if self.EUCA_DEFAULT_POLICY in policies.policy_names:
                     # add the new statments in
-                    default_policy = policy_list[policies.indexOf(self.EUCA_DEFAULT_POLICY)]
+                    default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
                     self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
                                               json.dumps(default_policy))
