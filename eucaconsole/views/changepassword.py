@@ -6,13 +6,10 @@ Pyramid views for Change password
 import logging
 
 from urllib2 import HTTPError, URLError
-from urlparse import urlparse
 
-from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
-from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
-from pyramid.settings import asbool
-from pyramid.view import view_config, forbidden_view_config
+from pyramid.security import NO_PERMISSION_REQUIRED, remember
+from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
 from ..views import BaseView
@@ -30,7 +27,7 @@ class ChangePasswordView(BaseView):
         if referrer_root in [changepassword_url]:
             referrer = '/'  # never use the changepassword form itself as came_from
         came_from_param = self.request.params.get('came_from', referrer)
-        self.came_from = urlparse(came_from_param).path or '/'
+        self.came_from = came_from_param or '/'
         self.changepassword_form_errors = []
 
     @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)

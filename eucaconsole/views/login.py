@@ -33,13 +33,13 @@ class LoginView(BaseView):
         self.euca_login_form = EucaLoginForm(self.request, formdata=self.request.params or None)
         self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
-        referrer = self.request.url
+        referrer = urlparse(self.request.url).path
         login_url = self.request.route_path('login')
         logout_url = self.request.route_path('logout')
         if referrer in [login_url, logout_url]:
             referrer = '/'  # never use the login form (or logout view) itself as came_from
         came_from_param = self.request.params.get('came_from', referrer)
-        self.came_from = urlparse(came_from_param).path or '/'
+        self.came_from = came_from_param or '/'
         self.login_form_errors = []
         self.duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
         self.https_required = asbool(self.request.registry.settings.get('session.secure', False))
