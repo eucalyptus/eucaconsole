@@ -70,13 +70,10 @@
                         ${structure:keypair_form['csrf_token']}
                         ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         <hr>
-                        <div class="row">
-                            <div class="small-3 columns">&nbsp;</div>
-                            <div class="small-9 columns field inline">
-                                <button type="submit" class="button" i18n:translate="">Create and Download</button>
-                                <a href="${request.route_path('keypairs')}"
-                                   class="cancel-link" i18n:translate="">Cancel</a>
-                            </div>
+                        <div>
+                            <button type="submit" class="button" i18n:translate="">Create and Download</button>
+                            <a href="${request.route_path('keypairs')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                      </form>
                  </div>
@@ -98,13 +95,10 @@
                             <div class="small-9 columns value">${keypair.fingerprint if keypair.fingerprint else ''}</div>
                         </div>
                         <hr/>
-                        <div class="row" tal:condition="not keypair">
-                            <div class="small-3 columns">&nbsp;</div>
-                            <div class="small-9 columns field inline">
-                                <button type="submit" class="button">Import</button>
-                                <a href="${request.route_path('keypairs')}"
-                                   class="cancel-link" i18n:translate="">Cancel</a>
-                            </div>
+                        <div tal:condition="not keypair">
+                            <button type="submit" class="button" i18n:translate="">Import</button>
+                            <a href="${request.route_path('keypairs')}"
+                               class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                     </form>
                 </div>
