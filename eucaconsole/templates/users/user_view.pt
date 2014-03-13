@@ -169,7 +169,7 @@
                             </div>
                             <div class="small-6 columns set-password">
                                 <span i18n:translate="">Manually enter a password.</span>
-                                <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
+                                <form id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
                                             <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
@@ -184,6 +184,7 @@
                                     </div>
                                     <div class="row">
                                       <div class="columns">
+                                        <small id="password-length" class="error" style="display:none;" i18n:translate="">Password must be at least 6 characters</small>
                                         <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
                                       </div>
                                     </div>
@@ -224,6 +225,10 @@
                             <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
                                 ${structure:change_password_form['csrf_token']}
                                 ${panel('form_field', field=change_password_form['password'])}
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns">
+                                    <small id="wrong-password" class="error" i18n:translate="">The password was incorrect.</small>
+                                </div>
                                 <div>&nbsp;</div>
                                 <div class="row">
                                     <div class="small-4 columns">&nbsp;</div>
