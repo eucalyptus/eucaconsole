@@ -65,10 +65,10 @@
             </div>
             <div metal:fill-slot="tile_footer" tal:omit-tag="">
                 <div class="footer status {{ item.status.replace(' ', '').toLowerCase() }}">
-                    <div class="completed" ng-show="item.status == 'completed'">
+                    <div class="completed" ng-show="item.status === 'completed'">
                         <span>{{ item.status }}</span>
                     </div>
-                    <div class="progress" ng-show="item.status != 'completed'"><span
+                    <div class="progress" ng-show="item.status !== 'completed'"><span
                             class="meter" style="width: {{ item.progress }}">{{ item.progress }}</span>
                     </div>
                 </div>
