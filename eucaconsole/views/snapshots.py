@@ -55,7 +55,7 @@ class SnapshotsView(LandingPageView):
     def snapshots_delete(self):
         snapshot_id = self.request.params.get('snapshot_id')
         snapshot = self.get_snapshot(snapshot_id)
-        location = self.get_redirect_location('snapshots')
+        location = self.request.params.get('redirect_url') if self.request.params.get('redirect_url') else self.get_redirect_location('snapshots')
         if snapshot and self.delete_form.validate():
             try:
                 snapshot.delete()

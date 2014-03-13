@@ -23,8 +23,9 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
-        $scope.revealDeleteModal = function (snapshot_id) {
+        $scope.revealDeleteModal = function (volume_id, snapshot_id) {
             var modal = $('#delete-snapshot-modal');
+            $scope.volumeID = volume_id;
             $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
