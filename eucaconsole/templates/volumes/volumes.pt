@@ -35,6 +35,9 @@
                     <li ng-show="item.status === 'in-use'">
                         <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
                     </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
+                    </li>
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
                     </li>
@@ -118,6 +121,9 @@
                             </li>
                             <li ng-show="item.status === 'in-use'">
                                 <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                             </li>
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
