@@ -25,7 +25,9 @@
         <div class="large-8 columns">
             <dl class="tabs" id="instance-subnav">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-                <dd><a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a></dd>
+                <dd ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'" ng-cloak="true">
+                    <a href="${request.route_path('instance_volumes', id=instance.id)}" i18n:translate="">Volumes</a>
+                </dd>
             </dl>
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
@@ -63,7 +65,7 @@
                             <a href="#" id="reboot-instance-action"
                                data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
-                        <li ng-show="instanceState != 'terminated'">
+                        <li ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'">
                             <a href="#" id="terminate-instance-action"
                                data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
                         </li>
