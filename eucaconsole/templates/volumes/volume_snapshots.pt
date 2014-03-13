@@ -1,16 +1,16 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/volume.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volume.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="VolumeSnapshots"
          ng-controller="VolumeSnapshotsCtrl"
-         ng-init="initController('${request.route_url('volume_snapshots_json', id=volume.id)}')">
+         ng-init="initController('${request.route_path('volume_snapshots_json', id=volume.id)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${volume_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -23,7 +23,7 @@
 
         <div class="large-8 columns">
             <dl class="tabs" id="volume-subnav">
-                <dd><a href="${request.route_url('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_path('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
                 <dd class="active"><a href="#" i18n:translate="">Snapshots</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
@@ -83,7 +83,7 @@
                 tal:define="snapshot_tags {};">
                 <h3 i18n:translate="">Create snapshot from volume</h3>
                 <p><span i18n:translate="">Add a snapshot for</span> <strong ng-non-bindable="">${volume_name}</strong></p>
-                <form method="post" action="${request.route_url('volume_snapshot_create', id=volume.id)}"
+                <form method="post" action="${request.route_path('volume_snapshot_create', id=volume.id)}"
                       id="create-snapshot-form" data-abide="">
                     ${structure:create_form['csrf_token']}
                     ${panel('form_field', field=create_form.name, leftcol_width=3, rightcol_width=9)}
@@ -119,7 +119,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/pages/volume_snapshots.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/volume_snapshots.js')}"></script>
 </div>
 
 </metal:block>

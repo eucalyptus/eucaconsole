@@ -2,8 +2,8 @@
 <div tal:omit-tag="">
     <!--! Attach/Detach/Delete modal dialogs -->
     <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('volumes_attach');
-                     detailpage_action request.route_url('volume_attach', id=volume.id) if volume else '';
+         tal:define="landingpage_action request.route_path('volumes_attach');
+                     detailpage_action request.route_path('volume_attach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'data-placeholder': 'select...'};">
         <h3 i18n:translate="">Attach volume</h3>
@@ -32,8 +32,8 @@
         </div>
     </div>
     <div id="detach-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('volumes_detach');
-                     detailpage_action request.route_url('volume_detach', id=volume.id) if volume else '';
+         tal:define="landingpage_action request.route_path('volumes_detach');
+                     detailpage_action request.route_path('volume_detach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Detach volume</h3>
         <p>
@@ -65,8 +65,8 @@
         <a class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('volumes_delete');
-                     detailpage_action request.route_url('volume_delete', id=volume.id) if volume else '';
+         tal:define="landingpage_action request.route_path('volumes_delete');
+                     detailpage_action request.route_path('volume_delete', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete volume</h3>
         <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>

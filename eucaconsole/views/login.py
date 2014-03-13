@@ -21,7 +21,7 @@ from ..views import BaseView
 
 @forbidden_view_config()
 def redirect_to_login_page(request):
-    login_url = request.route_url('login')
+    login_url = request.route_path('login')
     return HTTPFound(login_url)
 
 
@@ -34,8 +34,8 @@ class LoginView(BaseView):
         self.aws_login_form = AWSLoginForm(self.request, formdata=self.request.params or None)
         self.aws_enabled = asbool(request.registry.settings.get('enable.aws'))
         referrer = self.request.url
-        login_url = self.request.route_url('login')
-        logout_url = self.request.route_url('logout')
+        login_url = self.request.route_path('login')
+        logout_url = self.request.route_path('logout')
         if referrer in [login_url, logout_url]:
             referrer = '/'  # never use the login form (or logout view) itself as came_from
         came_from_param = self.request.params.get('came_from', referrer)
@@ -98,7 +98,7 @@ class LoginView(BaseView):
             except HTTPError, err:
                 logging.info("http error "+str(vars(err)))
                 if err.code == 403:  # password expired
-                    changepwd_url = self.request.route_url('changepassword')
+                    changepwd_url = self.request.route_path('changepassword')
                     return HTTPFound(changepwd_url+("?expired=true&account=%s&username=%s" % (account, username)))
                 elif err.msg == u'Unauthorized':
                     msg = _(u'Invalid user/account name and/or password.')
@@ -144,7 +144,7 @@ class LogoutView(BaseView):
     def __init__(self, request):
         super(LogoutView, self).__init__(request)
         self.request = request
-        self.login_url = request.route_url('login')
+        self.login_url = request.route_path('login')
         self.euca_logout_form = EucaLogoutForm(self.request, formdata=self.request.params or None)
 
     @view_config(route_name='logout', request_method='POST')

@@ -1,10 +1,10 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/groups.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/groups.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="GroupsPage" ng-controller="GroupsCtrl" ng-init="initPage('${request.route_url('group_view', name='_name_')}')">
+<div metal:fill-slot="main_content" ng-app="GroupsPage" ng-controller="GroupsCtrl" ng-init="initPage('${request.route_path('group_view', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('groups', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -21,7 +21,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-group-btn"
-                   href="${request.route_url('group_view', name='new')}">Create Group</a>
+                   href="${request.route_path('group_view', name='new')}">Create Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
@@ -82,7 +82,7 @@
                 <p>
                     <span i18n:translate="">Deleting a group also deletes all permissions associated with that group. Are you sure you want to delete group <strong>{{ group_name }}</strong></span>?
                 </p>
-                <form method="post" id="delete-form" action="${request.route_url('group_delete', name='_name_')}">
+                <form method="post" id="delete-form" action="${request.route_path('group_delete', name='_name_')}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
@@ -105,9 +105,9 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/groups.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/groups.js')}"></script>
 </div>
 
 </metal:block>

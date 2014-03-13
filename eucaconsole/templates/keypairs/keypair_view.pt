@@ -6,7 +6,7 @@
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('keypairs')}" i18n:translate="">Key pairs</a></li>
+                <li><a href="${request.route_path('keypairs')}" i18n:translate="">Key pairs</a></li>
                 <li class="current">
                     <a tal:condition="keypair" ng-non-bindable="">${keypair.name }</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create New Key Pair</a>
@@ -28,7 +28,7 @@
         </h3>
         <!-- New Keypair Material Download -->
         <div tal:condition="keypair_created ">
-           <form id="download-keypair-form" action="${request.route_url('file_download')}" method="post">
+           <form id="download-keypair-form" action="${request.route_path('file_download')}" method="post">
                ${structure:keypair_form['csrf_token']}
            </form>
            <script language="Javascript">
@@ -66,7 +66,7 @@
                     <p i18n:translate="">
                         Save the file in a place you will remember. You will need to enter the path later to connect to your instances.
                     </p>
-                    <form  action="${request.route_url('keypair_create')}" method="post" data-abide="abide">
+                    <form  action="${request.route_path('keypair_create')}" method="post" data-abide="abide">
                         ${structure:keypair_form['csrf_token']}
                         ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         <hr>
@@ -74,7 +74,7 @@
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field inline">
                                 <button type="submit" class="button" i18n:translate="">Create and Download</button>
-                                <a href="${request.route_url('keypairs')}"
+                                <a href="${request.route_path('keypairs')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                  </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">
                     <p i18n:translate="">Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
-                    <form action="${request.route_url('keypair_import')}" method="post" data-abide="abide">
+                    <form action="${request.route_path('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
                         ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                         ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, **html_attrs)}
@@ -102,7 +102,7 @@
                             <div class="small-3 columns">&nbsp;</div>
                             <div class="small-9 columns field inline">
                                 <button type="submit" class="button">Import</button>
-                                <a href="${request.route_url('keypairs')}"
+                                <a href="${request.route_path('keypairs')}"
                                    class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/pages/keypair.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/keypair.js')}"></script>
 </div>
 
 </metal:block>

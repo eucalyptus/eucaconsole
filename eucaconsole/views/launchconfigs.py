@@ -34,7 +34,7 @@ class LaunchConfigsView(LandingPageView):
         self.prefix = '/launchconfigs'
         self.filter_keys = ['image_id', 'image_name', 'key_name', 'name', 'security_groups']
         self.sort_keys = self.get_sort_keys()
-        self.json_items_endpoint = self.request.route_url('launchconfigs_json')
+        self.json_items_endpoint = self.request.route_path('launchconfigs_json')
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             filter_fields=self.filter_fields,
@@ -66,7 +66,7 @@ class LaunchConfigsView(LandingPageView):
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_url('launchconfigs')
+            location = self.request.route_path('launchconfigs')
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -183,7 +183,7 @@ class LaunchConfigView(BaseView):
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_url('launchconfigs')
+            location = self.request.route_path('launchconfigs')
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -242,7 +242,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.images_json_endpoint = self.request.route_url('images_json')
+        self.images_json_endpoint = self.request.route_path('images_json')
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
@@ -273,7 +273,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         """Handles the POST from the Create Launch Configuration wizard"""
         if self.create_form.validate():
             autoscale_conn = self.get_connection(conn_type='autoscale')
-            location = self.request.route_url('launchconfigs')
+            location = self.request.route_path('launchconfigs')
             image_id = self.image.id
             name=self.request.params.get('name')
             key_name = self.request.params.get('keypair')

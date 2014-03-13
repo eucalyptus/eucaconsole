@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/ipaddresses.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/ipaddresses.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ElasticIPsPage" ng-controller="ElasticIPsCtrl" ng-init="initController()">
@@ -90,7 +90,7 @@
                 you are allowed to manage.
             </p>
             <p i18n:translate="">How may IP addresses would you like to allocate?</p>
-            <form action="${request.route_url('ipaddresses')}" method="post" data-abide="abide">
+            <form action="${request.route_path('ipaddresses')}" method="post" data-abide="abide">
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.ipcount)}
                 <div class="row">
@@ -114,10 +114,10 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/ipaddresses.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/ipaddresses.js')}"></script>
 </div>
 
 </metal:block>

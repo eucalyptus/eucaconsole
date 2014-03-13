@@ -113,7 +113,7 @@ class BaseView(object):
             request.session.flash(notice, queue='warning')
             # Empty Beaker cache to clear connection objects
             cls.invalidate_cache()
-            location = request.route_url('login')
+            location = request.route_path('login')
             return HTTPFound(location=location)
         return HTTPForbidden()
 
@@ -300,12 +300,12 @@ class LandingPageView(BaseView):
 
     def get_json_endpoint(self, route):
         return '{0}{1}'.format(
-            self.request.route_url(route),
+            self.request.route_path(route),
             '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
     def get_redirect_location(self, route):
-        return '{0}'.format(self.request.route_url(route))
+        return '{0}'.format(self.request.route_path(route))
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

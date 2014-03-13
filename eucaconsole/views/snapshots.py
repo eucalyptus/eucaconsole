@@ -99,7 +99,7 @@ class SnapshotsView(LandingPageView):
                 queue = Notification.SUCCESS
                 # Clear images cache
                 ImagesView.clear_images_cache()
-                location = self.request.route_url('image_view', id=image_id)
+                location = self.request.route_path('image_view', id=image_id)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
@@ -244,7 +244,7 @@ class SnapshotView(TaggedItemView):
             # Update tags
             self.update_tags()
 
-            location = self.request.route_url('snapshot_view', id=self.snapshot.id)
+            location = self.request.route_path('snapshot_view', id=self.snapshot.id)
             msg = _(u'Successfully modified snapshot')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -272,7 +272,7 @@ class SnapshotView(TaggedItemView):
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('snapshot_view', id=snapshot.id)
+                location = self.request.route_path('snapshot_view', id=snapshot.id)
                 return HTTPFound(location=location)
             except EC2ResponseError as err:
                 msg = err.message
@@ -297,7 +297,7 @@ class SnapshotView(TaggedItemView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('snapshots')
+            location = self.request.route_path('snapshots')
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
@@ -313,7 +313,7 @@ class SnapshotView(TaggedItemView):
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
         bdm['/dev/sda'] = root_vol
-        location = self.request.route_url('snapshot_view', id=snapshot_id)
+        location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             try:
                 self.snapshot.connection.register_image(

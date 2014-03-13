@@ -1,8 +1,8 @@
 <!--! Modal dialogs for Elastic IPs on landing and detail page -->
 <div tal:omit-tag="">
     <div id="associate-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('ipaddresses_associate');
-                     detailpage_action request.route_url('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
+         tal:define="landingpage_action request.route_path('ipaddresses_associate');
+                     detailpage_action request.route_path('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Associate elastic IP Address to instance</h3>
         <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
@@ -23,8 +23,8 @@
         <a class="close-reveal-modal">&#215;</a>
     </div>
     <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('ipaddresses_disassociate');
-                     detailpage_action request.route_url('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
+         tal:define="landingpage_action request.route_path('ipaddresses_disassociate');
+                     detailpage_action request.route_path('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;
                      instance_name eip.instance_name if eip else '';">
         <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
@@ -45,8 +45,8 @@
         <a class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('ipaddresses_release');
-                     detailpage_action request.route_url('ipaddress_release', public_ip=eip.public_ip) if eip else '';
+         tal:define="landingpage_action request.route_path('ipaddresses_release');
+                     detailpage_action request.route_path('ipaddress_release', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Release IP address to cloud</h3>
         <p i18n:translate="">If you release an elastic IP address to the cloud, you can no longer associate

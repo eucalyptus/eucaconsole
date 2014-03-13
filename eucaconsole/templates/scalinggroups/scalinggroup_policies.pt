@@ -1,14 +1,14 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/scalinggroup.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl" ng-init="initPage()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                 <li class="current"><a ng-non-bindable="">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -20,13 +20,13 @@
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="scalinggroup-subnav">
-                <dd><a href="${request.route_url('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
                 <dd class="active"><a href="#" i18n:translate="">Policies</a></dd>
-                <dd><a href="${request.route_url('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
+                <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}">Instances</a></dd>
             </dl>
             <div class="panel gridwrapper no-title">
                 <div class="tile add" id="add-policy">
-                    <a href="${request.route_url('scalinggroup_policy_new', id=scaling_group.name)}">
+                    <a href="${request.route_path('scalinggroup_policy_new', id=scaling_group.name)}">
                         <div class="plus">+</div>
                         <div i18n:translate="">Add a policy</div>
                     </a>
@@ -65,7 +65,7 @@
                 <span i18n:translate="">Are you sure you want to delete the policy</span>
                 <b>{{ policyName }}</b>?
             </p>
-            <form action="${request.route_url('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
+            <form action="${request.route_path('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="{{ policyName }}" />
                 <button type="submit" class="button" i18n:translate="" id="delete-policy-dialog-btn">
@@ -79,8 +79,8 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/scalinggroup_policies.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_policies.js')}"></script>
 </div>
 
 </metal:block>

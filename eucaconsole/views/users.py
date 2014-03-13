@@ -49,7 +49,7 @@ class UsersView(LandingPageView):
 
     @view_config(route_name='users', renderer=TEMPLATE)
     def users_landing(self):
-        json_items_endpoint = self.request.route_url('users_json')
+        json_items_endpoint = self.request.route_path('users_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         # filter_keys are passed to client-side filtering in search box
@@ -206,9 +206,9 @@ class UserView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
         if self.user is None:
-            self.location = self.request.route_url('users')
+            self.location = self.request.route_path('users')
         else:
-            self.location = self.request.route_url('user_view', name=self.user.user_name)
+            self.location = self.request.route_path('user_view', name=self.user.user_name)
         self.prefix = '/users'
         self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
@@ -593,7 +593,7 @@ class UserView(BaseView):
             params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteUser', params)
             
-            location = self.request.route_url('users')
+            location = self.request.route_path('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
         except BotoServerError as err:

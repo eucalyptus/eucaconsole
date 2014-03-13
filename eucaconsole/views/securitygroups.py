@@ -150,7 +150,7 @@ class SecurityGroupView(TaggedItemView):
 
     @view_config(route_name='securitygroup_delete', renderer=TEMPLATE, request_method='POST')
     def securitygroup_delete(self):
-        location = self.request.route_url('securitygroups')
+        location = self.request.route_path('securitygroups')
         if self.security_group and self.delete_form.validate():
             name = self.security_group.name
             try:
@@ -181,12 +181,12 @@ class SecurityGroupView(TaggedItemView):
                         new_security_group.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully created security group')
                 queue = Notification.SUCCESS
-                location = self.request.route_url('securitygroup_view', id=new_security_group.id)
+                location = self.request.route_path('securitygroup_view', id=new_security_group.id)
                 status = 200
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-                location = self.request.route_url('securitygroups')
+                location = self.request.route_path('securitygroups')
                 status = getattr(err, 'status', 400)
             if self.request.is_xhr:
                 return JSONResponse(status=status, message=msg)
@@ -207,7 +207,7 @@ class SecurityGroupView(TaggedItemView):
             self.update_tags()
             self.update_rules()
 
-            location = self.request.route_url('securitygroup_view', id=self.security_group.id)
+            location = self.request.route_path('securitygroup_view', id=self.security_group.id)
             msg = _(u'Successfully modified security group')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)

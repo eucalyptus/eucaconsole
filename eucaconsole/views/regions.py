@@ -20,9 +20,9 @@ class RegionSelectView(BaseView):
         """Select region and redirect to referring page"""
         return_to = self.request.params.get('returnto')
         return_to_path = urlparse(return_to).path
-        landingpage_route_paths = [urlparse(self.request.route_url(name)).path for name in LANDINGPAGE_ROUTE_NAMES]
+        landingpage_route_paths = [urlparse(self.request.route_path(name)).path for name in LANDINGPAGE_ROUTE_NAMES]
         if return_to_path not in landingpage_route_paths:
-            return_to = self.request.route_url('dashboard')
+            return_to = self.request.route_path('dashboard')
         region = self.request.params.get('region')
         # NOTE: We normally don't want a GET request to modify data,
         #       but we're only updating the selected region in the session here.

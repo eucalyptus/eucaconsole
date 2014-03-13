@@ -3,7 +3,7 @@
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
         <p i18n:translate="">&nbsp;</p>
-        <form action="${request.route_url('cloudwatch_alarms_create')}" method="post" data-abide="">
+        <form action="${request.route_path('cloudwatch_alarms_create')}" method="post" data-abide="">
             ${structure:alarm_form['csrf_token']}
             <input type="hidden" name="redirect_location" value="${redirect_location}" />
             <input type="hidden" name="namespace" value="{{ namespace }}" />
@@ -120,6 +120,6 @@
             </div>
         </form>
         <a class="close-reveal-modal">&#215;</a>
-        <script src="${request.static_url('eucaconsole:static/js/pages/create_alarm.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>

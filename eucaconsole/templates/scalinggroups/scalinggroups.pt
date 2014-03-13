@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/scalinggroups.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroups.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="ScalingGroupsPage" ng-controller="ScalingGroupsCtrl">
@@ -21,7 +21,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="create-scalinggroup-btn"
-                   href="${request.route_url('scalinggroup_new')}">Create New Scaling Group</a>
+                   href="${request.route_path('scalinggroup_new')}">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
@@ -140,9 +140,9 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/scalinggroups.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroups.js')}"></script>
 
 </div>
 
