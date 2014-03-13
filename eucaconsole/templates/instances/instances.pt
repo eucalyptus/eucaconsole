@@ -48,7 +48,7 @@
                             View console output
                         </a>
                     </li>
-                    <li>
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                     </li>
                     <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
@@ -160,7 +160,7 @@
                                     View console output
                                 </a>
                             </li>
-                            <li>
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                             </li>
                             <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
