@@ -123,7 +123,7 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
                 <td class="status">
-                    <span class="label radius {{ item.status }}">{{ item.status }}</span>
+                    <span class="label radius status {{ item.status }}">{{ item.status }}</span>
                     <span class="dots" ng-show="item.transitional">&nbsp;</span>
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
