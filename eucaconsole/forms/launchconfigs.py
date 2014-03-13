@@ -58,8 +58,6 @@ class CreateLaunchConfigForm(BaseSecureForm):
 
         if image is not None:
             self.image_id.data = self.image.id
-            self.kernel_id.data = image.kernel_id or ''
-            self.ramdisk_id.data = image.ramdisk_id or ''
 
     def set_help_text(self):
         self.userdata_file.help_text = self.userdata_file_helptext
