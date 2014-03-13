@@ -65,7 +65,7 @@ angular.module('InstancesPage', ['LandingPage'])
         };
         $scope.revealConsoleOutputModal = function(instance) {
             $(document).trigger('click');
-            $scope.instanceID = instance['id'];
+            $scope.instance_name = instance['name'];
             var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
