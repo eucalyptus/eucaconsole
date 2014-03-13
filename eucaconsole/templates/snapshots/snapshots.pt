@@ -28,7 +28,7 @@
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                     <li>
-                        <a href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}" id="create-volume-action-tile-{{item.id}}" i18n:translate="">
+                        <a ng-href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}" id="create-volume-action-tile-{{item.id}}" i18n:translate="">
                             Create volume from snapshot
                         </a>
                     </li>
@@ -110,7 +110,7 @@
                         <ul id="item-dropdown_{{ item.id}}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
                             <li>
-                                <a href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}"
+                                <a ng-href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}"
                                    id="create-volume-action-grid-{{item.id}}" i18n:translate="">
                                     Create volume from snapshot
                                 </a>
