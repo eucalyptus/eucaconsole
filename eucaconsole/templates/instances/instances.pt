@@ -51,7 +51,7 @@
                     <li>
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                     </li>
-                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
+                    <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
                         <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                     </li>
                     <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
@@ -163,11 +163,11 @@
                             <li>
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                             </li>
+                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
+                                <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
+                            </li>
                             <li ng-show="item.root_device === 'ebs' &amp;&amp; item.status === 'running'">
                                 <a i18n:translate="" ng-click="revealModal('stop', item)">Stop</a>
-                            </li>
-                            <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                             </li>
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
