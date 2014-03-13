@@ -27,7 +27,12 @@
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
+                    <li>
+                        <a ng-href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}" id="create-volume-action-tile-{{item.id}}" i18n:translate="">
+                            Create volume from snapshot
+                        </a>
+                    </li>
+                    <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
 
                 </ul>
@@ -104,7 +109,13 @@
                         <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.id}}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a></li>
-                                                        <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
+                            <li>
+                                <a ng-href="${request.route_path('volume_view', id='new')}?from_snapshot={{item.id}}"
+                                   id="create-volume-action-grid-{{item.id}}" i18n:translate="">
+                                    Create volume from snapshot
+                                </a>
+                            </li>
+                            <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item.id)">Delete snapshot</a></li>
 
                         </ul>
