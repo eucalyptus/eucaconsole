@@ -11,9 +11,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageID = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
+        $scope.instanceTypeSelected = '';
         $scope.securityGroupsRules = {};
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
+        $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
@@ -23,17 +25,27 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
+        $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.setInitialValues = function () {
-            $scope.instanceType = $scope.urlParams['instance_type'] || 'm1.small';
+            $scope.instanceType = 'm1.small';
+            $scope.instanceTypeSelected = $scope.urlParams['instance_type'] || '';
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
+            $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
+            $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
+            if( $scope.instanceTypeSelected != '' )
+                $scope.instanceType = $scope.instanceTypeSelected;
+            if( $scope.keyPairSelected != '' )
+                $scope.keyPair = $scope.keyPairSelected;
+            if( $scope.securityGroupSelected != '' )
+                $scope.securityGroup = $scope.securityGroupSelected;
         };
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
             $scope.setInitialValues();

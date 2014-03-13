@@ -81,7 +81,16 @@
                                 Please specify the launch configuration name and the instance size/type.
                             </p>
                             ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'launchconfigName'})}
-                            ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
+                            <div tal:condition="not preset">
+                                ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
+                            </div>
+                            <div tal:condition="preset" ng-cloak="true">
+                                <div class="row">
+                                    <div class="small-3 columns"><label class="right">Instance type&nbsp;</label></div>
+                                    <div class="small-9 columns field inline">{{ instanceTypeSelected }}</div>
+                                    <input type="hidden" name="instance_type" value="{{ instanceTypeSelected }}">
+                                </div>
+                            </div>
                             <hr />
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
@@ -97,18 +106,36 @@
                             <p class="description" i18n:translate="">
                                 Please specify the key pair and security group.
                             </p>
-                            ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
-                            <div class="row">
-                                <div class="small-9 columns right">
-                                    <a data-reveal-id="create-keypair-modal" i18n:translate=""
-                                       id="create-keypair-link">Create key pair</a>
+                            <div tal:condition="not preset">
+                                ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                                <div class="row">
+                                    <div class="small-9 columns right">
+                                        <a data-reveal-id="create-keypair-modal" i18n:translate=""
+                                           id="create-keypair-link">Create key pair</a>
+                                    </div>
                                 </div>
                             </div>
-                            ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
-                            <div class="row">
-                                <div class="small-9 columns right">
-                                    <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
-                                       id="create-securitygroup-link">Create security group</a>
+                            <div tal:condition="preset" ng-cloak="true">
+                                <div class="row">
+                                    <div class="small-3 columns"><label class="right">Key pair&nbsp;</label></div>
+                                    <div class="small-9 columns field inline">{{ keyPairSelected }}</div>
+                                    <input type="hidden" name="keypair" value="{{ keyPairSelected }}">
+                                </div>
+                            </div>
+                            <div tal:condition="not preset">
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                                <div class="row">
+                                    <div class="small-9 columns right">
+                                        <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
+                                           id="create-securitygroup-link">Create security group</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div tal:condition="preset" ng-cloak="true">
+                                <div class="row">
+                                    <div class="small-3 columns"><label class="right">Security group&nbsp;</label></div>
+                                    <div class="small-9 columns field inline">{{ securityGroupSelected }}</div>
+                                    <input type="hidden" name="securitygroup" value="{{ securityGroupSelected }}">
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview')}
@@ -196,7 +223,7 @@
                         <div class="small-8 columns value">{{ securityGroup }}</div>
                     </div>
                 </div>
-                <div class="section step4 hide">
+                <div cl ass="section step4 hide">
                     <div class="row">
                         <div class="columns value" ng-show="userData || userDataFile">
                             <i class="fi-check"></i> User data added
