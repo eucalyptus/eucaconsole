@@ -76,7 +76,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                                <div class="small-8 columns value">${image.description if image.description else ''}</div>
+                                <div class="small-8 columns value" ng-non-bindable="">${image.description if image.description else ''}</div>
                             </div>
                         </div>
                         <div class="section" tal:condition="image.kernel_id">
