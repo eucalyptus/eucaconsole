@@ -85,7 +85,7 @@
                 <th i18n:translate="">Snapshots</th>
                 <th i18n:translate="">Avail Zone</th>
                 <th i18n:translate="">Tags</th>
-                <th i18n:translate="">Create Time</th>
+                <th i18n:translate="">Creation Time</th>
                 <th i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
