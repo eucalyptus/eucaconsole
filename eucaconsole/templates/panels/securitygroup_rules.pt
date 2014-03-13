@@ -89,7 +89,7 @@
             <div class="small-9 columns">
                 <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
                         ng-click="addRule($event)">Add Rule</a>
-                <a href="#" id="button-cancel-rule" class="button round small" i18n:translate="" 
+                <a href="#" id="button-cancel-rule" class="cancel-link" i18n:translate="" 
                         ng-click="cancelRule($event)">Cancel</a>
             </div>
         </div>
