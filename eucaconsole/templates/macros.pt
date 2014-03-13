@@ -254,13 +254,13 @@
 <!--! Help content expando for dialogs ===== -->
 <metal:helpexpando metal:define-macro="dialog_help_expando">
     <div class="expando" id="help-expando" ng-cloak="" ng-init="isDialogHelpExpanded = false">
-        <h6 class="title" >
+        <span class="title" >
             <a ng-click="isDialogHelpExpanded = !isDialogHelpExpanded">
                 <i class="fi-plus" ng-show="!isDialogHelpExpanded"></i>
                 <i class="fi-minus" ng-show="isDialogHelpExpanded"></i>
                 &nbsp;<span i18n:translate="">Help</span>
             </a>
-        </h6>
+        </span>
     </div>
 </metal:helpexpando>
 
@@ -294,6 +294,7 @@
 
 <!-- Volume device help -->
 <metal:volumedevicehelp metal:define-macro="volumedevice_help">
+    <div>&nbsp;</div>
     <div class="help-content">
         <h5 class="title" i18n:translate="">Volume device options for Linux</h5>
         <table class="table">
