@@ -261,11 +261,13 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             security_group_names=[name for name, label in self.create_form.securitygroup.choices],
+            preset='',
         )
 
     @view_config(route_name='launchconfig_new', renderer=TEMPLATE, request_method='GET')
     def launchconfig_new(self):
         """Displays the Create Launch Configuration wizard"""
+        self.render_dict['preset'] = self.request.params.get('preset')
         return self.render_dict
 
     @view_config(route_name='launchconfig_create', renderer=TEMPLATE, request_method='POST')
