@@ -22,8 +22,8 @@ class ChangePasswordView(BaseView):
     def __init__(self, request):
         super(ChangePasswordView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
-        referrer = self.request.url
-        referrer_root = referrer.split('?',1)[0] if referrer.find('?') > -1 else referrer
+        referrer = urlparse(self.request.url).path
+        referrer_root = referrer.split('?')[0]
         changepassword_url = self.request.route_path('changepassword')
         if referrer_root in [changepassword_url]:
             referrer = '/'  # never use the changepassword form itself as came_from
