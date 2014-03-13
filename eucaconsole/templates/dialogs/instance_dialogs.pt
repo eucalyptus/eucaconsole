@@ -101,12 +101,12 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="" ng-non-bindable="">Console Output for ${instance_name}</h3>
+            <h3 i18n:translate="">Console Output for {{ instance_name }}</h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
             <a class="close-reveal-modal">&#215;</a>
         </div>
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Connect to {{ instanceID }}</h3>
+            <h3 i18n:translate="">Connect to {{ instance_name }}</h3>
             <div ng-show="!(platform == 'windows')">
                 <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
                 <ol>
