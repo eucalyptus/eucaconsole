@@ -16,7 +16,10 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for user:</strong>
+            <em ng-non-bindable="">${user.user_name}</em>
+        </h3>
         <div class="large-8 columns">
             <dl class="tabs" data-tab="">
                 <dd class="active"><a href="#general-tab" i18n:translate="">General</a></dd>
