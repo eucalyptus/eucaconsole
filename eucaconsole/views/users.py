@@ -210,11 +210,11 @@ class UserView(BaseView):
         else:
             self.location = self.request.route_path('user_view', name=self.user.user_name)
         self.prefix = '/users'
+        create_date = parser.parse(self.user.create_date) if hasattr(self.user, 'create_date') else None
         self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
-        create_date = parser.parse(self.user.create_date)
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
