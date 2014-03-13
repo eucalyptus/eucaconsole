@@ -113,7 +113,7 @@ angular.module('UserView', ['PolicyList'])
             $('#passwords-match').css('display', 'none');
             var newpass = $event.target.new_password.value;
             var newpass2 = $event.target.new_password2.value;
-            if (newpass.length < 7) {
+            if (newpass.length < 6) {
                 $('#password-length').css('display', 'block');
                 return false;
             }
