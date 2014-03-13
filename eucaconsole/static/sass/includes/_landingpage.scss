@@ -137,7 +137,7 @@ $dropdown-border-color: $euca-green;
             font-weight: normal;
         }
         .f-dropdown a {
-            color: $euca-darkgreen;
+            color: $euca-darkgrey;
             font-weight: normal;
             overflow: visible;
             white-space: normal;
@@ -263,6 +263,12 @@ $dropdown-border-color: $euca-green;
             &.tags {
                 max-width: 20rem;
                 word-break: break-all;
+            }
+            .f-dropdown a {
+                color: $euca-darkgrey;
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
     }

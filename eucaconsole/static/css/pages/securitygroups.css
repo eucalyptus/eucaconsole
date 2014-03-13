@@ -30,7 +30,7 @@
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #00415e; font-weight: bold; }
 .tile .header a:hover { color: #8dc943; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown a { color: #468400; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #444444; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content a { color: #468400; }
 .tile .content a:hover { text-decoration: underline; }
@@ -58,6 +58,8 @@
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
+.gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 
