@@ -18,7 +18,7 @@ from .mime import check_types
 
 def get_configurator(settings, enable_auth=True):
     ensure_session_keys(settings)
-    #check_types()
+    check_types()
     config = Configurator(root_factory=SiteRootFactory, settings=settings)
     if enable_auth:
         authn_policy = SessionAuthenticationPolicy(callback=groupfinder)
