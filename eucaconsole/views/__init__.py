@@ -53,7 +53,7 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 self.region, self.access_key, self.secret_key, self.security_token, conn_type)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('clchost')
+            host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
             if conn_type == 'ec2':
                 host = self.request.registry.settings.get('ec2.host', host)
