@@ -142,7 +142,8 @@ angular.module('SecurityGroupRules', [])
             $scope.syncRules();
         };
         $scope.cancelRule = function ($event) {
-           $scope.resetValues();
+            $event.preventDefault();
+            $scope.resetValues();
         };
         $scope.setPorts = function (port) {
             if (!isNaN(parseInt(port, 10))) {
