@@ -104,7 +104,7 @@
                 </td>
                 <td><a ng-href="${prefix}/{{ item.id }}/snapshots">{{ item.snapshots }} snapshot<span ng-show="item.snapshots != 1">s</span></a></td>
                 <td>{{ item.zone }}</td>
-                <td class="breakword">{{ item.tags }}</td>
+                <td class="breakword">{{ item.tags | ellipsis: 60 }}</td>
                 <td>{{ item.create_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
