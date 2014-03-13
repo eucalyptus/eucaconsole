@@ -92,7 +92,7 @@
             <p i18n:translate="">How may IP addresses would you like to allocate?</p>
             <form action="${request.route_path('ipaddresses')}" method="post" data-abide="abide">
                 ${structure:allocate_form['csrf_token']}
-                ${panel('form_field', field=allocate_form.ipcount)}
+                ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6)}
                 <div class="row">
                     <button type="submit" class="button radius" id="allocate-ipaddresses-dialog-btn"
                             i18n:translate="">
