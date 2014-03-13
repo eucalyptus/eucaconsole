@@ -227,7 +227,7 @@
                                 ${panel('form_field', field=change_password_form['password'])}
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns">
-                                    <small id="wrong-password" class="error" i18n:translate="">The password was incorrect.</small>
+                                    <small id="wrong-password" class="error" i18n:translate="">The password you entered is incorrect.</small>
                                 </div>
                                 <div>&nbsp;</div>
                                 <div class="row">
