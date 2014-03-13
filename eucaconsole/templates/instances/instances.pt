@@ -44,7 +44,7 @@
                         </a>
                     </li>
                     <li ng-show="item.status == 'running'">
-                        <a i18n:translate="" id="view-consoleoutput-action-gridview-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
+                        <a i18n:translate="" id="view-consoleoutput-action-gridview-{{item.id}}" ng-click="revealConsoleOutputModal(item)">
                             View console output
                         </a>
                     </li>
@@ -156,7 +156,7 @@
                                 </a>
                             </li>
                             <li ng-show="item.status == 'running'">
-                                <a i18n:translate="" id="view-consoleoutput-action-tileview-{{item.id}}" ng-click="revealConsoleOutputModal(item.id)">
+                                <a i18n:translate="" id="view-consoleoutput-action-tileview-{{item.id}}" ng-click="revealConsoleOutputModal(item)">
                                     View console output
                                 </a>
                             </li>

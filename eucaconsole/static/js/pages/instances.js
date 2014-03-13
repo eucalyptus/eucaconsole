@@ -63,9 +63,10 @@ angular.module('InstancesPage', ['LandingPage'])
             }
             reader.readAsText(file);
         };
-        $scope.revealConsoleOutputModal = function(instanceID) {
+        $scope.revealConsoleOutputModal = function(instance) {
             $(document).trigger('click');
-            var consoleOutputEndpoint = "/instances/" + instanceID + "/consoleoutput/json";
+            $scope.instanceID = instance['id'];
+            var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
