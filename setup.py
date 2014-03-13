@@ -10,15 +10,15 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     # 'Babel >= 1.3',  # Only required for generating i18n translations
-    'beaker == 1.5.4',
+    'beaker >= 1.5.4',
     'boto == 2.25.0',
     'chameleon == 2.5.3',
     'gevent == 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
     'greenlet == 0.3.1',
     'gunicorn == 18.0',
     # 'lingua >= 1.5',  # Only required for generating i18n translations
-    'M2Crypto == 0.20.2',
-    'pycrypto == 2.0.1',
+    'M2Crypto >= 0.20.2',
+    'pycrypto >= 2.0.1',
     'Paste == 1.7.4',
     'pyramid == 1.4',
     'pyramid_beaker == 0.8',
