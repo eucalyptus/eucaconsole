@@ -185,6 +185,8 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_delete', request_method='POST')
     def group_delete(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         location = self.request.route_path('groups')
         if self.group is None:
             raise HTTPNotFound()
@@ -304,6 +306,8 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_update_policy', request_method='POST', renderer='json')
     def group_update_policy(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         """ calls iam:PutGroupPolicy """
         policy = self.request.matchdict.get('policy')
         try:
@@ -316,6 +320,8 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_delete_policy', request_method='POST', renderer='json')
     def group_delete_policy(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         """ calls iam:DeleteGroupPolicy """
         policy = self.request.matchdict.get('policy')
         try:
