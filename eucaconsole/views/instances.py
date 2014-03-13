@@ -458,6 +458,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             string_to_decrypt = base64.b64decode(passwd_data)
             ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
             return dict(results=dict(instance=instance_id, password=ret))
+        except RSA.RSAError as err: # likely, bad key
+            return JSONResponse(status=400, message=_(u"There was a problem with the key, please try again, verifying the correct private key is used."));
         except BotoServerError as err:
             logging.info("err = "+str(vars(err)))
             return JSONResponse(status=400, message=err.message);
