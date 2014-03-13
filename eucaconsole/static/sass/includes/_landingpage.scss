@@ -5,7 +5,7 @@
 /* @section Landing pages styles */
 
 // Sass variables
-$tile-width: 200px;
+$tile-width: 202px;
 $tile-height: 220px;
 $tile-row-height: 24px;
 $tile-bg-color: white;
@@ -368,6 +368,9 @@ $dropdown-border-color: $euca-green;
 
 #sorting-controls {
     padding-top: 22px;
+    .f-dropdown {
+        @include dropdown-shadow-mixin;
+    }
 }
 
 #results-count {

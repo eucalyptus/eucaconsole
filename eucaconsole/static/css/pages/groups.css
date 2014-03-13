@@ -23,7 +23,7 @@
 .gridwrapper .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d3e9b6; }
@@ -86,6 +86,7 @@
 #filters form button { box-shadow: none; }
 
 #sorting-controls { padding-top: 22px; }
+#sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; }
 
 #results-count { padding-top: 1rem; }
 #results-count .items-found { position: relative; top: -6px; }
