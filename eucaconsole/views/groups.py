@@ -113,6 +113,7 @@ class GroupView(BaseView):
             all_users=self.all_users,
             group_form=self.group_form,
             group_update_form=self.group_update_form,
+            delete_form=DeleteGroupForm(self.request),
         )
 
     def get_group(self):
