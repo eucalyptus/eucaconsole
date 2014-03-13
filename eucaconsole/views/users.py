@@ -11,7 +11,6 @@ import string
 import StringIO
 import simplejson as json
 import sys
-import urlparse
 
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
@@ -21,7 +20,6 @@ from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-from pyramid.response import Response
 
 from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
 from ..models import Notification
@@ -37,6 +35,7 @@ class PasswordGeneration(object):
         chars = string.ascii_letters + string.digits + '!@#$%^&*()'
         random.seed = (os.urandom(1024))
         return ''.join(random.choice(chars) for i in range(12))
+
 
 class UsersView(LandingPageView):
     TEMPLATE = '../templates/users/users.pt'
@@ -118,6 +117,7 @@ class UsersView(LandingPageView):
                 return dict(message=_(u"Successfully enabled user"))
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
+
 
 class UsersJsonView(BaseView):
     EUCA_DENY_POLICY = 'euca-console-deny-access-policy'

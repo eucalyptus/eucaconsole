@@ -40,7 +40,8 @@
                         <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ snapshot.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown" data-dropdown-content="">
                             <li><a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a></li>
-                            <li><a ng-click="revealDeleteModal()" i18n:translate="">Delete snapshot</a></li>
+                            <li><a ng-click="revealRegisterSnapshotModal(snapshot.id)" i18n:translate="">Register as image</a></li>
+                            <li><a ng-click="revealDeleteModal('${volume.id}', snapshot.id)" i18n:translate="">Delete snapshot</a></li>
                         </ul>
                     </div>
                     <div class="content">
@@ -97,24 +98,9 @@
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
-            <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete snapshot</h3>
-                <p>
-                    <span i18n:translate="">Are you sure you want to delete snapshot</span>?
-                </p>
-                <form method="post" id="delete-form" data-abide="" action="{{ deleteFormAction }}">
-                    ${structure:delete_form['csrf_token']}
-                    <div>&nbsp;</div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Delete Snapshot" i18n:attributes="value" />
-                        </div>
-                    </div>
-                </form>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('snapshot_dialogs', delete_form=delete_form, register_form=register_form, landingpage=True, from_volume_page=True)}
     </div>
 </div>
 

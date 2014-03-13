@@ -102,6 +102,20 @@ class DeleteSnapshotForm(BaseSecureForm):
     pass
 
 
+class RegisterSnapshotForm(BaseSecureForm):
+    """CSRF-protected form to delete a snapshot"""
+    name = wtforms.TextField(label=_(u'Name'),
+        validators=[validators.InputRequired(message=_(u'Image name is required'))])
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
+        ],
+    )
+    dot = wtforms.BooleanField(label=_(u'Delete on terminate'))
+    reg_as_windows = wtforms.BooleanField(label=_(u'Register as Windows OS image'))
+
+
 class AttachForm(BaseSecureForm):
     """CSRF-protected form to attach a volume to a selected instance
        Note: This is for attaching a volume to a choice of instances on the volume detail page
