@@ -4,7 +4,7 @@
     <div class="row" id="contentwrap" ng-app="ImagePage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('images')}" i18n:translate="">Images</a></li>
+                <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -21,20 +21,20 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_url('instance_create')}?image_id=${image.id}"
+                            <a href="${request.route_path('instance_create')}?image_id=${image.id}"
                                id="launch-instance-action" i18n:translate="">
                                 Launch instance
                             </a>
                         </li>
                         <li>
-                            <a href="${request.route_url('launchconfig_new')}?image_id=${image.id}"
+                            <a href="${request.route_path('launchconfig_new')}?image_id=${image.id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
                             </a>
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_url('image_update', id=image.id)}" method="post" data-abide="abide">
+                <form action="${request.route_path('image_update', id=image.id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
@@ -149,7 +149,7 @@
                         <button type="submit" class="button" id="save-changes-btn">
                             <span tal:condition="image" i18n:translate="">Save Changes</span>
                         </button>
-                        <a href="${request.route_url('images')}"
+                        <a href="${request.route_path('images')}"
                            class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>

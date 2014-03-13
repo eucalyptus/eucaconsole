@@ -1,17 +1,17 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/snapshot.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/snapshot.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
-         ng-init="initController('${request.route_url('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
+         ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
                  '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('snapshots')}" i18n:translate="">Snapshots</a></li>
+                <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${snapshot_name or 'Create new snapshot'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -27,15 +27,15 @@
             </metal:block>
         </h3>
         <div class="large-7 columns"
-             tal:define="form_action request.route_url('snapshot_update', id=snapshot.id)
-                         if snapshot else request.route_url('snapshot_create');
+             tal:define="form_action request.route_path('snapshot_update', id=snapshot.id)
+                         if snapshot else request.route_path('snapshot_create');
                          snapshot_tags snapshot.tags if snapshot else {};
                          html_attrs {'disabled': 'disabled'} if snapshot else {'data-placeholder': 'select...'};">
             <div class="panel ${'has-actions' if snapshot else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_url('volume_view', id='new')}?from_snapshot=${snapshot.id}"
+                            <a href="${request.route_path('volume_view', id='new')}?from_snapshot=${snapshot.id}"
                                id="create-volume-action" i18n:translate="">
                                 Create volume from snapshot
                             </a>
@@ -93,7 +93,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Created from volume</label></div>
                         <div class="small-8 columns value breakword">
-                            <a href="${request.route_url('volume_view', id=snapshot.volume_id)}" ng-non-bindable="">${volume_name}</a>
+                            <a href="${request.route_path('volume_view', id=snapshot.volume_id)}" ng-non-bindable="">${volume_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
@@ -111,14 +111,14 @@
                     <hr  />
                     <div ng-show="snapshotStatus == 'deleted'">
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
-                        <a href="${request.route_url('snapshots')}" i18n:translate="">Return to snapshots page</a>
+                        <a href="${request.route_path('snapshots')}" i18n:translate="">Return to snapshots page</a>
                     </div>
                     <div>
                         <button type="submit" class="button">
                             <span tal:condition="snapshot" i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
                             <span tal:condition="not snapshot" i18n:translate="">Create snapshot</span>
                         </button>
-                        <a href="${request.route_url('snapshots')}"
+                        <a href="${request.route_path('snapshots')}"
                            class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
@@ -161,7 +161,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/snapshot.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/snapshot.js')}"></script>
 </div>
 </metal:block>

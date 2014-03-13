@@ -5,13 +5,13 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserNew" ng-controller="UserNewCtrl"
-            ng-init="initController('${request.route_url('user_create')}',
-                                    '${request.route_url('users')}',
-                                    '${request.route_url('user_view', name='_name_')}',
-                                    '${request.route_url('file_download')}')">
+            ng-init="initController('${request.route_path('user_create')}',
+                                    '${request.route_path('users')}',
+                                    '${request.route_path('user_view', name='_name_')}',
+                                    '${request.route_path('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
                 <li class="current" i18n:translate="">Create new users</li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -61,7 +61,7 @@
                             <button type="submit" class="button" id="create-user-btn">
                                 <span i18n:translate="">Create Users</span>
                             </button>
-                            <a href="${request.route_url('users')}"
+                            <a href="${request.route_path('users')}"
                                class="cancel-link" i18n:translate="">Cancel</a>
                         </div>
                     </div>
@@ -72,8 +72,8 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/user_new.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/user_new.js')}"></script>
 </div>
 
 </metal:block>

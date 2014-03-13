@@ -203,7 +203,7 @@
 <metal:breadcrumbs metal:define-macro="breadcrumbs">
     <div id="breadcrumbs">
         <ul class="breadcrumbs">
-            <li><a href="${request.route_url('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
+            <li><a href="${request.route_path('dashboard')}" title="Dashboard" data-tooltip=""><i class="fi-home"></i></a></li>
             <metal:block metal:define-slot="crumbs" />
         </ul>
         <span class="icon-block">

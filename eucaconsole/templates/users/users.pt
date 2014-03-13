@@ -1,16 +1,16 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/users.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/users.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="UsersPage" ng-controller="UsersCtrl" ng-init="initPage(
-                '${request.route_url('user_view', name='_name_')}',
-                '${request.route_url('group_view', name='_name_')}',
-                '${request.route_url('user_summary_json', name='_name_')}',
-                '${request.route_url('user_disable', name='_name_')}',
-                '${request.route_url('user_enable', name='_name_')}',
-                '${request.route_url('file_download')}')">
+                '${request.route_path('user_view', name='_name_')}',
+                '${request.route_path('group_view', name='_name_')}',
+                '${request.route_path('user_summary_json', name='_name_')}',
+                '${request.route_path('user_disable', name='_name_')}',
+                '${request.route_path('user_enable', name='_name_')}',
+                '${request.route_path('file_download')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -27,7 +27,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="add-user-btn"
-                   href="${request.route_url('user_view', name='new')}">Create New Users</a>
+                   href="${request.route_path('user_view', name='new')}">Create New Users</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
@@ -144,7 +144,7 @@
                 <p>
                     <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong>{{ user_name }}</strong></span>?
                 </p>
-                <form method="post" id="delete-form" action="${request.route_url('user_delete', name='_name_')}">
+                <form method="post" id="delete-form" action="${request.route_path('user_delete', name='_name_')}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
@@ -206,10 +206,10 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/users.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/users.js')}"></script>
 </div>
 
 </metal:block>

@@ -46,5 +46,5 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('eucaconsole:static/js/widgets/autoscale_tag_editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/autoscale_tag_editor.js')}"></script>
 </div>

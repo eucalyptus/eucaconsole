@@ -221,7 +221,7 @@ class IPAddressView(BaseView):
     def ipaddress_associate(self):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
-            location = self.request.route_url('ipaddresses')
+            location = self.request.route_path('ipaddresses')
             try:
                 self.elastic_ip.associate(instance_id)
                 msg = _(u'Successfully associated IP {ip} with instance {instance}')
@@ -237,7 +237,7 @@ class IPAddressView(BaseView):
     @view_config(route_name='ipaddress_disassociate', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_disassociate(self):
         if self.disassociate_form.validate():
-            location = self.request.route_url('ipaddresses')
+            location = self.request.route_path('ipaddresses')
             try:
                 self.elastic_ip.disassociate()
                 msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
@@ -253,7 +253,7 @@ class IPAddressView(BaseView):
     @view_config(route_name='ipaddress_release', renderer=VIEW_TEMPLATE, request_method="POST")
     def ipaddress_release(self):
         if self.release_form.validate():
-            location = self.request.route_url('ipaddresses')
+            location = self.request.route_path('ipaddresses')
             try:
                 self.elastic_ip.release()
                 msg = _(u'Successfully released {ip} to the cloud')

@@ -171,7 +171,7 @@ class ImageView(TaggedItemView):
         if self.image_form.validate():
             self.update_tags()
 
-            location = self.request.route_url('image_view', id=self.image.id)
+            location = self.request.route_path('image_view', id=self.image.id)
             msg = _(u'Successfully modified image')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)

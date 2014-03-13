@@ -26,7 +26,7 @@ class IAMPolicyWizardView(BaseView):
         self.request = request
         self.ec2_conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.policy_json_endpoint = self.request.route_url('iam_policy_json')
+        self.policy_json_endpoint = self.request.route_path('iam_policy_json')
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
@@ -58,7 +58,7 @@ class IAMPolicyWizardView(BaseView):
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
         target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
-        location = self.request.route_url(target_route, name=self.target_name)  # redirect to detail page after submit
+        location = self.request.route_path(target_route, name=self.target_name)  # redirect to detail page after submit
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')

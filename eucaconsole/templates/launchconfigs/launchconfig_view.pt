@@ -4,7 +4,7 @@
     <div class="row" id="contentwrap" ng-app="">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
+                <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${launch_config.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -19,7 +19,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_url('scalinggroup_new')}?launch_config=${launch_config.name}"
+                            <a href="${request.route_path('scalinggroup_new')}?launch_config=${launch_config.name}"
                                id="create-scalinggroup-action" i18n:translate="">
                                 Use to create scaling group
                             </a>
@@ -39,14 +39,14 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_url('keypair_view', id=launch_config.key_name)}" ng-non-bindable="">${launch_config.key_name}</a>
+                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}" ng-non-bindable="">${launch_config.key_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
                             <div tal:repeat="security_group security_groups">
-                                <a href="${request.route_url('securitygroup_view', id=security_group.id)}" ng-non-bindable="">${security_group.name}</a>
+                                <a href="${request.route_path('securitygroup_view', id=security_group.id)}" ng-non-bindable="">${security_group.name}</a>
                             </div>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Image</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_url('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
+                            <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">

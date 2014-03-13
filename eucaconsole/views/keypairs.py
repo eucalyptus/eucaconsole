@@ -25,7 +25,7 @@ class KeyPairsView(LandingPageView):
 
     @view_config(route_name='keypairs', renderer='../templates/keypairs/keypairs.pt')
     def keypairs_landing(self):
-        json_items_endpoint = self.request.route_url('keypairs_json')
+        json_items_endpoint = self.request.route_path('keypairs_json')
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = ['name', 'fingerprint']
         # sort_keys are passed to sorting drop-down
@@ -142,7 +142,7 @@ class KeyPairView(BaseView):
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
-                location = self.request.route_url('keypair_view', id=name)
+                location = self.request.route_path('keypair_view', id=name)
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
@@ -168,7 +168,7 @@ class KeyPairView(BaseView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('keypair_view', id=name)
+            location = self.request.route_path('keypair_view', id=name)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
@@ -188,7 +188,7 @@ class KeyPairView(BaseView):
                 queue = Notification.ERROR
             notification_msg = msg
             self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_url('keypairs')
+            location = self.request.route_path('keypairs')
             return HTTPFound(location=location)
 
         return self.render_dict

@@ -282,7 +282,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             # Update tags
             self.update_tags()
 
-            location = self.request.route_url('volume_view', id=self.volume.id)
+            location = self.request.route_path('volume_view', id=self.volume.id)
             msg = _(u'Successfully modified volume')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -314,13 +314,13 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 msg = _(u'Successfully sent create volume request.  It may take a moment to create the volume.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('volume_view', id=volume.id)
+                location = self.request.route_path('volume_view', id=volume.id)
                 return HTTPFound(location=location)
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('volumes')
+                location = self.request.route_path('volumes')
                 return HTTPFound(location=location)
         else:
             self.request.error_messages = self.volume_form.get_errors_list()
@@ -337,7 +337,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             except EC2ResponseError as err:
                 msg = err.message.split('remoteDevice')[0]
                 queue = Notification.ERROR
-            location = self.request.route_url('volume_view', id=self.volume.id)
+            location = self.request.route_path('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         else:
@@ -357,7 +357,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('volume_view', id=self.volume.id)
+            location = self.request.route_path('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         else:
@@ -375,7 +375,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('volume_view', id=self.volume.id)
+            location = self.request.route_path('volume_view', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         else:
@@ -445,7 +445,7 @@ class VolumeSnapshotsView(BaseVolumeView):
     def volume_snapshots_json(self):
         snapshots = []
         for snapshot in self.volume.snapshots():
-            delete_form_action = self.request.route_url(
+            delete_form_action = self.request.route_path(
                 'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
             snapshots.append(dict(
                 id=snapshot.id,
@@ -483,7 +483,7 @@ class VolumeSnapshotsView(BaseVolumeView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('volume_snapshots', id=self.volume.id)
+            location = self.request.route_path('volume_snapshots', id=self.volume.id)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         else:
@@ -505,7 +505,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                 except EC2ResponseError as err:
                     msg = err.message
                     queue = Notification.ERROR
-                location = self.request.route_url('volume_snapshots', id=self.volume.id)
+                location = self.request.route_path('volume_snapshots', id=self.volume.id)
                 self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         return self.render_dict

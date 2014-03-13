@@ -45,7 +45,7 @@ class CloudWatchAlarmsView(LandingPageView):
             sort_keys=self.sort_keys,
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.request.route_url('cloudwatch_alarms_json'),
+            json_items_endpoint=self.request.route_path('cloudwatch_alarms_json'),
         )
 
     @view_config(route_name='cloudwatch_alarms', renderer=TEMPLATE, request_method='GET')
@@ -54,7 +54,7 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_create(self):
-        location = self.request.params.get('redirect_location') or self.request.route_url('cloudwatch_alarms')
+        location = self.request.params.get('redirect_location') or self.request.route_path('cloudwatch_alarms')
         if self.create_form.validate():
             try:
                 metric = self.request.params.get('metric')
@@ -93,7 +93,7 @@ class CloudWatchAlarmsView(LandingPageView):
     @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_delete(self):
         if self.delete_form.validate():
-            location = self.request.route_url('cloudwatch_alarms')
+            location = self.request.route_path('cloudwatch_alarms')
             alarm_name = self.request.params.get('name')
             try:
                 self.cloudwatch_conn.delete_alarm(alarm_name)

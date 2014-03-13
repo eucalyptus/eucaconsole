@@ -4,7 +4,7 @@
         <h3 i18n:translate="">Create security group</h3>
         <p i18n:translate=""></p>
         <form method="post" data-abide="abide" id="create-securitygroup-form"
-              ng-submit="handleSecurityGroupCreate($event, '${request.route_url('securitygroup_create')}')">
+              ng-submit="handleSecurityGroupCreate($event, '${request.route_path('securitygroup_create')}')">
             ${structure:securitygroup_form['csrf_token']}
             ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'newSecurityGroupName'}, leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9)}

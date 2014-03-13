@@ -2,8 +2,8 @@
 <div tal:omit-tag="">
     <!--! Delete dialogs -->
     <div id="delete-scalinggroup-modal" class="reveal-modal small" data-reveal=""
-        tal:define="landingpage_action request.route_url('scalinggroups_delete');
-                    detailpage_action request.route_url('scalinggroup_delete', id=scaling_group.name) if scaling_group else '';
+        tal:define="landingpage_action request.route_path('scalinggroups_delete');
+                    detailpage_action request.route_path('scalinggroup_delete', id=scaling_group.name) if scaling_group else '';
                     action landingpage_action if landingpage else detailpage_action;
                     has_instances scaling_group.instances if scaling_group else '';">
         <h3 i18n:translate="">Delete scaling group</h3>

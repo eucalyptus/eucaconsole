@@ -1,6 +1,6 @@
 
 <!--! Image Picker widget (Used in Launch Instance wizard) -->
-<link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/widgets/image_picker.css')}" />
+<link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
 <div id="image-picker" ng-app="ImagePicker"
      ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
 
@@ -45,7 +45,7 @@
                         </td>
                         <td>
                             <div class="name">
-                                <a href="${request.route_url(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                                <a href="${request.route_path(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
                                 <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                             </div>
                             <div ng-show="item.name">
@@ -62,6 +62,6 @@
             </table>
         </div>
     </div>
-    <script src="${request.static_url('eucaconsole:static/js/widgets/image_picker.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/image_picker.js')}"></script>
 </div>
 

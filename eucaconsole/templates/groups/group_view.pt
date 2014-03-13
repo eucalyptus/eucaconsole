@@ -1,8 +1,8 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/group.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/group.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -10,7 +10,7 @@
          ng-app="GroupPage" ng-controller="GroupPageCtrl" ng-init="initController(${group_users}, ${all_users})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('groups')}" i18n:translate="">IAM groups</a></li>
+                <li><a href="${request.route_path('groups')}" i18n:translate="">IAM groups</a></li>
                 <li class="current">
                     <a tal:condition="group" href="#" ng-non-bindable="">${group.group_name}</a>
                     <a tal:condition="not group and group_route_id == 'new'" i18n:translate="">Create new group</a>
@@ -40,7 +40,7 @@
                 <div tal:condition="not group and group_route_id == 'new'" i18n:translate=""
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
                          'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
-                    <form action="${request.route_url('group_create')}" method="post" data-abide="abide">
+                    <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section">
                             <div class="row controls-wrapper readonly">
@@ -69,7 +69,7 @@
                                     <button type="submit" class="button" id="create-btn">
                                         <span i18n:translate="">Create</span>
                                     </button>
-                                    <a href="${request.route_url('groups')}"
+                                    <a href="${request.route_path('groups')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                     </form>
                 </div>
                 <div tal:condition="group">
-                    <form action="${request.route_url('group_update', name=group.group_name)}" method="post" data-abide="abide">
+                    <form action="${request.route_path('group_update', name=group.group_name)}" method="post" data-abide="abide">
                         ${structure:group_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
@@ -123,18 +123,18 @@
                                     <button type="submit" class="button" id="save-changes-btn">
                                         <span tal:condition="group" i18n:translate="">Save Changes</span>
                                     </button>
-                                    <a href="${request.route_url('groups')}"
+                                    <a href="${request.route_path('groups')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
                     </form>
                     <hr />
-                    <div tal:define="policies_url request.route_url('group_policies_json', name=group.group_name);
-                                     policy_url request.route_url('group_policy_json', name=group.group_name, policy='_policy_');
-                                     remove_url request.route_url('group_delete_policy', name=group.group_name, policy='_policy_');
-                                     update_url request.route_url('group_update_policy', name=group.group_name, policy='_policy_');
-                                     add_url request.route_url('iam_policy_new')+'?type=group&id='+group.group_name">
+                    <div tal:define="policies_url request.route_path('group_policies_json', name=group.group_name);
+                                     policy_url request.route_path('group_policy_json', name=group.group_name, policy='_policy_');
+                                     remove_url request.route_path('group_delete_policy', name=group.group_name, policy='_policy_');
+                                     update_url request.route_path('group_update_policy', name=group.group_name, policy='_policy_');
+                                     add_url request.route_path('iam_policy_new')+'?type=group&id='+group.group_name">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
@@ -154,12 +154,12 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <div tal:condition="group">
-        <script src="${request.static_url('eucaconsole:static/js/pages/group.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/group.js')}"></script>
     </div>
     <div tal:condition="not:group">
-        <script src="${request.static_url('eucaconsole:static/js/pages/group_new.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/pages/group_new.js')}"></script>
     </div>
 </div>
 
