@@ -3,8 +3,6 @@
 Region selector view
 
 """
-from urlparse import urlparse
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -19,14 +17,13 @@ class RegionSelectView(BaseView):
     def select_region(self):
         """Select region and redirect to referring page"""
         return_to = self.request.params.get('returnto')
-        return_to_path = urlparse(return_to).path
-        landingpage_route_paths = [urlparse(self.request.route_url(name)).path for name in LANDINGPAGE_ROUTE_NAMES]
+        return_to_path = return_to
+        landingpage_route_paths = [self.request.route_path(name) for name in LANDINGPAGE_ROUTE_NAMES]
         if return_to_path not in landingpage_route_paths:
-            return_to = self.request.route_url('dashboard')
+            return_to = self.request.route_path('dashboard')
         region = self.request.params.get('region')
         # NOTE: We normally don't want a GET request to modify data,
         #       but we're only updating the selected region in the session here.
         self.request.session['region'] = region
-        safe_return_to = urlparse(return_to).path  # Prevent arbitrary redirects
-        return HTTPFound(location=safe_return_to)
+        return HTTPFound(location=return_to)
 

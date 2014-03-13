@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/scalinggroup_wizard.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup_wizard.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
@@ -9,15 +9,18 @@
          ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
+                <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
                 <li class="current"><a href="#" i18n:translate="">Create scaling group</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new scaling group</strong>
+        </h3>
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard no-title">
-                <form action="${request.route_url('scalinggroup_create')}" id="scalinggroup-wizard-form"
+                <form action="${request.route_path('scalinggroup_create')}" id="scalinggroup-wizard-form"
                       method="post" data-abide="abide">
                     ${structure:create_form['csrf_token']}
                     <dl class="tabs" data-tab="">
@@ -129,9 +132,9 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/scalinggroup_wizard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_wizard.js')}"></script>
 </div>
 
 </metal:block>

@@ -109,7 +109,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     .dropdown {
         display: inline-block;
-        margin-left: 2rem;
+        margin-left: 1.3rem;
         color: $euca-green;
         .icon {
             display: inline-block;
@@ -143,6 +143,12 @@ h1, h2, h3, h4, h5, h6 {
 
 #region-dropdown li[data-selected] {
     display: none;  // Hide selected region
+}
+
+#region-logo {
+    width: 16px; height: 16px;
+    top: 16px; left: 6px;
+    background: transparent url(../img/aws_favicon.png) no-repeat left 0;
 }
 
 // Nav bar styles
@@ -294,8 +300,8 @@ hr {
 
 .dots {
     display: inline-block;
-    width: 32px; height: 10px;
-    background-image: url(/static/img/dots32.gif)
+    width: 16px; height: 11px;
+    background-image: url(/static/img/ajax-loader.gif)
 }
 
 a.has-tip {

@@ -1,12 +1,12 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/dashboard.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/dashboard.css')}" />
 </head>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-         ng-init="initController('${request.route_url('dashboard_json')}')">
+         ng-init="initController('${request.route_path('dashboard_json')}')">
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
             <div id="zone-selector">
@@ -30,14 +30,14 @@
                 <div class="tile" id="running">
                     <h5 class="subheader" i18n:translate="">Running instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?state=running">
+                        <a href="${request.route_path('instances')}?state=running">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="running-instances-count" ng-cloak="">{{ totals.instances_running }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a class="button small round primary" href="${request.route_url('instance_create')}" i18n:translate="">Launch Instance</a>
+                        <a class="button small round primary" href="${request.route_path('instance_create')}" i18n:translate="">Launch Instance</a>
                     </div>
                 </div>
             </li>
@@ -45,7 +45,7 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Stopped instances</h5>
                     <div class="content">
-                        <a href="${request.route_url('instances')}?state=stopped">
+                        <a href="${request.route_path('instances')}?state=stopped">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="stopped-instances-count" ng-cloak="">{{ totals.instances_stopped }}</span></em>
                             </i>
@@ -60,14 +60,14 @@
                         <span i18n:translate=""> Instances in scaling groups</span>
                     </h5>
                     <div class="content">
-                        <a href="${request.route_url('scalinggroups')}">
+                        <a href="${request.route_path('scalinggroups')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="scalinggroup-instances-count" ng-cloak="">{{ totals.instances_scaling }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('scalinggroup_new')}" i18n:translate="">Create scaling group</a>
+                        <a href="${request.route_path('scalinggroup_new')}" i18n:translate="">Create scaling group</a>
                     </div>
                 </div>
             </li>
@@ -75,7 +75,7 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Elastic IPs</h5>
                     <div class="content">
-                        <a href="${request.route_url('ipaddresses')}">
+                        <a href="${request.route_path('ipaddresses')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="ipaddresses-count" ng-cloak="">{{ totals.eips }}</span></em>
                             </i>
@@ -88,14 +88,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Volumes</h5>
                     <div class="content">
-                        <a href="${request.route_url('volumes')}">
+                        <a href="${request.route_path('volumes')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="volumes-count" ng-cloak="">{{ totals.volumes }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('volume_view', id='new')}" i18n:translate="">Create volume</a>
+                        <a href="${request.route_path('volume_view', id='new')}" i18n:translate="">Create volume</a>
                     </div>
                 </div>
             </li>
@@ -103,14 +103,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Snapshots</h5>
                     <div class="content">
-                        <a href="${request.route_url('snapshots')}">
+                        <a href="${request.route_path('snapshots')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="snapshots-count" ng-cloak="">{{ totals.snapshots }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('snapshot_view', id='new')}" i18n:translate="">Create snapshot</a>
+                        <a href="${request.route_path('snapshot_view', id='new')}" i18n:translate="">Create snapshot</a>
                     </div>
                 </div>
             </li>
@@ -118,14 +118,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Security groups</h5>
                     <div class="content">
-                        <a href="${request.route_url('securitygroups')}">
+                        <a href="${request.route_path('securitygroups')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="securitygroups-count" ng-cloak="">{{ totals.securitygroups }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('securitygroup_view', id='new')}" i18n:translate="">Create security group</a>
+                        <a href="${request.route_path('securitygroup_view', id='new')}" i18n:translate="">Create security group</a>
                     </div>
                 </div>
             </li>
@@ -133,14 +133,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Key pairs</h5>
                     <div class="content">
-                        <a href="${request.route_url('keypairs')}">
+                        <a href="${request.route_path('keypairs')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="keypairs-count" ng-cloak="">{{ totals.keypairs }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('keypair_view', id='new')}" i18n:translate="">Create key pair</a>
+                        <a href="${request.route_path('keypair_view', id='new')}" i18n:translate="">Create key pair</a>
                     </div>
                 </div>
             </li>
@@ -148,14 +148,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM users</h5>
                     <div class="content">
-                        <a href="${request.route_url('users')}">
+                        <a href="${request.route_path('users')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="users-count" ng-cloak="">{{ totals.users }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('user_view', name='new')}" i18n:translate="">Create users</a>
+                        <a href="${request.route_path('user_view', name='new')}" i18n:translate="">Create users</a>
                     </div>
                 </div>
             </li>
@@ -163,14 +163,14 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM groups</h5>
                     <div class="content">
-                        <a href="${request.route_url('groups')}">
+                        <a href="${request.route_path('groups')}">
                             <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
                                 <span ng-show="!itemsLoading" id="groups-count" ng-cloak="">{{ totals.groups }}</span></em>
                             </i>
                         </a>
                     </div>
                     <div class="footer">
-                        <a href="${request.route_url('group_view', name='new')}" i18n:translate="">Create group</a>
+                        <a href="${request.route_path('group_view', name='new')}" i18n:translate="">Create group</a>
                     </div>
                 </div>
             </li>
@@ -179,7 +179,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/pages/dashboard.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/dashboard.js')}"></script>
 </div>
 
 </metal:block>

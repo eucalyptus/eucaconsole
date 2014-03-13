@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/volume.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volume.css')}" />
     <style type="text/css">
         input#size { width: 4rem; }
         input#name { width: 50%; }
@@ -12,14 +12,13 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
-         ng-init="initController('${request.route_url(
-                 'volume_state_json', id=volume.id) if volume else ''}',
+         ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
                  '${volume.attach_data.status if volume else ''}'
                  )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('volumes')}" i18n:translate="">Volumes</a></li>
+                <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${volume_name or 'Create volume'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -35,13 +34,13 @@
             </metal:block>
         </h3>
         <div class="large-8 columns"
-             tal:define="form_action request.route_url('volume_update', id=volume.id)
-                         if volume else request.route_url('volume_create');
+             tal:define="form_action request.route_path('volume_update', id=volume.id)
+                         if volume else request.route_path('volume_create');
                          volume_tags volume.tags if volume else {};
                          html_attrs {'disabled': 'disabled'} if volume else {};">
             <dl class="tabs" id="volume-subnav" tal:condition="volume">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-                <dd><a href="${request.route_url('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
+                <dd><a href="${request.route_path('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
             </dl>
             <div class="panel ${'has-actions' if volume else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
@@ -75,7 +74,7 @@
                          tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_url('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
+                            <a href="${request.route_path('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
                         </div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
@@ -113,14 +112,14 @@
                     <hr />
                     <div ng-show="volumeStatus == 'deleted'">
                         <span i18n:translate="">Volume was successfully deleted.</span>
-                        <a href="${request.route_url('volumes')}" i18n:translate="">Return to volumes page</a>
+                        <a href="${request.route_path('volumes')}" i18n:translate="">Return to volumes page</a>
                     </div>
                     <div>
                         <button type="submit" class="button">
                             <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save Changes</span>
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
-                        <a href="${request.route_url('volumes')}"
+                        <a href="${request.route_path('volumes')}"
                            class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
@@ -133,7 +132,7 @@
                 ${panel('help_volumes', 'create_volume')}
             </div>
             <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
-                ${panel('help_volumes', 'manage_snapshot', request.route_url('volume_snapshots', id=volume.id))}
+                ${panel('help_volumes', 'manage_snapshot', request.route_path('volume_snapshots', id=volume.id))}
             </div>
             <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_volumes', 'delete_volume')}
@@ -151,8 +150,8 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/volume.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/volume.js')}"></script>
 </div>
 </metal:block>

@@ -8,7 +8,7 @@
             You will need to enter the path later to connect to your instances.
         </p>
         <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial" id="create-keypair-form"
-              ng-submit="handleKeyPairCreate($event, '${request.route_url('keypair_create')}')">
+              ng-submit="handleKeyPairCreate($event, '${request.route_path('keypair_create')}')">
             ${structure:keypair_form['csrf_token']}
             ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'}, leftcol_width=3, rightcol_width=9)}
             <hr>
@@ -22,7 +22,7 @@
                 </div>
             </div>
         </form>
-        <form ng-show="showKeyPairMaterial" ng-submit="downloadKeyPair($event, '${request.route_url('file_download')}')">
+        <form ng-show="showKeyPairMaterial" ng-submit="downloadKeyPair($event, '${request.route_path('file_download')}')">
             ${structure:generate_file_form['csrf_token']}
             <textarea id="keypair-material" name="content"></textarea>
             <button type="submit" class="button" id="confirm-keypair-btn" i18n:translate="">

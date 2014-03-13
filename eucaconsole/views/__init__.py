@@ -53,7 +53,7 @@ class BaseView(object):
             conn = ConnectionManager.aws_connection(
                 self.region, self.access_key, self.secret_key, self.security_token, conn_type)
         elif cloud_type == 'euca':
-            host = self.request.registry.settings.get('clchost')
+            host = self.request.registry.settings.get('clchost', 'localhost')
             port = int(self.request.registry.settings.get('clcport', 8773))
             if conn_type == 'ec2':
                 host = self.request.registry.settings.get('ec2.host', host)
@@ -113,7 +113,7 @@ class BaseView(object):
             request.session.flash(notice, queue='warning')
             # Empty Beaker cache to clear connection objects
             cls.invalidate_cache()
-            location = request.route_url('login')
+            location = request.route_path('login')
             return HTTPFound(location=location)
         return HTTPForbidden()
 
@@ -300,12 +300,12 @@ class LandingPageView(BaseView):
 
     def get_json_endpoint(self, route):
         return '{0}{1}'.format(
-            self.request.route_url(route),
+            self.request.route_path(route),
             '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
     def get_redirect_location(self, route):
-        return '{0}'.format(self.request.route_url(route))
+        return '{0}'.format(self.request.route_path(route))
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

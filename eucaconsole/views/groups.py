@@ -29,7 +29,7 @@ class GroupsView(LandingPageView):
 
     @view_config(route_name='groups', renderer=TEMPLATE)
     def groups_landing(self):
-        json_items_endpoint = self.request.route_url('groups_json')
+        json_items_endpoint = self.request.route_path('groups_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         user_choices = []  # sorted(set(item.user_name for item in conn.get_all_users().users))
@@ -159,7 +159,7 @@ class GroupView(BaseView):
             except EC2ResponseError as err:
                 msg = err.message
                 queue = Notification.ERROR
-            location = self.request.route_url('group_view', name=new_group_name)
+            location = self.request.route_path('group_view', name=new_group_name)
             self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
@@ -177,14 +177,14 @@ class GroupView(BaseView):
                 self.group_update_users( self.group.group_name, new_users)
             if new_group_name is not None or new_path is not None:
                 self.group_update_name_and_path(new_group_name, new_path)
-            location = self.request.route_url('group_view', name=this_group_name)
+            location = self.request.route_path('group_view', name=this_group_name)
             return HTTPFound(location=location)
 
         return self.render_dict
 
     @view_config(route_name='group_delete', request_method='POST')
     def group_delete(self):
-        location = self.request.route_url('groups')
+        location = self.request.route_path('groups')
         if self.group is None:
             raise HTTPNotFound()
         try:

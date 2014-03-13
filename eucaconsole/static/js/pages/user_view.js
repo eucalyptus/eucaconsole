@@ -45,6 +45,16 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
+        $scope.setDropdownMenusListener = function () {
+            var modals = $('[data-reveal]');
+            modals.on('open', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
+            });
+            modals.on('close', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
+            })
+        };
+        $scope.setDropdownMenusListener();
     })
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -99,9 +109,14 @@ angular.module('UserView', ['PolicyList'])
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitChange = function($event) {
+            $('#password-length').css('display', 'none');
             $('#passwords-match').css('display', 'none');
             var newpass = $event.target.new_password.value;
             var newpass2 = $event.target.new_password2.value;
+            if (newpass.length < 7) {
+                $('#password-length').css('display', 'block');
+                return false;
+            }
             if (newpass != newpass2) {
                 $('#passwords-match').css('display', 'block');
                 return false;
@@ -114,11 +129,13 @@ angular.module('UserView', ['PolicyList'])
         $scope.changePassword = function($event) {
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
+            $('#wrong-password').css('display', 'none');
             // add in current password, then submit the request
             var data = $scope.data+"&password="+$event.target.password.value+"&csrf_token="+csrf_token;
             $http({method:'POST', url:$scope.jsonChangeEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
+                $('#change-password-modal').foundation('reveal', 'close');
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
                 $('#new_password').val("");
@@ -136,9 +153,8 @@ angular.module('UserView', ['PolicyList'])
                 if (errorMsg && status === 403) {
                     $('#euca-logout-form').submit();
                 }
-                Notify.failure(errorMsg);
+                $('#wrong-password').css('display', 'block');
             });
-            $('#change-password-modal').foundation('reveal', 'close');
         };
         // handles server call for generating a random password
         $scope.genPassword = function($event) {

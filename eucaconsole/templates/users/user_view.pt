@@ -1,16 +1,16 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="head_css">
-    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
-    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/css/pages/user.css')}" />
-    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/css/pages/changepassword.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/user.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/changepassword.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -35,7 +35,7 @@
                         </metal:actions>
                     </metal:block>
                     <div ng-controller="UserUpdateCtrl"
-                         ng-init="initController('${request.route_url('user_update', name=user.user_name)}')">
+                         ng-init="initController('${request.route_path('user_update', name=user.user_name)}')">
 
                         <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
@@ -61,7 +61,7 @@
                                     <button type="submit" class="button" id="save-user-btn">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
-                                    <a href="${request.route_url('users')}"
+                                    <a href="${request.route_path('users')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
@@ -70,12 +70,12 @@
                     <hr id="group-section"/>
                     <div ng-controller="UserGroupsCtrl"
                          ng-init="initController(
-                                '${request.route_url('user_add_to_group', name=user.user_name, group='_group_')}',
-                                '${request.route_url('user_remove_from_group', name=user.user_name, group='_group_')}',
-                                '${request.route_url('user_groups_json', name=user.user_name)}',
-                                '${request.route_url('user_avail_groups_json', name=user.user_name)}',
-                                '${request.route_url('group_policies_json', name='_name_')}',
-                                '${request.route_url('group_policy_json', name='_name_', policy='_policy_')}')">
+                                '${request.route_path('user_add_to_group', name=user.user_name, group='_group_')}',
+                                '${request.route_path('user_remove_from_group', name=user.user_name, group='_group_')}',
+                                '${request.route_path('user_groups_json', name=user.user_name)}',
+                                '${request.route_path('user_avail_groups_json', name=user.user_name)}',
+                                '${request.route_path('group_policies_json', name='_name_')}',
+                                '${request.route_path('group_policy_json', name='_name_', policy='_policy_')}')">
                         <div class="section">
                             <h6 i18n:translate="">Groups</h6>
                             <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
@@ -121,11 +121,11 @@
                         </div>
                     </div>
                     <hr/>
-                    <div tal:define="policies_url request.route_url('user_policies_json', name=user.user_name);
-                                     policy_url request.route_url('user_policy_json', name=user.user_name, policy='_policy_');
-                                     remove_url request.route_url('user_delete_policy', name=user.user_name, policy='_policy_');
-                                     update_url request.route_url('user_update_policy', name=user.user_name, policy='_policy_');
-                                     add_url request.route_url('iam_policy_new')+'?type=user&id='+user.user_name">
+                    <div tal:define="policies_url request.route_path('user_policies_json', name=user.user_name);
+                                     policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
+                                     remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
+                                     update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
+                                     add_url request.route_path('iam_policy_new')+'?type=user&id='+user.user_name">
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
@@ -147,10 +147,10 @@
                         </metal:actions>
                     </metal:block>
                     <div id="password-section" ng-controller="UserPasswordCtrl"
-                         ng-init="initController('${request.route_url('user_random_password', name=user.user_name)}',
-                                                 '${request.route_url('user_delete_password', name=user.user_name)}',
-                                                 '${request.route_url('user_change_password', name=user.user_name)}',
-                                                 '${request.route_url('file_download')}', '${has_password}')">
+                         ng-init="initController('${request.route_path('user_random_password', name=user.user_name)}',
+                                                 '${request.route_path('user_delete_password', name=user.user_name)}',
+                                                 '${request.route_path('user_change_password', name=user.user_name)}',
+                                                 '${request.route_path('file_download')}', '${has_password}')">
                         <h6 i18n:translate="">Password</h6>
                         <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p>
                         <span class='password-set' i18n:translate="">Password set?: </span> <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span> <span ng-hide="has_password">No</span>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="small-6 columns set-password">
                                 <span i18n:translate="">Manually enter a password.</span>
-                                <form data-abide="abide" id="user-change-password-form" ng-submit="submitChange($event)">
+                                <form id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
                                             <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
@@ -184,6 +184,7 @@
                                     </div>
                                     <div class="row">
                                       <div class="columns">
+                                        <small id="password-length" class="error" style="display:none;" i18n:translate="">Password must be at least 6 characters</small>
                                         <small id="passwords-match" class="error" style="display:none;" i18n:translate="">Passwords must match</small>
                                       </div>
                                     </div>
@@ -192,7 +193,7 @@
                                             <button type="submit" class="button" id="save-password-btn">
                                                 <span tal:condition="user" i18n:translate="">Save Password</span>
                                             </button>
-                                            <a href="${request.route_url('users')}"
+                                            <a href="${request.route_path('users')}"
                                                class="cancel-link" i18n:translate="">Cancel</a>
                                         </div>
                                     </div>
@@ -224,6 +225,10 @@
                             <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
                                 ${structure:change_password_form['csrf_token']}
                                 ${panel('form_field', field=change_password_form['password'])}
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns">
+                                    <small id="wrong-password" class="error" i18n:translate="">The password was incorrect.</small>
+                                </div>
                                 <div>&nbsp;</div>
                                 <div class="row">
                                     <div class="small-4 columns">&nbsp;</div>
@@ -238,9 +243,9 @@
                     <hr id="access-keys-section"/>
                     <div ng-controller="UserAccessKeysCtrl"
                          ng-init="initController(
-                                '${request.route_url('user_generate_keys', name=user.user_name)}',
-                                '${request.route_url('user_access_keys_json', name=user.user_name)}',
-                                '${request.route_url('file_download')}')">
+                                '${request.route_path('user_generate_keys', name=user.user_name)}',
+                                '${request.route_path('user_access_keys_json', name=user.user_name)}',
+                                '${request.route_path('file_download')}')">
                         <div class="section">
                             <h6 i18n:translate="">Access keys</h6>
                             <p i18n:translate="">Users managing their cloud with other tools than the Management Console require access keys.</p>
@@ -267,10 +272,10 @@
                                             <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
                                             <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li ng-show="item.status === 'Active'">
-                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
+                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_path('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
                                                 </li>
                                                 <li ng-show="item.status === 'Inactive'">
-                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_url('user_activate_key', name='_name_', key='_key_')}', item)">Activate</a>
+                                                    <a i18n:translate="" ng-click="makeAjaxCall('${request.route_path('user_activate_key', name='_name_', key='_key_')}', item)">Activate</a>
                                                 </li>
                                                 <li>
                                                     <a i18n:translate="" ng-click="confirmDelete(item)">Delete</a>
@@ -286,7 +291,7 @@
                                     <p>
                                         <span i18n:translate="">Are you sure you want to delete the access key?</span>
                                     </p>
-                                    <form id="delete-key-form" ng-submit="deleteKey('${request.route_url('user_delete_key', name='_name_', key='_key_')}')">
+                                    <form id="delete-key-form" ng-submit="deleteKey('${request.route_path('user_delete_key', name='_name_', key='_key_')}')">
                                         ${structure:user_form['csrf_token']}
                                         <div>&nbsp;</div>
                                         <div class="row">
@@ -315,7 +320,7 @@
                         </metal:actions>
                     </metal:block>
                     <div ng-controller="UserQuotasCtrl" ng-init="initController(
-                                '${request.route_url('user_update_quotas', name=user.user_name)}')">
+                                '${request.route_path('user_update_quotas', name=user.user_name)}')">
                         <form ng-submit="submit($event)" id="user-update-quotas-form">
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
@@ -328,7 +333,7 @@
                                     <button type="submit" class="button" id="save-quotas-btn">
                                         <span tal:condition="user" i18n:translate="">Save Quotas</span>
                                     </button>
-                                    <a href="${request.route_url('users')}"
+                                    <a href="${request.route_path('users')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
@@ -347,7 +352,7 @@
                 <p>
                     <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
                 </p>
-                <form method="post" id="delete-form" action="${request.route_url('user_delete', name=user.user_name)}">
+                <form method="post" id="delete-form" action="${request.route_path('user_delete', name=user.user_name)}">
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
@@ -364,10 +369,10 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/user_view.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/zxcvbn-async.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/user_view.js')}"></script>
 </div>
 
 </metal:block>

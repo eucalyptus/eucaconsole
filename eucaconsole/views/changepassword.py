@@ -8,11 +8,9 @@ import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
-from beaker.cache import cache_managers
 from pyramid.httpexceptions import HTTPFound
-from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
-from pyramid.settings import asbool
-from pyramid.view import view_config, forbidden_view_config
+from pyramid.security import NO_PERMISSION_REQUIRED, remember
+from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
 from ..views import BaseView
@@ -24,13 +22,15 @@ class ChangePasswordView(BaseView):
     def __init__(self, request):
         super(ChangePasswordView, self).__init__(request)
         self.changepassword_form = EucaChangePasswordForm(self.request)
-        referrer = self.request.url
-        referrer_root = referrer.split('?',1)[0] if referrer.find('?') > -1 else referrer
-        changepassword_url = self.request.route_url('changepassword')
+        referrer = urlparse(self.request.url).path
+        referrer_root = referrer.split('?')[0]
+        changepassword_url = self.request.route_path('changepassword')
         if referrer_root in [changepassword_url]:
             referrer = '/'  # never use the changepassword form itself as came_from
-        came_from_param = self.request.params.get('came_from', referrer)
-        self.came_from = urlparse(came_from_param).path or '/'
+        came_from = self.request.params.get('came_from', referrer)
+        if bool(urlparse(came_from).netloc):
+            came_from = '/'  # Prevent arbitrary redirects
+        self.came_from = came_from or '/'
         self.changepassword_form_errors = []
 
     @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)

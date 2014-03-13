@@ -350,7 +350,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
             # Update assigned IP address
             new_ip = self.request.params.get('ip_address')
-            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none':
+            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
                 self.instance.use_ip(new_ip)
                 time.sleep(1)  # Give backend time to allocate IP address
 
@@ -412,7 +412,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     @view_config(route_name='instance_reboot', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_reboot(self):
-        location = self.request.route_url('instance_view', id=self.instance.id)
+        location = self.request.route_path('instance_view', id=self.instance.id)
         if self.instance and self.reboot_form.validate():
             try:
                 rebooted = self.instance.reboot()
@@ -475,7 +475,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     def get_redirect_location(self):
         if self.instance:
-            return self.request.route_url('instance_view', id=self.instance.id)
+            return self.request.route_path('instance_view', id=self.instance.id)
         return ''
 
     def disassociate_ip_address(self, ip_address=None):
@@ -558,7 +558,7 @@ class InstanceVolumesView(BaseInstanceView):
             status = volume.status
             attach_status = volume.attach_data.status
             is_transitional = status in transitional_states or attach_status in transitional_states
-            detach_form_action = self.request.route_url(
+            detach_form_action = self.request.route_path(
                 'instance_volume_detach', id=self.instance.id, volume_id=volume.id)
             volumes.append(dict(
                 id=volume.id,
@@ -584,7 +584,7 @@ class InstanceVolumesView(BaseInstanceView):
                 volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
                 volume = volumes[0] if volumes else None
             if self.instance and volume and device:
-                location = self.request.route_url('instance_volumes', id=self.instance.id)
+                location = self.request.route_path('instance_volumes', id=self.instance.id)
                 try:
                     volume.attach(self.instance.id, device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
@@ -608,7 +608,7 @@ class InstanceVolumesView(BaseInstanceView):
             if volume:
                 volume.detach()
                 time.sleep(1)
-                location = self.request.route_url('instance_volumes', id=self.instance.id)
+                location = self.request.route_path('instance_volumes', id=self.instance.id)
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
@@ -627,7 +627,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         super(InstanceLaunchView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
-        self.location = self.request.route_url('instances')
+        self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
@@ -638,7 +638,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.images_json_endpoint = self.request.route_url('images_json')
+        self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.launch_form.keypair.choices))
         self.securitygroup_choices_json = json.dumps(dict(self.launch_form.securitygroup.choices))
@@ -744,7 +744,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
-        self.location = self.request.route_url('instances')
+        self.location = self.request.route_path('instances')
         self.launch_more_form = LaunchMoreInstancesForm(
             self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.render_dict = dict(

@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_url('eucaconsole:static/css/pages/instances.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instances.css')}" />
 </head>
 
 <div metal:fill-slot="main_content" ng-app="InstancesPage" ng-controller="InstancesCtrl" ng-init="initController()">
@@ -21,7 +21,7 @@
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button" i18n:translate="" id="launch-instance-btn"
-                   href="${request.route_url('instance_create')}">Launch New Instance</a>
+                   href="${request.route_path('instance_create')}">Launch New Instance</a>
                 <a class="button secondary" i18n:translate="" id="terminate-instances-btn" ng-cloak="" ng-show="!itemsLoading"
                    href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} Instances</a>
             </div>
@@ -194,11 +194,11 @@
 </metal:block>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/custom_filters.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/landingpage.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/pages/instances.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.base64.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/instances.js')}"></script>
 </div>
 
 </metal:block>

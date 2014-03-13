@@ -12,7 +12,7 @@ $snapshot-status-color-failed: darken(red, 20%);
 // Mixin for the "in-progress" dots indicator
 @mixin progress-dots {
     position: absolute;
-    width: 32px; height: 10px;
+    width: 16px; height: 11px;
     top: 8px; right: 8px;
 }
 

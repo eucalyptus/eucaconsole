@@ -60,8 +60,8 @@
             <a class="close-reveal-modal">&#215;</a>
         </div>
     </div>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
-    <script src="${request.static_url('eucaconsole:static/js/widgets/policy_list.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/policy_list.js')}"></script>
 </div>

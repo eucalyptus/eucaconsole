@@ -1,7 +1,7 @@
 <!-- Landing page filters form -->
 <div id="filters">
     <strong i18n:translate="">Filter by:</strong>
-    <form method="get" action="${request.current_route_url()}" ng-cloak="">
+    <form method="get" action="${request.current_route_path()}" ng-cloak="">
         <div tal:repeat="field filters_form" id="filterfieldwrapper_${field.short_name}">
             <div tal:condition="field.short_name != 'csrf_token'" tal:omit-tag="">
                 <label>${field.label}</label>
@@ -11,7 +11,7 @@
         <div>&nbsp;</div>
         <div>
             <button type="submit" class="small button round" i18n:translate="">Apply</button>
-            &nbsp;&nbsp;&nbsp;<a href="${request.current_route_url().split('?')[0]}" class="clear-link">Clear</a>
+            &nbsp;&nbsp;&nbsp;<a href="${request.current_route_path().split('?')[0]}" class="clear-link">Clear</a>
         </div>
     </form>
 </div>

@@ -10,7 +10,7 @@
     <div class="row" id="contentwrap" ng-app="">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_url('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
+                <li><a href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -73,7 +73,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_url('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script>
         $(document).ready(function() {
             $('#instance_id').chosen({'width': '80%'});

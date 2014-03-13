@@ -11,7 +11,6 @@ import string
 import StringIO
 import simplejson as json
 import sys
-import urlparse
 
 from urllib2 import HTTPError, URLError
 from urllib import urlencode
@@ -21,7 +20,6 @@ from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-from pyramid.response import Response
 
 from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
 from ..models import Notification
@@ -38,6 +36,7 @@ class PasswordGeneration(object):
         random.seed = (os.urandom(1024))
         return ''.join(random.choice(chars) for i in range(12))
 
+
 class UsersView(LandingPageView):
     TEMPLATE = '../templates/users/users.pt'
     EUCA_DENY_POLICY = 'euca-console-deny-access-policy'
@@ -49,7 +48,7 @@ class UsersView(LandingPageView):
 
     @view_config(route_name='users', renderer=TEMPLATE)
     def users_landing(self):
-        json_items_endpoint = self.request.route_url('users_json')
+        json_items_endpoint = self.request.route_path('users_json')
         if self.request.GET:
             json_items_endpoint += '?{params}'.format(params=urlencode(self.request.GET))
         # filter_keys are passed to client-side filtering in search box
@@ -118,6 +117,7 @@ class UsersView(LandingPageView):
                 return dict(message=_(u"Successfully enabled user"))
         except BotoServerError as err:
             return JSONResponse(status=400, message=err.message);
+
 
 class UsersJsonView(BaseView):
     EUCA_DENY_POLICY = 'euca-console-deny-access-policy'
@@ -206,15 +206,15 @@ class UserView(BaseView):
         self.conn = self.get_connection(conn_type="iam")
         self.user = self.get_user()
         if self.user is None:
-            self.location = self.request.route_url('users')
+            self.location = self.request.route_path('users')
         else:
-            self.location = self.request.route_url('user_view', name=self.user.user_name)
+            self.location = self.request.route_path('user_view', name=self.user.user_name)
         self.prefix = '/users'
+        create_date = parser.parse(self.user.create_date) if hasattr(self.user, 'create_date') else None
         self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
-        create_date = parser.parse(self.user.create_date)
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
@@ -458,6 +458,8 @@ class UserView(BaseView):
         except BotoServerError as err:  # catch error in password change
             return JSONResponse(status=400, message=err.message);
         except HTTPError, err:          # catch error in authentication
+            if err.msg == 'Unauthorized':
+                err.msg = _(u"The password you entered is incorrect.")
             return JSONResponse(status=401, message=err.msg);
         except URLError, err:           # catch error in authentication
             return JSONResponse(status=401, message=err.msg);
@@ -591,7 +593,7 @@ class UserView(BaseView):
             params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteUser', params)
             
-            location = self.request.route_url('users')
+            location = self.request.route_path('users')
             msg = _(u'Successfully deleted user')
             queue = Notification.SUCCESS
         except BotoServerError as err:
@@ -695,9 +697,9 @@ class UserView(BaseView):
                                               json.dumps(policy_list[i]))
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
-                if self.EUCA_DEFAULT_POLICY in policies:
+                if self.EUCA_DEFAULT_POLICY in policies.policy_names:
                     # add the new statments in
-                    default_policy = policy_list[policies.indexOf(self.EUCA_DEFAULT_POLICY)]
+                    default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
                     self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
                                               json.dumps(default_policy))

@@ -30,6 +30,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.getItems(jsonItemsEndpoint);
             $scope.setWatch();
             $scope.setFocus();
+            $scope.setDropdownMenusListener();
             $scope.enableInfiniteScroll();
         };
         $scope.initChosenFilters = function () {
@@ -49,6 +50,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
         };
         $scope.setWatch = function () {
+            // Dismiss sorting dropdown on sort selection
             var sortingDropdown = $('#sorting-dropdown');
             $scope.$watch('sortBy',  function () {
                 if (sortingDropdown.hasClass('open')) {
@@ -58,6 +60,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 // Set sortBy in localStorage
                 sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
+            // Landing page display preference (table/tile view) watcher
             $scope.$watch('landingPageView', function () {
                 var gridviewBtn = $('#gridview-button'),
                     tableviewBtn = $('#tableview-button');
@@ -87,6 +90,15 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $(document).on('closed', '[data-reveal]', function () {
                 $('#search-filter').focus();
             });
+        };
+        $scope.setDropdownMenusListener = function () {
+            var modals = $('[data-reveal]');
+            modals.on('open', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
+            });
+            modals.on('close', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
+            })
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

@@ -2,7 +2,7 @@
 <!--! Security group rules editor -->
 <div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
-    <link rel="stylesheet" href="${request.static_url('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />
     <div class="columns">
         <h6 i18n:translate="">Inbound rules</h6>
@@ -64,7 +64,7 @@
                         <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType" />
                         <label><span i18n:translate="" class="ip-label">IP address</span></label>
                         <input type="text" name="cidr_ip" id="input-cidr-ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
-                            ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="${layout.cidr_pattern}" placeholder="0.0.0.0/32"/>
+                            ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'" pattern="${layout.cidr_pattern}" placeholder="x.x.x.x/x"/>
                         <div>
                             <a id="sgroup-use-my-ip" ng-click="useMyIP('${remote_addr}')">Use my IP address</a>
                         </div>
@@ -94,6 +94,6 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
     </div>
-    <script src="${request.static_url('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>
 </div>

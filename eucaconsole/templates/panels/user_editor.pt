@@ -44,5 +44,5 @@
         <!--! Add class="debug" to textarea to view users data posted by form -->
         <textarea id="users" name="users" class="hidden"></textarea>
     </div>
-    <script src="${request.static_url('eucaconsole:static/js/widgets/user_editor.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/user_editor.js')}"></script>
 </div>

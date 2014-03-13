@@ -16,6 +16,7 @@ angular.module('ScalingGroupInstances', [])
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getItems();
             $scope.setFocus();
+            $scope.setDropdownMenusListener();
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
@@ -55,6 +56,15 @@ angular.module('ScalingGroupInstances', [])
                     modalButton.focus();
                 }
             });
+        };
+        $scope.setDropdownMenusListener = function () {
+            var modals = $('[data-reveal]');
+            modals.on('open', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
+            });
+            modals.on('close', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
+            })
         };
     })
 ;

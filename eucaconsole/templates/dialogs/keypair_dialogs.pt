@@ -1,12 +1,12 @@
 <!--! Modal dialogs for Keypairs on landing and detail page -->
 <div tal:omit-tag="">
     <div id="delete-keypair-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_url('keypair_delete');
-                     detailpage_action request.route_url('keypair_delete', id=keypair.name) if keypair else '';
+         tal:define="landingpage_action request.route_path('keypair_delete');
+                     detailpage_action request.route_path('keypair_delete', id=keypair.name) if keypair else '';
                      action landingpage_action if landingpage else detailpage_action;
                      keypair_name keypair.name if keypair else '';">
-        <h3 i18n:translate="">Delete keypair</h3>
-        <p><span i18n:translate="">Are you sure you want to delete the keypair</span>
+        <h3 i18n:translate="">Delete key</h3>
+        <p><span i18n:translate="">Are you sure you want to delete key</span>
             <span tal:condition="keypair"><b ng-non-bindable="">${keypair_name}</b>
             <span tal:condition="not keypair"><b>{{ keypairName }}</b>
             ?</p>
@@ -18,7 +18,7 @@
             <div tal:condition="not landingpage" tal:omit-tag="">
                 <input type="hidden" name="name" value="${keypair_name}"/>
             </div>
-            <button type="submit" class="button" i18n:translate="">Yes, delete</button>
+            <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
         </form>
         <a class="close-reveal-modal">&#215;</a>
     </div>

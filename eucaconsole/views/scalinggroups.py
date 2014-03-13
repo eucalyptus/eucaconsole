@@ -35,7 +35,7 @@ class ScalingGroupsView(LandingPageView):
 
     @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
-        json_items_endpoint = self.request.route_url('scalinggroups_json')
+        json_items_endpoint = self.request.route_path('scalinggroups_json')
         self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
@@ -59,7 +59,7 @@ class ScalingGroupsView(LandingPageView):
     @view_config(route_name='scalinggroups_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroups_delete(self):
         if self.delete_form.validate():
-            location = self.request.route_url('scalinggroups')
+            location = self.request.route_path('scalinggroups')
             name = self.request.params.get('name')
             try:
                 conn = self.get_connection(conn_type='autoscale')
@@ -187,7 +187,7 @@ class ScalingGroupView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_update(self):
         if self.edit_form.validate():
-            location = self.request.route_url('scalinggroup_view', id=self.scaling_group.name)
+            location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
             try:
                 self.update_tags()
                 self.update_properties()
@@ -205,7 +205,7 @@ class ScalingGroupView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroup_delete(self):
         if self.delete_form.validate():
-            location = self.request.route_url('scalinggroups')
+            location = self.request.route_path('scalinggroups')
             name = self.request.params.get('name')
             try:
                 # Need to shut down instances prior to scaling group deletion
@@ -260,7 +260,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             policies=self.policies,
             markunhealthy_form=self.markunhealthy_form,
             terminate_form=self.terminate_form,
-            json_items_endpoint=self.request.route_url('scalinggroup_instances_json', id=self.scaling_group.name),
+            json_items_endpoint=self.request.route_path('scalinggroup_instances_json', id=self.scaling_group.name),
         )
 
     @view_config(route_name='scalinggroup_instances', renderer=TEMPLATE, request_method='GET')
@@ -269,7 +269,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_instances_markunhealthy', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_instances_markunhealthy(self):
-        location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
+        location = self.request.route_path('scalinggroup_instances', id=self.scaling_group.name)
         if self.markunhealthy_form.validate():
             instance_id = self.request.params.get('instance_id')
             respect_grace_period = self.request.params.get('respect_grace_period') == 'y'
@@ -292,7 +292,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_instances_terminate', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_instances_terminate(self):
-        location = self.request.route_url('scalinggroup_instances', id=self.scaling_group.name)
+        location = self.request.route_path('scalinggroup_instances', id=self.scaling_group.name)
         if self.terminate_form.validate():
             instance_id = self.request.params.get('instance_id')
             decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
@@ -378,7 +378,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
     @view_config(route_name='scalinggroup_policy_delete', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_policy_delete(self):
         if self.delete_form.validate():
-            location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
+            location = self.request.route_path('scalinggroup_policies', id=self.scaling_group.name)
             policy_name = self.request.params.get('name')
             try:
                 self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
@@ -414,7 +414,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
-            create_alarm_redirect=self.request.route_url('scalinggroup_policy_new', id=self.scaling_group.name),
+            create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -425,7 +425,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
 
     @view_config(route_name='scalinggroup_policy_create', renderer=TEMPLATE, request_method='POST')
     def scalinggroup_policy_create(self):
-        location = self.request.route_url('scalinggroup_policies', id=self.scaling_group.name)
+        location = self.request.route_path('scalinggroup_policies', id=self.scaling_group.name)
         if self.policy_form.validate():
             adjustment_amount = self.request.params.get('adjustment_amount')
             adjustment_direction = self.request.params.get('adjustment_direction', 'up')
@@ -513,12 +513,12 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 msg += ' {0}'.format(scaling_group.name)
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('scalinggroup_view', id=scaling_group.name)
+                location = self.request.route_path('scalinggroup_view', id=scaling_group.name)
                 return HTTPFound(location=location)
             except BotoServerError as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
-                location = self.request.route_url('scalinggroups')
+                location = self.request.route_path('scalinggroups')
                 return HTTPFound(location=location)
         return self.render_dict

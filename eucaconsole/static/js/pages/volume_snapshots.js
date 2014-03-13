@@ -16,10 +16,17 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getVolumeSnapshots();
             $scope.setFocus();
+            $scope.setDropdownMenusListener();
         };
-        $scope.revealDeleteModal = function (action) {
+        $scope.revealRegisterSnapshotModal = function (snapshot_id) {
+            var modal = $('#register-snapshot-modal');
+            $scope.snapshotID = snapshot_id;
+            modal.foundation('reveal', 'open');
+        };
+        $scope.revealDeleteModal = function (volume_id, snapshot_id) {
             var modal = $('#delete-snapshot-modal');
-            $scope.deleteFormAction = action;
+            $scope.volumeID = volume_id;
+            $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
@@ -33,6 +40,15 @@ angular.module('VolumeSnapshots', ['TagEditor'])
                     modalButton.focus();
                 }
             });
+        };
+        $scope.setDropdownMenusListener = function () {
+            var modals = $('[data-reveal]');
+            modals.on('open', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'none');
+            });
+            modals.on('close', function () {
+                $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
+            })
         };
         $scope.getVolumeSnapshots = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
