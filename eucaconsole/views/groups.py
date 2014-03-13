@@ -104,6 +104,7 @@ class GroupView(BaseView):
         self.all_users = self.get_all_users_array()
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
+        self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params)
         create_date = parser.parse(self.group.create_date) if self.group else datetime.now()
         self.render_dict = dict(
             group=self.group,
@@ -113,7 +114,7 @@ class GroupView(BaseView):
             all_users=self.all_users,
             group_form=self.group_form,
             group_update_form=self.group_update_form,
-            delete_form=DeleteGroupForm(self.request),
+            delete_form=self.delete_form,
         )
 
     def get_group(self):
@@ -185,7 +186,7 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_delete', request_method='POST')
     def group_delete(self):
-        if not(self.is_csrf_valid()):
+        if not self.delete_form.validate():
             return JSONResponse(status=400, message="missing CSRF token")
         location = self.request.route_path('groups')
         if self.group is None:
@@ -308,7 +309,7 @@ class GroupView(BaseView):
     def group_update_policy(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        """ calls iam:PutGroupPolicy """
+        # calls iam:PutGroupPolicy
         policy = self.request.matchdict.get('policy')
         try:
             policy_text = self.request.params.get('policy_text')
@@ -320,9 +321,9 @@ class GroupView(BaseView):
 
     @view_config(route_name='group_delete_policy', request_method='POST', renderer='json')
     def group_delete_policy(self):
-        if not(self.is_csrf_valid()):
+        if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
-        """ calls iam:DeleteGroupPolicy """
+        # calls iam:DeleteGroupPolicy
         policy = self.request.matchdict.get('policy')
         try:
             result = self.conn.delete_group_policy(group_name=self.group.group_name, policy_name=policy)
