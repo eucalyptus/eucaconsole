@@ -13,10 +13,12 @@ from .routes import urls
 from .tweens import setup_tweens
 from .chamext import setup_exts
 from .keymgt import ensure_session_keys
+from .mime import check_types
 
 
 def get_configurator(settings, enable_auth=True):
     ensure_session_keys(settings)
+    check_types()
     config = Configurator(root_factory=SiteRootFactory, settings=settings)
     if enable_auth:
         authn_policy = SessionAuthenticationPolicy(callback=groupfinder)
