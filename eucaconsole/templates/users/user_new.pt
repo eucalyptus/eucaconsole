@@ -17,7 +17,9 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create new users</strong>
+        </h3>
         <div class="large-7 columns">
             <div class="panel no-title">
                 <form id="user-new-form" ng-submit="submit($event)"

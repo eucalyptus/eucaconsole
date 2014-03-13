@@ -19,12 +19,15 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
-        <div id="viewpage-title" class="large-12 columns">
-            <span tal:condition="group"><h4 i18n:translate="">Details for group ${group.group_name}</h4></span>
-            <span tal:condition="not group and group_route_id == 'new'"><h4 i18n:translate="">Create new group</h4></span>
-        </div>
-
+        <h3 id="pagetitle">
+            <metal:block tal:condition="group">
+                <strong i18n:translate="">Details for group:</strong>
+                <em ng-non-bindable="">${group.group_name}</em>
+            </metal:block>
+            <metal:block tal:condition="not group and group_route_id == 'new'">
+                <strong i18n:translate="">Create new group</strong>
+            </metal:block>
+        </h3>
         <div class="large-7 columns"
             tal:define="readonly True if group else False;">
             <div class="panel has-actions">
