@@ -223,7 +223,7 @@
                         <div class="small-8 columns value">{{ securityGroup }}</div>
                     </div>
                 </div>
-                <div cl ass="section step4 hide">
+                <div class="section step4 hide">
                     <div class="row">
                         <div class="columns value" ng-show="userData || userDataFile">
                             <i class="fi-check"></i> User data added
