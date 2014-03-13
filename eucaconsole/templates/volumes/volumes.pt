@@ -29,6 +29,9 @@
                     <li ng-show="item.status !== 'deleted'">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
                     </li>
+                    <li>
+                        <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
+                    </li>
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
@@ -112,6 +115,9 @@
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'deleted'">
                                 <a i18n:translate="" ng-href="${prefix}/{{ item.id }}">View details</a>
+                            </li>
+                            <li>
+                                <a ng-href="${prefix}/{{ item.id }}/snapshots" i18n:translate="">Manage snapshots</a>
                             </li>
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
