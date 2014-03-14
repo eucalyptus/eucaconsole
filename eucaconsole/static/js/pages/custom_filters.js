@@ -11,7 +11,7 @@ angular.module('CustomFilters', [])
 })
 .filter('escapeHTMLTagID', function() {
     return function(input) {
-      return encodeURIComponent(input).replace(/[\%\.]/g, "_");
+      return encodeURIComponent(input).replace(/[\%\.\~\!\*\(\)]/g, "_");
     };
 })
 .filter('ellipsis', function () {
