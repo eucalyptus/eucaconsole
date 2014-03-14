@@ -273,11 +273,7 @@ class SnapshotView(TaggedItemView):
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_path('snapshot_view', id=snapshot.id)
                 return HTTPFound(location=location)
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
-            except BotoServerError as err:
+            except (EC2ResponseError, BotoServerError) as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)
