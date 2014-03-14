@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

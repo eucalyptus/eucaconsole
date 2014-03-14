@@ -23,7 +23,7 @@
                 </div>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
         <hr />
         <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
         <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
@@ -62,7 +62,7 @@
                 </div>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('volumes_delete');
@@ -81,7 +81,7 @@
             </div>
             <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <!--! /end modal dialogs -->
 </div>

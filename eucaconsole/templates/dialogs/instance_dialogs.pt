@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="start-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_start');
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="stop-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_stop');
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_terminate');
@@ -98,12 +98,12 @@
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Console Output for {{ instance_name }}</h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
             <h3 i18n:translate="">Connect to {{ instance_name }}</h3>
@@ -135,7 +135,7 @@
                 </div>
             </div>
                 
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

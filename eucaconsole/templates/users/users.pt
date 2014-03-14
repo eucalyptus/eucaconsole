@@ -136,7 +136,7 @@
             <p>
                 Need some content
             </p>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="user-dialogs">
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
             <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Disable user {{ user_name }}</h3>
@@ -173,7 +173,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
             <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Enable user {{ user_name }}</h3>
@@ -194,7 +194,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>
