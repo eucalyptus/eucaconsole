@@ -1,9 +1,10 @@
+@charset "UTF-8";
+@import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
 /* ========================================================================== HTML5 display definitions ========================================================================== */
 /** Correct `block` display not defined in IE 8/9. */
-@import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
 
 /** Correct `inline-block` display not defined in IE 8/9. */
@@ -1581,6 +1582,16 @@ footer .copyright { font-size: 0.9em; }
 .tabs dd:first-child a { box-shadow: none; }
 .tabs dd a { color: #00415e; box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
+
+/* ----------------------------------------- Progress bars
+----------------------------------------- */
+@-webkit-keyframes move { 0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; } }
+
+@keyframes move { 0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; } }
+
+.progress > .meter:after { content: ""; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent); z-index: 1; background-size: 50px 50px; -webkit-animation: move 2s linear infinite; animation: move 2s linear infinite; overflow: hidden; }
 
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */

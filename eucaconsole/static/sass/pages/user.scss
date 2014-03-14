@@ -69,6 +69,16 @@ $keys-status-color-inactive: $euca-grey;
     line-height: 1rem;
 }
 
+#quotas-panel {
+    .expando {
+        margin-bottom: 1rem;
+        .title {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    }
+}
+
 // *********************
 // User snapshots page
 .tile {
