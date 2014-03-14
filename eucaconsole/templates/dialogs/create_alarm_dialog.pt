@@ -111,9 +111,8 @@
             </div>
             <hr />
             <div class="row">
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <button type="submit" class="button" i18n:translate="" id="create-alarm-btn">
+                <div>
+                    <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn">
                         Create Alarm
                     </button>
                 </div>
