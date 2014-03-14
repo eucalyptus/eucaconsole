@@ -35,6 +35,6 @@
             </div>
             <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
 </div>

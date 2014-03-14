@@ -20,7 +20,7 @@
                 </div>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('ipaddresses_disassociate');
@@ -42,7 +42,7 @@
             </div>
             <input type="submit" class="button" value="Yes, Disassociate address" />
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('ipaddresses_release');
@@ -62,6 +62,6 @@
             </div>
             <input type="submit" class="button" value="Yes, Release Address" />
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
