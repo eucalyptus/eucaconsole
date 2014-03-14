@@ -270,7 +270,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 /* -----------------------------------------
    Misc
 ----------------------------------------- */
-#pagetitle {
+#pagetitle, .pagetitle {
     font-size: 1.3rem;
     font-weight: bold;
     margin-left: 1rem;

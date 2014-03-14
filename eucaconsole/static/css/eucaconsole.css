@@ -1417,9 +1417,9 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
-#pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
-#pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
-#pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444444; }
+#pagetitle, .pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
+#pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
+#pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444444; }
 
 .subsection-label { color: #00415e; margin-bottom: 6px; }
 
