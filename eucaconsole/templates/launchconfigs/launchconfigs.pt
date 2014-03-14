@@ -25,8 +25,8 @@
                    href="${request.route_path('launchconfig_new')}">Create New Launch Configuration</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeNameForID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.name | escapeNameForID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                     <li><a i18n:translate=""
                            ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
@@ -71,8 +71,8 @@
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
-                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></a>
-                        <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
+                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeNameForID }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_{{ item.name | escapeNameForID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                             <li><a i18n:translate=""
                                    ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>

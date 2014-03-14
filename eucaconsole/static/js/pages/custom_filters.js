@@ -9,6 +9,11 @@ angular.module('CustomFilters', [])
       return encodeURIComponent(input);
     };
 })
+.filter('escapeNameForID', function() {
+    return function(input) {
+      return encodeURIComponent(input).replace(/[\%\+\.\,]/g, "");
+    };
+})
 .filter('ellipsis', function () {
     return function (line, num) {
         if( line === null || line.length == 0 ){
