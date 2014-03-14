@@ -94,7 +94,7 @@
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6)}
                 <div class="row">
-                    <button type="submit" class="button radius" id="allocate-ipaddresses-dialog-btn"
+                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn"
                             i18n:translate="">
                         Allocate Addresses From Cloud
                     </button>

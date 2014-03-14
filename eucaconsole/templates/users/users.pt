@@ -148,9 +148,8 @@
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
@@ -161,15 +160,14 @@
                 <p>
                     <span i18n:translate="">Disabling a user deletes their password and prevents them from executing any actions against the cloud. The user's other information is maintained until you either make the user active again or delete them.</span>
                     <p>&nbsp;</p>
-                    <span i18n:translate="">Are you sure you want to disable <strong>{{ user_name }}</strong></span>?
+                    <span i18n:translate="">Are you sure you want to disable user <strong>{{ user_name }}</strong></span>?
                 </p>
                 <form id="disable-form" ng-submit="disableUser($event)">
                     ${structure:disable_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Disable User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
@@ -188,9 +186,8 @@
                     ${panel('form_field', field=enable_form['random_password'], reverse="true", leftcol_width=2, rightcol_width=10)}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Enable User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Enable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>

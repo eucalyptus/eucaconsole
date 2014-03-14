@@ -212,9 +212,8 @@
                                 ${structure:generate_form['csrf_token']}
                                 <div>&nbsp;</div>
                                 <div class="row">
-                                    <div class="small-4 columns">&nbsp;</div>
-                                    <div class="small-8 columns field inline">
-                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    <div>
+                                        <input type="submit" class="button expand" value="Yes, Delete Password" i18n:attributes="value" />
                                     </div>
                                 </div>
                             </form>
@@ -234,9 +233,8 @@
                                 </div>
                                 <div>&nbsp;</div>
                                 <div class="row">
-                                    <div class="small-4 columns">&nbsp;</div>
-                                    <div class="small-8 columns field inline">
-                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    <div>
+                                        <input type="submit" class="button expand" value="OK" i18n:attributes="value" />
                                     </div>
                                 </div>
                             </form>
@@ -298,10 +296,9 @@
                                         ${structure:user_form['csrf_token']}
                                         <div>&nbsp;</div>
                                         <div class="row">
-                                            <div class="small-4 columns">&nbsp;</div>
-                                            <div class="small-8 columns field inline">
-                                                <button type="submit" class="button" id="delete-key-btn">
-                                                    <span i18n:translate="">Yes, Delete</span>
+                                            <div>
+                                                <button type="submit" class="button expand" id="delete-key-btn">
+                                                    <span i18n:translate="">Yes, Delete Key</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -359,9 +356,8 @@
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Delete User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
