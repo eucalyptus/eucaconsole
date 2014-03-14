@@ -11,7 +11,7 @@ angular.module('CustomFilters', [])
 })
 .filter('escapeNameForID', function() {
     return function(input) {
-      return encodeURIComponent(input).replace(/[\%\+\.\,]/g, "");
+      return encodeURIComponent(input).replace(/[\%\+\.\,]/g, "_");
     };
 })
 .filter('ellipsis', function () {
