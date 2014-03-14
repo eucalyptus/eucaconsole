@@ -80,7 +80,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/)  ){
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
                     var closeMark = modal.find('.close-reveal-modal');
                     if(!!closeMark){
                         closeMark.focus();
