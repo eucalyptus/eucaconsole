@@ -24,8 +24,8 @@
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
-        <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
         <hr />
+        <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
         <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
             <!--! Volume device help -->
             <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />

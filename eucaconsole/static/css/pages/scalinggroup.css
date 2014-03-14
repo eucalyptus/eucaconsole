@@ -23,7 +23,7 @@
 .gridwrapper .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; }
 .gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
 
-.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 200px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
 .tile.add { text-align: center; text-transform: uppercase; position: relative; }
 .tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 .tile.add a:hover { background-color: #d3e9b6; }
@@ -32,7 +32,7 @@
 .tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #00415e; font-weight: bold; }
 .tile .header a:hover { color: #8dc943; }
 .tile .header strong { font-weight: normal; }
-.tile .header .f-dropdown a { color: #468400; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .header .f-dropdown a { color: #444444; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
 .tile .content { padding: 8px; font-size: 0.9em; }
 .tile .content a { color: #468400; }
 .tile .content a:hover { text-decoration: underline; }
@@ -44,7 +44,7 @@
 .tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
 .tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
 .tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
-.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
 .tile .footer .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; }
 
 .gridwrapper .table { border: none; width: 100%; }
@@ -60,6 +60,8 @@
 .gridwrapper .table tr td.id { max-width: 120px; }
 .gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
 .gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
+.gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
 .gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
 .gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
 
@@ -84,6 +86,7 @@
 #filters form button { box-shadow: none; }
 
 #sorting-controls { padding-top: 22px; }
+#sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; }
 
 #results-count { padding-top: 1rem; }
 #results-count .items-found { position: relative; top: -6px; }

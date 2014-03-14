@@ -7,7 +7,7 @@ from dateutil import parser
 import simplejson as json
 import time
 
-from boto.exception import EC2ResponseError
+from boto.exception import EC2ResponseError, BotoServerError
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -260,8 +260,7 @@ class SnapshotView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
             try:
-                volume = self.get_volume(volume_id)
-                snapshot = volume.create_snapshot(description)
+                snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
                     snapshot.add_tag('Name', name)
@@ -274,7 +273,7 @@ class SnapshotView(TaggedItemView):
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_path('snapshot_view', id=snapshot.id)
                 return HTTPFound(location=location)
-            except EC2ResponseError as err:
+            except (EC2ResponseError, BotoServerError) as err:
                 msg = err.message
                 queue = Notification.ERROR
                 self.request.session.flash(msg, queue=queue)

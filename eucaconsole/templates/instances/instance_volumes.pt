@@ -93,9 +93,13 @@
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
-                <hr />
                 <!--! Volume device help -->
-                <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+                <hr />
+                <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
+                <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+                    <!--! Volume device help -->
+                    <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+                </div>
             </div>
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
