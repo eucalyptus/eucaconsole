@@ -14,6 +14,7 @@ angular.module('InstanceVolumes', [])
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
         $scope.detachFormAction = '';
+        $scope.isDialogHelpExpanded = false;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.initChosenSelector();
