@@ -4,7 +4,7 @@
          tal:define="landingpage_action request.route_path('ipaddresses_associate');
                      detailpage_action request.route_path('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
-        <h3 i18n:translate="">Associate elastic IP Address to instance</h3>
+        <h3 i18n:translate="">Associate elastic IP address with instance</h3>
         <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
         <form action="${action}"
               method="post" data-abide="abide">
@@ -14,9 +14,8 @@
             </div>
             ${panel('form_field', field=associate_form.instance_id)}
             <div class="row">
-                <div class="small-4 columns">&nbsp;</div>
-                <div class="small-8 columns field inline">
-                    <input type="submit" class="button" value="Associate Address" i18n:attributes="value" />
+                <div>
+                    <input type="submit" class="button expand" value="Associate Address with Instance" i18n:attributes="value" />
                 </div>
             </div>
         </form>
@@ -40,7 +39,7 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
-            <input type="submit" class="button" value="Yes, Disassociate address" />
+            <input type="submit" class="button expand" value="Yes, Disassociate Address from Instance" />
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
@@ -60,7 +59,7 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
-            <input type="submit" class="button" value="Yes, Release Address" />
+            <input type="submit" class="button expand" value="Yes, Release Address to Cloud" />
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
