@@ -5,7 +5,7 @@
 /* @section Landing pages styles */
 
 // Sass variables
-$tile-width: 200px;
+$tile-width: 202px;
 $tile-height: 220px;
 $tile-row-height: 24px;
 $tile-bg-color: white;
@@ -137,7 +137,7 @@ $dropdown-border-color: $euca-green;
             font-weight: normal;
         }
         .f-dropdown a {
-            color: $euca-darkgreen;
+            color: $euca-darkgrey;
             font-weight: normal;
             overflow: visible;
             white-space: normal;
@@ -206,6 +206,7 @@ $dropdown-border-color: $euca-green;
                 display: inline-block;
                 white-space: nowrap;
                 font-weight: bold;
+                text-align: center;
             }
         }
         .dots {
@@ -263,6 +264,12 @@ $dropdown-border-color: $euca-green;
             &.tags {
                 max-width: 20rem;
                 word-break: break-all;
+            }
+            .f-dropdown a {
+                color: $euca-darkgrey;
+                &:hover {
+                    text-decoration: none;
+                }
             }
         }
     }
@@ -361,6 +368,9 @@ $dropdown-border-color: $euca-green;
 
 #sorting-controls {
     padding-top: 22px;
+    .f-dropdown {
+        @include dropdown-shadow-mixin;
+    }
 }
 
 #results-count {
