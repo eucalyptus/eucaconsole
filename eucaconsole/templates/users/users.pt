@@ -30,8 +30,8 @@
                    href="${request.route_path('user_view', name='new')}">Create New Users</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.user_name | escapeNameForID }}"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.user_name | escapeNameForID }}" class="f-dropdown" data-dropdown-content="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.user_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.user_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.user_enabled">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                     </li>
@@ -112,8 +112,8 @@
                 </td>
                 <td>
                   <span class="actions">
-                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.user_name | escapeNameForID }}"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ item.user_name | escapeNameForID }}" class="f-dropdown" data-dropdown-content="">
+                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.user_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.user_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                         <li ng-show="item.user_enabled">
                             <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                         </li>

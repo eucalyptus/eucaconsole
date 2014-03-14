@@ -9,7 +9,7 @@ angular.module('CustomFilters', [])
       return encodeURIComponent(input);
     };
 })
-.filter('escapeNameForID', function() {
+.filter('escapeHTMLTagID', function() {
     return function(input) {
       return encodeURIComponent(input).replace(/[\%\.]/g, "_");
     };
