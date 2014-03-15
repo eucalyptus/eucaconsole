@@ -24,8 +24,8 @@
                    href="${request.route_path('group_view', name='new')}">Create Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.group_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.group_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">View details</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a></li>
                 </ul>
@@ -65,8 +65,8 @@
                 <td> {{ item.create_date | date:'${layout.angular_date_format}' }} </td>
                 <td>
                   <span class="actions">
-                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.group_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.group_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                         <li><a i18n:translate="" ng-href="${prefix}/{{ item.group_name }}">View details</a></li>
                         <li>
                             <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
@@ -86,13 +86,12 @@
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Delete" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Delete Group" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

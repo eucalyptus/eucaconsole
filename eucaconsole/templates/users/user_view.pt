@@ -42,7 +42,7 @@
 
                         <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
-                            <div class="section">
+                            <div class="columns section">
                                 <h6 i18n:translate="">User</h6>
                                 ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
@@ -79,8 +79,9 @@
                                 '${request.route_path('user_avail_groups_json', name=user.user_name)}',
                                 '${request.route_path('group_policies_json', name='_name_')}',
                                 '${request.route_path('group_policy_json', name='_name_', policy='_policy_')}')">
-                        <div class="section">
+                        <div class="columns section">
                             <h6 i18n:translate="">Groups</h6>
+                            <div>&nbsp;</div>
                             <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
                                 ${structure:user_form['csrf_token']}
                                 <div class="columns field inline">
@@ -129,7 +130,7 @@
                                      remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
                                      update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
                                      add_url request.route_path('iam_policy_new')+'?type=user&id='+user.user_name">
-                        <div class="section">
+                        <div class="columns section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
                                 <strong i18n:translate="">User policies</strong>
@@ -149,7 +150,7 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <div id="password-section" ng-controller="UserPasswordCtrl"
+                    <div id="password-section" class="columns section" ng-controller="UserPasswordCtrl"
                          ng-init="initController('${request.route_path('user_random_password', name=user.user_name)}',
                                                  '${request.route_path('user_delete_password', name=user.user_name)}',
                                                  '${request.route_path('user_change_password', name=user.user_name)}',
@@ -212,9 +213,8 @@
                                 ${structure:generate_form['csrf_token']}
                                 <div>&nbsp;</div>
                                 <div class="row">
-                                    <div class="small-4 columns">&nbsp;</div>
-                                    <div class="small-8 columns field inline">
-                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    <div>
+                                        <input type="submit" class="button expand" value="Yes, Delete Password" i18n:attributes="value" />
                                     </div>
                                 </div>
                             </form>
@@ -234,9 +234,8 @@
                                 </div>
                                 <div>&nbsp;</div>
                                 <div class="row">
-                                    <div class="small-4 columns">&nbsp;</div>
-                                    <div class="small-8 columns field inline">
-                                        <input type="submit" class="button" value="OK" i18n:attributes="value" />
+                                    <div>
+                                        <input type="submit" class="button expand" value="OK" i18n:attributes="value" />
                                     </div>
                                 </div>
                             </form>
@@ -249,12 +248,12 @@
                                 '${request.route_path('user_generate_keys', name=user.user_name)}',
                                 '${request.route_path('user_access_keys_json', name=user.user_name)}',
                                 '${request.route_path('file_download')}')">
-                        <div class="section">
+                        <div class="columns section">
                             <h6 i18n:translate="">Access keys</h6>
                             <p i18n:translate="">Users managing their cloud with other tools than the Management Console require access keys.</p>
                             <form id="user-generate-keys-form" ng-submit="generateKeys($event)">
                                 ${structure:user_form['csrf_token']}
-                                <div class="columns field inline">
+                                <div class="field inline">
                                     <button type="submit" class="button" id="gen-keys-btn">
                                         <span tal:condition="user" i18n:translate="">Generate Access Key</span>
                                     </button>
@@ -298,10 +297,9 @@
                                         ${structure:user_form['csrf_token']}
                                         <div>&nbsp;</div>
                                         <div class="row">
-                                            <div class="small-4 columns">&nbsp;</div>
-                                            <div class="small-8 columns field inline">
-                                                <button type="submit" class="button" id="delete-key-btn">
-                                                    <span i18n:translate="">Yes, Delete</span>
+                                            <div>
+                                                <button type="submit" class="button expand" id="delete-key-btn">
+                                                    <span i18n:translate="">Yes, Delete Key</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -322,7 +320,7 @@
                             </li>
                         </metal:actions>
                     </metal:block>
-                    <div ng-controller="UserQuotasCtrl" ng-init="initController(
+                    <div ng-controller="UserQuotasCtrl" class="columns" ng-init="initController(
                                 '${request.route_path('user_update_quotas', name=user.user_name)}')">
                         <form ng-submit="submit($event)" id="user-update-quotas-form">
                             <div class="section">
@@ -330,15 +328,13 @@
                                 ${structure:user_form['csrf_token']}
                                 ${panel('quotas_panel', quota_form=user_form)}
                             </div>
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" id="save-quotas-btn">
-                                        <span tal:condition="user" i18n:translate="">Save Quotas</span>
-                                    </button>
-                                    <a href="${request.route_path('users')}"
-                                       class="cancel-link" i18n:translate="">Cancel</a>
-                                </div>
+                            <hr />
+                            <div>
+                                <button type="submit" class="button" id="save-quotas-btn">
+                                    <span tal:condition="user" i18n:translate="">Save Quotas</span>
+                                </button>
+                                <a href="${request.route_path('users')}"
+                                   class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
                         </form>
                     </div>
@@ -359,9 +355,8 @@
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Delete User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>

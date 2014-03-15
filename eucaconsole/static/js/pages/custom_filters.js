@@ -9,6 +9,11 @@ angular.module('CustomFilters', [])
       return encodeURIComponent(input);
     };
 })
+.filter('escapeHTMLTagID', function() {
+    return function(input) {
+      return encodeURIComponent(input).replace(/[%~!'\.\*\(\)]/g, "_");
+    };
+})
 .filter('ellipsis', function () {
     return function (line, num) {
         if( line === null || line.length == 0 ){

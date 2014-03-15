@@ -111,15 +111,14 @@
             </div>
             <hr />
             <div class="row">
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <button type="submit" class="button" i18n:translate="" id="create-alarm-btn">
+                <div>
+                    <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn">
                         Create Alarm
                     </button>
                 </div>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
         <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>

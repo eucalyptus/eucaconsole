@@ -71,11 +71,11 @@
 .match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
 
 .displayicons { font-size: 2rem; }
-.displayicons a { float: right; border-bottom: none; color: #777777; }
+.displayicons a { float: right; border-bottom: none; color: #8dc943; }
 .displayicons a:hover { border-bottom: none; color: #8dc943; }
 .displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
-.displayicons .selected { background-color: white; color: #8dc943; }
-.displayicons .selected :hover { cursor: default; }
+.displayicons .selected { background-color: white; color: #777777; }
+.displayicons .selected:hover { color: #777777; cursor: default; }
 .displayicons i { display: inline-block; padding: 2px 8px; }
 
 #filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }

@@ -33,8 +33,8 @@
             <div tal:condition="not landingpage" tal:omit-tag="">
                 <input type="hidden" name="name" value="${launch_config_name}">
             </div>
-            <button type="submit" class="button" i18n:translate="">Yes, Delete</button>
+            <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
 </div>

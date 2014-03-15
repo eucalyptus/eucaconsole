@@ -30,8 +30,8 @@
                    href="${request.route_path('user_view', name='new')}">Create New Users</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
-                <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.user_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.user_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.user_enabled">
                         <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                     </li>
@@ -112,8 +112,8 @@
                 </td>
                 <td>
                   <span class="actions">
-                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
-                    <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                    <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.user_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.user_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                         <li ng-show="item.user_enabled">
                             <a i18n:translate="" ng-href="${prefix}/{{ item.user_name }}">View details</a>
                         </li>
@@ -136,7 +136,7 @@
             <p>
                 Need some content
             </p>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="user-dialogs">
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
@@ -148,32 +148,30 @@
                     ${structure:delete_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, delete" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
             <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Disable user {{ user_name }}</h3>
                 <p>
                     <span i18n:translate="">Disabling a user deletes their password and prevents them from executing any actions against the cloud. The user's other information is maintained until you either make the user active again or delete them.</span>
                     <p>&nbsp;</p>
-                    <span i18n:translate="">Are you sure you want to disable <strong>{{ user_name }}</strong></span>?
+                    <span i18n:translate="">Are you sure you want to disable user <strong>{{ user_name }}</strong></span>?
                 </p>
                 <form id="disable-form" ng-submit="disableUser($event)">
                     ${structure:disable_form['csrf_token']}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Yes, Disable User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
             <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Enable user {{ user_name }}</h3>
@@ -188,13 +186,12 @@
                     ${panel('form_field', field=enable_form['random_password'], reverse="true", leftcol_width=2, rightcol_width=10)}
                     <div>&nbsp;</div>
                     <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <input type="submit" class="button" value="Enable User" i18n:attributes="value" />
+                        <div>
+                            <input type="submit" class="button expand" value="Enable User" i18n:attributes="value" />
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

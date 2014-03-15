@@ -84,9 +84,8 @@
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
                         leftcol_width=6, rightcol_width=6)}
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                <div>
+                    <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">
                         Yes, Mark Unhealthy
                     </button>
                 </div>
@@ -101,10 +100,9 @@
                 ${structure:terminate_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
                 ${panel('form_field', field=terminate_form['decrement_capacity'],
-                        leftcol_width=4, rightcol_width=8, reverse='true')}
-                <div class="small-3 columns">&nbsp;</div>
-                <div class="small-9 columns">
-                    <button type="submit" class="button" i18n:translate="" id="mark-unhealthy-dialog-btn">
+                        leftcol_width=2, rightcol_width=10, reverse='true')}
+                <div>
+                    <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">
                         Yes, Terminate
                     </button>
                 </div>

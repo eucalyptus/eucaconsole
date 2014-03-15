@@ -16,13 +16,12 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, Reboot" i18n:attributes="value" />
+                    <div>
+                        <input type="submit" class="button expand" value="Yes, Reboot" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="start-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_start');
@@ -38,13 +37,12 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, Start Instance" i18n:attributes="value" />
+                    <div>
+                        <input type="submit" class="button expand" value="Yes, Start Instance" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="stop-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_stop');
@@ -60,13 +58,12 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, Stop Instance" i18n:attributes="value" />
+                    <div>
+                        <input type="submit" class="button expand" value="Yes, Stop Instance" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_terminate');
@@ -92,21 +89,28 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="row">
-                    <div class="small-4 columns">&nbsp;</div>
-                    <div class="small-8 columns field inline">
-                        <input type="submit" class="button" value="Yes, Terminate" i18n:attributes="value" />
+                    <div>
+                        <input type="submit" class="button expand" value="Yes, Terminate" i18n:attributes="value" />
                     </div>
                 </div>
             </form>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Console Output for {{ instance_name }}</h3>
+            <h3 class="pagetitle">
+            <strong i18n:translate="">Console output for instance:</strong>
+            <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+            <em tal:condition="landingpage">{{ instance_name }}</em>
+        </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
-            <h3 i18n:translate="">Connect to {{ instance_name }}</h3>
+        <h3 class="pagetitle">
+            <strong i18n:translate="">Connect to instance:</strong>
+            <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+            <em tal:condition="landingpage">{{ instance_name }}</em>
+        </h3>
             <div ng-show="!(platform == 'windows')">
                 <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
                 <ol>
@@ -135,7 +139,7 @@
                 </div>
             </div>
                 
-            <a class="close-reveal-modal">&#215;</a>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

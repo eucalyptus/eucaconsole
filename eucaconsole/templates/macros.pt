@@ -174,7 +174,7 @@
 </metal:plaindatagrid_macro>
 
 <metal:plaintableview_macro metal:define-macro="plain_tableview">
-    <div class="large-12 columns datagrid" id="datagrid-items">
+    <div class="datagrid" id="datagrid-items">
         <div ng-show="itemsLoading"><span class="dots"></span></div>
         <div id="tableview" class="gridwrapper" ng-show="!itemsLoading">
             <!-- Begin table view -->

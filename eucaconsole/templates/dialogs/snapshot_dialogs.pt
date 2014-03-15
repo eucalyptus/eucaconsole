@@ -17,12 +17,11 @@
             <div tal:condition="from_volume_page" tal:omit-tag="">
                 <input type="hidden" name="redirect_url" value="/volumes/{{ volumeID }}/snapshots" />
             </div>
-            <div class="large-4 columns">&nbsp;</div>
-            <div class="large-8 columns">
-                <button type="submit" class="button" i18n:translate="">Yes, Delete Snapshot</button>
+            <div>
+                <button type="submit" class="button expand" i18n:translate="">Yes, Delete Snapshot</button>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="register-snapshot-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('snapshots_register');
@@ -39,12 +38,11 @@
             ${panel('form_field', field=register_form['description'])}
             ${panel('form_field', reverse='true', field=register_form['dot'])}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
-            <div class="large-4 columns">&nbsp;</div>
-            <div class="large-8 columns">
-                <button type="submit" class="button" i18n:translate="">Register as Image</button>
+            <div>
+                <button type="submit" class="button expand" i18n:translate="">Register as Image</button>
             </div>
         </form>
-        <a class="close-reveal-modal">&#215;</a>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 

@@ -1418,9 +1418,9 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
   #maincontent { min-height: 480px; } }
 /* ----------------------------------------- Misc
 ----------------------------------------- */
-#pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
-#pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
-#pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444444; }
+#pagetitle, .pagetitle { font-size: 1.3rem; font-weight: bold; margin-left: 1rem; margin-bottom: 1rem; }
+#pagetitle.landingpage, .pagetitle.landingpage { margin-left: 0; position: absolute; top: 0; left: 1rem; }
+#pagetitle em, .pagetitle em { font-style: normal; font-weight: 700; font-family: Lato, Helvetica, Arial, sans-serif; color: #444444; }
 
 .subsection-label { color: #00415e; margin-bottom: 6px; }
 
@@ -1559,6 +1559,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal { z-index: 9999995; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
+.reveal-modal .button.expand { margin-bottom: 0; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1581,6 +1582,16 @@ footer .copyright { font-size: 0.9em; }
 .tabs dd:first-child a { box-shadow: none; }
 .tabs dd a { color: #00415e; box-shadow: inset 6px 0px 4px 0px rgba(50, 50, 50, 0.2); padding: 10px 32px 6px 24px; font-weight: bold; }
 .tabs dd.active a { box-shadow: none; }
+
+/* ----------------------------------------- Progress bars
+----------------------------------------- */
+@-webkit-keyframes move { 0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; } }
+
+@keyframes move { 0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; } }
+
+.progress > .meter:after { content: ""; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background-image: linear-gradient(-45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent); z-index: 1; background-size: 50px 50px; -webkit-animation: move 2s linear infinite; animation: move 2s linear infinite; overflow: hidden; }
 
 /* ----------------------------------------- Foundation fixes
 ----------------------------------------- */
