@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS images
 import re
 
 from beaker.cache import cache_region, cache_managers
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -113,7 +113,7 @@ class ImagesJsonView(LandingPageView):
             try:
                 filters = {'image-type': 'machine'}
                 return conn.get_all_images(owners=_owners, filters=filters) if conn else []
-            except EC2ResponseError as exc:
+            except BotoServerError as exc:
                 return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)
 
@@ -150,7 +150,10 @@ class ImageView(TaggedItemView):
         images_param = [image_param]
         images = []
         if self.conn:
-            images = self.conn.get_all_images(image_ids=images_param)
+            try:
+                images = self.conn.get_all_images(image_ids=images_param)
+            except BotoServerError as err:
+                pass
         image = images[0] if images else None
         if image:
             attrs = image.__dict__

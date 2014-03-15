@@ -3,6 +3,7 @@
 Core views
 
 """
+import logging
 import simplejson as json
 import textwrap
 from urllib import urlencode
@@ -20,6 +21,7 @@ from pyramid.view import notfound_view_config, view_config
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
+from ..models import Notification
 from ..models.auth import ConnectionManager
 
 
@@ -78,6 +80,38 @@ class BaseView(object):
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
 
         return conn
+
+    def sendErrorResponse(self, err):
+        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
+        msg = self._get_error_message_(err)
+        logging.error("Error encountered: " + msg)
+        if status in [403]:
+            if any(['Invalid access key' in msg, 'Invalid security token' in msg]):
+                notice = msg
+            else:
+                notice = _(u'Your session has timed out')
+            self.request.session.flash(notice, queue=Notification.WARNING)
+            cls.invalidate_cache()
+        else:
+            self.request.session.flash(msg, queue=Notification.ERROR)
+
+    def getJSONErrorResponse(self, err):
+        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
+        msg = self._get_error_message_(err)
+        logging.error("Error encountered: " + msg)
+        if status in [403]:
+            pass # unsure how to handle this, esp if called from __init__()
+        return JSONResponse(status=400, message=msg);
+
+    def _get_error_message_(self, err):
+        msg = err.reason;
+        if err.error_message is not None:
+            msg = err.error_message;
+            if 'because of:' in msg:
+                msg = msg[msg.index("because of:")+11:];
+            if 'RelatesTo Error:' in msg:
+                msg = msg[msg.index("RelatesTo Error:")+16:];
+        return msg
 
     def is_csrf_valid(self):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')

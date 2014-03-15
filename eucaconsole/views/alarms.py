@@ -29,6 +29,7 @@ class CloudWatchAlarmsView(LandingPageView):
         self.ec2_conn = self.get_connection()
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        # TODO: not likely to fail, but if session creds expire?
         self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
@@ -79,12 +80,9 @@ class CloudWatchAlarmsView(LandingPageView):
                 self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
@@ -99,12 +97,9 @@ class CloudWatchAlarmsView(LandingPageView):
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
                 msg = '{0} {1}'.format(prefix, alarm_name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
@@ -128,6 +123,8 @@ class CloudWatchAlarmsJsonView(BaseView):
             items = self.get_items()
         except BotoServerError as err:
             return Response(status=err.status, body=err.message)
+            # TODO: verify JSONResponse wouldn't be acceptable
+            #return self.getJSONErrorResponse(err)
         for alarm in items:
             alarms.append(dict(
                 name=alarm.name,

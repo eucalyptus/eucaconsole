@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS security groups
 import simplejson as json
 import time
 
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -61,15 +61,12 @@ class SecurityGroupsView(LandingPageView):
             name = security_group.name
             try:
                 security_group.delete()
-                time.sleep(1)
                 prefix = _(u'Successfully deleted security group')
                 template = '{0} {1}'.format(prefix, name)
                 msg = template.format(group=name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            except BotoServerError as err:
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete security group')
@@ -157,12 +154,9 @@ class SecurityGroupView(TaggedItemView):
                 self.security_group.delete()
                 prefix = _(u'Successfully deleted security group')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg.format(group=name)
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            except BotoServerError as err:
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -180,19 +174,19 @@ class SecurityGroupView(TaggedItemView):
                     for tagname, tagvalue in tags.items():
                         new_security_group.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully created security group')
-                queue = Notification.SUCCESS
                 location = self.request.route_path('securitygroup_view', id=new_security_group.id)
-                status = 200
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                location = self.request.route_path('securitygroups')
-                status = getattr(err, 'status', 400)
-            if self.request.is_xhr:
-                return JSONResponse(status=status, message=msg)
-            else:
-                self.request.session.flash(msg, queue=queue)
-                return HTTPFound(location=location)
+                if self.request.is_xhr:
+                    return JSONResponse(status=200, message=msg)
+                else:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                    return HTTPFound(location=location)
+            except BotoServerError as err:
+                if self.request.is_xhr:
+                    return self.getJSONErrorResponse(err)
+                else:
+                    self.sendErrorResponse(err)
+                    location = self.request.route_path('securitygroups')
+                    return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.securitygroup_form.get_errors_list())
             return JSONResponse(status=400, message=form_errors)  # Validation failure = bad request

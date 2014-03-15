@@ -16,7 +16,6 @@ from urllib2 import HTTPError, URLError
 from urllib import urlencode
 
 from boto.exception import BotoServerError
-from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -88,7 +87,7 @@ class UsersView(LandingPageView):
             result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
             return dict(message=_(u"Successfully disabled user"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_enable', request_method='POST', renderer='json')
     def user_enable(self):
@@ -116,7 +115,7 @@ class UsersView(LandingPageView):
             else:
                 return dict(message=_(u"Successfully enabled user"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
 
 class UsersJsonView(BaseView):
@@ -137,7 +136,7 @@ class UsersJsonView(BaseView):
             for g in groups:
                 info = self.conn.get_group(group_name=g.group_name)
                 g['users'] = info.users
-        except EC2ResponseError as exc:
+        except BotoServerError as exc:
             pass
         for user in self.get_items():
             user_groups = []
@@ -157,17 +156,16 @@ class UsersJsonView(BaseView):
     @view_config(route_name='user_summary_json', renderer='json', request_method='GET')
     def user_summary_json(self):
         user_param = self.request.matchdict.get('name')
-        user = self.conn.get_user(user_name=user_param)
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=user.user_name)
+            profile = self.conn.get_login_profiles(user_name=user_param)
             # this call returns 404 if no password found
             has_password = True
         except BotoServerError as err:
             pass
         user_enabled = True
         try:
-            policies = self.conn.get_all_user_policies(user_name=user.user_name)
+            policies = self.conn.get_all_user_policies(user_name=user_param)
             for policy in policies.policy_names:
                 if policy == self.EUCA_DENY_POLICY and has_password is False:
                     user_enabled = False
@@ -176,13 +174,13 @@ class UsersJsonView(BaseView):
         keys = []
         if user_enabled: # we won't spend time fetching the keys if the user is disabled
             try:
-                keys = self.conn.get_all_access_keys(user_name=user.user_name)
+                keys = self.conn.get_all_access_keys(user_name=user_param)
                 keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-            except EC2ResponseError as exc:
+            except BotoServerError as exc:
                 pass
 
         return dict(results=dict(
-                user_name=user.user_name,
+                user_name=user_param,
                 num_keys=len(keys),
                 has_password=has_password,
                 user_enabled=user_enabled,
@@ -204,7 +202,10 @@ class UserView(BaseView):
     def __init__(self, request):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
-        self.user = self.get_user()
+        try:
+            self.user = self.get_user()
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         if self.user is None:
             self.location = self.request.route_path('users')
         else:
@@ -267,40 +268,55 @@ class UserView(BaseView):
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
     def user_keys_json(self):
         """Return user access keys list"""
-        keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
-        return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
+        try:
+            keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
+            return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
         """Return user groups list"""
-        groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
-        for g in groups.groups:
-            g['title'] = g.group_name
-        return dict(results=groups.groups)
+        try:
+            groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
+            for g in groups.groups:
+                g['title'] = g.group_name
+            return dict(results=groups.groups)
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
     def user_avail_groups_json(self):
         """Return groups this user isn't part of"""
-        taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
-        all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
-        avail_groups = list(set(all_groups) - set(taken_groups))
-        if len(avail_groups) == 0:
-            avail_groups.append(_(u"User already a member of all groups"))
-        return dict(results=avail_groups)
+        try:
+            taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
+            all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
+            avail_groups = list(set(all_groups) - set(taken_groups))
+            if len(avail_groups) == 0:
+                avail_groups.append(_(u"User already a member of all groups"))
+            return dict(results=avail_groups)
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
     def user_policies_json(self):
         """Return user policies list"""
-        policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
-        return dict(results=policies.policy_names)
+        try:
+            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            return dict(results=policies.policy_names)
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
     def user_policy_json(self):
         """Return user policies list"""
-        policy_name = self.request.matchdict.get('policy')
-        policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
-        parsed = json.loads(policy.policy_document)
-        return dict(results=json.dumps(parsed, indent=2))
+        try:
+            policy_name = self.request.matchdict.get('policy')
+            policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
+            parsed = json.loads(policy.policy_document)
+            return dict(results=json.dumps(parsed, indent=2))
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_create', renderer='json', request_method='POST')
     def user_create(self):
@@ -401,7 +417,7 @@ class UserView(BaseView):
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully added users"), results="true")
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
+            return self.getJSONErrorResponse(err)
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
@@ -420,7 +436,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully updated user information"),
                         results=self.user)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
@@ -456,7 +472,7 @@ class UserView(BaseView):
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully set user password"), results="true")
         except BotoServerError as err:  # catch error in password change
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
         except HTTPError, err:          # catch error in authentication
             if err.msg == 'Unauthorized':
                 err.msg = _(u"The password you entered is incorrect.")
@@ -489,7 +505,7 @@ class UserView(BaseView):
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated user password"), results="true")
         except BotoServerError as err:  # catch error in password change
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
     def user_delete_password(self):
@@ -500,7 +516,7 @@ class UserView(BaseView):
             self.conn.delete_login_profile(user_name=self.user.user_name)
             return dict(message=_(u"Successfully deleted user password"), results="true")
         except BotoServerError as err:  # catch error in password delete
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
@@ -519,7 +535,7 @@ class UserView(BaseView):
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated access keys"), results="true")
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):
@@ -531,7 +547,7 @@ class UserView(BaseView):
             result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
             return dict(message=_(u"Successfully deleted key"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
     def user_deactivate_key(self):
@@ -543,7 +559,7 @@ class UserView(BaseView):
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
             return dict(message=_(u"Successfully deactivated key"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
     def user_activate_key(self):
@@ -555,7 +571,7 @@ class UserView(BaseView):
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
             return dict(message=_(u"Successfully activated key"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
@@ -568,7 +584,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully added user to group"),
                         results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
     def user_remove_from_group(self):
@@ -581,7 +597,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully removed user to group"),
                         results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
@@ -595,13 +611,10 @@ class UserView(BaseView):
             
             location = self.request.route_path('users')
             msg = _(u'Successfully deleted user')
-            queue = Notification.SUCCESS
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
         except BotoServerError as err:
-            location = self.location
-            msg = err.message
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
-        return HTTPFound(location=location)
+            self.sendErrorResponse(err)
 
     @view_config(route_name='user_update_policy', request_method='POST', renderer='json')
     def user_update_policy(self):
@@ -615,7 +628,7 @@ class UserView(BaseView):
                 user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated user policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
     def user_delete_policy(self):
@@ -627,7 +640,7 @@ class UserView(BaseView):
             result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted user policy"), results=result)
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
+            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
     def user_update_quotas(self):
@@ -712,7 +725,7 @@ class UserView(BaseView):
                                               json.dumps(new_policy))
             return dict(message=_(u"Successfully updated user policy"))
         except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
+            return self.getJSONErrorResponse(err)
 
     def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
         new_limit = self.request.params.get(param, '')

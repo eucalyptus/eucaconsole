@@ -61,6 +61,7 @@ class LaunchConfigsView(LandingPageView):
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
             except BotoServerError as err:
+                # TODO: augment BaseView.sendErrorResponse() to allow for message templates like this
                 prefix = _(u'Unable to delete launch configuration')
                 msg = '{0} {1} - {2}'.format(prefix, name, err.message)
                 queue = Notification.ERROR
@@ -89,29 +90,35 @@ class LaunchConfigsJsonView(BaseView):
     def __init__(self, request):
         super(LaunchConfigsJsonView, self).__init__(request)
         self.ec2_conn = self.get_connection()
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+        try:
+            self.autoscale_conn = self.get_connection(conn_type='autoscale')
+            self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
-        launchconfigs_array = []
-        launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
-        scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
-        for launchconfig in self.launch_configs:
-            security_groups = self.get_launchconfig_security_groups(launchconfig)
-            image_id = launchconfig.image_id
-            name=launchconfig.name
-            launchconfigs_array.append(dict(
-                created_time=launchconfig.created_time.isoformat(),
-                image_id=image_id,
-                image_name=launchconfigs_image_mapping.get(image_id),
-                instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
-                key_name=launchconfig.key_name,
-                name=name,
-                security_groups=security_groups,
-                in_use=name in scalinggroup_launchconfig_names,
-            ))
-        return dict(results=launchconfigs_array)
+        try:
+            launchconfigs_array = []
+            launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
+            scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+            for launchconfig in self.launch_configs:
+                security_groups = self.get_launchconfig_security_groups(launchconfig)
+                image_id = launchconfig.image_id
+                name=launchconfig.name
+                launchconfigs_array.append(dict(
+                    created_time=launchconfig.created_time.isoformat(),
+                    image_id=image_id,
+                    image_name=launchconfigs_image_mapping.get(image_id),
+                    instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
+                    key_name=launchconfig.key_name,
+                    name=name,
+                    security_groups=security_groups,
+                    in_use=name in scalinggroup_launchconfig_names,
+                ))
+            return dict(results=launchconfigs_array)
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err) # invokes 403 checking
 
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.launch_configs]
@@ -150,9 +157,12 @@ class LaunchConfigView(BaseView):
         super(LaunchConfigView, self).__init__(request)
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.launch_config = self.get_launch_config()
-        self.image = self.get_image()
-        self.security_groups = self.get_security_groups()
+        try:
+            self.launch_config = self.get_launch_config()
+            self.image = self.get_image()
+            self.security_groups = self.get_security_groups()
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err) # invokes 403 checking
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
@@ -178,6 +188,7 @@ class LaunchConfigView(BaseView):
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
             except BotoServerError as err:
+                # TODO: augment BaseView.sendErrorResponse() to allow for message templates like this
                 prefix = _(u'Unable to delete launch configuration')
                 msg = '{0} {1} - {2}'.format(prefix, self.launch_config.name, err.message)
                 queue = Notification.ERROR
@@ -232,7 +243,11 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         super(CreateLaunchConfigView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
-        self.securitygroups = self.get_security_groups()
+        try:
+            self.securitygroups = self.get_security_groups()
+            self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
+        except BotoServerError as err:
+            return self.getJSONErrorResponse(err) # invokes 403 checking
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
@@ -243,7 +258,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_path('images_json')
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
         self.securitygroup_choices_json = json.dumps(dict(self.create_form.securitygroup.choices))
@@ -301,7 +315,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                     instance_monitoring=monitoring_enabled,
                 )
                 autoscale_conn.create_launch_configuration(launch_config=launch_config)
-                time.sleep(2)
                 msg = _(u'Successfully sent create launch configuration request. '
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS

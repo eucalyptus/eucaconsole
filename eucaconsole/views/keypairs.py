@@ -5,7 +5,7 @@ Pyramid views for Eucalyptus and AWS key pairs
 """
 import simplejson as json
 
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -61,7 +61,13 @@ class KeyPairsJsonView(BaseView):
         return dict(results=keypairs)
 
     def get_items(self):
-        return self.conn.get_all_key_pairs() if self.conn else []
+        ret = []
+        try:
+            if self.conn:
+                ret = self.conn.get_all_key_pairs()
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
+        return ret
 
 
 class KeyPairView(BaseView):
@@ -94,7 +100,7 @@ class KeyPairView(BaseView):
         if self.conn:
             try:
                 keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
-            except EC2ResponseError as err:
+            except BotoServerError as err:
                 return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
@@ -112,8 +118,11 @@ class KeyPairView(BaseView):
 
     def get_keypair_names(self):
         keypairs = []
-        if self.conn:
-            keypairs = [k.name for k in self.conn.get_all_key_pairs()]
+        try:
+            if self.conn:
+                keypairs = [k.name for k in self.conn.get_all_key_pairs()]
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         return sorted(set(keypairs))
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
@@ -130,12 +139,9 @@ class KeyPairView(BaseView):
                                   new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                queue = Notification.SUCCESS
-                status = 200
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                status = getattr(err, 'status', 400)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            except BotoServerError as err:
+                self.sendErrorResponse(err)
             if self.request.is_xhr:
                 import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
@@ -143,7 +149,6 @@ class KeyPairView(BaseView):
                 return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
                 location = self.request.route_path('keypair_view', id=name)
-                self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.keypair_form.get_errors_list())
@@ -164,12 +169,10 @@ class KeyPairView(BaseView):
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            except BotoServerError as err:
+                self.sendErrorResponse(err)
             location = self.request.route_path('keypair_view', id=name)
-            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
 
         return self.render_dict
@@ -182,12 +185,9 @@ class KeyPairView(BaseView):
                 self.conn.delete_key_pair(name)
                 prefix = _(u'Successfully deleted keypair')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            except BotoServerError as err:
+                self.sendErrorResponse(err)
             location = self.request.route_path('keypairs')
             return HTTPFound(location=location)
 

@@ -30,24 +30,28 @@ class IAMPolicyWizardView(BaseView):
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
-        self.choices_manager = ChoicesManager(conn=self.ec2_conn)
-        self.render_dict = dict(
-            page_title=self.get_page_title(),
-            create_form=self.create_form,
-            policy_json_endpoint=self.policy_json_endpoint,
-            policy_actions=permissions.POLICY_ACTIONS,
-            controller_options=json.dumps(self.get_controller_options()),
-            resource_choices=dict(
-                instances=self.get_instance_choices(),
-                images=self.get_image_choices(),
-                volumes=self.get_volume_choices(),
-                snapshots=self.get_snapshot_choices(),
-                security_groups=self.get_security_group_choices(),
-                key_pairs=self.get_key_pair_choices(),
-                vm_types=self.get_vm_type_choices(),
-                availability_zones=self.get_availability_zone_choices(),
-            ),
-        )
+        # tend to think a constructor should *not* do stuff that will throw exceptions, but here we are
+        try:
+            self.choices_manager = ChoicesManager(conn=self.ec2_conn)
+            self.render_dict = dict(
+                page_title=self.get_page_title(),
+                create_form=self.create_form,
+                policy_json_endpoint=self.policy_json_endpoint,
+                policy_actions=permissions.POLICY_ACTIONS,
+                controller_options=json.dumps(self.get_controller_options()),
+                resource_choices=dict(
+                    instances=self.get_instance_choices(),
+                    images=self.get_image_choices(),
+                    volumes=self.get_volume_choices(),
+                    snapshots=self.get_snapshot_choices(),
+                    security_groups=self.get_security_group_choices(),
+                    key_pairs=self.get_key_pair_choices(),
+                    vm_types=self.get_vm_type_choices(),
+                    availability_zones=self.get_availability_zone_choices(),
+                ),
+            )
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
     def iam_policy_new(self):
@@ -70,11 +74,9 @@ class IAMPolicyWizardView(BaseView):
                 caller(self.target_name, policy_name, policy_json)
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

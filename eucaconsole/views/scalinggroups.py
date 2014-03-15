@@ -65,18 +65,16 @@ class ScalingGroupsView(LandingPageView):
                 conn = self.get_connection(conn_type='autoscale')
                 scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
+                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 scaling_group.shutdown_instances()
                 time.sleep(3)
                 conn.delete_auto_scaling_group(name)
                 time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -165,8 +163,11 @@ class ScalingGroupView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.policies = self.get_policies(self.scaling_group)
+        try:
+            self.scaling_group = self.get_scaling_group()
+            self.policies = self.get_policies(self.scaling_group)
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -193,12 +194,9 @@ class ScalingGroupView(BaseScalingGroupView):
                 self.update_properties()
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -209,18 +207,16 @@ class ScalingGroupView(BaseScalingGroupView):
             name = self.request.params.get('name')
             try:
                 # Need to shut down instances prior to scaling group deletion
+                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 self.scaling_group.shutdown_instances()
                 time.sleep(3)
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -276,15 +272,11 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             try:
                 self.autoscale_conn.set_instance_health(
                     instance_id, 'Unhealthy', should_respect_grace_period=respect_grace_period)
-                time.sleep(2)
                 prefix = _(u'Successfully marked the following instance as unhealthy:')
                 msg = '{0} {1}'.format(prefix, instance_id)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.markunhealthy_form.get_errors_list()
@@ -298,15 +290,11 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
             try:
                 self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
-                time.sleep(5)
                 prefix = _(u'Successfully sent terminate request for instance')
                 msg = '{0} {1}'.format(prefix, instance_id)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.terminate_form.get_errors_list()
@@ -355,10 +343,13 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.policies = self.get_policies(self.scaling_group)
-        self.alarms = self.get_alarms()
-        self.metrics = self.cloudwatch_conn.list_metrics()
+        try:
+            self.scaling_group = self.get_scaling_group()
+            self.policies = self.get_policies(self.scaling_group)
+            self.alarms = self.get_alarms()
+            self.metrics = self.cloudwatch_conn.list_metrics()
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
@@ -384,12 +375,9 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
                 self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
@@ -402,9 +390,12 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPolicyView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.alarms = self.get_alarms()
-        self.metrics = self.get_metrics()
+        try:
+            self.scaling_group = self.get_scaling_group()
+            self.alarms = self.get_alarms()
+            self.metrics = self.get_metrics()
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.alarm_form = CloudWatchAlarmCreateForm(
@@ -455,12 +446,9 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
                 msg = '{0} {1}'.format(prefix, scaling_policy.name)
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.policy_form.get_errors_list()
@@ -477,9 +465,12 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
         self.request = request
-        self.create_form = ScalingGroupCreateForm(
-            self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-            elb_conn=self.elb_conn, formdata=self.request.params or None)
+        try:
+            self.create_form = ScalingGroupCreateForm(
+                self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
+                elb_conn=self.elb_conn, formdata=self.request.params or None)
+        except BotoServerError as err:
+            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.render_dict = dict(
             create_form=self.create_form,
             avail_zones_placeholder_text=_(u'Select availability zones...')
@@ -511,14 +502,11 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
                 msg += ' {0}'.format(scaling_group.name)
-                queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('scalinggroup_view', id=scaling_group.name)
                 return HTTPFound(location=location)
             except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
+                self.sendErrorResponse(err)
                 location = self.request.route_path('scalinggroups')
                 return HTTPFound(location=location)
         return self.render_dict
