@@ -95,6 +95,13 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     }
                }
             });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+            });
             $(document).on('closed', '[data-reveal]', function () {
                 $('#search-filter').focus();
             });
