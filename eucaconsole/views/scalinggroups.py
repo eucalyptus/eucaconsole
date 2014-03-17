@@ -66,9 +66,8 @@ class ScalingGroupsView(LandingPageView):
                 scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
                 scaling_group.shutdown_instances()
-                time.sleep(3)
+                self.wait_for_instances_to_shutdown(scaling_group)
                 conn.delete_auto_scaling_group(name)
-                time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -79,6 +78,25 @@ class ScalingGroupsView(LandingPageView):
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
+
+    def wait_for_instances_to_shutdown(self, scaling_group):
+        if( scaling_group.instances ):
+            ec2_conn = self.get_connection()
+            instance_ids = [i.instance_id for i in scaling_group.instances]
+            is_all_shutdown = False
+            count = 0
+            while( is_all_shutdown is False and count < 5 ):
+                instances = ec2_conn.get_only_instances(instance_ids)
+                if( instances ):
+                    is_all_shutdown = True
+                    for instance in instances:
+                        print "State: " , instance._state
+                        if str(instance._state).startswith('running') or str(instance._state).startswith('pending'):
+                            is_all_shutdown = False
+                if is_all_shutdown is False:
+                    time.sleep(2)
+                count += 1
+        return
 
     def get_scaling_group_by_name(self, name):
         conn = self.get_connection(conn_type='autoscale')
@@ -210,9 +228,8 @@ class ScalingGroupView(BaseScalingGroupView):
             try:
                 # Need to shut down instances prior to scaling group deletion
                 self.scaling_group.shutdown_instances()
-                time.sleep(3)
+                self.wait_for_instances_to_shutdown()
                 self.autoscale_conn.delete_auto_scaling_group(name)
-                time.sleep(1)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -223,6 +240,24 @@ class ScalingGroupView(BaseScalingGroupView):
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
+
+    def wait_for_instances_to_shutdown(self):
+        if( self.scaling_group.instances ):
+            instance_ids = [i.instance_id for i in self.scaling_group.instances]
+            is_all_shutdown = False
+            count = 0
+            while( is_all_shutdown is False and count < 5 ):
+                instances = self.ec2_conn.get_only_instances(instance_ids)
+                if( instances ):
+                    is_all_shutdown = True
+                    for instance in instances:
+                        print "State: " , instance._state
+                        if str(instance._state).startswith('running') or str(instance._state).startswith('pending'):
+                            is_all_shutdown = False
+                if is_all_shutdown is False:
+                    time.sleep(2)
+                count += 1
+        return
 
     def update_tags(self):
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
