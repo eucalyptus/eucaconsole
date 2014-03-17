@@ -18,7 +18,7 @@ angular.module('VolumesPage', ['LandingPage'])
                 volumeZone = volume['zone'];
             $scope.volumeID = volume['id'];
             if (action === 'detach') {
-                $scope.instanceName = $scope.instanceName = volume['instance_name'];
+                $scope.instanceName = volume['instance_name'];
             }
             if (action === 'attach') {
                 // Set instance choices for attach to instance widget
