@@ -91,8 +91,12 @@ class ScalingGroupsView(LandingPageView):
                 if instances:
                     is_all_shutdown = True
                     for instance in instances:
-                        if not str(instance._state).startswith('terminated'):
-                            is_all_shutdown = False
+                        if self.cloud_type == 'aws':
+                            if not str(instance._state).startswith('terminated'):
+                                is_all_shutdown = False
+                        else:
+                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                                is_all_shutdown = False
                     time.sleep(3)
                 count += 1
         return
@@ -251,8 +255,12 @@ class ScalingGroupView(BaseScalingGroupView):
                 if instances:
                     is_all_shutdown = True
                     for instance in instances:
-                        if not str(instance._state).startswith('terminated'):
-                            is_all_shutdown = False
+                        if self.cloud_type == 'aws':
+                            if not str(instance._state).startswith('terminated'):
+                                is_all_shutdown = False
+                        else:
+                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                                is_all_shutdown = False
                     time.sleep(3)
                 count += 1
         return
