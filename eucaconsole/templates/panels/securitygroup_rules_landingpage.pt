@@ -9,7 +9,8 @@
         </span>
         <br ng-show="!$last" />
         <span style="display: block;" tal:condition="tile_view" ng-show="$last && item.rules.length > 3">
-            <span data-tooltip="" class="label round has-tip ellipsis" title="{{ item.rules.length - 3 }} more rules">...</span>
+            <!--! XSS Heads up!  Don't enable Foundation tooltips below -->
+            <span class="label round has-tip ellipsis" title="{{ item.rules.length - 3 }} more rules">...</span>
         </span>
     </span>
 </span>
