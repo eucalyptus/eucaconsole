@@ -46,6 +46,7 @@ class DeleteScalingGroupMixin(object):
                 count += 1
         return
 
+
 class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
     TEMPLATE = '../templates/scalinggroups/scalinggroups.pt'
 
