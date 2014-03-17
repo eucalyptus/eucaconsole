@@ -264,7 +264,7 @@
                                 <metal:block metal:fill-slot="tableview_headers">
                                     <th i18n:translate="">ACCESS KEY ID</th>
                                     <th i18n:translate="">STATUS</th>
-                                    <th i18n:translate="">ACTIONS</th>
+                                    <th class="actions" i18n:translate="">ACTIONS</th>
                                 </metal:block>
                                 <metal:block metal:fill-slot="tableview_columns">
                                     <td>{{ item.access_key_id }}</td>
