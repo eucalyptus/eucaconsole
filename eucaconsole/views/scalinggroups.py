@@ -24,7 +24,29 @@ from ..models import Notification
 from ..views import LandingPageView, BaseView
 
 
-class ScalingGroupsView(LandingPageView):
+class DeleteScalingGroupMixin(object):
+    def wait_for_instances_to_shutdown(self, scaling_group):
+        if scaling_group.instances:
+            ec2_conn = self.get_connection()
+            instance_ids = [i.instance_id for i in scaling_group.instances]
+            is_all_shutdown = False
+            count = 0
+            while is_all_shutdown is False and count < 30:
+                instances = ec2_conn.get_only_instances(instance_ids)
+                if instances:
+                    is_all_shutdown = True
+                    for instance in instances:
+                        if self.cloud_type == 'aws':
+                            if not str(instance._state).startswith('terminated'):
+                                is_all_shutdown = False
+                        else:
+                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
+                                is_all_shutdown = False
+                    time.sleep(3)
+                count += 1
+        return
+
+class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
     TEMPLATE = '../templates/scalinggroups/scalinggroups.pt'
 
     def __init__(self, request):
@@ -80,26 +102,6 @@ class ScalingGroupsView(LandingPageView):
             return HTTPFound(location=location)
         return self.render_dict
 
-    def wait_for_instances_to_shutdown(self, scaling_group):
-        if scaling_group.instances:
-            ec2_conn = self.get_connection()
-            instance_ids = [i.instance_id for i in scaling_group.instances]
-            is_all_shutdown = False
-            count = 0
-            while is_all_shutdown is False and count < 30:
-                instances = ec2_conn.get_only_instances(instance_ids)
-                if instances:
-                    is_all_shutdown = True
-                    for instance in instances:
-                        if self.cloud_type == 'aws':
-                            if not str(instance._state).startswith('terminated'):
-                                is_all_shutdown = False
-                        else:
-                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
-                                is_all_shutdown = False
-                    time.sleep(3)
-                count += 1
-        return
 
     def get_scaling_group_by_name(self, name):
         conn = self.get_connection(conn_type='autoscale')
@@ -180,7 +182,7 @@ class BaseScalingGroupView(BaseView):
         return tags
 
 
-class ScalingGroupView(BaseScalingGroupView):
+class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     """Views for Scaling Group detail page"""
     TEMPLATE = '../templates/scalinggroups/scalinggroup_view.pt'
 
@@ -231,7 +233,7 @@ class ScalingGroupView(BaseScalingGroupView):
             try:
                 # Need to shut down instances prior to scaling group deletion
                 self.scaling_group.shutdown_instances()
-                self.wait_for_instances_to_shutdown()
+                self.wait_for_instances_to_shutdown(self.scaling_group)
                 time.sleep(3)
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
@@ -244,26 +246,6 @@ class ScalingGroupView(BaseScalingGroupView):
             self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
-
-    def wait_for_instances_to_shutdown(self):
-        if self.scaling_group.instances:
-            instance_ids = [i.instance_id for i in self.scaling_group.instances]
-            is_all_shutdown = False
-            count = 0
-            while is_all_shutdown is False and count < 30:
-                instances = self.ec2_conn.get_only_instances(instance_ids)
-                if instances:
-                    is_all_shutdown = True
-                    for instance in instances:
-                        if self.cloud_type == 'aws':
-                            if not str(instance._state).startswith('terminated'):
-                                is_all_shutdown = False
-                        else:
-                            if not str(instance._state).startswith('terminated') and not str(instance._state).startswith('shutting-down'):
-                                is_all_shutdown = False
-                    time.sleep(3)
-                count += 1
-        return
 
     def update_tags(self):
         updated_tags_list = self.parse_tags_param(scaling_group_name=self.scaling_group.name)
@@ -563,3 +545,5 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 location = self.request.route_path('scalinggroups')
                 return HTTPFound(location=location)
         return self.render_dict
+
+
