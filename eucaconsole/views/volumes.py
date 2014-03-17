@@ -27,15 +27,6 @@ class BaseVolumeView(BaseView):
         super(BaseVolumeView, self).__init__(request)
         self.conn = self.get_connection()
 
-    def get_instance(self, instance_id):
-        if instance_id:
-            try:
-                instances_list = self.conn.get_only_instances(instance_ids=[instance_id])
-                return instances_list[0] if instances_list else None
-            except EC2ResponseError as err:
-                return None
-        return None
-
     def get_volume(self, volume_id=None):
         volume_id = volume_id or self.request.matchdict.get('id')
         if volume_id and volume_id != 'new':
@@ -182,7 +173,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         ]
 
 
-class VolumesJsonView(LandingPageView, BaseVolumeView):
+class VolumesJsonView(LandingPageView):
     def __init__(self, request):
         super(VolumesJsonView, self).__init__(request)
         self.conn = self.get_connection()
@@ -200,12 +191,13 @@ class VolumesJsonView(LandingPageView, BaseVolumeView):
         ignore_params = ['zone']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         snapshots = self.conn.get_all_snapshots() if self.conn else []
+        instances = self.conn.get_only_instances() if self.conn else []
         for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
             instance_name = None
             if volume.attach_data is not None and volume.attach_data.instance_id is not None:
-                instance = self.get_instance(volume.attach_data.instance_id)
+                instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
                 instance_name = TaggedItemView.get_display_name(instance)
             volumes.append(dict(
                 create_time=volume.create_time,

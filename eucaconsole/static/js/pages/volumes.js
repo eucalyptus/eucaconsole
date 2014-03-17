@@ -8,6 +8,7 @@ angular.module('VolumesPage', ['LandingPage'])
     .controller('VolumesCtrl', function ($scope) {
         $scope.volumeID = '';
         $scope.volumeZone = '';
+        $scope.instanceName = '';
         $scope.instancesByZone = '';
         $scope.initPage = function (instancesByZone) {
             $scope.instancesByZone = instancesByZone;
@@ -16,6 +17,9 @@ angular.module('VolumesPage', ['LandingPage'])
             var modal = $('#' + action + '-volume-modal'),
                 volumeZone = volume['zone'];
             $scope.volumeID = volume['id'];
+            if (action === 'detach') {
+                $scope.instanceName = $scope.instanceName = volume['instance_name'];
+            }
             if (action === 'attach') {
                 // Set instance choices for attach to instance widget
                 modal.on('open', function() {
