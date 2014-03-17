@@ -33,7 +33,7 @@
         <div class="row" ng-show="showProgress">
             <br>
             <div class="large-8 columns">
-                Delete in progress <i class="icon"><em><span class="dots">&nbsp;</span></em></i>
+                Delete in progress <em><span class="dots">&nbsp;</span></em>
             </div>
         </div>
         <a href="#" class="close-reveal-modal">&#215;</a>
