@@ -191,7 +191,7 @@ class VolumesJsonView(LandingPageView):
         ignore_params = ['zone']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         snapshots = self.conn.get_all_snapshots() if self.conn else []
-        instances = self.conn.get_only_instances() if self.conn else []
+        instances = self.conn.get_only_instances(filters=filters) if self.conn else []
         for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
