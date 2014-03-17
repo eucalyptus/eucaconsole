@@ -6,7 +6,7 @@
     <div class="columns field">
         <div class="items">
             <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
-                <span title="{{ getSafeTitle(tag) }}" data-tooltip="">
+                <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>
                 <small ng-show="tag.propagate_at_launch" class="propagates">&nbsp;(<small i18n:translate="">propagate</small>)</small>
