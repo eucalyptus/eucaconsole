@@ -82,8 +82,10 @@
             <form action="${request.route_path('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
                 ${structure:markunhealthy_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
-                ${panel('form_field', field=markunhealthy_form['respect_grace_period'],
-                        leftcol_width=6, rightcol_width=6)}
+                <span>&nbsp;</span>
+                ${structure:markunhealthy_form['respect_grace_period']}
+                ${markunhealthy_form.respect_grace_period.label}
+                <div>&nbsp;</div>
                 <div>
                     <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">
                         Yes, Mark Unhealthy
@@ -99,8 +101,7 @@
             <form action="${request.route_path('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
                 ${structure:terminate_form['csrf_token']}
                 <input type="hidden" name="instance_id" value="{{ instanceID }}">
-                ${panel('form_field', field=terminate_form['decrement_capacity'],
-                        leftcol_width=2, rightcol_width=10, reverse='true')}
+                ${panel('form_field', field=terminate_form['decrement_capacity'], leftcol_width=2, rightcol_width=10, reverse='true')}
                 <div>
                     <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">
                         Yes, Terminate
