@@ -125,13 +125,15 @@ class SnapshotsJsonView(LandingPageView):
     def __init__(self, request):
         super(SnapshotsJsonView, self).__init__(request)
         self.conn = self.get_connection()
-        self.volumes = self.get_volumes()
 
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
     def snapshots_json(self):
         snapshots = []
-        for snapshot in self.filter_items(self.get_items()):
-            volume = self.get_volume(snapshot.volume_id)
+        filtered_snapshots = self.filter_items(self.get_items())
+        volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
+        volumes = self.conn.get_all_volumes(volume_ids=volume_ids) if self.conn else []
+        for snapshot in filtered_snapshots:
+            volume = [volume for volume in volumes if volume.id == snapshot.volume_id][0]
             volume_name = TaggedItemView.get_display_name(volume)
             snapshots.append(dict(
                 id=snapshot.id,
@@ -150,15 +152,6 @@ class SnapshotsJsonView(LandingPageView):
 
     def get_items(self):
         return self.conn.get_all_snapshots(owner='self') if self.conn else []
-
-    def get_volumes(self):
-        return self.conn.get_all_volumes() if self.conn else []
-
-    def get_volume(self, volume_id):
-        if volume_id and self.volumes:
-            volumes_list = [volume for volume in self.volumes if volume.id == volume_id]
-            return volumes_list[0] if volumes_list else None
-        return None
 
     @staticmethod
     def is_transitional(snapshot):
