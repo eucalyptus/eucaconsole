@@ -19,6 +19,7 @@ from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
+from . import boto_error_handler
 
 
 class BaseVolumeView(BaseView):
@@ -302,7 +303,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             if snapshot_id:
                 snapshot = self.get_snapshot(snapshot_id)
                 kwargs['snapshot'] = snapshot
-            try:
+            with boto_error_handler(self.request, self.request.route_path('volumes')):
                 volume = self.conn.create_volume(**kwargs)
                 # Add name tag
                 if name:
@@ -315,12 +316,6 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_path('volume_view', id=volume.id)
-                return HTTPFound(location=location)
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_path('volumes')
                 return HTTPFound(location=location)
         else:
             self.request.error_messages = self.volume_form.get_errors_list()

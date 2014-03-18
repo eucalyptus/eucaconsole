@@ -3,15 +3,16 @@
 Core views
 
 """
+from contextlib import contextmanager
 import simplejson as json
 import textwrap
 from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
-from boto.exception import EC2ResponseError, BotoServerError
+from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPException
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -20,6 +21,7 @@ from pyramid.view import notfound_view_config, view_config
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
+from ..models import Notification
 from ..models.auth import ConnectionManager
 
 
@@ -32,6 +34,14 @@ class JSONResponse(Response):
             dict(message=message)
         )
 
+class JSONError(HTTPException):
+    def __init__(self, status=400, message=None, **kwargs):
+        super(JSONError, self).__init__(**kwargs)
+        self.status = status
+        self.content_type = 'application/json'
+        self.body = json.dumps(
+            dict(message=message)
+        )
 
 class BaseView(object):
     """Base class for all views"""
@@ -95,28 +105,6 @@ class BaseView(object):
         """Empty Beaker cache to clear connection objects"""
         for _cache in cache_managers.values():
             _cache.clear()
-
-    @classmethod
-    def handle_403_error(cls, exc, request=None):
-        """Handle session timeout by redirecting to login page with notice.
-           exc is usually a boto.exception.EC2ResponseError exception
-        """
-        status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
-        message = exc.message
-        if request.is_xhr:
-            return JSONResponse(status=status, message=message)
-        if status in [403]:
-            if any(['Invalid access key' in message, 'Invalid security token' in message]):
-                notice = message
-            else:
-                notice = _(u'Your session has timed out')
-            request.session.flash(notice, queue='warning')
-            # Empty Beaker cache to clear connection objects
-            cls.invalidate_cache()
-            location = request.route_path('login')
-            return HTTPFound(location=location)
-        return HTTPForbidden()
-
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -313,17 +301,39 @@ def notfound_view(request):
     """404 Not Found view"""
     return dict()
 
-
-@view_config(context=EC2ResponseError, permission=NO_PERMISSION_REQUIRED)
-def ec2conn_error(exc, request):
-    """Handle session timeout by redirecting to login page with notice."""
-    return BaseView.handle_403_error(exc, request=request)
-
-
 @view_config(context=BotoServerError, permission=NO_PERMISSION_REQUIRED)
-def autoscale_error(exc, request):
-    """Handle autoscale connection session timeout by redirecting to login page with notice."""
-    return BaseView.handle_403_error(exc, request=request)
+def conn_error(exc, request):
+    """Handle session timeout by redirecting to login page with notice."""
+    return BaseView.handle_error(exc, request=request)
+
+@contextmanager
+def boto_error_handler(request, location=None):
+    try:
+        yield
+    except BotoServerError as err:
+        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
+        message = err.reason;
+        if err.error_message is not None:
+            message = err.error_message;
+            if 'because of:' in message:
+                message = message[message.index("because of:")+11:];
+            if 'RelatesTo Error:' in message:
+                message = message[message.index("RelatesTo Error:")+16:];
+        if request.is_xhr:
+            raise JSONError(message=message)
+        if status == 403:
+            if any(['Invalid access key' in message, 'Invalid security token' in message]):
+                notice = message
+            else:
+                notice = _(u'Your session has timed out')
+            request.session.flash(notice, queue=Notification.WARNING)
+            # Empty Beaker cache to clear connection objects
+            for _cache in cache_managers.values():
+                _cache.clear()
+            raise HTTPFound(location=request.route_path('login'))
+        request.session.flash(message, queue=Notification.ERROR)
+        raise HTTPFound(location)
+    
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
