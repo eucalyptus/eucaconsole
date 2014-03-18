@@ -59,19 +59,14 @@ class DashboardJsonView(BaseView):
             elasticips_count = len(ec2_conn.get_all_addresses())
 
             # IAM counts
+            users_count = 0
+            groups_count = 0
             session = self.request.session
-            try:
-                username = session['username']
-                if username == 'admin':
+            if session['cloud_type'] == 'euca':
+                if session['username'] == 'admin':
                     iam_conn = self.get_connection(conn_type="iam")
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
-                else:
-                    users_count = 0
-                    groups_count = 0
-            except KeyError:
-                users_count = 0
-                groups_count = 0
 
             return dict(
                 instance_total=instances_total_count,
