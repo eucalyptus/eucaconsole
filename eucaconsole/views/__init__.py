@@ -173,19 +173,13 @@ class BlockDeviceMappingItemView(BaseView):
     def get_image(self):
         from eucaconsole.views.images import ImageView
         image_id = self.request.params.get('image_id')
-        image = None
         if self.conn and image_id:
-            try:
+            with boto_error_handler(self.request):
                 image = self.conn.get_image(image_id)
-            except BotoServerError as err:
-                if err.status in [400, 404]:
-                    raise HTTPNotFound()
-                if err.statis in [403]:
-                    BaseView.handle_403_error(err, request=self.request)
-            if image:
-                platform = ImageView.get_platform(image)
-                image.platform_name = ImageView.get_platform_name(platform)
-            return image
+                if image:
+                    platform = ImageView.get_platform(image)
+                    image.platform_name = ImageView.get_platform_name(platform)
+                return image
         return None
 
     def get_owner_choices(self):
