@@ -7,8 +7,10 @@
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Reboot instance</h3>
             <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
-            <p><span i18n:translate="">Are you sure you want to reboot instance</span>
-               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+            <p>
+                <span i18n:translate="">Are you sure you want to reboot</span>
+                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
             </p>
             <form method="post" action="${action}" id="reboot-form">
                 ${structure:reboot_form['csrf_token']}
@@ -28,8 +30,10 @@
                          detailpage_action request.route_path('instance_start', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Start instance</h3>
-            <p><span i18n:translate="">Are you sure you want to start instance</span>
-               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+            <p>
+                <span i18n:translate="">Are you sure you want to start</span>
+                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
             </p>
             <form method="post" action="${action}" id="start-form">
                 ${structure:start_form['csrf_token']}
@@ -49,8 +53,10 @@
                          detailpage_action request.route_path('instance_stop', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Stop instance</h3>
-            <p><span i18n:translate="">Are you sure you want to stop instance</span>
-               <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+            <p>
+                <span i18n:translate="">Are you sure you want to stop</span>
+                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
             </p>
             <form method="post" action="${action}" id="stop-form">
                 ${structure:stop_form['csrf_token']}
@@ -79,8 +85,9 @@
             </div>
             <div>
                 <p>
-                    <span i18n:translate="">Are you sure you want to terminate instance</span>
-                    <b>${instance.id if instance else '{{ instanceID }}'}</b>?
+                    <span i18n:translate="">Are you sure you want to terminate</span>
+                    <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                    <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
                 </p>
             </div>
             <form method="post" action="${action}" id="terminate-form">
@@ -100,7 +107,7 @@
             <h3 class="pagetitle">
             <strong i18n:translate="">Console output for instance:</strong>
             <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
-            <em tal:condition="landingpage">{{ instance_name }}</em>
+            <em tal:condition="landingpage">{{ instanceName }}</em>
         </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -109,7 +116,7 @@
         <h3 class="pagetitle">
             <strong i18n:translate="">Connect to instance:</strong>
             <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
-            <em tal:condition="landingpage">{{ instance_name }}</em>
+            <em tal:condition="landingpage">{{ instanceName }}</em>
         </h3>
             <div ng-show="!(platform == 'windows')">
                 <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
