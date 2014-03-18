@@ -209,14 +209,14 @@
                             <div tal:condition="image" class="small-8 columns value">${image.kernel_id}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
-                            ${panel('form_field', field=instance_form.kernel, ng_attrs={'disabled':'isNotStopped'})}
+                            ${panel('form_field', field=instance_form.kernel)}
                         </div>
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">RAM disk ID (ramfs)</label></div>
                             <div tal:condition="image" class="small-8 columns value">${image.ramdisk_id}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
-                            ${panel('form_field', field=instance_form.ramdisk, ng_attrs={'disabled':'isNotStopped'})}
+                            ${panel('form_field', field=instance_form.ramdisk)}
                         </div>
                     </div
                     <hr />
