@@ -27,8 +27,15 @@
             ${structure:delete_form['csrf_token']}
             <input tal:condition="scaling_group" type="hidden" name="name" value="${scaling_group.name}">
             <input tal:condition="not scaling_group" type="hidden" name="name" value="{{ scalinggroupName }}">
-            <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
+            <button type="submit" class="button expand" i18n:translate="" 
+                ng-model="showProgress" ng-init="showProgress=false" ng-click="showProgress=true">Yes, Delete</button>
         </form>
+        <div class="row" ng-show="showProgress">
+            <br>
+            <div class="large-8 columns">
+                Delete in progress <em><span class="dots">&nbsp;</span></em>
+            </div>
+        </div>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <!--! /end modal dialogs -->

@@ -40,7 +40,7 @@ angular.module('ImagePicker', [])
                 clearLink = form.find('.clear-link');
             submitBtn.on('click', function (evt) {
                 evt.preventDefault();
-                var architecture, ownerAlias, platform, rootDeviceType;
+                var architecture, ownerAlias, platform, rootDeviceType, tags;
                 var params = {};
                 platform = form.find('#platform').val();
                 if ($scope.cloudType === 'euca') {
@@ -51,9 +51,11 @@ angular.module('ImagePicker', [])
                 ownerAlias = form.find('#owner_alias').val();
                 rootDeviceType = form.find('#root_device_type').val();
                 architecture = form.find('#architecture').val();
+                tags = form.find('#tags').val();
                 if (ownerAlias) { params['owner_alias'] = ownerAlias; }
                 if (rootDeviceType) { params['root_device_type'] = rootDeviceType; }
                 if (architecture) { params['architecture'] = architecture; }
+                if (tags) { params['tags'] = tags; }
                 $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "?" + $.param(params, true));
                 $scope.getItems();
             });

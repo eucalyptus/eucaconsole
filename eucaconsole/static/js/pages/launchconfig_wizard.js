@@ -27,8 +27,26 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
+            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
+            $scope.keyPairChoices = JSON.parse(keyPairChoices);
+            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
+            $scope.setInitialValues();
+            $scope.preventFormSubmitOnEnter();
+            $scope.setFocus();
+            $scope.updateSelectedSecurityGroupRules();
+        };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
+        $scope.preventFormSubmitOnEnter = function () {
+            $(document).ready(function () {
+                $(window).keydown(function(evt) {
+                    if (evt.keyCode === 13) {
+                        evt.preventDefault();
+                    }
+                });
+            });
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -46,14 +64,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.keyPair = $scope.keyPairSelected;
             if( $scope.securityGroupSelected != '' )
                 $scope.securityGroup = $scope.securityGroupSelected;
-        };
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
-            $scope.setInitialValues();
-            $scope.setFocus();
-            $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
-            $scope.updateSelectedSecurityGroupRules();
-            $scope.keyPairChoices = JSON.parse(keyPairChoices);
-            $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {

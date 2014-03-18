@@ -13,14 +13,13 @@ from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPException
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPException
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
-from ..forms import GenerateFileForm
 from ..forms.login import EucaLogoutForm
 from ..models import Notification
 from ..models.auth import ConnectionManager
@@ -169,12 +168,20 @@ class BlockDeviceMappingItemView(BaseView):
     def __init__(self, request):
         super(BlockDeviceMappingItemView, self).__init__(request)
         self.conn = self.get_connection()
+        self.request = request
 
     def get_image(self):
         from eucaconsole.views.images import ImageView
         image_id = self.request.params.get('image_id')
+        image = None
         if self.conn and image_id:
-            image = self.conn.get_image(image_id)
+            try:
+                image = self.conn.get_image(image_id)
+            except BotoServerError as err:
+                if err.status in [400, 404]:
+                    raise HTTPNotFound()
+                if err.statis in [403]:
+                    BaseView.handle_403_error(err, request=self.request)
             if image:
                 platform = ImageView.get_platform(image)
                 image.platform_name = ImageView.get_platform_name(platform)

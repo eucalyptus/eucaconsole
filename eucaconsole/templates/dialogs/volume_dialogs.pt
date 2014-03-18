@@ -36,17 +36,15 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Detach volume</h3>
         <p>
-          <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.
-          </span>
+            <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.</span>
         </p>
         <p>
-          <span i18n:translate="">
-              Are you sure you want to detach volume 
-              <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
-              <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
-              from instance
-          </span>
-          <strong ng-non-bindable="">${instance_name}</strong>?
+            <span i18n:translate="">Are you sure you want to detach volume</span>
+            <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
+            <span tal:condition="not volume"><b>{{ volumeID }}</b></span>
+            <span i18n:translate="">from instance</span>
+            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong><strong
+                tal:condition="landingpage">{{ instanceName }}</strong>?
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
@@ -55,9 +53,7 @@
             </div>
             <div>&nbsp;</div>
             <div class="row">
-                <div>
-                    <input type="submit" class="button expand" value="Yes, Detach Volume" i18n:attributes="value" />
-                </div>
+                <input type="submit" class="button expand" value="Yes, Detach Volume" i18n:attributes="value" />
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>

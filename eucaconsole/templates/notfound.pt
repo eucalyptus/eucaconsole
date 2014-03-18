@@ -1,6 +1,5 @@
 <metal:block use-macro="main_template">
 
-
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap">
         <div>&nbsp;</div>
