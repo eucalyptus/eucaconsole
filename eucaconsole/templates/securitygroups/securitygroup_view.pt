@@ -11,7 +11,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="SecurityGroupPage">
+    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('securitygroups')}" i18n:translate="">Security groups</a></li>
@@ -49,7 +49,7 @@
                     ${structure:securitygroup_form['csrf_token']}
                     <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9, autofocus='')}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
@@ -98,10 +98,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script>
-        angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
-        $('input#name').focus();
-    </script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/securitygroup.js')}"></script>
 </div>
 
 </metal:block>
