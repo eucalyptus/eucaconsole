@@ -190,8 +190,11 @@ class VolumesJsonView(LandingPageView):
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
-        snapshots = self.conn.get_all_snapshots() if self.conn else []
-        instances = self.conn.get_only_instances(filters=filters) if self.conn else []
+        instance_ids = list(set([
+            vol.attach_data.instance_id for vol in filtered_items if vol.attach_data.instance_id is not None]))
+        volume_ids = [volume.id for volume in filtered_items]
+        snapshots = self.conn.get_all_snapshots(filters={'volume-id': volume_ids}) if self.conn else []
+        instances = self.conn.get_only_instances(instance_ids=instance_ids) if self.conn else []
         for volume in filtered_items:
             status = volume.status
             attach_status = volume.attach_data.status
