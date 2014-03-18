@@ -13,7 +13,7 @@ from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPException
+from pyramid.httpexceptions import HTTPFound, HTTPException
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -34,6 +34,7 @@ class JSONResponse(Response):
             dict(message=message)
         )
 
+
 class JSONError(HTTPException):
     def __init__(self, status=400, message=None, **kwargs):
         super(JSONError, self).__init__(**kwargs)
@@ -42,6 +43,7 @@ class JSONError(HTTPException):
         self.body = json.dumps(
             dict(message=message)
         )
+
 
 class BaseView(object):
     """Base class for all views"""
@@ -105,6 +107,37 @@ class BaseView(object):
         """Empty Beaker cache to clear connection objects"""
         for _cache in cache_managers.values():
             _cache.clear()
+
+    @staticmethod
+    def handle_error(err=None, request=None, location=None, template="{0}"):
+        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
+        message = template.format(err.reason)
+        logging.error("Error encountered: " + message)
+        if err.error_message is not None:
+            message = err.error_message
+            if 'because of:' in message:
+                message = message[message.index("because of:")+11:]
+            if 'RelatesTo Error:' in message:
+                message = message[message.index("RelatesTo Error:")+16:]
+            # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
+            # this logic found in volumes.js
+        if request.is_xhr:
+            raise JSONError(message=message)
+        if status == 403:
+            if any(['Invalid access key' in message, 'Invalid security token' in message]):
+                notice = message
+            else:
+                notice = _(u'Your session has timed out')
+            request.session.flash(notice, queue=Notification.WARNING)
+            # Empty Beaker cache to clear connection objects
+            for _cache in cache_managers.values():
+                _cache.clear()
+            raise HTTPFound(location=request.route_path('login'))
+        request.session.flash(message, queue=Notification.ERROR)
+        if location is None:
+            location = request.current_route_url()
+        raise HTTPFound(location)
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -303,44 +336,20 @@ def notfound_view(request):
     """404 Not Found view"""
     return dict()
 
+
 @view_config(context=BotoServerError, permission=NO_PERMISSION_REQUIRED)
 def conn_error(exc, request):
-    """Handle session timeout by redirecting to login page with notice."""
-    return BaseView.handle_error(exc, request=request)
+    """Generic handler for BotoServerError exceptions"""
+    return BaseView.handle_error(err=exc, request=request)
+
 
 @contextmanager
 def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
     except BotoServerError as err:
-        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
-        message = template.format(err.reason);
-        logging.error("Error encountered: " + message)
-        if err.error_message is not None:
-            message = err.error_message;
-            if 'because of:' in message:
-                message = message[message.index("because of:")+11:];
-            if 'RelatesTo Error:' in message:
-                message = message[message.index("RelatesTo Error:")+16:];
-            # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
-            # this logic found in volumes.js
-        if request.is_xhr:
-            raise JSONError(message=message)
-        if status == 403:
-            if any(['Invalid access key' in message, 'Invalid security token' in message]):
-                notice = message
-            else:
-                notice = _(u'Your session has timed out')
-            request.session.flash(notice, queue=Notification.WARNING)
-            # Empty Beaker cache to clear connection objects
-            for _cache in cache_managers.values():
-                _cache.clear()
-            raise HTTPFound(location=request.route_path('login'))
-        request.session.flash(message, queue=Notification.ERROR)
-        if location is None:
-            location = request.current_route_url()
-        raise HTTPFound(location)
-    
+        BaseView.handle_error(err=err, request=request, location=location, template=template)
+
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
