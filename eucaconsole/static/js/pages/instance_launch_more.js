@@ -16,12 +16,8 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
         $scope.setInitialValues = function () {
             $('#number').val($scope.instanceNumber);
         };
-        $scope.setFocus = function () {
-            $('#number').focus();
-        };
         $scope.initController = function () {
             $scope.setInitialValues();
-            $scope.setFocus();
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
