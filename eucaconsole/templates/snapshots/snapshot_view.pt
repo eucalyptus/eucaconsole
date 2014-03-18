@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
-                        ${panel('form_field', field=snapshot_form['name'], **html_attrs)}
+                        ${panel('form_field', field=snapshot_form['name'], autofocus='', **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
