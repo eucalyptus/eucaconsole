@@ -44,6 +44,7 @@ angular.module('UserNew', ['UserEditor'])
             $scope.allUsersRedirect = allRedirect;
             $scope.singleUserRedirect = singleRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
+            $scope.setFocus();
         }
         $scope.submit = function($event) {
             var form = $($event.target);
@@ -82,6 +83,9 @@ angular.module('UserNew', ['UserEditor'])
                 }
                 Notify.failure(errorMsg);
             });
+        };
+        $scope.setFocus = function () {
+            $('input.name').focus();
         };
     })
 ;
