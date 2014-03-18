@@ -100,6 +100,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script>
         angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
+        $('input#name').focus();
     </script>
 </div>
 
