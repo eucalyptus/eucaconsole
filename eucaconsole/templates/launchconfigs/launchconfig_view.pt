@@ -1,7 +1,7 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="">
+    <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
@@ -117,6 +117,10 @@
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', launch_config=launch_config, in_use=in_use, delete_form=delete_form)}
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/launchconfig.js')}"></script>
 </div>
 
 </metal:block>

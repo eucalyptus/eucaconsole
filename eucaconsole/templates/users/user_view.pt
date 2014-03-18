@@ -7,7 +7,7 @@
 </div>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl">
+    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
@@ -121,7 +121,7 @@
                         <div id="policy-view-modal" class="reveal-modal medium" data-reveal="">
                             <h3 i18n:translate="">{{ policyName }} policy</h3>
                             <textarea id="group-policy-area" class="policy-area" ng-model="policyJson" readonly='readonly'></textarea>
-                            <a class="close-reveal-modal">&#215;</a>
+                            <a href="" class="close-reveal-modal">&#215;</a>
                         </div>
                     </div>
                     <hr/>
@@ -218,7 +218,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <a class="close-reveal-modal">&#215;</a>
+                            <a href="" class="close-reveal-modal">&#215;</a>
                         </div>
                         <div id="change-password-modal" class="reveal-modal small" data-reveal="">
                             <h3 i18n:translate="">Change password</h3>
@@ -239,7 +239,7 @@
                                     </div>
                                 </div>
                             </form>
-                            <a class="close-reveal-modal">&#215;</a>
+                            <a href="" class="close-reveal-modal">&#215;</a>
                         </div>
                     </div>
                     <hr id="access-keys-section"/>
@@ -304,7 +304,7 @@
                                             </div>
                                         </div>
                                     </form>
-                                    <a class="close-reveal-modal">&#215;</a>
+                                    <a href="" class="close-reveal-modal">&#215;</a>
                                 </div>
                             </div>
                         </div>
@@ -360,7 +360,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

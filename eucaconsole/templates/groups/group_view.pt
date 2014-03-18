@@ -47,7 +47,7 @@
                         ${structure:group_form['csrf_token']}
                         <div class="section">
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, **html_attrs)}
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             </div>
                         </div>
                         <hr />
@@ -168,7 +168,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="close-reveal-modal">&#215;</a>
+                <a href="" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

@@ -27,14 +27,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.currentStepIndex = 1;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
-            $scope.setFocus();
             $scope.updateSelectedSecurityGroupRules();
+            $scope.setWatcher();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
@@ -64,18 +65,32 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.keyPair = $scope.keyPairSelected;
             if( $scope.securityGroupSelected != '' )
                 $scope.securityGroup = $scope.securityGroupSelected;
+            if( $scope.imageID == '' ){
+                $scope.currentStepIndex = 1;
+            }else{
+                $scope.currentStepIndex = 2;
+            }
         };
-        $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
-                var modal = $(this);
-                var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
-                if (!!inputElement) {
-                    inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
-                }
+        $scope.setWatcher = function (){
+            $scope.$watch('currentStepIndex', function(){
+                 $scope.setWizardFocus($scope.currentStepIndex);
             });
+        };
+        $scope.setWizardFocus = function (stepIdx) {
+            var modal = $('div').filter("#step" + stepIdx);
+            var inputElement = modal.find('input[type!=hidden]').get(0);
+            var textareaElement = modal.find('textarea[class!=hidden]').get(0);
+            var selectElement = modal.find('select').get(0);
+            var modalButton = modal.find('button').get(0);
+            if (!!textareaElement){
+                textareaElement.focus();
+            } else if (!!inputElement) {
+                inputElement.focus();
+            } else if (!!selectElement) {
+                selectElement.focus();
+            } else if (!!modalButton) {
+                modalButton.focus();
+            }
         };
         $scope.inputImageID = function (url) {
             url += '?image_id=' + $scope.imageID;
@@ -96,6 +111,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $('#tabStep' + nextStep).click();
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+            $scope.currentStepIndex = nextStep;
         };
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();

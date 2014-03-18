@@ -54,7 +54,30 @@ angular.module('UserView', ['PolicyList'])
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             })
         };
-        $scope.setDropdownMenusListener();
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var modalID = $(this).attr('id');
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                    var closeMark = modal.find('.close-reveal-modal');
+                    if(!!closeMark){
+                        closeMark.focus();
+                    }
+                }else{
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    var modalButton = modal.find('button').get(0);
+                    if (!!inputElement) {
+                        inputElement.focus();
+                    } else if (!!modalButton) {
+                        modalButton.focus();
+                    }
+               }
+            });
+        };
+        $scope.initController = function() {
+            $scope.setFocus();
+            $scope.setDropdownMenusListener();
+        };
     })
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

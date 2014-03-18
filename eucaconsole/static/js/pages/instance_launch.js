@@ -27,6 +27,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.currentStepIndex = 1;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
@@ -36,7 +37,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.preventFormSubmitOnEnter();
             $scope.watchTags();
             $scope.focusEnterImageID();
-            $scope.setFocus();
+            $scope.setWatcher();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
@@ -57,6 +58,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
+            if( $scope.imageID == '' ){
+                $scope.currentStepIndex = 1;
+            }else{
+                $scope.currentStepIndex = 2;
+            }
         };
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
@@ -76,6 +82,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
+        $scope.setWatcher = function (){
+            $scope.setDialogFocus();
+            $scope.$watch('currentStepIndex', function(){
+                 $scope.setWizardFocus($scope.currentStepIndex);
+            });
+        };
         $scope.focusEnterImageID = function () {
             // Focus on "Enter Image ID" field if passed appropriate URL param
             if ($scope.urlParams['input_image_id']) {
@@ -86,17 +98,58 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.setFocus = function () {
+        $scope.setDialogFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
-                var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
-                if (!!inputElement) {
-                    inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
+                modal.find('div.error').removeClass('error');
+                var modalID = $(this).attr('id');
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                    var closeMark = modal.find('.close-reveal-modal');
+                    if(!!closeMark){
+                        closeMark.focus();
+                    }
+                }else{
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    var modalButton = modal.find('button').get(0);
+                    if (!!inputElement) {
+                        inputElement.focus();
+                    } else if (!!modalButton) {
+                        modalButton.focus();
+                    }
+               }
+            });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                var chosenSelect = modal.find('select');
+                if (chosenSelect.length > 0) {
+                    chosenSelect.chosen('destroy');
+                    chosenSelect.prop('selectedIndex', 0);
+                    chosenSelect.chosen();
                 }
             });
+            $(document).on('closed', '[data-reveal]', function () {
+                $scope.setWizardFocus($scope.currentStepIndex);
+            });
+        };
+        $scope.setWizardFocus = function (stepIdx) {
+            var modal = $('div').filter("#step" + stepIdx);
+            var inputElement = modal.find('input[type!=hidden]').get(0);
+            var textareaElement = modal.find('textarea[class!=hidden]').get(0);
+            var selectElement = modal.find('select').get(0);
+            var modalButton = modal.find('button').get(0);
+            if (!!textareaElement){
+                textareaElement.focus();
+            } else if (!!inputElement) {
+                inputElement.focus();
+            } else if (!!selectElement) {
+                selectElement.focus();
+            } else if (!!modalButton) {
+                modalButton.focus();
+            }
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -113,6 +166,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#tabStep' + nextStep).click();
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+            $scope.currentStepIndex = nextStep;
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])

@@ -1,27 +1,17 @@
 /**
- * @fileOverview Keypair Detaile Page JS
+ * @fileOverview ElasticIP Detail Page JS
  * @requires AngularJS
  *
  */
 
-angular.module('KeypairPage', [])
-    .controller('KeypairPageCtrl', function ($scope) {
+angular.module('ElasticIPPage', [])
+    .controller('ElasticIPPageCtrl', function ($scope) {
         $scope.initController = function () {
-            $scope.setWatch();
+            $scope.activateWidget();
             $scope.setFocus();
         };
-        $scope.setWatch = function () {
-            // JAVASCRIPT SNIPPET TAKEN FROM 3.4.1 TO ADD A LISTENER TO THE FILE UPLOAD INPUTBOX
-            $('#key-import-file').on('change', function(evt) {
-                var file = evt.target.files[0];
-                var reader = new FileReader();
-                reader.onloadend = function(evt) {
-                    if (evt.target.readyState == FileReader.DONE) {
-                        $('#key-import-contents').val(evt.target.result).trigger('keyup');
-                    }
-                }
-                reader.readAsText(file);
-            });
+        $scope.activateWidget = function () {
+            $('#instance_id').chosen({'width': '80%'});
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {

@@ -16,6 +16,7 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
+            $('input#name').focus();
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);
@@ -25,6 +26,9 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
                 } else if (!!modalButton) {
                     modalButton.focus();
                 }
+            });
+            $(document).on('closed', '[data-reveal]', function () {
+                $('input#name').focus();
             });
         };
     })

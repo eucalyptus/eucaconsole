@@ -23,22 +23,15 @@
         <div class="row userentry controls-wrapper">
             <div>
                 <div class="small-12 columns">
-                    <input class="userinput name" placeholder="name..." ng-model="newUserName" ng-keypress="keyListener($event)"/>
+                    <input class="userinput name" placeholder="name..." autofocus=""
+                           ng-model="newUserName" ng-keypress="keyListener($event)" />
                     <small class="error" i18n:translate="">Must have at least one user</small>
                 </div>
-                <!--
-                <div class="small-8 columns">
-                    <input class="userinput email" placeholder="e-mail..."/>
-                    <small class="error" i18n:translate="">What??</small>
-                </div>
-                -->
             </div>
             <div>&nbsp;</div>
-            <div>
-                <div class="columns">
-                    <a href="#" ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
-                       title="Add user" i18n:translate="">Add User</a>
-                
+            <div class="columns">
+                <a href="#" ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
+                   title="Add user" i18n:translate="">Add User</a>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view users data posted by form -->
