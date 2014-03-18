@@ -56,6 +56,7 @@ angular.module('VolumePage', ['TagEditor'])
             if (jsonEndpoint) {
                 $scope.getVolumeState();
             }
+            $scope.setFocus();
         };
         $scope.getVolumeState = function () {
             $http.get($scope.volumeStatusEndpoint).success(function(oData) {
@@ -80,6 +81,9 @@ angular.module('VolumePage', ['TagEditor'])
                     $('input#device').val(results);
                 }
             });
+        };
+        $scope.setFocus = function () {
+            $('input#name').focus();
         };
     })
 ;
