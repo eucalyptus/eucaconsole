@@ -23,6 +23,7 @@ from pyramid.view import view_config
 from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
+from . import boto_error_handler
 
 
 class PasswordGeneration(object):
@@ -622,13 +623,11 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         policy = str(self.request.matchdict.get('policy'))
-        try:
+        with boto_error_handler(self.request):
             policy_text = self.request.params.get('policy_text')
             result = self.conn.put_user_policy(
                 user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated user policy"), results=result)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
     def user_delete_policy(self):
