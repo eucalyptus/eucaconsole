@@ -4,9 +4,7 @@ Pyramid views for Eucalyptus and AWS security groups
 
 """
 import simplejson as json
-import time
 
-from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config

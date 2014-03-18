@@ -3,8 +3,6 @@
 Pyramid views for Eucalyptus and AWS volumes
 
 """
-import time
-
 from dateutil import parser
 import simplejson as json
 
@@ -16,7 +14,8 @@ from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.volumes import (
-    VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
+    VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
+    RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 from . import boto_error_handler
@@ -51,7 +50,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         try:
             self.instances = self.get_instances_by_state(self.conn.get_only_instances() if self.conn else [], "running")
         except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
+            response = self.getJSONErrorResponse(err) # FIXME: Broken reference
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -126,7 +125,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
-
 
     @staticmethod
     def get_instances_by_zone(instances):

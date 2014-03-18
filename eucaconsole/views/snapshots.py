@@ -5,7 +5,6 @@ Pyramid views for Eucalyptus and AWS snapshots
 """
 from dateutil import parser
 import simplejson as json
-import time
 
 from boto.exception import BotoServerError
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
@@ -359,4 +358,3 @@ class SnapshotStateView(BaseView):
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
         return None
-

@@ -20,7 +20,8 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
+from ..forms.users import (
+    UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm)
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
@@ -409,7 +410,7 @@ class UserView(BaseView):
             if new_name == self.user.user_name:
                 new_name = None
             result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
-            self.user.path = path;
+            self.user.path = path
             if self.user.user_name != new_name:
                 pass # TODO: need to force view refresh if name changes
             return dict(message=_(u"Successfully updated user information"),
@@ -445,18 +446,18 @@ class UserView(BaseView):
             csv_w = csv.writer(string_output)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
-                        'text/csv', string_output.getvalue())
+            self._store_file_("{acct}-{user}-login.csv".format(
+                acct=account, user=self.user.user_name), 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully set user password"), results="true")
         except BotoServerError as err:  # catch error in password change
             # TODO: Leverage common error code, if only to extract message
-            return self.getJSONErrorResponse(err)
+            return self.getJSONErrorResponse(err)  # FIXME: Broken reference
         except HTTPError, err:          # catch error in authentication
             if err.msg == 'Unauthorized':
                 err.msg = _(u"The password you entered is incorrect.")
-            return JSONResponse(status=401, message=err.msg);
+            return JSONResponse(status=401, message=err.msg)
         except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
+            return JSONResponse(status=401, message=err.msg)
 
     @view_config(route_name='user_random_password', request_method='POST', renderer='json')
     def user_random_password(self):

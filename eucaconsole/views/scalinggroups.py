@@ -9,11 +9,9 @@ import time
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..forms.alarms import CloudWatchAlarmCreateForm

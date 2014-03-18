@@ -79,7 +79,8 @@ class KeyPairView(BaseView):
         self.keypair = self.get_keypair()
         self.keypair_route_id = self.request.matchdict.get('id')
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
-        self.keypair_import_form = KeyPairImportForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
+        self.keypair_import_form = KeyPairImportForm(
+            self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,

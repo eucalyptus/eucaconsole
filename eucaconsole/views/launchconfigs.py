@@ -7,12 +7,10 @@ import re
 import simplejson as json
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-import time
 
 from ..forms import GenerateFileForm
 from ..forms.images import ImagesFiltersForm
@@ -276,7 +274,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             autoscale_conn = self.get_connection(conn_type='autoscale')
             location = self.request.route_path('launchconfigs')
             image_id = self.image.id
-            name=self.request.params.get('name')
+            name = self.request.params.get('name')
             key_name = self.request.params.get('keypair')
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names

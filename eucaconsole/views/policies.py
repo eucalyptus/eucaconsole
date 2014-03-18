@@ -5,7 +5,6 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -203,5 +202,3 @@ class IAMPolicyWizardJsonView(BaseView):
         if policy_dict:
             return dict(policy=policy_dict)
         return JSONResponse(status=404, message=_(u'Unable to locate policy'))
-
-
