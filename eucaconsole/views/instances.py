@@ -7,7 +7,6 @@ import base64
 from dateutil import parser
 from operator import attrgetter
 import simplejson as json
-import time
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
@@ -177,7 +176,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         else:
             msg = _(u'Unable to reboot instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
-        self.request.session.flash(msg, queue=queue)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_terminate', request_method='POST')
@@ -426,8 +424,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 string_to_decrypt = base64.b64decode(passwd_data)
                 ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
                 return dict(results=dict(instance=instance_id, password=ret))
-            except RSA.RSAError as err: # likely, bad key
-                return JSONResponse(status=400, message=_(u"There was a problem with the key, please try again, verifying the correct private key is used."));
+            except RSA.RSAError as err:  # likely, bad key
+                return JSONResponse(status=400, message=_(
+                    u"There was a problem with the key, please try again, verifying the correct private key is used."))
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
