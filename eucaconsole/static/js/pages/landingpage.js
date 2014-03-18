@@ -95,6 +95,19 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     }
                }
             });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                var chosenSelect = modal.find('select');
+                if (chosenSelect.length > 0) {
+                    chosenSelect.chosen('destroy');
+                    chosenSelect.prop('selectedIndex', 0);
+                    chosenSelect.chosen();
+                }
+            });
             $(document).on('closed', '[data-reveal]', function () {
                 $('#search-filter').focus();
             });
