@@ -28,6 +28,7 @@ angular.module('IAMPolicyWizard', [])
                 $scope.initChosenSelectors();
                 $scope.addResourceTypeListener();
             }
+            $scope.setFocus();
         };
         $scope.initSelectedTab = function () {
             var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
@@ -316,6 +317,9 @@ angular.module('IAMPolicyWizard', [])
             if (EC2_NUMERIC_KEYS.indexOf(conditionKey) !== -1) { return 'NUMERIC'; }
 
             return '';
+        };
+        $scope.setFocus = function () {
+            $('input#name').focus();
         };
     })
 ;
