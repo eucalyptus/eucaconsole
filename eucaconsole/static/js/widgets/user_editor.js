@@ -31,6 +31,7 @@ angular.module('UserEditor', [])
         };
         $scope.addUser = function ($event) {
             $event.preventDefault();
+            $(".error").css("display", "none");
             var userEntry = $($event.currentTarget).closest('.userentry'),
                 userNameField = userEntry.find('.name'),
                 //userEmailField = userEntry.find('.email'),
