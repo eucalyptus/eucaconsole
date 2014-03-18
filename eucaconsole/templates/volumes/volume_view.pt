@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['name'], **html_attrs)}
+                        ${panel('form_field', field=volume_form['name'], autofocus='', **html_attrs)}
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
