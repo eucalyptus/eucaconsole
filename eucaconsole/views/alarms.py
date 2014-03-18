@@ -15,6 +15,7 @@ from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPU
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
+from . import boto_error_handler
 
 
 class CloudWatchAlarmsView(LandingPageView):
@@ -57,7 +58,7 @@ class CloudWatchAlarmsView(LandingPageView):
     def cloudwatch_alarms_create(self):
         location = self.request.params.get('redirect_location') or self.request.route_path('cloudwatch_alarms')
         if self.create_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 metric = self.request.params.get('metric')
                 name = self.request.params.get('name')
                 namespace = self.request.params.get('namespace')
@@ -81,8 +82,6 @@ class CloudWatchAlarmsView(LandingPageView):
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
@@ -93,13 +92,11 @@ class CloudWatchAlarmsView(LandingPageView):
         if self.delete_form.validate():
             location = self.request.route_path('cloudwatch_alarms')
             alarm_name = self.request.params.get('name')
-            try:
+            with boto_error_handler(self.request, location):
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
                 msg = '{0} {1}'.format(prefix, alarm_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
@@ -118,24 +115,20 @@ class CloudWatchAlarmsJsonView(BaseView):
     """JSON response for CloudWatch Alarms landing page et. al."""
     @view_config(route_name='cloudwatch_alarms_json', renderer='json', request_method='GET')
     def cloudwatch_alarms_json(self):
-        alarms = []
-        try:
+        with boto_error_handler(self.request):
             items = self.get_items()
-        except BotoServerError as err:
-            return Response(status=err.status, body=err.message)
-            # TODO: verify JSONResponse wouldn't be acceptable
-            #return self.getJSONErrorResponse(err)
-        for alarm in items:
-            alarms.append(dict(
-                name=alarm.name,
-                statistic=alarm.statistic,
-                metric=alarm.metric,
-                period=alarm.period,
-                comparison=alarm.comparison,
-                threshold=alarm.threshold,
-                unit=alarm.unit,
-            ))
-        return dict(results=alarms)
+            alarms = []
+            for alarm in items:
+                alarms.append(dict(
+                    name=alarm.name,
+                    statistic=alarm.statistic,
+                    metric=alarm.metric,
+                    period=alarm.period,
+                    comparison=alarm.comparison,
+                    threshold=alarm.threshold,
+                    unit=alarm.unit,
+                ))
+            return dict(results=alarms)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')

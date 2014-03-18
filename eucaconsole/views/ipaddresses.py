@@ -12,6 +12,7 @@ from ..forms.ipaddresses import (
     AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm, IPAddressesFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
+from . import boto_error_handler
 
 
 class IPAddressesView(LandingPageView):
@@ -55,7 +56,7 @@ class IPAddressesView(LandingPageView):
             if self.allocate_form.validate():
                 new_ips = []
                 ipcount = int(self.request.params.get('ipcount', 0))
-                try:
+                with boto_error_handler(self.request, self.location):
                     for i in xrange(ipcount):
                         new_ip = self.conn.allocate_address()
                         new_ips.append(new_ip.public_ip)
@@ -63,8 +64,6 @@ class IPAddressesView(LandingPageView):
                     ips = ', '.join(new_ips)
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
                 return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -73,14 +72,12 @@ class IPAddressesView(LandingPageView):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
             public_ip = self.request.params.get('public_ip')
-            try:
+            with boto_error_handler(self.request, self.location):
                 elastic_ip = self.get_elastic_ip(public_ip)
                 elastic_ip.associate(instance_id)
                 template = _(u'Successfully associated IP {ip} with instance {instance}')
                 msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to associate IP with instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -90,15 +87,13 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_disassociate(self):
         if self.disassociate_form.validate():
             public_ip = self.request.params.get('public_ip')
-            try:
+            with boto_error_handler(self.request, self.location):
                 #TODO: re-write to not fetch eip prior to operation
                 elastic_ip = self.get_elastic_ip(public_ip)
                 elastic_ip.disassociate()
                 template = _(u'Successfully disassociated IP {ip} from instance {instance}')
                 msg = template.format(ip=elastic_ip.public_ip, instance=elastic_ip.instance_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to disassociate IP from instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -108,15 +103,13 @@ class IPAddressesView(LandingPageView):
     def ipaddresses_release(self):
         if self.release_form.validate():
             public_ip = self.request.params.get('public_ip')
-            try:
+            with boto_error_handler(self.request, self.location):
                 #TODO: re-write to not fetch eip prior to operation
                 elastic_ip = self.get_elastic_ip(public_ip)
                 elastic_ip.release()
                 template = _(u'Successfully released {ip} to the cloud')
                 msg = template.format(ip=elastic_ip.public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to release IP address')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -145,7 +138,7 @@ class IPAddressesJsonView(LandingPageView):
     @view_config(route_name='ipaddresses_json', renderer='json', request_method='GET')
     def ipaddresses_json(self):
         ipaddresses = []
-        try:
+        with boto_error_handler(self.request):
             items = self.get_items()
             if self.request.params.getall('assignment'):
                 items = self.filter_by_assignment(items)
@@ -159,8 +152,6 @@ class IPAddressesJsonView(LandingPageView):
                     domain=address.domain,
                 ))
             return dict(results=ipaddresses)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)
 
     def get_items(self):
         return self.conn.get_all_addresses() if self.conn else []
@@ -218,13 +209,11 @@ class IPAddressView(BaseView):
         if self.associate_form.validate():
             instance_id = self.request.params.get('instance_id')
             location = self.request.route_path('ipaddresses')
-            try:
+            with boto_error_handler(self.request, location):
                 self.elastic_ip.associate(instance_id)
                 msg = _(u'Successfully associated IP {ip} with instance {instance}')
                 notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -232,14 +221,12 @@ class IPAddressView(BaseView):
     def ipaddress_disassociate(self):
         if self.disassociate_form.validate():
             location = self.request.route_path('ipaddresses')
-            try:
+            with boto_error_handler(self.request, location):
                 #TODO: re-write to not fetch eip prior to operation
                 self.elastic_ip.disassociate()
                 msg = _(u'Successfully disassociated IP {ip} from instance {instance}')
                 notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=self.elastic_ip.instance_id)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -247,14 +234,12 @@ class IPAddressView(BaseView):
     def ipaddress_release(self):
         if self.release_form.validate():
             location = self.request.route_path('ipaddresses')
-            try:
+            with boto_error_handler(self.request, location):
                 #TODO: re-write to not fetch eip prior to operation
                 self.elastic_ip.release()
                 msg = _(u'Successfully released {ip} to the cloud')
                 notification_msg = msg.format(ip=self.elastic_ip.public_ip)
                 self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -263,20 +248,14 @@ class IPAddressView(BaseView):
         addresses_param = [address_param]
         ip_addresses = []
         elastic_ip = None
-        try:
-            if self.conn:
-                ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
-            elastic_ip = ip_addresses[0] if ip_addresses else None
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
+        if self.conn:
+            ip_addresses = self.conn.get_all_addresses(addresses=addresses_param)
+        elastic_ip = ip_addresses[0] if ip_addresses else None
         return elastic_ip
 
     def get_instance(self):
         if self.elastic_ip and self.elastic_ip.instance_id:
-            try:
-                instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
-                return instances[0] if instances else None
-            except BotoServerError as err:
-                response = self.getJSONErrorResponse(err) # invokes 403 checking
+            instances = self.conn.get_only_instances(instance_ids=[self.elastic_ip.instance_id])
+            return instances[0] if instances else None
         return None
 

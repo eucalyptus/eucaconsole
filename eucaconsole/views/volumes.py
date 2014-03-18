@@ -88,13 +88,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         volume_id = self.request.params.get('volume_id')
         volume = self.get_volume(volume_id)
         if volume and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 volume.delete()
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to delete volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -107,12 +104,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         if volume and self.attach_form.validate():
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
-            try:
+            with boto_error_handler(self.request, self.location):
                 volume.attach(instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -123,12 +118,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         volume_id = self.request.params.get('volume_id')
         volume = self.get_volume(volume_id)
         if self.detach_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to attach volume.')  # TODO Pull in form validation error messages here
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -185,7 +178,7 @@ class VolumesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in VolumesFiltersForm
         ignore_params = ['zone']
-        try:
+        with boto_error_handler(self.request):
             filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
             snapshots = self.conn.get_all_snapshots() if self.conn else []
             instances = self.conn.get_only_instances(filters=filters) if self.conn else []
@@ -211,8 +204,6 @@ class VolumesJsonView(LandingPageView):
                     transitional=status in transitional_states or attach_status in transitional_states,
                 ))
             return dict(results=volumes)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)
 
     def get_items(self, filters=None):
         return self.conn.get_all_volumes(filters=filters) if self.conn else []
@@ -225,13 +216,12 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         super(VolumeView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        try:
+        self.location = self.request.route_path('volume_view', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots() if self.conn else []
             zones = self.conn.get_all_zones() if self.conn else []
             instances = self.conn.get_only_instances() if self.conn else []
-        except BotoServerError as err:
-            result = self.getJSONErrorResponse(err) # invokes 403 checking
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,
             zones=zones, formdata=self.request.params or None)
@@ -275,13 +265,11 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         if self.volume and self.volume_form.validate():
             # Update tags
             location = self.request.route_path('volume_view', id=self.volume.id)
-            try:
+            with boto_error_handler(self.request, location):
                 self.update_tags()
 
                 msg = _(u'Successfully modified volume')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.volume_form.get_errors_list()
@@ -319,13 +307,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     @view_config(route_name='volume_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_delete(self):
         if self.volume and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.volume.delete()
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                # should this be maintained?? msg = err.message.split('remoteDevice')[0]
-                self.sendErrorResponse(err)
             location = self.request.route_path('volume_view', id=self.volume.id)
             return HTTPFound(location=location)
         else:
@@ -337,12 +322,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         if self.volume and self.attach_form.validate():
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.volume.attach(instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             location = self.request.route_path('volume_view', id=self.volume.id)
             return HTTPFound(location=location)
         else:
@@ -352,12 +335,10 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     @view_config(route_name='volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_detach(self):
         if self.detach_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             location = self.request.route_path('volume_view', id=self.volume.id)
             return HTTPFound(location=location)
         else:
@@ -404,10 +385,9 @@ class VolumeSnapshotsView(BaseVolumeView):
         super(VolumeSnapshotsView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        try:
+        self.location = self.request.route_path('volume_snapshots', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
-        except BotoServerError as err:
-            result = self.getJSONErrorResponse(err) # invokes 403 checking
         self.tagged_obj = self.volume
         self.volume_name = TaggedItemView.get_display_name(self.volume)
         self.add_form = None
@@ -430,7 +410,7 @@ class VolumeSnapshotsView(BaseVolumeView):
 
     @view_config(route_name='volume_snapshots_json', renderer='json', request_method='GET')
     def volume_snapshots_json(self):
-        try:
+        with boto_error_handler(self.request):
             snapshots = []
             for snapshot in self.volume.snapshots():
                 delete_form_action = self.request.route_path(
@@ -446,8 +426,6 @@ class VolumeSnapshotsView(BaseVolumeView):
                     delete_form_action=delete_form_action,
                 ))
             return dict(results=snapshots)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)
 
     @view_config(route_name='volume_snapshot_create', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_snapshot_create(self):
@@ -455,7 +433,7 @@ class VolumeSnapshotsView(BaseVolumeView):
             name = self.request.params.get('name')
             description = self.request.params.get('description')
             tags_json = self.request.params.get('tags')
-            try:
+            with boto_error_handler(self.request, self.location):
                 params = {'VolumeId': self.volume.id}
                 if description:
                     params['Description'] = description[0:255]
@@ -470,8 +448,6 @@ class VolumeSnapshotsView(BaseVolumeView):
                         snapshot.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent create snapshot request.  It may take a moment to create the snapshot.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             location = self.request.route_path('volume_snapshots', id=self.volume.id)
             return HTTPFound(location=location)
         else:
@@ -485,12 +461,10 @@ class VolumeSnapshotsView(BaseVolumeView):
             snapshot_id = self.request.matchdict.get('snapshot_id')
             if volume_id and snapshot_id:
                 snapshot = self.get_snapshot(snapshot_id)
-                try:
+                with boto_error_handler(self.request, self.location):
                     snapshot.delete()
                     msg = _(u'Successfully deleted the snapshot.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
                 location = self.request.route_path('volume_snapshots', id=self.volume.id)
                 return HTTPFound(location=location)
         return self.render_dict

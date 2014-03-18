@@ -15,6 +15,7 @@ from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView
+from . import boto_error_handler
 
 
 class ImagesView(LandingPageView):
@@ -110,11 +111,9 @@ class ImagesJsonView(LandingPageView):
         # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
         def _get_images_cache(_owners, _region):
-            try:
+            with boto_error_handler(self.request):
                 filters = {'image-type': 'machine'}
                 return conn.get_all_images(owners=_owners, filters=filters) if conn else []
-            except BotoServerError as exc:
-                return BaseView.handle_403_error(exc, request=self.request)
         return _get_images_cache(owners, region)
 
     def filter_by_platform(self, items):
@@ -150,10 +149,8 @@ class ImageView(TaggedItemView):
         images_param = [image_param]
         images = []
         if self.conn:
-            try:
+            with boto_error_handler(self.request):
                 images = self.conn.get_all_images(image_ids=images_param)
-            except BotoServerError as err:
-                pass
         image = images[0] if images else None
         if image:
             attrs = image.__dict__

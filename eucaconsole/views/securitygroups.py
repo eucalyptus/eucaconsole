@@ -14,6 +14,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
+from . import boto_error_handler
 
 
 class SecurityGroupsView(LandingPageView):
@@ -59,14 +60,12 @@ class SecurityGroupsView(LandingPageView):
         location = self.get_redirect_location('securitygroups')
         if security_group and self.delete_form.validate():
             name = security_group.name
-            try:
+            with boto_error_handler(self.request, location):
                 security_group.delete()
                 prefix = _(u'Successfully deleted security group')
                 template = '{0} {1}'.format(prefix, name)
                 msg = template.format(group=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete security group')
@@ -150,13 +149,11 @@ class SecurityGroupView(TaggedItemView):
         location = self.request.route_path('securitygroups')
         if self.security_group and self.delete_form.validate():
             name = self.security_group.name
-            try:
+            with boto_error_handler(self.request, location):
                 self.security_group.delete()
                 prefix = _(u'Successfully deleted security group')
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -166,7 +163,7 @@ class SecurityGroupView(TaggedItemView):
             name = self.request.params.get('name')
             description = self.request.params.get('description')
             tags_json = self.request.params.get('tags')
-            try:
+            with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 new_security_group = self.conn.create_security_group(name, description)
                 self.add_rules(security_group=new_security_group)
                 if tags_json:
@@ -179,13 +176,6 @@ class SecurityGroupView(TaggedItemView):
                     return JSONResponse(status=200, message=msg)
                 else:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=location)
-            except BotoServerError as err:
-                if self.request.is_xhr:
-                    return self.getJSONErrorResponse(err)
-                else:
-                    self.sendErrorResponse(err)
-                    location = self.request.route_path('securitygroups')
                     return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.securitygroup_form.get_errors_list())

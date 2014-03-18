@@ -15,6 +15,7 @@ from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
 from ..models import Notification
 from ..views import BaseView, JSONResponse, TaggedItemView
+from . import boto_error_handler
 
 
 class IAMPolicyWizardView(BaseView):
@@ -31,7 +32,7 @@ class IAMPolicyWizardView(BaseView):
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
         # tend to think a constructor should *not* do stuff that will throw exceptions, but here we are
-        try:
+        with boto_error_handler(request):
             self.choices_manager = ChoicesManager(conn=self.ec2_conn)
             self.render_dict = dict(
                 page_title=self.get_page_title(),
@@ -50,8 +51,6 @@ class IAMPolicyWizardView(BaseView):
                     availability_zones=self.get_availability_zone_choices(),
                 ),
             )
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
     def iam_policy_new(self):
@@ -66,7 +65,7 @@ class IAMPolicyWizardView(BaseView):
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
-            try:
+            with boto_error_handler(self.request, location):
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
@@ -75,8 +74,6 @@ class IAMPolicyWizardView(BaseView):
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

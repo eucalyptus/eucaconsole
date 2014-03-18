@@ -6,6 +6,7 @@ Pyramid views for Dashboard
 from boto.exception import BotoServerError
 from pyramid.view import view_config
 from . import BaseView
+from . import boto_error_handler
 
 
 class DashboardView(BaseView):
@@ -17,10 +18,8 @@ class DashboardView(BaseView):
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
     def dashboard_home(self):
         availability_zones = []
-        try:
+        with boto_error_handler(self.request):
             availability_zones = self.conn.get_all_zones()
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err)  # causes 403 check...
         return dict(
             availability_zones=availability_zones
         )
@@ -40,7 +39,7 @@ class DashboardJsonView(BaseView):
         # Instances counts
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
 
-        try:
+        with boto_error_handler(self.request):
             for instance in ec2_conn.get_only_instances(filters=filters):
                 instances_total_count += 1
                 if instance.tags.get('aws:autoscaling:groupName'):
@@ -87,5 +86,3 @@ class DashboardJsonView(BaseView):
                 users=users_count,
                 groups=groups_count,
             )
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)

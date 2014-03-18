@@ -23,6 +23,7 @@ from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
+from . import boto_error_handler
 
 
 class LaunchConfigsView(LandingPageView):
@@ -55,19 +56,16 @@ class LaunchConfigsView(LandingPageView):
     def launchconfigs_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('launchconfigs')
+            prefix = _(u'Unable to delete launch configuration')
+            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            with boto_error_handler(self.request, location, template):
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            except BotoServerError as err:
-                # TODO: augment BaseView.sendErrorResponse() to allow for message templates like this
-                prefix = _(u'Unable to delete launch configuration')
-                msg = '{0} {1} - {2}'.format(prefix, name, err.message)
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_path('launchconfigs')
+                notification_msg = msg
+                self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -90,15 +88,13 @@ class LaunchConfigsJsonView(BaseView):
     def __init__(self, request):
         super(LaunchConfigsJsonView, self).__init__(request)
         self.ec2_conn = self.get_connection()
-        try:
+        with boto_error_handler(request):
             self.autoscale_conn = self.get_connection(conn_type='autoscale')
             self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
-        try:
+        with boto_error_handler(self.request):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
@@ -117,8 +113,6 @@ class LaunchConfigsJsonView(BaseView):
                     in_use=name in scalinggroup_launchconfig_names,
                 ))
             return dict(results=launchconfigs_array)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err) # invokes 403 checking
 
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.launch_configs]
@@ -157,12 +151,10 @@ class LaunchConfigView(BaseView):
         super(LaunchConfigView, self).__init__(request)
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        try:
+        with boto_error_handler(request):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
             self.security_groups = self.get_security_groups()
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err) # invokes 403 checking
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
@@ -182,19 +174,14 @@ class LaunchConfigView(BaseView):
     def launchconfig_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('launchconfigs')
+            prefix = _(u'Unable to delete launch configuration')
+            template = '{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
+            with boto_error_handler(self.request, location, template):
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                # TODO: augment BaseView.sendErrorResponse() to allow for message templates like this
-                prefix = _(u'Unable to delete launch configuration')
-                msg = '{0} {1} - {2}'.format(prefix, self.launch_config.name, err.message)
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_path('launchconfigs')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -243,11 +230,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         super(CreateLaunchConfigView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
-        try:
+        with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
             self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err) # invokes 403 checking
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
@@ -301,7 +286,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json else None
-            try:
+            with boto_error_handler(self.request, location):
                 launch_config = LaunchConfiguration(
                     name=name,
                     image_id=image_id,
@@ -318,10 +303,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 msg = _(u'Successfully sent create launch configuration request. '
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 

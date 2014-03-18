@@ -14,6 +14,7 @@ from pyramid.response import Response
 from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
+from . import boto_error_handler
 
 
 class KeyPairsView(LandingPageView):
@@ -53,20 +54,18 @@ class KeyPairsJsonView(BaseView):
     @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
     def keypairs_json(self):
         keypairs = []
-        for keypair in self.get_items():
-            keypairs.append(dict(
-                name=keypair.name,
-                fingerprint=keypair.fingerprint,
-            ))
-        return dict(results=keypairs)
+        with boto_error_handler(self.request):
+            for keypair in self.get_items():
+                keypairs.append(dict(
+                    name=keypair.name,
+                    fingerprint=keypair.fingerprint,
+                ))
+            return dict(results=keypairs)
 
     def get_items(self):
         ret = []
-        try:
-            if self.conn:
-                ret = self.conn.get_all_key_pairs()
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
+        if self.conn:
+            ret = self.conn.get_all_key_pairs()
         return ret
 
 
@@ -118,11 +117,9 @@ class KeyPairView(BaseView):
 
     def get_keypair_names(self):
         keypairs = []
-        try:
+        with boto_error_handler(self.request):
             if self.conn:
                 keypairs = [k.name for k in self.conn.get_all_key_pairs()]
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
         return sorted(set(keypairs))
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
@@ -131,7 +128,8 @@ class KeyPairView(BaseView):
             name = self.request.params.get('name')
             session = self.request.session
             new_keypair = None
-            try:
+            location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, location):
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
                 self._store_file_(new_keypair.name+".pem",
@@ -140,8 +138,6 @@ class KeyPairView(BaseView):
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             if self.request.is_xhr:
                 import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
@@ -164,15 +160,13 @@ class KeyPairView(BaseView):
             key_material = self.request.params.get('key_material')
             msg = ""
             material = ""
-            try:
+            location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, location):
                 new_keypair = self.conn.import_key_pair(name, key_material)
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
-            location = self.request.route_path('keypair_view', id=name)
             return HTTPFound(location=location)
 
         return self.render_dict
@@ -181,14 +175,12 @@ class KeyPairView(BaseView):
     def keypair_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('keypairs')
+            with boto_error_handler(self.request, location):
                 self.conn.delete_key_pair(name)
                 prefix = _(u'Successfully deleted keypair')
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
-            location = self.request.route_path('keypairs')
             return HTTPFound(location=location)
 
         return self.render_dict

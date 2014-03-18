@@ -315,19 +315,21 @@ def conn_error(exc, request):
     return BaseView.handle_error(exc, request=request)
 
 @contextmanager
-def boto_error_handler(request, location=None):
+def boto_error_handler(request, location=None, template="{0}"):
     try:
         yield
     except BotoServerError as err:
         status = getattr(err, 'status', None) or err.args[0] if err.args else ""
-        message = err.reason;
-        logging.error("Error encountered: " + msg)
+        message = template.format(err.reason);
+        logging.error("Error encountered: " + message)
         if err.error_message is not None:
             message = err.error_message;
             if 'because of:' in message:
                 message = message[message.index("because of:")+11:];
             if 'RelatesTo Error:' in message:
                 message = message[message.index("RelatesTo Error:")+16:];
+            # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
+            # this logic found in volumes.js
         if request.is_xhr:
             raise JSONError(message=message)
         if status == 403:
@@ -341,6 +343,8 @@ def boto_error_handler(request, location=None):
                 _cache.clear()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
+        if location is None:
+            location = request.current_route_url()
         raise HTTPFound(location)
     
 

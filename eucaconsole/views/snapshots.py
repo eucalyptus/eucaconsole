@@ -17,6 +17,7 @@ from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshot
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 from ..views.images import ImagesView
+from . import boto_error_handler
 
 
 class SnapshotsView(LandingPageView):
@@ -57,13 +58,11 @@ class SnapshotsView(LandingPageView):
         snapshot = self.get_snapshot(snapshot_id)
         location = self.request.params.get('redirect_url') if self.request.params.get('redirect_url') else self.get_redirect_location('snapshots')
         if snapshot and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete snapshot')
@@ -84,7 +83,7 @@ class SnapshotsView(LandingPageView):
         bdm['/dev/sda'] = root_vol
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
@@ -97,8 +96,6 @@ class SnapshotsView(LandingPageView):
                 ImagesView.clear_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to register snapshot')
@@ -178,10 +175,9 @@ class SnapshotView(TaggedItemView):
         super(SnapshotView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        try:
+        self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
             self.snapshot = self.get_snapshot()
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.snapshot_name = self.get_snapshot_name()
         self.volume_name = TaggedItemView.get_display_name(
             self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
@@ -193,10 +189,8 @@ class SnapshotView(TaggedItemView):
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.start_time = self.get_start_time()
         self.tagged_obj = self.snapshot
-        try:
+        with boto_error_handler(request, self.location):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.render_dict = dict(
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
@@ -244,12 +238,10 @@ class SnapshotView(TaggedItemView):
         if self.snapshot and self.snapshot_form.validate():
             # Update tags
             location = self.request.route_path('snapshot_view', id=self.snapshot.id)
-            try:
+            with boto_error_handler(self.request, location):
                 self.update_tags()
                 msg = _(u'Successfully modified snapshot')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.snapshot_form.get_errors_list()
@@ -262,7 +254,7 @@ class SnapshotView(TaggedItemView):
             description = self.request.params.get('description', '')
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
-            try:
+            with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
@@ -276,16 +268,12 @@ class SnapshotView(TaggedItemView):
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_path('snapshot_view', id=snapshot.id)
                 return HTTPFound(location=location)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
-                location = self.request.route_path('snapshot_create')
-                return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshot_delete(self):
         if self.snapshot and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, self.request.route_path('snapshots')):
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
@@ -295,8 +283,6 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully deleted snapshot.')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             location = self.request.route_path('snapshots')
             return HTTPFound(location=location)
         return self.render_dict
@@ -314,7 +300,7 @@ class SnapshotView(TaggedItemView):
         bdm['/dev/sda'] = root_vol
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 self.snapshot.connection.register_image(
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),
@@ -324,8 +310,6 @@ class SnapshotView(TaggedItemView):
                 # Clear images cache
                 ImagesView.clear_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -352,10 +336,8 @@ class SnapshotStateView(BaseView):
         super(SnapshotStateView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        try:
+        with boto_error_handler(request):
             self.snapshot = self.get_snapshot()
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
 
     @view_config(route_name='snapshot_size_json', renderer='json', request_method='GET')
     def snapshot_size_json(self):

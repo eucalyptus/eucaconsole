@@ -28,6 +28,7 @@ from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
+from . import boto_error_handler
 
 
 class BaseInstanceView(BaseView):
@@ -131,13 +132,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.start_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 # Can only start an instance if it has a volume attached
                 instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to start instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -151,12 +150,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if instance_image.root_device_type == 'ebs':
-                try:
+                with boto_error_handler(self.request, self.location):
                     instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
             else:
                 msg = _(u'Only EBS-backed instances can be stopped')
                 self.request.session.flash(msg, queue=Notification.ERROR)
@@ -170,15 +167,13 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.reboot_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 rebooted = instance.reboot()
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 if not rebooted:
                     msg = _(u'Unable to reboot the instance.')
                     self.request.session.flash(msg, queue=Notification.ERROR)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to reboot instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -190,13 +185,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 instance.terminate()
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to terminate instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -206,13 +199,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_batch_terminate(self):
         instance_ids = self.request.params.getall('instance_ids')
         if self.batch_terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.conn.terminate_instances(instance_ids=instance_ids)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
                 msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
         else:
             msg = _(u'Unable to terminate instances')
             self.request.session.flash(msg, queue=Notification.ERROR)
@@ -341,7 +332,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
         if self.instance and self.instance_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 # Update tags
                 self.update_tags()
 
@@ -373,21 +364,16 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 msg = _(u'Successfully modified instance')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
-                return HTTPFound(location=self.location)
         return self.render_dict
 
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
         if self.instance and self.start_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 # Can only start an instance if it has a volume attached
                 self.instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -396,12 +382,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
-                try:
+                with boto_error_handler(self.request, self.location):
                     self.instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
                 return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -409,28 +393,24 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_reboot(self):
         location = self.request.route_path('instance_view', id=self.instance.id)
         if self.instance and self.reboot_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 rebooted = self.instance.reboot()
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 if not rebooted:
                     msg = _(u'Unable to reboot the instance.')
                     self.request.session.flash(msg, queue=Notification.ERROR)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_terminate(self):
         if self.instance and self.terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.instance.terminate()
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -439,18 +419,17 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         instance_id = self.request.matchdict.get('id')
-        try:
-            passwd_data = self.conn.get_password_data(instance_id)
-            priv_key_string = self.request.params.get('key')
-            priv_key_string = base64.b64decode(priv_key_string)
-            user_priv_key = RSA.load_key_string(priv_key_string)
-            string_to_decrypt = base64.b64decode(passwd_data)
-            ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
-            return dict(results=dict(instance=instance_id, password=ret))
-        except RSA.RSAError as err: # likely, bad key
-            return JSONResponse(status=400, message=_(u"There was a problem with the key, please try again, verifying the correct private key is used."));
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err);
+        with boto_error_handler(self.request, self.location):
+            try:
+                passwd_data = self.conn.get_password_data(instance_id)
+                priv_key_string = self.request.params.get('key')
+                priv_key_string = base64.b64decode(priv_key_string)
+                user_priv_key = RSA.load_key_string(priv_key_string)
+                string_to_decrypt = base64.b64decode(passwd_data)
+                ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
+                return dict(results=dict(instance=instance_id, password=ret))
+            except RSA.RSAError as err: # likely, bad key
+                return JSONResponse(status=400, message=_(u"There was a problem with the key, please try again, verifying the correct private key is used."));
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
@@ -495,10 +474,8 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
     def instance_console_output_json(self):
         """Return console output for instance"""
-        try:
+        with boto_error_handler(self.request):
             output = self.conn.get_console_output(instance_id=self.instance.id)
-        except BotoServerError as err:
-            return self.getJSONErrorResponse(err)
         return dict(results=output.output)
 
     # TODO: also in forms/instances.py, let's consolidate
@@ -522,10 +499,9 @@ class InstanceVolumesView(BaseInstanceView):
         self.conn = self.get_connection()
         # fetching all volumes all the time is inefficient. should re-factor in the future
         self.volumes = []
-        try:
+        self.location = self.request.route_path('instance_volumes', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
             self.volumes = self.conn.get_all_volumes()
-        except BotoServerError as err:
-            response = self.getJSONErrorResponse(err) # invokes 403 checking
         self.instance = self.get_instance()
         self.attach_form = AttachVolumeForm(
             self.request, volumes=self.volumes, instance=self.instance, formdata=self.request.params or None)
@@ -576,12 +552,10 @@ class InstanceVolumesView(BaseInstanceView):
             device = self.request.params.get('device')
             if self.instance and volume_id and device:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
-                try:
+                with boto_error_handler(self.request, location):
                     self.conn.attach_volume(volume_id=volume_id, instance_id=self.instance.id, device=device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
                 return HTTPFound(location=location)
 
     @view_config(route_name='instance_volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -590,12 +564,10 @@ class InstanceVolumesView(BaseInstanceView):
             volume_id = self.request.matchdict.get('volume_id')
             if volume_id:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
-                try:
+                with boto_error_handler(self.request, location):
                     self.conn.detach_volume(volume_id=volume_id)
                     msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                except BotoServerError as err:
-                    self.sendErrorResponse(err)
                 return HTTPFound(location=location)
 
     def get_attached_volumes(self):
@@ -669,7 +641,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
-            try:
+            with boto_error_handler(self.request, self.location):
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
@@ -699,17 +671,13 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=self.location)
         return self.render_dict
 
     def get_security_groups(self):
         if self.conn:
-            try:
+            with boto_error_handler(self.request, self.location):
                 return self.conn.get_all_security_groups()
-            except BotoServerError as err:
-                result = self.getJSONErrorResponse(err) # invoke 403 checking
         return []
 
     def get_securitygroups_rules(self):
@@ -763,7 +731,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
-            try:
+            with boto_error_handler(self.request, self.location):
                 for idx in range(num_instances):
                     reservation = self.conn.run_instances(
                         image_id,
@@ -794,8 +762,6 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            except BotoServerError as err:
-                self.sendErrorResponse(err)
             return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.launch_more_form.get_errors_list()
