@@ -24,6 +24,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.initChosenSelectors();
+            $scope.setFocus();
         };
         $scope.handleSizeChange = function () {
             // Adjust desired/max based on min size change
@@ -33,6 +34,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             if ($scope.maxSize < $scope.desiredCapacity) {
                 $scope.maxSize = $scope.desiredCapacity;
             }
+        };
+        $scope.setFocus = function () {
+            $('input#min_size').focus();
         };
     })
 ;
