@@ -23,7 +23,7 @@
         <div class="row userentry controls-wrapper">
             <div>
                 <div class="small-12 columns">
-                    <input class="userinput name" placeholder="name..." ng-model="newUserName" ng-keypress="keyListener($event)"/>
+                    <input class="userinput name" placeholder="name..." autofocus="" ng-model="newUserName" ng-keypress="keyListener($event)"/>
                     <small class="error" i18n:translate="">What??</small>
                 </div>
                 <!--
