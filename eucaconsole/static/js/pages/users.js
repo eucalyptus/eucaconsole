@@ -32,6 +32,7 @@ angular.module('UsersPage', ['LandingPage'])
         };
         $scope.revealModalXHR = function (action, user) {
             var modal = $('#' + action + '-user-modal');
+            $scope.user_name = user['user_name'];
             $scope.user = user
             modal.foundation('reveal', 'open');
         };

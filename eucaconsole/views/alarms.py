@@ -4,17 +4,16 @@ Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
 from boto.ec2.cloudwatch import MetricAlarm
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView
+from . import boto_error_handler
 
 
 class CloudWatchAlarmsView(LandingPageView):
@@ -29,6 +28,7 @@ class CloudWatchAlarmsView(LandingPageView):
         self.ec2_conn = self.get_connection()
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        # TODO: not likely to fail, but if session creds expire?
         self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
@@ -56,7 +56,7 @@ class CloudWatchAlarmsView(LandingPageView):
     def cloudwatch_alarms_create(self):
         location = self.request.params.get('redirect_location') or self.request.route_path('cloudwatch_alarms')
         if self.create_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 metric = self.request.params.get('metric')
                 name = self.request.params.get('name')
                 namespace = self.request.params.get('namespace')
@@ -79,12 +79,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
@@ -95,16 +90,11 @@ class CloudWatchAlarmsView(LandingPageView):
         if self.delete_form.validate():
             location = self.request.route_path('cloudwatch_alarms')
             alarm_name = self.request.params.get('name')
-            try:
+            with boto_error_handler(self.request, location):
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
                 msg = '{0} {1}'.format(prefix, alarm_name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
@@ -123,22 +113,20 @@ class CloudWatchAlarmsJsonView(BaseView):
     """JSON response for CloudWatch Alarms landing page et. al."""
     @view_config(route_name='cloudwatch_alarms_json', renderer='json', request_method='GET')
     def cloudwatch_alarms_json(self):
-        alarms = []
-        try:
+        with boto_error_handler(self.request):
             items = self.get_items()
-        except BotoServerError as err:
-            return Response(status=err.status, body=err.message)
-        for alarm in items:
-            alarms.append(dict(
-                name=alarm.name,
-                statistic=alarm.statistic,
-                metric=alarm.metric,
-                period=alarm.period,
-                comparison=alarm.comparison,
-                threshold=alarm.threshold,
-                unit=alarm.unit,
-            ))
-        return dict(results=alarms)
+            alarms = []
+            for alarm in items:
+                alarms.append(dict(
+                    name=alarm.name,
+                    statistic=alarm.statistic,
+                    metric=alarm.metric,
+                    period=alarm.period,
+                    comparison=alarm.comparison,
+                    threshold=alarm.threshold,
+                    unit=alarm.unit,
+                ))
+            return dict(results=alarms)
 
     def get_items(self):
         conn = self.get_connection(conn_type='cloudwatch')

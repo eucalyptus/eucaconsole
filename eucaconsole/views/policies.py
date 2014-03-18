@@ -5,7 +5,6 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -15,6 +14,7 @@ from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
 from ..models import Notification
 from ..views import BaseView, JSONResponse, TaggedItemView
+from . import boto_error_handler
 
 
 class IAMPolicyWizardView(BaseView):
@@ -30,24 +30,25 @@ class IAMPolicyWizardView(BaseView):
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
-        self.choices_manager = ChoicesManager(conn=self.ec2_conn)
-        self.render_dict = dict(
-            page_title=self.get_page_title(),
-            create_form=self.create_form,
-            policy_json_endpoint=self.policy_json_endpoint,
-            policy_actions=permissions.POLICY_ACTIONS,
-            controller_options=json.dumps(self.get_controller_options()),
-            resource_choices=dict(
-                instances=self.get_instance_choices(),
-                images=self.get_image_choices(),
-                volumes=self.get_volume_choices(),
-                snapshots=self.get_snapshot_choices(),
-                security_groups=self.get_security_group_choices(),
-                key_pairs=self.get_key_pair_choices(),
-                vm_types=self.get_vm_type_choices(),
-                availability_zones=self.get_availability_zone_choices(),
-            ),
-        )
+        with boto_error_handler(request):
+            self.choices_manager = ChoicesManager(conn=self.ec2_conn)
+            self.render_dict = dict(
+                page_title=self.get_page_title(),
+                create_form=self.create_form,
+                policy_json_endpoint=self.policy_json_endpoint,
+                policy_actions=permissions.POLICY_ACTIONS,
+                controller_options=json.dumps(self.get_controller_options()),
+                resource_choices=dict(
+                    instances=self.get_instance_choices(),
+                    images=self.get_image_choices(),
+                    volumes=self.get_volume_choices(),
+                    snapshots=self.get_snapshot_choices(),
+                    security_groups=self.get_security_group_choices(),
+                    key_pairs=self.get_key_pair_choices(),
+                    vm_types=self.get_vm_type_choices(),
+                    availability_zones=self.get_availability_zone_choices(),
+                ),
+            )
 
     @view_config(route_name='iam_policy_new', renderer=TEMPLATE, request_method='GET')
     def iam_policy_new(self):
@@ -62,7 +63,7 @@ class IAMPolicyWizardView(BaseView):
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
-            try:
+            with boto_error_handler(self.request, location):
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
@@ -70,11 +71,7 @@ class IAMPolicyWizardView(BaseView):
                 caller(self.target_name, policy_name, policy_json)
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
@@ -205,5 +202,3 @@ class IAMPolicyWizardJsonView(BaseView):
         if policy_dict:
             return dict(policy=policy_dict)
         return JSONResponse(status=404, message=_(u'Unable to locate policy'))
-
-

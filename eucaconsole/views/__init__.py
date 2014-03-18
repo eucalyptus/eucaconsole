@@ -3,15 +3,17 @@
 Core views
 
 """
+import logging
+from contextlib import contextmanager
 import simplejson as json
 import textwrap
 from urllib import urlencode
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
-from boto.exception import EC2ResponseError, BotoServerError
+from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
+from pyramid.httpexceptions import HTTPFound, HTTPException
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -19,12 +21,23 @@ from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..models import Notification
 from ..models.auth import ConnectionManager
 
 
 class JSONResponse(Response):
     def __init__(self, status=200, message=None, **kwargs):
         super(JSONResponse, self).__init__(**kwargs)
+        self.status = status
+        self.content_type = 'application/json'
+        self.body = json.dumps(
+            dict(message=message)
+        )
+
+
+class JSONError(HTTPException):
+    def __init__(self, status=400, message=None, **kwargs):
+        super(JSONError, self).__init__(**kwargs)
         self.status = status
         self.content_type = 'application/json'
         self.body = json.dumps(
@@ -95,26 +108,35 @@ class BaseView(object):
         for _cache in cache_managers.values():
             _cache.clear()
 
-    @classmethod
-    def handle_403_error(cls, exc, request=None):
-        """Handle session timeout by redirecting to login page with notice.
-           exc is usually a boto.exception.EC2ResponseError exception
-        """
-        status = getattr(exc, 'status', None) or exc.args[0] if exc.args else ""
-        message = exc.message
+    @staticmethod
+    def handle_error(err=None, request=None, location=None, template="{0}"):
+        status = getattr(err, 'status', None) or err.args[0] if err.args else ""
+        message = template.format(err.reason)
+        logging.error("Error encountered: " + message)
+        if err.error_message is not None:
+            message = err.error_message
+            if 'because of:' in message:
+                message = message[message.index("because of:")+11:]
+            if 'RelatesTo Error:' in message:
+                message = message[message.index("RelatesTo Error:")+16:]
+            # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
+            # this logic found in volumes.js
         if request.is_xhr:
-            return JSONResponse(status=status, message=message)
-        if status in [403]:
+            raise JSONError(message=message)
+        if status == 403:
             if any(['Invalid access key' in message, 'Invalid security token' in message]):
                 notice = message
             else:
                 notice = _(u'Your session has timed out')
-            request.session.flash(notice, queue='warning')
+            request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
-            cls.invalidate_cache()
-            location = request.route_path('login')
-            return HTTPFound(location=location)
-        return HTTPForbidden()
+            for _cache in cache_managers.values():
+                _cache.clear()
+            raise HTTPFound(location=request.route_path('login'))
+        request.session.flash(message, queue=Notification.ERROR)
+        if location is None:
+            location = request.current_route_url()
+        raise HTTPFound(location)
 
 
 class TaggedItemView(BaseView):
@@ -184,19 +206,13 @@ class BlockDeviceMappingItemView(BaseView):
     def get_image(self):
         from eucaconsole.views.images import ImageView
         image_id = self.request.params.get('image_id')
-        image = None
         if self.conn and image_id:
-            try:
+            with boto_error_handler(self.request):
                 image = self.conn.get_image(image_id)
-            except BotoServerError as err:
-                if err.status in [400, 404]:
-                    raise HTTPNotFound()
-                if err.statis in [403]:
-                    BaseView.handle_403_error(err, request=self.request)
-            if image:
-                platform = ImageView.get_platform(image)
-                image.platform_name = ImageView.get_platform_name(platform)
-            return image
+                if image:
+                    platform = ImageView.get_platform(image)
+                    image.platform_name = ImageView.get_platform_name(platform)
+                return image
         return None
 
     def get_owner_choices(self):
@@ -321,16 +337,19 @@ def notfound_view(request):
     return dict()
 
 
-@view_config(context=EC2ResponseError, permission=NO_PERMISSION_REQUIRED)
-def ec2conn_error(exc, request):
-    """Handle session timeout by redirecting to login page with notice."""
-    return BaseView.handle_403_error(exc, request=request)
-
-
 @view_config(context=BotoServerError, permission=NO_PERMISSION_REQUIRED)
-def autoscale_error(exc, request):
-    """Handle autoscale connection session timeout by redirecting to login page with notice."""
-    return BaseView.handle_403_error(exc, request=request)
+def conn_error(exc, request):
+    """Generic handler for BotoServerError exceptions"""
+    return BaseView.handle_error(err=exc, request=request)
+
+
+@contextmanager
+def boto_error_handler(request, location=None, template="{0}"):
+    try:
+        yield
+    except BotoServerError as err:
+        BaseView.handle_error(err=err, request=request, location=location, template=template)
+
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):

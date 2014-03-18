@@ -5,9 +5,8 @@ Pyramid views for Eucalyptus and AWS snapshots
 """
 from dateutil import parser
 import simplejson as json
-import time
 
-from boto.exception import EC2ResponseError, BotoServerError
+from boto.exception import BotoServerError
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -17,6 +16,7 @@ from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshot
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 from ..views.images import ImagesView
+from . import boto_error_handler
 
 
 class SnapshotsView(LandingPageView):
@@ -57,16 +57,11 @@ class SnapshotsView(LandingPageView):
         snapshot = self.get_snapshot(snapshot_id)
         location = self.request.params.get('redirect_url') if self.request.params.get('redirect_url') else self.get_redirect_location('snapshots')
         if snapshot and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 snapshot.delete()
-                time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to delete snapshot')
@@ -87,7 +82,7 @@ class SnapshotsView(LandingPageView):
         bdm['/dev/sda'] = root_vol
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
@@ -96,14 +91,10 @@ class SnapshotsView(LandingPageView):
                 )
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
-                queue = Notification.SUCCESS
                 # Clear images cache
                 ImagesView.clear_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             msg = _(u'Unable to register snapshot')
@@ -134,13 +125,15 @@ class SnapshotsJsonView(LandingPageView):
     def __init__(self, request):
         super(SnapshotsJsonView, self).__init__(request)
         self.conn = self.get_connection()
-        self.volumes = self.get_volumes()
 
     @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
     def snapshots_json(self):
         snapshots = []
-        for snapshot in self.filter_items(self.get_items()):
-            volume = self.get_volume(snapshot.volume_id)
+        filtered_snapshots = self.filter_items(self.get_items())
+        volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
+        volumes = self.conn.get_all_volumes(volume_ids=volume_ids) if self.conn else []
+        for snapshot in filtered_snapshots:
+            volume = [volume for volume in volumes if volume.id == snapshot.volume_id][0]
             volume_name = TaggedItemView.get_display_name(volume)
             snapshots.append(dict(
                 id=snapshot.id,
@@ -160,15 +153,6 @@ class SnapshotsJsonView(LandingPageView):
     def get_items(self):
         return self.conn.get_all_snapshots(owner='self') if self.conn else []
 
-    def get_volumes(self):
-        return self.conn.get_all_volumes() if self.conn else []
-
-    def get_volume(self, volume_id):
-        if volume_id and self.volumes:
-            volumes_list = [volume for volume in self.volumes if volume.id == volume_id]
-            return volumes_list[0] if volumes_list else None
-        return None
-
     @staticmethod
     def is_transitional(snapshot):
         if snapshot.status.lower() == 'completed':
@@ -183,7 +167,9 @@ class SnapshotView(TaggedItemView):
         super(SnapshotView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.snapshot = self.get_snapshot()
+        self.location = self.request.route_path('snapshot_view', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
+            self.snapshot = self.get_snapshot()
         self.snapshot_name = self.get_snapshot_name()
         self.volume_name = TaggedItemView.get_display_name(
             self.get_volume(self.snapshot.volume_id)) if self.snapshot is not None else ''
@@ -195,7 +181,8 @@ class SnapshotView(TaggedItemView):
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.start_time = self.get_start_time()
         self.tagged_obj = self.snapshot
-        self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
+        with boto_error_handler(request, self.location):
+            self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
@@ -242,11 +229,11 @@ class SnapshotView(TaggedItemView):
     def snapshot_update(self):
         if self.snapshot and self.snapshot_form.validate():
             # Update tags
-            self.update_tags()
-
             location = self.request.route_path('snapshot_view', id=self.snapshot.id)
-            msg = _(u'Successfully modified snapshot')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            with boto_error_handler(self.request, location):
+                self.update_tags()
+                msg = _(u'Successfully modified snapshot')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.snapshot_form.get_errors_list()
@@ -259,7 +246,7 @@ class SnapshotView(TaggedItemView):
             description = self.request.params.get('description', '')
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
-            try:
+            with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
@@ -273,31 +260,22 @@ class SnapshotView(TaggedItemView):
                 self.request.session.flash(msg, queue=queue)
                 location = self.request.route_path('snapshot_view', id=snapshot.id)
                 return HTTPFound(location=location)
-            except (EC2ResponseError, BotoServerError) as err:
-                msg = err.message
-                queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
         return self.render_dict
 
     @view_config(route_name='snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshot_delete(self):
         if self.snapshot and self.delete_form.validate():
-            try:
+            with boto_error_handler(self.request, self.request.route_path('snapshots')):
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
                     # Clear images cache
                     ImagesView.clear_images_cache()
                 self.snapshot.delete()
-                time.sleep(1)
                 prefix = _(u'Successfully deleted snapshot.')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path('snapshots')
-            self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -314,20 +292,16 @@ class SnapshotView(TaggedItemView):
         bdm['/dev/sda'] = root_vol
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
-            try:
+            with boto_error_handler(self.request, location):
                 self.snapshot.connection.register_image(
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
-                queue = Notification.SUCCESS
                 # Clear images cache
                 ImagesView.clear_images_cache()
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -344,7 +318,7 @@ class SnapshotView(TaggedItemView):
         volumes_list = []
         try:
             volumes_list = self.conn.get_all_volumes(volume_ids=[volume_id])
-        except EC2ResponseError as err:
+        except BotoServerError as err:
             return None
         return volumes_list[0] if volumes_list else None
 
@@ -354,7 +328,8 @@ class SnapshotStateView(BaseView):
         super(SnapshotStateView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.snapshot = self.get_snapshot()
+        with boto_error_handler(request):
+            self.snapshot = self.get_snapshot()
 
     @view_config(route_name='snapshot_size_json', renderer='json', request_method='GET')
     def snapshot_size_json(self):
@@ -376,4 +351,3 @@ class SnapshotStateView(BaseView):
             snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
             return snapshots_list[0] if snapshots_list else None
         return None
-

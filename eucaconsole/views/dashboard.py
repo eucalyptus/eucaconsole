@@ -5,6 +5,7 @@ Pyramid views for Dashboard
 """
 from pyramid.view import view_config
 from . import BaseView
+from . import boto_error_handler
 
 
 class DashboardView(BaseView):
@@ -15,7 +16,9 @@ class DashboardView(BaseView):
 
     @view_config(route_name='dashboard', request_method='GET', renderer='../templates/dashboard.pt')
     def dashboard_home(self):
-        availability_zones = self.conn.get_all_zones()
+        availability_zones = []
+        with boto_error_handler(self.request):
+            availability_zones = self.conn.get_all_zones()
         return dict(
             availability_zones=availability_zones
         )
@@ -35,49 +38,45 @@ class DashboardJsonView(BaseView):
         # Instances counts
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
 
-        for instance in ec2_conn.get_only_instances(filters=filters):
-            instances_total_count += 1
-            if instance.tags.get('aws:autoscaling:groupName'):
-                instances_scaling_count += 1
-            if instance.state == u'running':
-                instances_running_count += 1
-            elif instance.state == u'stopped':
-                instances_stopped_count += 1
+        with boto_error_handler(self.request):
+            for instance in ec2_conn.get_only_instances(filters=filters):
+                instances_total_count += 1
+                if instance.tags.get('aws:autoscaling:groupName'):
+                    instances_scaling_count += 1
+                if instance.state == u'running':
+                    instances_running_count += 1
+                elif instance.state == u'stopped':
+                    instances_stopped_count += 1
 
-        # Volume/snapshot counts
-        volumes_count = len(ec2_conn.get_all_volumes(filters=filters))
-        snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
+            # Volume/snapshot counts
+            volumes_count = len(ec2_conn.get_all_volumes(filters=filters))
+            snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
 
-        # Security groups, key pairs, IP addresses
-        securitygroups_count = len(ec2_conn.get_all_security_groups())
-        keypairs_count = len(ec2_conn.get_all_key_pairs())
-        elasticips_count = len(ec2_conn.get_all_addresses())
+            # Security groups, key pairs, IP addresses
+            securitygroups_count = len(ec2_conn.get_all_security_groups())
+            keypairs_count = len(ec2_conn.get_all_key_pairs())
+            elasticips_count = len(ec2_conn.get_all_addresses())
 
-        # IAM counts
-        session = self.request.session
-        try:
-            username = session['username']
-            if username == 'admin':
-                iam_conn = self.get_connection(conn_type="iam")
-                users_count = len(iam_conn.get_all_users().users)
-                groups_count = len(iam_conn.get_all_groups().groups)
-            else:
-                users_count = 0
-                groups_count = 0
-        except KeyError:
+            # IAM counts
             users_count = 0
             groups_count = 0
+            session = self.request.session
+            if session['cloud_type'] == 'euca':
+                if session['username'] == 'admin':
+                    iam_conn = self.get_connection(conn_type="iam")
+                    users_count = len(iam_conn.get_all_users().users)
+                    groups_count = len(iam_conn.get_all_groups().groups)
 
-        return dict(
-            instance_total=instances_total_count,
-            instances_running=instances_running_count,
-            instances_stopped=instances_stopped_count,
-            instances_scaling=instances_scaling_count,
-            volumes=volumes_count,
-            snapshots=snapshots_count,
-            securitygroups=securitygroups_count,
-            keypairs=keypairs_count,
-            eips=elasticips_count,
-            users=users_count,
-            groups=groups_count,
-        )
+            return dict(
+                instance_total=instances_total_count,
+                instances_running=instances_running_count,
+                instances_stopped=instances_stopped_count,
+                instances_scaling=instances_scaling_count,
+                volumes=volumes_count,
+                snapshots=snapshots_count,
+                securitygroups=securitygroups_count,
+                keypairs=keypairs_count,
+                eips=elasticips_count,
+                users=users_count,
+                groups=groups_count,
+            )

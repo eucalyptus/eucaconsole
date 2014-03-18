@@ -9,11 +9,9 @@ import time
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..forms.alarms import CloudWatchAlarmCreateForm
@@ -22,6 +20,7 @@ from ..forms.scalinggroups import (
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView
+from . import boto_error_handler
 
 
 class DeleteScalingGroupMixin(object):
@@ -84,22 +83,18 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
             name = self.request.params.get('name')
-            try:
+            with boto_error_handler(self.request, location):
                 conn = self.get_connection(conn_type='autoscale')
                 scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
+                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 scaling_group.shutdown_instances()
                 self.wait_for_instances_to_shutdown(scaling_group)
                 time.sleep(3)
                 conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -115,10 +110,8 @@ class ScalingGroupsJsonView(BaseView):
     @view_config(route_name='scalinggroups_json', renderer='json', request_method='GET')
     def scalinggroups_json(self):
         scalinggroups = []
-        try:
+        with boto_error_handler(self.request):
             items = self.get_items()
-        except BotoServerError as err:
-            return Response(status=err.status, body=err.message)
         for group in items:
             group_instances = group.instances or []
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
@@ -189,8 +182,9 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def __init__(self, request):
         super(ScalingGroupView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.policies = self.get_policies(self.scaling_group)
+        with boto_error_handler(request):
+            self.scaling_group = self.get_scaling_group()
+            self.policies = self.get_policies(self.scaling_group)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -212,17 +206,12 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def scalinggroup_update(self):
         if self.edit_form.validate():
             location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
-            try:
+            with boto_error_handler(self.request, location):
                 self.update_tags()
                 self.update_properties()
                 prefix = _(u'Successfully updated scaling group')
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -231,20 +220,16 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
             name = self.request.params.get('name')
-            try:
+            with boto_error_handler(self.request, location):
                 # Need to shut down instances prior to scaling group deletion
+                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 self.scaling_group.shutdown_instances()
                 self.wait_for_instances_to_shutdown(self.scaling_group)
                 time.sleep(3)
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -297,18 +282,12 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         if self.markunhealthy_form.validate():
             instance_id = self.request.params.get('instance_id')
             respect_grace_period = self.request.params.get('respect_grace_period') == 'y'
-            try:
+            with boto_error_handler(self.request, location):
                 self.autoscale_conn.set_instance_health(
                     instance_id, 'Unhealthy', should_respect_grace_period=respect_grace_period)
-                time.sleep(2)
                 prefix = _(u'Successfully marked the following instance as unhealthy:')
                 msg = '{0} {1}'.format(prefix, instance_id)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.markunhealthy_form.get_errors_list()
@@ -320,17 +299,11 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         if self.terminate_form.validate():
             instance_id = self.request.params.get('instance_id')
             decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
-            try:
+            with boto_error_handler(self.request, location):
                 self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
-                time.sleep(5)
                 prefix = _(u'Successfully sent terminate request for instance')
                 msg = '{0} {1}'.format(prefix, instance_id)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.terminate_form.get_errors_list()
@@ -348,10 +321,8 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
     def scalinggroup_instances_json(self):
         instances = []
         transitional_states = ['Unhealthy', 'Pending']
-        try:
+        with boto_error_handler(self.request):
             items = self.get_instances()
-        except BotoServerError as err:
-            return Response(status=err.status, body=err.message)
         for instance in items:
             is_transitional = any([
                 instance.lifecycle_state in transitional_states,
@@ -379,10 +350,11 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.policies = self.get_policies(self.scaling_group)
-        self.alarms = self.get_alarms()
-        self.metrics = self.cloudwatch_conn.list_metrics()
+        with boto_error_handler(request):
+            self.scaling_group = self.get_scaling_group()
+            self.policies = self.get_policies(self.scaling_group)
+            self.alarms = self.get_alarms()
+            self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
@@ -404,16 +376,11 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroup_policies', id=self.scaling_group.name)
             policy_name = self.request.params.get('name')
-            try:
+            with boto_error_handler(self.request, location):
                 self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.delete_form.get_errors_list()
@@ -426,9 +393,10 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPolicyView, self).__init__(request)
-        self.scaling_group = self.get_scaling_group()
-        self.alarms = self.get_alarms()
-        self.metrics = self.get_metrics()
+        with boto_error_handler(request):
+            self.scaling_group = self.get_scaling_group()
+            self.alarms = self.get_alarms()
+            self.metrics = self.get_metrics()
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.alarm_form = CloudWatchAlarmCreateForm(
@@ -463,7 +431,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 scaling_adjustment=scaling_adjustment,
                 cooldown=self.request.params.get('cooldown'),
             )
-            try:
+            with boto_error_handler(self.request, location):
                 # Create scaling policy
                 self.autoscale_conn.create_scaling_policy(scaling_policy)
                 created_scaling_policy = self.autoscale_conn.get_all_policies(
@@ -479,12 +447,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 alarm.update()
                 prefix = _(u'Successfully created scaling group policy')
                 msg = '{0} {1}'.format(prefix, scaling_policy.name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.policy_form.get_errors_list()
@@ -501,9 +464,10 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupWizardView, self).__init__(request)
         self.request = request
-        self.create_form = ScalingGroupCreateForm(
-            self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-            elb_conn=self.elb_conn, formdata=self.request.params or None)
+        with boto_error_handler(request):
+            self.create_form = ScalingGroupCreateForm(
+                self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
+                elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
             avail_zones_placeholder_text=_(u'Select availability zones...')
@@ -518,7 +482,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
     def scalinggroup_create(self):
         """Handles the POST from the Create Scaling Group wizard"""
         if self.create_form.validate():
-            try:
+            with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
                 scaling_group = AutoScalingGroup(
                     name=scaling_group_name,
@@ -535,15 +499,8 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
                 msg += ' {0}'.format(scaling_group.name)
-                queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('scalinggroup_view', id=scaling_group.name)
-                return HTTPFound(location=location)
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
-                location = self.request.route_path('scalinggroups')
                 return HTTPFound(location=location)
         return self.render_dict
 

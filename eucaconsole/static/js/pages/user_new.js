@@ -49,6 +49,10 @@ angular.module('UserNew', ['UserEditor'])
             var form = $($event.target);
             var users = JSON.parse(form.find('textarea[name="users"]').val())
             var singleUser = Object.keys(users)[0]
+            if (singleUser === undefined) {
+                $(".error").css("display", "block");
+                return;
+            }
             var isSingleUser = Object.keys(users).length == 1;
             var csrf_token = form.find('input[name="csrf_token"]').val();
             var data = $($event.target).serialize();

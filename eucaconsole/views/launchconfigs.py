@@ -7,12 +7,10 @@ import re
 import simplejson as json
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
-import time
 
 from ..forms import GenerateFileForm
 from ..forms.images import ImagesFiltersForm
@@ -23,6 +21,7 @@ from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
+from . import boto_error_handler
 
 
 class LaunchConfigsView(LandingPageView):
@@ -55,18 +54,16 @@ class LaunchConfigsView(LandingPageView):
     def launchconfigs_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('launchconfigs')
+            prefix = _(u'Unable to delete launch configuration')
+            template = '{0} {1} - {2}'.format(prefix, name, '{0}')
+            with boto_error_handler(self.request, location, template):
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
-            except BotoServerError as err:
-                prefix = _(u'Unable to delete launch configuration')
-                msg = '{0} {1} - {2}'.format(prefix, name, err.message)
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_path('launchconfigs')
+                notification_msg = msg
+                self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -89,29 +86,31 @@ class LaunchConfigsJsonView(BaseView):
     def __init__(self, request):
         super(LaunchConfigsJsonView, self).__init__(request)
         self.ec2_conn = self.get_connection()
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+        with boto_error_handler(request):
+            self.autoscale_conn = self.get_connection(conn_type='autoscale')
+            self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
-        launchconfigs_array = []
-        launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
-        scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
-        for launchconfig in self.launch_configs:
-            security_groups = self.get_launchconfig_security_groups(launchconfig)
-            image_id = launchconfig.image_id
-            name=launchconfig.name
-            launchconfigs_array.append(dict(
-                created_time=launchconfig.created_time.isoformat(),
-                image_id=image_id,
-                image_name=launchconfigs_image_mapping.get(image_id),
-                instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
-                key_name=launchconfig.key_name,
-                name=name,
-                security_groups=security_groups,
-                in_use=name in scalinggroup_launchconfig_names,
-            ))
-        return dict(results=launchconfigs_array)
+        with boto_error_handler(self.request):
+            launchconfigs_array = []
+            launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
+            scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
+            for launchconfig in self.launch_configs:
+                security_groups = self.get_launchconfig_security_groups(launchconfig)
+                image_id = launchconfig.image_id
+                name=launchconfig.name
+                launchconfigs_array.append(dict(
+                    created_time=launchconfig.created_time.isoformat(),
+                    image_id=image_id,
+                    image_name=launchconfigs_image_mapping.get(image_id),
+                    instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
+                    key_name=launchconfig.key_name,
+                    name=name,
+                    security_groups=security_groups,
+                    in_use=name in scalinggroup_launchconfig_names,
+                ))
+            return dict(results=launchconfigs_array)
 
     def get_launchconfigs_image_mapping(self):
         launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.launch_configs]
@@ -150,9 +149,10 @@ class LaunchConfigView(BaseView):
         super(LaunchConfigView, self).__init__(request)
         self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.launch_config = self.get_launch_config()
-        self.image = self.get_image()
-        self.security_groups = self.get_security_groups()
+        with boto_error_handler(request):
+            self.launch_config = self.get_launch_config()
+            self.image = self.get_image()
+            self.security_groups = self.get_security_groups()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
@@ -172,18 +172,14 @@ class LaunchConfigView(BaseView):
     def launchconfig_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('launchconfigs')
+            prefix = _(u'Unable to delete launch configuration')
+            template = '{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
+            with boto_error_handler(self.request, location, template):
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except BotoServerError as err:
-                prefix = _(u'Unable to delete launch configuration')
-                msg = '{0} {1} - {2}'.format(prefix, self.launch_config.name, err.message)
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_path('launchconfigs')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
 
@@ -232,7 +228,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         super(CreateLaunchConfigView, self).__init__(request)
         self.request = request
         self.image = self.get_image()
-        self.securitygroups = self.get_security_groups()
+        with boto_error_handler(request):
+            self.securitygroups = self.get_security_groups()
+            self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
@@ -243,7 +241,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.images_json_endpoint = self.request.route_path('images_json')
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
         self.securitygroup_choices_json = json.dumps(dict(self.create_form.securitygroup.choices))
@@ -277,7 +274,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             autoscale_conn = self.get_connection(conn_type='autoscale')
             location = self.request.route_path('launchconfigs')
             image_id = self.image.id
-            name=self.request.params.get('name')
+            name = self.request.params.get('name')
             key_name = self.request.params.get('keypair')
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
@@ -287,7 +284,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json else None
-            try:
+            with boto_error_handler(self.request, location):
                 launch_config = LaunchConfiguration(
                     name=name,
                     image_id=image_id,
@@ -301,14 +298,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                     instance_monitoring=monitoring_enabled,
                 )
                 autoscale_conn.create_launch_configuration(launch_config=launch_config)
-                time.sleep(2)
                 msg = _(u'Successfully sent create launch configuration request. '
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
-            except BotoServerError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
         return self.render_dict
 
