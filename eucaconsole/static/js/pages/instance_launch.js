@@ -37,11 +37,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.preventFormSubmitOnEnter();
             $scope.watchTags();
             $scope.focusEnterImageID();
-            if( $scope.imageID == '' ){
-                $scope.currentStepIndex = 1;
-            }else{
-                $scope.currentStepIndex = 2;
-            }
             $scope.setWatcher();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
@@ -63,6 +58,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
+            if( $scope.imageID == '' ){
+                $scope.currentStepIndex = 1;
+            }else{
+                $scope.currentStepIndex = 2;
+            }
         };
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
