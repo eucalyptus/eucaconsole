@@ -450,8 +450,7 @@ class UserView(BaseView):
                 acct=account, user=self.user.user_name), 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully set user password"), results="true")
         except BotoServerError as err:  # catch error in password change
-            # TODO: Leverage common error code, if only to extract message
-            return self.getJSONErrorResponse(err)  # FIXME: Broken reference
+            return BaseView.handle_error(err)
         except HTTPError, err:          # catch error in authentication
             if err.msg == 'Unauthorized':
                 err.msg = _(u"The password you entered is incorrect.")
