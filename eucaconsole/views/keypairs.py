@@ -5,7 +5,7 @@ Pyramid views for Eucalyptus and AWS key pairs
 """
 import simplejson as json
 
-from boto.exception import EC2ResponseError
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -14,6 +14,7 @@ from pyramid.response import Response
 from ..forms.keypairs import KeyPairForm, KeyPairImportForm, KeyPairDeleteForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
+from . import boto_error_handler
 
 
 class KeyPairsView(LandingPageView):
@@ -53,15 +54,19 @@ class KeyPairsJsonView(BaseView):
     @view_config(route_name='keypairs_json', renderer='json', request_method='GET')
     def keypairs_json(self):
         keypairs = []
-        for keypair in self.get_items():
-            keypairs.append(dict(
-                name=keypair.name,
-                fingerprint=keypair.fingerprint,
-            ))
-        return dict(results=keypairs)
+        with boto_error_handler(self.request):
+            for keypair in self.get_items():
+                keypairs.append(dict(
+                    name=keypair.name,
+                    fingerprint=keypair.fingerprint,
+                ))
+            return dict(results=keypairs)
 
     def get_items(self):
-        return self.conn.get_all_key_pairs() if self.conn else []
+        ret = []
+        if self.conn:
+            ret = self.conn.get_all_key_pairs()
+        return ret
 
 
 class KeyPairView(BaseView):
@@ -74,7 +79,8 @@ class KeyPairView(BaseView):
         self.keypair = self.get_keypair()
         self.keypair_route_id = self.request.matchdict.get('id')
         self.keypair_form = KeyPairForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
-        self.keypair_import_form = KeyPairImportForm(self.request, keypair=self.keypair, formdata=self.request.params or None)
+        self.keypair_import_form = KeyPairImportForm(
+            self.request, keypair=self.keypair, formdata=self.request.params or None)
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,
@@ -94,7 +100,7 @@ class KeyPairView(BaseView):
         if self.conn:
             try:
                 keypairs = self.conn.get_all_key_pairs(keynames=keypairs_param)
-            except EC2ResponseError as err:
+            except BotoServerError as err:
                 return None
         keypair = keypairs[0] if keypairs else None
         return keypair 
@@ -112,8 +118,9 @@ class KeyPairView(BaseView):
 
     def get_keypair_names(self):
         keypairs = []
-        if self.conn:
-            keypairs = [k.name for k in self.conn.get_all_key_pairs()]
+        with boto_error_handler(self.request):
+            if self.conn:
+                keypairs = [k.name for k in self.conn.get_all_key_pairs()]
         return sorted(set(keypairs))
 
     @view_config(route_name='keypair_create', request_method='POST', renderer=TEMPLATE)
@@ -122,7 +129,8 @@ class KeyPairView(BaseView):
             name = self.request.params.get('name')
             session = self.request.session
             new_keypair = None
-            try:
+            location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, location):
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
                 self._store_file_(new_keypair.name+".pem",
@@ -130,12 +138,7 @@ class KeyPairView(BaseView):
                                   new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                queue = Notification.SUCCESS
-                status = 200
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-                status = getattr(err, 'status', 400)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             if self.request.is_xhr:
                 import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
@@ -143,7 +146,6 @@ class KeyPairView(BaseView):
                 return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
                 location = self.request.route_path('keypair_view', id=name)
-                self.request.session.flash(msg, queue=queue)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
             form_errors = ', '.join(self.keypair_form.get_errors_list())
@@ -159,17 +161,13 @@ class KeyPairView(BaseView):
             key_material = self.request.params.get('key_material')
             msg = ""
             material = ""
-            try:
+            location = self.request.route_path('keypair_view', id=name)
+            with boto_error_handler(self.request, location):
                 new_keypair = self.conn.import_key_pair(name, key_material)
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            location = self.request.route_path('keypair_view', id=name)
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
         return self.render_dict
@@ -178,17 +176,12 @@ class KeyPairView(BaseView):
     def keypair_delete(self):
         if self.delete_form.validate():
             name = self.request.params.get('name')
-            try:
+            location = self.request.route_path('keypairs')
+            with boto_error_handler(self.request, location):
                 self.conn.delete_key_pair(name)
                 prefix = _(u'Successfully deleted keypair')
                 msg = '{0} {1}'.format(prefix, name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            notification_msg = msg
-            self.request.session.flash(notification_msg, queue=queue)
-            location = self.request.route_path('keypairs')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
         return self.render_dict

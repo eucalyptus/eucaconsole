@@ -7,11 +7,9 @@ import base64
 from dateutil import parser
 from operator import attrgetter
 import simplejson as json
-import time
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
-from boto.exception import EC2ResponseError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.i18n import TranslationString as _
@@ -29,6 +27,7 @@ from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
+from . import boto_error_handler
 
 
 class BaseInstanceView(BaseView):
@@ -40,19 +39,22 @@ class BaseInstanceView(BaseView):
     def get_instance(self, instance_id=None):
         instance_id = instance_id or self.request.matchdict.get('id')
         if instance_id:
-            reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
-            reservation = reservations_list[0] if reservations_list else None
-            if reservation:
-                instance = reservation.instances[0]
-                instance.groups = reservation.groups
-                instance.reservation_id = reservation.id
-                instance.owner_id = reservation.owner_id
-                if instance.platform is None:
-                    instance.platform = _(u"linux")
-                instance.instance_profile_id = None
-                if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
-                    instance.instance_profile_id = instance.instance_profile.keys()[0]
-                return instance
+            try:
+                reservations_list = self.conn.get_all_reservations(instance_ids=[instance_id])
+                reservation = reservations_list[0] if reservations_list else None
+                if reservation:
+                    instance = reservation.instances[0]
+                    instance.groups = reservation.groups
+                    instance.reservation_id = reservation.id
+                    instance.owner_id = reservation.owner_id
+                    if instance.platform is None:
+                        instance.platform = _(u"linux")
+                    instance.instance_profile_id = None
+                    if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
+                        instance.instance_profile_id = instance.instance_profile.keys()[0]
+                    return instance
+            except BotoServerError as err:
+                pass
         return None
 
     def get_image(self, instance=None, image_id=None):
@@ -60,11 +62,14 @@ class BaseInstanceView(BaseView):
         if image_id is None:
             image_id = self.request.matchdict.get('image_id') or self.request.params.get('image_id')
         if self.conn and image_id:
-            image = self.conn.get_image(image_id)
-            if image:
-                platform = ImageView.get_platform(image)
-                image.platform_name = ImageView.get_platform_name(platform)
-            return image
+            try:
+                image = self.conn.get_image(image_id)
+                if image:
+                    platform = ImageView.get_platform(image)
+                    image.platform_name = ImageView.get_platform_name(platform)
+                return image
+            except BotoServerError as err:
+                pass
         return None
 
 
@@ -126,18 +131,14 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.start_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 # Can only start an instance if it has a volume attached
                 instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to start instance')
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_stop', request_method='POST')
@@ -148,20 +149,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if instance_image.root_device_type == 'ebs':
-                try:
+                with boto_error_handler(self.request, self.location):
                     instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
-                    queue = Notification.SUCCESS
-                except EC2ResponseError as err:
-                    msg = err.message
-                    queue = Notification.ERROR
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
             else:
                 msg = _(u'Only EBS-backed instances can be stopped')
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to stop instance')
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_reboot', request_method='POST')
@@ -169,21 +166,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.reboot_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 rebooted = instance.reboot()
-                time.sleep(1)
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 if not rebooted:
                     msg = _(u'Unable to reboot the instance.')
-                    queue = Notification.ERROR
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                    self.request.session.flash(msg, queue=Notification.ERROR)
         else:
             msg = _(u'Unable to reboot instance')
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_terminate', request_method='POST')
@@ -191,38 +183,28 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 instance.terminate()
-                time.sleep(1)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to terminate instance')
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_batch_terminate', request_method='POST')
     def instances_batch_terminate(self):
         instance_ids = self.request.params.getall('instance_ids')
         if self.batch_terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.conn.terminate_instances(instance_ids=instance_ids)
-                time.sleep(4)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
                 msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to terminate instances')
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
 
@@ -285,10 +267,11 @@ class InstancesJsonView(LandingPageView):
     def get_items(self, filters=None):
         if self.conn:
             instances = []
-            for reservation in self.conn.get_all_reservations(filters=filters):
-                for instance in reservation.instances:
-                    instance.groups = reservation.groups
-                    instances.append(instance)
+            with boto_error_handler(self.request):
+                for reservation in self.conn.get_all_reservations(filters=filters):
+                    for instance in reservation.instances:
+                        instance.groups = reservation.groups
+                        instances.append(instance)
             return instances
         return []
 
@@ -345,52 +328,48 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
         if self.instance and self.instance_form.validate():
-            # Update tags
-            self.update_tags()
+            with boto_error_handler(self.request, self.location):
+                # Update tags
+                self.update_tags()
 
-            # Update assigned IP address
-            new_ip = self.request.params.get('ip_address')
-            if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
-                self.instance.use_ip(new_ip)
-                time.sleep(1)  # Give backend time to allocate IP address
+                # Update assigned IP address
+                new_ip = self.request.params.get('ip_address')
+                if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
+                    self.instance.use_ip(new_ip)
 
-            # Disassociate IP address
-            if new_ip == '':
-                self.disassociate_ip_address(ip_address=self.instance.ip_address)
+                # Disassociate IP address
+                if new_ip == '':
+                    self.disassociate_ip_address(ip_address=self.instance.ip_address)
 
-            # Update stopped instance
-            if self.instance.state == 'stopped':
-                instance_type = self.request.params.get('instance_type')
-                user_data = self.request.params.get('userdata')
-                kernel = self.request.params.get('kernel')
-                ramdisk = self.request.params.get('ramdisk')
-                self.instance.instance_type = instance_type
-                self.instance.user_data = user_data
-                self.instance.kernel = kernel
-                self.instance.ramdisk = ramdisk
-                self.instance.update()
+                # Update stopped instance
+                if self.instance.state == 'stopped':
+                    instance_type = self.request.params.get('instance_type')
+                    user_data = self.request.params.get('userdata')
+                    kernel = self.request.params.get('kernel')
+                    ramdisk = self.request.params.get('ramdisk')
+                    self.instance.instance_type = instance_type
+                    self.instance.user_data = user_data
+                    self.instance.kernel = kernel
+                    self.instance.ramdisk = ramdisk
+                    self.instance.update()
 
-            # Start instance if desired
-            if self.request.params.get('start_later'):
-                self.instance.start()
+                # Start instance if desired
+                if self.request.params.get('start_later'):
+                    self.instance.start()
 
-            msg = _(u'Successfully modified instance')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
+                msg = _(u'Successfully modified instance')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=self.location)
         return self.render_dict
 
     @view_config(route_name='instance_start', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_start(self):
         if self.instance and self.start_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 # Can only start an instance if it has a volume attached
                 self.instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -399,14 +378,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
-                try:
+                with boto_error_handler(self.request, self.location):
                     self.instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
-                    queue = Notification.SUCCESS
-                except EC2ResponseError as err:
-                    msg = err.message
-                    queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -414,34 +389,24 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_reboot(self):
         location = self.request.route_path('instance_view', id=self.instance.id)
         if self.instance and self.reboot_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 rebooted = self.instance.reboot()
-                time.sleep(1)
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
-                queue = Notification.SUCCESS
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 if not rebooted:
                     msg = _(u'Unable to reboot the instance.')
-                    queue = Notification.ERROR
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                    self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
         return self.render_dict
 
     @view_config(route_name='instance_terminate', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_terminate(self):
         if self.instance and self.terminate_form.validate():
-            try:
+            with boto_error_handler(self.request, self.location):
                 self.instance.terminate()
-                time.sleep(1)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
 
@@ -450,19 +415,18 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if not self.is_csrf_valid():
             return JSONResponse(status=400, message="missing CSRF token")
         instance_id = self.request.matchdict.get('id')
-        try:
-            passwd_data = self.conn.get_password_data(instance_id)
-            priv_key_string = self.request.params.get('key')
-            priv_key_string = base64.b64decode(priv_key_string)
-            user_priv_key = RSA.load_key_string(priv_key_string)
-            string_to_decrypt = base64.b64decode(passwd_data)
-            ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
-            return dict(results=dict(instance=instance_id, password=ret))
-        except RSA.RSAError as err: # likely, bad key
-            return JSONResponse(status=400, message=_(u"There was a problem with the key, please try again, verifying the correct private key is used."));
-        except BotoServerError as err:
-            logging.info("err = "+str(vars(err)))
-            return JSONResponse(status=400, message=err.message);
+        with boto_error_handler(self.request, self.location):
+            try:
+                passwd_data = self.conn.get_password_data(instance_id)
+                priv_key_string = self.request.params.get('key')
+                priv_key_string = base64.b64decode(priv_key_string)
+                user_priv_key = RSA.load_key_string(priv_key_string)
+                string_to_decrypt = base64.b64decode(passwd_data)
+                ret = user_priv_key.private_decrypt(string_to_decrypt, RSA.pkcs1_padding)
+                return dict(results=dict(instance=instance_id, password=ret))
+            except RSA.RSAError as err:  # likely, bad key
+                return JSONResponse(status=400, message=_(
+                    u"There was a problem with the key, please try again, verifying the correct private key is used."))
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
@@ -485,8 +449,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         elastic_ip = ip_addresses[0] if ip_addresses else None
         if elastic_ip:
             disassociated = elastic_ip.disassociate()
-            if disassociated:
-                time.sleep(1)  # Give backend time to disassociate IP address
 
 
 class InstanceStateView(BaseInstanceView):
@@ -509,7 +471,8 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_console_output_json', renderer='json', request_method='GET')
     def instance_console_output_json(self):
         """Return console output for instance"""
-        output = self.conn.get_console_output(instance_id=self.instance.id)
+        with boto_error_handler(self.request):
+            output = self.conn.get_console_output(instance_id=self.instance.id)
         return dict(results=output.output)
 
     # TODO: also in forms/instances.py, let's consolidate
@@ -531,7 +494,11 @@ class InstanceVolumesView(BaseInstanceView):
         super(InstanceVolumesView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.volumes = self.conn.get_all_volumes()
+        # fetching all volumes all the time is inefficient. should re-factor in the future
+        self.volumes = []
+        self.location = self.request.route_path('instance_volumes', id=self.request.matchdict.get('id'))
+        with boto_error_handler(request, self.location):
+            self.volumes = self.conn.get_all_volumes()
         self.instance = self.get_instance()
         self.attach_form = AttachVolumeForm(
             self.request, volumes=self.volumes, instance=self.instance, formdata=self.request.params or None)
@@ -580,40 +547,24 @@ class InstanceVolumesView(BaseInstanceView):
         if self.attach_form.validate():
             volume_id = self.request.params.get('volume_id')
             device = self.request.params.get('device')
-            volume = None
-            if volume_id:
-                volume_ids = [volume_id]
-                volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
-                volume = volumes[0] if volumes else None
-            if self.instance and volume and device:
+            if self.instance and volume_id and device:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
-                try:
-                    volume.attach(self.instance.id, device)
+                with boto_error_handler(self.request, location):
+                    self.conn.attach_volume(volume_id=volume_id, instance_id=self.instance.id, device=device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
-                    queue = Notification.SUCCESS
-                    time.sleep(1)
-                except EC2ResponseError as err:
-                    msg = err.message
-                    queue = Notification.ERROR
-                self.request.session.flash(msg, queue=queue)
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
 
     @view_config(route_name='instance_volume_detach', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_volume_detach(self):
         if self.detach_form.validate():
             volume_id = self.request.matchdict.get('volume_id')
-            volume = None
             if volume_id:
-                volume_ids = [volume_id]
-                volumes = self.conn.get_all_volumes(volume_ids=volume_ids)
-                volume = volumes[0] if volumes else None
-            if volume:
-                volume.detach()
-                time.sleep(1)
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
-                msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
-                queue = Notification.SUCCESS
-                self.request.session.flash(msg, queue=queue)
+                with boto_error_handler(self.request, location):
+                    self.conn.detach_volume(volume_id=volume_id)
+                    msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=location)
 
     def get_attached_volumes(self):
@@ -687,7 +638,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
-            try:
+            with boto_error_handler(self.request, self.location):
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
@@ -716,17 +667,14 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                             instance.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
 
     def get_security_groups(self):
         if self.conn:
-            return self.conn.get_all_security_groups()
+            with boto_error_handler(self.request, self.location):
+                return self.conn.get_all_security_groups()
         return []
 
     def get_securitygroups_rules(self):
@@ -780,7 +728,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
-            try:
+            with boto_error_handler(self.request, self.location):
                 for idx in range(num_instances):
                     reservation = self.conn.run_instances(
                         image_id,
@@ -808,14 +756,9 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                             # Don't copy 'Name' tag, and avoid tags that start with 'aws:'
                             if all([tagname != 'Name', not tagname.startswith('aws:')]):
                                 instance.add_tag(tagname, tagvalue)
-                time.sleep(2)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.launch_more_form.get_errors_list()

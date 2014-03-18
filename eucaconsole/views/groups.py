@@ -9,7 +9,6 @@ import simplejson as json
 from urllib import urlencode
 
 from boto.exception import BotoServerError
-from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -17,6 +16,7 @@ from pyramid.view import view_config
 from ..forms.groups import GroupForm, GroupUpdateForm, DeleteGroupForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
+from . import boto_error_handler
 
 
 class GroupsView(LandingPageView):
@@ -67,13 +67,13 @@ class GroupsJsonView(BaseView):
             try:
                 policies = self.conn.get_all_group_policies(group_name=group.group_name)
                 policies = policies.policy_names
-            except EC2ResponseError as exc:
+            except BotoServerError as exc:
                 pass
             user_count = 0
             try:
                 group = self.conn.get_group(group_name=group.group_name)
-                user_count=len(group.users) if hasattr(group, 'users') else 0
-            except EC2ResponseError as exc:
+                user_count = len(group.users) if hasattr(group, 'users') else 0
+            except BotoServerError as exc:
                 pass
             groups.append(dict(
                 path=group.path,
@@ -85,10 +85,8 @@ class GroupsJsonView(BaseView):
         return dict(results=groups)
 
     def get_items(self):
-        try:
+        with boto_error_handler(self.request):
             return self.conn.get_all_groups().groups
-        except EC2ResponseError as exc:
-            return BaseView.handle_403_error(exc, request=self.request)
 
 
 class GroupView(BaseView):
@@ -122,9 +120,11 @@ class GroupView(BaseView):
         # Return None if the request is to create new group. Prob. No groupname "new" can be created
         if group_param == "new" or group_param is None:
             return None
-        group = []
-        if self.conn:
+        group = None
+        try:
             group = self.conn.get_group(group_name=group_param)
+        except BotoServerError as err:
+            pass
         return group
 
     @staticmethod
@@ -153,16 +153,12 @@ class GroupView(BaseView):
         if self.group_form.validate():
             new_group_name = self.request.params.get('group_name') 
             new_path = self.request.params.get('path')
-            try:
+            location = self.request.route_path('group_view', name=new_group_name)
+            with boto_error_handler(self.request, location):
                 self.conn.create_group(group_name=new_group_name, path=new_path)
                 msg_template = _(u'Successfully created group {group}')
                 msg = msg_template.format(group=new_group_name)
-                queue = Notification.SUCCESS
-            except EC2ResponseError as err:
-                msg = err.message
-                queue = Notification.ERROR
-            location = self.request.route_path('group_view', name=new_group_name)
-            self.request.session.flash(msg, queue=queue)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
 
         return self.render_dict
@@ -177,9 +173,10 @@ class GroupView(BaseView):
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
             if new_users is not None:
                 self.group_update_users( self.group.group_name, new_users)
-            if new_group_name is not None or new_path is not None:
-                self.group_update_name_and_path(new_group_name, new_path)
             location = self.request.route_path('group_view', name=this_group_name)
+            if new_group_name is not None or new_path is not None:
+                with boto_error_handler(self.request, location):
+                    self.group_update_name_and_path(new_group_name, new_path)
             return HTTPFound(location=location)
 
         return self.render_dict
@@ -191,28 +188,19 @@ class GroupView(BaseView):
         location = self.request.route_path('groups')
         if self.group is None:
             raise HTTPNotFound()
-        try:
+        with boto_error_handler(self.request, location):
             params = {'GroupName': self.group.group_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteGroup', params)
             msg = _(u'Successfully deleted group')
-            queue = Notification.SUCCESS
-        except BotoServerError as err:
-            msg = err.message
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
         return HTTPFound(location=location)
 
     def group_update_name_and_path(self, new_group_name, new_path):
         this_group_name = new_group_name if new_group_name is not None else self.group.group_name
-        try:
-            self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
-            msg_template = _(u'Successfully modified group {group}')
-            msg = msg_template.format(group=this_group_name)
-            queue = Notification.SUCCESS
-        except EC2ResponseError as err:
-            msg = err.message
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
+        self.conn.update_group(self.group.group_name, new_group_name=new_group_name, new_path=new_path)
+        msg_template = _(u'Successfully modified group {group}')
+        msg = msg_template.format(group=this_group_name)
+        self.request.session.flash(msg, queue=Notification.SUCCESS)
         return
 
     def group_update_users(self, group_name, new_users):
@@ -273,7 +261,7 @@ class GroupView(BaseView):
             msg_template = _(u'Successfully added user {user}')
             msg = msg_template.format(user=user)
             queue = Notification.SUCCESS
-        except EC2ResponseError as err:
+        except BotoServerError as err:
             msg = err.message
             queue = Notification.ERROR
 
@@ -285,7 +273,7 @@ class GroupView(BaseView):
             msg_template = _(u'Successfully removed user {user}')
             msg = msg_template.format(user=user)
             queue = Notification.SUCCESS
-        except EC2ResponseError as err:
+        except BotoServerError as err:
             msg = err.message
             queue = Notification.ERROR
 
@@ -294,16 +282,18 @@ class GroupView(BaseView):
     @view_config(route_name='group_policies_json', renderer='json', request_method='GET')
     def group_policies_json(self):
         """Return group policies list"""
-        policies = self.conn.get_all_group_policies(group_name=self.group.group_name)
-        return dict(results=policies.policy_names)
+        with boto_error_handler(self.request):
+            policies = self.conn.get_all_group_policies(group_name=self.group.group_name)
+            return dict(results=policies.policy_names)
 
     @view_config(route_name='group_policy_json', renderer='json', request_method='GET')
     def group_policy_json(self):
         """Return group policies list"""
-        policy_name = self.request.matchdict.get('policy')
-        policy = self.conn.get_group_policy(group_name=self.group.group_name, policy_name=policy_name)
-        parsed = json.loads(policy.policy_document)
-        return dict(results=json.dumps(parsed, indent=2))
+        with boto_error_handler(self.request):
+            policy_name = self.request.matchdict.get('policy')
+            policy = self.conn.get_group_policy(group_name=self.group.group_name, policy_name=policy_name)
+            parsed = json.loads(policy.policy_document)
+            return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='group_update_policy', request_method='POST', renderer='json')
     def group_update_policy(self):
@@ -311,13 +301,11 @@ class GroupView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         # calls iam:PutGroupPolicy
         policy = self.request.matchdict.get('policy')
-        try:
+        with boto_error_handler(self.request):
             policy_text = self.request.params.get('policy_text')
             result = self.conn.put_group_policy(
                 group_name=self.group.group_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated group policy"), results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='group_delete_policy', request_method='POST', renderer='json')
     def group_delete_policy(self):
@@ -325,9 +313,7 @@ class GroupView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         # calls iam:DeleteGroupPolicy
         policy = self.request.matchdict.get('policy')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.delete_group_policy(group_name=self.group.group_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted group policy"), results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
 

@@ -16,14 +16,15 @@ from urllib2 import HTTPError, URLError
 from urllib import urlencode
 
 from boto.exception import BotoServerError
-from boto.exception import EC2ResponseError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.users import UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm
+from ..forms.users import (
+    UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm)
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
+from . import boto_error_handler
 
 
 class PasswordGeneration(object):
@@ -77,7 +78,7 @@ class UsersView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         self.conn = self.get_connection(conn_type="iam")
-        try:
+        with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             result = self.conn.delete_login_profile(user_name=user_name)
             policy = {}
@@ -87,8 +88,6 @@ class UsersView(LandingPageView):
             policy['Statement'] = statements
             result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
             return dict(message=_(u"Successfully disabled user"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_enable', request_method='POST', renderer='json')
     def user_enable(self):
@@ -96,7 +95,7 @@ class UsersView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         self.conn = self.get_connection(conn_type="iam")
-        try:
+        with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
             random_password = self.request.params.get('random_password')
@@ -115,8 +114,6 @@ class UsersView(LandingPageView):
                 return dict(message=_(u"Successfully added users"), results="true")
             else:
                 return dict(message=_(u"Successfully enabled user"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
 
 class UsersJsonView(BaseView):
@@ -131,43 +128,40 @@ class UsersJsonView(BaseView):
     def users_json(self):
         users = []
         groups = []
-        try:
+        with boto_error_handler(self.request):
             groups = self.conn.get_all_groups()
             groups = groups.groups
             for g in groups:
                 info = self.conn.get_group(group_name=g.group_name)
                 g['users'] = info.users
-        except EC2ResponseError as exc:
-            pass
-        for user in self.get_items():
-            user_groups = []
-            for g in groups:
-                if user.user_name in [u.user_name for u in g.users]:
-                    user_groups.append(g.group_name)
-            users.append(dict(
-                path=user.path,
-                user_name=user.user_name,
-                user_id=user.user_id,
-                create_date=user.create_date,
-                num_groups=len(user_groups),
-                arn=user.arn,
-            ))
-        return dict(results=users)
+            for user in self.get_items():
+                user_groups = []
+                for g in groups:
+                    if user.user_name in [u.user_name for u in g.users]:
+                        user_groups.append(g.group_name)
+                users.append(dict(
+                    path=user.path,
+                    user_name=user.user_name,
+                    user_id=user.user_id,
+                    create_date=user.create_date,
+                    num_groups=len(user_groups),
+                    arn=user.arn,
+                ))
+            return dict(results=users)
 
     @view_config(route_name='user_summary_json', renderer='json', request_method='GET')
     def user_summary_json(self):
         user_param = self.request.matchdict.get('name')
-        user = self.conn.get_user(user_name=user_param)
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=user.user_name)
+            profile = self.conn.get_login_profiles(user_name=user_param)
             # this call returns 404 if no password found
             has_password = True
         except BotoServerError as err:
             pass
         user_enabled = True
         try:
-            policies = self.conn.get_all_user_policies(user_name=user.user_name)
+            policies = self.conn.get_all_user_policies(user_name=user_param)
             for policy in policies.policy_names:
                 if policy == self.EUCA_DENY_POLICY and has_password is False:
                     user_enabled = False
@@ -176,23 +170,21 @@ class UsersJsonView(BaseView):
         keys = []
         if user_enabled: # we won't spend time fetching the keys if the user is disabled
             try:
-                keys = self.conn.get_all_access_keys(user_name=user.user_name)
+                keys = self.conn.get_all_access_keys(user_name=user_param)
                 keys = [key for key in keys.list_access_keys_result.access_key_metadata if key.status == 'Active']
-            except EC2ResponseError as exc:
+            except BotoServerError as exc:
                 pass
 
         return dict(results=dict(
-                user_name=user.user_name,
+                user_name=user_param,
                 num_keys=len(keys),
                 has_password=has_password,
                 user_enabled=user_enabled,
             ))
 
     def get_items(self):
-        try:
+        with boto_error_handler(self.request):
             return self.conn.get_all_users().users
-        except BotoServerError as exc:
-            return BaseView.handle_403_error(exc, request=self.request)
 
 
 class UserView(BaseView):
@@ -204,7 +196,8 @@ class UserView(BaseView):
     def __init__(self, request):
         super(UserView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
-        self.user = self.get_user()
+        with boto_error_handler(request, request.current_route_url()):
+            self.user = self.get_user()
         if self.user is None:
             self.location = self.request.route_path('users')
         else:
@@ -267,40 +260,45 @@ class UserView(BaseView):
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
     def user_keys_json(self):
         """Return user access keys list"""
-        keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
-        return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
+        with boto_error_handler(self.request):
+            keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
+            return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
         """Return user groups list"""
-        groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
-        for g in groups.groups:
-            g['title'] = g.group_name
-        return dict(results=groups.groups)
+        with boto_error_handler(self.request):
+            groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
+            for g in groups.groups:
+                g['title'] = g.group_name
+            return dict(results=groups.groups)
 
     @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
     def user_avail_groups_json(self):
         """Return groups this user isn't part of"""
-        taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
-        all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
-        avail_groups = list(set(all_groups) - set(taken_groups))
-        if len(avail_groups) == 0:
-            avail_groups.append(_(u"User already a member of all groups"))
-        return dict(results=avail_groups)
+        with boto_error_handler(self.request):
+            taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
+            all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
+            avail_groups = list(set(all_groups) - set(taken_groups))
+            if len(avail_groups) == 0:
+                avail_groups.append(_(u"User already a member of all groups"))
+            return dict(results=avail_groups)
 
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
     def user_policies_json(self):
         """Return user policies list"""
-        policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
-        return dict(results=policies.policy_names)
+        with boto_error_handler(self.request):
+            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            return dict(results=policies.policy_names)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
     def user_policy_json(self):
         """Return user policies list"""
-        policy_name = self.request.matchdict.get('policy')
-        policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
-        parsed = json.loads(policy.policy_document)
-        return dict(results=json.dumps(parsed, indent=2))
+        with boto_error_handler(self.request):
+            policy_name = self.request.matchdict.get('policy')
+            policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
+            parsed = json.loads(policy.policy_document)
+            return dict(results=json.dumps(parsed, indent=2))
 
     @view_config(route_name='user_create', renderer='json', request_method='POST')
     def user_create(self):
@@ -318,7 +316,7 @@ class UserView(BaseView):
        
         session = self.request.session
         account=session['account']
-        try:
+        with boto_error_handler(self.request):
             user_list = []
             if users_json:
                 users = json.loads(users_json)
@@ -400,27 +398,23 @@ class UserView(BaseView):
             self._store_file_("{acct}-users.csv".format(acct=account),
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully added users"), results="true")
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
         """ calls iam:UpdateUser """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        try:
+        with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', None)
             path = self.request.params.get('path', None)
             if new_name == self.user.user_name:
                 new_name = None
             result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
-            self.user.path = path;
+            self.user.path = path
             if self.user.user_name != new_name:
                 pass # TODO: need to force view refresh if name changes
             return dict(message=_(u"Successfully updated user information"),
                         results=self.user)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_change_password', request_method='POST', renderer='json')
     def user_change_password(self):
@@ -452,24 +446,24 @@ class UserView(BaseView):
             csv_w = csv.writer(string_output)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
-                        'text/csv', string_output.getvalue())
+            self._store_file_("{acct}-{user}-login.csv".format(
+                acct=account, user=self.user.user_name), 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully set user password"), results="true")
         except BotoServerError as err:  # catch error in password change
-            return JSONResponse(status=400, message=err.message);
+            return BaseView.handle_error(err)
         except HTTPError, err:          # catch error in authentication
             if err.msg == 'Unauthorized':
                 err.msg = _(u"The password you entered is incorrect.")
-            return JSONResponse(status=401, message=err.msg);
+            return JSONResponse(status=401, message=err.msg)
         except URLError, err:           # catch error in authentication
-            return JSONResponse(status=401, message=err.msg);
+            return JSONResponse(status=401, message=err.msg)
 
     @view_config(route_name='user_random_password', request_method='POST', renderer='json')
     def user_random_password(self):
         """ calls iam:UpdateLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        try:
+        with boto_error_handler(self.request):
             new_pass = PasswordGeneration.generatePassword()
             try:
                 # try to fetch login profile.
@@ -488,26 +482,22 @@ class UserView(BaseView):
             self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated user password"), results="true")
-        except BotoServerError as err:  # catch error in password change
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
     def user_delete_password(self):
         """ calls iam:DeleteLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        try:
+        with boto_error_handler(self.request):
             self.conn.delete_login_profile(user_name=self.user.user_name)
             return dict(message=_(u"Successfully deleted user password"), results="true")
-        except BotoServerError as err:  # catch error in password delete
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
     def user_genKeys(self):
         """ calls iam:CreateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.create_access_key(user_name=self.user.user_name)
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -518,8 +508,6 @@ class UserView(BaseView):
                         user=self.user.user_name, key=result.access_key.access_key_id),
                         'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated access keys"), results="true")
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
     def user_delete_key(self):
@@ -527,11 +515,9 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
             return dict(message=_(u"Successfully deleted key"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
     def user_deactivate_key(self):
@@ -539,11 +525,9 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
             return dict(message=_(u"Successfully deactivated key"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
     def user_activate_key(self):
@@ -551,11 +535,9 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
             return dict(message=_(u"Successfully activated key"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
     def user_add_to_group(self):
@@ -563,12 +545,10 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
             return dict(message=_(u"Successfully added user to group"),
                         results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_remove_from_group', request_method='POST', renderer='json')
     def user_remove_from_group(self):
@@ -576,12 +556,10 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
             return dict(message=_(u"Successfully removed user to group"),
                         results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     @view_config(route_name='user_delete', request_method='POST')
     def user_delete(self):
@@ -589,19 +567,14 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
-        try:
+        with boto_error_handler(self.request):
             params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteUser', params)
             
             location = self.request.route_path('users')
             msg = _(u'Successfully deleted user')
-            queue = Notification.SUCCESS
-        except BotoServerError as err:
-            location = self.location
-            msg = err.message
-            queue = Notification.ERROR
-        self.request.session.flash(msg, queue=queue)
-        return HTTPFound(location=location)
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
 
     @view_config(route_name='user_update_policy', request_method='POST', renderer='json')
     def user_update_policy(self):
@@ -609,13 +582,11 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         policy = str(self.request.matchdict.get('policy'))
-        try:
+        with boto_error_handler(self.request):
             policy_text = self.request.params.get('policy_text')
             result = self.conn.put_user_policy(
                 user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
             return dict(message=_(u"Successfully updated user policy"), results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
     def user_delete_policy(self):
@@ -623,11 +594,9 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         policy = self.request.matchdict.get('policy')
-        try:
+        with boto_error_handler(self.request):
             result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted user policy"), results=result)
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
     def user_update_quotas(self):
@@ -636,7 +605,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
-        try:
+        with boto_error_handler(self.request):
             # load all policies for this user
             policy_list = []
             policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
@@ -711,8 +680,6 @@ class UserView(BaseView):
                     self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
                                               json.dumps(new_policy))
             return dict(message=_(u"Successfully updated user policy"))
-        except BotoServerError as err:
-            return JSONResponse(status=400, message=err.message);
 
     def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
         new_limit = self.request.params.get(param, '')
