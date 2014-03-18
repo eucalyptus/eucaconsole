@@ -38,6 +38,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             if (jsonEndpoint) {
                 $scope.getSnapshotState();
             }
+            $scope.setFocus();
         };
         $scope.getSnapshotState = function () {
             $http.get($scope.snapshotStatusEndpoint).success(function(oData) {
@@ -61,6 +62,10 @@ angular.module('SnapshotPage', ['TagEditor'])
                 }
             });
         };
+        $scope.setFocus = function () {
+            $('input#name').focus();
+        };
+
     })
 ;
 
