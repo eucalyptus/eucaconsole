@@ -269,13 +269,11 @@ class InstancesJsonView(LandingPageView):
     def get_items(self, filters=None):
         if self.conn:
             instances = []
-            try:
+            with boto_error_handler(self.request):
                 for reservation in self.conn.get_all_reservations(filters=filters):
                     for instance in reservation.instances:
                         instance.groups = reservation.groups
                         instances.append(instance)
-            except BotoServerError as err:
-                pass
             return instances
         return []
 

@@ -31,7 +31,6 @@ class IAMPolicyWizardView(BaseView):
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
-        # tend to think a constructor should *not* do stuff that will throw exceptions, but here we are
         with boto_error_handler(request):
             self.choices_manager = ChoicesManager(conn=self.ec2_conn)
             self.render_dict = dict(
