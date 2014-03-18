@@ -8,6 +8,7 @@ angular.module('KeypairPage', [])
     .controller('KeypairPageCtrl', function ($scope) {
         $scope.initController = function () {
             $scope.setWatch();
+            $scope.setFocus();
         };
         $scope.setWatch = function () {
             // JAVASCRIPT SNIPPET TAKEN FROM 3.4.1 TO ADD A LISTENER TO THE FILE UPLOAD INPUTBOX
@@ -21,6 +22,9 @@ angular.module('KeypairPage', [])
                 }
                 reader.readAsText(file);
             });
+        };
+        $scope.setFocus = function () {
+            $('input#key-name').focus();
         };
     })
 ;
