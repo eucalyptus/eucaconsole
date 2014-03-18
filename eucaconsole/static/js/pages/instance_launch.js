@@ -36,7 +36,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.preventFormSubmitOnEnter();
             $scope.watchTags();
             $scope.focusEnterImageID();
-            $scope.setFocus();
+            if( $scope.imageID == '' ){
+                $scope.setWizardFocus(1);
+            }else{
+                $scope.setWizardFocus(2);
+            }
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
@@ -86,17 +90,21 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             url += '?image_id=' + $scope.imageID;
             document.location.href = url;
         };
-        $scope.setFocus = function () {
-            $(document).on('opened', '[data-reveal]', function () {
-                var modal = $(this);
-                var inputElement = modal.find('input[type!=hidden]').get(0);
-                var modalButton = modal.find('button').get(0);
-                if (!!inputElement) {
-                    inputElement.focus();
-                } else if (!!modalButton) {
-                    modalButton.focus();
-                }
-            });
+        $scope.setWizardFocus = function (stepIdx) {
+            var modal = $('div').filter("#step" + stepIdx);
+            var inputElement = modal.find('input[type!=hidden]').get(0);
+            var textareaElement = modal.find('textarea[class!=hidden]').get(0);
+            var selectElement = modal.find('select').get(0);
+            var modalButton = modal.find('button').get(0);
+            if (!!textareaElement){
+                textareaElement.focus();
+            } else if (!!inputElement) {
+                inputElement.focus();
+            } else if (!!selectElement) {
+                selectElement.focus();
+            } else if (!!modalButton) {
+                modalButton.focus();
+            }
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -113,6 +121,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#tabStep' + nextStep).click();
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+            $scope.setWizardFocus(nextStep);
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
