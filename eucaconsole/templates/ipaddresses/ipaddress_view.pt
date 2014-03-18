@@ -7,7 +7,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="">
+    <div class="row" id="contentwrap" ng-app="ElasticIPPage" ng-controller="ElasticIPPageCtrl" ng-init="initController()"> 
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
@@ -74,11 +74,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#instance_id').chosen({'width': '80%'});
-        });
-    </script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/ipaddress.js')}"></script>
 </div>
 
 </metal:block>
