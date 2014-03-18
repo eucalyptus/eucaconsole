@@ -55,6 +55,37 @@
 
 
 /* -----------------------------------------
+   Fonts
+----------------------------------------- */
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(../fonts/Lato/Lato-Regular.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(../fonts/Lato/Lato-Bold.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Oswald Regular'), local('Oswald-Regular'), url(../fonts/Oswald/Oswald-Regular.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Oswald Bold'), local('Oswald-Bold'), url(../fonts/Oswald/Oswald-Bold.woff) format('woff');
+}
+
+/* -----------------------------------------
    Master Layout
 ----------------------------------------- */
 html {

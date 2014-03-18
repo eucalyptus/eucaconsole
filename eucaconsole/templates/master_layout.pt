@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/fonts/foundation/foundation-icons.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/thirdparty/chosen.min.css')}" />
-    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700|Oswald:300,400,700' rel='stylesheet' type='text/css' />
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/eucaconsole.css')}"
           type="text/css" media="screen" charset="utf-8" />
     <meta metal:define-slot="head_css" />
