@@ -23,7 +23,7 @@ angular.module('InstancesPage', ['LandingPage'])
         $scope.revealModal = function (action, instance) {
             var modal = $('#' + action + '-instance-modal');
             $scope.instanceID = instance['id'];
-            $scope.instance_name = instance['name'];
+            $scope.instanceName = instance['name'];
             $scope.rootDevice = instance['root_device'];
             $scope.groupName = instance['security_groups'][0].name;
             $scope.keyName = instance['key_name'];
@@ -66,7 +66,7 @@ angular.module('InstancesPage', ['LandingPage'])
         };
         $scope.revealConsoleOutputModal = function(instance) {
             $(document).trigger('click');
-            $scope.instance_name = instance['name'];
+            $scope.instanceName = instance['name'];
             var consoleOutputEndpoint = "/instances/" + instance['id'] + "/consoleoutput/json";
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
