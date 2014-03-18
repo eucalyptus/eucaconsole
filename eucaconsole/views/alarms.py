@@ -4,11 +4,9 @@ Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
 from boto.ec2.cloudwatch import MetricAlarm
-from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
-from pyramid.response import Response
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS

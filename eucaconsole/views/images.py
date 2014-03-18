@@ -6,7 +6,6 @@ Pyramid views for Eucalyptus and AWS images
 import re
 
 from beaker.cache import cache_region, cache_managers
-from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -14,7 +13,7 @@ from pyramid.view import view_config
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView, TaggedItemView
+from ..views import LandingPageView, TaggedItemView
 from . import boto_error_handler
 
 

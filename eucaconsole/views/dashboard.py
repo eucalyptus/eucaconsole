@@ -3,7 +3,6 @@
 Pyramid views for Dashboard
 
 """
-from boto.exception import BotoServerError
 from pyramid.view import view_config
 from . import BaseView
 from . import boto_error_handler

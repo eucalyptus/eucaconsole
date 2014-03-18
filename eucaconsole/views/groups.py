@@ -72,7 +72,7 @@ class GroupsJsonView(BaseView):
             user_count = 0
             try:
                 group = self.conn.get_group(group_name=group.group_name)
-                user_count=len(group.users) if hasattr(group, 'users') else 0
+                user_count = len(group.users) if hasattr(group, 'users') else 0
             except BotoServerError as exc:
                 pass
             groups.append(dict(
