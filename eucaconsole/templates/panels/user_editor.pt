@@ -16,15 +16,15 @@
         </div>
         <div class="row">
             <div class="columns subheader">
-                <span i18n:translate="" ng-show="usersArray.length">Add another user</span><span
-                      ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
+                <span ng-show="usersArray.length" i18n:translate="">Add another user</span>
+                <span ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
             </div>
         </div>
         <div class="row userentry controls-wrapper">
             <div>
                 <div class="small-12 columns">
                     <input class="userinput name" placeholder="name..." ng-model="newUserName" ng-keypress="keyListener($event)"/>
-                    <small class="error" i18n:translate="">What??</small>
+                    <small class="error" i18n:translate="">Must have at least one user</small>
                 </div>
                 <!--
                 <div class="small-8 columns">
