@@ -30,11 +30,14 @@ class IAMPolicyWizardView(BaseView):
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
         self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
         self.target_name = self.request.params.get('id', '')  # user or group name
+        self.target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
+        self.location = self.request.route_path(self.target_route, name=self.target_name)
         with boto_error_handler(request):
             self.choices_manager = ChoicesManager(conn=self.ec2_conn)
             self.render_dict = dict(
                 page_title=self.get_page_title(),
                 create_form=self.create_form,
+                cancel_link_url=self.location,
                 policy_json_endpoint=self.policy_json_endpoint,
                 policy_actions=permissions.POLICY_ACTIONS,
                 controller_options=json.dumps(self.get_controller_options()),
@@ -58,12 +61,11 @@ class IAMPolicyWizardView(BaseView):
     @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
-        target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
-        location = self.request.route_path(target_route, name=self.target_name)  # redirect to detail page after submit
+        # redirect to detail page after submit
         if self.create_form.validate():
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
-            with boto_error_handler(self.request, location):
+            with boto_error_handler(self.request, self.location):
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
@@ -72,7 +74,7 @@ class IAMPolicyWizardView(BaseView):
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+            return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
