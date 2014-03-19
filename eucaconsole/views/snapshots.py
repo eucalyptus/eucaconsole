@@ -54,8 +54,11 @@ class SnapshotsView(LandingPageView):
     @view_config(route_name='snapshots_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_delete(self):
         snapshot_id = self.request.params.get('snapshot_id')
+        volume_id = self.request.params.get('volume_id')
         snapshot = self.get_snapshot(snapshot_id)
-        location = self.request.params.get('redirect_url') if self.request.params.get('redirect_url') else self.get_redirect_location('snapshots')
+        location = self.get_redirect_location('snapshots')
+        if volume_id:
+            location = self.request.route_path('volume_snapshots', id=volume_id)
         if snapshot and self.delete_form.validate():
             with boto_error_handler(self.request, location):
                 snapshot.delete()

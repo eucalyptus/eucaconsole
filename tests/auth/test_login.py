@@ -10,6 +10,7 @@ from pyramid.testing import DummyRequest
 
 from eucaconsole.forms.login import AWSLoginForm, EucaLoginForm
 from eucaconsole.models.auth import AWSAuthenticator, EucaAuthenticator, User, groupfinder
+from eucaconsole.views import BaseView
 from tests import BaseTestCase, BaseFormTestCase
 
 
@@ -87,3 +88,14 @@ class UserTestCase(BaseTestCase):
         request = DummyRequest()
         groups = groupfinder(user_id=None, request=request)
         self.assertEqual(groups, [])
+
+
+class ArbitraryRedirectTestCase(BaseTestCase):
+    def test_redirect_with_extra_slash_in_scheme(self):
+        unsafe_url = 'http:///www.example.com/'
+        self.assertEqual(BaseView.sanitize_url(unsafe_url), '/')
+
+    def test_path_redirect(self):
+        url = 'http://www.example.com/foo/bar'
+        self.assertEqual(BaseView.sanitize_url(url), '/foo/bar')
+
