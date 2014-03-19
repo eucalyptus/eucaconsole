@@ -100,7 +100,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('snapshot_dialogs', delete_form=delete_form, register_form=register_form, landingpage=True, from_volume_page=True)}
+        ${panel('snapshot_dialogs', delete_form=delete_form, register_form=register_form, landingpage=True, volume_id=volume.id)}
     </div>
 </div>
 

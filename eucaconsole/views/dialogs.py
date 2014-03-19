@@ -21,14 +21,14 @@ def ipaddress_dialogs(context, request, eip=None, landingpage=False,
 
 
 @panel_config('snapshot_dialogs', renderer='../templates/dialogs/snapshot_dialogs.pt')
-def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, from_volume_page=False, 
+def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landingpage=False, volume_id=None,
                      delete_form=None, register_form=None):
     """Modal dialogs for Snapshot landing and detail page."""
     return dict(
         snapshot=snapshot,
         snapshot_name=snapshot_name,
         landingpage=landingpage,
-        from_volume_page=from_volume_page,
+        volume_id=volume_id,
         delete_form=delete_form,
         register_form=register_form,
     )
