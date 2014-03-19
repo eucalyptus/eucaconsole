@@ -27,10 +27,7 @@ class ChangePasswordView(BaseView):
         changepassword_url = self.request.route_path('changepassword')
         if referrer_root in [changepassword_url]:
             referrer = '/'  # never use the changepassword form itself as came_from
-        came_from = self.request.params.get('came_from', referrer)
-        if bool(urlparse(came_from).netloc):
-            came_from = '/'  # Prevent arbitrary redirects
-        self.came_from = came_from or '/'
+        self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.changepassword_form_errors = []
 
     @view_config(route_name='changepassword', request_method='GET', renderer=template, permission=NO_PERMISSION_REQUIRED)

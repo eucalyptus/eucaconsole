@@ -8,6 +8,7 @@ from contextlib import contextmanager
 import simplejson as json
 import textwrap
 from urllib import urlencode
+from urlparse import urlparse
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
@@ -101,6 +102,20 @@ class BaseView(object):
     def _has_file_(self):
         session = self.request.session
         return 'file_cache' in session
+
+    @staticmethod
+    def sanitize_url(url):
+        default_path = '/'
+        if not url:
+            return default_path
+        parsed_url = urlparse(url)
+        scheme = parsed_url.scheme
+        netloc = parsed_url.netloc
+        if scheme:
+            if not netloc:  # Prevent arbitrary redirects when url scheme has extra slash e.g. "http:///example.com"
+                return default_path
+            url = parsed_url.path
+        return url or default_path
 
     @staticmethod
     def invalidate_cache():
