@@ -101,19 +101,23 @@ class ImagesJsonView(LandingPageView):
         owners = [owner_alias] if owner_alias else []
         conn = self.get_connection()
         region = self.request.session.get('region')
-        return self.get_images(conn, owners, region)
+        items = self.get_images(conn, owners, [], region)
+        # This is to included shared images in the owned images list per GUI-374
+        if owner_alias == 'self':
+            items.extend(self.get_images(conn, [], ['self'], region))
+        return items
 
-    def get_images(self, conn, owners, region):
+    def get_images(self, conn, owners, executors, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        cache_key = 'images_cache_{owners}_{region}'.format(owners=owners, region=region)
+        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(owners=owners, executors=executors, region=region)
 
         # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
-        def _get_images_cache(_owners, _region):
+        def _get_images_cache(_owners, _executors, _region):
             with boto_error_handler(self.request):
                 filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=_owners, filters=filters) if conn else []
-        return _get_images_cache(owners, region)
+                return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
+        return _get_images_cache(owners, executors, region)
 
     def filter_by_platform(self, items):
         filtered_items = []
