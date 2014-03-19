@@ -5,7 +5,7 @@
         <div tal:repeat="field filters_form" id="filterfieldwrapper_${field.short_name}">
             <div tal:condition="field.short_name != 'csrf_token'" tal:omit-tag="">
                 <label>${field.label}</label>
-                ${structure:field()}
+                <div ng-non-bindable="">${structure:field()}</div>
             </div>
         </div>
         <div>&nbsp;</div>

@@ -33,14 +33,15 @@ def landingpage_filters(context, request, filters_form=None):
 
 
 @panel_config('form_field', renderer='../templates/panels/form_field_row.pt')
-def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8, inline='', ng_attrs=None, **kwargs):
+def form_field_row(context, request, field=None, reverse=False, leftcol_width=4, rightcol_width=8,
+                   inline='', ng_attrs=None, **kwargs):
     """ Widget for a singe form field row.
         The left/right column widths are Zurb Foundation grid units.
             e.g. leftcol_width=3 would set column for labels with a wrapper of <div class="small-3 columns">...</div>
         Pass any HTML attributes to this widget as keyword arguments.
             e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
-    html_attrs = {}
+    html_attrs = {'ng-non-bindable': ''}
     error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
 
     # Add required="required" HTML attribute to form field if any "required" validators
