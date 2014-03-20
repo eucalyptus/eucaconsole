@@ -100,7 +100,7 @@
                                            ng-click="isLoggingIn=true">
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn">
-                                    <span i18n:translate="">Logging in</span> &nbsp;<em><span class="dots">&nbsp;</span></em>
+                                    <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
