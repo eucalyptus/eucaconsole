@@ -109,7 +109,7 @@
 
 .status.terminated { background-color: #777777; }
 
-.status.shuttingdown { background-color: lightgrey; }
+.status.shutting-down { background-color: lightgrey; }
 
 .table th, .table td { padding: 4px 7px; }
 .table .label { margin: 0 0 0 0; }
