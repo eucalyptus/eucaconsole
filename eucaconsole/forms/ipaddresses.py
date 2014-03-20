@@ -13,11 +13,10 @@ from . import BaseSecureForm, ChoicesManager
 
 class AllocateIPsForm(BaseSecureForm):
     """Allocate IP Addresses form, used on IP Addresses landing page in modal dialog"""
-    ipcount_error_msg = _(u'Invalid number')
-    ipcount = wtforms.TextField(
+    ipcount_error_msg = _(u'Please enter a whole number greater than zero')
+    ipcount = wtforms.IntegerField(
         label=_(u'Number to allocate:'),
         validators=[validators.InputRequired(message=ipcount_error_msg)],
-        widget=widgets.TextInput(),
     )
 
     def __init__(self, request, **kwargs):
