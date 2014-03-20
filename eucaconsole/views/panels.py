@@ -41,7 +41,7 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
         Pass any HTML attributes to this widget as keyword arguments.
             e.g. ${panel('form_field', field=the_field, readonly='readonly')}
     """
-    html_attrs = {'ng-non-bindable': ''}
+    html_attrs = {}
     error_msg = kwargs.get('error_msg') or getattr(field, 'error_msg', None) 
 
     # Add required="required" HTML attribute to form field if any "required" validators
