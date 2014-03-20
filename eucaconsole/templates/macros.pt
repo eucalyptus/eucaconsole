@@ -346,7 +346,7 @@
                 </tr>
             </tbody>
         </table>
-        <div i18n:translate="">Note: <code>/dev/sda1</code> is reserved for root device</div>
+        <div i18n:translate="">Note: <code>/dev/sda</code> is reserved for root device</div>
     </div>
 </metal:volumedevicehelp>
 

@@ -82,6 +82,7 @@ class SnapshotsView(LandingPageView):
         root_vol = BlockDeviceType(snapshot_id=snapshot_id)
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
+        # ok to keep this sda since we're setting new value
         bdm['/dev/sda'] = root_vol
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
@@ -199,7 +200,7 @@ class SnapshotView(TaggedItemView):
 
     def get_root_device_name(self, img):
         return img.root_device_name.replace('&#x2f;', '/').replace(
-            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda1'
+            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
 
     def get_images_registered(self, snap_id):
         ret = []
