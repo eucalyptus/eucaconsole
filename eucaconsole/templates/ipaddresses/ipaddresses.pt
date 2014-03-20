@@ -48,7 +48,7 @@
                         <a i18n:translate=""
                            ng-click="revealModal('associate', item)">Associate with instance</a>
                     </li>
-                    <li>
+                    <li ng-show="!item.instance_id">
                         <a i18n:translate=""
                            ng-click="revealModal('release', item)">Release to cloud</a>
                     </li>
@@ -74,7 +74,7 @@
                                 <a i18n:translate=""
                                    ng-click="revealModal('associate', item)">Associate with instance</a>
                             </li>
-                            <li><a i18n:translate=""
+                            <li ng-show="!item.instance_id"><a i18n:translate=""
                                    ng-click="revealModal('release', item)">Release to cloud</a>
                             </li>
                         </ul>
