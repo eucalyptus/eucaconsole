@@ -31,7 +31,7 @@ angular.module('Dashboard', [])
                 $scope.itemsLoading = false;
                 $scope.totals = results;
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
                     alert(errorMsg);
                     $('#euca-logout-form').submit();
@@ -39,6 +39,7 @@ angular.module('Dashboard', [])
             });
         };
         $scope.setZone = function (zone) {
+            $scope.itemsLoading = true;
             $scope.selectedZone = zone;
             localStorage.setItem($scope.storedZoneKey, zone);
             $scope.zoneDropdown.removeClass('open').removeAttr('style');
