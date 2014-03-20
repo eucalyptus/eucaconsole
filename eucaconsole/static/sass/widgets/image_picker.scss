@@ -20,7 +20,7 @@
                 display: inline-block;
                 width: 50px;
                 height: 50px;
-                background: url(/static/img/image-platform-icons.png) no-repeat top left;
+                background: url(../../img/image-platform-icons.png) no-repeat top left;
                 &.redhat { background-position: 0 0; }
                 &.fedora { background-position: 0 -51px; }
                 &.gentoo { background-position: 0 -101px; }

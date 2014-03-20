@@ -6,7 +6,7 @@
 #image-picker .table tbody { display: block; overflow-y: scroll; }
 #image-picker .table tbody td { word-break: break-all; }
 #image-picker .table .icon { padding: 15px; }
-#image-picker .table .icon .image { display: inline-block; width: 50px; height: 50px; background: url(/static/img/image-platform-icons.png) no-repeat top left; }
+#image-picker .table .icon .image { display: inline-block; width: 50px; height: 50px; background: url(../../img/image-platform-icons.png) no-repeat top left; }
 #image-picker .table .icon .image.redhat { background-position: 0 0; }
 #image-picker .table .icon .image.fedora { background-position: 0 -51px; }
 #image-picker .table .icon .image.gentoo { background-position: 0 -101px; }

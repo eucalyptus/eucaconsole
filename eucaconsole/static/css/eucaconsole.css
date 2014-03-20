@@ -1436,7 +1436,7 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 
 hr { border: 1px solid #777777; border-width: 1px 0 0; }
 
-.dots { display: inline-block; width: 16px; height: 11px; background-image: url(/static/img/ajax-loader.gif); }
+.dots { display: inline-block; width: 16px; height: 11px; background-image: url(../img/ajax-loader.gif); }
 
 a.has-tip { border-bottom: none !important; }
 
