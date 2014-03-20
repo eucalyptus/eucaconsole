@@ -43,7 +43,7 @@ angular.module('InstancePage', ['TagEditor'])
                     modal.foundation('reveal', 'open');
                 }
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || null;
+                var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
                     alert(errorMsg);
                     $('#euca-logout-form').submit();

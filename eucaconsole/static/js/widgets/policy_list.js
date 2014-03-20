@@ -106,7 +106,7 @@ angular.module('PolicyList', [])
                 $scope.codeEditor.setValue(results);
                 $scope.codeEditor.focus();
             }).error(function (oData, status) {
-                var errorMsg = oData['error'] || '';
+                var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
                     $('#euca-logout-form').submit();
                 }
