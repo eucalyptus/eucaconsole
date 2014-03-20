@@ -54,7 +54,10 @@ class CloudWatchAlarmsView(LandingPageView):
 
     @view_config(route_name='cloudwatch_alarms_create', renderer=TEMPLATE, request_method='POST')
     def cloudwatch_alarms_create(self):
-        location = self.request.params.get('redirect_location') or self.request.route_path('cloudwatch_alarms')
+        location = self.request.route_path('cloudwatch_alarms')
+        redirect_location = self.request.params.get('redirect_location')
+        if redirect_location:
+            location = self.sanitize_url(redirect_location)
         if self.create_form.validate():
             with boto_error_handler(self.request, location):
                 metric = self.request.params.get('metric')
