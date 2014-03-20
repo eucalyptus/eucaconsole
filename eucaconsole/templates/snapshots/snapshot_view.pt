@@ -148,10 +148,7 @@
             <p i18n:translate="">You must have volumes before you can create snapshots.</p>
             <form method="get" action="/volumes/new" id="update-form">
                 <div class="row">
-                    <div class="small-6 columns field inline">
-                        <input type="submit" class="button" value="Create New Volume"
-                               i18n:attributes="value"/>
-                    </div>
+                    <input type="submit" class="button expand" value="Create New Volume" i18n:attributes="value"/>
                 </div>
             </form>
             <a class="close-reveal-modal">&#215;</a>
