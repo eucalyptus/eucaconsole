@@ -32,11 +32,7 @@ def get_configurator(settings, enable_auth=True):
         config.set_authorization_policy(authz_policy)
         config.set_default_permission('view')
     config.add_request_method(User.get_auth_user, 'user', reify=True)
-    cache_duration=43200
-    try:
-        cache_duration = int(settings.get('static.cache.duration'))
-    except (KeyError, ValueError):
-        pass
+    cache_duration = int(settings.get('static.cache.duration', 43200))
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
