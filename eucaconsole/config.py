@@ -15,6 +15,11 @@ from .chamext import setup_exts
 from .keymgt import ensure_session_keys
 from .mime import check_types
 
+try:
+    from version import __version__
+except ImportError:
+    __version__ = 'DEVELOPMENT'
+
 
 def get_configurator(settings, enable_auth=True):
     ensure_session_keys(settings)
@@ -27,7 +32,8 @@ def get_configurator(settings, enable_auth=True):
         config.set_authorization_policy(authz_policy)
         config.set_default_permission('view')
     config.add_request_method(User.get_auth_user, 'user', reify=True)
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    cache_duration = int(settings.get('static.cache.duration', 43200))
+    config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
     for route in urls:
