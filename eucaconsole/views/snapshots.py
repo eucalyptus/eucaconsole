@@ -137,8 +137,10 @@ class SnapshotsJsonView(LandingPageView):
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))
         volumes = self.conn.get_all_volumes(volume_ids=volume_ids) if self.conn else []
         for snapshot in filtered_snapshots:
-            volume = [volume for volume in volumes if volume.id == snapshot.volume_id][0]
-            volume_name = TaggedItemView.get_display_name(volume)
+            volume = [volume for volume in volumes if volume.id == snapshot.volume_id]
+            volume_name = ''
+            if volume:
+                volume_name = TaggedItemView.get_display_name(volume[0])
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
