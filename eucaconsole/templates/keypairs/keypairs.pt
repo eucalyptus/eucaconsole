@@ -14,10 +14,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
-        <div class="large-2 columns" id="landing-page-filters">
-            <!--! Filters go here -->
-        </div>
+        <h3 id="pagetitle"><strong i18n:translate="">Key Pairs</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
                 <a class="button small" i18n:translate="" id="create-keypair-btn"
