@@ -58,10 +58,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" ng-model="isLoggingIn" ng-init="isLoggingIn=false">
                                 <div class="small-12 columns">
                                     <input type="submit" class="submit button"
-                                           id="euca-login-button" value="Log in to Eucalyptus" />
+                                           id="euca-login-button" value="Log in to Eucalyptus"
+                                           ng-click="isLoggingIn=true">
+                                </div>
+                                <div class="small-12 columns" ng-show="isLoggingIn">
+                                    <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
@@ -89,10 +93,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" ng-model="isLoggingIn" ng-init="isLoggingIn=false">
                                 <div class="small-12 columns">
                                     <input type="submit" class="submit button"
-                                           id="aws-login-button" value="Log in to AWS" />
+                                           id="aws-login-button" value="Log in to AWS"
+                                           ng-click="isLoggingIn=true">
+                                </div>
+                                <div class="small-12 columns" ng-show="isLoggingIn">
+                                    <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                                 </div>
                             </div>
                             <div>&nbsp;</div>
