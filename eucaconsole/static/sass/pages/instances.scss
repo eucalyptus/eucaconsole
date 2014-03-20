@@ -19,7 +19,7 @@ $instance-status-color-terminating: lightgrey;
 .status.stopped { background-color: $instance-status-color-stopped; }
 .status.stopping { background-color: $instance-status-color-stopping; }
 .status.terminated { background-color: $instance-status-color-terminated; }
-.status.shuttingdown { background-color: $instance-status-color-terminating; }
+.status.shutting-down { background-color: $instance-status-color-terminating; }
 
 
 

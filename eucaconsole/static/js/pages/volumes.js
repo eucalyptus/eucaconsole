@@ -5,11 +5,12 @@
  */
 
 angular.module('VolumesPage', ['LandingPage'])
-    .controller('VolumesCtrl', function ($scope) {
+    .controller('VolumesCtrl', function ($scope, $timeout) {
         $scope.volumeID = '';
         $scope.volumeZone = '';
         $scope.instanceName = '';
         $scope.instancesByZone = '';
+        $scope.instanceChoices = {};
         $scope.initPage = function (instancesByZone) {
             $scope.instancesByZone = instancesByZone;
         };
@@ -23,20 +24,20 @@ angular.module('VolumesPage', ['LandingPage'])
             if (action === 'attach') {
                 // Set instance choices for attach to instance widget
                 modal.on('open', function() {
-                    var instanceSelect = $('#instance_id'),
-                        instances = $scope.instancesByZone[volumeZone],
-                        options = '';
-                    if (instances === undefined) {
-                        options = "<option value=''>No available instances in the same availability zone</option>";
+                    $scope.instanceChoices = {};
+                    var instancesByZone = $scope.instancesByZone[volumeZone],
+                        instanceSelect = modal.find('#instance_id');
+                    if (!!instancesByZone) {
+                        instancesByZone.forEach(function (instance) {
+                            $scope.instanceChoices[instance['id']] = instance['name'];
+                        });
+                    } else {
+                        $scope.instanceChoices[''] = 'No instances available in zone ' + volumeZone;
                     }
-                    else {
-                      instances.forEach(function (instance) {
-                          options += '<option value="' + instance['id'] + '">' + instance['name'] + '</option>';
-                      });
-                    }
-                    instanceSelect.html(options);
-                    instanceSelect.trigger('chosen:updated');
-                    instanceSelect.chosen({'width': '75%', search_contains: true});
+                    $timeout(function () {
+                        instanceSelect.trigger('chosen:updated');
+                        instanceSelect.chosen({'width': '75%', search_contains: true});
+                    }, 50);
                 });
             }
             modal.foundation('reveal', 'open');

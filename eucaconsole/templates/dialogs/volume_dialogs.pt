@@ -14,7 +14,7 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()'}, **html_attrs)}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()', 'options': 'k as v for (k, v) in instanceChoices'}, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="row">
                 <div>

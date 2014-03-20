@@ -3,9 +3,11 @@
 Pyramid views for Eucalyptus and AWS scaling groups
 
 """
-from operator import attrgetter
 import simplejson as json
 import time
+
+from markupsafe import escape
+from operator import attrgetter
 
 from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
@@ -98,7 +100,6 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
             return HTTPFound(location=location)
         return self.render_dict
 
-
     def get_scaling_group_by_name(self, name):
         conn = self.get_connection(conn_type='autoscale')
         names = []
@@ -169,8 +170,8 @@ class BaseScalingGroupView(BaseView):
         for tag in tags_list:
             tags.append(Tag(
                 resource_id=scaling_group_name,
-                key=tag.get('name'),
-                value=tag.get('value'),
+                key=escape(tag.get('name')),
+                value=escape(tag.get('value')),
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags

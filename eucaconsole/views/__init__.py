@@ -4,9 +4,11 @@ Core views
 
 """
 import logging
-from contextlib import contextmanager
 import simplejson as json
 import textwrap
+
+from contextlib import contextmanager
+from markupsafe import escape
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -167,7 +169,9 @@ class TaggedItemView(BaseView):
 
         for key, value in tags.items():
             if not key.strip().startswith('aws:'):
-                self.tagged_obj.add_tag(key, value)
+                safe_key = escape(key)
+                safe_value = escape(value)
+                self.tagged_obj.add_tag(safe_key, safe_value)
 
     def remove_tags(self):
         for tagkey, tagvalue in self.tagged_obj.tags.items():
