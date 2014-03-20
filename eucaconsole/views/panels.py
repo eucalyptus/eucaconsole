@@ -177,6 +177,7 @@ def bdmapping_editor(context, request, image=None, snapshot_choices=None):
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
+                is_root = True if get_root_device_name(image)==key else False,
                 volume_type=device.volume_type,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
@@ -184,6 +185,11 @@ def bdmapping_editor(context, request, image=None, snapshot_choices=None):
             )
     bdm_json = json.dumps(bdm_dict)
     return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json)
+
+
+def get_root_device_name(img):
+    return img.root_device_name.replace('&#x2f;', '/').replace(
+        '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
 
 
 @panel_config('image_picker', renderer='../templates/panels/image_picker.pt')
