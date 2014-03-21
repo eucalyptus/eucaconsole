@@ -14,7 +14,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
         $scope.instanceId = '';
-        $scope.instance_name = '';
+        $scope.instanceName = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.initController = function (jsonEndpoint, status, attachStatus, instance_name) {
@@ -26,7 +26,7 @@ angular.module('VolumePage', ['TagEditor'])
                 $scope.getVolumeState();
             }
             $scope.setFocus();
-            $scope.instance_name = instance_name;
+            $scope.instanceName = instance_name;
         };
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;

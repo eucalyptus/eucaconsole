@@ -61,7 +61,7 @@
     <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Detach volume</h3>
         <p>
-            <span i18n:translate="">Cannot detach root volume from instance <strong>{{ instance_name }}</strong>.</span>
+            <span i18n:translate="">Cannot detach root volume from instance <strong>{{ instanceName }}</strong>.</span>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
