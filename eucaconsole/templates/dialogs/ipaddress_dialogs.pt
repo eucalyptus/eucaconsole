@@ -59,7 +59,13 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
-            <input type="submit" class="button expand" value="Yes, Release Address to Cloud" />
+            <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
+                <button type="submit" class="button expand" i18n:translate=""
+                    ng-click="showProgress=true">Yes, Release Address to Cloud</button>
+            </div>
+            <div ng-show="showProgress">
+                Sending request <em><span class="dots">&nbsp;</span></em>
+            </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
