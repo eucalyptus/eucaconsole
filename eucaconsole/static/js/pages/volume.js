@@ -14,8 +14,20 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
         $scope.instanceId = '';
+        $scope.instance_name = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
+        $scope.initController = function (jsonEndpoint, status, attachStatus, instance_name) {
+            $scope.initChosenSelectors();
+            $scope.volumeStatusEndpoint = jsonEndpoint;
+            $scope.volumeStatus = status.replace('-', ' ');
+            $scope.volumeAttachStatus = attachStatus;
+            if (jsonEndpoint) {
+                $scope.getVolumeState();
+            }
+            $scope.setFocus();
+            $scope.instance_name = instance_name;
+        };
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -48,16 +60,6 @@ angular.module('VolumePage', ['TagEditor'])
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
         };
-        $scope.initController = function (jsonEndpoint, status, attachStatus) {
-            $scope.initChosenSelectors();
-            $scope.volumeStatusEndpoint = jsonEndpoint;
-            $scope.volumeStatus = status.replace('-', ' ');
-            $scope.volumeAttachStatus = attachStatus;
-            if (jsonEndpoint) {
-                $scope.getVolumeState();
-            }
-            $scope.setFocus();
-        };
         $scope.getVolumeState = function () {
             $http.get($scope.volumeStatusEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
@@ -75,6 +77,7 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.getDeviceSuggestion = function () {
+            // TODO: the url shouldn't be built by hand, pass value from request.route_path!
             $http.get("/instances/"+$scope.instanceId+"/nextdevice/json").success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
@@ -100,6 +103,18 @@ angular.module('VolumePage', ['TagEditor'])
                         modalButton.focus();
                     }
                }
+            });
+        };
+        $scope.detachModal = function (device_name, url) {
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    if (results.root_device_name == device_name) {
+                        $('#detach-volume-warn-modal').foundation('reveal', 'open');
+                    } else {
+                        $('#detach-volume-modal').foundation('reveal', 'open');
+                    }
+                }
             });
         };
     })

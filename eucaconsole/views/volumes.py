@@ -193,6 +193,7 @@ class VolumesJsonView(LandingPageView):
                     create_time=volume.create_time,
                     id=volume.id,
                     instance=volume.attach_data.instance_id,
+                    device=volume.attach_data.device,
                     instance_name=instance_name,
                     name=TaggedItemView.get_display_name(volume),
                     snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
@@ -242,6 +243,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             volume_name=self.volume_name,
             volume_create_time=self.create_time,
             instance_name=self.instance_name,
+            device_name=self.attach_data.device,
+            attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,
             attach_form=self.attach_form,
@@ -255,9 +258,15 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         return self.render_dict
 
     def get_create_time(self):
-        """Returns instance launch time as a python datetime.datetime object"""
+        """Returns volume create time as a python datetime.datetime object"""
         if self.volume and self.volume.create_time:
             return parser.parse(self.volume.create_time)
+        return None
+
+    def get_attachment_time(self):
+        """Returns volume attach time as a python datetime.datetime object"""
+        if self.volume and self.attach_data.attach_time:
+            return parser.parse(self.attach_data.attach_time)
         return None
 
     @view_config(route_name='volume_update', renderer=VIEW_TEMPLATE, request_method='POST')

@@ -36,7 +36,8 @@
                         <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                     </li>
                     <li ng-show="item.status === 'in-use'">
-                        <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
+                        <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
+                               id="detach-volume-action" i18n:translate="">Detach from instance</a>
                     </li>
                     <li ng-show="item.status === 'available'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>
@@ -123,7 +124,8 @@
                                 <a i18n:translate="" ng-click="revealModal('attach', item)">Attach to instance</a>
                             </li>
                             <li ng-show="item.status === 'in-use'">
-                                <a i18n:translate="" ng-click="revealModal('detach', item)">Detach from instance</a>
+                                <a ng-click="detachModal(item, '${request.route_path('instance_json', id='_id_')}')"
+                                   id="detach-volume-action" i18n:translate="">Detach from instance</a>
                             </li>
                             <li ng-show="item.status === 'available'">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete volume</a>

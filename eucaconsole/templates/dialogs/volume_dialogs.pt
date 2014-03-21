@@ -58,6 +58,13 @@
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
+    <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Detach volume</h3>
+        <p>
+            <span i18n:translate="">Cannot detach root volume from instance <strong>{{ instance_name }}</strong>.</span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('volumes_delete');
                      detailpage_action request.route_path('volume_delete', id=volume.id) if volume else '';
