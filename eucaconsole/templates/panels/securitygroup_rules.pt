@@ -61,12 +61,12 @@
                 </div>
                 <div class="small-9 columns">
                     <div class="ipaddress">
-                        <div style="display: inline-block;">
+                        <div class="cidr-block">
                             <input type="radio" name="traffictype" value="ip" checked="checked" ng-model="trafficType"/>
                             <label><span i18n:translate="" class="ip-label">IP address</span></label>
                         </div>
-                        <div style="display: inline-block; vertical-align: top;">
-                            <div>
+                        <div class="cidr-block">
+                            <div> 
                                 <input type="text" name="cidr_ip" id="input-cidr-ip" class="cidr-ip" ng-model="cidrIp" autocomplete="off"
                                     ng-required="selectedProtocol &amp;&amp; trafficType == 'ip'"
                                     pattern="${layout.cidr_pattern}" placeholder="x.x.x.x/x"/>
