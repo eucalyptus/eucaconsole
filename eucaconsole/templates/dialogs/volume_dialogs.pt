@@ -73,7 +73,13 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
+            <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
+                <button type="submit" class="button expand" i18n:translate=""
+                    ng-click="showProgress=true">Yes, Delete</button>
+            </div>
+            <div ng-show="showProgress">
+                <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
+            </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
