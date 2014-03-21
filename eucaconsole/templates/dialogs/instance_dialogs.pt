@@ -96,8 +96,12 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="row">
-                    <div>
-                        <input type="submit" class="button expand" value="Yes, Terminate" i18n:attributes="value" />
+                    <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
+                        <button type="submit" class="button expand" i18n:translate=""
+                            ng-click="showProgress=true">Yes, Terminate</button>
+                    </div>
+                    <div ng-show="showProgress">
+                        Sending request <em><span class="dots">&nbsp;</span></em>
                     </div>
                 </div>
             </form>
