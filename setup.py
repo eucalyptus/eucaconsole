@@ -11,27 +11,28 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 requires = [
     # 'Babel >= 1.3',  # Only required for generating i18n translations
     'beaker >= 1.5.4',
-    'boto == 2.25.0',
-    'chameleon == 2.5.3',
-    'gevent == 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
-    'greenlet == 0.3.1',
-    'gunicorn == 18.0',
+    'boto >= 2.25.0',
+    'chameleon >= 2.5.3',
+    'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
+    'greenlet >= 0.3.1',
+    'gunicorn >= 18.0',
     # 'lingua >= 1.5',  # Only required for generating i18n translations
     'M2Crypto >= 0.20.2',
+    'markupsafe >= 0.9.2',
     'pycrypto >= 2.0.1',
-    'Paste == 1.7.4',
-    'pyramid == 1.4',
-    'pyramid_beaker == 0.8',
-    'pyramid_chameleon == 0.1',
+    'Paste >= 1.7.4',
+    'pyramid >= 1.4',
+    'pyramid_beaker >= 0.8',
+    'pyramid_chameleon >= 0.1',
     # 'pyramid_debugtoolbar',  # Optional -- helpful for development/debugging
-    'pyramid_layout == 0.8',
+    'pyramid_layout >= 0.8',
     # 'pyramid_mailer >= 0.13',
     # 'pyramid_tm >= 0.7',
-    'python-dateutil == 1.4.1',  # Don't use 2.x series unless on Python 3
-    'simplejson == 2.0.9',
+    'python-dateutil >= 1.4.1',  # Don't use 2.x series unless on Python 3
+    'simplejson >= 2.0.9',
     # 'SQLAlchemy == 0.8.3',
     # 'waitress >= 0.8.8',  # Pure python WSGI server
-    'WTForms == 1.0.2',
+    'WTForms >= 1.0.2',
 ]
 
 message_extractors = {'.': [
