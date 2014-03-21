@@ -121,8 +121,8 @@
                 <form action="${request.route_path('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
-                    <input type="hidden" name="type" value="${request.params.get('type', '')}" />
-                    <input type="hidden" name="id" value="${request.params.get('id', '')}" />
+                    <input type="hidden" name="type" value="${request.params.get('type', '')}" ng-non-bindalbe=""/>
+                    <input type="hidden" name="id" value="${request.params.get('id', '')}" ng-non-bindable=""/>
                     <label><strong i18n:translate="">Name</strong></label>
                     ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, autofocus='')}
                     <label><strong i18n:translate="">Policy</strong></label>
