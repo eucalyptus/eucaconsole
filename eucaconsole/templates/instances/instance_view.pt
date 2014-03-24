@@ -53,7 +53,7 @@
                                 View console output
                             </a>
                         </li>
-                        <li ng-show="instanceState == 'running' && hasElasticIP == false">
+                        <li ng-show="instanceState == 'running'">
                             <a href="#" id="associate-ip-action"
                                data-reveal-id="associate-ip-to-instance-modal" i18n:translate="">
                                 Associate IP address

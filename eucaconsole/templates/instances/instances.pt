@@ -51,7 +51,7 @@
                     <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                         <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                     </li>
-                    <li ng-show="item.status == 'running' && item.has_elastic_ip == false">
+                    <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
                             Associate IP address
                         </a>
@@ -173,7 +173,7 @@
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-href="${prefix}/{{ item.id }}/volumes" i18n:translate="">Manage volumes</a>
                             </li>
-                            <li ng-show="item.status == 'running' && item.has_elastic_ip == false">
+                            <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('associate-ip-to', item)">
                                     Associate IP address
                                 </a>

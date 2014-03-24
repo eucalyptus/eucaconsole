@@ -211,6 +211,18 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
+    @view_config(route_name='instances_associate', request_method='POST')
+    def associate_ip_address(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        if instance and self.associate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                new_ip = self.request.params.get('ip_address')
+                instance.use_ip(new_ip)
+                msg = _(u'Successfully associated the IP to the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):
@@ -445,6 +457,17 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             except RSA.RSAError as err:  # likely, bad key
                 return JSONResponse(status=400, message=_(
                     u"There was a problem with the key, please try again, verifying the correct private key is used."))
+
+    @view_config(route_name='instance_associate', renderer=VIEW_TEMPLATE, request_method='POST')
+    def associate_ip_address(self):
+        if self.instance and self.associate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                new_ip = self.request.params.get('ip_address')
+                self.instance.use_ip(new_ip)
+                msg = _(u'Successfully associated the IP to the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
 
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
