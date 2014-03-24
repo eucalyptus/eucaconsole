@@ -8,13 +8,12 @@
                      html_attrs {'data-placeholder': 'select...'};">
         <h3 i18n:translate="">Attach volume</h3>
         <p><span i18n:translate="">Attach a volume to an instance</span></p>
-        <form method="post" action="${action}"
-              id="attach-form" data-abide="">
+        <form method="post" action="${action}" id="attach-form" data-abide="">
             ${structure:attach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()', 'options': 'k as v for (k, v) in instanceChoices'}, **html_attrs)}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="row">
                 <div>

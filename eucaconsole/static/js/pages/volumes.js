@@ -32,7 +32,7 @@ angular.module('VolumesPage', ['LandingPage'])
                             $scope.instanceChoices[instance['id']] = instance['name'];
                         });
                     } else {
-                        $scope.instanceChoices[''] = 'No instances available in zone ' + volumeZone;
+                        $scope.instanceChoices[''] = 'No available instances in availability zone ' + volumeZone;
                     }
                     $timeout(function () {
                         instanceSelect.trigger('chosen:updated');

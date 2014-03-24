@@ -8,7 +8,7 @@ from wtforms import validators
 
 from pyramid.i18n import TranslationString as _
 
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
 
 
 class VolumeForm(BaseSecureForm):
@@ -145,7 +145,7 @@ class AttachForm(BaseSecureForm):
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
         if self.volume:
-            choices = []
+            choices = [BLANK_CHOICE]
             for instance in self.instances:
                 if instance.state == "running" and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
@@ -153,7 +153,9 @@ class AttachForm(BaseSecureForm):
                     vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
                     choices.append((instance.id, vol_name))
             if len(choices) == 1:
-                choices = [('', _(u'No available instances in the same availability zone'))]
+                prefix = _(u'No available instances in availability zone ')
+                msg = '{0} {1}'.format(prefix, self.volume.zone)
+                choices = [('', msg)]
             self.instance_id.choices = choices
         else:
             # We need to set all instances as choices for the landing page to avoid failed validation of instance field
