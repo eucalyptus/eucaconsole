@@ -11,8 +11,6 @@ angular.module('VolumesPage', ['LandingPage'])
         $scope.instanceName = '';
         $scope.instancesByZone = '';
         $scope.instanceChoices = {};
-        // this one is used by detachModal()
-        $scope.instance_name = '';
         $scope.initPage = function (instancesByZone) {
             $scope.instancesByZone = instancesByZone;
         };

@@ -29,12 +29,6 @@ angular.module('InstanceVolumes', [])
                 });
             });
         };
-        $scope.revealDetachModal = function (action, name) {
-            var modal = $('#detach-volume-modal');
-            $scope.detachFormAction = action;
-            $scope.detachVolumeName = name;
-            modal.foundation('reveal', 'open');
-        };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -76,6 +70,25 @@ angular.module('InstanceVolumes', [])
                 if (errorMsg && status === 403) {
                     alert(errorMsg);
                     $('#euca-logout-form').submit();
+                }
+            });
+        };
+        $scope.revealDetachModal = function (action, name) {
+            var modal = $('#detach-volume-modal');
+            $scope.detachFormAction = action;
+            modal.foundation('reveal', 'open');
+        };
+        $scope.detachModal = function (volume, device_name, url, action) {
+            $scope.detachVolumeName = volume;
+            $scope.detachFormAction = action;
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    if (results.root_device_name == device_name) {
+                        $('#detach-volume-warn-modal').foundation('reveal', 'open');
+                    } else {
+                        $('#detach-volume-modal').foundation('reveal', 'open');
+                    }
                 }
             });
         };
