@@ -131,6 +131,7 @@ class KeyPairView(BaseView):
             new_keypair = None
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
+                BaseView.log_request(self.request, _(u"Creating keypair ")+name)
                 new_keypair = self.conn.create_key_pair(name)
                 # Store the new keypair material information in the session
                 self._store_file_(new_keypair.name+".pem",
@@ -163,6 +164,7 @@ class KeyPairView(BaseView):
             material = ""
             location = self.request.route_path('keypair_view', id=name)
             with boto_error_handler(self.request, location):
+                BaseView.log_request(self.request, _(u"Importing keypair ")+name)
                 new_keypair = self.conn.import_key_pair(name, key_material)
                 material = new_keypair.material
                 msg_template = _(u'Successfully imported key pair {keypair}')
@@ -178,6 +180,7 @@ class KeyPairView(BaseView):
             name = self.request.params.get('name')
             location = self.request.route_path('keypairs')
             with boto_error_handler(self.request, location):
+                BaseView.log_request(self.request, _(u"Deleting keypair ")+name)
                 self.conn.delete_key_pair(name)
                 prefix = _(u'Successfully deleted keypair')
                 msg = '{0} {1}'.format(prefix, name)
