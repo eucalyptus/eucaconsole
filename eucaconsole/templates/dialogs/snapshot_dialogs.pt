@@ -7,7 +7,7 @@
         <h3 i18n:translate="">Delete snapshot</h3>
         <p><span i18n:translate="">Are you sure you want to delete snapshot</span><br />
            <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
-           <span tal:condition="not snapshot"><b>{{ snapshotID }}</b></span>
+           <span tal:condition="not snapshot"><b>{{ snapshotName }}</b></span>
            ?</p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
