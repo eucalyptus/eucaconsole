@@ -66,6 +66,7 @@ class IAMPolicyWizardView(BaseView):
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
             with boto_error_handler(self.request, self.location):
+                BaseView.log_request(self.request, _(u"Creating policy {0} for {1} {2}").format(policy_name, self.target_type, self.target_name))
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
