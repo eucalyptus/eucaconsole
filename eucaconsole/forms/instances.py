@@ -313,7 +313,13 @@ class InstancesFiltersForm(BaseSecureForm):
             ('instance-store', 'Instance-store')
         )
 
+
 class AssociateIpToInstanceForm(BaseSecureForm):
     """CSRF-protected form to associate IP to an instance"""
+    pass
+
+
+class DisassociateIpFromInstanceForm(BaseSecureForm):
+    """CSRF-protected form to disassociate IP from an instance"""
     pass
 

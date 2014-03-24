@@ -59,6 +59,12 @@
                                 Associate IP address
                             </a>
                         </li>
+                        <li ng-show="instanceState == 'running'">
+                            <a href="#" id="disassociate-ip-action"
+                               data-reveal-id="disassociate-ip-from-instance-modal" i18n:translate="">
+                                Disassociate IP address
+                            </a>
+                        </li>
                         <li ng-show="instanceState == 'stopped'">
                             <a href="#" id="start-instance-action"
                                data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
@@ -251,7 +257,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form, associate_ip_form=associate_ip_form)}
+        ${panel('instance_dialogs', instance=instance, instance_name=instance_name, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form, associate_ip_form=associate_ip_form, disassociate_ip_form=disassociate_ip_form)}
         <div id="update-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Update instance</h3>
             <p i18n:translate="">

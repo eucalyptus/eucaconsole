@@ -56,6 +56,11 @@
                             Associate IP address
                         </a>
                    </li>
+                    <li ng-show="item.status == 'running'">
+                        <a i18n:translate="" ng-click="revealModal('disassociate-ip-from', item)">
+                            Disassociate IP address
+                        </a>
+                   </li>
                     <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
                         <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                     </li>
@@ -173,6 +178,11 @@
                                     Associate IP address
                                 </a>
                             </li>
+                            <li ng-show="item.status == 'running'">
+                                <a i18n:translate="" ng-click="revealModal('disassociate-ip-from', item)">
+                                    Disassociate IP address
+                                </a>
+                            </li>
                             <li ng-show="item.status !== 'running' &amp;&amp; !item.transitional &amp;&amp; item.status !== 'terminated' &amp;&amp; item.root_device === 'ebs'">
                                 <a i18n:translate="" ng-click="revealModal('start', item)">Start</a>
                             </li>
@@ -191,7 +201,7 @@
             </metal:block>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form, associate_ip_form=associate_ip_form)}
+        ${panel('instance_dialogs', landingpage=True, start_form=start_form, stop_form=stop_form, reboot_form=reboot_form, terminate_form=terminate_form, associate_ip_form=associate_ip_form, disassociate_ip_form=disassociate_ip_form)}
         <!--! Batch-terminate instance modal dialog -->
         ${panel('terminate_instances_dialog', batch_terminate_form=batch_terminate_form)}
     </div>
