@@ -243,7 +243,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             volume_name=self.volume_name,
             volume_create_time=self.create_time,
             instance_name=self.instance_name,
-            device_name=self.attach_data.device,
+            device_name=self.attach_data.device if self.attach_data else None,
             attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,
