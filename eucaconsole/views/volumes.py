@@ -417,7 +417,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
                 snapshots.append(dict(
                     id=snapshot.id,
-                    name=snapshot.tags.get('Name', ''),
+                    name=TaggedItemView.get_display_name(snapshot),
                     progress=snapshot.progress,
                     volume_size=self.volume.size,
                     start_time=snapshot.start_time,

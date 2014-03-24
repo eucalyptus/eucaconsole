@@ -56,6 +56,7 @@ class SnapshotsView(LandingPageView):
         snapshot_id = self.request.params.get('snapshot_id')
         volume_id = self.request.params.get('volume_id')
         snapshot = self.get_snapshot(snapshot_id)
+        snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
         if volume_id:
             location = self.request.route_path('volume_snapshots', id=volume_id)
@@ -63,7 +64,7 @@ class SnapshotsView(LandingPageView):
             with boto_error_handler(self.request, location):
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -144,7 +145,7 @@ class SnapshotsJsonView(LandingPageView):
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
-                name=snapshot.tags.get('Name', snapshot.id),
+                name=TaggedItemView.get_display_name(snapshot),
                 progress=snapshot.progress,
                 transitional=self.is_transitional(snapshot),
                 start_time=snapshot.start_time,
@@ -271,6 +272,7 @@ class SnapshotView(TaggedItemView):
     @view_config(route_name='snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshot_delete(self):
         if self.snapshot and self.delete_form.validate():
+            snapshot_name = TaggedItemView.get_display_name(self.snapshot)
             with boto_error_handler(self.request, self.request.route_path('snapshots')):
                 if self.images_registered is not None:
                     for img in self.images_registered:
@@ -278,8 +280,8 @@ class SnapshotView(TaggedItemView):
                     # Clear images cache
                     ImagesView.clear_images_cache()
                 self.snapshot.delete()
-                prefix = _(u'Successfully deleted snapshot.')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
+                prefix = _(u'Successfully deleted snapshot')
+                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path('snapshots')
             return HTTPFound(location=location)
