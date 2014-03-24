@@ -125,11 +125,10 @@ class BaseView(object):
         for _cache in cache_managers.values():
             _cache.clear()
 
-    @staticmethod
-    def log_request(request, message):
-        account=request.session['account']
-        username=request.session['username']
-        logging.info("{acct}/{user}[{id}]: {msg}".format(id=request.id, acct=account, user=username, msg=message))
+    def log_request(self, message):
+        account=self.request.session['account']
+        username=self.request.session['username']
+        logging.info("{acct}/{user}[{id}]: {msg}".format(id=self.request.id, acct=account, user=username, msg=message))
 
     @staticmethod
     def log_error(request, message):

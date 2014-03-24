@@ -74,7 +74,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 dimension = self.get_dimension_name(dimension_param)
                 dimension_value = self.get_dimension_value(dimension_param)
                 dimensions = {dimension: dimension_value}
-                BaseView.log_request(self.request, _(u"Creating alarm {0}").format(name))
+                self.log_request(_(u"Creating alarm {0}").format(name))
                 alarm = MetricAlarm(
                     name=name, metric=metric, namespace=namespace, statistic=statistic, comparison=comparison,
                     threshold=threshold, period=period, evaluation_periods=evaluation_periods, unit=unit,
@@ -95,7 +95,7 @@ class CloudWatchAlarmsView(LandingPageView):
             location = self.request.route_path('cloudwatch_alarms')
             alarm_name = self.request.params.get('name')
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Deleting alarm {0}").format(alarm_name))
+                self.log_request(_(u"Deleting alarm {0}").format(alarm_name))
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
                 msg = '{0} {1}'.format(prefix, alarm_name)

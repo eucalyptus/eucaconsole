@@ -59,7 +59,7 @@ class SecurityGroupsView(LandingPageView):
         if security_group and self.delete_form.validate():
             name = security_group.name
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Deleting security group {0}").format(name))
+                self.log_request(_(u"Deleting security group {0}").format(name))
                 security_group.delete()
                 prefix = _(u'Successfully deleted security group')
                 template = '{0} {1}'.format(prefix, name)
@@ -149,7 +149,7 @@ class SecurityGroupView(TaggedItemView):
         if self.security_group and self.delete_form.validate():
             name = self.security_group.name
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Deleting security group {0}").format(name))
+                self.log_request(_(u"Deleting security group {0}").format(name))
                 self.security_group.delete()
                 prefix = _(u'Successfully deleted security group')
                 msg = '{0} {1}'.format(prefix, name)
@@ -164,7 +164,7 @@ class SecurityGroupView(TaggedItemView):
             description = self.request.params.get('description')
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
-                BaseView.log_request(self.request, _(u"Creating security group {0}").format(name))
+                self.log_request(_(u"Creating security group {0}").format(name))
                 new_security_group = self.conn.create_security_group(name, description)
                 self.add_rules(security_group=new_security_group)
                 if tags_json:
@@ -189,9 +189,9 @@ class SecurityGroupView(TaggedItemView):
     def securitygroup_update(self):
         if self.securitygroup_form.validate():
             # Update tags and rules
-            BaseView.log_request(self.request, _(u"Replacing security group {0} tags").format(self.security_group.name))
+            self.log_request(_(u"Replacing security group {0} tags").format(self.security_group.name))
             self.update_tags()
-            BaseView.log_request(self.request, _(u"Replacing security group {0} rules").format(self.security_group.name))
+            self.log_request(_(u"Replacing security group {0} rules").format(self.security_group.name))
             self.update_rules()
 
             location = self.request.route_path('securitygroup_view', id=self.security_group.id)

@@ -86,7 +86,7 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
             location = self.request.route_path('scalinggroups')
             name = self.request.params.get('name')
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Deleting scaling group {0}").format(name))
+                self.log_request(_(u"Deleting scaling group {0}").format(name))
                 conn = self.get_connection(conn_type='autoscale')
                 scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
@@ -209,7 +209,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         if self.edit_form.validate():
             location = self.request.route_path('scalinggroup_view', id=self.scaling_group.name)
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Updating scaling group {0}").format(self.scaling_group.name))
+                self.log_request(_(u"Updating scaling group {0}").format(self.scaling_group.name))
                 self.update_tags()
                 self.update_properties()
                 prefix = _(u'Successfully updated scaling group')
@@ -226,11 +226,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             with boto_error_handler(self.request, location):
                 # Need to shut down instances prior to scaling group deletion
                 #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
-                BaseView.log_request(self.request, _(u"Terminating scaling group {0} instances").format(name))
+                self.log_request(_(u"Terminating scaling group {0} instances").format(name))
                 self.scaling_group.shutdown_instances()
                 self.wait_for_instances_to_shutdown(self.scaling_group)
                 time.sleep(3)
-                BaseView.log_request(self.request, _(u"Deleting scaling group {0}").format(name))
+                self.log_request(_(u"Deleting scaling group {0}").format(name))
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
@@ -288,7 +288,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             instance_id = self.request.params.get('instance_id')
             respect_grace_period = self.request.params.get('respect_grace_period') == 'y'
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Marking instance {0} unhealthy").format(instance_id))
+                self.log_request(_(u"Marking instance {0} unhealthy").format(instance_id))
                 self.autoscale_conn.set_instance_health(
                     instance_id, 'Unhealthy', should_respect_grace_period=respect_grace_period)
                 prefix = _(u'Successfully marked the following instance as unhealthy:')
@@ -306,7 +306,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
             instance_id = self.request.params.get('instance_id')
             decrement_capacity = self.request.params.get('decrement_capacity') == 'y'
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Terminating scaling group {0} instance {1}").format(self.scaling_group.name, instance_id))
+                self.log_request(_(u"Terminating scaling group {0} instance {1}").format(self.scaling_group.name, instance_id))
                 self.autoscale_conn.terminate_instance(instance_id, decrement_capacity=decrement_capacity)
                 prefix = _(u'Successfully sent terminate request for instance')
                 msg = '{0} {1}'.format(prefix, instance_id)
@@ -384,7 +384,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             location = self.request.route_path('scalinggroup_policies', id=self.scaling_group.name)
             policy_name = self.request.params.get('name')
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Deleting scaling group {0} policy {1}").format(self.scaling_group.name, policy_name))
+                self.log_request(_(u"Deleting scaling group {0} policy {1}").format(self.scaling_group.name, policy_name))
                 self.autoscale_conn.delete_policy(policy_name, autoscale_group=self.scaling_group.name)
                 prefix = _(u'Successfully deleted scaling group policy')
                 msg = '{0} {1}'.format(prefix, policy_name)
@@ -440,7 +440,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
                 cooldown=self.request.params.get('cooldown'),
             )
             with boto_error_handler(self.request, location):
-                BaseView.log_request(self.request, _(u"Creating scaling group {0} policy {1}").format(self.scaling_group.name, scaling_policy.name))
+                self.log_request(_(u"Creating scaling group {0} policy {1}").format(self.scaling_group.name, scaling_policy.name))
                 # Create scaling policy
                 self.autoscale_conn.create_scaling_policy(scaling_policy)
                 created_scaling_policy = self.autoscale_conn.get_all_policies(
@@ -493,7 +493,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
         if self.create_form.validate():
             with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
-                BaseView.log_request(self.request, _(u"Creating scaling group {0}").format(scaling_group_name))
+                self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
                 scaling_group = AutoScalingGroup(
                     name=scaling_group_name,
                     launch_config=self.request.params.get('launch_config'),
