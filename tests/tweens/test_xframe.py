@@ -27,10 +27,9 @@ class TestXFrame(unittest.TestCase):
         # make sure non html resources aren't getting header
         tween = xframe_tween_factory(MockHandler('image/jpeg'), None)
         res = tween(None)
-        self.assertTrue('X_FRAME_OPTIONS' not in res.headers)
+        self.assertTrue('X-FRAME-OPTIONS' not in res.headers)
 
         # make sure html resources *are* getting header
         tween = xframe_tween_factory(MockHandler('text/html'), None)
         res = tween(None)
-        self.assertTrue('X_FRAME_OPTIONS' in res.headers)
-
+        self.assertTrue('X-FRAME-OPTIONS' in res.headers)
