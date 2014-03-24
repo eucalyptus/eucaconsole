@@ -63,10 +63,10 @@
                         </div>
                     </div>
                     <div class="footer status has-progress {{ snapshot.status }}">
-                        <div class="completed" ng-show="snapshot.status == 'completed'">
+                        <div class="completed" ng-show="snapshot.status === 'completed'">
                             <span>{{ snapshot.status }}</span>
                         </div>
-                        <div class="progress" ng-show="snapshot.status != 'completed'"><span
+                        <div class="progress" ng-show="snapshot.status !== 'completed'"><span
                                 class="meter" style="width: {{ snapshot.progress }}">{{ snapshot.progress }}</span>
                         </div>
                     </div>

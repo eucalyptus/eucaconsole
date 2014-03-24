@@ -113,7 +113,9 @@
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
-.tile .footer.has-progress .progress { color: black; }
+.tile .footer.has-progress .progress { padding-right: 0; }
+.tile .footer.has-progress .progress .meter { color: black; text-align: left; }
+.tile .footer.has-progress .completed { position: relative; top: -3px; }
 
 .status.pending { background-color: #a5d46b; }
 

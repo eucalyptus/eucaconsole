@@ -38,9 +38,19 @@ $volume-status-color-attached: darkorange;
 // Volume snapshots page
 .tile {
     @include panel-tile-mixin;
-    .footer.has-progress {
-        .progress {
-            color: black;
+    .footer {
+        &.has-progress {
+            .progress {
+                padding-right: 0;
+                .meter {
+                    color: black;
+                    text-align: left;
+                }
+            }
+            .completed {
+                position: relative;
+                top: -3px;
+            }
         }
     }
 }
