@@ -244,17 +244,24 @@ class InstancesJsonView(LandingPageView):
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
+        elastic_ips = self.conn.get_all_addresses()
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({'name':group.name, 'id':group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
+            has_elastic_ip = False
+            if instance.ip_address:
+                for ip in elastic_ips:
+                    if instance.ip_address == ip.public_ip:
+                        has_elastic_ip = True  
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
+                has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
@@ -312,6 +319,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -325,6 +333,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             terminate_form=self.terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
+            has_elastic_ip=self.has_elastic_ip,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -336,6 +345,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
         if self.instance and self.instance_form.validate():
+
             with boto_error_handler(self.request, self.location):
                 # Update tags
                 self.update_tags()
@@ -458,6 +468,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if elastic_ip:
             disassociated = elastic_ip.disassociate()
 
+    def check_has_elastic_ip(self, ip_address):
+        has_elastic_ip = False
+        elastic_ips = self.conn.get_all_addresses()
+        if ip_address is not None:
+            for ip in elastic_ips:
+                if ip_address == ip.public_ip:
+                    has_elastic_ip = True  
+        return has_elastic_ip
 
 class InstanceStateView(BaseInstanceView):
     def __init__(self, request):

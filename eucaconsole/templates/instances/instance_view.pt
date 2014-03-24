@@ -9,7 +9,7 @@
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}', '${instance.id}', '${instance_name}', '${instance.groups[0].name}',
-                                     '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}')">
+                                     '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}', '${has_elastic_ip}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -53,13 +53,13 @@
                                 View console output
                             </a>
                         </li>
-                        <li ng-show="instanceState == 'running'">
+                        <li ng-show="instanceState == 'running' && hasElasticIP == false">
                             <a href="#" id="associate-ip-action"
                                data-reveal-id="associate-ip-to-instance-modal" i18n:translate="">
                                 Associate IP address
                             </a>
                         </li>
-                        <li ng-show="instanceState == 'running'">
+                        <li ng-show="instanceState == 'running' && hasElasticIP == true">
                             <a href="#" id="disassociate-ip-action"
                                data-reveal-id="disassociate-ip-from-instance-modal" i18n:translate="">
                                 Disassociate IP address

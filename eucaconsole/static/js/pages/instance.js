@@ -19,7 +19,7 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, consoleEndpoint, state, id, name, group_name, key_name, public_dns_name, platform) {
+        $scope.initController = function (jsonEndpoint, consoleEndpoint, state, id, name, group_name, key_name, public_dns_name, platform, has_elastic_ip) {
             $scope.instanceStateEndpoint = jsonEndpoint;
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
@@ -29,6 +29,7 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.keyName = key_name;
             $scope.publicDNS = public_dns_name;
             $scope.platform = platform;
+            $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
             $scope.getInstanceState();
             $scope.setFocus();
             $('#file').on('change', $scope.getPassword);
