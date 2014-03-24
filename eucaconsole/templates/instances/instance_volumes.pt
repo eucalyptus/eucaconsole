@@ -127,7 +127,7 @@
             <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                    <span i18n:translate="">This operation is not available because you cannot detach root volume of an EBS-backed instance. To delele this volume, terminate instance <strong>{{ instanceName }}</strong>.</span>
+                    <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong>${instance_name}</strong>.</span>
                 </p>
                 <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
