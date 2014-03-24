@@ -31,8 +31,12 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.platform = platform;
             $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
             $scope.getInstanceState();
+            $scope.activateWidget();
             $scope.setFocus();
             $('#file').on('change', $scope.getPassword);
+        };
+        $scope.activateWidget = function () {
+            $('#ip_address').chosen({'width': '80%'});
         };
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');

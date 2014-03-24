@@ -135,6 +135,7 @@ class ChoicesManager(object):
             choices.append((instance.ip_address, instance.ip_address))
         if instance and instance.ip_address is None and instance.state == 'stopped':
             choices.append(('none', _(u'no address in stopped state')))
+        print "Choices: " , choices
         return sorted(set(choices))
 
     def kernels(self, kernel_images=None, image=None):

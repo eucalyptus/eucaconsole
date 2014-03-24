@@ -157,11 +157,13 @@
                          detailpage_action request.route_path('instance_associate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Associate IP address to instance</h3>
+            <p i18n:translate="">Associate <b>${instance.id if instance else '{{ instanceID }}'}</b> with IP address</p>
             <form method="post" action="${action}" id="associate-ip-to-instance-form">
                 ${structure:associate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
+                ${panel('form_field', field=associate_ip_form.ip_address)}
                 <div class="row">
                     <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
                         <button type="submit" class="button expand" i18n:translate=""
