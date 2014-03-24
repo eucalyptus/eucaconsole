@@ -312,3 +312,8 @@ class InstancesFiltersForm(BaseSecureForm):
             ('ebs', 'EBS'),
             ('instance-store', 'Instance-store')
         )
+
+class AssociateIpToInstanceForm(BaseSecureForm):
+    """CSRF-protected form to associate IP to an instance"""
+    pass
+

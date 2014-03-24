@@ -19,7 +19,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm)
+    BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -86,6 +86,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(self.request, formdata=self.request.params or None)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
@@ -98,6 +99,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
             batch_terminate_form=self.batch_terminate_form,
+            associate_ip_form=self.associate_ip_form,
             filters_form=self.filters_form,
         )
 
@@ -302,6 +304,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
@@ -317,6 +320,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
+            associate_ip_form=self.associate_ip_form,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')

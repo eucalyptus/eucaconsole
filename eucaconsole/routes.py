@@ -47,6 +47,7 @@ urls = [
     Route(name='instances_reboot', pattern='/instances/reboot'),
     Route(name='instances_terminate', pattern='/instances/terminate'),
     Route(name='instances_batch_terminate', pattern='/instances/batch-terminate'),
+    Route(name='instances_associate', pattern='/instances/associate'),
     # Detail page
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
@@ -54,6 +55,7 @@ urls = [
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
+    Route(name='instance_associate', pattern='/instances/{id}/associate'),
     Route(name='instance_start', pattern='/instances/{id}/start'),
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
