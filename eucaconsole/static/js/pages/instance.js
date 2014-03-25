@@ -36,7 +36,10 @@ angular.module('InstancePage', ['TagEditor'])
             $('#file').on('change', $scope.getPassword);
         };
         $scope.activateWidget = function () {
-            $('#ip_address').chosen({'width': '80%'});
+            $('#associate-ip-to-instance-modal').on('open', function(){
+                var thisSelect = $(this).find('#ip_address');
+                thisSelect.chosen({'width': '80%', 'search_contains': true});
+            });
         };
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');
