@@ -92,6 +92,7 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.PublicDNS = oData ? oData.public_dns_name : '';
                 $scope.instancePrivateIP = oData ? oData.private_ip_address : '';
                 $scope.PrivateDNS = oData ? oData.private_dns_name : '';
+                $scope.hasElasticIP = oData ? oData.has_elastic_ip : '';
             });
         };
         $scope.getInstanceState = function () {

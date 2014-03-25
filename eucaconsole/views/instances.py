@@ -535,11 +535,13 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):
         """Return current instance state"""
+        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address)
         self.ip_address_dict = dict(
             ip_address=self.instance.ip_address,
             public_dns_name=self.instance.public_dns_name,
             private_ip_address=self.instance.private_ip_address,
             private_dns_name=self.instance.private_dns_name,
+            has_elastic_ip=self.has_elastic_ip,
         ) 
         return self.ip_address_dict
 
@@ -565,6 +567,15 @@ class InstanceStateView(BaseInstanceView):
             except KeyError:
                 return dev_name
         return 'error'
+
+    def check_has_elastic_ip(self, ip_address):
+        has_elastic_ip = False
+        elastic_ips = self.conn.get_all_addresses()
+        if ip_address is not None:
+            for ip in elastic_ips:
+                if ip_address == ip.public_ip:
+                    has_elastic_ip = True  
+        return has_elastic_ip
 
 
 class InstanceVolumesView(BaseInstanceView):
