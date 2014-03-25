@@ -34,6 +34,7 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
+            $scope.ipAddress = instance['ip_address'];
             modal.foundation('reveal', 'open');
         };
         $scope.unterminatedInstancesCount = function (items) {

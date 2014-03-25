@@ -196,6 +196,21 @@
                     </span>
                 </p>
             </div>
+            <div class="row">
+                <div class="small-6 columns"><label i18n:translate="">IP ADDRESS</label></div>
+                <div class="small-6 columns"><label i18n:translate="">INSTANCE</label></div>
+            </div>
+            <div class="row">
+                <div class="small-6 columns">
+                    <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
+                    <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
+                </div>
+                <div class="small-6 columns">
+                    <span tal:condition="instance"><b ng-non-bindable="">${instance.id}</b></span>
+                    <span tal:condition="not instance"><b>{{ instanceName || instanceID }}</b></span> 
+                </div>
+            </div> 
+            <br>
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
                 ${structure:disassociate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">
