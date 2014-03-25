@@ -87,6 +87,7 @@
                             ${structure:alarm_form.threshold(**{'placeholder': 'amount...', 'type': 'number'})}
                         </div>
                         <div class="small-6 columns">
+                            <div class="unit-label">{{ unitLabel }}</div>
                             ${structure:alarm_form.unit(**{'ng-model': 'unit'})}
                         </div>
                     </div>

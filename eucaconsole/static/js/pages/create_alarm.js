@@ -33,7 +33,7 @@ angular.module('CreateAlarm', [])
         };
         $scope.setUnitChoice = function () {
             var unitChoice = $scope.metricUnitMapping[$scope.metric];
-            $scope.unitLabel = unitChoice;
+            $scope.unitLabel = unitChoice.toLowerCase();
             $scope.unitField.val(unitChoice);
         };
     })
