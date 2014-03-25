@@ -80,6 +80,7 @@ class UsersView(LandingPageView):
         self.conn = self.get_connection(conn_type="iam")
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
+            self.log_request(_(u"Disabling user {0}").format(user_name))
             result = self.conn.delete_login_profile(user_name=user_name)
             policy = {}
             policy['Version'] = '2011-04-01'
@@ -97,6 +98,7 @@ class UsersView(LandingPageView):
         self.conn = self.get_connection(conn_type="iam")
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
+            self.log_request(_(u"Enabling user {0}").format(user_name))
             result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
             random_password = self.request.params.get('random_password')
             if random_password == 'y':
@@ -321,16 +323,19 @@ class UserView(BaseView):
             if users_json:
                 users = json.loads(users_json)
                 for (name, email) in users.items():
+                    self.log_request(_(u"Creating user {0}").format(name))
                     user = self.conn.create_user(name, path)
                     user_data = {'account': account, 'username':name}
                     policy = {}
                     policy['Version'] = '2011-04-01'
                     statements = []
                     if random_password == 'y':
+                        self.log_request(_(u"Generating password for user {0}").format(user_name))
                         password = PasswordGeneration.generatePassword()
                         self.conn.create_login_profile(name, password)
                         user_data['password'] = password
                     if access_keys == 'y':
+                        self.log_request(_(u"Creating access keys for user {0}").format(user_name))
                         creds = self.conn.create_access_key(name)
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
@@ -382,6 +387,7 @@ class UserView(BaseView):
                         'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
 
                     if len(statements) > 0:
+                        self.log_request(_(u"Creating policy user {0}").format(user_name))
                         policy['Statement'] = statements
                         self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
             # create file to send instead. Since # users is probably small, do it all in memory
@@ -406,6 +412,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', None)
+            self.log_request(_(u"Updating user {0}").format(user_name))
             path = self.request.params.get('path', None)
             if new_name == self.user.user_name:
                 new_name = None
@@ -432,6 +439,7 @@ class UserView(BaseView):
             # 900 is minimum duration for session creds
             creds = auth.authenticate(account=account, user=username,
                                       passwd=password, timeout=8, duration=900)
+            self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
@@ -465,6 +473,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             new_pass = PasswordGeneration.generatePassword()
+            self.log_request(_(u"Generating password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
                 self.conn.get_login_profiles(user_name=self.user.user_name)
@@ -489,6 +498,7 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting password for user {0}").format(self.user.user_name))
             self.conn.delete_login_profile(user_name=self.user.user_name)
             return dict(message=_(u"Successfully deleted user password"), results="true")
 
@@ -498,6 +508,7 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
+            self.log_request(_(u"Creating access keys for user {0}").format(self.user.user_name))
             result = self.conn.create_access_key(user_name=self.user.user_name)
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -516,6 +527,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Creating access key {0} for user {1}").format(key_id, self.user.user_name))
             result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
             return dict(message=_(u"Successfully deleted key"))
 
@@ -526,6 +538,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Deactivating access key {0} for user {1}").format(key_id, self.user.user_name))
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
             return dict(message=_(u"Successfully deactivated key"))
 
@@ -536,6 +549,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Activating access key {0} for user {1}").format(key_id, self.user.user_name))
             result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
             return dict(message=_(u"Successfully activated key"))
 
@@ -546,6 +560,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Adding user {0} to group {1}").format(self.user.user_name, group))
             result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
             return dict(message=_(u"Successfully added user to group"),
                         results=result)
@@ -557,6 +572,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
             result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
             return dict(message=_(u"Successfully removed user to group"),
                         results=result)
@@ -568,6 +584,7 @@ class UserView(BaseView):
         if self.user is None:
             raise HTTPNotFound
         with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting user {0}").format(self.user.user_name))
             params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteUser', params)
             
@@ -583,6 +600,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         policy = str(self.request.matchdict.get('policy'))
         with boto_error_handler(self.request):
+            self.log_request(_(u"Updating policy {0} for user {1}").format(policy, self.user.user_name))
             policy_text = self.request.params.get('policy_text')
             result = self.conn.put_user_policy(
                 user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
@@ -595,6 +613,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting policy {0} for user {1}").format(policy, self.user.user_name))
             result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted user policy"), results=result)
 
@@ -662,18 +681,21 @@ class UserView(BaseView):
             for i in range(0, len(policy_list)-1):
                 if 'dirty' in policy_list[i].keys():
                     del policy_list[i]['dirty']
+                    self.log_request(_(u"Updating policy {0} for user {1}").format(policies.policies_name[i], self.user.user_name))
                     self.conn.put_user_policy(self.user.user_name, policies.policies_names[i],
                                               json.dumps(policy_list[i]))
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
                 if self.EUCA_DEFAULT_POLICY in policies.policy_names:
                     # add the new statments in
+                    self.log_request(_(u"Updating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, self.user.user_name))
                     default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
                     self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
                                               json.dumps(default_policy))
                 else:
                     # create the default policy
+                    self.log_request(_(u"Creating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, self.user.user_name))
                     new_policy = {}
                     new_policy['Version'] = '2011-04-01'
                     new_policy['Statement'] = new_stmts

@@ -14,7 +14,8 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}'
+                 '${volume.attach_data.status if volume else ''}',
+                 '${instance_name}'
                  )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -37,7 +38,8 @@
              tal:define="form_action request.route_path('volume_update', id=volume.id)
                          if volume else request.route_path('volume_create');
                          volume_tags volume.tags if volume else {};
-                         html_attrs {'disabled': 'disabled'} if volume else {};">
+                         html_attrs {'disabled': 'disabled'} if volume else {};
+                         instance_id volume.attach_data.instance_id if volume else None;">
             <dl class="tabs" id="volume-subnav" tal:condition="volume">
                 <dd class="active"><a href="#" i18n:translate="">General</a></dd>
                 <dd><a href="${request.route_path('volume_snapshots', id=volume.id)}" i18n:translate="">Snapshots</a></dd>
@@ -50,7 +52,7 @@
                                id="attach-volume-action" i18n:translate="">Attach to instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'in-use'">
-                            <a href="#" data-reveal-id="detach-volume-modal"
+                            <a ng-click="detachModal('${device_name}', '${request.route_path('instance_json', id=instance_id)}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'available'">
@@ -70,12 +72,19 @@
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:define="instance_id volume.attach_data.instance_id if volume else None;"
-                         tal:condition="instance_id">
+                    <div class="row controls-wrapper readonly" tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
                             <a href="${request.route_path('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
                         </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance_id">
+                        <div class="small-4 columns"><label i18n:translate="">Attached as device</label></div>
+                        <div class="small-8 columns value"> ${device_name} </div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="instance_id">
+                        <div class="small-4 columns"><label i18n:translate="">Attachment time</label></div>
+                        <div class="small-8 columns value">${attachment_time.strftime(layout.date_format)}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['name'], autofocus='', **html_attrs)}

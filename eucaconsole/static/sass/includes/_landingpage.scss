@@ -329,9 +329,9 @@ $dropdown-border-color: $euca-green;
     }
     .selected {
         background-color: white;
-        color: $euca-grey;
+        color: black;
         &:hover {
-            color: $euca-grey;
+            color: black;
             cursor: default;
         }
     }

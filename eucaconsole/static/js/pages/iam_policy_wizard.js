@@ -17,6 +17,8 @@ angular.module('IAMPolicyWizard', [])
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
         $scope.actionsList = [];
+        $scope.urlParams = $.url().param();
+        $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
@@ -34,6 +36,9 @@ angular.module('IAMPolicyWizard', [])
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+                if (tabLinkId === 'custom-policy-tab') {
+                    $scope.setPolicyName('custom');
+                }
             });
             $('#' + lastSelectedTab).click();
         };
@@ -86,10 +91,10 @@ angular.module('IAMPolicyWizard', [])
             var typeNameMapping = {
                 'admin_access': 'AccountAdminAccessPolicy',
                 'user_access': 'PowerUserAccessPolicy',
-                'monitor_access': 'ReadOnlyUserAccessPolicy',
-                'blank': 'CustomAccessPolicy'
-            }
-            $scope.policyName = typeNameMapping[policyType] || '';
+                'monitor_access': 'ReadOnlyAccessPolicy',
+                'custom': 'CustomAccessPolicy'
+            };
+            $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {

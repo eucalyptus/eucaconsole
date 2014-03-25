@@ -155,6 +155,7 @@ class GroupView(BaseView):
             new_path = self.request.params.get('path')
             location = self.request.route_path('group_view', name=new_group_name)
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Creating group {0}").format(new_group_name))
                 self.conn.create_group(group_name=new_group_name, path=new_path)
                 msg_template = _(u'Successfully created group {group}')
                 msg = msg_template.format(group=new_group_name)
@@ -176,6 +177,7 @@ class GroupView(BaseView):
             location = self.request.route_path('group_view', name=this_group_name)
             if new_group_name is not None or new_path is not None:
                 with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Updating group {0}").format(group_name_param))
                     self.group_update_name_and_path(new_group_name, new_path)
             return HTTPFound(location=location)
 
@@ -189,6 +191,7 @@ class GroupView(BaseView):
         if self.group is None:
             raise HTTPNotFound()
         with boto_error_handler(self.request, location):
+            self.log_request(_(u"Deleting group {0}").format(self.group.group_name))
             params = {'GroupName': self.group.group_name, 'IsRecursive': 'true'}
             self.conn.get_response('DeleteGroup', params)
             msg = _(u'Successfully deleted group')
@@ -257,6 +260,7 @@ class GroupView(BaseView):
 
     def group_add_user(self, group_name, user):
         try:
+            self.log_request(_(u"Adding user {0} to group {1}").format(user, group_name))
             self.conn.add_user_to_group(group_name, user)
             msg_template = _(u'Successfully added user {user}')
             msg = msg_template.format(user=user)
@@ -269,6 +273,7 @@ class GroupView(BaseView):
 
     def group_remove_user(self, group_name, user):
         try:
+            self.log_request(_(u"Removing user {0} from group {1}").format(user, group_name))
             self.conn.remove_user_from_group(group_name, user)
             msg_template = _(u'Successfully removed user {user}')
             msg = msg_template.format(user=user)
@@ -302,6 +307,7 @@ class GroupView(BaseView):
         # calls iam:PutGroupPolicy
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Updating policy {0} for group {1}").format(policy, self.group.group_name))
             policy_text = self.request.params.get('policy_text')
             result = self.conn.put_group_policy(
                 group_name=self.group.group_name, policy_name=policy, policy_json=policy_text)
@@ -314,6 +320,7 @@ class GroupView(BaseView):
         # calls iam:DeleteGroupPolicy
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
+            self.log_request(_(u"Deleting policy {0} for group {1}").format(policy, self.group.group_name))
             result = self.conn.delete_group_policy(group_name=self.group.group_name, policy_name=policy)
             return dict(message=_(u"Successfully deleted group policy"), results=result)
 

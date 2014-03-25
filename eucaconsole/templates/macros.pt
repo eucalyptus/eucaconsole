@@ -22,7 +22,7 @@
             <div class="small-9 columns" id="primary-buttons">
                 <metal:block metal:define-slot="new_button" />
             </div>
-            <div class="small-3 columns displayicons">
+            <div class="small-3 columns displayicons" ng-cloak="">
                 <a id="gridview-button" class="gridview" title="Grid view" ng-click="switchView('gridview')"><i class="fi-thumbnails"></i></a>
                 <a id="tableview-button" class="tableview" title="Table view" ng-click="switchView('tableview')"><i class="fi-list-thumbnails"></i></a>
                 <label i18n:translate="" class="hide-for-medium-down">View:</label>

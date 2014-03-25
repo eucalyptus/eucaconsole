@@ -7,9 +7,11 @@
 angular.module('SnapshotsPage', ['LandingPage'])
     .controller('SnapshotsCtrl', function ($scope) {
         $scope.snapshotID = '';
-        $scope.revealModal = function (action, snapshot_id) {
+        $scope.snapshotName = '';
+        $scope.revealModal = function (action, snapshot) {
             var modal = $('#' + action + '-snapshot-modal');
-            $scope.snapshotID = snapshot_id;
+            $scope.snapshotID = snapshot['id'];
+            $scope.snapshotName = snapshot['name'];
             modal.foundation('reveal', 'open');
         };
     })
