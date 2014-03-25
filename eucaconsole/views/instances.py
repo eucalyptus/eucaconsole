@@ -86,7 +86,8 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
-        self.associate_ip_form = AssociateIpToInstanceForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(
+            self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.filters_form = InstancesFiltersForm(
@@ -279,7 +280,7 @@ class InstancesJsonView(LandingPageView):
         elastic_ips = self.conn.get_all_addresses()
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
-            security_groups_array = sorted({'name':group.name, 'id':group.id} for group in instance.groups)
+            security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = False
@@ -348,6 +349,7 @@ class InstanceJsonView(BaseInstanceView):
                     root_device_type=instance.root_device_type,
                 ))
 
+
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
@@ -364,13 +366,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
-        self.associate_ip_form = AssociateIpToInstanceForm(self.request, conn=self.conn, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(
+            self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
-        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address)
+        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -407,7 +410,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     user_data = self.request.params.get('userdata')
                     kernel = self.request.params.get('kernel')
                     ramdisk = self.request.params.get('ramdisk')
-                    self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(self.instance.id, instance_type, kernel, ramdisk))
+                    self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(
+                        self.instance.id, instance_type, kernel, ramdisk))
                     self.instance.instance_type = instance_type
                     self.instance.user_data = user_data
                     self.instance.kernel = kernel
@@ -551,6 +555,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     has_elastic_ip = True  
         return has_elastic_ip
 
+
 class InstanceStateView(BaseInstanceView):
     def __init__(self, request):
         super(InstanceStateView, self).__init__(request)
@@ -566,15 +571,15 @@ class InstanceStateView(BaseInstanceView):
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):
         """Return current instance state"""
-        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address)
-        self.ip_address_dict = dict(
+        has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
+        ip_address_dict = dict(
             ip_address=self.instance.ip_address,
             public_dns_name=self.instance.public_dns_name,
             private_ip_address=self.instance.private_ip_address,
             private_dns_name=self.instance.private_dns_name,
-            has_elastic_ip=self.has_elastic_ip,
+            has_elastic_ip=has_elastic_ip,
         ) 
-        return self.ip_address_dict
+        return ip_address_dict
 
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
@@ -672,7 +677,8 @@ class InstanceVolumesView(BaseInstanceView):
             if self.instance and volume_id and device:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
                 with boto_error_handler(self.request, location):
-                    self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, self.instance.id, device))
+                    self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(
+                        volume_id, self.instance.id, device))
                     self.conn.attach_volume(volume_id=volume_id, instance_id=self.instance.id, device=device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -763,7 +769,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
+                    num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
@@ -854,7 +861,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
+                    num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
