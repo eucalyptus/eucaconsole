@@ -16,6 +16,8 @@ def generate_keyini(target):
     ini.set('general', 'session.encrypt_key', encrypt_key)
     with open(target, 'w') as f:
         ini.write(f)
+    os.chmod(target, 0o600)
+
     return ini
 
 
