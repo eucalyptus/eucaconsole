@@ -5,7 +5,7 @@
                      detailpage_action request.route_path('snapshot_delete', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete snapshot</h3>
-        <p><span i18n:translate="">Are you sure you want to delete snapshot</span><br />
+        <p><span i18n:translate="">Are you sure you want to delete snapshot</span>
            <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
            <span tal:condition="not snapshot"><b>{{ snapshotName }}</b></span>
            ?</p>
