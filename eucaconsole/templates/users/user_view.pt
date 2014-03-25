@@ -85,9 +85,9 @@
                             <form id="user-add-group-form" ng-submit="addUserToGroup($event)">
                                 ${structure:user_form['csrf_token']}
                                 <div class="columns field inline">
-                                    <div class="row controls-wrapper controls_${field.name}" tal:repeat="field group_form">
+                                    <div class="row controls-wrapper controls_group_name">
                                         <div class="column small-6">
-                                            ${structure:field()}
+                                            <select id="group_name" name="group_name" ng-options="item for item in groupNames" ng-init="getAvailableGroups(); index=0" ng-model=groupNames[index]>{{item}}</select>
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn">
