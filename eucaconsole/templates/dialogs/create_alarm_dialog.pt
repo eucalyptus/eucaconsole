@@ -1,5 +1,6 @@
 <!--! Create alarm dialog -->
-<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" ng-init="initController()">
+<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl"
+     ng-init="initController('${metric_unit_mapping}')">
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
         <p i18n:translate="">&nbsp;</p>
@@ -67,7 +68,7 @@
                             <div tal:omit-tag="" tal:define="avail_zone_attrs {'ng-show': 'dimension == \'availability_zone\''}">
                                 ${structure:alarm_form.availability_zone(**avail_zone_attrs)}
                             </div>
-                            ${structure:alarm_form.image_id(**{'ng-show': 'dimension === "image"'})}
+                            ${structure:alarm_form.image_id(**{'ng-show': 'dimension === "image"', 'placeholder': 'Image ID'})}
                             ${structure:alarm_form.instance_id(**{'ng-show': 'dimension === "instance"'})}
                             ${structure:alarm_form.instance_type(**{'ng-show': 'dimension === "instance_type"'})}
                             ${structure:alarm_form.load_balancer_name(**{'ng-show': 'dimension === "load_balancer"'})}
@@ -86,6 +87,7 @@
                             ${structure:alarm_form.threshold(**{'placeholder': 'amount...', 'type': 'number'})}
                         </div>
                         <div class="small-6 columns">
+                            <div class="unit-label">{{ unitLabel }}</div>
                             ${structure:alarm_form.unit(**{'ng-model': 'unit'})}
                         </div>
                     </div>

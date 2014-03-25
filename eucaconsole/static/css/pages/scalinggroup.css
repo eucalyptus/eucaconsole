@@ -126,3 +126,7 @@ input[type="number"] { width: 3rem; }
 #evaluation_periods, #period { display: inline-block; width: 4rem; }
 
 #threshold { width: 100%; }
+
+#unit { position: relative; left: -9999rem; }
+
+.unit-label { position: relative; top: 6px; }

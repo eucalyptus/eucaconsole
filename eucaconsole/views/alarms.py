@@ -29,10 +29,9 @@ class CloudWatchAlarmsView(LandingPageView):
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         # TODO: not likely to fail, but if session creds expire?
-        self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
-            metrics=self.metrics, formdata=self.request.params or None)
+            formdata=self.request.params or None)
         self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = []
         # sort_keys are passed to sorting drop-down

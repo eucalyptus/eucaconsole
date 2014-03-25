@@ -8,6 +8,7 @@
 angular.module('ScalingGroupPolicy', ['CreateAlarm'])
     .controller('ScalingGroupPolicyCtrl', function ($scope) {
         $scope.alarmModal = $('#create-alarm-modal');
+        $scope.policyForm = $('#add-policy-form');
         $scope.initPage = function (){
             $scope.setFocus();
         };
@@ -16,7 +17,7 @@ angular.module('ScalingGroupPolicy', ['CreateAlarm'])
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
-            $('input#name').focus();
+            $scope.policyForm.find('input#name').focus();
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var inputElement = modal.find('input[type!=hidden]').get(0);

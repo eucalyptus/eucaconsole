@@ -16,6 +16,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..constants.cloudwatch import METRIC_TYPES
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
@@ -361,7 +362,6 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
             self.alarms = self.get_alarms()
-            self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
@@ -404,17 +404,17 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.alarms = self.get_alarms()
-            self.metrics = self.get_metrics()
         self.policy_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.alarm_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, elb_conn=self.elb_conn,
-            metrics=self.metrics, scaling_group=self.scaling_group, formdata=self.request.params or None)
+            scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),
+            metric_unit_mapping=json.dumps(self.get_metric_unit_mapping()),
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )
@@ -462,8 +462,12 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             self.request.error_messages = self.policy_form.get_errors_list()
         return self.render_dict
 
-    def get_metrics(self):
-        return self.cloudwatch_conn.list_metrics()
+    @staticmethod
+    def get_metric_unit_mapping():
+        metric_units = {}
+        for mtype in METRIC_TYPES:
+            metric_units[mtype.get('name')] = mtype.get('unit')
+        return metric_units
 
 
 class ScalingGroupWizardView(BaseScalingGroupView):
