@@ -3,7 +3,6 @@
 Forms for CloudWatch Alarms
 
 """
-from collections import namedtuple
 from operator import itemgetter
 
 import wtforms
@@ -85,24 +84,21 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=unit_error_msg),
         ],
     )
+    image_id = wtforms.TextField(label=_(u'Image'))
     availability_zone = wtforms.SelectField()
-    image_id = wtforms.SelectField()
     instance_id = wtforms.SelectField()
     instance_type = wtforms.SelectField()
     load_balancer_name = wtforms.SelectField()
     scaling_group_name = wtforms.SelectField()
     volume_id = wtforms.SelectField()
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, metrics=None,
-                 scaling_group=None, **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, elb_conn=None, scaling_group=None, **kwargs):
         super(CloudWatchAlarmCreateForm, self).__init__(request, **kwargs)
         self.ec2_conn = ec2_conn
         self.autoscale_conn = autoscale_conn
         self.elb_conn = elb_conn
-        self.metrics = metrics or []
         self.scaling_group = scaling_group
         self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.choices_from_metrics = self.get_choices_from_metrics()
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
@@ -127,12 +123,11 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
         self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
-        self.image_id.choices = self.choices_from_metrics.image_choices
-        self.instance_id.choices = self.choices_from_metrics.instance_choices
+        self.instance_id.choices = self.ec2_choices_manager.instances()
         self.instance_type.choices = self.get_instance_type_choices()
         self.load_balancer_name.choices = self.elb_choices_manager.load_balancers()
         self.scaling_group_name.choices = self.autoscale_choices_manager.scaling_groups()
-        self.volume_id.choices = self.choices_from_metrics.volume_choices
+        self.volume_id.choices = self.ec2_choices_manager.volumes()
 
     def set_help_text(self):
         self.evaluation_periods.help_text = self.evaluation_periods_help_text
@@ -151,28 +146,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
     def get_instance_type_choices(self):
         return self.ec2_choices_manager.instance_types(cloud_type=self.cloud_type)
-
-    def get_choices_from_metrics(self):
-        Choices = namedtuple('Choices', ['image_choices', 'instance_choices', 'volume_choices'])
-        image_choices = []
-        instance_choices = []
-        volume_choices = []
-        for metric in self.metrics:
-            if hasattr(metric, 'dimensions'):
-                if metric.dimensions.get('ImageId'):
-                    image_id = metric.dimensions.get('ImageId')[0]
-                    image_choices.append((image_id, image_id))
-                elif metric.dimensions.get('InstanceId'):
-                    instance_id = metric.dimensions.get('InstanceId')[0]
-                    instance_choices.append((instance_id, instance_id))
-                elif metric.dimensions.get('VolumeId'):
-                    volume_id = metric.dimensions.get('VolumeId')[0]
-                    volume_choices.append((volume_id, volume_id))
-        return Choices(
-            image_choices=sorted(set(image_choices)),
-            instance_choices=sorted(set(instance_choices)),
-            volume_choices=sorted(set(volume_choices))
-        )
 
     @staticmethod
     def get_metric_choices():

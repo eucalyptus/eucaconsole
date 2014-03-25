@@ -95,6 +95,19 @@ class ChoicesManager(object):
             choices.extend(AWS_INSTANCE_TYPE_CHOICES)
         return choices
 
+    def volumes(self, volumes=None):
+        from ..views import TaggedItemView
+        choices = [('', _(u'Select volume...'))]
+        volumes = volumes or []
+        if not volumes and self.conn is not None:
+            volumes = self.conn.get_all_volumes()
+            if self.conn:
+                for volume in volumes:
+                    value = volume.id
+                    label = TaggedItemView.get_display_name(volume)
+                    choices.append((value, label))
+        return choices
+
     def security_groups(self, securitygroups=None, add_blank=True):
         choices = []
         if add_blank:

@@ -409,7 +409,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
         self.alarm_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn, elb_conn=self.elb_conn,
-            metrics=self.metrics, scaling_group=self.scaling_group, formdata=self.request.params or None)
+            scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             policy_form=self.policy_form,
