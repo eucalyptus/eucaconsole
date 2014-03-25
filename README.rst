@@ -48,6 +48,7 @@ Note: It is strongly recommended to set up the development environment in a virt
 If setup.py fails with an M2Crypto error and you're on a yum-based system (Fedora, CentOS, RHEL),
 download the M2Crypto package at https://pypi.python.org/pypi/M2Crypto and install via `fedora_setup.sh install`
 
+
 Sass/Compass Setup
 ------------------
 The CSS files are pre-processed using Sass, so you'll need to set up a Sass-to-CSS watcher to output CSS.
@@ -93,8 +94,19 @@ To have Pyramid automatically detect modifications to templates and views,
 
 The `--reload` flag instructs Pyramid to automatically watch for changes in the view callables.
 
-The Pyramid Debug Toolbar can be enabled by installing pyramid_debugtoolbar (via easy_install or pip) and
-adding pyramid_debugtoolbar to the app:main section of console.ini
+Note: Waitress may work better than gunicorn with the --reload flag.  To install Waitress, run `pip install -e .[dev]`
+(this will also install the Pyramid Debug Toolbar).
+
+To switch from gunicorn to Waitress for development, change the server:main section in your console.ini to this:
+
+::
+
+    [server:main]
+    use = egg:waitress#main
+    host = 0.0.0.0
+    port = 8888
+
+The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the app:main section of console.ini
 
 ::
 
@@ -139,6 +151,16 @@ To run the tests with nose and report test coverage:
     python setup.py nosetests --with-coverage
 
 Note that you will need to `pip install nose, coverage, nose-cov` to use nose with coverage
+
+
+Configuring i18n
+----------------
+The translation strings are marked in templates and in python scripts as decribed at
+http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#i18n-chapter
+
+The translations require Babel and lingua, which can be install via `pip install -e .[i18n]`
+
+To generate the translation files, run 'make translations' at the repo root.
 
 
 Technology Stack
