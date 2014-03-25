@@ -36,7 +36,7 @@ def snapshot_dialogs(context, request, snapshot=None, snapshot_name=None, landin
 
 @panel_config('instance_dialogs', renderer='../templates/dialogs/instance_dialogs.pt')
 def instance_dialogs(context, request, instance=None, instance_name=None, landingpage=False, start_form=None,
-                     stop_form=None, reboot_form=None, terminate_form=None):
+                     stop_form=None, reboot_form=None, terminate_form=None, associate_ip_form=None, disassociate_ip_form=None):
     """Modal dialogs for Instance landing and detail page."""
     return dict(
         instance=instance,
@@ -46,6 +46,8 @@ def instance_dialogs(context, request, instance=None, instance_name=None, landin
         stop_form=stop_form,
         reboot_form=reboot_form,
         terminate_form=terminate_form,
+        associate_ip_form=associate_ip_form,
+        disassociate_ip_form=disassociate_ip_form,
     )
 
 

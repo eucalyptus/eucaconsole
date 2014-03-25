@@ -142,7 +142,7 @@ class ChoicesManager(object):
         if instance and instance.state == 'running':
             choices.append(('', _(u'Unassign Address')))
         for eip in ipaddresses:
-            if eip.instance_id is None:
+            if eip.instance_id is None or eip.instance_id == '':
                 choices.append((eip.public_ip, eip.public_ip))
         if instance and instance.ip_address:
             choices.append((instance.ip_address, instance.ip_address))

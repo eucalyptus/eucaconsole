@@ -19,19 +19,30 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, consoleEndpoint, state, id, name, group_name, key_name, public_dns_name, platform) {
+        $scope.initController = function (jsonEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, name, group_name, key_name, public_ip, public_dns_name, platform, has_elastic_ip) {
             $scope.instanceStateEndpoint = jsonEndpoint;
+            $scope.instanceIPAddressEndpoint = ipaddressEndpoint;
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
             $scope.instanceID = id;
             $scope.instance_name = name;
             $scope.groupName = group_name;
             $scope.keyName = key_name;
+            $scope.instancePublicIP = public_ip;
             $scope.publicDNS = public_dns_name;
             $scope.platform = platform;
+            $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
             $scope.getInstanceState();
+            $scope.activateWidget();
+            $scope.setWatch();
             $scope.setFocus();
             $('#file').on('change', $scope.getPassword);
+        };
+        $scope.activateWidget = function () {
+            $('#associate-ip-to-instance-modal').on('open', function(){
+                var thisSelect = $(this).find('#ip_address');
+                thisSelect.chosen({'width': '80%', 'search_contains': true});
+            });
         };
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');
@@ -68,6 +79,20 @@ angular.module('InstancePage', ['TagEditor'])
                         modalButton.focus();
                     }
                }
+            });
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('instanceState', function(){
+                $scope.getIPAddressData();
+            });
+        };
+        $scope.getIPAddressData = function () {
+            $http.get($scope.instanceIPAddressEndpoint).success(function(oData) {
+                $scope.instancePublicIP = oData ? oData.ip_address : '';
+                $scope.PublicDNS = oData ? oData.public_dns_name : '';
+                $scope.instancePrivateIP = oData ? oData.private_ip_address : '';
+                $scope.PrivateDNS = oData ? oData.private_dns_name : '';
+                $scope.hasElasticIP = oData ? oData.has_elastic_ip : '';
             });
         };
         $scope.getInstanceState = function () {

@@ -9,11 +9,16 @@ angular.module('InstancesPage', ['LandingPage'])
         $scope.instanceID = '';
         $scope.fileName = '';
         $scope.batchTerminateModal = $('#batch-terminate-modal');
+        $scope.associateIPModal = $('#associate-ip-to-instance-modal');
         $scope.initChosenSelectors = function () {
             $scope.batchTerminateModal.on('open', function () {
                 var instanceIdsSelect = $scope.batchTerminateModal.find('select');
                 instanceIdsSelect.chosen({'width': '100%', 'search_contains': true});
                 instanceIdsSelect.trigger('chosen:updated');
+            });
+            $scope.associateIPModal.on('open', function () {
+                $('#ip_address').chosen({'width': '80%'});
+                $('#ip_address').trigger('chosen:updated');
             });
         };
         $scope.initController = function () {
@@ -29,6 +34,7 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
+            $scope.ipAddress = instance['ip_address'];
             modal.foundation('reveal', 'open');
         };
         $scope.unterminatedInstancesCount = function (items) {

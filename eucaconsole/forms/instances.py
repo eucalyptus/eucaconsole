@@ -312,3 +312,25 @@ class InstancesFiltersForm(BaseSecureForm):
             ('ebs', 'EBS'),
             ('instance-store', 'Instance-store')
         )
+
+
+class AssociateIpToInstanceForm(BaseSecureForm):
+    """CSRF-protected form to associate IP to an instance"""
+    associate_ip_error_msg = _(u'IP is required')
+    ip_address = wtforms.SelectField(
+        label=_(u'IP address:'),
+        validators=[validators.InputRequired(message=associate_ip_error_msg)],
+    )
+
+    def __init__(self, request, conn=None, **kwargs):
+        super(AssociateIpToInstanceForm, self).__init__(request, **kwargs)
+        self.conn = conn
+        self.choices_manager = ChoicesManager(conn=self.conn)
+        self.ip_address.choices = self.choices_manager.elastic_ips()
+        self.ip_address.error_msg = self.associate_ip_error_msg
+
+
+class DisassociateIpFromInstanceForm(BaseSecureForm):
+    """CSRF-protected form to disassociate IP from an instance"""
+    pass
+

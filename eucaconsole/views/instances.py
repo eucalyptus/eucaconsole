@@ -19,7 +19,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
     RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
-    BatchTerminateInstancesForm, InstancesFiltersForm)
+    BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
@@ -86,6 +86,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
         self.batch_terminate_form = BatchTerminateInstancesForm(self.request, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(
+            self.request, conn=self.conn, formdata=self.request.params or None)
+        self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
@@ -98,6 +101,8 @@ class InstancesView(LandingPageView, BaseInstanceView):
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
             batch_terminate_form=self.batch_terminate_form,
+            associate_ip_form=self.associate_ip_form,
+            disassociate_ip_form=self.disassociate_ip_form,
             filters_form=self.filters_form,
         )
 
@@ -212,6 +217,33 @@ class InstancesView(LandingPageView, BaseInstanceView):
             self.request.session.flash(msg, queue=Notification.ERROR)
         return HTTPFound(location=self.location)
 
+    @view_config(route_name='instances_associate', request_method='POST')
+    def instances_associate_ip_address(self):
+        instance_id = self.request.params.get('instance_id')
+        instance = self.get_instance(instance_id)
+        if instance and self.associate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                new_ip = self.request.params.get('ip_address')
+                instance.use_ip(new_ip)
+                msg = _(u'Successfully associated the IP to the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
+    @view_config(route_name='instances_disassociate', request_method='POST')
+    def instances_disassociate_ip_address(self):
+        if self.disassociate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                ip_address = self.request.params.get('ip_address')
+                ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
+                elastic_ip = ip_addresses[0] if ip_addresses else None
+                if elastic_ip:
+                    disassociated = elastic_ip.disassociate()
+                msg = _(u'Successfully disassociated the IP from the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):
@@ -245,17 +277,24 @@ class InstancesJsonView(LandingPageView):
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
+        elastic_ips = self.conn.get_all_addresses()
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
-            security_groups_array = sorted({'name':group.name, 'id':group.id} for group in instance.groups)
+            security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
+            has_elastic_ip = False
+            if instance.ip_address:
+                for ip in elastic_ips:
+                    if instance.ip_address == ip.public_ip:
+                        has_elastic_ip = True  
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
+                has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
                 launch_time=instance.launch_time,
                 placement=instance.placement,
@@ -310,6 +349,7 @@ class InstanceJsonView(BaseInstanceView):
                     root_device_type=instance.root_device_type,
                 ))
 
+
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
@@ -326,10 +366,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
         self.terminate_form = TerminateInstanceForm(self.request, formdata=self.request.params or None)
+        self.associate_ip_form = AssociateIpToInstanceForm(
+            self.request, conn=self.conn, formdata=self.request.params or None)
+        self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
         self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -341,6 +385,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
             terminate_form=self.terminate_form,
+            associate_ip_form=self.associate_ip_form,
+            disassociate_ip_form=self.disassociate_ip_form,
+            has_elastic_ip=self.has_elastic_ip,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -352,20 +399,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     @view_config(route_name='instance_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def instance_update(self):
         if self.instance and self.instance_form.validate():
+
             with boto_error_handler(self.request, self.location):
                 # Update tags
                 self.update_tags()
-
-                # Update assigned IP address
-                new_ip = self.request.params.get('ip_address')
-                if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
-                    self.log_request(_(u"Associating eip {0} with instance {0}").format(new_ip, self.instance.id))
-                    self.instance.use_ip(new_ip)
-
-                # Disassociate IP address
-                if new_ip == '':
-                    self.log_request(_(u"Disassociating eip {0} with instance {0}").format(self.instance.ip_address, self.instance.id))
-                    self.disassociate_ip_address(ip_address=self.instance.ip_address)
 
                 # Update stopped instance
                 if self.instance.state == 'stopped':
@@ -373,7 +410,8 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     user_data = self.request.params.get('userdata')
                     kernel = self.request.params.get('kernel')
                     ramdisk = self.request.params.get('ramdisk')
-                    self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(self.instance.id, instance_type, kernel, ramdisk))
+                    self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(
+                        self.instance.id, instance_type, kernel, ramdisk))
                     self.instance.instance_type = instance_type
                     self.instance.user_data = user_data
                     self.instance.kernel = kernel
@@ -460,6 +498,31 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 return JSONResponse(status=400, message=_(
                     u"There was a problem with the key, please try again, verifying the correct private key is used."))
 
+    @view_config(route_name='instance_associate', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_associate_ip_address(self):
+        if self.instance and self.associate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                new_ip = self.request.params.get('ip_address')
+                self.instance.use_ip(new_ip)
+                msg = _(u'Successfully associated the IP to the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
+    @view_config(route_name='instance_disassociate', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_disassociate_ip_address(self):
+        if self.disassociate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                ip_address = self.request.params.get('ip_address')
+                ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
+                elastic_ip = ip_addresses[0] if ip_addresses else None
+                if elastic_ip:
+                    disassociated = elastic_ip.disassociate()
+                msg = _(u'Successfully disassociated the IP from the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
     def get_launch_time(self):
         """Returns instance launch time as a python datetime.datetime object"""
         if self.instance and self.instance.launch_time:
@@ -483,6 +546,15 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             self.log_request(_(u"Disassociating ip {0} from instance {1}").format(ip_address, self.instance.id))
             disassociated = elastic_ip.disassociate()
 
+    def check_has_elastic_ip(self, ip_address):
+        has_elastic_ip = False
+        elastic_ips = self.conn.get_all_addresses()
+        if ip_address is not None:
+            for ip in elastic_ips:
+                if ip_address == ip.public_ip:
+                    has_elastic_ip = True  
+        return has_elastic_ip
+
 
 class InstanceStateView(BaseInstanceView):
     def __init__(self, request):
@@ -495,6 +567,19 @@ class InstanceStateView(BaseInstanceView):
     def instance_state_json(self):
         """Return current instance state"""
         return dict(results=self.instance.state)
+
+    @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
+    def instance_ip_address_json(self):
+        """Return current instance state"""
+        has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
+        ip_address_dict = dict(
+            ip_address=self.instance.ip_address,
+            public_dns_name=self.instance.public_dns_name,
+            private_ip_address=self.instance.private_ip_address,
+            private_dns_name=self.instance.private_dns_name,
+            has_elastic_ip=has_elastic_ip,
+        ) 
+        return ip_address_dict
 
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
@@ -518,6 +603,15 @@ class InstanceStateView(BaseInstanceView):
             except KeyError:
                 return dev_name
         return 'error'
+
+    def check_has_elastic_ip(self, ip_address):
+        has_elastic_ip = False
+        elastic_ips = self.conn.get_all_addresses()
+        if ip_address is not None:
+            for ip in elastic_ips:
+                if ip_address == ip.public_ip:
+                    has_elastic_ip = True  
+        return has_elastic_ip
 
 
 class InstanceVolumesView(BaseInstanceView):
@@ -583,7 +677,8 @@ class InstanceVolumesView(BaseInstanceView):
             if self.instance and volume_id and device:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
                 with boto_error_handler(self.request, location):
-                    self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, self.instance.id, device))
+                    self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(
+                        volume_id, self.instance.id, device))
                     self.conn.attach_volume(volume_id=volume_id, instance_id=self.instance.id, device=device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -674,7 +769,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
+                    num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
@@ -765,7 +861,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
+                    num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
