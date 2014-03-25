@@ -30,7 +30,7 @@
                     Your instance(s) will not be accessible until you add rules to this security group
                     (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
                     You can add rules to security group
-                    <span class="breakword"><a ng-href="/securitygroups/{{ securityGroup }}" target="_blank">{{ securityGroup }}</a></span>
+                    <span class="breakword"><a ng-href="/securitygroups/{{ getSecurityGroupIDByName(securityGroup) }}" target="_blank">{{ securityGroup }}</a></span>
                     after you launch the instance(s) if you select security group <span class="breakword">{{ securityGroup }}</span>.
                 </p>
             </div>
