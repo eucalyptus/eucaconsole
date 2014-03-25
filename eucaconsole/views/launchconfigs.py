@@ -176,6 +176,7 @@ class LaunchConfigView(BaseView):
             prefix = _(u'Unable to delete launch configuration')
             template = '{0} {1} - {2}'.format(prefix, self.launch_config.name, '{0}')
             with boto_error_handler(self.request, location, template):
+                self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
@@ -285,6 +286,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json else None
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Creating launch configuration {0}").format(name))
                 launch_config = LaunchConfiguration(
                     name=name,
                     image_id=image_id,

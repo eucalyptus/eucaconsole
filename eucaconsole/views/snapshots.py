@@ -62,6 +62,7 @@ class SnapshotsView(LandingPageView):
             location = self.request.route_path('volume_snapshots', id=volume_id)
         if snapshot and self.delete_form.validate():
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
@@ -254,6 +255,7 @@ class SnapshotView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
             with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
+                self.log_request(_(u"Creating snapshot from volume {0}").format(volume.id))
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
@@ -274,6 +276,7 @@ class SnapshotView(TaggedItemView):
         if self.snapshot and self.delete_form.validate():
             snapshot_name = TaggedItemView.get_display_name(self.snapshot)
             with boto_error_handler(self.request, self.request.route_path('snapshots')):
+                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
@@ -301,6 +304,7 @@ class SnapshotView(TaggedItemView):
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Registering snapshot {0} as image {1}").format(snapshot_id, name))
                 self.snapshot.connection.register_image(
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),
