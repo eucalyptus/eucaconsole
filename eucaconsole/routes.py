@@ -64,6 +64,7 @@ urls = [
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
     Route(name='instance_get_password', pattern='/instances/{id}/getpassword'), # for windows instances
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
+    Route(name='instance_ip_address_json', pattern='/instances/{id}/ipaddress/json'),
     Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
     Route(name='instance_console_output_json', pattern='/instances/{id}/consoleoutput/json'),
     Route(name='instance_volumes', pattern='/instances/{id}/volumes'),

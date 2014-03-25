@@ -541,6 +541,17 @@ class InstanceStateView(BaseInstanceView):
         """Return current instance state"""
         return dict(results=self.instance.state)
 
+    @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
+    def instance_ip_address_json(self):
+        """Return current instance state"""
+        self.ip_address_dict = dict(
+            ip_address=self.instance.ip_address,
+            public_dns_name=self.instance.public_dns_name,
+            private_ip_address=self.instance.private_ip_address,
+            private_dns_name=self.instance.private_dns_name,
+        ) 
+        return self.ip_address_dict
+
     @view_config(route_name='instance_nextdevice_json', renderer='json', request_method='GET')
     def instance_nextdevice_json(self):
         """Return current instance state"""

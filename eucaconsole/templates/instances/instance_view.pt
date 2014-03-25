@@ -7,9 +7,11 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
+                                     '${request.route_path('instance_ip_address_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}', '${instance.id}', '${instance_name}', '${instance.groups[0].name}',
-                                     '${instance.key_name}', '${instance.public_dns_name}', '${instance.platform}', '${has_elastic_ip}')">
+                                     '${instance.key_name}', '${instance.ip_address}', '${instance.public_dns_name}',
+                                     '${instance.platform}', '${has_elastic_ip}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -137,20 +139,21 @@
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
                         <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
                     </div>
-                    ${panel('form_field', field=instance_form.ip_address)}
-                    <div class="row controls-wrapper readonly"
-                         tal:condition="instance.public_dns_name != instance.ip_address">
+                    <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
+                        <div class="small-4 columns"><label i18n:translate="">IP address</label></div>
+                        <div class="small-8 columns value" ng-cloak="">{{ instancePublicIP }}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" ng-show="PublicDNS != ''">
                         <div class="small-4 columns"><label i18n:translate="">Public hostname</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.public_dns_name}</div>
+                        <div class="small-8 columns value" ng-cloak="">{{ PublicDNS }}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance.private_ip_address">
+                    <div class="row controls-wrapper readonly" ng-show="instancePrivateIP != null">
                         <div class="small-4 columns"><label i18n:translate="">Private IP address</label></div>
-                        <div class="small-8 columns value">${instance.private_ip_address}</div>
+                        <div class="small-8 columns value" ng-cloak="">{{ instancePrivateIP }}</div>
                     </div>
-                    <div class="row controls-wrapper readonly"
-                         tal:condition="instance.private_dns_name != instance.private_ip_address">
+                    <div class="row controls-wrapper readonly" ng-show="PrivateDNS != ''">
                         <div class="small-4 columns"><label i18n:translate="">Private hostname</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.private_dns_name}</div>
+                        <div class="small-8 columns value" ng-cloak="">{{ PrivateDNS }}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
