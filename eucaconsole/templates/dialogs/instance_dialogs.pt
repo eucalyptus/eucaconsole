@@ -157,7 +157,7 @@
                          detailpage_action request.route_path('instance_associate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;
                          html_attrs {'data-placeholder': 'select IP...'};">
-            <h3 i18n:translate="">Associate IP address to instance</h3>
+            <h3 i18n:translate="">Associate elastic IP address with instance</h3>
             <p i18n:translate="" tal:condition="instance">Associate <b ng-non-bindable=''>${ instance_name }</b> with IP address</p>
             <p i18n:translate="" tal:condition="not instance">Associate <b>{{ instanceName }}</b> with IP address</p>
             <form method="post" action="${action}" id="associate-ip-to-instance-form" data-abide="abide">
@@ -169,7 +169,7 @@
                 <div class="row">
                     <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
                         <button type="submit" class="button expand" i18n:translate=""
-                            ng-click="showProgress=true">Associate address</button>
+                            ng-click="showProgress=true">Associate Address with Instance</button>
                     </div>
                     <div ng-show="showProgress">
                         <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
@@ -182,36 +182,29 @@
              tal:define="landingpage_action request.route_path('instances_disassociate');
                          detailpage_action request.route_path('instance_disassociate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
-            <h3 i18n:translate="">Disassociate IP address from instance</h3>
+            <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
             <div>
                 <p>
                     <span i18n:translate=""> 
-                        If you disassociate an IP address from an instance, you will no longer be able to connect to that instance using that IP address.
+                        If you disassociate an elastic IP address from an instance, you will no longer be able to connect to that instance using that IP address.
                     </span>
                 </p>
             </div>
             <div>
                 <p>
                     <span i18n:translate=""> 
-                        Are you sure you want to dissassociate the following IP address from the instance?
-                    </span>
-                </p>
-            </div>
-            <div class="row">
-                <div class="small-6 columns"><label i18n:translate="">IP ADDRESS</label></div>
-                <div class="small-6 columns"><label i18n:translate="">INSTANCE</label></div>
-            </div>
-            <div class="row">
-                <div class="small-6 columns">
+                        Are you sure you want to dissassociate 
+                    <span>
                     <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
-                </div>
-                <div class="small-6 columns">
-                    <span tal:condition="instance"><b ng-non-bindable="">${instance.id}</b></span>
-                    <span tal:condition="not instance"><b>{{ instanceName }}</b></span> 
-                </div>
-            </div> 
-            <br />
+                    <br />
+                    <span i18n:translate=""> 
+                    from the instance
+                    </span>
+                    <span tal:condition="instance"><b ng-non-bindable="">${instance.id}</b> ?</span>
+                    <span tal:condition="not instance"><b>{{ instanceName }}</b> ?</span>
+                </p>
+            </div>
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
                 ${structure:disassociate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">
@@ -223,7 +216,7 @@
                 <div class="row">
                     <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
                         <button type="submit" class="button expand" i18n:translate=""
-                            ng-click="showProgress=true">Yes, disassociate</button>
+                            ng-click="showProgress=true">Yes, Disassociate Address from Instance</button>
                     </div>
                     <div ng-show="showProgress">
                         <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
