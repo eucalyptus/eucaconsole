@@ -42,8 +42,8 @@
             <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
             <span tal:condition="not volume"><b>{{ volumeID }}</b></span>
             <span i18n:translate="">from instance</span>
-            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong><strong
-                tal:condition="landingpage">{{ instanceName }}</strong>?
+            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+            <strong tal:condition="landingpage">{{ instanceName }}</strong>?
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
@@ -55,6 +55,13 @@
                 <input type="submit" class="button expand" value="Yes, Detach Volume" i18n:attributes="value" />
             </div>
         </form>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Detach volume</h3>
+        <p>
+            <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong ng-non-bindable="">{{ instanceName }}</strong>.</span>
+        </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""

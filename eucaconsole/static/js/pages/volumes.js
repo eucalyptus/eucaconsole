@@ -5,7 +5,7 @@
  */
 
 angular.module('VolumesPage', ['LandingPage'])
-    .controller('VolumesCtrl', function ($scope, $timeout) {
+    .controller('VolumesCtrl', function ($scope, $http, $timeout) {
         $scope.volumeID = '';
         $scope.volumeZone = '';
         $scope.instanceName = '';
@@ -41,6 +41,20 @@ angular.module('VolumesPage', ['LandingPage'])
                 });
             }
             modal.foundation('reveal', 'open');
+        };
+        $scope.detachModal = function (item, url) {
+            $scope.instanceName = item.instance_name;
+            url = url.replace('_id_', item.instance);
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    if (results.root_device_name == item.device) {
+                        $('#detach-volume-warn-modal').foundation('reveal', 'open');
+                    } else {
+                        $('#detach-volume-modal').foundation('reveal', 'open');
+                    }
+                }
+            });
         };
     })
 ;

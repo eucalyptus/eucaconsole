@@ -51,6 +51,7 @@ urls = [
     Route(name='instance_create', pattern='/instances/new'),
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
+    Route(name='instance_json', pattern='/instances/{id}/json'),
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
