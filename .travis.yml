@@ -7,7 +7,8 @@ install:
     - sudo apt-get -y update
     - sudo apt-get -y install openssl build-essential python-dev swig
     - python setup.py install
+    - pip install -e .[i18n]
 # command to run tests, e.g. python setup.py test
-script:  "python setup.py test:
-after_script: "python setup.py extract_messages"
+script:  "python setup.py test"
+after_script:  "python setup.py extract_messages"
 
