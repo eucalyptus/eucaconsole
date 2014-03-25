@@ -1,10 +1,8 @@
 import os
-#from uuid import uuid4
+
 
 def setup_tweens(config):
-    '''Since tweens order is important this function will take care
-    of proper ordering'''
-
+    """Since tweens order is important this function will take care of proper ordering"""
     config.add_tween('eucaconsole.tweens.xframe_tween_factory')
     config.add_tween('eucaconsole.tweens.request_id_tween_factory')
 
@@ -16,6 +14,7 @@ def xframe_tween_factory(handler, registry):
             response.headers['X-FRAME-OPTIONS'] = 'SAMEORIGIN'
         return response
     return tween
+
 
 def request_id_tween_factory(handler, registry):
     def tween(request):
