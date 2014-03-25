@@ -119,10 +119,6 @@
                     <hr />
                     ${panel('tag_editor', tags=volume_tags)}
                     <hr />
-                    <div ng-show="volumeStatus == 'deleted'">
-                        <span i18n:translate="">Volume was successfully deleted.</span>
-                        <a href="${request.route_path('volumes')}" i18n:translate="">Return to volumes page</a>
-                    </div>
                     <div>
                         <button type="submit" class="button">
                             <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save Changes</span>
