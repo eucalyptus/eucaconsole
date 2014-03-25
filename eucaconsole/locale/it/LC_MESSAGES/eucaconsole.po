@@ -1,17 +1,18 @@
-# Translations template for eucaconsole.
+# Italian translations for eucaconsole.
 # Copyright (C) 2014 ORGANIZATION
-# This file is distributed under the same license as the eucaconsole project.
+# This file is distributed under the same license as the eucaconsole
+# project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2014-03-25 13:16-0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2014-03-25 13:16-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: it <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -99,7 +100,8 @@ msgstr ""
 #: eucaconsole/forms/alarms.py:21 eucaconsole/forms/keypairs.py:17
 #: eucaconsole/forms/keypairs.py:35 eucaconsole/forms/launchconfigs.py:24
 #: eucaconsole/forms/policies.py:17 eucaconsole/forms/scalinggroups.py:153
-#: eucaconsole/forms/scalinggroups.py:224 eucaconsole/forms/securitygroups.py:18
+#: eucaconsole/forms/scalinggroups.py:224
+#: eucaconsole/forms/securitygroups.py:18
 msgid "Name is required"
 msgstr ""
 
@@ -107,11 +109,11 @@ msgstr ""
 #: eucaconsole/forms/groups.py:48 eucaconsole/forms/keypairs.py:20
 #: eucaconsole/forms/keypairs.py:39 eucaconsole/forms/launchconfigs.py:26
 #: eucaconsole/forms/policies.py:19 eucaconsole/forms/scalinggroups.py:155
-#: eucaconsole/forms/scalinggroups.py:226 eucaconsole/forms/securitygroups.py:20
-#: eucaconsole/forms/snapshots.py:17 eucaconsole/forms/snapshots.py:69
-#: eucaconsole/forms/users.py:55 eucaconsole/forms/volumes.py:18
-#: eucaconsole/forms/volumes.py:87 eucaconsole/forms/volumes.py:107
-#: eucaconsole/templates/images/images.pt:83
+#: eucaconsole/forms/scalinggroups.py:226
+#: eucaconsole/forms/securitygroups.py:20 eucaconsole/forms/snapshots.py:17
+#: eucaconsole/forms/snapshots.py:69 eucaconsole/forms/users.py:55
+#: eucaconsole/forms/volumes.py:18 eucaconsole/forms/volumes.py:87
+#: eucaconsole/forms/volumes.py:107 eucaconsole/templates/images/images.pt:83
 #: eucaconsole/templates/instances/instance_launch.pt:89
 #: eucaconsole/templates/keypairs/keypair_view.pt:56
 #: eucaconsole/templates/keypairs/keypairs.pt:46
@@ -138,8 +140,8 @@ msgstr ""
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:62
 #: eucaconsole/templates/securitygroups/securitygroups.pt:49
 #: eucaconsole/templates/snapshots/snapshot_view.pt:81
-#: eucaconsole/templates/snapshots/snapshots.pt:83 eucaconsole/views/images.py:62
-#: eucaconsole/views/securitygroups.py:43
+#: eucaconsole/templates/snapshots/snapshots.pt:83
+#: eucaconsole/views/images.py:62 eucaconsole/views/securitygroups.py:43
 msgid "Description"
 msgstr ""
 
@@ -195,8 +197,8 @@ msgstr ""
 
 #: eucaconsole/forms/alarms.py:71
 msgid ""
-"How many consecutive periods the trigger threshold must be breached before "
-"the alarm is triggered."
+"How many consecutive periods the trigger threshold must be breached "
+"before the alarm is triggered."
 msgstr ""
 
 #: eucaconsole/forms/alarms.py:73
@@ -408,7 +410,8 @@ msgid "No available volumes in the availability zone"
 msgstr ""
 
 #: eucaconsole/forms/instances.py:268 eucaconsole/forms/snapshots.py:83
-#: eucaconsole/forms/volumes.py:174 eucaconsole/templates/images/image_view.pt:107
+#: eucaconsole/forms/volumes.py:174
+#: eucaconsole/templates/images/image_view.pt:107
 #: eucaconsole/templates/instances/instance_view.pt:100
 #: eucaconsole/templates/instances/instances.pt:124
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:85
@@ -416,8 +419,8 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:80
 #: eucaconsole/templates/users/users.pt:80
 #: eucaconsole/templates/volumes/volume_view.pt:69
-#: eucaconsole/templates/volumes/volumes.pt:86 eucaconsole/views/snapshots.py:125
-#: eucaconsole/views/volumes.py:159
+#: eucaconsole/templates/volumes/volumes.pt:86
+#: eucaconsole/views/snapshots.py:125 eucaconsole/views/volumes.py:159
 msgid "Status"
 msgstr ""
 
@@ -588,8 +591,8 @@ msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:65
 msgid ""
-"Length of time in seconds after a new EC2 instance comes into service that "
-"Auto Scaling starts checking its health"
+"Length of time in seconds after a new EC2 instance comes into service "
+"that Auto Scaling starts checking its health"
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:70
@@ -680,8 +683,8 @@ msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:253
 msgid ""
-"Time (in seconds) before Alarm related Scaling Activities can start after the"
-" previous Scaling Activity ends."
+"Time (in seconds) before Alarm related Scaling Activities can start after"
+" the previous Scaling Activity ends."
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:257
@@ -700,12 +703,14 @@ msgstr ""
 msgid "No alarms are available."
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:307 eucaconsole/views/scalinggroups.py:374
+#: eucaconsole/forms/scalinggroups.py:307
+#: eucaconsole/views/scalinggroups.py:374
 #: eucaconsole/views/scalinggroups.py:419
 msgid "Scale up by"
 msgstr ""
 
-#: eucaconsole/forms/scalinggroups.py:308 eucaconsole/views/scalinggroups.py:373
+#: eucaconsole/forms/scalinggroups.py:308
+#: eucaconsole/views/scalinggroups.py:373
 #: eucaconsole/views/scalinggroups.py:418
 msgid "Scale down by"
 msgstr ""
@@ -870,7 +875,8 @@ msgstr ""
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:50
 #: eucaconsole/templates/instances/instance_view.pt:98
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:72
-#: eucaconsole/templates/volumes/volumes.pt:88 eucaconsole/views/ipaddresses.py:132
+#: eucaconsole/templates/volumes/volumes.pt:88
+#: eucaconsole/views/ipaddresses.py:132
 msgid "Instance"
 msgstr ""
 
@@ -1047,9 +1053,9 @@ msgstr ""
 
 #: eucaconsole/templates/login.pt:14
 msgid ""
-"HTTPS not detected. You will not be able to log in unless the session.secure "
-"setting is disabled in the configuration file. Please contact your cloud "
-"administrator."
+"HTTPS not detected. You will not be able to log in unless the "
+"session.secure setting is disabled in the configuration file. Please "
+"contact your cloud administrator."
 msgstr ""
 
 #: eucaconsole/templates/login.pt:36 eucaconsole/templates/login.pt:41
@@ -1265,8 +1271,8 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:6
 msgid ""
-"Save the key pair the file in a place you will remember. You will need to "
-"enter the path later to connect to your instances."
+"Save the key pair the file in a place you will remember. You will need to"
+" enter the path later to connect to your instances."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:28
@@ -1313,9 +1319,9 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:81
 msgid ""
-"Terminating an EBS-backed instance may also delete the root volume if the "
-"volume is set up to do so. Data on that volume will be lost. To keep the "
-"volume, you may stop the instance instead."
+"Terminating an EBS-backed instance may also delete the root volume if the"
+" volume is set up to do so. Data on that volume will be lost. To keep the"
+" volume, you may stop the instance instead."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:88
@@ -1348,10 +1354,10 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:126
 msgid ""
-"To connect to your instance, be sure security group \"{{ groupName }}\" has "
-"TCP port 22 open to inbound traffic and then perform the following steps "
-"(these instructions do not apply if you did not select a key pair when you "
-"launched this instance):"
+"To connect to your instance, be sure security group \"{{ groupName }}\" "
+"has TCP port 22 open to inbound traffic and then perform the following "
+"steps (these instructions do not apply if you did not select a key pair "
+"when you launched this instance):"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:128
@@ -1360,8 +1366,8 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:129
 msgid ""
-"Change your directory to the one where you stored your key file \"{{ keyName "
-"}}.pem\""
+"Change your directory to the one where you stored your key file \"{{ "
+"keyName }}.pem\""
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:130
@@ -1372,22 +1378,22 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:132
 msgid ""
-"Connect to your instance via its public IP address by running the following "
-"command: <dynamic element><dynamic element>"
+"Connect to your instance via its public IP address by running the "
+"following command: <dynamic element><dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:136
 msgid ""
-"To connect to your instance, be sure security group \"{{ groupName }}\" has "
-"TCP port 3389 open to inbound traffic and then perform the following steps "
-"(these instructions do not apply if you did not select a key pair when you "
-"launched this instance):"
+"To connect to your instance, be sure security group \"{{ groupName }}\" "
+"has TCP port 3389 open to inbound traffic and then perform the following "
+"steps (these instructions do not apply if you did not select a key pair "
+"when you launched this instance):"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:138
 msgid ""
-"Browse to your key file \"{{ keyName }}.pem\" in your local file system and "
-"use it to retrieve your instance password."
+"Browse to your key file \"{{ keyName }}.pem\" in your local file system "
+"and use it to retrieve your instance password."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:139
@@ -1429,8 +1435,8 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:188
 msgid ""
-"If you disassociate an IP address from an instance, you will no longer be "
-"able to connect to that instance using that IP address."
+"If you disassociate an IP address from an instance, you will no longer be"
+" able to connect to that instance using that IP address."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:195
@@ -1471,8 +1477,8 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:32
 msgid ""
-"Are you sure you want to disassociate <dynamic element><dynamic element> from"
-" instance <dynamic element> <dynamic element> ?"
+"Are you sure you want to disassociate <dynamic element><dynamic element> "
+"from instance <dynamic element> <dynamic element> ?"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:50
@@ -1484,9 +1490,9 @@ msgstr ""
 msgid ""
 "If you release an elastic IP address to the cloud, you can no longer "
 "associate that IP address with any of your instances. If the elastic IP "
-"address is currently associated with an instance when you release it to the "
-"cloud, the instance will get a new IP address as long as you did not specify "
-"private addressing when you launched the instance."
+"address is currently associated with an instance when you release it to "
+"the cloud, the instance will get a new IP address as long as you did not "
+"specify private addressing when you launched the instance."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:56
@@ -1528,8 +1534,8 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:16
 msgid ""
-"Change the launch configuration from each scaling group's detail page, and "
-"then try to delete this launch configuration again."
+"Change the launch configuration from each scaling group's detail page, "
+"and then try to delete this launch configuration again."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:22
@@ -1636,9 +1642,9 @@ msgstr ""
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:63
 #: eucaconsole/templates/instances/instance_volumes.pt:130
 msgid ""
-"This operation is not available because you cannot detach the root volume of "
-"an EBS-backed instance. If you want to delete this volume, terminate instance"
-" <dynamic element>."
+"This operation is not available because you cannot detach the root volume"
+" of an EBS-backed instance. If you want to delete this volume, terminate "
+"instance <dynamic element>."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:71
@@ -1736,8 +1742,8 @@ msgstr ""
 #: eucaconsole/templates/groups/group_view.pt:160
 #: eucaconsole/templates/groups/groups.pt:80
 msgid ""
-"Deleting a group also deletes all permissions associated with that group. Are"
-" you sure you want to delete group <dynamic element>"
+"Deleting a group also deletes all permissions associated with that group."
+" Are you sure you want to delete group <dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/groups/groups.pt:17
@@ -1759,7 +1765,8 @@ msgstr ""
 #: eucaconsole/templates/securitygroups/securitygroups.pt:63
 #: eucaconsole/templates/snapshots/snapshots.pt:29
 #: eucaconsole/templates/snapshots/snapshots.pt:113
-#: eucaconsole/templates/users/users.pt:36 eucaconsole/templates/users/users.pt:118
+#: eucaconsole/templates/users/users.pt:36
+#: eucaconsole/templates/users/users.pt:118
 #: eucaconsole/templates/volumes/volume_snapshots.pt:41
 #: eucaconsole/templates/volumes/volumes.pt:30
 #: eucaconsole/templates/volumes/volumes.pt:118
@@ -1769,7 +1776,8 @@ msgstr ""
 #: eucaconsole/templates/groups/groups.pt:27
 #: eucaconsole/templates/groups/groups.pt:69
 #: eucaconsole/templates/users/user_view.pt:288
-#: eucaconsole/templates/users/users.pt:45 eucaconsole/templates/users/users.pt:127
+#: eucaconsole/templates/users/users.pt:45
+#: eucaconsole/templates/users/users.pt:127
 msgid "Delete"
 msgstr ""
 
@@ -1801,8 +1809,8 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_instances.pt:35
 msgid ""
-"The <dynamic element> dialog box will appear. Select the volume you want to "
-"attach to this instance."
+"The <dynamic element> dialog box will appear. Select the volume you want "
+"to attach to this instance."
 msgstr ""
 
 #: eucaconsole/templates/help/help_instances.pt:41
@@ -1815,8 +1823,8 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_instances.pt:47
 msgid ""
-"The <dynamic element> dialog box will appear. Click confirm to detach the "
-"volume."
+"The <dynamic element> dialog box will appear. Click confirm to detach the"
+" volume."
 msgstr ""
 
 #: eucaconsole/templates/help/help_ipaddresses.pt:12
@@ -1835,8 +1843,8 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_ipaddresses.pt:29
 msgid ""
-"This dialog box lets you verify that you wish to disassociate one or more "
-"elastic IP addresses from running instance(s)."
+"This dialog box lets you verify that you wish to disassociate one or more"
+" elastic IP addresses from running instance(s)."
 msgstr ""
 
 #: eucaconsole/templates/help/help_ipaddresses.pt:43
@@ -1855,20 +1863,21 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_keypairs.pt:13
 msgid ""
-"Eucalyptus uses cryptographic key pairs to verify access to instances. Before"
-" you can run an instance, you must create a key pair. Creating a key pair "
-"generates two keys: a public key (saved within Eucalyptus) and a "
-"corresponding private key (output to the user as a character string). To "
-"enable this private key you must save it to a file and set appropriate access"
-" permissions (using the chmod command), as shown in the example below."
+"Eucalyptus uses cryptographic key pairs to verify access to instances. "
+"Before you can run an instance, you must create a key pair. Creating a "
+"key pair generates two keys: a public key (saved within Eucalyptus) and a"
+" corresponding private key (output to the user as a character string). To"
+" enable this private key you must save it to a file and set appropriate "
+"access permissions (using the chmod command), as shown in the example "
+"below."
 msgstr ""
 
 #: eucaconsole/templates/help/help_keypairs.pt:20
 msgid ""
-"When you create a VM instance, the public key is then injected into the VM. "
-"Later, when attempting to login to the VM instance using SSH, the public key "
-"is checked against your private key to verify access. Note that the private "
-"key becomes obsolete when the public key is deleted."
+"When you create a VM instance, the public key is then injected into the "
+"VM. Later, when attempting to login to the VM instance using SSH, the "
+"public key is checked against your private key to verify access. Note "
+"that the private key becomes obsolete when the public key is deleted."
 msgstr ""
 
 #: eucaconsole/templates/help/help_keypairs.pt:25
@@ -1888,7 +1897,9 @@ msgid "Delete Key Pair"
 msgstr ""
 
 #: eucaconsole/templates/help/help_keypairs.pt:81
-msgid "This dialog box allows you to confirm or cancel a key pair delete operation."
+msgid ""
+"This dialog box allows you to confirm or cancel a key pair delete "
+"operation."
 msgstr ""
 
 #: eucaconsole/templates/help/help_keypairs.pt:82
@@ -1902,8 +1913,8 @@ msgstr ""
 #: eucaconsole/templates/help/help_snapshots.pt:13
 msgid ""
 "A snapshot is a block level storage volume that is created by copying an "
-"existing volume and is backed by persistent storage. You can use snapshots to"
-" create new volumes to be used with your instances."
+"existing volume and is backed by persistent storage. You can use "
+"snapshots to create new volumes to be used with your instances."
 msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:36
@@ -1914,9 +1925,9 @@ msgstr ""
 msgid ""
 "A snapshot is a block level storage volume that is created by copying an "
 "existing volume and is backed by persistent storage. You can register a "
-"snapshot as an image if it the snapshot was created from a volume containing "
-"a root file system. Once registered, this image can then be used to lau nch "
-"EBS-backed instances."
+"snapshot as an image if it the snapshot was created from a volume "
+"containing a root file system. Once registered, this image can then be "
+"used to lau nch EBS-backed instances."
 msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:56
@@ -1924,7 +1935,9 @@ msgid "Delete Snapshot"
 msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:58
-msgid "This dialog box allows you to confirm or cancel a snapshot delete operation."
+msgid ""
+"This dialog box allows you to confirm or cancel a snapshot delete "
+"operation."
 msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:59
@@ -2033,7 +2046,8 @@ msgstr ""
 #: eucaconsole/templates/panels/bdmapping_editor.pt:14
 #: eucaconsole/templates/snapshots/snapshot_view.pt:89
 #: eucaconsole/templates/snapshots/snapshots.pt:81
-#: eucaconsole/templates/volumes/volumes.pt:87 eucaconsole/views/snapshots.py:122
+#: eucaconsole/templates/volumes/volumes.pt:87
+#: eucaconsole/views/snapshots.py:122
 msgid "Size"
 msgstr ""
 
@@ -2471,8 +2485,8 @@ msgstr ""
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:66
 msgid ""
-"Save the file in a place you will remember. You will need to enter the path "
-"later to connect to your instances."
+"Save the file in a place you will remember. You will need to enter the "
+"path later to connect to your instances."
 msgstr ""
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:74
@@ -2485,8 +2499,8 @@ msgstr ""
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:81
 msgid ""
-"Importing a public key allows you to use an existing SSH key to access your "
-"Eucalyptus instances."
+"Importing a public key allows you to use an existing SSH key to access "
+"your Eucalyptus instances."
 msgstr ""
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:99
@@ -2611,7 +2625,9 @@ msgstr ""
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:31
 #: eucaconsole/templates/panels/tag_editor.pt:24
-msgid "Tag may not begin with \"aws:\" or its length cannot be longer than 128 chars"
+msgid ""
+"Tag may not begin with \"aws:\" or its length cannot be longer than 128 "
+"chars"
 msgstr ""
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:35
@@ -2757,7 +2773,9 @@ msgid "WARNING, NO RULES DEFINED!"
 msgstr ""
 
 #: eucaconsole/templates/panels/tag_editor.pt:28
-msgid "Tag may not begin with \"aws:\" or its length cannot be longer than 256 chars"
+msgid ""
+"Tag may not begin with \"aws:\" or its length cannot be longer than 256 "
+"chars"
 msgstr ""
 
 #: eucaconsole/templates/panels/user_editor.pt:13
@@ -2824,7 +2842,9 @@ msgid "Monitor access"
 msgstr ""
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:66
-msgid "Provides read-only access to all resources, with no access to users and groups"
+msgid ""
+"Provides read-only access to all resources, with no access to users and "
+"groups"
 msgstr ""
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:82
@@ -2843,8 +2863,8 @@ msgstr ""
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:103
 msgid ""
-"You may write a policy using policy syntax by simply copy/pasting or typing "
-"directly into the Policy box in the panel on the right."
+"You may write a policy using policy syntax by simply copy/pasting or "
+"typing directly into the Policy box in the panel on the right."
 msgstr ""
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:131
@@ -2948,8 +2968,8 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:80
 msgid ""
-"Marking an instance unhealthy will cause the system to terminate it. Are you "
-"sure you want to mark the following instance as unhealthy?"
+"Marking an instance unhealthy will cause the system to terminate it. Are "
+"you sure you want to mark the following instance as unhealthy?"
 msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:90
@@ -3146,8 +3166,8 @@ msgstr ""
 
 #: eucaconsole/templates/users/quotas.pt:4
 msgid ""
-"Define limits on resources that this user is allowed to create. Leave blank "
-"for unlimited rights."
+"Define limits on resources that this user is allowed to create. Leave "
+"blank for unlimited rights."
 msgstr ""
 
 #: eucaconsole/templates/users/quotas.pt:10
@@ -3220,8 +3240,8 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:140
 msgid ""
-"Best practice: Only define user policies when group policies do not meet your"
-" needs."
+"Best practice: Only define user policies when group policies do not meet "
+"your needs."
 msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:162
@@ -3271,8 +3291,8 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:231
 msgid ""
-"This operation requires the password of the person making the request. Please"
-" enter your password below"
+"This operation requires the password of the person making the request. "
+"Please enter your password below"
 msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:238 eucaconsole/views/users.py:464
@@ -3331,19 +3351,22 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:357
 msgid ""
-"Deleting a user also deletes all keys, passwords and permissions associated "
-"with that user. Are you sure you want to delete user <dynamic element>"
+"Deleting a user also deletes all keys, passwords and permissions "
+"associated with that user. Are you sure you want to delete user <dynamic "
+"element>"
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:29
 msgid "Create New Users"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:39 eucaconsole/templates/users/users.pt:121
+#: eucaconsole/templates/users/users.pt:39
+#: eucaconsole/templates/users/users.pt:121
 msgid "Disable"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:42 eucaconsole/templates/users/users.pt:124
+#: eucaconsole/templates/users/users.pt:42
+#: eucaconsole/templates/users/users.pt:124
 msgid "Enable"
 msgstr ""
 
@@ -3355,11 +3378,13 @@ msgstr ""
 msgid "Does not have active access keys"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:74 eucaconsole/templates/users/users.pt:93
+#: eucaconsole/templates/users/users.pt:74
+#: eucaconsole/templates/users/users.pt:93
 msgid "Active"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:75 eucaconsole/templates/users/users.pt:94
+#: eucaconsole/templates/users/users.pt:75
+#: eucaconsole/templates/users/users.pt:94
 msgid "Disabled"
 msgstr ""
 
@@ -3377,8 +3402,8 @@ msgstr ""
 
 #: eucaconsole/templates/users/users.pt:145
 msgid ""
-"Deleting a user also deletes all keys, passwords and permissions associated "
-"with that user."
+"Deleting a user also deletes all keys, passwords and permissions "
+"associated with that user."
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:162
@@ -3387,10 +3412,11 @@ msgstr ""
 
 #: eucaconsole/templates/users/users.pt:164
 msgid ""
-"Disabling a user deletes their password and creates an IAM access \"deny all "
-"actions\" policy that prevents them from executing any actions against the "
-"cloud. The user's other information, including active access keys, is "
-"maintained until you either make the user active again or delete them."
+"Disabling a user deletes their password and creates an IAM access \"deny "
+"all actions\" policy that prevents them from executing any actions "
+"against the cloud. The user's other information, including active access "
+"keys, is maintained until you either make the user active again or delete"
+" them."
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:167
@@ -3403,17 +3429,17 @@ msgstr ""
 
 #: eucaconsole/templates/users/users.pt:183
 msgid ""
-"Enabling a user removes the policy that was in place denying the user access "
-"to the cloud. When this user is active, they will be able to execute actions "
-"against the cloud."
+"Enabling a user removes the policy that was in place denying the user "
+"access to the cloud. When this user is active, they will be able to "
+"execute actions against the cloud."
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:186
 msgid ""
-"The user will need a new password only if they access the cloud using the "
-"Management Console. If you want to set a specific password rather than let "
-"the system generate a random one, you can do that from the user's detail page"
-" once they are active."
+"The user will need a new password only if they access the cloud using the"
+" Management Console. If you want to set a specific password rather than "
+"let the system generate a random one, you can do that from the user's "
+"detail page once they are active."
 msgstr ""
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:20
@@ -3471,8 +3497,8 @@ msgstr ""
 
 #: eucaconsole/templates/volumes/volume_view.pt:107
 msgid ""
-"You should create your volume in the same availability zone as the instance "
-"with which you want to use it."
+"You should create your volume in the same availability zone as the "
+"instance with which you want to use it."
 msgstr ""
 
 #: eucaconsole/templates/volumes/volume_view.pt:125
@@ -3615,8 +3641,8 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:143 eucaconsole/views/instances.py:438
 msgid ""
-"Successfully sent start instance request.  It may take a moment to start the "
-"instance."
+"Successfully sent start instance request.  It may take a moment to start "
+"the instance."
 msgstr ""
 
 #: eucaconsole/views/instances.py:146
@@ -3629,8 +3655,8 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:161 eucaconsole/views/instances.py:451
 msgid ""
-"Successfully sent stop instance request.  It may take a moment to stop the "
-"instance."
+"Successfully sent stop instance request.  It may take a moment to stop "
+"the instance."
 msgstr ""
 
 #: eucaconsole/views/instances.py:164
@@ -3665,8 +3691,8 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:197 eucaconsole/views/instances.py:477
 msgid ""
-"Successfully sent terminate instance request.  It may take a moment to shut "
-"down the instance."
+"Successfully sent terminate instance request.  It may take a moment to "
+"shut down the instance."
 msgstr ""
 
 #: eucaconsole/views/instances.py:201
@@ -3703,8 +3729,8 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:498
 msgid ""
-"There was a problem with the key, please try again, verifying the correct "
-"private key is used."
+"There was a problem with the key, please try again, verifying the correct"
+" private key is used."
 msgstr ""
 
 #: eucaconsole/views/instances.py:546
@@ -3717,7 +3743,9 @@ msgid "Attaching volume {0} to {1} as {2}"
 msgstr ""
 
 #: eucaconsole/views/instances.py:683
-msgid "Request successfully submitted.  It may take a moment to attach the volume."
+msgid ""
+"Request successfully submitted.  It may take a moment to attach the "
+"volume."
 msgstr ""
 
 #: eucaconsole/views/instances.py:694
@@ -3726,7 +3754,9 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:696 eucaconsole/views/volumes.py:123
 #: eucaconsole/views/volumes.py:356
-msgid "Request successfully submitted.  It may take a moment to detach the volume."
+msgid ""
+"Request successfully submitted.  It may take a moment to detach the "
+"volume."
 msgstr ""
 
 #: eucaconsole/views/instances.py:772 eucaconsole/views/instances.py:864
@@ -3735,8 +3765,8 @@ msgstr ""
 
 #: eucaconsole/views/instances.py:800 eucaconsole/views/instances.py:893
 msgid ""
-"Successfully sent launch instances request.  It may take a moment to launch "
-"instances "
+"Successfully sent launch instances request.  It may take a moment to "
+"launch instances "
 msgstr ""
 
 #: eucaconsole/views/ipaddresses.py:59
@@ -3845,8 +3875,8 @@ msgstr ""
 
 #: eucaconsole/views/launchconfigs.py:303
 msgid ""
-"Successfully sent create launch configuration request. It may take a moment "
-"to create the launch configuration."
+"Successfully sent create launch configuration request. It may take a "
+"moment to create the launch configuration."
 msgstr ""
 
 #: eucaconsole/views/login.py:103
@@ -3989,11 +4019,13 @@ msgstr ""
 msgid "Successfully created scaling group"
 msgstr ""
 
-#: eucaconsole/views/securitygroups.py:62 eucaconsole/views/securitygroups.py:152
+#: eucaconsole/views/securitygroups.py:62
+#: eucaconsole/views/securitygroups.py:152
 msgid "Deleting security group {0}"
 msgstr ""
 
-#: eucaconsole/views/securitygroups.py:64 eucaconsole/views/securitygroups.py:154
+#: eucaconsole/views/securitygroups.py:64
+#: eucaconsole/views/securitygroups.py:154
 msgid "Successfully deleted security group"
 msgstr ""
 
@@ -4059,8 +4091,8 @@ msgstr ""
 
 #: eucaconsole/views/snapshots.py:267 eucaconsole/views/volumes.py:471
 msgid ""
-"Successfully sent create snapshot request.  It may take a moment to create "
-"the snapshot."
+"Successfully sent create snapshot request.  It may take a moment to "
+"create the snapshot."
 msgstr ""
 
 #: eucaconsole/views/snapshots.py:307
@@ -4214,8 +4246,8 @@ msgstr ""
 
 #: eucaconsole/views/volumes.py:91 eucaconsole/views/volumes.py:326
 msgid ""
-"Successfully sent delete volume request.  It may take a moment to delete the "
-"volume."
+"Successfully sent delete volume request.  It may take a moment to delete "
+"the volume."
 msgstr ""
 
 #: eucaconsole/views/volumes.py:94
@@ -4224,8 +4256,8 @@ msgstr ""
 
 #: eucaconsole/views/volumes.py:108 eucaconsole/views/volumes.py:342
 msgid ""
-"Successfully sent request to attach volume.  It may take a moment to attach "
-"to instance."
+"Successfully sent request to attach volume.  It may take a moment to "
+"attach to instance."
 msgstr ""
 
 #: eucaconsole/views/volumes.py:111 eucaconsole/views/volumes.py:126
@@ -4254,8 +4286,8 @@ msgstr ""
 
 #: eucaconsole/views/volumes.py:312
 msgid ""
-"Successfully sent create volume request.  It may take a moment to create the "
-"volume."
+"Successfully sent create volume request.  It may take a moment to create "
+"the volume."
 msgstr ""
 
 #: eucaconsole/views/volumes.py:488
