@@ -65,7 +65,7 @@
                             <a href="#" id="reboot-instance-action"
                                data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
-                        <li ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'">
+                        <li ng-show="instanceState != 'shutting-down'">
                             <a href="#" id="terminate-instance-action"
                                data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
                         </li>
