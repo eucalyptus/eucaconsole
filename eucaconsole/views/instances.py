@@ -377,15 +377,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 # Update tags
                 self.update_tags()
 
-                # Update assigned IP address
-                new_ip = self.request.params.get('ip_address')
-                if new_ip and new_ip != self.instance.ip_address and new_ip != 'none' and self.instance.state != 'stopped':
-                    self.instance.use_ip(new_ip)
-
-                # Disassociate IP address
-                if new_ip == '':
-                    self.disassociate_ip_address(ip_address=self.instance.ip_address)
-
                 # Update stopped instance
                 if self.instance.state == 'stopped':
                     instance_type = self.request.params.get('instance_type')
