@@ -32,6 +32,8 @@ class MasterLayout(object):
         self.home_url = request.application_url
         self.help_url = request.registry.settings.get('help.url')
         self.support_url = request.registry.settings.get('support.url')
+        if self.support_url is None or self.support_url == "":
+            self.support_url = "http://support.eucalyptus.com"
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
         self.aws_regions = AWS_REGIONS
         self.default_region = request.registry.settings.get('aws.default.region')
