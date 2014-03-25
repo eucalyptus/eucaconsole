@@ -87,7 +87,8 @@
                                 <div class="columns field inline">
                                     <div class="row controls-wrapper controls_group_name">
                                         <div class="column small-6">
-                                            <select id="group_name" name="group_name" ng-options="item for item in groupNames" ng-init="getAvailableGroups(); index=0" ng-model=groupNames[index]>{{item}}</select>
+                                            <select id="group_name" name="group_name" ng-options="item for item in groupNames"
+                                                    ng-init="getAvailableGroups(); index=0" ng-model="groupNames[index]">{{item}}</select>
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn">
@@ -102,7 +103,8 @@
                                     <a ng-href="/groups/{{ item.group_name }}">{{ item.title }}</a>
                                 </div>
                                 <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                                    <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.group_name }}"><i class="fi-widget"></i></a>
+                                    <a class="tiny secondary button dropdown right"
+                                       data-dropdown="item-dropdown_{{ item.group_name }}"><i class="fi-widget"></i></a>
                                     <ul id="item-dropdown_{{ item.group_name }}" class="f-dropdown" data-dropdown-content="">
                                         <li>
                                             <a i18n:translate="" ng-click="removeUserFromGroup(item)">Remove user</a>
@@ -129,7 +131,7 @@
                                      policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
                                      remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
                                      update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
-                                     add_url request.route_path('iam_policy_new')+'?type=user&id='+user.user_name">
+                                     add_url request.route_path('iam_policy_new')+'?type=user&amp;id='+user.user_name">
                         <div class="columns section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
@@ -158,7 +160,9 @@
                                                  '${request.route_path('file_download')}', '${has_password}')">
                         <h6 i18n:translate="">Password</h6>
                         <p i18n:translate="">Users managing their cloud with the Management Console require a password.</p>
-                        <span class='password-set' i18n:translate="">Password set?: </span> <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span> <span ng-hide="has_password">No</span>
+                        <span class='password-set' i18n:translate="">Password set?: </span>
+                        <span ng-show="has_password">Yes &nbsp;&nbsp;<a data-reveal-id="delete-password-modal" i18n:translate="">Delete password</a></span>
+                        <span ng-hide="has_password">No</span>
                         <p>&nbsp;</p>
                         <div class="subsection-label" i18n:translate="">Create new password:</div>
                         <div class="row">
@@ -350,7 +354,9 @@
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete user</h3>
                 <p>
-                    <span i18n:translate="">Deleting a user also deletes all keys, passwords and permissions associated with that user. Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
+                    <span i18n:translate="">
+                        Deleting a user also deletes all keys, passwords and permissions associated with that user.
+                        Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
                 </p>
                 <form method="post" id="delete-form" action="${request.route_path('user_delete', name=user.user_name)}">
                     ${structure:delete_form['csrf_token']}

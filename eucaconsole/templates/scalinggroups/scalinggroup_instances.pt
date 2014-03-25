@@ -81,7 +81,7 @@
                <b>{{ instanceID }}</b>?</p>
             <form action="${request.route_path('scalinggroup_instances_markunhealthy', id=scaling_group.name)}" method="post">
                 ${structure:markunhealthy_form['csrf_token']}
-                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 <span>&nbsp;</span>
                 ${structure:markunhealthy_form['respect_grace_period']}
                 ${markunhealthy_form.respect_grace_period.label}
@@ -96,11 +96,13 @@
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Terminate instance</h3>
-            <p><span i18n:translate="">Are you sure you want to terminate instance</span>
-               <b>{{ instanceID }}</b>?</p>
+            <p>
+                <span i18n:translate="">Are you sure you want to terminate instance</span>
+                <b>{{ instanceID }}</b>?
+            </p>
             <form action="${request.route_path('scalinggroup_instances_terminate', id=scaling_group.name)}" method="post">
                 ${structure:terminate_form['csrf_token']}
-                <input type="hidden" name="instance_id" value="{{ instanceID }}">
+                <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 ${panel('form_field', field=terminate_form['decrement_capacity'], leftcol_width=2, rightcol_width=10, reverse='true')}
                 <div>
                     <button type="submit" class="button expand" i18n:translate="" id="mark-unhealthy-dialog-btn">

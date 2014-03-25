@@ -39,7 +39,7 @@
                     </li>
                     <li>
                         <a i18n:translate="" id="create-launchconfig-action-gridview-{{item.id}}"
-                            ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}&keypair={{item.key_name}}&security_group={{item.security_groups[0].name}}&preset=true">
+                            ng-href="/launchconfigs/new?image_id={{item.image_id}}&amp;instance_type={{item.instance_type}}&amp;keypair={{item.key_name}}&amp;security_group={{item.security_groups[0].name}}&amp;preset=true">
                             Create launch configuration
                         </a>
                     </li>
@@ -56,7 +56,7 @@
                             Associate IP address
                         </a>
                    </li>
-                    <li ng-show="item.status == 'running' && item.has_elastic_ip == true">
+                    <li ng-show="item.status == 'running' &amp;&amp; item.has_elastic_ip == true">
                         <a i18n:translate="" ng-click="revealModal('disassociate-ip-from', item)">
                             Disassociate IP address
                         </a>
@@ -161,7 +161,7 @@
                             </li>
                             <li>
                                 <a i18n:translate="" id="create-launchconfig-action-tileview-{{item.id}}"
-                                    ng-href="/launchconfigs/new?image_id={{item.image_id}}&instance_type={{item.instance_type}}&keypair={{item.key_name}}&security_group={{item.security_groups[0].name}}&preset=true">
+                                    ng-href="/launchconfigs/new?image_id={{item.image_id}}&amp;instance_type={{item.instance_type}}&amp;keypair={{item.key_name}}&amp;security_group={{item.security_groups[0].name}}&amp;preset=true">
                                     Create launch configuration
                                 </a>
                             </li>
@@ -178,7 +178,7 @@
                                     Associate IP address
                                 </a>
                             </li>
-                            <li ng-show="item.status == 'running' && item.has_elastic_ip == true">
+                            <li ng-show="item.status == 'running' &amp;&amp; item.has_elastic_ip == true">
                                 <a i18n:translate="" ng-click="revealModal('disassociate-ip-from', item)">
                                     Disassociate IP address
                                 </a>

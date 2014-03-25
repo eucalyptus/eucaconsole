@@ -22,7 +22,4 @@
 pserve console.ini --reload
 
 
-# Uncomment to run gunicorn
-# python runapp.py
-
 
