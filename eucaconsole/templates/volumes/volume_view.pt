@@ -78,13 +78,13 @@
                             <a href="${request.route_path('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance_id">
+                    <div class="row controls-wrapper readonly" ng-show="device_name">
                         <div class="small-4 columns"><label i18n:translate="">Attached as device</label></div>
-                        <div class="small-8 columns value"> ${device_name} </div>
+                        <div class="small-8 columns value"> {{device_name}} </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance_id">
+                    <div class="row controls-wrapper readonly" ng-show="attach_time">
                         <div class="small-4 columns"><label i18n:translate="">Attachment time</label></div>
-                        <div class="small-8 columns value">${attachment_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value">{{attach_time | date:'${layout.angular_date_format}'}}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['name'], autofocus='', **html_attrs)}

@@ -66,6 +66,8 @@ angular.module('VolumePage', ['TagEditor'])
                 if (results) {
                     $scope.volumeStatus = results['volume_status'];
                     $scope.volumeAttachStatus = results['attach_status'];
+                    $scope.device_name = results['attach_device'];
+                    $scope.attach_time = results['attach_time'];
                     // Poll to obtain desired end state if current state is transitional
                     if ($scope.isTransitional($scope.volumeStatus) || $scope.isTransitional($scope.volumeAttachStatus)) {
                         $scope.isUpdating = true;

@@ -337,7 +337,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, instance_id, device))
+                self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(self.volume.id, instance_id, device))
                 self.volume.attach(instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -351,7 +351,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     def volume_detach(self):
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Detaching volume {0} from {1}").format(volume_id, volume.attach_data.instance_id))
+                self.log_request(_(u"Detaching volume {0} from {1}").format(self.volume.id, self.volume.attach_data.instance_id))
                 self.volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -389,8 +389,13 @@ class VolumeStateView(BaseVolumeView):
         """Return current volume status"""
         volume_status = self.volume.status
         attach_status = self.volume.attach_data.status
+        attach_device = self.volume.attach_data.device
+        attach_time = self.volume.attach_data.attach_time
         return dict(
-            results=dict(volume_status=volume_status, attach_status=attach_status)
+            results=dict(volume_status=volume_status,
+                         attach_status=attach_status,
+                         attach_device=attach_device,
+                         attach_time=attach_time)
         )
 
 
