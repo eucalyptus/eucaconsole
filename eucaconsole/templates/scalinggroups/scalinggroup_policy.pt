@@ -17,24 +17,21 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
 
         <div class="large-7 columns">
-            <dl class="tabs" id="scalinggroup-subnav">
-                <dd><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" i18n:translate="">General</a></dd>
-                <dd class="active"><a href="${request.route_path('scalinggroup_policies', id=scaling_group.name)}" i18n:translate="">Policies</a></dd>
-                <dd><a href="${request.route_path('scalinggroup_instances', id=scaling_group.name)}" i18n:translate="">Instances</a></dd>
-            </dl>
             <div class="panel no-title">
-                <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}" method="post" data-abide="">
+                <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}"
+                      method="post" data-abide="" id="add-policy-form">
                     ${structure:policy_form['csrf_token']}
-                    <h6 i18n:translate="">New policy</h6>
-                    ${panel('form_field', field=policy_form['name'])}
-                    ${panel('form_field', field=policy_form['adjustment_direction'])}
-                    ${panel('form_field', field=policy_form['adjustment_amount'])}
-                    ${panel('form_field', field=policy_form['adjustment_type'])}
-                    ${panel('form_field', field=policy_form['cooldown'])}
-                    ${panel('form_field', field=policy_form['alarm'])}
+                    <h6 i18n:translate="">Create new scaling policy</h6>
+                    <div>&nbsp;</div>
+                    ${panel('form_field', field=policy_form['name'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['adjustment_direction'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['adjustment_amount'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['cooldown'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['alarm'], leftcol_width=3, rightcol_width=9)}
                     <div class="row controls-wrapper">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns">
+                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-9 columns">
                             <a ng-click="revealAlarmModal()">Create alarm</a>
                         </div>
                     </div>
