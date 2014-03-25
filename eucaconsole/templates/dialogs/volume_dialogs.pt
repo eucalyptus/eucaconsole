@@ -8,13 +8,12 @@
                      html_attrs {'data-placeholder': 'select...'};">
         <h3 i18n:translate="">Attach volume</h3>
         <p><span i18n:translate="">Attach a volume to an instance</span></p>
-        <form method="post" action="${action}"
-              id="attach-form" data-abide="">
+        <form method="post" action="${action}" id="attach-form" data-abide="">
             ${structure:attach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            ${panel('form_field', field=attach_form.instance_id, ng_attrs={'model': 'instanceId', 'change': 'getDeviceSuggestion()', 'options': 'k as v for (k, v) in instanceChoices'}, **html_attrs)}
+            ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="row">
                 <div>
@@ -43,8 +42,8 @@
             <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
             <span tal:condition="not volume"><b>{{ volumeID }}</b></span>
             <span i18n:translate="">from instance</span>
-            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong><strong
-                tal:condition="landingpage">{{ instanceName }}</strong>?
+            <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+            <strong tal:condition="landingpage">{{ instanceName }}</strong>?
         </p>
         <form method="post" id="detach-form" data-abide="" action="${action}">
             ${structure:detach_form['csrf_token']}
@@ -56,6 +55,13 @@
                 <input type="submit" class="button expand" value="Yes, Detach Volume" i18n:attributes="value" />
             </div>
         </form>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Detach volume</h3>
+        <p>
+            <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong ng-non-bindable="">{{ instanceName }}</strong>.</span>
+        </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""

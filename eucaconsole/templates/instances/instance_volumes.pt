@@ -39,7 +39,8 @@
                         <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ volume.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
-                                <a i18n:translate="" ng-click="revealDetachModal(volume.detach_form_action, volume.name)">Detach volume</a>
+                                <a ng-click="detachModal(volume.id, volume.device, '${request.route_path('instance_json', id=instance.id)}', volume.detach_form_action)"
+                                    i18n:translate="">Detach volume</a>
                             </li>
                         </ul>
                     </div>
@@ -122,6 +123,13 @@
                     </div>
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Detach volume</h3>
+                <p>
+                    <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong ng-non-bindable="">${instance_name}</strong>.</span>
+                </p>
+                <a href="#" class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

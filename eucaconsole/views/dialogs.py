@@ -61,6 +61,10 @@ def terminate_instances_dialog(context, request, batch_terminate_form=None):
 def volume_dialogs(context, request, volume=None, volume_name=None, instance_name=None, landingpage=False,
                    attach_form=None, detach_form=None, delete_form=None):
     """Modal dialogs for Volume landing and detail page."""
+    ng_attrs = {'model': 'instanceId', 'change': 'getDeviceSuggestion()'}
+    # If landing page, build instance choices based on selected volumes availability zone (see volumes.js)
+    if landingpage:
+        ng_attrs['options'] = 'k as v for (k, v) in instanceChoices'
     return dict(
         volume=volume,
         volume_name=volume_name,
@@ -69,6 +73,7 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
         attach_form=attach_form,
         detach_form=detach_form,
         delete_form=delete_form,
+        ng_attrs=ng_attrs,
     )
 
 

@@ -5,7 +5,9 @@ form input.port { width: 3.8rem; }
 form .row.trafficfrom { margin-top: 1rem; }
 form .ip-label, form .sg-label { margin-right: 1rem; }
 form .ipaddress, form .securitygroupname { text-align: left !important; }
-form .cidr-ip, form .groupname { display: inline; width: 50%; }
+form .cidr-block { display: inline-block; vertical-align: top; margin-bottom: 1rem; }
+form .cidr-ip { display: inline; width: 100%; }
+form .groupname { display: inline; width: 50%; }
 form label.protocol { margin-bottom: 1.5rem; }
 
 #rules-editor .items { margin-bottom: 6px; }

@@ -291,6 +291,25 @@ class InstancesJsonView(LandingPageView):
         return filtered_items
 
 
+class InstanceJsonView(BaseInstanceView):
+    def __init__(self, request):
+        super(InstanceJsonView, self).__init__(request)
+
+    @view_config(route_name='instance_json', renderer='json', request_method='GET')
+    def instance_json(self):
+        instance = self.get_instance()
+        # Only included a few fields here. Feel free to include more as needed.
+        return dict(results=dict(
+                    id=instance.id,
+                    instance_type=instance.instance_type,
+                    image_id=instance.image_id,
+                    platform=instance.platform,
+                    state_reason=instance.state_reason,
+                    ip_address=instance.ip_address,
+                    root_device_name=instance.root_device_name,
+                    root_device_type=instance.root_device_type,
+                ))
+
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 

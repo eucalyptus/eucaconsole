@@ -20,7 +20,6 @@
             <strong i18n:translate="">Details for volume:</strong>
             <em ng-non-bindable="">${volume_name}</em>
         </h3>
-
         <div class="large-8 columns">
             <dl class="tabs" id="volume-subnav">
                 <dd><a href="${request.route_path('volume_view', id=volume.id)}" i18n:translate="">General</a></dd>
@@ -41,7 +40,7 @@
                         <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown" data-dropdown-content="">
                             <li><a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a></li>
                             <li><a ng-click="revealRegisterSnapshotModal(snapshot.id)" i18n:translate="">Register as image</a></li>
-                            <li><a ng-click="revealDeleteModal('${volume.id}', snapshot.id)" i18n:translate="">Delete snapshot</a></li>
+                            <li><a ng-click="revealDeleteModal('${volume.id}', snapshot)" i18n:translate="">Delete snapshot</a></li>
                         </ul>
                     </div>
                     <div class="content">
@@ -63,10 +62,10 @@
                         </div>
                     </div>
                     <div class="footer status has-progress {{ snapshot.status }}">
-                        <div class="completed" ng-show="snapshot.status == 'completed'">
+                        <div class="completed" ng-show="snapshot.status === 'completed'">
                             <span>{{ snapshot.status }}</span>
                         </div>
-                        <div class="progress" ng-show="snapshot.status != 'completed'"><span
+                        <div class="progress" ng-show="snapshot.status !== 'completed'"><span
                                 class="meter" style="width: {{ snapshot.progress }}">{{ snapshot.progress }}</span>
                         </div>
                     </div>

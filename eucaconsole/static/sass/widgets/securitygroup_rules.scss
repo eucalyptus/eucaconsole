@@ -17,7 +17,15 @@ form {
     .ipaddress, .securitygroupname {
         text-align: left !important;
     }
-    .cidr-ip, .groupname {
+    .cidr-block {
+       display: inline-block;
+       vertical-align: top;
+       margin-bottom: 1rem;
+    }
+    .cidr-ip {
+        display: inline; width: 100%;
+    }
+    .groupname {
         display: inline; width: 50%;
     }
     label.protocol {
