@@ -15,13 +15,14 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Create scaling policy</strong>
+        </h3>
         <div class="large-7 columns">
             <div class="panel no-title">
                 <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}"
                       method="post" data-abide="" id="add-policy-form">
                     ${structure:policy_form['csrf_token']}
-                    <h6 i18n:translate="">Create new scaling policy</h6>
                     <div>&nbsp;</div>
                     ${panel('form_field', field=policy_form['name'], leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_direction'], leftcol_width=3, rightcol_width=9)}
@@ -53,7 +54,7 @@
             </div>
         </div>
         <!--! Create Alarm modal dialog -->
-        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect)}
+        ${panel('create_alarm_dialog', alarm_form=alarm_form, redirect_location=create_alarm_redirect, metric_unit_mapping=metric_unit_mapping)}
         <!--! /end modal dialogs -->
     </div>
 </div>

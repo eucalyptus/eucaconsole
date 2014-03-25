@@ -5,13 +5,13 @@ Common constants for CloudWatch
 """
 
 METRIC_TYPES = [
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupDesiredCapacity', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupInServiceInstances', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupMaxSize', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupMinSize', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupPendingInstances', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupTerminatingInstances', 'unit': 'None'},
-    {'namespace': 'AWS/AutoScaling', 'name': 'GroupTotalInstances', 'unit': 'None'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupDesiredCapacity', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupInServiceInstances', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupMaxSize', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupMinSize', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupPendingInstances', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupTerminatingInstances', 'unit': 'Count'},
+    {'namespace': 'AWS/AutoScaling', 'name': 'GroupTotalInstances', 'unit': 'Count'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeIdleTime', 'unit': 'Seconds'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeQueueLength', 'unit': 'Count'},
     {'namespace': 'AWS/EBS', 'name': 'VolumeReadBytes', 'unit': 'Bytes'},

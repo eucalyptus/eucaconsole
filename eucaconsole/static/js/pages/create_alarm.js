@@ -9,12 +9,16 @@ angular.module('CreateAlarm', [])
         $scope.statisticField = $('#statistic');
         $scope.metricField = $('#metric');
         $scope.dimensionField = $('#dimension');
+        $scope.metric = '';
         $scope.unitField = $('#unit');
+        $scope.unitLabel = '';
+        $scope.metricUnitMapping = {};
         $scope.setInitialValues = function () {
             $scope.metricField.val($scope.metricField.find('option[selected]').val());
             $scope.metricField.trigger('change');
         };
-        $scope.initController = function () {
+        $scope.initController = function (metricUnitMapping) {
+            $scope.metricUnitMapping = JSON.parse(metricUnitMapping);
             $scope.alarmDialog.on('opened', function () {
                 $scope.setInitialValues();
             });
@@ -22,15 +26,15 @@ angular.module('CreateAlarm', [])
         $scope.updateMetricNamespace = function () {
             var selectedOptionLabel = $scope.metricField.find('option[value="' + $scope.metric + '"]').text();
             $scope.namespace = selectedOptionLabel.split(' - ')[0];
-            $scope.setUnitChoice();
             $timeout(function () {
+                $scope.setUnitChoice();
                 $scope.dimensionField.trigger('change');
             }, 50);
         };
         $scope.setUnitChoice = function () {
-            if ($scope.namespace === 'AWS/AutoScaling') {
-                $scope.unitField.val('Count');
-            }
+            var unitChoice = $scope.metricUnitMapping[$scope.metric];
+            $scope.unitLabel = unitChoice;
+            $scope.unitField.val(unitChoice);
         };
     })
 ;
