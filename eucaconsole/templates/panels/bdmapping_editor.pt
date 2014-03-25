@@ -32,7 +32,7 @@
                     <td>{{ val.snapshot_id }}</td>
                     <td>
                         <input class="number" value="{{ val.size }}" required="required" pattern="integer"
-                               ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'">
+                               ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>

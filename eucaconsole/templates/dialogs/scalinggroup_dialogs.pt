@@ -7,31 +7,28 @@
                     action landingpage_action if landingpage else detailpage_action;
                     has_instances scaling_group.instances if scaling_group else '';">
         <h3 i18n:translate="">Delete scaling group</h3>
-        <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0">
-            <p>
-                Deleting a scaling group also terminates all instances within that scaling group.
-            </p>
-        </span>
-        <span tal:condition="has_instances">
-            <p>
-                Deleting a scaling group also terminates all instances within that scaling group.
-            </p>
-        </span>
-        <p><span i18n:translate="">Are you sure you want to delete the scaling group</span>
+        <p tal:condition="landingpage" ng-show="scalinggroupInstances > 0">
+            Deleting a scaling group also terminates all instances within that scaling group.
+        </p>
+        <p tal:condition="has_instances">
+            Deleting a scaling group also terminates all instances within that scaling group.
+        </p>
+        <p>
+            <span i18n:translate="">Are you sure you want to delete the scaling group</span>
             <b tal:condition="scaling_group" ng-non-bindable="">${scaling_group.name}</b>
             <b tal:condition="not scaling_group">{{ scalinggroupName }}</b>
-           <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0"> and terminate its instances</span>
-           <span tal:condition="has_instances"> and terminate its instances</span>
-           ?</p>
+            <span tal:condition="landingpage" ng-show="scalinggroupInstances > 0"> and terminate its instances</span>
+            <span tal:condition="has_instances"> and terminate its instances</span>?
+        </p>
         <form action="${action}" method="post">
             ${structure:delete_form['csrf_token']}
-            <input tal:condition="scaling_group" type="hidden" name="name" value="${scaling_group.name}" ng-non-bindable="">
-            <input tal:condition="not scaling_group" type="hidden" name="name" value="{{ scalinggroupName }}">
+            <input tal:condition="scaling_group" type="hidden" name="name" value="${scaling_group.name}" ng-non-bindable="" />
+            <input tal:condition="not scaling_group" type="hidden" name="name" value="{{ scalinggroupName }}" />
             <button type="submit" class="button expand" i18n:translate="" 
                 ng-model="showProgress" ng-init="showProgress=false" ng-click="showProgress=true">Yes, Delete</button>
         </form>
         <div class="row" ng-show="showProgress">
-            <br>
+            <br />
             <div class="large-8 columns">
                 <span i18n:translate="">Delete in progress </span><em><span class="dots">&nbsp;</span></em>
             </div>

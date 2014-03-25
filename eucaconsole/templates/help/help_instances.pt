@@ -1,104 +1,104 @@
+<div tal:omit-tag="">
 
-<!-- HELP INSTANCES: INSTANCE LANDING PAGE -->
-<div tal:condition="display == 'instance_landing_page'">
-    <h3 i18n:translate="">Help</h3>
-    <p></p>
-</div>
+    <!-- HELP INSTANCES: INSTANCE LANDING PAGE -->
+    <div tal:condition="display == 'instance_landing_page'">
+        <h3 i18n:translate="">Help</h3>
+        <p></p>
+    </div>
 
-<!-- HELP INSTANCE: CONNECT INSTANCE-->
-<div tal:condition="display == 'connect_instance'">
-    <h5 class="title">Connecting to an instance</h5>
-    <p>To connect to your instance, be sure the security group
-        <b ng-non-bindable="">${instance_name}</b> has
-        TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
-        apply if you did not select a key pair when you launched this instance):
-    </p>
-    <ol>
-        <li>Open an SSH terminal window.</li>
-        <li ng-non-bindable="">Change your directory to the one where you stored your key file "${instance_key_name}.pem"</li>
-        <li>Run the following command to set the correct permissions for your key file:<br />
-            <code ng-non-bindable="">chmod 400 ${instance_key_name or 'key_file'}.pem</code>
-        </li>
-        <li>Connect to your instance via its public IP address by running the following command:<br />
-            <code ng-non-bindable="">ssh -i ${instance_key_name or 'key_file'}.pem root@${instance_ip_address}</code>
-        </li>
-    </ol>
-</div>
-
-<!-- HELP INSTANCE: INSTANCE VOLUME-->
-<div tal:condition="display == 'instance_volume'">
-    <h5 class="title" i18n:translate="">Attach a volume to this instance</h5>
-    <div class="topic">
+    <!-- HELP INSTANCE: CONNECT INSTANCE-->
+    <div tal:condition="display == 'connect_instance'">
+        <h5 class="title">Connecting to an instance</h5>
+        <p>To connect to your instance, be sure the security group
+            <b ng-non-bindable="">${instance_name}</b> has
+            TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
+            apply if you did not select a key pair when you launched this instance):
+        </p>
         <ol>
-            <li i18n:translate="">Click the <strong>Attach a volume</strong> icon</li>
-            <li i18n:translate="">
-                The <strong>Attach volume to instance</strong> dialog box will appear.
-                Select the volume you want to attach to this instance.
+            <li>Open an SSH terminal window.</li>
+            <li ng-non-bindable="">Change your directory to the one where you stored your key file "${instance_key_name}.pem"</li>
+            <li>Run the following command to set the correct permissions for your key file:<br />
+                <code ng-non-bindable="">chmod 400 ${instance_key_name or 'key_file'}.pem</code>
+            </li>
+            <li>Connect to your instance via its public IP address by running the following command:<br />
+                <code ng-non-bindable="">ssh -i ${instance_key_name or 'key_file'}.pem root@${instance_ip_address}</code>
             </li>
         </ol>
     </div>
-    <h5 class="title" i18n:translate="">Detach a volume from this instance</h5>
-    <div class="topic">
-        <ol>
-            <li i18n:translate="">
-                Click the <i class="fi-minus-circle"></i> icon for the instance you want to detach.
-            </li>
-            <li i18n:translate="">
-                The <strong>Detach volume</strong> dialog box will appear.  Click confirm to detach the volume.
-            </li>
-        </ol>
-    </div>
-</div>
 
-
-<!-- HELP INSTANCE LAUNCH MORE LIKE THIS: advanced_option -->
-<div tal:condition="display == 'launch_more_like_this'">
-    <h5 class="title">Launch More Instances Like This</h5>
-        <p>This dialog box allows you create one or more new instances that have the same characteristics as an instance you've already created.</p>
-    <h5 class="title">Specify the Number of Instances</h5>
-        <p>This panel allows you to specify the number of new instances to launch.</p>
-        <ol>
-            <li>
-                 Enter the number of instances you'd like to launch into the <strong>Instances</strong> text box.
-            </li>
-            <li>
-                You can optionally specify advanced options by clicking the <strong>Select advanced options</strong> link.
-            </li>
-            <li>
-                Click the <strong>Launch Instance(s)</strong> button to launch your new instances.
-            </li>
-        </ol>
-</div>
-
-
-<!-- HELP INSTANCE LAUNCH MORE LIKE THIS: advanced_option -->
-<div tal:condition="display == 'launch_more_like_this_advanced_option'">
-    <h5 class="title">Specify Advanced Options</h5>
-    <p>This panel allows you to specify advanced options for your new instance(s). You can add user data, override the kernal and RAM disk IDs, specify private networking, and add additional storage.</p>
-    <ol>
-        <li>
-            Specify custom user data by typing it into the <strong>User data</strong> text box or by attaching a file using the <strong>Attach file</strong> link.
-        </li>
-        <li>
-            You can override the kernel ID in the selected image with the <strong>Kernel ID</strong> drop-down list box.
-        </li>
-        <li>
-            You can override the RAM disk ID in the selected image with the <strong>RAM disk ID</strong> drop-down list box.
-        </li>
-        <li>
-            Click the <strong>Network</strong> check box to specify that your new instance should use private addressing only. Private addresses cannot connect directly to the Internet and must go through a NAT (Network Address Translation) device or an elastic IP address mapped to the instance.
-        </li>
-        <li>
-            For EBS-backed instances, you can configure the root volume of your instance:
+    <!-- HELP INSTANCE: INSTANCE VOLUME-->
+    <div tal:condition="display == 'instance_volume'">
+        <h5 class="title" i18n:translate="">Attach a volume to this instance</h5>
+        <div class="topic">
             <ol>
-                <li>
-                    Type the size of the attached storage in gigabytes into the <strong>Size (GB) </strong>text box.
-                </li>
-                <li>
-                    Select the <strong>Delete on termination</strong> check box if you would like the attached storage to be deleted when the instance is terminated.
+                <li i18n:translate="">Click the <strong>Attach a volume</strong> icon</li>
+                <li i18n:translate="">
+                    The <strong>Attach volume to instance</strong> dialog box will appear.
+                    Select the volume you want to attach to this instance.
                 </li>
             </ol>
-        </li>
-    </ol>
-</div>
+        </div>
+        <h5 class="title" i18n:translate="">Detach a volume from this instance</h5>
+        <div class="topic">
+            <ol>
+                <li i18n:translate="">
+                    Click the <i class="fi-minus-circle"></i> icon for the instance you want to detach.
+                </li>
+                <li i18n:translate="">
+                    The <strong>Detach volume</strong> dialog box will appear.  Click confirm to detach the volume.
+                </li>
+            </ol>
+        </div>
+    </div>
 
+    <!-- HELP INSTANCE LAUNCH MORE LIKE THIS: advanced_option -->
+    <div tal:condition="display == 'launch_more_like_this'">
+        <h5 class="title">Launch More Instances Like This</h5>
+            <p>This dialog box allows you create one or more new instances that have the same characteristics as an instance you've already created.</p>
+        <h5 class="title">Specify the Number of Instances</h5>
+            <p>This panel allows you to specify the number of new instances to launch.</p>
+            <ol>
+                <li>
+                     Enter the number of instances you'd like to launch into the <strong>Instances</strong> text box.
+                </li>
+                <li>
+                    You can optionally specify advanced options by clicking the <strong>Select advanced options</strong> link.
+                </li>
+                <li>
+                    Click the <strong>Launch Instance(s)</strong> button to launch your new instances.
+                </li>
+            </ol>
+    </div>
+
+    <!-- HELP INSTANCE LAUNCH MORE LIKE THIS: advanced_option -->
+    <div tal:condition="display == 'launch_more_like_this_advanced_option'">
+        <h5 class="title">Specify Advanced Options</h5>
+        <p>This panel allows you to specify advanced options for your new instance(s). You can add user data, override the kernal and RAM disk IDs, specify private networking, and add additional storage.</p>
+        <ol>
+            <li>
+                Specify custom user data by typing it into the <strong>User data</strong> text box or by attaching a file using the <strong>Attach file</strong> link.
+            </li>
+            <li>
+                You can override the kernel ID in the selected image with the <strong>Kernel ID</strong> drop-down list box.
+            </li>
+            <li>
+                You can override the RAM disk ID in the selected image with the <strong>RAM disk ID</strong> drop-down list box.
+            </li>
+            <li>
+                Click the <strong>Network</strong> check box to specify that your new instance should use private addressing only. Private addresses cannot connect directly to the Internet and must go through a NAT (Network Address Translation) device or an elastic IP address mapped to the instance.
+            </li>
+            <li>
+                For EBS-backed instances, you can configure the root volume of your instance:
+                <ol>
+                    <li>
+                        Type the size of the attached storage in gigabytes into the <strong>Size (GB) </strong>text box.
+                    </li>
+                    <li>
+                        Select the <strong>Delete on termination</strong> check box if you would like the attached storage to be deleted when the instance is terminated.
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+
+</div>

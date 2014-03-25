@@ -109,10 +109,10 @@
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 class="pagetitle">
-            <strong i18n:translate="">Console output for instance:</strong>
-            <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
-            <em tal:condition="landingpage">{{ instanceName }}</em>
-        </h3>
+                <strong i18n:translate="">Console output for instance:</strong>
+                <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+                <em tal:condition="landingpage">{{ instanceName }}</em>
+            </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
@@ -211,7 +211,7 @@
                     <span tal:condition="not instance"><b>{{ instanceName }}</b></span> 
                 </div>
             </div> 
-            <br>
+            <br />
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
                 ${structure:disassociate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">

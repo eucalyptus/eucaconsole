@@ -28,10 +28,10 @@
               tal:condition="not in_use if launch_config else True">
             ${structure:delete_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
-                <input type="hidden" name="name" value="{{ launchConfigName }}">
+                <input type="hidden" name="name" value="{{ launchConfigName }}" />
             </div>
             <div tal:condition="not landingpage" tal:omit-tag="">
-                <input type="hidden" name="name" value="${launch_config_name}" ng-non-bindable="">
+                <input type="hidden" name="name" value="${launch_config_name}" ng-non-bindable="" />
             </div>
             <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
                 <button type="submit" class="button expand" i18n:translate=""

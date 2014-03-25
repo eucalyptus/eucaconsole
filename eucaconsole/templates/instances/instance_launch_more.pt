@@ -116,7 +116,7 @@
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_instances', 'launch_more_like_this')}
             </div>
-            <div class="help-content" ng-show="expanded && isHelpExpanded" ng-cloak="">
+            <div class="help-content" ng-show="expanded &amp;&amp; isHelpExpanded" ng-cloak="">
                 ${panel('help_instances', 'launch_more_like_this_advanced_option')}
             </div>
         </div>

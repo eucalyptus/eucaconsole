@@ -40,7 +40,7 @@
                         </ul>
                     </div>
                     <div class="content"
-                         tal:define="scale_text scale_down_text if policy.scaling_adjustment < 0 else scale_up_text;
+                         tal:define="scale_text scale_down_text if policy.scaling_adjustment &lt; 0 else scale_up_text;
                                      scale_type ' instances' if policy.adjustment_type == 'ChangeInCapacity' else '%'">
                         <strong i18n:translate="">Policy:</strong><br/>
                         <span ng-non-bindable="">${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}</span><br />

@@ -25,7 +25,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="eip">
                     <metal:actions metal:fill-slot="actions">
                         <li tal:condition="not eip.instance_id">
-                            <a id="associate-ip-action" data-reveal-id="associate-ip-modal" id="associate-btn" i18n:translate="">
+                            <a id="associate-ip-action" data-reveal-id="associate-ip-modal" i18n:translate="">
                                 Associate with an instance
                             </a>
                         </li>

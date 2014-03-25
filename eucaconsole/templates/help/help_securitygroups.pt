@@ -1,52 +1,55 @@
+<div tal:omit-tag="">
+    <!-- HELP SECURITY GROUPSS: SECURITY GROUP LANDING PAGE -->
+    <div tal:condition="display == 'securitygroup_landing_page'">
+        <h3 i18n:translate="">Help</h3>
 
-<!-- HELP SECURITY GROUPSS: SECURITY GROUP LANDING PAGE -->
-<div tal:condition="display == 'securitygroup_landing_page'">
-    <h3 i18n:translate="">Help</h3>
-    <p></p>
-</div>
+        <p></p>
+    </div>
 
+    <!-- HELP SECURITY GROUP: CREATE SECURITY GROUP-->
+    <div tal:condition="display == 'create_securitygroup'">
+        <h5 class="title">Managing Security Group Rules</h5>
+        <h6>Add Security Group Rules</h6>
 
-<!-- HELP SECURITY GROUP: CREATE SECURITY GROUP-->
-<div tal:condition="display == 'create_securitygroup'">
-    <h5 class="title">Managing Security Group Rules</h5>
-    <h6>Add Security Group Rules</h6>
-    <div>
-        <p>You can optionally create one or more rules for the security
-           group. A rule grants a specified range of IP addresses inbound
-           access to your instances for a protocol or custom port range. Rules
-           for many of the most popular protocols are pre-defined and available
-           for selection in the drop-down list box, or you can define your own
-           rule.
-       </p>
-       <ol>
-           <li>Select a protocol for the rule from the <strong>Protocol</strong> drop-down list box.</li>
-           <li>Enter a port range for the rule in the <strong>Port range</strong> text box.</li>
-           <li>Select the type of inbound traffic for the rule using the radio buttons:
-               <p>To grant access to an IP address or range of IP addresses,
-                  select the <strong>IP Address</strong> radio button and enter a CIDR range in the text box.</p>
-               <p>
-                   <strong>Note:</strong>
-                   For more information on CIDR notation, please see the
-                   <a class="xref" href="http://en.wikipedia.org/wiki/CIDR_notation" target="_blank">CIDR notation Wikipedia article</a>.
-               </p>
-               <p>To grant access to another security group, select the <strong>Other security group</strong>
-                  radio button and enter the name of the security group in the text box.</p>
-               <p>
-                   <strong>Note:</strong>
-                   To specify a security group in another account, use the format "userid/groupname".
-               </p>
-           </li>
-           <li>Click the <strong>Save Changes</strong> button.</li>
-       </ol>
+        <div>
+            <p>You can optionally create one or more rules for the security
+                group. A rule grants a specified range of IP addresses inbound
+                access to your instances for a protocol or custom port range. Rules
+                for many of the most popular protocols are pre-defined and available
+                for selection in the drop-down list box, or you can define your own
+                rule.
+            </p>
+            <ol>
+                <li>Select a protocol for the rule from the <strong>Protocol</strong> drop-down list box.</li>
+                <li>Enter a port range for the rule in the <strong>Port range</strong> text box.</li>
+                <li>Select the type of inbound traffic for the rule using the radio buttons:
+                    <p>To grant access to an IP address or range of IP addresses,
+                        select the <strong>IP Address</strong> radio button and enter a CIDR range in the text box.</p>
+                    <p>
+                        <strong>Note:</strong>
+                        For more information on CIDR notation, please see the
+                        <a class="xref" href="http://en.wikipedia.org/wiki/CIDR_notation" target="_blank">CIDR notation
+                            Wikipedia article</a>.
+                    </p>
+                    <p>To grant access to another security group, select the <strong>Other security group</strong>
+                        radio button and enter the name of the security group in the text box.
+                    </p>
+                    <p>
+                        <strong>Note:</strong>
+                        To specify a security group in another account, use the format "userid/groupname".
+                    </p>
+                </li>
+                <li>Click the <strong>Save Changes</strong> button.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- HELP SECURITY GROUP: DELETE SECURITY GROUP-->
+    <div tal:condition="display == 'delete_securitygroup'">
+        <h6>Delete Security Group Rules</h6>
+
+        <div>
+            Click the <strong><i class="fi-minus-circle"></i></strong> next to the existing rule you want to delete.
+        </div>
     </div>
 </div>
-
-
-<!-- HELP SECURITY GROUP: DELETE SECURITY GROUP-->
-<div tal:condition="display == 'delete_securitygroup'">
-    <h6>Delete Security Group Rules</h6>
-    <div>
-        Click the <strong><i class="fi-minus-circle"></i></strong> next to the existing rule you want to delete.
-    </div>
-</div>
-
