@@ -16,8 +16,8 @@
         </div>
         <div class="row">
             <div class="columns subheader">
-                <span ng-show="usersArray.length" i18n:translate="">Add another user</span>
-                <span ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
+                <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user</span>
+                <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
             </div>
         </div>
         <div class="row userentry controls-wrapper">
