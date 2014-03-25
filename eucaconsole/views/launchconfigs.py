@@ -241,6 +241,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
+        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map())
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
@@ -256,6 +257,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
+            securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             security_group_names=[name for name, label in self.create_form.securitygroup.choices],
@@ -317,3 +319,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         for security_group in self.securitygroups:
             rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
+
+    def get_securitygroups_id_map(self):
+        map_dict = {}
+        for security_group in self.securitygroups:
+            map_dict[security_group.name] = security_group.id
+        return map_dict

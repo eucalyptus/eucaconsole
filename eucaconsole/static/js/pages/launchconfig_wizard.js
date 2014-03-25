@@ -13,6 +13,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.summarySection = $('.summary');
         $scope.instanceTypeSelected = '';
         $scope.securityGroupsRules = {};
+        $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
@@ -28,10 +29,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
+            $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.updateSelectedSecurityGroupRules();
@@ -39,6 +41,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
+        $scope.getSecurityGroupIDByName = function (securityGroupName) {
+            return $scope.securityGroupsIDMap[securityGroupName];
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {

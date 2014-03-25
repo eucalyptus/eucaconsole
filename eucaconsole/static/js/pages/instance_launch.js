@@ -21,6 +21,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.securityGroupsRules = {};
+        $scope.securityGroupsIDMap = {};
         $scope.selectedGroupRules = [];
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
@@ -28,10 +29,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
+            $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
@@ -41,6 +43,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
+        $scope.getSecurityGroupIDByName = function (securityGroupName) {
+            return $scope.securityGroupsIDMap[securityGroupName];
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
