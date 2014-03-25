@@ -323,6 +323,22 @@ angular.module('UserView', ['PolicyList'])
             $('#delete-key-modal').foundation('reveal', 'close');
         };
     })
+    // this directive allows for the watch function below that triggers a chosen:updated
+    // event when the groupNames value in the scope is updated (by XHR). We can't simply
+    // trigger the even from the XHR success function since angular hasn't updated the
+    // ng-options yet.
+    .directive('chosen', function () {
+        var linker = function(scope, element, attr) {
+            scope.$watch('groupNames', function() {
+                element.trigger('chosen:updated');
+            });
+            element.chosen();
+        };
+        return {
+            restrict:'A',
+            link: linker
+        }
+    })
     .controller('UserGroupsCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.addEndpoint = '';
@@ -331,6 +347,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.jsonGroupsEndpoint = '';
         $scope.jsonGroupPoliciesEndpoint = '';
         $scope.jsonGroupPolicyEndpoint = '';
+        $scope.groupNames = [];
         $scope.items = [];
         $scope.itemsLoading = true;
         $scope.policyName = '';
@@ -375,13 +392,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.getAvailableGroups = function () {
             $http.get($scope.jsonGroupsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
-                $scope.groups = results;
-                options = "";
-                for (var i=0; i<results.length; i++) {
-                    options += "<option value='"+results[i]+"'>"+results[i]+"</option>";
-                }
-                $('#group_name').find('option').remove().end().append($(options));
-                $('#group_name').trigger('chosen:updated');
+                $scope.groupNames = results;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
@@ -390,7 +401,7 @@ angular.module('UserView', ['PolicyList'])
             });
         };
         $scope.addUserToGroup = function ($event) {
-            group_name = $('#group_name').val();
+            group_name = $scope.groupNames[$('#group_name').val()];
             url = $scope.addEndpoint.replace("_group_", group_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,
