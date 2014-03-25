@@ -325,7 +325,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 self.volume.delete()
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            location = self.request.route_path('volume_view', id=self.volume.id)
+            location = self.request.route_path('volumes')
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.volume_form.get_errors_list()
