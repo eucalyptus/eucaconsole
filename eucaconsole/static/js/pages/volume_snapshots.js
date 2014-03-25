@@ -12,6 +12,8 @@ angular.module('VolumeSnapshots', ['TagEditor'])
         $scope.jsonEndpoint = '';
         $scope.initialLoading = true;
         $scope.deleteFormAction = '';
+        $scope.snapshotID = '';
+        $scope.snapshotName = '';
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.getVolumeSnapshots();
@@ -23,10 +25,11 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             $scope.snapshotID = snapshot_id;
             modal.foundation('reveal', 'open');
         };
-        $scope.revealDeleteModal = function (volume_id, snapshot_id) {
+        $scope.revealDeleteModal = function (volume_id, snapshot) {
             var modal = $('#delete-snapshot-modal');
             $scope.volumeID = volume_id;
-            $scope.snapshotID = snapshot_id;
+            $scope.snapshotID = snapshot['id'];
+            $scope.snapshotName = snapshot['name'];
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {

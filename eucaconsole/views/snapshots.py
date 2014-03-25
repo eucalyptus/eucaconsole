@@ -56,14 +56,16 @@ class SnapshotsView(LandingPageView):
         snapshot_id = self.request.params.get('snapshot_id')
         volume_id = self.request.params.get('volume_id')
         snapshot = self.get_snapshot(snapshot_id)
+        snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
         if volume_id:
             location = self.request.route_path('volume_snapshots', id=volume_id)
         if snapshot and self.delete_form.validate():
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
+                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -144,7 +146,7 @@ class SnapshotsJsonView(LandingPageView):
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
-                name=snapshot.tags.get('Name', snapshot.id),
+                name=TaggedItemView.get_display_name(snapshot),
                 progress=snapshot.progress,
                 transitional=self.is_transitional(snapshot),
                 start_time=snapshot.start_time,
@@ -253,6 +255,7 @@ class SnapshotView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
             with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
+                self.log_request(_(u"Creating snapshot from volume {0}").format(volume.id))
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
@@ -271,15 +274,17 @@ class SnapshotView(TaggedItemView):
     @view_config(route_name='snapshot_delete', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshot_delete(self):
         if self.snapshot and self.delete_form.validate():
+            snapshot_name = TaggedItemView.get_display_name(self.snapshot)
             with boto_error_handler(self.request, self.request.route_path('snapshots')):
+                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 if self.images_registered is not None:
                     for img in self.images_registered:
                         img.deregister()
                     # Clear images cache
                     ImagesView.clear_images_cache()
                 self.snapshot.delete()
-                prefix = _(u'Successfully deleted snapshot.')
-                msg = '{prefix} {id}'.format(prefix=prefix, id=self.snapshot.id)
+                prefix = _(u'Successfully deleted snapshot')
+                msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             location = self.request.route_path('snapshots')
             return HTTPFound(location=location)
@@ -299,6 +304,7 @@ class SnapshotView(TaggedItemView):
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Registering snapshot {0} as image {1}").format(snapshot_id, name))
                 self.snapshot.connection.register_image(
                     name=name, description=description,
                     kernel_id=('windows' if reg_as_windows else None),

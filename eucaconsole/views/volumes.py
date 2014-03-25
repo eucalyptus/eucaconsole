@@ -86,6 +86,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         volume = self.get_volume(volume_id)
         if volume and self.delete_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Deleting volume {0}").format(volume_id))
                 volume.delete()
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -102,6 +103,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, instance_id, device))
                 volume.attach(instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -116,6 +118,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         volume = self.get_volume(volume_id)
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Detaching volume {0} from {1}").format(volume_id, volume.attach_data.instance_id))
                 volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -193,6 +196,7 @@ class VolumesJsonView(LandingPageView):
                     create_time=volume.create_time,
                     id=volume.id,
                     instance=volume.attach_data.instance_id,
+                    device=volume.attach_data.device,
                     instance_name=instance_name,
                     name=TaggedItemView.get_display_name(volume),
                     snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
@@ -242,6 +246,8 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             volume_name=self.volume_name,
             volume_create_time=self.create_time,
             instance_name=self.instance_name,
+            device_name=self.attach_data.device if self.attach_data else None,
+            attachment_time=self.get_attachment_time(),
             volume_form=self.volume_form,
             delete_form=self.delete_form,
             attach_form=self.attach_form,
@@ -255,9 +261,15 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         return self.render_dict
 
     def get_create_time(self):
-        """Returns instance launch time as a python datetime.datetime object"""
+        """Returns volume create time as a python datetime.datetime object"""
         if self.volume and self.volume.create_time:
             return parser.parse(self.volume.create_time)
+        return None
+
+    def get_attachment_time(self):
+        """Returns volume attach time as a python datetime.datetime object"""
+        if self.volume and self.attach_data.attach_time:
+            return parser.parse(self.attach_data.attach_time)
         return None
 
     @view_config(route_name='volume_update', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -288,6 +300,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
                 snapshot = self.get_snapshot(snapshot_id)
                 kwargs['snapshot'] = snapshot
             with boto_error_handler(self.request, self.request.route_path('volumes')):
+                self.log_request(_(u"Creating volume (size={0}, zone={1}, snapshot_id={2})").format(size, zone, snapshot_id))
                 volume = self.conn.create_volume(**kwargs)
                 # Add name tag
                 if name:
@@ -308,10 +321,11 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     def volume_delete(self):
         if self.volume and self.delete_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Deleting volume {0}").format(self.volume.id))
                 self.volume.delete()
                 msg = _(u'Successfully sent delete volume request.  It may take a moment to delete the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            location = self.request.route_path('volume_view', id=self.volume.id)
+            location = self.request.route_path('volumes')
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.volume_form.get_errors_list()
@@ -323,6 +337,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, instance_id, device))
                 self.volume.attach(instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -336,6 +351,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     def volume_detach(self):
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Detaching volume {0} from {1}").format(volume_id, volume.attach_data.instance_id))
                 self.volume.detach()
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -417,7 +433,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
                 snapshots.append(dict(
                     id=snapshot.id,
-                    name=snapshot.tags.get('Name', ''),
+                    name=TaggedItemView.get_display_name(snapshot),
                     progress=snapshot.progress,
                     volume_size=self.volume.size,
                     start_time=snapshot.start_time,
@@ -434,6 +450,7 @@ class VolumeSnapshotsView(BaseVolumeView):
             description = self.request.params.get('description')
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Creating snapshot from volume {0}").format(self.volume.id))
                 params = {'VolumeId': self.volume.id}
                 if description:
                     params['Description'] = description[0:255]

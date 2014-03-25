@@ -125,11 +125,21 @@ class BaseView(object):
         for _cache in cache_managers.values():
             _cache.clear()
 
+    def log_request(self, message):
+        account=self.request.session['account']
+        username=self.request.session['username']
+        logging.info("{acct}/{user}[{id}]: {msg}".format(id=self.request.id, acct=account, user=username, msg=message))
+
+    @staticmethod
+    def log_error(request, message):
+        account=request.session['account']
+        username=request.session['username']
+        logging.error("{acct}/{user}[{id}]: {msg}".format(id=request.id, acct=account, user=username, msg=message))
+
     @staticmethod
     def handle_error(err=None, request=None, location=None, template="{0}"):
         status = getattr(err, 'status', None) or err.args[0] if err.args else ""
         message = template.format(err.reason)
-        logging.error("Error encountered: " + message)
         if err.error_message is not None:
             message = err.error_message
             if 'because of:' in message:
@@ -138,6 +148,7 @@ class BaseView(object):
                 message = message[message.index("RelatesTo Error:")+16:]
             # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
             # this logic found in volumes.js
+        BaseView.log_error(request, message)
         if request.is_xhr:
             raise JSONError(message=message)
         if status == 403:

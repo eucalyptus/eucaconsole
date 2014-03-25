@@ -136,6 +136,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance = self.get_instance(instance_id)
         if instance and self.start_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Starting instance {0}").format(instance_id))
                 # Can only start an instance if it has a volume attached
                 instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
@@ -154,6 +155,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
             # Only EBS-backed instances can be stopped
             if instance_image.root_device_type == 'ebs':
                 with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Stopping instance {0}").format(instance_id))
                     instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -171,6 +173,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance = self.get_instance(instance_id)
         if instance and self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Rebooting instance {0}").format(instance_id))
                 rebooted = instance.reboot()
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -188,6 +191,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance = self.get_instance(instance_id)
         if instance and self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Terminating instance {0}").format(instance_id))
                 instance.terminate()
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
@@ -202,6 +206,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         instance_ids = self.request.params.getall('instance_ids')
         if self.batch_terminate_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
                 self.conn.terminate_instances(instance_ids=instance_ids)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
                 msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
@@ -324,6 +329,25 @@ class InstancesJsonView(LandingPageView):
         return filtered_items
 
 
+class InstanceJsonView(BaseInstanceView):
+    def __init__(self, request):
+        super(InstanceJsonView, self).__init__(request)
+
+    @view_config(route_name='instance_json', renderer='json', request_method='GET')
+    def instance_json(self):
+        instance = self.get_instance()
+        # Only included a few fields here. Feel free to include more as needed.
+        return dict(results=dict(
+                    id=instance.id,
+                    instance_type=instance.instance_type,
+                    image_id=instance.image_id,
+                    platform=instance.platform,
+                    state_reason=instance.state_reason,
+                    ip_address=instance.ip_address,
+                    root_device_name=instance.root_device_name,
+                    root_device_type=instance.root_device_type,
+                ))
+
 class InstanceView(TaggedItemView, BaseInstanceView):
     VIEW_TEMPLATE = '../templates/instances/instance_view.pt'
 
@@ -383,6 +407,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     user_data = self.request.params.get('userdata')
                     kernel = self.request.params.get('kernel')
                     ramdisk = self.request.params.get('ramdisk')
+                    self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(self.instance.id, instance_type, kernel, ramdisk))
                     self.instance.instance_type = instance_type
                     self.instance.user_data = user_data
                     self.instance.kernel = kernel
@@ -391,6 +416,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
                 # Start instance if desired
                 if self.request.params.get('start_later'):
+                    self.log_request(_(u"Starting instance {0}").format(self.instance.id))
                     self.instance.start()
 
                 msg = _(u'Successfully modified instance')
@@ -402,6 +428,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_start(self):
         if self.instance and self.start_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Starting instance {0}").format(self.instance.id))
                 # Can only start an instance if it has a volume attached
                 self.instance.start()
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
@@ -415,6 +442,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             # Only EBS-backed instances can be stopped
             if self.image.root_device_type == 'ebs':
                 with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Stopping instance {0}").format(self.instance.id))
                     self.instance.stop()
                     msg = _(u'Successfully sent stop instance request.  It may take a moment to stop the instance.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -426,6 +454,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         location = self.request.route_path('instance_view', id=self.instance.id)
         if self.instance and self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Rebooting instance {0}").format(self.instance.id))
                 rebooted = self.instance.reboot()
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -439,6 +468,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
     def instance_terminate(self):
         if self.instance and self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Terminating instance {0}").format(self.instance.id))
                 self.instance.terminate()
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
@@ -509,6 +539,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
         elastic_ip = ip_addresses[0] if ip_addresses else None
         if elastic_ip:
+            self.log_request(_(u"Disassociating ip {0} from instance {1}").format(ip_address, self.instance.id))
             disassociated = elastic_ip.disassociate()
 
     def check_has_elastic_ip(self, ip_address):
@@ -641,6 +672,7 @@ class InstanceVolumesView(BaseInstanceView):
             if self.instance and volume_id and device:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
                 with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, self.instance.id, device))
                     self.conn.attach_volume(volume_id=volume_id, instance_id=self.instance.id, device=device)
                     msg = _(u'Request successfully submitted.  It may take a moment to attach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -653,6 +685,7 @@ class InstanceVolumesView(BaseInstanceView):
             if volume_id:
                 location = self.request.route_path('instance_volumes', id=self.instance.id)
                 with boto_error_handler(self.request, location):
+                    self.log_request(_(u"Dettaching volume {0} from {1}").format(volume_id, self.instance.id))
                     self.conn.detach_volume(volume_id=volume_id)
                     msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -730,6 +763,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
                     max_count=num_instances,
@@ -820,21 +854,22 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
-                for idx in range(num_instances):
-                    reservation = self.conn.run_instances(
-                        image_id,
-                        key_name=key_name,
-                        user_data=self.get_user_data(),
-                        addressing_type=addressing_type,
-                        instance_type=instance_type,
-                        placement=availability_zone,
-                        kernel_id=kernel_id,
-                        ramdisk_id=ramdisk_id,
-                        monitoring_enabled=monitoring_enabled,
-                        block_device_map=block_device_map,
-                        security_group_ids=security_groups,
-                    )
-                    instance = reservation.instances[0]
+                self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(num_instances, image_id, instance_type))
+                reservation = self.conn.run_instances(
+                    image_id,
+                    max_count=num_instances,
+                    key_name=key_name,
+                    user_data=self.get_user_data(),
+                    addressing_type=addressing_type,
+                    instance_type=instance_type,
+                    placement=availability_zone,
+                    kernel_id=kernel_id,
+                    ramdisk_id=ramdisk_id,
+                    monitoring_enabled=monitoring_enabled,
+                    block_device_map=block_device_map,
+                    security_group_ids=security_groups,
+                )
+                for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
                     input_field_name = 'name_{0}'.format(idx)

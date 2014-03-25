@@ -29,10 +29,9 @@ class CloudWatchAlarmsView(LandingPageView):
         self.elb_conn = self.get_connection(conn_type='elb')
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         # TODO: not likely to fail, but if session creds expire?
-        self.metrics = self.cloudwatch_conn.list_metrics()
         self.create_form = CloudWatchAlarmCreateForm(
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
-            metrics=self.metrics, formdata=self.request.params or None)
+            formdata=self.request.params or None)
         self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
         self.filter_keys = []
         # sort_keys are passed to sorting drop-down
@@ -74,6 +73,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 dimension = self.get_dimension_name(dimension_param)
                 dimension_value = self.get_dimension_value(dimension_param)
                 dimensions = {dimension: dimension_value}
+                self.log_request(_(u"Creating alarm {0}").format(name))
                 alarm = MetricAlarm(
                     name=name, metric=metric, namespace=namespace, statistic=statistic, comparison=comparison,
                     threshold=threshold, period=period, evaluation_periods=evaluation_periods, unit=unit,
@@ -94,6 +94,7 @@ class CloudWatchAlarmsView(LandingPageView):
             location = self.request.route_path('cloudwatch_alarms')
             alarm_name = self.request.params.get('name')
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Deleting alarm {0}").format(alarm_name))
                 self.cloudwatch_conn.delete_alarm(alarm_name)
                 prefix = _(u'Successfully deleted alarm')
                 msg = '{0} {1}'.format(prefix, alarm_name)
