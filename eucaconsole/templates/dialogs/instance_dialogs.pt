@@ -214,7 +214,10 @@
             <form method="post" action="${action}" id="disassociate-ip-to-instance-form">
                 ${structure:disassociate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">
-                    <input type="hidden" name="instance_id" value="{{ instanceID }}" />
+                    <input type="hidden" name="ip_address" value="{{ ipAddress }}" />
+                </div>
+                <div tal:condition="not landingpage" tal:omit-tag="">
+                    <input type="hidden" name="ip_address" value="${instance.ip_address}" ng-non-bindable=""/>
                 </div>
                 <div class="row">
                     <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">

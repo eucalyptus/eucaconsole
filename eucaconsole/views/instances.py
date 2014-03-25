@@ -212,7 +212,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         return HTTPFound(location=self.location)
 
     @view_config(route_name='instances_associate', request_method='POST')
-    def associate_ip_address(self):
+    def instances_associate_ip_address(self):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.associate_ip_form.validate():
@@ -223,6 +223,21 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
+
+    @view_config(route_name='instances_disassociate', request_method='POST')
+    def instances_disassociate_ip_address(self):
+        if self.disassociate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                ip_address = self.request.params.get('ip_address')
+                ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
+                elastic_ip = ip_addresses[0] if ip_addresses else None
+                if elastic_ip:
+                    disassociated = elastic_ip.disassociate()
+                msg = _(u'Successfully disassociated the IP from the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
 
 class InstancesJsonView(LandingPageView):
     def __init__(self, request):
@@ -459,12 +474,26 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     u"There was a problem with the key, please try again, verifying the correct private key is used."))
 
     @view_config(route_name='instance_associate', renderer=VIEW_TEMPLATE, request_method='POST')
-    def associate_ip_address(self):
+    def instance_associate_ip_address(self):
         if self.instance and self.associate_ip_form.validate():
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
                 self.instance.use_ip(new_ip)
                 msg = _(u'Successfully associated the IP to the instance.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        return self.render_dict
+
+    @view_config(route_name='instance_disassociate', renderer=VIEW_TEMPLATE, request_method='POST')
+    def instance_disassociate_ip_address(self):
+        if self.disassociate_ip_form.validate():
+            with boto_error_handler(self.request, self.location):
+                ip_address = self.request.params.get('ip_address')
+                ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
+                elastic_ip = ip_addresses[0] if ip_addresses else None
+                if elastic_ip:
+                    disassociated = elastic_ip.disassociate()
+                msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
