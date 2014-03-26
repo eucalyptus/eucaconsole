@@ -51,7 +51,7 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            })
+            });
         };
         $scope.getVolumeSnapshots = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

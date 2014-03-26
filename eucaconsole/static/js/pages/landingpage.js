@@ -119,7 +119,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            })
+            });
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {

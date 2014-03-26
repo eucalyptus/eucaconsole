@@ -52,7 +52,7 @@ angular.module('UserView', ['PolicyList'])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            })
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
