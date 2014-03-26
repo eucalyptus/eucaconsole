@@ -672,14 +672,12 @@ form .controls-wrapper > [class*='small-'] label {
         background-color: $euca-validation-input-bgcolor;
     }
     small.error {
-        margin-bottom: 6px;
-        background-color: transparent;
-        color: $euca-validation-error-color;
-        font-weight: bold;
-        padding-left: 0;
-        font-style: normal;
-        padding-bottom: 4px;
+        @include validation-error-mixin;
     }
+}
+
+[data-abide] small.error {
+        @include validation-error-mixin;
 }
 
 textarea.hidden {

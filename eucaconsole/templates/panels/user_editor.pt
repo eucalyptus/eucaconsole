@@ -15,22 +15,20 @@
             </div>
         </div>
         <div class="row">
-            <div class="columns subheader">
+            <div class="columns subheader" ng-cloak="">
                 <span class="subsection-label" ng-show="usersArray.length" i18n:translate="">Add another user</span>
                 <span class="subsection-label" ng-show="usersArray.length == 0" i18n:translate="">Add a user</span>:
             </div>
         </div>
         <div class="row userentry controls-wrapper">
-            <div>
-                <div class="small-12 columns">
-                    <input class="userinput name" placeholder="name..." autofocus=""
-                           ng-model="newUserName" ng-keypress="keyListener($event)" />
-                    <small class="error" i18n:translate="">Must have at least one user</small>
-                </div>
+            <div class="field columns">
+                <input class="userinput name" placeholder="name..." autofocus=""
+                       ng-model="newUserName" ng-keyup="keyListener($event)" />
+                <small class="error" i18n:translate="">Must have at least one user</small>
             </div>
             <div>&nbsp;</div>
             <div class="columns">
-                <a href="#" ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
+                <a ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
                    title="Add user" i18n:translate="">Add User</a>
             </div>
         </div>

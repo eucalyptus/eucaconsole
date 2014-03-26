@@ -22,17 +22,16 @@
         </h3>
         <div class="large-7 columns">
             <div class="panel no-title">
-                <form id="user-new-form" ng-submit="submit($event)"
-                        data-abide="abide" >
+                <form id="user-new-form" ng-submit="submit($event)" data-abide="abide" ng-cloak="">
                     ${structure:user_form['csrf_token']}
                     <div class="section">
                         ${panel('user_editor')}
-                        ${panel('form_field', field=user_form['random_password'], reverse="true", leftcol_width=2, rightcol_width=10)}
-                        ${panel('form_field', field=user_form['access_keys'], reverse="true", leftcol_width=2, rightcol_width=10)}
-                        ${panel('form_field', field=user_form['allow_all'], reverse="true", leftcol_width=2, rightcol_width=10)}
+                        <div>${structure:user_form['random_password']}&nbsp;${user_form.random_password.label}</div>
+                        <div>${structure:user_form['access_keys']}&nbsp;${user_form.access_keys.label}</div>
+                        <div>${structure:user_form['allow_all']}&nbsp;${user_form.allow_all.label}</div>
                     </div>
                     <hr/>
-                    <div class="expando" id="quotas-section" ng-cloak="">
+                    <div class="expando" id="quotas-section">
                         <h6 class="title" >
                             <a ng-click="toggleQuotasContent()">
                                 <i class="fi-plus" ng-show="!quotas_expanded"></i>
@@ -45,7 +44,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <div class="expando" id="advance-section" ng-cloak="">
+                    <div class="expando" id="advance-section">
                         <h6 class="title" >
                             <a ng-click="toggleAdvContent()">
                                 <i class="fi-plus" ng-show="!adv_expanded"></i>
@@ -57,15 +56,13 @@
                             ${panel('form_field', field=user_form['path'])}
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="small-4 columns">&nbsp;</div>
-                        <div class="small-8 columns field inline">
-                            <button type="submit" class="button" id="create-user-btn">
-                                <span i18n:translate="">Create Users</span>
-                            </button>
-                            <a href="${request.route_path('users')}"
-                               class="cancel-link" i18n:translate="">Cancel</a>
-                        </div>
+                    <hr />
+                    <div>
+                        <button type="submit" class="button" id="create-user-btn">
+                            <span i18n:translate="">Create Users</span>
+                        </button>
+                        <a href="${request.route_path('users')}"
+                           class="cancel-link" i18n:translate="">Cancel</a>
                     </div>
                 </form>
             </div>

@@ -347,6 +347,7 @@
             </div>
         </div>
         <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <!--! Help goes here -->
         </div>
