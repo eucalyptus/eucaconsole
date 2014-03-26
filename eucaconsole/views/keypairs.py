@@ -144,7 +144,7 @@ class KeyPairView(BaseView):
                 import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
-                return Response(status=status, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
+                return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
                 location = self.request.route_path('keypair_view', id=name)
                 return HTTPFound(location=location)
