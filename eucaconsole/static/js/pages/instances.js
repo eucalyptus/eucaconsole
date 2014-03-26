@@ -38,7 +38,7 @@ angular.module('InstancesPage', ['LandingPage'])
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
                 var results = oData ? oData.results : [];
-                $scope.$emit('refresh');
+                $scope.$broadcast('refresh');
                 Notify.success("Successfully removed terminated instance");
               }).
               error(function (oData, status) {

@@ -183,8 +183,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_terminate', request_method='POST')
     def instances_terminate(self):
-        # IMHO, this is goofy... instance_id is part of request path, don't need an additional parameter
-        # and there is no reason to fetch the instance before terminating.. 1 extra CLC call
+        # TODO: there is no reason to fetch the instance before terminating.. 1 extra CLC call
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.terminate_form.validate():
