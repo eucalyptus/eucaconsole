@@ -64,7 +64,7 @@ class ChangePasswordView(BaseView):
         if changepassword_form.validate():
             account = self.request.params.get('account')
             username = self.request.params.get('username')
-            password = self.request.params.get('password')
+            password = self.request.params.get('current_password')
             new_password = self.request.params.get('new_password')
             new_password2 = self.request.params.get('new_password2')
             if new_password != new_password2:

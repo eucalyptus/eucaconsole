@@ -26,7 +26,7 @@ class AWSLoginForm(BaseSecureForm):
 
 
 class EucaChangePasswordForm(BaseSecureForm):
-    password = wtforms.PasswordField(
+    current_password = wtforms.PasswordField(
         _(u'Current password'), validators=[validators.InputRequired(message=_(u'Password is required'))],
         widget=widgets.PasswordInput())
     new_password = wtforms.PasswordField(
