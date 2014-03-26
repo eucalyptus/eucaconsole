@@ -117,6 +117,7 @@
                             <input type="hidden" id="aws_csrf_token" name="csrf_token"/>
                             <input type="hidden" name="came_from" value="${came_from}"/>
                             <input type="hidden" id="package" name="package"/>
+                            <input type="hidden" id="aws-region" name="aws-region"/>
                             <input type="submit" id="false-aws-login-button" style="display:none;"/>
                         </form>
                     </div>

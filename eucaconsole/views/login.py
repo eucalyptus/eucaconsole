@@ -115,6 +115,7 @@ class LoginView(BaseView):
         if self.aws_login_form.validate():
             package = self.request.params.get('package')
             package = base64.decodestring(package);
+            aws_region = self.request.params.get('aws-region');
             try:
                 auth = AWSAuthenticator(package=package)
                 creds = auth.authenticate(timeout=10)
@@ -125,7 +126,7 @@ class LoginView(BaseView):
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
-                session['region'] = default_region
+                session['region'] = aws_region if aws_region else default_region
                 session['username_label'] = '{user}...@AWS'.format(user=creds.access_key[:8])
                 # Save EC2 Connection object in cache
                 ConnectionManager.aws_connection(

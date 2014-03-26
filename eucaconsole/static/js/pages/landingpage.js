@@ -74,6 +74,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                // Set landingPageView in localStorage
                localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             });
+            // Click event on the AWS region
+            $('#region-dropdown').on('click', 'a.aws-region-option', function(){
+                localStorage.setItem('aws-region', $(this).attr('id')); 
+            });
         };
         $scope.setFocus = function () {
             $('#search-filter').focus();
