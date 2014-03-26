@@ -81,3 +81,21 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.instance_type.error_msg = self.instance_type_error_msg
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
+
+class LaunchConfigsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    instance_type = wtforms.SelectMultipleField(label=_(u'Instance type'))
+    key_name = wtforms.SelectMultipleField(label=_(u'Key pair'))
+    security_groups = wtforms.SelectMultipleField(label=_(u'Security group'))
+
+    def __init__(self, request, cloud_type='euca', ec2_conn=None, **kwargs):
+        super(LaunchConfigsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.cloud_type = cloud_type
+        self.ec2_conn = ec2_conn
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.instance_type.choices = self.ec2_choices_manager.instance_types(
+            add_blank=False, cloud_type=self.cloud_type, add_description=False)
+        self.key_name.choices = self.ec2_choices_manager.keypairs(add_blank=False)
+        self.security_groups.choices = self.ec2_choices_manager.security_groups(add_blank=False)
+
