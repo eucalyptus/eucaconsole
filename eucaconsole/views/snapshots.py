@@ -255,7 +255,7 @@ class SnapshotView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
             with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
-                self.log_request(_(u"Creating snapshot from volume {0}").format(volume.id))
+                self.log_request(_(u"Creating snapshot from volume {0}").format(volume_id))
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag
                 if name:
