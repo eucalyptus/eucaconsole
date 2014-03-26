@@ -16,7 +16,7 @@ class EucaChangePasswordFormTestCase(BaseFormTestCase):
     request = DummyRequest()
 
     def test_required_fields(self):
-        self.assert_required('password')
+        self.assert_required('current_password')
         self.assert_required('new_password')
         self.assert_required('new_password2')
 
@@ -30,13 +30,13 @@ class EucaChangePasswordTestCase(BaseTestCase):
     auth = EucaAuthenticator(host=host, port=port)
     account = 'foo_account'
     username = 'foo'
-    password = 'pw'
+    current_password = 'pw'
     new_password = 'newpass'
     duration = 3600
 
 
     def test_euca_authentication_failure(self):
-        kwargs = dict(account=self.account, user=self.username, passwd=self.password,
+        kwargs = dict(account=self.account, user=self.username, passwd=self.current_password,
                       new_passwd=self.new_password, duration=self.duration)
         self.assertRaises(URLError, self.auth.authenticate, **kwargs)
 
