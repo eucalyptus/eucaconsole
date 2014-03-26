@@ -192,6 +192,19 @@ class ChoicesManager(object):
             choices.append((scaling_group.name, scaling_group.name))
         return sorted(choices)
 
+    def launch_configs(self, launch_configs=None, add_blank=True):
+        """Returns a list of lauch configuration choices"""
+        choices = []
+        launch_configs = launch_configs or []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        # Note: self.conn is an ELBConnection
+        if not launch_configs and self.conn is not None:
+            launch_configs = self.conn.get_all_launch_configurations()
+        for launch_config in launch_configs:
+            choices.append((launch_config.name, launch_config.name))
+        return sorted(choices)
+
     #### ELB connection type choices
     ##
 

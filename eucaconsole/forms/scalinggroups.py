@@ -330,3 +330,19 @@ class ScalingGroupInstancesTerminateForm(BaseSecureForm):
     """Scaling Group instance terminate form"""
     decrement_capacity = wtforms.BooleanField(label=_(u'Also decrement desired capacity of scaling group'))
 
+
+class ScalingGroupsFiltersForm(BaseSecureForm):
+    """Form class for filters on landing page"""
+    launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
+    availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
+    tags = wtforms.TextField(label=_(u'Tags'))
+
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, **kwargs):
+        super(ScalingGroupsFiltersForm, self).__init__(request, **kwargs)
+        self.request = request
+        self.ec2_conn = ec2_conn
+        self.autoscale_conn = autoscale_conn
+        self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
+        self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
+        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(add_blank=False)

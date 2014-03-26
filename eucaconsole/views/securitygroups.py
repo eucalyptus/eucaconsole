@@ -11,7 +11,7 @@ from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..models import Notification
-from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 

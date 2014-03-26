@@ -20,7 +20,8 @@ from ..constants.cloudwatch import METRIC_TYPES
 from ..forms.alarms import CloudWatchAlarmCreateForm
 from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
-    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm)
+    ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
+    ScalingGroupsFiltersForm)
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 from . import boto_error_handler
@@ -57,29 +58,28 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
         self.initial_sort_key = 'name'
         self.prefix = '/scalinggroups'
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
+        self.json_items_endpoint = self.get_json_endpoint('scalinggroups_json')
+        self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.filters_form = ScalingGroupsFiltersForm(
+            self.request, formdata=self.request.params or None,
+            ec2_conn=self.ec2_conn, autoscale_conn=self.autoscale_conn)
+        self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
+        # sort_keys are passed to sorting drop-down
+        self.render_dict = dict(
+            filter_fields=True,
+            filters_form=self.filters_form,
+            filter_keys=self.filter_keys,
+            sort_keys=self.get_sort_keys(),
+            prefix=self.prefix,
+            initial_sort_key=self.initial_sort_key,
+            json_items_endpoint=self.json_items_endpoint,
+            delete_form=self.delete_form,
+        )
 
     @view_config(route_name='scalinggroups', renderer=TEMPLATE, request_method='GET')
     def scalinggroups_landing(self):
-        json_items_endpoint = self.request.route_path('scalinggroups_json')
-        self.filter_keys = ['availability_zones', 'launch_config', 'name', 'placement_group']
-        # sort_keys are passed to sorting drop-down
-        self.sort_keys = [
-            dict(key='name', name=_(u'Name: A to Z')),
-            dict(key='-name', name=_(u'Name: Z to A')),
-            dict(key='-status', name=_(u'Health status')),
-            dict(key='-current_instances_count', name=_(u'Current instances')),
-            dict(key='launch_config', name=_(u'Launch configuration')),
-            dict(key='availability_zones', name=_(u'Availability zones')),
-        ]
-        return dict(
-            filter_fields=self.filter_fields,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
-            prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=json_items_endpoint,
-            delete_form=self.delete_form,
-        )
+        return self.render_dict
 
     @view_config(route_name='scalinggroups_delete', request_method='POST', renderer=TEMPLATE)
     def scalinggroups_delete(self):
@@ -100,21 +100,32 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
     def get_scaling_group_by_name(self, name):
-        conn = self.get_connection(conn_type='autoscale')
-        names = []
-        names.append(name)
-        return conn.get_all_groups(names)[0] if conn else []
+        names = [name]
+        return self.autoscale_conn.get_all_groups(names)[0] if self.autoscale_conn else []
+
+    @staticmethod
+    def get_sort_keys():
+        return [
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='-status', name=_(u'Health status')),
+            dict(key='-current_instances_count', name=_(u'Current instances')),
+            dict(key='launch_config', name=_(u'Launch configuration')),
+            dict(key='availability_zones', name=_(u'Availability zones')),
+        ]
 
 
-class ScalingGroupsJsonView(BaseView):
+class ScalingGroupsJsonView(LandingPageView):
     @view_config(route_name='scalinggroups_json', renderer='json', request_method='GET')
     def scalinggroups_json(self):
         scalinggroups = []
         with boto_error_handler(self.request):
-            items = self.get_items()
+            items = self.filter_items(self.get_items(), autoscale=True)
         for group in items:
             group_instances = group.instances or []
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
@@ -217,6 +228,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 msg = '{0} {1}'.format(prefix, self.scaling_group.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.edit_form.get_errors_list()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_delete', request_method='POST', renderer=TEMPLATE)
@@ -237,6 +250,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
     def update_tags(self):
@@ -516,6 +531,8 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('scalinggroup_view', id=scaling_group.name)
                 return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
 
