@@ -120,11 +120,18 @@ angular.module('UserView', ['PolicyList'])
             $scope.has_password = has_password;
             var newPasswordForm = $('#new_password');
             // add password strength meter to first new password field
-            newPasswordForm.after("<hr id='password-strength'/>");
+            newPasswordForm.after("<hr id='password-strength'/><span id='password-word'></span>");
+            $('#password-strength').attr('class', "password_none");
             newPasswordForm.on('keypress', function () {
                 var val = $(this).val();
                 var score = zxcvbn(val).score;
                 $('#password-strength').attr('class', "password_" + score);
+                $('#password-word').attr('class', "password_" + score);
+                var word = '';
+                if (score == 0) word = 'weak';
+                if (score == 1 || score == 2) word = 'medium';
+                if (score == 3 || score == 4) word = 'strong';
+                $('#password-word').text(word);
             });
             $("#change-password-modal").on('show', function () {
                 $('#password').focus(); // doesn't seem to work.
