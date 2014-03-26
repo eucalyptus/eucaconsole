@@ -150,7 +150,7 @@ class BaseView(object):
             # this logic found in volumes.js
         BaseView.log_error(request, message)
         if request.is_xhr:
-            raise JSONError(message=message)
+            raise JSONError(message=message, status=status or 403)
         if status == 403:
             if any(['Invalid access key' in message, 'Invalid security token' in message]):
                 notice = message
