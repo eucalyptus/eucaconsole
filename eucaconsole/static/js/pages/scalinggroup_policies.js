@@ -36,7 +36,7 @@ angular.module('ScalingGroupPolicies', [])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            })
+            });
         };
     })
 ;

@@ -108,13 +108,18 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.detachModal = function (device_name, url) {
+            var warnModal = $('#detach-volume-warn-modal'),
+                detachModal = $('#detach-volume-modal');
+
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     if (results.root_device_name == device_name) {
-                        $('#detach-volume-warn-modal').foundation('reveal', 'open');
+                        warnModal.foundation('reveal', 'open');
+                        warnModal.find('h3').click();  // Workaround for dropdown menu not closing
                     } else {
-                        $('#detach-volume-modal').foundation('reveal', 'open');
+                        detachModal.foundation('reveal', 'open');
+                        detachModal.find('h3').click();
                     }
                 }
             });
