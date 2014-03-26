@@ -8,14 +8,14 @@
             ${structure:alarm_form['csrf_token']}
             <input type="hidden" name="redirect_location" value="${redirect_location}" />
             <input type="hidden" name="namespace" value="{{ namespace }}" />
-            ${panel('form_field', field=alarm_form['name'], leftcol_width=3, rightcol_width=9)}
-            ${panel('form_field', field=alarm_form['description'], leftcol_width=3, rightcol_width=9)}
+            ${panel('form_field', field=alarm_form['name'], leftcol_width=2, rightcol_width=10)}
+            ${panel('form_field', field=alarm_form['description'], leftcol_width=2, rightcol_width=10)}
             <hr />
             <div class="row controls-wrapper">
-                <div class="small-3 columns">
+                <div class="small-2 columns">
                     <label class="right">Trigger alarm</label>
                 </div>
-                <div class="small-9 columns">
+                <div class="small-10 columns">
                     <div class="row">
                         <div class="large-5 columns">
                             <div class="row">
@@ -95,10 +95,10 @@
             </div>
             <hr />
             <div class="row controls-wrapper">
-                <div class="small-3 columns">
+                <div class="small-2 columns">
                     <label class="right" i18n:translate="">Evaluation</label>
                 </div>
-                <div class="small-9 columns">
+                <div class="small-10 columns">
                     <div>
                         <span i18n:translate="">Evaluate this measurement</span>
                         ${structure:alarm_form.evaluation_periods(**{'type': 'number', 'min': 1, 'step': 1})}
