@@ -60,8 +60,11 @@
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                     </li>
-                    <li ng-show="!item.transitional">
+                    <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                         <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
+                    </li>
+                    <li ng-show="item.status == 'terminated'">
+                        <a i18n:translate="" ng-click="removeFromView(item, '${request.route_path('instance_terminate', id='_id_')}')">Remove from view</a>
                     </li>
                 </ul>
             </div>
@@ -172,8 +175,11 @@
                             <li ng-show="item.status == 'running'">
                                 <a i18n:translate="" ng-click="revealModal('reboot', item)">Reboot</a>
                             </li>
-                            <li ng-show="!item.transitional">
+                            <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
+                            </li>
+                            <li ng-show="item.status == 'terminated'">
+                                <a i18n:translate="" ng-click="removeFromView(item, '${request.route_path('instance_terminate', id='_id_')}')">Remove from view</a>
                             </li>
                         </ul>
                    </span>

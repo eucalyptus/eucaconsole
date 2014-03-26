@@ -31,6 +31,22 @@ angular.module('InstancesPage', ['LandingPage'])
             $scope.platform = instance['platform'];
             modal.foundation('reveal', 'open');
         };
+        $scope.removeFromView = function(instance, url) {
+            var url = url.replace("_id_", instance.id);
+            var data = "csrf_token=" + $('#csrf_token').val() + "&instance_id=" + instance.id;
+            $http({method:'POST', url:url, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.$emit('refresh');
+                Notify.success("Successfully removed terminated instance");
+              }).
+              error(function (oData, status) {
+                if (status == 403) window.location = '/';
+                var errorMsg = oData['message'] || '';
+                Notify.failure(errorMsg);
+              });
+        };
         $scope.unterminatedInstancesCount = function (items) {
             return items.filter(function (item) {
                 return item.status !== 'terminated';

@@ -27,7 +27,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.initLocalStorageKeys(pageResource);
             $scope.setInitialSort(sortKey);
-            $scope.getItems(jsonItemsEndpoint);
+            $scope.getItems();
             $scope.setWatch();
             $scope.setFocus();
             $scope.setDropdownMenusListener();
@@ -181,6 +181,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
         };
         $scope.sanitizeContent = function (content) {
             return $sanitize(content);
-        }
+        };
+        // listen for refresh to allow other controllers to trigger this
+        $scope.$on('refresh', function($event) {
+            $scope.itemsLoading=true;
+            $scope.getItems();
+        });
     })
 ;

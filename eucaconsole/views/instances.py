@@ -183,6 +183,8 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_terminate', request_method='POST')
     def instances_terminate(self):
+        # IMHO, this is goofy... instance_id is part of request path, don't need an additional parameter
+        # and there is no reason to fetch the instance before terminating.. 1 extra CLC call
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
         if instance and self.terminate_form.validate():
@@ -191,7 +193,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 instance.terminate()
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                if self.request.is_xhr:
+                    return JSONResponse(status=200, message=msg)
+                else:
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to terminate instance')
             self.request.session.flash(msg, queue=Notification.ERROR)
