@@ -177,7 +177,8 @@
                                     </label>
                                     <div class="row">
                                         <div class="small-6 columns">
-                                            <select class="condition-keys" ng-model="${cond_key}">
+                                            <select class="condition-keys" ng-model="${cond_key}"
+                                                    ng-change="setOperators('${cond_key}')">
                                                 <option value="" i18n:translate="">Select key...</option>
                                                 <optgroup label="EC2 Conditions" tal:condition="namespace == 'ec2'" tal:omit-tag="">
                                                     <option value="ec2:AvailabilityZone"
@@ -253,15 +254,13 @@
                                         <div class="small-6 columns">
                                             <select class="condition-operators" ng-model="${cond_operator}">
                                                 <option value="" i18n:translate="">select...</option>
-                                                <optgroup label="ARN Conditions"
-                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'ARN'">
+                                                <optgroup label="ARN Conditions" ng-if="selectedOperatorType == 'ARN'">
                                                     <option value="ArnEquals">ArnEquals</option>
                                                     <option value="ArnNotEquals">ArnNotEquals</option>
                                                     <option value="ArnLike">ArnLike</option>
                                                     <option value="ArnNotLike">ArnNotLike</option>
                                                 </optgroup>
-                                                <optgroup label="String Conditions"
-                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'STRING'">
+                                                <optgroup label="String Conditions" ng-if="selectedOperatorType == 'STRING'">
                                                     <option value="StringEquals">StringEquals</option>
                                                     <option value="StringNotEquals">StringNotEquals</option>
                                                     <option value="StringEqualsIgnoreCase">StringEqualsIgnoreCase</option>
@@ -270,8 +269,7 @@
                                                     <option value="StringNotLike">StringNotLike</option>
                                                 </optgroup>
                                                 <option value="Null">Null</option>
-                                                <optgroup label="Numeric Conditions"
-                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'">
+                                                <optgroup label="Numeric Conditions" ng-if="selectedOperatorType == 'NUMERIC'">
                                                     <option value="NumericEquals">NumericEquals</option>
                                                     <option value="NumericNotEquals">NumericNotEquals</option>
                                                     <option value="NumericLessThan">NumericLessThan</option>
@@ -279,8 +277,7 @@
                                                     <option value="NumericGreaterThan">NumericGreaterThan</option>
                                                     <option value="NumericGreaterThanEquals">NumericGreaterThanEquals</option>
                                                 </optgroup>
-                                                <optgroup label="Date Conditions"
-                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'DATE'">
+                                                <optgroup label="Date Conditions" ng-if="selectedOperatorType == 'DATE'">
                                                     <option value="DateEquals">DateEquals</option>
                                                     <option value="DateNotEquals">DateNotEquals</option>
                                                     <option value="DateLessThan">DateLessThan</option>
@@ -288,13 +285,11 @@
                                                     <option value="DateGreaterThan">DateGreaterThan</option>
                                                     <option value="DateGreaterThanEquals">DateGreaterThanEquals</option>
                                                 </optgroup>
-                                                <optgroup label="IP Conditions"
-                                                          ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'IP'">
+                                                <optgroup label="IP Conditions" ng-if="selectedOperatorType == 'IP'">
                                                     <option value="IpAddress">IpAddress</option>
                                                     <option value="NotIpAddress">NotIpAddress</option>
                                                 </optgroup>
-                                                <option value="Bool"
-                                                        ng-if="${cond_key} &amp;&amp; getConditionType(${cond_key}) == 'BOOL'">
+                                                <option value="Bool" ng-if="selectedOperatorType == 'BOOL'">
                                                     Bool
                                                 </option>
                                             </select>
@@ -392,6 +387,10 @@
                                         <!--! Input field for Numeric inputs -->
                                         <input type="number" class="condition-value numeric"
                                                ng-if="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'NUMERIC'" />
+                                        <!--! Input field for User* and String* -->
+                                        <input type="text" class="condition-value userstringlike"
+                                               ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
+                                               &amp;&amp; getConditionType(${cond_key}) == 'STRING'" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
