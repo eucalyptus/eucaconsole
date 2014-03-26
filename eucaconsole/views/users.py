@@ -29,7 +29,7 @@ from . import boto_error_handler
 
 class PasswordGeneration(object):
     @staticmethod
-    def generatePassword():
+    def generate_password():
         """
         Generates a simple 12 character password.
         """
@@ -46,6 +46,7 @@ class UsersView(LandingPageView):
         super(UsersView, self).__init__(request)
         self.initial_sort_key = 'user_name'
         self.prefix = '/users'
+        self.conn = self.get_connection(conn_type="iam")
 
     @view_config(route_name='users', renderer=TEMPLATE)
     def users_landing(self):
@@ -77,15 +78,12 @@ class UsersView(LandingPageView):
         """ calls iam:DeleteLoginProfile and iam:PutUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        self.conn = self.get_connection(conn_type="iam")
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Disabling user {0}").format(user_name))
             result = self.conn.delete_login_profile(user_name=user_name)
-            policy = {}
-            policy['Version'] = '2011-04-01'
-            statements = []
-            statements.append({'Effect': 'Deny', 'Action': '*', 'Resource': '*'})
+            policy = {'Version': '2011-04-01'}
+            statements = [{'Effect': 'Deny', 'Action': '*', 'Resource': '*'}]
             policy['Statement'] = statements
             result = self.conn.put_user_policy(user_name, self.EUCA_DENY_POLICY, json.dumps(policy))
             return dict(message=_(u"Successfully disabled user"))
@@ -95,14 +93,13 @@ class UsersView(LandingPageView):
         """ calls iam:CreateLoginProfile and iam:DeleteUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
-        self.conn = self.get_connection(conn_type="iam")
         with boto_error_handler(self.request):
             user_name = self.request.matchdict.get('name')
             self.log_request(_(u"Enabling user {0}").format(user_name))
             result = self.conn.delete_user_policy(user_name, self.EUCA_DENY_POLICY)
             random_password = self.request.params.get('random_password')
             if random_password == 'y':
-                password = PasswordGeneration.generatePassword()
+                password = PasswordGeneration.generate_password()
                 result = self.conn.create_login_profile(user_name, password)
 
                 # assemble file response
@@ -112,7 +109,7 @@ class UsersView(LandingPageView):
                 row = [account, user_name, password]
                 csv_w.writerow(row)
                 self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=user_name),
-                            'text/csv', string_output.getvalue())
+                                  'text/csv', string_output.getvalue())
                 return dict(message=_(u"Successfully added users"), results="true")
             else:
                 return dict(message=_(u"Successfully enabled user"))
@@ -177,12 +174,14 @@ class UsersJsonView(BaseView):
             except BotoServerError as exc:
                 pass
 
-        return dict(results=dict(
+        return dict(
+            results=dict(
                 user_name=user_param,
                 num_keys=len(keys),
                 has_password=has_password,
                 user_enabled=user_enabled,
-            ))
+            )
+        )
 
     def get_items(self):
         with boto_error_handler(self.request):
@@ -227,11 +226,13 @@ class UserView(BaseView):
         else:
             return None
 
-    def addQuotaLimit(self, statements, param, action, condition):
+    def add_quota_limit(self, statements, param, action, condition):
         val = self.request.params.get(param, None)
         if val:
-            statements.append({'Effect': 'Limit', 'Action': action,
-                'Resource': '*', 'Condition':{'NumericLessThanEquals':{condition: val}}})
+            statements.append({
+                'Effect': 'Limit', 'Action': action, 'Resource': '*',
+                'Condition': {'NumericLessThanEquals': {condition: val}}
+            })
 
     @view_config(route_name='user_view', renderer=TEMPLATE)
     def user_view(self):
@@ -246,16 +247,14 @@ class UserView(BaseView):
             pass
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn,
-                             formdata=self.request.params or None)
+        self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.render_dict['user_form'] = self.user_form
         self.render_dict['has_password'] = 'true' if has_password else 'false'
         return self.render_dict
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn,
-                             formdata=self.request.params or None)
+        self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.render_dict['user_form'] = self.user_form
         return self.render_dict
  
@@ -279,7 +278,9 @@ class UserView(BaseView):
     def user_avail_groups_json(self):
         """Return groups this user isn't part of"""
         with boto_error_handler(self.request):
-            taken_groups = [group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups]
+            taken_groups = [
+                group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups
+            ]
             all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
             avail_groups = list(set(all_groups) - set(taken_groups))
             if len(avail_groups) == 0:
@@ -317,7 +318,7 @@ class UserView(BaseView):
         path = self.request.params.get('path', '/')
        
         session = self.request.session
-        account=session['account']
+        account = session['account']
         with boto_error_handler(self.request):
             user_list = []
             if users_json:
@@ -325,17 +326,16 @@ class UserView(BaseView):
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
                     user = self.conn.create_user(name, path)
-                    user_data = {'account': account, 'username':name}
-                    policy = {}
-                    policy['Version'] = '2011-04-01'
+                    user_data = {'account': account, 'username': name}
+                    policy = {'Version': '2011-04-01'}
                     statements = []
                     if random_password == 'y':
-                        self.log_request(_(u"Generating password for user {0}").format(user_name))
-                        password = PasswordGeneration.generatePassword()
+                        self.log_request(_(u"Generating password for user {0}").format(name))
+                        password = PasswordGeneration.generate_password()
                         self.conn.create_login_profile(name, password)
                         user_data['password'] = password
                     if access_keys == 'y':
-                        self.log_request(_(u"Creating access keys for user {0}").format(user_name))
+                        self.log_request(_(u"Creating access keys for user {0}").format(name))
                         creds = self.conn.create_access_key(name)
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
@@ -345,49 +345,54 @@ class UserView(BaseView):
                         statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
-                    self.addQuotaLimit(statements,
-                        'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-                    self.addQuotaLimit(statements,
-                        'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-                    self.addQuotaLimit(statements,
-                        'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-                    self.addQuotaLimit(statements,
-                        'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-                    self.addQuotaLimit(statements,
-                        'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-                    self.addQuotaLimit(statements,
-                        'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
+                    self.add_quota_limit(
+                        statements, 'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
+                    self.add_quota_limit(
+                        statements, 'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
+                    self.add_quota_limit(
+                        statements, 'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
+                    self.add_quota_limit(
+                        statements, 'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
+                    self.add_quota_limit(
+                        statements, 'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
+                    self.add_quota_limit(
+                        statements, 'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
                     ## s3
-                    self.addQuotaLimit(statements,
-                        's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-                    self.addQuotaLimit(statements,
-                        's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-                    self.addQuotaLimit(statements,
-                        's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
-                    self.addQuotaLimit(statements,
-                        's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
+                    self.add_quota_limit(
+                        statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
+                    self.add_quota_limit(
+                        statements, 's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                    self.add_quota_limit(
+                        statements, 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
+                    self.add_quota_limit(
+                        statements, 's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
                     ## iam
-                    self.addQuotaLimit(statements,
-                        'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-                    self.addQuotaLimit(statements,
-                        'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-                    self.addQuotaLimit(statements,
-                        'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-                    self.addQuotaLimit(statements,
-                        'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
+                    self.add_quota_limit(
+                        statements, 'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
+                    self.add_quota_limit(
+                        statements, 'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
+                    self.add_quota_limit(
+                        statements, 'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
+                    self.add_quota_limit(
+                        statements, 'iam_inst_profiles_max',
+                        'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
                     ## autoscaling
-                    self.addQuotaLimit(statements,
-                        'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
-                    self.addQuotaLimit(statements,
-                        'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
-                    self.addQuotaLimit(statements,
-                        'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
+                    self.add_quota_limit(
+                        statements, 'autoscale_groups_max', 'autoscaling:createautoscalinggroup',
+                        'autoscaling:quota-autoscalinggroupnumber')
+                    self.add_quota_limit(
+                        statements, 'launch_configs_max', 'autoscaling:createlaunchconfiguration',
+                        'autoscaling:quota-launchconfigurationnumber')
+                    self.add_quota_limit(
+                        statements, 'scaling_policies_max', 'autoscaling:pubscalingpolicy',
+                        'autoscaling:quota-scalingpolicynumber')
                     ## elb
-                    self.addQuotaLimit(statements,
-                        'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
+                    self.add_quota_limit(
+                        statements, 'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer',
+                        'elasticloadbalancing:quota-loadbalancernumber')
 
                     if len(statements) > 0:
-                        self.log_request(_(u"Creating policy user {0}").format(user_name))
+                        self.log_request(_(u"Creating policy for user {0}").format(name))
                         policy['Statement'] = statements
                         self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
             # create file to send instead. Since # users is probably small, do it all in memory
@@ -401,8 +406,7 @@ class UserView(BaseView):
                     row.append(user['access_id'])
                     row.append(user['secret_key'])
                 csv_w.writerow(row)
-            self._store_file_("{acct}-users.csv".format(acct=account),
-                        'text/csv', string_output.getvalue())
+            self._store_file_("{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully added users"), results="true")
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
@@ -412,14 +416,14 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', None)
-            self.log_request(_(u"Updating user {0}").format(user_name))
+            self.log_request(_(u"Updating user {0}").format(new_name))
             path = self.request.params.get('path', None)
             if new_name == self.user.user_name:
                 new_name = None
             result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
             self.user.path = path
             if self.user.user_name != new_name:
-                pass # TODO: need to force view refresh if name changes
+                pass  # TODO: need to force view refresh if name changes
             return dict(message=_(u"Successfully updated user information"),
                         results=self.user)
 
@@ -434,11 +438,10 @@ class UserView(BaseView):
 
             auth = self.get_connection(conn_type='sts')
             session = self.request.session
-            account=session['account']
-            username=session['username']
+            account = session['account']
+            username = session['username']
             # 900 is minimum duration for session creds
-            creds = auth.authenticate(account=account, user=username,
-                                      passwd=password, timeout=8, duration=900)
+            creds = auth.authenticate(account=account, user=username, passwd=password, timeout=8, duration=900)
             self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
@@ -472,7 +475,7 @@ class UserView(BaseView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
-            new_pass = PasswordGeneration.generatePassword()
+            new_pass = PasswordGeneration.generate_password()
             self.log_request(_(u"Generating password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
@@ -488,8 +491,9 @@ class UserView(BaseView):
             csv_w = csv.writer(string_output)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
-                        'text/csv', string_output.getvalue())
+            self._store_file_(
+                "{acct}-{user}-login.csv".format(acct=account, user=self.user.user_name),
+                'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated user password"), results="true")
 
     @view_config(route_name='user_delete_password', request_method='POST', renderer='json')
@@ -503,7 +507,7 @@ class UserView(BaseView):
             return dict(message=_(u"Successfully deleted user password"), results="true")
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
-    def user_genKeys(self):
+    def user_gen_keys(self):
         """ calls iam:CreateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
@@ -515,9 +519,10 @@ class UserView(BaseView):
             csv_w = csv.writer(string_output)
             row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
             csv_w.writerow(row)
-            self._store_file_("{acct}-{user}-{key}-creds.csv".format(acct=account, \
-                        user=self.user.user_name, key=result.access_key.access_key_id),
-                        'text/csv', string_output.getvalue())
+            self._store_file_(
+                "{acct}-{user}-{key}-creds.csv".format(acct=account,
+                user=self.user.user_name, key=result.access_key.access_key_id),
+                'text/csv', string_output.getvalue())
             return dict(message=_(u"Successfully generated access keys"), results="true")
 
     @view_config(route_name='user_delete_key', request_method='POST', renderer='json')
@@ -629,78 +634,82 @@ class UserView(BaseView):
             policy_list = []
             policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
             for policy_name in policies.policy_names:
-                policy_json = self.conn.get_user_policy(user_name=self.user.user_name,
-                                    policy_name=policy_name).policy_document
+                policy_json = self.conn.get_user_policy(
+                    user_name=self.user.user_name, policy_name=policy_name).policy_document
                 policy = json.loads(policy_json)
                 policy_list.append(policy)
             # for each form item, update proper policy if needed
             new_stmts = []
             ## ec2
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
+                                    'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
+                                    'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
+                                    'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
+                                    'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
+                                    'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
+                                    'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
             ## s3
             self.update_quota_limit(policy_list, new_stmts,
-                's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
+                                    's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                                    's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
+                                    's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
             self.update_quota_limit(policy_list, new_stmts,
-                's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
+                                    's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
             ## iam
             self.update_quota_limit(policy_list, new_stmts,
-                'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
+                                    'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
+                                    'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
+                                    'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'iam_inst_profiles_max', 'iam:CreateInstanceProfile', 'iam:quota-instanceprofilenumber')
+                                    'iam_inst_profiles_max', 'iam:CreateInstanceProfile',
+                                    'iam:quota-instanceprofilenumber')
             ## autoscaling
             self.update_quota_limit(policy_list, new_stmts,
-                'autoscale_groups_max', 'autoscaling:createautoscalinggroup', 'autoscaling:quota-autoscalinggroupnumber')
+                                    'autoscale_groups_max', 'autoscaling:createautoscalinggroup',
+                                    'autoscaling:quota-autoscalinggroupnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'launch_configs_max', 'autoscaling:createlaunchconfiguration', 'autoscaling:quota-launchconfigurationnumber')
+                                    'launch_configs_max', 'autoscaling:createlaunchconfiguration',
+                                    'autoscaling:quota-launchconfigurationnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                'scaling_policies_max', 'autoscaling:pubscalingpolicy', 'autoscaling:quota-scalingpolicynumber')
+                                    'scaling_policies_max', 'autoscaling:pubscalingpolicy',
+                                    'autoscaling:quota-scalingpolicynumber')
             ## elb
             self.update_quota_limit(policy_list, new_stmts,
-                'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer', 'elasticloadbalancing:quota-loadbalancernumber')
+                                    'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer',
+                                    'elasticloadbalancing:quota-loadbalancernumber')
 
             # save policies that were modified
             for i in range(0, len(policy_list)-1):
                 if 'dirty' in policy_list[i].keys():
                     del policy_list[i]['dirty']
-                    self.log_request(_(u"Updating policy {0} for user {1}").format(policies.policies_name[i], self.user.user_name))
-                    self.conn.put_user_policy(self.user.user_name, policies.policies_names[i],
-                                              json.dumps(policy_list[i]))
+                    self.log_request(_(u"Updating policy {0} for user {1}").format(
+                        policies.policies_name[i], self.user.user_name))
+                    self.conn.put_user_policy(
+                        self.user.user_name, policies.policies_names[i], json.dumps(policy_list[i]))
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
                 if self.EUCA_DEFAULT_POLICY in policies.policy_names:
                     # add the new statments in
-                    self.log_request(_(u"Updating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, self.user.user_name))
+                    self.log_request(_(u"Updating policy {0} for user {1}").format(
+                        self.EUCA_DEFAULT_POLICY, self.user.user_name))
                     default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
-                                              json.dumps(default_policy))
+                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(default_policy))
                 else:
                     # create the default policy
-                    self.log_request(_(u"Creating policy {0} for user {1}").format(self.EUCA_DEFAULT_POLICY, self.user.user_name))
-                    new_policy = {}
-                    new_policy['Version'] = '2011-04-01'
-                    new_policy['Statement'] = new_stmts
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY,
-                                              json.dumps(new_policy))
+                    self.log_request(_(u"Creating policy {0} for user {1}").format(
+                        self.EUCA_DEFAULT_POLICY, self.user.user_name))
+                    new_policy = {'Version': '2011-04-01', 'Statement': new_stmts}
+                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(new_policy))
             return dict(message=_(u"Successfully updated user policy"))
 
     def update_quota_limit(self, policy_list, new_stmts, param, action, condition):
@@ -729,12 +738,14 @@ class UserView(BaseView):
                                     lowest_stmt = s
         if lowest_val == sys.maxint: # was there a statement? If not, we should add one
             if new_limit != '':
-                new_stmts.append({'Effect': 'Limit', 'Action': action,
-                    'Resource': '*', 'Condition':{'NumericLessThanEquals':{condition: new_limit}}})
+                new_stmts.append({
+                    'Effect': 'Limit', 'Action': action, 'Resource': '*',
+                    'Condition': {'NumericLessThanEquals': {condition: new_limit}}
+                })
         else:
             if new_limit != '': # need to remove the value
                 del lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val]
-            else: # need to change the value
+            else:  # need to change the value
                 lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit
             lowest_policy['dirty'] = True
 
