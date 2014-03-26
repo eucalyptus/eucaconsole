@@ -20,7 +20,7 @@
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-
+        <h3 id="pagetitle"><strong i18n:translate="">IAM Users</strong></h3>
         <div class="large-2 columns" id="landing-page-filters">
             <!--! Filters go here -->
         </div>
