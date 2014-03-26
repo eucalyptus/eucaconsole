@@ -80,6 +80,7 @@
                                data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
                         </li>
                         <li ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'">
+                        
                             <a href="#" id="terminate-instance-action"
                                data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
                         </li>

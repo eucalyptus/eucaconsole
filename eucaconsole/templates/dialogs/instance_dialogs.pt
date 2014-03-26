@@ -10,7 +10,7 @@
             <p>
                 <span i18n:translate="">Are you sure you want to reboot</span>
                 <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
-                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
+                <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="reboot-form">
                 ${structure:reboot_form['csrf_token']}
@@ -33,7 +33,7 @@
             <p>
                 <span i18n:translate="">Are you sure you want to start</span>
                 <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
-                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
+                <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="start-form">
                 ${structure:start_form['csrf_token']}
@@ -56,7 +56,7 @@
             <p>
                 <span i18n:translate="">Are you sure you want to stop</span>
                 <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
-                <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
+                <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="stop-form">
                 ${structure:stop_form['csrf_token']}
@@ -87,7 +87,7 @@
                 <p>
                     <span i18n:translate="">Are you sure you want to terminate</span>
                     <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
-                    <strong tal:condition="landingpage">{{ instanceName }}'}</strong>?
+                    <strong tal:condition="landingpage">{{ instanceName }}</strong>?
                 </p>
             </div>
             <form method="post" action="${action}" id="terminate-form">
