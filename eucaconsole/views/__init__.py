@@ -318,7 +318,7 @@ class LandingPageView(BaseView):
         self.items = []
         self.prefix = '/'
 
-    def filter_items(self, items, ignore=None):
+    def filter_items(self, items, ignore=None, autoscale=False):
         ignore = ignore or []  # Pass list of filters to ignore
         filtered_items = []
         if hasattr(self.request.params, 'dict_of_lists'):
@@ -330,13 +330,21 @@ class LandingPageView(BaseView):
                 return items
             for item in items:
                 matchedkey_count = 0
-                for fkey, fval in filter_params.items():
-                    if fval and fval[0]:
-                        if fkey == 'tags':  # Special case to handle tags
-                            if self.match_tags(item=item, tags=fval[0].split(',')):
+                for filter_key, filter_value in filter_params.items():
+                    if filter_value and filter_value[0]:
+                        if filter_key == 'tags':  # Special case to handle tags
+                            if self.match_tags(item=item, tags=filter_value[0].split(','), autoscale=autoscale):
                                 matchedkey_count += 1
-                        elif hasattr(item, fkey) and getattr(item, fkey, None) in fval:
-                            matchedkey_count += 1
+                        elif hasattr(item, filter_key):
+                            filterkey_val = getattr(item, filter_key, None)
+                            if filterkey_val:
+                                if isinstance(filterkey_val, list):
+                                    for fitem in filterkey_val:
+                                        if fitem in filter_value:
+                                            matchedkey_count += 1
+                                else:
+                                    if filterkey_val in filter_value:
+                                        matchedkey_count += 1
                     else:
                         matchedkey_count += 1  # Handle empty param values
                 if matchedkey_count == len(filter_params):
@@ -344,11 +352,17 @@ class LandingPageView(BaseView):
         return filtered_items
 
     @staticmethod
-    def match_tags(item=None, tags=None):
+    def match_tags(item=None, tags=None, autoscale=False):
         for tag in tags:
             tag = tag.strip()
-            if any([tag in item.tags.keys(), tag in item.tags.values()]):
-                return True
+            if autoscale:  # autoscaling tags are a list of Tag boto.ec2.autoscale.tag.Tag objects
+                if item.tags:
+                    for as_tag in item.tags:
+                        if as_tag and tag == as_tag.key or tag == as_tag.value:
+                            return True
+            else:  # Standard tags are a dict of key/value pairs
+                if any([tag in item.tags.keys(), tag in item.tags.values()]):
+                    return True
         return False
 
     def get_json_endpoint(self, route):
