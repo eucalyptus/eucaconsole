@@ -19,6 +19,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.actionsList = [];
         $scope.urlParams = $.url().param();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
+        $scope.selectedOperatorType = '';
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
@@ -77,15 +78,14 @@ angular.module('IAMPolicyWizard', [])
             }, 100);
         };
         $scope.initCodeMirror = function () {
-            $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
-                mode: "javascript",
-                lineWrapping: true,
-                styleActiveLine: true,
-                lineNumbers: true
+            $(document).ready(function () {
+                $scope.codeEditor = CodeMirror.fromTextArea($scope.policyTextarea, {
+                    mode: "javascript",
+                    lineWrapping: true,
+                    styleActiveLine: true,
+                    lineNumbers: true
+                });
             });
-        };
-        $scope.visitStep = function(step) {
-            $('#tabStep' + step).click();
         };
         $scope.setPolicyName = function (policyType) {
             var typeNameMapping = {
@@ -322,6 +322,12 @@ angular.module('IAMPolicyWizard', [])
 
             return '';
         };
+        $scope.setOperators = function (conditionKey) {
+            $scope[conditionKey.replace('ConditionKey', 'ConditionOperator')] = '';
+            $timeout(function () {
+                $scope.selectedOperatorType = $scope.getConditionType($scope[conditionKey]);
+            }, 50);
+        }
     })
 ;
 
