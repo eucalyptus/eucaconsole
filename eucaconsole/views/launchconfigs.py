@@ -15,7 +15,7 @@ from pyramid.view import view_config
 from ..forms import GenerateFileForm
 from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
-from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
+from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
@@ -28,15 +28,19 @@ class LaunchConfigsView(LandingPageView):
     def __init__(self, request):
         super(LaunchConfigsView, self).__init__(request)
         self.request = request
+        self.ec2_conn = self.get_connection()
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.initial_sort_key = 'name'
         self.prefix = '/launchconfigs'
         self.filter_keys = ['image_id', 'image_name', 'key_name', 'name', 'security_groups']
         self.sort_keys = self.get_sort_keys()
-        self.json_items_endpoint = self.request.route_path('launchconfigs_json')
+        self.json_items_endpoint = self.get_json_endpoint('launchconfigs_json')
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
+        self.filters_form = LaunchConfigsFiltersForm(
+            self.request, cloud_type=self.cloud_type, ec2_conn=self.ec2_conn, formdata=self.request.params or None)
         self.render_dict = dict(
-            filter_fields=self.filter_fields,
+            filter_fields=True,
+            filters_form=self.filters_form,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             prefix=self.prefix,
@@ -65,6 +69,8 @@ class LaunchConfigsView(LandingPageView):
                 notification_msg = msg
                 self.request.session.flash(notification_msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
     @staticmethod
@@ -81,14 +87,14 @@ class LaunchConfigsView(LandingPageView):
         ]
 
 
-class LaunchConfigsJsonView(BaseView):
+class LaunchConfigsJsonView(LandingPageView):
     """JSON response view for Launch Configurations landing page"""
     def __init__(self, request):
         super(LaunchConfigsJsonView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         with boto_error_handler(request):
-            self.autoscale_conn = self.get_connection(conn_type='autoscale')
-            self.launch_configs = self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+            self.items = self.get_items()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
     def launchconfigs_json(self):
@@ -96,10 +102,10 @@ class LaunchConfigsJsonView(BaseView):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
-            for launchconfig in self.launch_configs:
+            for launchconfig in self.filter_items(self.items):
                 security_groups = self.get_launchconfig_security_groups(launchconfig)
                 image_id = launchconfig.image_id
-                name=launchconfig.name
+                name = launchconfig.name
                 launchconfigs_array.append(dict(
                     created_time=launchconfig.created_time.isoformat(),
                     image_id=image_id,
@@ -112,8 +118,11 @@ class LaunchConfigsJsonView(BaseView):
                 ))
             return dict(results=launchconfigs_array)
 
+    def get_items(self):
+        return self.autoscale_conn.get_all_launch_configurations() if self.autoscale_conn else []
+
     def get_launchconfigs_image_mapping(self):
-        launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.launch_configs]
+        launchconfigs_image_ids = [launchconfig.image_id for launchconfig in self.items]
         launchconfigs_images = self.ec2_conn.get_all_images(image_ids=launchconfigs_image_ids) if self.ec2_conn else []
         launchconfigs_image_mapping = dict()
         for image in launchconfigs_images:
@@ -182,6 +191,8 @@ class LaunchConfigView(BaseView):
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.delete_form.get_errors_list()
         return self.render_dict
 
     def get_launch_config(self):
@@ -307,6 +318,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
     def get_security_groups(self):
