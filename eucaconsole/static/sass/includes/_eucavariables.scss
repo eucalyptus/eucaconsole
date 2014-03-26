@@ -159,3 +159,12 @@ $tooltip-padding: rem-calc(5);
     box-shadow: 2px 2px 5px $euca-grey;
 }
 
+@mixin validation-error-mixin {
+    margin-bottom: 6px;
+    background-color: transparent;
+    color: $euca-validation-error-color;
+    font-weight: bold;
+    padding-left: 0;
+    font-style: normal;
+    padding-bottom: 4px;
+}
