@@ -98,47 +98,27 @@
                         <div class="section" tal:condition="image.block_device_names">
                             <hr />
                             <h6 i18n:translate="">Block device mappings</h6>
-                            <div tal:repeat="row image.block_device_names">
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-4 columns"><label i18n:translate="">Device</label></div>
-                                    <div class="small-8 columns" ng-non-bindable="">${row.name if row.name else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.status">
-                                    <div class="small-4 columns"><label i18n:translate="">Status</label></div>
-                                    <div class="small-8 columns value">${row.value.status if row.value.status else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.attach_time">
-                                    <div class="small-4 columns"><label i18n:translate="">Attach time</label></div>
-                                    <div class="small-8 columns value">${row.value.attach_time if row.value.attach_time else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.no_device">
-                                    <div class="small-4 columns"><label i18n:translate="">No device</label></div>
-                                    <div class="small-8 columns value">${row.value.no_device if row.value.no_device else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.volume_id">
-                                    <div class="small-4 columns"><label i18n:translate="">Volume ID</label></div>
-                                    <div class="small-8 columns value">${row.value.volume_id if row.value.volume_id else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.volume_type">
-                                    <div class="small-4 columns"><label i18n:translate="">Volume type</label></div>
-                                    <div class="small-8 columns value">${row.value.volume_type if row.value.volume_type else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.snapshot_id">
-                                    <div class="small-4 columns"><label i18n:translate="">Snapshot ID</label></div>
-                                    <div class="small-8 columns value">${row.value.snapshot_id if row.value.snapshot_id else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.size">
-                                    <div class="small-4 columns"><label i18n:translate="">Size</label></div>
-                                    <div class="small-8 columns value">${row.value.size if row.value.size else ''} GB</div>
-                                </div>
-                                <div class="row controls-wrapper readonly">
-                                    <div class="small-4 columns"><label i18n:translate="">Delete on termination?</label></div>
-                                    <div class="small-8 columns value">${row.value.delete_on_termination if row.value.delete_on_termination else ''}</div>
-                                </div>
-                                <div class="row controls-wrapper readonly" tal:condition="row.value.ephemeral_name">
-                                    <div class="small-4 columns"><label i18n:translate="">Ephemeral name</label></div>
-                                    <div class="small-8 columns value" ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</div>
-                                </div>
+                            <div id="tableview" class="gridwrapper">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><label i18n:translate="">Device mapping</label></th>
+                                            <th><label i18n:translate="">Snapshot</label></th>
+                                            <th><label i18n:translate="">Size (GB)</label></th>
+                                            <th><label i18n:translate="">Delete on termination?</label></th>
+                                            <th><label i18n:translate="">Ephemeral name</label></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr tal:repeat="row image.block_device_names">
+                                            <td ng-non-bindable="">${row.name if row.name else ''}</td>
+                                            <td>${row.value.snapshot_id if row.value.snapshot_id else ''}</td>
+                                            <td>${row.value.size if row.value.size else ''}</td>
+                                            <td>${row.value.delete_on_termination if row.value.delete_on_termination else ''}</td>
+                                            <td ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</td>
+                                        </tr>
+                                    </tbody> 
+                                </table>
                             </div>
                         </div>
                     </div>
