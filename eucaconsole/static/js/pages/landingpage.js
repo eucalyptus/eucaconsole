@@ -103,7 +103,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 modal.find('textarea').val('');
                 modal.find('div.error').removeClass('error');
                 var chosenSelect = modal.find('select');
-                if (chosenSelect.length > 0) {
+                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
