@@ -27,7 +27,7 @@
 
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor .table { width: 100%; }
-#bdmapping-editor .table th { font-size: 0.825rem; }
+#bdmapping-editor .table th { font-size: 0.825rem; background-color: #8dc943; text-transform: uppercase; }
 #bdmapping-editor .table td { line-height: 1rem; padding: 4px 8px; vertical-align: middle; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }

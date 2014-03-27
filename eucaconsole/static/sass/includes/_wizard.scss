@@ -125,6 +125,8 @@ $wizard-tab-padding: 8px 1rem;
         width: 100%;
         th {
             font-size: 0.825rem;
+            background-color: $euca-green;
+            text-transform: uppercase;
         }
         td {
             line-height: 1rem;

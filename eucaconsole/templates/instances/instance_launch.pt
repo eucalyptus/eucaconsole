@@ -154,10 +154,12 @@
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
+                                ${structure:launch_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
+                                ${launch_form['monitoring_enabled'].label}
                             </div>
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['private_addressing'], reverse=True, ng_attrs={'model': 'privateAddressing'})}
+                                ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
+                                ${launch_form['private_addressing'].label}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
