@@ -20,6 +20,7 @@ angular.module('Dashboard', [])
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.setInitialZone();
             $scope.getItemCounts();
+            $scope.storeAWSRegion();
         };
         $scope.getItemCounts = function() {
             var jsonUrl = $scope.jsonEndpoint;
@@ -44,6 +45,11 @@ angular.module('Dashboard', [])
             localStorage.setItem($scope.storedZoneKey, zone);
             $scope.zoneDropdown.removeClass('open').removeAttr('style');
             $scope.getItemCounts();
-        }
+        };
+        $scope.storeAWSRegion = function () {
+            if( $('#region-dropdown').length > 0 ){
+                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id')); 
+            }
+        };
     })
 ;
