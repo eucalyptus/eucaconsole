@@ -20,7 +20,6 @@ class IPAddressesView(LandingPageView):
 
     def __init__(self, request):
         super(IPAddressesView, self).__init__(request)
-        self.initial_sort_key = 'public_ip'
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/ipaddresses'
         self.conn = self.get_connection()
@@ -28,23 +27,13 @@ class IPAddressesView(LandingPageView):
         self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
         self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
-        self.filters_form = IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
-        self.json_items_endpoint = self.get_json_endpoint('ipaddresses_json')
-        self.sort_keys = self.get_sort_keys()
         self.location = self.get_redirect_location('ipaddresses')
-        self.filter_keys = ['public_ip', 'instance_id']
         self.render_dict = dict(
-            filter_fields=True,
-            filter_keys=self.filter_keys,
-            sort_keys=self.sort_keys,
             prefix=self.prefix,
-            initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.json_items_endpoint,
             allocate_form=self.allocate_form,
             associate_form=self.associate_form,
             disassociate_form=self.disassociate_form,
             release_form=self.release_form,
-            filters_form=self.filters_form,
         )
 
     @view_config(route_name='ipaddresses', renderer=VIEW_TEMPLATE)
@@ -65,6 +54,14 @@ class IPAddressesView(LandingPageView):
                     msg = u'{prefix} {ips}'.format(prefix=prefix, ips=ips)
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                 return HTTPFound(location=self.location)
+        self.render_dict.update(
+            initial_sort_key='public_ip',
+            json_items_endpoint=self.get_json_endpoint('ipaddresses_json'),
+            filter_fields=True,
+            filters_form=IPAddressesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
+            filter_keys=['public_ip', 'instance_id'],
+            sort_keys=self.get_sort_keys(),
+        )
         return self.render_dict
 
     @view_config(route_name='ipaddresses_associate', request_method="POST")
@@ -107,7 +104,7 @@ class IPAddressesView(LandingPageView):
                 self.log_request(_(u"Releasing ElasticIP {0}").format(public_ip))
                 self.conn.associate_address(public_ip)
                 template = _(u'Successfully released {ip} to the cloud')
-                msg = template.format(ip=elastic_ip.public_ip)
+                msg = template.format(ip=public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
             msg = _(u'Unable to release IP address')
