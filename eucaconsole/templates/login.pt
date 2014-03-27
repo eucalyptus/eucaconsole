@@ -50,8 +50,11 @@
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
-                                    <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
-                                    <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                    <div tal:condition="field.name == 'password'">
+                                        <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
+                                        <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                    </div>
+                                    <div tal:condition="field.name != 'password'">${structure:field}</div>
                                     
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
@@ -87,8 +90,11 @@
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
-                                    <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
-                                    <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                    <div tal:condition="field.name == 'secret_key'">
+                                        <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
+                                        <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                    </div>
+                                    <div tal:condition="field.name != 'secret_key'">${structure:field}</div>
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
