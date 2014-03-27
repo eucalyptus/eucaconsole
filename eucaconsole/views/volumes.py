@@ -46,18 +46,15 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.conn = self.get_connection()
         self.initial_sort_key = '-create_time'
         self.prefix = '/volumes'
-        self.json_items_endpoint = self.get_json_endpoint('volumes_json')
         self.location = self.get_redirect_location('volumes')
         with boto_error_handler(request, self.location):
             self.instances = self.get_instances_by_state(self.conn.get_only_instances() if self.conn else [], "running")
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
-        self.filters_form = VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
-            filters_form=self.filters_form,
         )
 
     @view_config(route_name='volumes', renderer=VIEW_TEMPLATE)
@@ -70,9 +67,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
         # filter_keys are passed to client-side filtering in search box
         self.render_dict.update(dict(
             filter_fields=True,
+            filters_form=VolumesFiltersForm(self.request, conn=self.conn, formdata=self.request.params or None),
             sort_keys=self.get_sort_keys(),
             filter_keys=filter_keys,
-            json_items_endpoint=self.json_items_endpoint,
+            json_items_endpoint=self.get_json_endpoint('volumes_json'),
             attach_form=self.attach_form,
             detach_form=self.detach_form,
             delete_form=self.delete_form,
