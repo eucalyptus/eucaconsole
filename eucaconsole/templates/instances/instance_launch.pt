@@ -63,7 +63,6 @@
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
                                     <a class="button small" i18n:translate="" id="image-id-btn"
                                        ng-click="inputImageID('${request.route_path('instance_create')}')">Next</a>
-                                    <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                 </div>
                             </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint)}

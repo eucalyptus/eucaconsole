@@ -10,6 +10,17 @@
         tbody {
             display: block;
             overflow-y: scroll;
+            tr {
+                display: block;
+                border-bottom: 1px solid $euca-lightgrey;
+                &.selected, &:hover {
+                    background-color: $euca-extralightgreen;
+                    cursor: pointer;
+                }
+                &.selected:hover {
+                    cursor: inherit;
+                }
+            }
             td {
                 word-break: break-all;
             }

@@ -14,6 +14,9 @@ angular.module('ImagePicker', [])
         $scope.itemsLoading = false;
         $scope.cloudType = 'euca';
         $scope.filtersForm = $('#filters');
+        $scope.imagePicker = $('#image-picker');
+        $scope.urlParams = $.url().param();
+        $scope.selectedImageParam = $scope.urlParams['image_id'] || '';
         // Properties for search input filter
         $scope.filterProps = [
             'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_devite_type'
@@ -24,6 +27,7 @@ angular.module('ImagePicker', [])
             $scope.cloudType = cloudType;
             $scope.initChosenSelectors();
             $scope.initFilters();
+            $scope.initImageSelectionListener();
             $scope.getItems();
         };
         $scope.initChosenSelectors = function () {
@@ -32,6 +36,11 @@ angular.module('ImagePicker', [])
                 'search_contains': true,
                 'placeholder_text_single': ' ',
                 'placeholder_text_multiple': ' '
+            });
+        };
+        $scope.initImageSelectionListener = function () {
+            $scope.imagePicker.on('click', '.table tr', function () {
+                document.location.href = $(this).attr('data-href').replace('http://', '');
             });
         };
         $scope.initFilters = function () {
