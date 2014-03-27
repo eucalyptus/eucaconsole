@@ -125,16 +125,26 @@ class BaseView(object):
         for _cache in cache_managers.values():
             _cache.clear()
 
-    def log_request(self, message):
-        account=self.request.session['account']
-        username=self.request.session['username']
-        logging.info("{acct}/{user}[{id}]: {msg}".format(id=self.request.id, acct=account, user=username, msg=message))
-
     @staticmethod
-    def log_error(request, message):
-        account=request.session['account']
-        username=request.session['username']
-        logging.error("{acct}/{user}[{id}]: {msg}".format(id=request.id, acct=account, user=username, msg=message))
+    def log_message(request, message, level='info'):
+        prefix = ''
+        cloud_type = request.session.get('cloud_type', 'euca')
+        if cloud_type == 'euca':
+            account = request.session.get('account', '')
+            username = request.session.get('username', '')
+            prefix = '{0}/{1}'.format(account, username)
+        elif cloud_type == 'aws':
+            account = request.session.get('username_label', '')
+            region = request.session.get('region')
+            prefix = '{0}/{1}'.format(account, region)
+        log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
+        if level == 'info':
+            logging.info(log_message)
+        elif level == 'error':
+            logging.error(log_message)
+
+    def log_request(self, message):
+        self.log_message(self.request, message)
 
     @staticmethod
     def handle_error(err=None, request=None, location=None, template="{0}"):
@@ -148,7 +158,7 @@ class BaseView(object):
                 message = message[message.index("RelatesTo Error:")+16:]
             # do we need this logic in the common code?? msg = err.message.split('remoteDevice')[0]
             # this logic found in volumes.js
-        BaseView.log_error(request, message)
+        BaseView.log_message(request, message, level='error')
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
         if status == 403:
