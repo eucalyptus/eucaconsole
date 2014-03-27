@@ -144,15 +144,18 @@
                     </div>
                 </div>
                 <div class="content panel has-actions" id="security-tab">
-                    <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
-                        <metal:actions metal:fill-slot="actions">
+                    <div class="actions-menu">
+                        <span class="button dropdown" data-dropdown="actions-dropdown2">
+                            <span i18n:translate="">Actions</span>
+                        </span>
+                        <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
-                        </metal:actions>
-                    </metal:block>
+                        </ul>
+                    </div>
                     <div id="password-section" class="columns section" ng-controller="UserPasswordCtrl"
                          ng-init="initController('${request.route_path('user_random_password', name=user.user_name)}',
                                                  '${request.route_path('user_delete_password', name=user.user_name)}',
@@ -316,15 +319,18 @@
                     </div>
                 </div>
                 <div class="content panel has-actions" id="quotas-tab">
-                    <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
-                        <metal:actions metal:fill-slot="actions">
+                    <div class="actions-menu">
+                        <span class="button dropdown" data-dropdown="actions-dropdown3">
+                            <span i18n:translate="">Actions</span>
+                        </span>
+                        <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
-                        </metal:actions>
-                    </metal:block>
+                        </ul>
+                    </div>
                     <div ng-controller="UserQuotasCtrl" class="columns" ng-init="initController(
                                 '${request.route_path('user_update_quotas', name=user.user_name)}')">
                         <form ng-submit="submit($event)" id="user-update-quotas-form">
