@@ -61,24 +61,33 @@ angular.module('UserNew', ['UserEditor'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
-                $('#new_password').val("");
-                $('#new_password2').val("");
-                $('#password-strength').removeAttr('class');
-                $.generateFile({
-                    csrf_token: csrf_token,
-                    filename: 'not-used', // let the server set this
-                    content: 'none',
-                    script: $scope.getFileEndpoint
-                });
-                // this is clearly a hack. We'd need to bake callbacks into the generateFile
-                // stuff to do this properly.
-                setTimeout(function() {
+                if (results.hasFile == 'y') {
+                    $('#new_password').val("");
+                    $('#new_password2').val("");
+                    $('#password-strength').removeAttr('class');
+                    $.generateFile({
+                        csrf_token: csrf_token,
+                        filename: 'not-used', // let the server set this
+                        content: 'none',
+                        script: $scope.getFileEndpoint
+                    });
+                    // this is clearly a hack. We'd need to bake callbacks into the generateFile
+                    // stuff to do this properly.
+                    setTimeout(function() {
+                        if (isSingleUser) {
+                            window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
+                        } else {
+                            window.location = $scope.allUsersRedirect;
+                        }
+                    }, 3000);
+                }
+                else {
                     if (isSingleUser) {
                         window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                     } else {
                         window.location = $scope.allUsersRedirect;
                     }
-                }, 3000);
+                }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {

@@ -160,10 +160,11 @@ class UsersJsonView(BaseView):
             pass
         user_enabled = True
         try:
-            policies = self.conn.get_all_user_policies(user_name=user_param)
-            for policy in policies.policy_names:
-                if policy == self.EUCA_DENY_POLICY and has_password is False:
-                    user_enabled = False
+            if user_param != 'admin':
+                policies = self.conn.get_all_user_policies(user_name=user_param)
+                for policy in policies.policy_names:
+                    if policy == self.EUCA_DENY_POLICY and has_password is False:
+                        user_enabled = False
         except BotoServerError as err:
             pass
         keys = []
@@ -396,18 +397,21 @@ class UserView(BaseView):
                         policy['Statement'] = statements
                         self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
             # create file to send instead. Since # users is probably small, do it all in memory
-            string_output = StringIO.StringIO()
-            csv_w = csv.writer(string_output)
-            for user in user_list:
-                row = [user['account'], user['username']]
-                if random_password == 'y':
-                    row.append(user['password'])
-                if access_keys == 'y':
-                    row.append(user['access_id'])
-                    row.append(user['secret_key'])
-                csv_w.writerow(row)
-            self._store_file_("{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
-            return dict(message=_(u"Successfully added users"), results="true")
+            has_file = 'n'
+            if not (access_keys == 'n' and random_password == 'n'):
+                string_output = StringIO.StringIO()
+                csv_w = csv.writer(string_output)
+                for user in user_list:
+                    row = [user['account'], user['username']]
+                    if random_password == 'y':
+                        row.append(user['password'])
+                    if access_keys == 'y':
+                        row.append(user['access_id'])
+                        row.append(user['secret_key'])
+                    csv_w.writerow(row)
+                self._store_file_("{acct}-users.csv".format(acct=account), 'text/csv', string_output.getvalue())
+                has_file = 'y'
+            return dict(message=_(u"Successfully added users"), results=dict(hasFile=has_file))
  
     @view_config(route_name='user_update', request_method='POST', renderer='json')
     def user_update(self):
