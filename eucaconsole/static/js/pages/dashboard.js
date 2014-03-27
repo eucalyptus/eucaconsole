@@ -19,8 +19,8 @@ angular.module('Dashboard', [])
         $scope.initController = function (jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.setInitialZone();
-            $scope.setWatch();
             $scope.getItemCounts();
+            $scope.storeAWSRegion();
         };
         $scope.getItemCounts = function() {
             var jsonUrl = $scope.jsonEndpoint;
@@ -46,11 +46,10 @@ angular.module('Dashboard', [])
             $scope.zoneDropdown.removeClass('open').removeAttr('style');
             $scope.getItemCounts();
         };
-        $scope.setWatch = function () {
-            // Click event on the AWS region
-            $('#region-dropdown').on('click', 'a.aws-region-option', function(){
-                localStorage.setItem('aws-region', $(this).attr('id')); 
-            });
+        $scope.storeAWSRegion = function () {
+            if( $('#region-dropdown').length > 0 ){
+                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id')); 
+            }
         };
     })
 ;

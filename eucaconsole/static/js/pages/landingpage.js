@@ -32,6 +32,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.setFocus();
             $scope.setDropdownMenusListener();
             $scope.enableInfiniteScroll();
+            $scope.storeAWSRegion();
         };
         $scope.initChosenFilters = function () {
             !!$(document).chosen && $('#filters').find('select').chosen({
@@ -73,10 +74,6 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                }
                // Set landingPageView in localStorage
                localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
-            });
-            // Click event on the AWS region
-            $('#region-dropdown').on('click', 'a.aws-region-option', function(){
-                localStorage.setItem('aws-region', $(this).attr('id')); 
             });
         };
         $scope.setFocus = function () {
@@ -124,6 +121,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
             })
+        };
+        $scope.storeAWSRegion = function () {
+            if( $('#region-dropdown').length > 0 ){
+                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id')); 
+            }
         };
         $scope.getItems = function () {
             $http.get($scope.jsonEndpoint).success(function(oData) {
