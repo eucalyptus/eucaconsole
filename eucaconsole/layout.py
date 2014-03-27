@@ -35,6 +35,7 @@ class MasterLayout(object):
         self.aws_enabled = asbool(request.registry.settings.get('aws.enabled'))
         self.aws_regions = AWS_REGIONS
         self.default_region = request.registry.settings.get('aws.default.region')
+        self.browser_password_save = 'true' if asbool(request.registry.settings.get('browser.password.save')) else 'false'
         self.cloud_type = request.session.get('cloud_type')
         self.selected_region = self.request.session.get('region', self.default_region)
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
