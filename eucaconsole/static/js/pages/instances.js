@@ -48,7 +48,9 @@ angular.module('InstancesPage', ['LandingPage'])
                 Notify.success("Successfully removed terminated instance");
               }).
               error(function (oData, status) {
-                if (status == 403) window.location = '/';
+                if (status == 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
                 var errorMsg = oData['message'] || '';
                 Notify.failure(errorMsg);
               });
@@ -78,7 +80,9 @@ angular.module('InstancesPage', ['LandingPage'])
                         $('#the-password').text(results.password);
                       }).
                       error(function (oData, status) {
-                        if (status == 403) window.location = '/';
+                        if (status == 403) {
+                            $('#timed-out-modal').foundation('reveal', 'open');
+                        }
                         var errorMsg = oData['message'] || '';
                         Notify.failure(errorMsg);
                       });
@@ -100,8 +104,7 @@ angular.module('InstancesPage', ['LandingPage'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };

@@ -82,7 +82,7 @@ angular.module('UserNew', ['UserEditor'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 Notify.failure(errorMsg);
             });

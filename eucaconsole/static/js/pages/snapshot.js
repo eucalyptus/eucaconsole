@@ -57,8 +57,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
-                    alert(errorMsg);
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };

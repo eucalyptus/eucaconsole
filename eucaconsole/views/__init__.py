@@ -384,7 +384,11 @@ def notfound_view(request):
 @view_config(context=BotoServerError, permission=NO_PERMISSION_REQUIRED)
 def conn_error(exc, request):
     """Generic handler for BotoServerError exceptions"""
-    return BaseView.handle_error(err=exc, request=request)
+    try:
+        BaseView.handle_error(err=exc, request=request)
+    except HTTPException as ex:
+        return ex
+    return
 
 
 @contextmanager
