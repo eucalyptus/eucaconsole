@@ -284,7 +284,10 @@ class UserView(BaseView):
             all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
             avail_groups = list(set(all_groups) - set(taken_groups))
             if len(avail_groups) == 0:
-                avail_groups.append(_(u"User already a member of all groups"))
+                if len(all_groups) == 0:
+                    avail_groups.append(_(u"There are no groups defined"))
+                else:
+                    avail_groups.append(_(u"User already a member of all groups"))
             return dict(results=avail_groups)
 
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
