@@ -124,6 +124,13 @@
         </p>
         <a class="close-reveal-modal">&#215;</a>
     </div>
+    <div id="timed-out-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Session Timeout</h3>
+        <p>
+            <span i18n:translate="">Your session has timed out due to inactivity or an unexpected error. Please log in again.</span>
+        </p>
+        <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
+    </div>
 
     <a class="exit-off-canvas"></a>
 

@@ -181,7 +181,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 $('#wrong-password').css('display', 'block');
             });
@@ -206,7 +206,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 Notify.failure(errorMsg);
             });
@@ -226,7 +226,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 Notify.failure(errorMsg);
             });
@@ -256,7 +256,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };
@@ -281,7 +281,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
                 Notify.failure(errorMsg);
             });
@@ -299,7 +299,9 @@ angular.module('UserView', ['PolicyList'])
                 Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                if (status == 403) window.location = '/';
+                if (status == 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
                 var errorMsg = oData['message'] || '';
                 Notify.failure(errorMsg);
               });
@@ -323,7 +325,9 @@ angular.module('UserView', ['PolicyList'])
                 Notify.success(oData.message);
               }).
               error(function (oData, status) {
-                if (status == 403) window.location = '/';
+                if (status == 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
                 var errorMsg = oData['message'] || '';
                 Notify.failure(errorMsg);
               });
@@ -380,7 +384,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };
@@ -392,7 +396,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };
@@ -403,7 +407,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
         };
@@ -456,7 +460,7 @@ angular.module('UserView', ['PolicyList'])
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
-                    $('#euca-logout-form').submit();
+                    $('#timed-out-modal').foundation('reveal', 'open');
                 }
             });
             $('#policy-view-modal').foundation('reveal', 'open');

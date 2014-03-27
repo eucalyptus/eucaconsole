@@ -215,7 +215,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 if (oData.message) {
-                    alert(oData.message);
+                    Notify.failure(oData.message);
                 }
             });
         };
@@ -248,7 +248,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {
-                    alert(oData.message);
+                    Notify.failure(oData.message);
                 }
             });
         };
