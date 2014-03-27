@@ -26,28 +26,26 @@ class SnapshotsView(LandingPageView):
         super(SnapshotsView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
-        self.initial_sort_key = '-start_time'
         self.prefix = '/snapshots'
-        self.json_items_endpoint = self.get_json_endpoint('snapshots_json')
+        self.initial_sort_key = '-start_time'
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
-        self.filters_form = SnapshotsFiltersForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             delete_form=self.delete_form,
             register_form=self.register_form,
-            filters_form=self.filters_form,
         )
 
     @view_config(route_name='snapshots', renderer=VIEW_TEMPLATE)
     def snapshots_landing(self):
-        filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'status']
+        filter_keys = ['id', 'name', 'volume_size', 'start_time', 'tags', 'volume_id', 'volume_name', 'status']
         self.render_dict.update(dict(
             filter_keys=filter_keys,
             filter_fields=True,
+            filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None),
             sort_keys=self.get_sort_keys(),
             initial_sort_key=self.initial_sort_key,
-            json_items_endpoint=self.json_items_endpoint,
+            json_items_endpoint=self.get_json_endpoint('snapshots_json'),
         ))
         return self.render_dict
 
@@ -56,6 +54,7 @@ class SnapshotsView(LandingPageView):
         snapshot_id = self.request.params.get('snapshot_id')
         volume_id = self.request.params.get('volume_id')
         snapshot = self.get_snapshot(snapshot_id)
+        # NOTE: could optimize by requiring snapshot name as param and avoid above CLC fetch
         snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
         if volume_id:
