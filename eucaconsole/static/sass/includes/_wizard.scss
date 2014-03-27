@@ -83,14 +83,14 @@ $wizard-tab-padding: 8px 1rem;
     top: 2px;
     padding: 8px;
     padding-bottom: 2rem;
-    margin-top: 54px;
     margin-bottom: 1rem;
     label {
         position: relative;
         right: -1rem;
-        color: $euca-darkblue;
+        color: $euca-grey;
         font-weight: bold;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
+        margin-top: 4px;
     }
     .value {
         word-break: break-all;
@@ -125,6 +125,8 @@ $wizard-tab-padding: 8px 1rem;
         width: 100%;
         th {
             font-size: 0.825rem;
+            background-color: $euca-green;
+            text-transform: uppercase;
         }
         td {
             line-height: 1rem;

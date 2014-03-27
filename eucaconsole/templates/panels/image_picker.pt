@@ -3,7 +3,6 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
     <div id="image-picker" ng-app="ImagePicker"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
-
         <!--! Image picker widget -->
         <div class="row">
             <div class="medium-7 columns">
@@ -31,25 +30,29 @@
             <div class="large-9 columns">
                 <table class="table" ng-cloak="">
                     <tbody style="max-height: ${maxheight}">
-                    <tr>
+                    <tr ng-show="itemsLoading">
                         <td colspan="2">
                             <div i18n:translate="" ng-show="itemsLoading">Loading...</div>
-                            <div ng-show="!itemsLoading &amp;&amp; items.length == 0">
-                                <span i18n:translate="">No images were found matching the criteria.</span>
-                            </div>
                         </td>
                     </tr>
-                    <tr ng-show="!itemsLoading" ng-repeat="item in items">
+                    <tr ng-show="!itemsLoading &amp;&amp; items.length == 0">
+                        <td colspan="2">
+                            <span i18n:translate="">No images were found matching the criteria.</span>
+                        </td>
+                    </tr>
+                    <tr ng-show="!itemsLoading" ng-repeat="item in items"
+                        data-href="${request.route_path(prefix_route)}?image_id={{ item.id }}"
+                        ng-class="{'selected': item.id == selectedImageParam}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>
                         </td>
                         <td>
                             <div class="name">
-                                <a href="${request.route_path(prefix_route)}?image_id={{ item.id }}">{{ item.name || item.id }}</a>
+                                <strong class="image-title">{{ item.name || item.id }}</strong>
                                 <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                             </div>
                             <div ng-show="item.name">
-                                <b>{{ item.id }}</b>
+                                <span class="image-id">{{ item.id }}</span>
                                 <span class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
                             </div>
                             <div ng-show="item.description">

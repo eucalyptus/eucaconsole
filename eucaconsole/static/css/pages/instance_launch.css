@@ -16,8 +16,8 @@
 .wizard .tabs-content .content { width: 100%; }
 .wizard .tabs-content .content .description { font-weight: bold; color: #00415e; }
 
-.summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-top: 54px; margin-bottom: 1rem; }
-.summary label { position: relative; right: -1rem; color: #00415e; font-weight: bold; margin-bottom: 4px; }
+.summary { background-color: white; position: relative; top: 2px; padding: 8px; padding-bottom: 2rem; margin-bottom: 1rem; }
+.summary label { position: relative; right: -1rem; color: #777777; font-weight: bold; margin-bottom: 2px; margin-top: 4px; }
 .summary .value { word-break: break-all; }
 .summary .row { margin-bottom: 5px; }
 .summary .title { font-weight: bold; border-bottom: 1px solid #00415e; margin-top: 7px; margin-bottom: 1rem; }
@@ -27,7 +27,7 @@
 
 #bdmapping-editor .storage-label { text-align: left; }
 #bdmapping-editor .table { width: 100%; }
-#bdmapping-editor .table th { font-size: 0.825rem; }
+#bdmapping-editor .table th { font-size: 0.825rem; background-color: #8dc943; text-transform: uppercase; }
 #bdmapping-editor .table td { line-height: 1rem; padding: 4px 8px; vertical-align: middle; }
 #bdmapping-editor #new-blockdevice-entry label { text-align: left; }
 #bdmapping-editor input.number { width: 2rem; }

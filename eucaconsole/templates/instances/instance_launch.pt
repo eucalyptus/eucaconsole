@@ -63,7 +63,6 @@
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
                                     <a class="button small" i18n:translate="" id="image-id-btn"
                                        ng-click="inputImageID('${request.route_path('instance_create')}')">Next</a>
-                                    <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                 </div>
                             </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint)}
@@ -155,10 +154,12 @@
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
+                                ${structure:launch_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
+                                ${launch_form['monitoring_enabled'].label}
                             </div>
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=launch_form['private_addressing'], reverse=True, ng_attrs={'model': 'privateAddressing'})}
+                                ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
+                                ${launch_form['private_addressing'].label}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row" tal:condition="image">
@@ -178,6 +179,7 @@
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
+            <div class="help-padding">&nbsp;</div>
             <div class="summary" ng-cloak="" tal:condition="image">
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section">
@@ -205,7 +207,7 @@
                     </div>
                     <div class="row">
                         <label i18n:translate="">Zone:</label>
-                        <div class="columns value">{{ instanceZone }}</div>
+                        <div class="columns value">{{ instanceZone || 'no preference' }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Names:</label>
