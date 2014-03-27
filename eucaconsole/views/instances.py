@@ -89,6 +89,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -118,7 +119,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='placement', name=_(u'Availability zone')),
             dict(key='key_name', name=_(u'Key pair')),
         ]
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
