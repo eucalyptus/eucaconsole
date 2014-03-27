@@ -20,16 +20,19 @@ angular.module('IAMPolicyWizard', [])
         $scope.urlParams = $.url().param();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
+        $scope.languageCode = 'en';
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
+            $scope.languageCode = options['languageCode'] || 'en';
             $scope.initSelectedTab();
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
             if ($scope.cloudType === 'euca') {
                 $scope.initChosenSelectors();
                 $scope.addResourceTypeListener();
+                $scope.initDateTimePickers();
             }
         };
         $scope.initSelectedTab = function () {
@@ -59,8 +62,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.addResourceTypeListener = function () {
             // Show/hide resource choices based on resource type selection
-            var resourceSelects = $scope.policyGenerator.find('select.resource-type');
-            resourceSelects.on('change', function(evt) {
+            $scope.policyGenerator.on('change', 'select.resource-type', function(evt) {
                 var resourceSelect = $(evt.target),
                     resourceType = resourceSelect.val(),
                     resourceSelector = '.resource.' + resourceType,
@@ -76,6 +78,13 @@ angular.module('IAMPolicyWizard', [])
                 $scope.policyGenerator.find('select.chosen').chosen({'width': '44%', 'search_contains': true});
                 $scope.limitResourceChoices();
             }, 100);
+        };
+        $scope.initDateTimePickers = function () {
+            $(document).ready(function () {
+                $scope.policyGenerator.find('.datetimepicker').datetimepicker({
+                    'format': 'Y-m-d H:i:s', 'lang': $scope.languageCode
+                });
+            });
         };
         $scope.initCodeMirror = function () {
             $(document).ready(function () {

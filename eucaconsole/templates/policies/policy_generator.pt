@@ -391,6 +391,9 @@
                                         <input type="text" class="condition-value userstringlike"
                                                ng-if="${cond_operator} &amp;&amp; ${cond_key}.toLowerCase().indexOf('user') !== -1
                                                &amp;&amp; getConditionType(${cond_key}) == 'STRING'" />
+                                        <!--! Input field for date/time operators -->
+                                        <input type="text" class="condition-value datetimepicker"
+                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'DATE'" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">

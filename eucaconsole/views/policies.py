@@ -89,6 +89,7 @@ class IAMPolicyWizardView(BaseView):
             'policyJsonEndpoint': self.policy_json_endpoint,
             'cloudType': self.cloud_type,
             'actionsList': self.get_all_actions(),
+            'languageCode': self.get_language_code(),
         }
 
     def get_instance_choices(self):
@@ -186,6 +187,11 @@ class IAMPolicyWizardView(BaseView):
 
     def get_all_choice(self, resource):
         return self.get_arn_prefix(resource, add_all=True)
+
+    def get_language_code(self):
+        if self.request.accept_language and self.request.accept_language.header_value:
+            return self.request.accept_language.header_value[:2]
+        return 'en'
 
     @staticmethod
     def get_all_actions():
