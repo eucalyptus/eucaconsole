@@ -27,6 +27,7 @@ class SnapshotsView(LandingPageView):
         self.request = request
         self.conn = self.get_connection()
         self.prefix = '/snapshots'
+        self.initial_sort_key = '-start_time'
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -43,7 +44,7 @@ class SnapshotsView(LandingPageView):
             filter_fields=True,
             filters_form=SnapshotsFiltersForm(self.request, formdata=self.request.params or None),
             sort_keys=self.get_sort_keys(),
-            initial_sort_key='-start_time',
+            initial_sort_key=self.initial_sort_key,
             json_items_endpoint=self.get_json_endpoint('snapshots_json'),
         ))
         return self.render_dict
