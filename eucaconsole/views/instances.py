@@ -78,7 +78,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         super(InstancesView, self).__init__(request)
         self.initial_sort_key = '-launch_time'
         self.prefix = '/instances'
-        self.filter_fields = True
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
         self.location = self.get_redirect_location('instances')
         self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
@@ -89,7 +88,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -119,15 +117,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='placement', name=_(u'Availability zone')),
             dict(key='key_name', name=_(u'Key pair')),
         ]
-        self.filters_form = InstancesFiltersForm(
-            self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
+        autoscale_conn = self.get_connection(conn_type='autoscale')
+        filters_form = InstancesFiltersForm(
+            self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
-            filter_fields=self.filter_fields,
+            filter_fields=True,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             json_items_endpoint=self.json_items_endpoint,
-            filters_form=self.filters_form,
+            filters_form=filters_form,
         ))
         return self.render_dict
 
