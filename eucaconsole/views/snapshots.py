@@ -56,6 +56,7 @@ class SnapshotsView(LandingPageView):
         snapshot_id = self.request.params.get('snapshot_id')
         volume_id = self.request.params.get('volume_id')
         snapshot = self.get_snapshot(snapshot_id)
+        # NOTE: could optimize by requiring snapshot name as param and avoid above CLC fetch
         snapshot_name = TaggedItemView.get_display_name(snapshot)
         location = self.get_redirect_location('snapshots')
         if volume_id:

@@ -43,6 +43,7 @@ angular.module('VolumesPage', ['LandingPage'])
             modal.foundation('reveal', 'open');
         };
         $scope.detachModal = function (item, url) {
+            $scope.volumeID = item['id'];
             $scope.instanceName = item.instance_name;
             url = url.replace('_id_', item.instance);
             $http.get(url).success(function(oData) {

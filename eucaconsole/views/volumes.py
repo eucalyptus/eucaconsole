@@ -98,13 +98,12 @@ class VolumesView(LandingPageView, BaseVolumeView):
     @view_config(route_name='volumes_attach', request_method='POST')
     def volumes_attach(self):
         volume_id = self.request.params.get('volume_id')
-        volume = self.get_volume(volume_id)
-        if volume and self.attach_form.validate():
+        if self.attach_form.validate():
             instance_id = self.request.params.get('instance_id')
             device = self.request.params.get('device')
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Attaching volume {0} to {1} as {2}").format(volume_id, instance_id, device))
-                volume.attach(instance_id, device)
+                self.conn.attach_volume(volume_id, instance_id, device)
                 msg = _(u'Successfully sent request to attach volume.  It may take a moment to attach to instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
@@ -115,11 +114,10 @@ class VolumesView(LandingPageView, BaseVolumeView):
     @view_config(route_name='volumes_detach', request_method='POST')
     def volumes_detach(self):
         volume_id = self.request.params.get('volume_id')
-        volume = self.get_volume(volume_id)
         if self.detach_form.validate():
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Detaching volume {0} from {1}").format(volume_id, volume.attach_data.instance_id))
-                volume.detach()
+                self.log_request(_(u"Detaching volume {0}").format(volume_id))
+                self.conn.detach_volume(volume_id)
                 msg = _(u'Request successfully submitted.  It may take a moment to detach the volume.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:

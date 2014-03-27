@@ -89,10 +89,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.associate_ip_form = AssociateIpToInstanceForm(
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
-        self.autoscale_conn = self.get_connection(conn_type='autoscale')
-        self.filters_form = InstancesFiltersForm(
-            self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
-            cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict = dict(
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
@@ -103,7 +99,6 @@ class InstancesView(LandingPageView, BaseInstanceView):
             batch_terminate_form=self.batch_terminate_form,
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
-            filters_form=self.filters_form,
         )
 
     @view_config(route_name='instances', renderer='../templates/instances/instances.pt')
@@ -123,23 +118,27 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='placement', name=_(u'Availability zone')),
             dict(key='key_name', name=_(u'Key pair')),
         ]
+        self.autoscale_conn = self.get_connection(conn_type='autoscale')
+        self.filters_form = InstancesFiltersForm(
+            self.request, ec2_conn=self.conn, autoscale_conn=self.autoscale_conn,
+            cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
             filter_fields=self.filter_fields,
             filter_keys=self.filter_keys,
             sort_keys=self.sort_keys,
             json_items_endpoint=self.json_items_endpoint,
+            filters_form=self.filters_form,
         ))
         return self.render_dict
 
     @view_config(route_name='instances_start', request_method='POST')
     def instances_start(self):
         instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.start_form.validate():
+        if self.start_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Starting instance {0}").format(instance_id))
                 # Can only start an instance if it has a volume attached
-                instance.start()
+                self.conn.start_instances([instance_id])
                 msg = _(u'Successfully sent start instance request.  It may take a moment to start the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
         else:
@@ -151,10 +150,9 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_stop(self):
         instance_id = self.request.params.get('instance_id')
         instance = self.get_instance(instance_id)
-        instance_image = self.get_image(instance)
         if instance and self.stop_form.validate():
             # Only EBS-backed instances can be stopped
-            if instance_image.root_device_type == 'ebs':
+            if instance.root_device_type == 'ebs':
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Stopping instance {0}").format(instance_id))
                     instance.stop()
@@ -171,11 +169,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances_reboot', request_method='POST')
     def instances_reboot(self):
         instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.reboot_form.validate():
+        if self.reboot_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Rebooting instance {0}").format(instance_id))
-                rebooted = instance.reboot()
+                rebooted = self.conn.reboot_instances([instance_id])
                 msg = _(u'Successfully sent reboot request.  It may take a moment to reboot the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
                 if not rebooted:
@@ -188,13 +185,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
 
     @view_config(route_name='instances_terminate', request_method='POST')
     def instances_terminate(self):
-        # TODO: there is no reason to fetch the instance before terminating.. 1 extra CLC call
         instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.terminate_form.validate():
+        if self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instance {0}").format(instance_id))
-                instance.terminate()
+                self.conn.terminate_instances([instance_id])
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 if self.request.is_xhr:
@@ -224,11 +219,11 @@ class InstancesView(LandingPageView, BaseInstanceView):
     @view_config(route_name='instances_associate', request_method='POST')
     def instances_associate_ip_address(self):
         instance_id = self.request.params.get('instance_id')
-        instance = self.get_instance(instance_id)
-        if instance and self.associate_ip_form.validate():
+        if self.associate_ip_form.validate():
             with boto_error_handler(self.request, self.location):
                 new_ip = self.request.params.get('ip_address')
-                instance.use_ip(new_ip)
+                self.log_request(_(u"Associating IP {0} with instances {1}").format(new_ip, instance_id))
+                self.conn.associate_address(instance_id, new_ip)
                 msg = _(u'Successfully associated the IP to the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
@@ -239,10 +234,8 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if self.disassociate_ip_form.validate():
             with boto_error_handler(self.request, self.location):
                 ip_address = self.request.params.get('ip_address')
-                ip_addresses = self.conn.get_all_addresses(addresses=[ip_address])
-                elastic_ip = ip_addresses[0] if ip_addresses else None
-                if elastic_ip:
-                    disassociated = elastic_ip.disassociate()
+                self.log_request(_(u"Disassociating IP {0}").format(ip_address))
+                self.conn.disassociate_address(ip_address)
                 msg = _(u'Successfully disassociated the IP from the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)

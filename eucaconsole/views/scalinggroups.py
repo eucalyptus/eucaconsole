@@ -91,10 +91,8 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
                 conn = self.get_connection(conn_type='autoscale')
                 scaling_group = self.get_scaling_group_by_name(name)
                 # Need to shut down instances prior to scaling group deletion
-                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 scaling_group.shutdown_instances()
                 self.wait_for_instances_to_shutdown(scaling_group)
-                time.sleep(3)
                 conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
                 msg = '{0} {1}'.format(prefix, name)
@@ -239,11 +237,9 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             name = self.request.params.get('name')
             with boto_error_handler(self.request, location):
                 # Need to shut down instances prior to scaling group deletion
-                #TODO: in "this" case, we need to replace sleeps with polling loop to check state.
                 self.log_request(_(u"Terminating scaling group {0} instances").format(name))
                 self.scaling_group.shutdown_instances()
                 self.wait_for_instances_to_shutdown(self.scaling_group)
-                time.sleep(3)
                 self.log_request(_(u"Deleting scaling group {0}").format(name))
                 self.autoscale_conn.delete_auto_scaling_group(name)
                 prefix = _(u'Successfully deleted scaling group')
