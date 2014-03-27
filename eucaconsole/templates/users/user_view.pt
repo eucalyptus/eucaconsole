@@ -7,7 +7,9 @@
 </div>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl"
+            ng-init="initController('${request.route_path('user_disable', name=user.user_name)}',
+                                    '${request.route_path('users')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
@@ -30,6 +32,9 @@
                 <div class="content active panel has-actions" id="general-tab">
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                         <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                            </li>
                             <li>
                                 <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
                                     Delete user
@@ -149,6 +154,9 @@
                             <span i18n:translate="">Actions</span>
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                            </li>
                             <li>
                                 <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
                                     Delete user
@@ -325,6 +333,9 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
+                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                            </li>
+                            <li>
                                 <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
                                     Delete user
                                 </a>
@@ -358,6 +369,25 @@
             <!--! Help goes here -->
         </div>
         <div id="user-dialogs">
+            <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Disable user</h3>
+                <p>
+                    <span i18n:translate="">Disabling a user deletes their password and creates an IAM access "deny all actions" policy that prevents them from executing any actions against the cloud. The user's other information, including active access keys, is maintained until you either make the user active again or delete them.</span>
+                </p>
+                <p>
+                    <span i18n:translate="">Are you sure you want to disable user <strong>{{ user_name }}</strong></span>?
+                </p>
+                <form id="disable-form" ng-submit="disableUser($event)">
+                    ${structure:disable_form['csrf_token']}
+                    <div>&nbsp;</div>
+                    <div class="row">
+                        <div>
+                            <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
+                        </div>
+                    </div>
+                </form>
+                <a href="#" class="close-reveal-modal">&#215;</a>
+            </div>
             <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Delete user</h3>
                 <p>
