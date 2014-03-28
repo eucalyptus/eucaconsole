@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ImagePage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -102,11 +106,11 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th><label i18n:translate="">Device mapping</label></th>
-                                            <th><label i18n:translate="">Snapshot</label></th>
-                                            <th><label i18n:translate="">Size (GB)</label></th>
-                                            <th><label i18n:translate="">Delete on termination?</label></th>
-                                            <th><label i18n:translate="">Ephemeral name</label></th>
+                                            <th i18n:translate="">Device mapping</th>
+                                            <th i18n:translate="">Snapshot</th>
+                                            <th i18n:translate="">Size (GB)</th>
+                                            <th i18n:translate="">Delete on termination?</th>
+                                            <th i18n:translate="">Ephemeral name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
