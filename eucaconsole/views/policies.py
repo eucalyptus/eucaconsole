@@ -9,7 +9,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..constants import policies, permissions
+from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
 from ..models import Notification
@@ -90,6 +90,7 @@ class IAMPolicyWizardView(BaseView):
             'cloudType': self.cloud_type,
             'actionsList': self.get_all_actions(),
             'languageCode': self.get_language_code(),
+            'awsRegions': AWS_REGIONS,
         }
 
     def get_instance_choices(self):

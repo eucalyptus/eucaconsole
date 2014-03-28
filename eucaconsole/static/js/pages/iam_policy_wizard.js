@@ -26,14 +26,55 @@ angular.module('IAMPolicyWizard', [])
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
+            $scope.awsRegions = options['awsRegions'];
             $scope.initSelectedTab();
+            $scope.initChoices();
             $scope.initCodeMirror();
             $scope.handlePolicyFileUpload();
+            $scope.setupListeners();
             if ($scope.cloudType === 'euca') {
                 $scope.initChosenSelectors();
                 $scope.addResourceTypeListener();
                 $scope.initDateTimePickers();
             }
+        };
+        $scope.initChoices = function () {
+            $scope.imageTypeChoices = ['emi', 'eki', 'eri'];
+            if ($scope.cloudType === 'aws') {
+                $scope.imageTypeChoices = ['ami', 'aki', 'ari'];
+            }
+            $scope.rootDeviceTypeChoices = ['ebs', 'instance-store'];
+            $scope.tenancyChoices = ['default', 'dedicated'];
+            $scope.volumeTypeChoices = ['standard', 'io1'];
+            $scope.cannedAclChoices = [
+                'private', 'public-read', 'public-read-write', 'authenticated-read', 'bucket-owner-read',
+                'bucket-owner-full-control', 'log-delivery-write'
+            ];
+        };
+        $scope.setupListeners = function () {
+            $(document).ready(function() {
+                $scope.initToggleAdvancedListener();
+                $scope.initSelectActionListener();
+            });
+        };
+        $scope.initToggleAdvancedListener = function () {
+            $scope.policyGenerator.on('click', '.advanced-button', function () {
+                $(this).closest('tr').find('.advanced').toggleClass('hide');
+            });
+        };
+        $scope.initSelectActionListener = function () {
+            // Handle Allow/Deny selection for a given action
+            $scope.policyGenerator.on('click', '.allow-deny-action', function () {
+                var tgt = $(this).find('i'),
+                    actionRow = tgt.closest('tr');
+                tgt.toggleClass('selected');
+                if (tgt.hasClass('fi-check')) {
+                    actionRow.find('.fi-x').removeClass('selected');
+                } else {
+                    actionRow.find('.fi-check').removeClass('selected');
+                }
+                $scope.updatePolicy();
+            });
         };
         $scope.initSelectedTab = function () {
             var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
@@ -173,19 +214,6 @@ angular.module('IAMPolicyWizard', [])
             $scope.policyText = formattedResults;
             $scope.codeEditor.setValue(formattedResults);
         };
-        // Handle Allow/Deny selection for a given action
-        $scope.selectAction = function ($event) {
-            var tgt = $($event.target),
-                actionRow = tgt.closest('tr');
-            $event.preventDefault();
-            tgt.toggleClass('selected');
-            if (tgt.hasClass('fi-check')) {
-                actionRow.find('.fi-x').removeClass('selected');
-            } else {
-                actionRow.find('.fi-check').removeClass('selected');
-            }
-            $scope.updatePolicy();
-        };
         // Handle Allow/Deny selection for a given namespace (e.g. Allow all EC2 actions)
         $scope.selectAll = function ($event) {
             $event.preventDefault();
@@ -198,9 +226,6 @@ angular.module('IAMPolicyWizard', [])
                 actionRow.find('.fi-check').removeClass('selected');
             }
             $scope.updatePolicy();
-        };
-        $scope.toggleAdvanced = function ($event) {
-            $($event.target).closest('tr').find('.advanced').toggleClass('hide');
         };
         $scope.addResource = function (action, $event) {
             var resourceBtn = $($event.target),
@@ -302,9 +327,12 @@ angular.module('IAMPolicyWizard', [])
         $scope.getConditionType = function (conditionKey) {
             /* Given a condition key, return a condition type (e.g. 'DATE' for Date Conditions)
                AWS condition types documented at
-               http://docs.aws.amazon.com/IAM/latest/UserGuide/AccessPolicyLanguage_ElementDescriptions.html
+                 http://docs.aws.amazon.com/IAM/latest/UserGuide/AccessPolicyLanguage_ElementDescriptions.html
                EC2 condition types documented at
-               http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html#ec2-supported-iam-actions-resources*/
+                 http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html#ec2-supported-iam-actions-resources
+               S3 condition types documented at
+                 http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingIAMPolicies.html
+            */
             conditionKey = conditionKey || '';
             if (!conditionKey) {
                 return '';
@@ -315,6 +343,8 @@ angular.module('IAMPolicyWizard', [])
             ];
             var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
+
+            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId', 's3:LocationConstraint', 's3:prefix', 's3:delimiter'];
 
             // AWS conditions
             if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }
@@ -328,6 +358,9 @@ angular.module('IAMPolicyWizard', [])
             if (EC2_STRING_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
             if (EC2_ARN_KEYS.indexOf(conditionKey) !== -1) { return 'ARN'; }
             if (EC2_NUMERIC_KEYS.indexOf(conditionKey) !== -1) { return 'NUMERIC'; }
+
+            // S3-specific conditions
+            if (S3_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
 
             return '';
         };
