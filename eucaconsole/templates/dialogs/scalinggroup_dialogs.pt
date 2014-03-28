@@ -27,7 +27,7 @@
             <div id="dialog-submit-button">
                 <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
             </div>
-            <div id="dialog-progress-display" class="hidden">
+            <div id="dialog-progress-display" class="hide">
                 <span i18n:translate="">Delete in progress </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
