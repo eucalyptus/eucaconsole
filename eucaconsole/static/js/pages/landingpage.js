@@ -112,6 +112,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $(document).on('closed', '[data-reveal]', function () {
                 $('#search-filter').focus();
             });
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
