@@ -89,7 +89,7 @@
                     ng-click="showProgress=true">Yes, Delete</button>
             </div>
             <div ng-show="showProgress">
-                <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
