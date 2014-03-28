@@ -1,9 +1,5 @@
 <metal:block use-macro="main_template">
 
-<head metal:fill-slot="head_css">
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
-</head>
-
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ImagePage">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">

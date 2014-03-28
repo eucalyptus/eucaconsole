@@ -1575,6 +1575,11 @@ textarea.hidden.debug { display: block; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
+table.table { border: none; }
+table.table thead tr { background-color: #8dc943; }
+table.table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; text-transform: uppercase; }
+table.table thead tr th.actions { text-align: right; }
+table.table tr { border-bottom: 1px solid #ddd; }
 table.table tr td { vertical-align: top; }
 
 /* ----------------------------------------- Footer
