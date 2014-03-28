@@ -168,3 +168,23 @@ $tooltip-padding: rem-calc(5);
     font-style: normal;
     padding-bottom: 4px;
 }
+
+@mixin table-styles-mixin {
+    border: none;
+    thead tr {
+        background-color: $euca-green;
+        th {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            vertical-align: top;
+            text-transform: uppercase;
+            &.actions {
+                text-align: right;
+            }
+        }
+    }
+    tr {
+        border-bottom: 1px solid #ddd;
+    }
+}
+

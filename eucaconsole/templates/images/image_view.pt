@@ -102,11 +102,11 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th><label i18n:translate="">Device mapping</label></th>
-                                            <th><label i18n:translate="">Snapshot</label></th>
-                                            <th><label i18n:translate="">Size (GB)</label></th>
-                                            <th><label i18n:translate="">Delete on termination?</label></th>
-                                            <th><label i18n:translate="">Ephemeral name</label></th>
+                                            <th i18n:translate="">Device mapping</th>
+                                            <th i18n:translate="">Snapshot</th>
+                                            <th i18n:translate="">Size (GB)</th>
+                                            <th i18n:translate="">Delete on termination?</th>
+                                            <th i18n:translate="">Ephemeral name</th>
                                         </tr>
                                     </thead>
                                     <tbody>

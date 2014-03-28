@@ -49,9 +49,11 @@
 
 .gridwrapper .table { border: none; width: 100%; }
 .gridwrapper .table thead tr { background-color: #8dc943; }
-.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; text-transform: uppercase; white-space: nowrap; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; text-transform: uppercase; }
 .gridwrapper .table thead tr th.actions { text-align: right; }
-.gridwrapper .table tr { position: relative; width: 100%; border-bottom: 1px solid #ddd; }
+.gridwrapper .table tr { border-bottom: 1px solid #ddd; }
+.gridwrapper .table th { white-space: nowrap; }
+.gridwrapper .table tr { position: relative; width: 100%; }
 .gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
 .gridwrapper .table tr td.status { text-transform: capitalize; }
 .gridwrapper .table tr td.status .label { color: black; }

@@ -219,24 +219,14 @@ $dropdown-border-color: $euca-green;
 
 // Table view
 .gridwrapper .table {
-    border: none;
+    @include table-styles-mixin;
     width: $gridwrapper-table-width;
-    thead tr {
-        background-color: $euca-green;
-        th {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            text-transform: uppercase;
-            white-space: nowrap;
-            &.actions {
-                text-align: right;
-            }
-        }
+    th {
+        white-space: nowrap;
     }
     tr {
         position: relative;
         width: $gridwrapper-table-width;
-        border-bottom: 1px solid #ddd;
         td {
             position: relative;
             padding: 8px 4px 8px 6px;

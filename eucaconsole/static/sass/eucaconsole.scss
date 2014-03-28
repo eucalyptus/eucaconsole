@@ -816,6 +816,7 @@ textarea.hidden {
    Tables
 ----------------------------------------- */
 table.table {
+    @include table-styles-mixin;
     tr td {
         vertical-align: top;
     }
