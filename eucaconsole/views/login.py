@@ -17,7 +17,7 @@ from pyramid.view import view_config, forbidden_view_config
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
-
+from ..constants import AWS_REGIONS
 
 @forbidden_view_config()
 def redirect_to_login_page(request):
@@ -126,7 +126,8 @@ class LoginView(BaseView):
                 session['session_token'] = creds.session_token
                 session['access_id'] = creds.access_key
                 session['secret_key'] = creds.secret_key
-                session['region'] = aws_region if aws_region else default_region
+                last_visited_aws_region = [reg for reg in AWS_REGIONS if reg.get('name') == aws_region]
+                session['region'] = aws_region if last_visited_aws_region else default_region
                 session['username_label'] = '{user}...@AWS'.format(user=creds.access_key[:8])
                 # Save EC2 Connection object in cache
                 ConnectionManager.aws_connection(
