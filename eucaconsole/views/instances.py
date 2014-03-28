@@ -810,13 +810,15 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+            if security_group.vpc_id == None:
+                rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
 
     def get_securitygroups_id_map(self):
         map_dict = {}
         for security_group in self.securitygroups:
-            map_dict[security_group.name] = security_group.id
+            if security_group.vpc_id == None:
+                map_dict[security_group.name] = security_group.id
         return map_dict
 
 
