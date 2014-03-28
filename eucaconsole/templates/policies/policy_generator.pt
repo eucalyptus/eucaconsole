@@ -245,6 +245,10 @@
                                                             tal:condition="action in ['PutObject', 'PutObjectAcl', 'PutObjectVersionAcl', 'CreateBucket', 'PutBucketAcl']">
                                                         Canned ACL (x-amz-acl)
                                                     </option>
+                                                    <option value="s3:VersionId" i18n:translate=""
+                                                            tal:condition="action in ['GetObjectVersion', 'GetObjectVersionAcl', 'PutObjectVersionAcl', 'DeleteObjectVersion']">
+                                                        Version ID
+                                                    </option>
                                                 </optgroup>
                                                 <!--! Generic AWS condition keys -->
                                                 <optgroup label="AWS Conditions" tal:omit-tag="">
@@ -409,6 +413,12 @@
                                         <!--! Input field for date/time operators -->
                                         <input type="text" class="condition-value datetimepicker"
                                                ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'DATE'" />
+                                        <!--! Input field for IP operations -->
+                                        <input type="text" class="condition-value"
+                                               ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'IP'" />
+                                        <!--! Input field for s3 non-select string values -->
+                                        <input type="text" class="condition-value"
+                                               ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1 &amp;&amp; ${cond_key} !== 's3:x-amz-acl'" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">

@@ -326,9 +326,12 @@ angular.module('IAMPolicyWizard', [])
         $scope.getConditionType = function (conditionKey) {
             /* Given a condition key, return a condition type (e.g. 'DATE' for Date Conditions)
                AWS condition types documented at
-               http://docs.aws.amazon.com/IAM/latest/UserGuide/AccessPolicyLanguage_ElementDescriptions.html
+                 http://docs.aws.amazon.com/IAM/latest/UserGuide/AccessPolicyLanguage_ElementDescriptions.html
                EC2 condition types documented at
-               http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html#ec2-supported-iam-actions-resources*/
+                 http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-policies-for-amazon-ec2.html#ec2-supported-iam-actions-resources
+               S3 condition types documented at
+                 http://docs.aws.amazon.com/AmazonS3/latest/dev/UsingIAMPolicies.html
+            */
             conditionKey = conditionKey || '';
             if (!conditionKey) {
                 return '';
@@ -339,6 +342,8 @@ angular.module('IAMPolicyWizard', [])
             ];
             var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
+
+            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId'];
 
             // AWS conditions
             if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }
@@ -354,7 +359,7 @@ angular.module('IAMPolicyWizard', [])
             if (EC2_NUMERIC_KEYS.indexOf(conditionKey) !== -1) { return 'NUMERIC'; }
 
             // S3-specific conditions
-            if (['s3:x-amz-acl'].indexOf(conditionKey) !== -1) { return 'STRING'; }
+            if (S3_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
 
             return '';
         };
