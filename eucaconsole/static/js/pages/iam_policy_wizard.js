@@ -26,6 +26,7 @@ angular.module('IAMPolicyWizard', [])
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
+            $scope.awsRegions = options['awsRegions'];
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -343,7 +344,7 @@ angular.module('IAMPolicyWizard', [])
             var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
 
-            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId'];
+            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId', 's3:LocationConstraint'];
 
             // AWS conditions
             if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }

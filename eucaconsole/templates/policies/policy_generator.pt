@@ -249,6 +249,10 @@
                                                             tal:condition="action in ['GetObjectVersion', 'GetObjectVersionAcl', 'PutObjectVersionAcl', 'DeleteObjectVersion']">
                                                         Version ID
                                                     </option>
+                                                    <option value="s3:LocationConstraint" i18n:translate=""
+                                                            tal:condition="action in ['CreateBucket']">
+                                                        Restrict to region
+                                                    </option>
                                                 </optgroup>
                                                 <!--! Generic AWS condition keys -->
                                                 <optgroup label="AWS Conditions" tal:omit-tag="">
@@ -392,10 +396,17 @@
                                             </select>
                                             <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
-                                        <!--! CannedACL (x-amz-acl) choices -->
+                                        <!--! S3 CannedACL choices -->
                                         <div ng-if="${cond_key} == 's3:x-amz-acl' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in cannedAclChoices" value="{{ choice }}">{{ choice }}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <!--! S3 Location constraint (region) choices -->
+                                        <div ng-if="${cond_key} == 's3:LocationConstraint' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option ng-repeat="choice in awsRegions" value="{{ choice.name }}">{{ choice.label }}</option>
                                             </select>
                                             <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
@@ -418,7 +429,8 @@
                                                ng-show="${cond_operator} &amp;&amp; getConditionType(${cond_key}) == 'IP'" />
                                         <!--! Input field for s3 non-select string values -->
                                         <input type="text" class="condition-value"
-                                               ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1 &amp;&amp; ${cond_key} !== 's3:x-amz-acl'" />
+                                               ng-show="${cond_operator} &amp;&amp; ${cond_key}.indexOf('s3:') !== -1
+                                                        &amp;&amp; ['s3:x-amz-acl', 's3:LocationConstraint'].indexOf(${cond_key}) === -1" />
                                     </div>
                                     <a class="button tiny round" i18n:translate=""
                                        ng-click="addCondition('${action}', $event)">
