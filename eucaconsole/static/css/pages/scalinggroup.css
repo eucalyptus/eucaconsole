@@ -107,6 +107,8 @@
 
 #breadcrumbs .icon-block { display: none; }
 
+.hidden { display: none; }
+
 input[type="number"] { width: 3rem; }
 
 #health_check_period, #default_cooldown, #cooldown { width: 4rem; }

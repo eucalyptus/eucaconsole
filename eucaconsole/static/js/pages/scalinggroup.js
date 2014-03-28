@@ -24,6 +24,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.initController = function () {
             $scope.setInitialValues();
             $scope.initChosenSelectors();
+            $scope.setWatch();
             $scope.setFocus();
         };
         $scope.handleSizeChange = function () {
@@ -34,6 +35,12 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             if ($scope.maxSize < $scope.desiredCapacity) {
                 $scope.maxSize = $scope.desiredCapacity;
             }
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('#dialog-submit-button').css('display', 'none');                
+                $(this).find('#dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
