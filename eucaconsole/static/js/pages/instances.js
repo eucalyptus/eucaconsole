@@ -26,11 +26,16 @@ angular.module('InstancesPage', ['LandingPage'])
             $('#file').on('change', $scope.getPassword);
         };
         $scope.revealModal = function (action, instance) {
-            var modal = $('#' + action + '-instance-modal');
+            var modal = $('#' + action + '-instance-modal'),
+                securityGroups = instance['security_groups'],
+                securityGroupName = 'default';
+            if (securityGroups && securityGroups.length) {
+                securityGroupName = securityGroups[0].name || instance['security_groups'][0]['id'];
+            }
             $scope.instanceID = instance['id'];
             $scope.instanceName = instance['name'];
             $scope.rootDevice = instance['root_device'];
-            $scope.groupName = instance['security_groups'][0].name;
+            $scope.groupName = securityGroupName;
             $scope.keyName = instance['key_name'];
             $scope.publicDNS = instance['public_dns_name'];
             $scope.platform = instance['platform'];
