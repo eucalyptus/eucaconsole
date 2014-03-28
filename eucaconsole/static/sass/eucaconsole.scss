@@ -160,8 +160,17 @@ h1, h2, h3, h4, h5, h6 {
         width: 199px; height: 22px;
         background: url(../img/eucalogo-199x22.png) no-repeat;
     }
+    #selected-region {
+        position: relative;
+        display: inline-block;
+        padding-left: 24px;
+        background: transparent url(../img/aws_favicon.png) no-repeat left 0;
+    }
     #region-dropdown {
         min-width: 12rem;
+        li[data-selected] {
+            display: none;
+        }
     }
     #offcanvas-icon {
         display: none;
@@ -170,16 +179,6 @@ h1, h2, h3, h4, h5, h6 {
             font-size: 1.8rem;
         }
     }
-}
-
-#region-dropdown li[data-selected] {
-    display: none;  // Hide selected region
-}
-
-#region-logo {
-    width: 16px; height: 16px;
-    top: 16px; left: 6px;
-    background: transparent url(../img/aws_favicon.png) no-repeat left 0;
 }
 
 // Nav bar styles
@@ -929,6 +928,28 @@ footer {
     }
     .hide-for-xsmall {
         display: none !important;
+    }
+    #logobar {
+        .dropdown {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #selected-region.dropdown {
+            width: 8rem;
+            position: relative;
+            top: -8px;
+        }
+        #user-dropdown-section .dropdown {
+            position: relative;
+            width: 4rem;
+            margin-right: 1rem;
+            padding-right: 12px;
+            .aws.down-caret {
+                position: absolute;
+                top: 8px; right: 0;
+            }
+        }
     }
 }
 

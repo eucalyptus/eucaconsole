@@ -43,9 +43,8 @@
             <a id="logo" href="${layout.home_url}" title="${layout.site_title}"></a>
             <section tal:condition="request.user.is_authenticated()" id="user-dropdown-section">
                 <a href="#" data-dropdown="user-dropdown" class="small secondary dropdown">
-                    <span class="${'hide-for-xsmall' if layout.cloud_type == 'aws' else ''}">${layout.username_label}</span>
-                    <i class="fi-torso icon show-for-xsmall" tal:condition="layout.cloud_type == 'aws'"></i>
-                    <span class="down-caret"></span>
+                    <span class="${layout.cloud_type} username-label">${layout.username_label}</span>
+                    <span class="${layout.cloud_type} down-caret"></span>
                 </a>
                 <ul id="user-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li><a href="${layout.help_url}" target="_blank" i18n:translate="">Help</a></li>
@@ -59,12 +58,10 @@
                 </ul>
             </section>
             <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
-                <span id="region-logo">
-                    <a href="#" data-dropdown="region-dropdown" class="small secondary dropdown">
-                        <span>${layout.selected_region_label}</span>
-                        <span class="down-caret"></span>
-                    </a>
-                </span>
+                <a id="selected-region" data-dropdown="region-dropdown" class="small secondary dropdown">
+                    <span>${layout.selected_region_label}</span>
+                    <span class="down-caret"></span>
+                </a>
                 <ul id="region-dropdown" class="f-dropdown" data-dropdown-content="">
                     <li tal:repeat="region layout.aws_regions" tal:attributes="data-selected (region.name == layout.selected_region)">
                         <a href="${request.route_path('region_select')}?region=${region.name}&amp;returnto=${request.url}"

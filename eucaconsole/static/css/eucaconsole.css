@@ -1390,13 +1390,11 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #logobar .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #777777; width: auto; min-width: 8rem; }
 #logobar .f-dropdown.open { width: auto !important; }
 #logobar #logo { display: inline-block; width: 199px; height: 22px; background: url(../img/eucalogo-199x22.png) no-repeat; }
+#logobar #selected-region { position: relative; display: inline-block; padding-left: 24px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 #logobar #region-dropdown { min-width: 12rem; }
+#logobar #region-dropdown li[data-selected] { display: none; }
 #logobar #offcanvas-icon { display: none; margin-right: 12px; }
 #logobar #offcanvas-icon i { font-size: 1.8rem; }
-
-#region-dropdown li[data-selected] { display: none; }
-
-#region-logo { width: 16px; height: 16px; top: 16px; left: 6px; background: transparent url(../img/aws_favicon.png) no-repeat left 0; }
 
 #navbar { border-top: 1px solid black; border-bottom: 1px solid black; }
 #navbar .top-bar-section ul li > a { font-family: Oswald, Helvetica, Arial, sans-serif; font-size: 1.2rem; }
@@ -1622,7 +1620,11 @@ footer .copyright { font-size: 0.9em; }
 ----------------------------------------- */
 /* Extra small screen (< 481px) */
 @media screen and (max-width: 480px) { .show-for-xsmall { display: inline-block !important; }
-  .hide-for-xsmall { display: none !important; } }
+  .hide-for-xsmall { display: none !important; }
+  #logobar .dropdown { display: inline-block; overflow: hidden; text-overflow: ellipsis; }
+  #logobar #selected-region.dropdown { width: 8rem; position: relative; top: -8px; }
+  #logobar #user-dropdown-section .dropdown { position: relative; width: 4rem; margin-right: 1rem; padding-right: 12px; }
+  #logobar #user-dropdown-section .dropdown .aws.down-caret { position: absolute; top: 8px; right: 0; } }
 @media screen and (max-width: 640px) { #logo { width: 20px !important; } }
 @media screen and (max-width: 920px) { #logobar { border-bottom: 1px solid black; margin-top: 8px; }
   #logobar .dropdown { position: relative; top: 4px; }
