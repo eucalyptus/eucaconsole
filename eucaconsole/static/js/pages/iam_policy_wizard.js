@@ -45,6 +45,10 @@ angular.module('IAMPolicyWizard', [])
             $scope.rootDeviceTypeChoices = ['ebs', 'instance-store'];
             $scope.tenancyChoices = ['default', 'dedicated'];
             $scope.volumeTypeChoices = ['standard', 'io1'];
+            $scope.cannedAclChoices = [
+                'private', 'public-read', 'public-read-write', 'authenticated-read', 'bucket-owner-read',
+                'bucket-owner-full-control', 'log-delivery-write'
+            ];
         };
         $scope.setupListeners = function () {
             $(document).ready(function() {
@@ -348,6 +352,9 @@ angular.module('IAMPolicyWizard', [])
             if (EC2_STRING_KEYS.indexOf(conditionKey) !== -1) { return 'STRING'; }
             if (EC2_ARN_KEYS.indexOf(conditionKey) !== -1) { return 'ARN'; }
             if (EC2_NUMERIC_KEYS.indexOf(conditionKey) !== -1) { return 'NUMERIC'; }
+
+            // S3-specific conditions
+            if (['s3:x-amz-acl'].indexOf(conditionKey) !== -1) { return 'STRING'; }
 
             return '';
         };

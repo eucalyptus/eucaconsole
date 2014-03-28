@@ -18,7 +18,7 @@
 #policy-preview h6.title { font-weight: bold; color: #00415e; margin-bottom: 1rem; }
 
 #policy-generator { border-color: #cccccc; border-left: none; border-right: none; width: 100%; }
-#policy-generator tr.namespace { border-top: 1px solid #cccccc; }
+#policy-generator tr.namespace { border-top: 1px solid #cccccc; background-color: white; }
 #policy-generator tr.namespace td { font-size: 1rem; }
 #policy-generator th.allow, #policy-generator th.deny { text-transform: uppercase; width: 40px; }
 #policy-generator td { font-size: 0.9rem; line-height: 1rem; }

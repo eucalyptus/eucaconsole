@@ -179,74 +179,83 @@
                                             <select class="condition-keys" ng-model="${cond_key}"
                                                     ng-change="setOperators('${cond_key}')">
                                                 <option value="" i18n:translate="">Select key...</option>
+                                                <!--! EC2-specific condition keys -->
                                                 <optgroup label="EC2 Conditions" tal:condition="namespace == 'ec2'" tal:omit-tag="">
-                                                    <option value="ec2:AvailabilityZone"
+                                                    <option value="ec2:AvailabilityZone" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Availability zone
                                                     </option>
-                                                    <option value="ec2:EbsOptimized"
+                                                    <option value="ec2:EbsOptimized" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         EBS optimized
                                                     </option>
-                                                    <option value="ec2:ImageType"
+                                                    <option value="ec2:ImageType" i18n:translate=""
                                                             tal:condition="action == 'RunInstances'">
                                                         Image type
                                                     </option>
-                                                    <option value="ec2:InstanceProfile"
+                                                    <option value="ec2:InstanceProfile" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Instance profile
                                                     </option>
-                                                    <option value="ec2:InstanceType"
+                                                    <option value="ec2:InstanceType" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Instance type
                                                     </option>
-                                                    <option value="ec2:ParentSnapshot"
+                                                    <option value="ec2:ParentSnapshot" i18n:translate=""
                                                             tal:condition="'Volume' in action">
                                                         Parent snapshot
                                                     </option>
-                                                    <option value="ec2:ParentVolume"
+                                                    <option value="ec2:ParentVolume" i18n:translate=""
                                                             tal:condition="action == 'RunInstances'">
                                                         Parent volume
                                                     </option>
-                                                    <option value="ec2:PlacementGroup"
+                                                    <option value="ec2:PlacementGroup" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Placement group
                                                     </option>
-                                                    <option value="ec2:RootDeviceType"
+                                                    <option value="ec2:RootDeviceType" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Root device type
                                                     </option>
-                                                    <option value="ec2:Tenancy"
+                                                    <option value="ec2:Tenancy" i18n:translate=""
                                                             tal:condition="'Instance' in action or 'Volume' in action">
                                                         Tenancy
                                                     </option>
                                                     <!--! ec2:TargetImage is Eucalyptus-specific -->
-                                                    <option value="ec2:TargetImage"
+                                                    <option value="ec2:TargetImage" i18n:translate=""
                                                             tal:condition="layout.cloud_type == 'euca' and 'Image' in action">
                                                         Target image
                                                     </option>
-                                                    <option value="ec2:VolumeIops"
+                                                    <option value="ec2:VolumeIops" i18n:translate=""
                                                             tal:condition="'Volume' in action or action == 'RunInstances'">
                                                         Volume IOPS
                                                     </option>
-                                                    <option value="ec2:VolumeSize"
+                                                    <option value="ec2:VolumeSize" i18n:translate=""
                                                             tal:condition="'Volume' in action or action == 'RunInstances'">
                                                         Volume size
                                                     </option>
-                                                    <option value="ec2:VolumeType"
+                                                    <option value="ec2:VolumeType" i18n:translate=""
                                                             tal:condition="'Volume' in action or action == 'RunInstances'">
                                                         Volume type
                                                     </option>
                                                 </optgroup>
+                                                <!--! S3-specific condition keys -->
+                                                <optgroup label="S3 Conditions" tal:condition="namespace == 's3'" tal:omit-tag="">
+                                                    <option value="s3:x-amz-acl" i18n:translate=""
+                                                            tal:condition="action in ['PutObject', 'PutObjectAcl', 'PutObjectVersionAcl', 'CreateBucket', 'PutBucketAcl']">
+                                                        Canned ACL (x-amz-acl)
+                                                    </option>
+                                                </optgroup>
+                                                <!--! Generic AWS condition keys -->
                                                 <optgroup label="AWS Conditions" tal:omit-tag="">
-                                                    <option value="aws:CurrentTime">Current time</option>
-                                                    <option value="aws:EpochTime">Epoch time</option>
-                                                    <option value="aws:SecureTransport">Secure transport</option>
-                                                    <option value="aws:SourceArn">Source ARN</option>
-                                                    <option value="aws:SourceIp">Source IP</option>
-                                                    <option value="aws:UserAgent">User agent</option>
-                                                    <option value="aws:userid">User ID</option>
-                                                    <option value="aws:username">Username</option>
+                                                    <option value="aws:CurrentTime" i18n:translate="">Current time</option>
+                                                    <option value="aws:EpochTime" i18n:translate="">Epoch time</option>
+                                                    <option value="aws:SecureTransport" i18n:translate="">Secure transport</option>
+                                                    <option value="aws:SourceArn" i18n:translate="">Source ARN</option>
+                                                    <option value="aws:SourceIp" i18n:translate="">Source IP</option>
+                                                    <option value="aws:UserAgent" i18n:translate="">User agent</option>
+                                                    <option value="aws:userid" i18n:translate="">User ID</option>
+                                                    <option value="aws:username" i18n:translate="">Username</option>
                                                 </optgroup>
                                             </select>
                                         </div>
@@ -376,6 +385,13 @@
                                         <div ng-if="${cond_key} == 'ec2:VolumeType' &amp;&amp; ${cond_operator}">
                                             <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
                                                 <option ng-repeat="choice in volumeTypechoices" value="{{ choice }}">{{ choice }}</option>
+                                            </select>
+                                            <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
+                                        </div>
+                                        <!--! CannedACL (x-amz-acl) choices -->
+                                        <div ng-if="${cond_key} == 's3:x-amz-acl' &amp;&amp; ${cond_operator}">
+                                            <select class="condition-value chosen" ng-if="${cond_operator}.indexOf('Equals') !== -1">
+                                                <option ng-repeat="choice in cannedAclChoices" value="{{ choice }}">{{ choice }}</option>
                                             </select>
                                             <input type="text" class="condition-value" ng-if="${cond_operator}.indexOf('Equals') === -1" />
                                         </div>
