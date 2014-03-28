@@ -929,6 +929,28 @@ footer {
     .hide-for-xsmall {
         display: none !important;
     }
+    #logobar {
+        .dropdown {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #selected-region.dropdown {
+            width: 8rem;
+            position: relative;
+            top: -8px;
+        }
+        #user-dropdown-section .dropdown {
+            position: relative;
+            width: 4rem;
+            margin-right: 1rem;
+            padding-right: 12px;
+            .aws.down-caret {
+                position: absolute;
+                top: 8px; right: 0;
+            }
+        }
+    }
 }
 
 @media screen and (max-width: 640px) {
