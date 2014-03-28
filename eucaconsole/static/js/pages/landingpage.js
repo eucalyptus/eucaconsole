@@ -113,8 +113,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 $('#search-filter').focus();
             });
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('#dialog-submit-button').css('display', 'none');                
-                $(this).find('#dialog-progress-display').css('display', 'block');                
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
         $scope.setDropdownMenusListener = function () {

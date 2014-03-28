@@ -89,8 +89,8 @@ angular.module('VolumePage', ['TagEditor'])
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('#dialog-submit-button').css('display', 'none');                
-                $(this).find('#dialog-progress-display').css('display', 'block');                
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
         $scope.setFocus = function () {
