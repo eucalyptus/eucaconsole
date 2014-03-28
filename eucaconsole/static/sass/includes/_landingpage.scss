@@ -16,6 +16,9 @@ $gridwrapper-table-width: 100%;
 
 $dropdown-border-color: $euca-green;
 
+.hidden {
+    display: none;
+}
 
 .columns.datagrid {
     padding-left: 0;

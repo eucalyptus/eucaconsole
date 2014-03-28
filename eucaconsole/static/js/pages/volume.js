@@ -25,6 +25,7 @@ angular.module('VolumePage', ['TagEditor'])
             if (jsonEndpoint) {
                 $scope.getVolumeState();
             }
+            $scope.setWatch();
             $scope.setFocus();
             $scope.instanceName = instance_name;
         };
@@ -84,6 +85,12 @@ angular.module('VolumePage', ['TagEditor'])
                 if (results) {
                     $('input#device').val(results);
                 }
+            });
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('#dialog-submit-button').css('display', 'none');                
+                $(this).find('#dialog-progress-display').css('display', 'block');                
             });
         };
         $scope.setFocus = function () {

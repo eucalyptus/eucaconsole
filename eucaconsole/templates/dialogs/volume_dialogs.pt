@@ -15,10 +15,11 @@
             </div>
             ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
-            <div class="row">
-                <div>
-                    <input type="submit" class="button expand" value="Attach Volume" i18n:attributes="value" />
-                </div>
+            <div id="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Attach Volume</button>
+            </div>
+            <div id="dialog-progress-display" class="hidden">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
@@ -50,9 +51,11 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            <div>&nbsp;</div>
-            <div class="row">
-                <input type="submit" class="button expand" value="Yes, Detach Volume" i18n:attributes="value" />
+            <div id="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Detach Volume</button>
+            </div>
+            <div id="dialog-progress-display" class="hidden">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
@@ -84,11 +87,10 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
-            <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                <button type="submit" class="button expand" i18n:translate=""
-                    ng-click="showProgress=true">Yes, Delete</button>
+            <div id="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
             </div>
-            <div ng-show="showProgress">
+            <div id="dialog-progress-display" class="hidden">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
