@@ -243,15 +243,23 @@
                                                 <optgroup label="S3 Conditions" tal:condition="namespace == 's3'" tal:omit-tag="">
                                                     <option value="s3:x-amz-acl" i18n:translate=""
                                                             tal:condition="action in ['PutObject', 'PutObjectAcl', 'PutObjectVersionAcl', 'CreateBucket', 'PutBucketAcl']">
-                                                        Canned ACL (x-amz-acl)
+                                                        Canned ACL (s3:x-amz-acl)
                                                     </option>
                                                     <option value="s3:VersionId" i18n:translate=""
                                                             tal:condition="action in ['GetObjectVersion', 'GetObjectVersionAcl', 'PutObjectVersionAcl', 'DeleteObjectVersion']">
-                                                        Version ID
+                                                        Version ID (s3:VersionId)
                                                     </option>
                                                     <option value="s3:LocationConstraint" i18n:translate=""
                                                             tal:condition="action in ['CreateBucket']">
-                                                        Restrict to region
+                                                        Restrict to region (s3:LocationPrefix)
+                                                    </option>
+                                                    <option value="s3:prefix" i18n:translate=""
+                                                            tal:condition="action in ['ListBucket', 'ListBucketVersions']">
+                                                        Prefix (s3:prefix)
+                                                    </option>
+                                                    <option value="s3:delimiter" i18n:translate=""
+                                                            tal:condition="action in ['ListBucket', 'ListBucketVersions']">
+                                                        Delimiter (s3:delimiter)
                                                     </option>
                                                 </optgroup>
                                                 <!--! Generic AWS condition keys -->
@@ -284,7 +292,7 @@
                                                     <option value="StringLike">StringLike</option>
                                                     <option value="StringNotLike">StringNotLike</option>
                                                 </optgroup>
-                                                <option value="Null">Null</option>
+                                                <option value="Null" tal:condition="namespace == 'ec2'">Null</option>
                                                 <optgroup label="Numeric Conditions" ng-if="selectedOperatorType == 'NUMERIC'">
                                                     <option value="NumericEquals">NumericEquals</option>
                                                     <option value="NumericNotEquals">NumericNotEquals</option>

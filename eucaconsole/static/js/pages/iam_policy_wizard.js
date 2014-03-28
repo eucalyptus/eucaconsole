@@ -344,7 +344,7 @@ angular.module('IAMPolicyWizard', [])
             var EC2_ARN_KEYS = ['ec2:InstanceProfile', 'ec2:ParentSnapshot', 'ec2:ParentVolume', 'ec2:PlacementGroup'];
             var EC2_NUMERIC_KEYS = ['ec2:VolumeIops', 'ec2:VolumeSize'];
 
-            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId', 's3:LocationConstraint'];
+            var S3_KEYS = ['s3:x-amz-acl', 's3:VersionId', 's3:LocationConstraint', 's3:prefix', 's3:delimiter'];
 
             // AWS conditions
             if (conditionKey.indexOf('Arn') !== -1) { return 'ARN'; }
