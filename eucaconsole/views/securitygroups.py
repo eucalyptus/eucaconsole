@@ -105,7 +105,7 @@ class SecurityGroupsJsonView(LandingPageView):
     def securitygroups_json(self):
         securitygroups = []
         for securitygroup in self.filter_items(self.get_items()):
-            if securitygroup.vpc_id == None:
+            if securitygroup.vpc_id is None:
                 securitygroups.append(dict(
                     id=securitygroup.id,
                     description=securitygroup.description,
@@ -113,7 +113,6 @@ class SecurityGroupsJsonView(LandingPageView):
                     owner_id=securitygroup.owner_id,
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
-                    vpc_id=securitygroup.vpc_id,
                 ))
         return dict(results=securitygroups)
 
