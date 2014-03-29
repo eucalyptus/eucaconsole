@@ -7,7 +7,14 @@
 angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
     .controller('SecurityGroupPageCtrl', function ($scope) {
         $scope.initController = function () {
+            $scope.setWatch();
             $scope.setFocus();
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
