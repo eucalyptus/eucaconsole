@@ -102,7 +102,7 @@ class IPAddressesView(LandingPageView):
             public_ip = self.request.params.get('public_ip')
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Releasing ElasticIP {0}").format(public_ip))
-                self.conn.associate_address(public_ip)
+                self.conn.release_address(public_ip)
                 template = _(u'Successfully released {ip} to the cloud')
                 msg = template.format(ip=public_ip)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

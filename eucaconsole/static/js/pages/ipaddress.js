@@ -8,10 +8,17 @@ angular.module('ElasticIPPage', [])
     .controller('ElasticIPPageCtrl', function ($scope) {
         $scope.initController = function () {
             $scope.activateWidget();
+            $scope.setWatch();
             $scope.setFocus();
         };
         $scope.activateWidget = function () {
             $('#instance_id').chosen({'width': '80%'});
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
