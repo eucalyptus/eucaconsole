@@ -38,6 +38,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             if (jsonEndpoint) {
                 $scope.getSnapshotState();
             }
+            $scope.setWatch();
             $scope.setFocus();
         };
         $scope.getSnapshotState = function () {
@@ -59,6 +60,12 @@ angular.module('SnapshotPage', ['TagEditor'])
                 if (errorMsg && status === 403) {
                     $('#timed-out-modal').foundation('reveal', 'open');
                 }
+            });
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
         $scope.setFocus = function () {

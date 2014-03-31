@@ -18,15 +18,13 @@
             <div tal:condition="not landingpage" tal:omit-tag="">
                 <input type="hidden" name="name" value="${keypair_name}" ng-non-bindable=""/>
             </div>
-            <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                <button type="submit" class="button expand" i18n:translate=""
-                    ng-click="showProgress=true">Yes, Delete</button>
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Delete</button>
             </div>
-            <div ng-show="showProgress">
-                <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
-</div>
-
+ </div>

@@ -13,10 +13,11 @@
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             ${panel('form_field', field=associate_form.instance_id)}
-            <div class="row">
-                <div>
-                    <input type="submit" class="button expand" value="Associate Address with Instance" i18n:attributes="value" />
-                </div>
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Associate Address with Instance</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
@@ -39,7 +40,12 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
-            <input type="submit" class="button expand" value="Yes, Disassociate Address from Instance" />
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
@@ -59,12 +65,11 @@
             <div tal:condition="landingpage" tal:omit-tag="">
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
-            <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                <button type="submit" class="button expand" i18n:translate=""
-                    ng-click="showProgress=true">Yes, Release Address to Cloud</button>
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
             </div>
-            <div ng-show="showProgress">
-                <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
         <a href="#" class="close-reveal-modal">&#215;</a>
