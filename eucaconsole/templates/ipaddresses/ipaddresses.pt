@@ -95,11 +95,12 @@
                          'error_msg': 'Please enter a whole number greater than zero'};">
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
-                <div class="row">
+                <div class="dialog-submit-button">
                     <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn"
-                            i18n:translate="">
-                        Allocate Addresses From Cloud
-                    </button>
+                        i18n:translate="">Allocate Addresses From Cloud</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a class="close-reveal-modal">&#215;</a>
