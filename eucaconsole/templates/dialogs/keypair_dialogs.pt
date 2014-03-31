@@ -24,3 +24,7 @@
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
+        </form>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>
