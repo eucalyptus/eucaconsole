@@ -23,7 +23,9 @@ $(document).ready(function () {
 
 // user view page includes the User Editor editor
 angular.module('UserView', ['PolicyList'])
-    .controller('UserViewCtrl', function ($scope) {
+    .controller('UserViewCtrl', function ($scope, $http) {
+        $scope.disable_url = '';
+        $scope.allUsersRedirect = '';
         $scope.form = $('#user-update-form');
         $scope.ec2_expanded = false;
         $scope.s3_expanded = false;
@@ -44,6 +46,14 @@ angular.module('UserView', ['PolicyList'])
         };
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
+        };
+        $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
+            $scope.userName = user_name;
+            $scope.disable_url = disable_url;
+            $scope.allUsersRedirect = allRedirect;
+            $('#delete-user-form').attr('action', delete_url);
+            $scope.setFocus();
+            $scope.setDropdownMenusListener();
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
@@ -74,9 +84,26 @@ angular.module('UserView', ['PolicyList'])
                }
             });
         };
-        $scope.initController = function() {
-            $scope.setFocus();
-            $scope.setDropdownMenusListener();
+        $scope.disableUser = function ($event) {
+            $event.preventDefault();
+            var data = "csrf_token="+$('#csrf_token').val();
+            $http({method:'POST', url:$scope.disable_url, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                // could put data back into form, but form already contains changes
+                if (oData.error == undefined) {
+                    Notify.success(oData.message);
+                    window.location = $scope.allUsersRedirect;
+                } else {
+                    Notify.failure(oData.message);
+                }
+              }).
+              error(function (oData, status) {
+                var errorMsg = oData['message'] || '';
+                Notify.failure(errorMsg);
+              });
+            $('#disable-user-modal').foundation('reveal', 'close');
         };
     })
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {

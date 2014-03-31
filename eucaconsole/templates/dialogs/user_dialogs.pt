@@ -1,0 +1,60 @@
+<!--! Modal dialogs for Volumes landing and detail page -->
+<div tal:omit-tag="">
+    <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Disable user</h3>
+        <p>
+            <span i18n:translate="">Disabling a user deletes their password and creates an IAM access "deny all actions" policy that prevents them from executing any actions against the cloud. The user's other information, including active access keys, is maintained until you either make the user active again or delete them.</span>
+        </p>
+        <p>
+            <span i18n:translate="">Are you sure you want to disable user <strong>{{ userName }}</strong></span>?
+        </p>
+        <form id="disable-form" ng-submit="disableUser($event)">
+            ${structure:disable_form['csrf_token']}
+            <div>&nbsp;</div>
+            <div class="row">
+                <div>
+                    <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Enable user</h3>
+        <p>
+            <span i18n:translate="">Enabling a user removes the policy that was in place denying the user access to the cloud. When this user is active, they will be able to execute actions against the cloud.</span>
+        </p>
+        <p>
+            <span i18n:translate="">The user will need a new password only if they access the cloud using the Management Console. If you want to set a specific password rather than let the system generate a random one, you can do that from the user's detail page once they are active.</span>
+        </p>
+        <form id="enable-form" ng-submit="enableUser($event)">
+            ${structure:enable_form['csrf_token']}
+            ${panel('form_field', field=enable_form['random_password'], leftcol_width=4, rightcol_wdth=8, reverse='true')}
+            <div>&nbsp;</div>
+            <div class="row">
+                <div>
+                    <input type="submit" class="button expand" value="Enable User" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
+    <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Delete user</h3>
+        <p>
+            <span i18n:translate="">
+                Deleting a user also deletes all keys, passwords and permissions associated with that user.
+                Are you sure you want to delete user <strong>{{ userName }}</strong></span>?
+        </p>
+        <form method="post" id="delete-user-form" action="">
+            ${structure:delete_form['csrf_token']}
+            <div>&nbsp;</div>
+            <div class="row">
+                <div>
+                    <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
+                </div>
+            </div>
+        </form>
+        <a href="" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>

@@ -6,33 +6,33 @@
 
 angular.module('UsersPage', ['LandingPage'])
     .controller('UsersCtrl', function ($scope, $http) {
-        $scope.user_name = '';
+        $scope.userName = '';
         $scope.groupName = '';
         $scope.user_view_url = '';
         $scope.group_view_url = '';
         $scope.user_summary_url = '';
         $scope.disable_url = '';
         $scope.enable_url = '';
+        $scope.delete_url = '';
         $scope.getFileEndpoint = '';
-        $scope.initPage = function (user_view_url, group_view_url, user_summary_url, disable_url, enable_url, getFileEndpoint) {
+        $scope.initPage = function (user_view_url, group_view_url, user_summary_url, disable_url, enable_url, delete_url, getFileEndpoint) {
             $scope.user_view_url = user_view_url;
             $scope.group_view_url = group_view_url;
             $scope.user_summary_url = user_summary_url;
             $scope.disable_url = disable_url;
             $scope.enable_url = enable_url;
+            $scope.delete_url = delete_url;
             $scope.getFileEndpoint = getFileEndpoint;
         };
-        $scope.revealModal = function (action, user) {
-            var modal = $('#' + action + '-user-modal');
-            $scope.user_name = user['user_name'];
+        $scope.revealDelete = function (user) {
+            var modal = $('#delete-user-modal');
+            $scope.userName = user['user_name'];
             modal.foundation('reveal', 'open');
-            var form = $('#' + action + '-form');
-            var action = form.attr('action').replace("_name_", user['user_name']);
-            form.attr('action', action);
+            $('#delete-user-form').attr('action', $scope.delete_url.replace('_name_', user['user_name']));
         };
         $scope.revealModalXHR = function (action, user) {
             var modal = $('#' + action + '-user-modal');
-            $scope.user_name = user['user_name'];
+            $scope.userName = user['user_name'];
             $scope.user = user
             modal.foundation('reveal', 'open');
         };

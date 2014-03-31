@@ -48,7 +48,7 @@
                 <span i18n:translate="">Are you sure you want to delete the policy <strong>{{ policyName }}</strong></span>?
             </p>
             
-            <form ng-submit="doDelete($event)" id="delete-form">
+            <form ng-submit="doDelete($event)" id="delete-policy-form">
                 <div class="row">
                     <div class="small-4 columns">&nbsp;</div>
                     <div class="small-8 columns field inline">

@@ -217,6 +217,8 @@ class UserView(BaseView):
             change_password_form=self.change_password_form,
             generate_form=self.generate_form,
             delete_form=self.delete_form,
+            disable_form=DisableUserForm(self.request),
+            enable_form=EnableUserForm(self.request),
         )
 
     def get_user(self):
