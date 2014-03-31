@@ -78,6 +78,18 @@ def volume_dialogs(context, request, volume=None, volume_name=None, instance_nam
         ng_attrs=ng_attrs,
     )
 
+@panel_config('user_dialogs', renderer='../templates/dialogs/user_dialogs.pt')
+def user_dialogs(context, request, user=None, user_name=None, landingpage=False,
+                   disable_form=None, enable_form=None, delete_form=None):
+    """Modal dialogs for User landing and detail page."""
+    return dict(
+        user=user,
+        user_name=user_name,
+        landingpage=landingpage,
+        disable_form=disable_form,
+        enable_form=enable_form,
+        delete_form=delete_form,
+    )
 
 @panel_config('securitygroup_dialogs', renderer='../templates/dialogs/securitygroup_dialogs.pt')
 def securitygroup_dialogs(context, request, security_group=None, landingpage=False, delete_form=None):

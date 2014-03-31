@@ -8,8 +8,10 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="UserView" ng-controller="UserViewCtrl"
-            ng-init="initController('${request.route_path('user_disable', name=user.user_name)}',
-                                    '${request.route_path('users')}')">
+            ng-init="initController('${user.user_name}',
+                                    '${request.route_path('user_disable', name=user.user_name)}',
+                                    '${request.route_path('users')}',
+                                    '${request.route_path('user_delete', name=user.user_name)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
@@ -225,7 +227,7 @@
                             <p>
                                 <span i18n:translate="">Are you sure you want to delete this user's password</span>?
                             </p>
-                            <form method="post" id="delete-form" data-abide="" ng-submit="deletePassword($event)">
+                            <form method="post" id="delete-pwd-form" data-abide="" ng-submit="deletePassword($event)">
                                 ${structure:generate_form['csrf_token']}
                                 <div>&nbsp;</div>
                                 <div class="row">
@@ -368,45 +370,7 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <!--! Help goes here -->
         </div>
-        <div id="user-dialogs">
-            <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Disable user</h3>
-                <p>
-                    <span i18n:translate="">Disabling a user deletes their password and creates an IAM access "deny all actions" policy that prevents them from executing any actions against the cloud. The user's other information, including active access keys, is maintained until you either make the user active again or delete them.</span>
-                </p>
-                <p>
-                    <span i18n:translate="">Are you sure you want to disable user <strong>{{ user_name }}</strong></span>?
-                </p>
-                <form id="disable-form" ng-submit="disableUser($event)">
-                    ${structure:disable_form['csrf_token']}
-                    <div>&nbsp;</div>
-                    <div class="row">
-                        <div>
-                            <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
-                        </div>
-                    </div>
-                </form>
-                <a href="#" class="close-reveal-modal">&#215;</a>
-            </div>
-            <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete user</h3>
-                <p>
-                    <span i18n:translate="">
-                        Deleting a user also deletes all keys, passwords and permissions associated with that user.
-                        Are you sure you want to delete user <strong ng-non-bindable="">${user.user_name}</strong></span>?
-                </p>
-                <form method="post" id="delete-form" action="${request.route_path('user_delete', name=user.user_name)}">
-                    ${structure:delete_form['csrf_token']}
-                    <div>&nbsp;</div>
-                    <div class="row">
-                        <div>
-                            <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
-                        </div>
-                    </div>
-                </form>
-                <a href="" class="close-reveal-modal">&#215;</a>
-            </div>
-        </div>
+        ${panel('user_dialogs', delete_form=delete_form, disable_form=disable_form, enable_form=enable_form)}
     </div>
 </div>
 

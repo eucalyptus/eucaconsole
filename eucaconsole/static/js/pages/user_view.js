@@ -47,6 +47,14 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
+        $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
+            $scope.userName = user_name;
+            $scope.disable_url = disable_url;
+            $scope.allUsersRedirect = allRedirect;
+            $('#delete-user-form').attr('action', delete_url);
+            $scope.setFocus();
+            $scope.setDropdownMenusListener();
+        };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
             modals.on('open', function () {
@@ -96,12 +104,6 @@ angular.module('UserView', ['PolicyList'])
                 Notify.failure(errorMsg);
               });
             $('#disable-user-modal').foundation('reveal', 'close');
-        };
-        $scope.initController = function(disable_url, allRedirect) {
-            $scope.disable_url = disable_url;
-            $scope.allUsersRedirect = allRedirect;
-            $scope.setFocus();
-            $scope.setDropdownMenusListener();
         };
     })
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
