@@ -212,6 +212,7 @@ urls = [
     # Groups #####
     Route(name='groups', pattern='/groups'),
     Route(name='groups_json', pattern='/groups/json'),
+    Route(name='groups_delete', pattern='/groups/delete'),
     Route(name='group_create', pattern='/groups/create'),
     Route(name='group_view', pattern='/groups/{name}'),
     Route(name='group_update', pattern='/groups/{name}/update'),
