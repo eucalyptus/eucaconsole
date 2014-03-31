@@ -23,7 +23,7 @@
         <div class="row userentry controls-wrapper">
             <div class="field columns">
                 <input class="userinput name" placeholder="name..." autofocus=""
-                       ng-model="newUserName" ng-keyup="keyListener($event)" />
+                       ng-model="newUserName" ng-keypress="keyListener($event)" />
                 <small class="error" i18n:translate="">Must have at least one user</small>
             </div>
             <div>&nbsp;</div>
