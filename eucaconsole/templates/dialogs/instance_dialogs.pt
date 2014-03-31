@@ -17,10 +17,11 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                <div class="row">
-                    <div>
-                        <input type="submit" class="button expand" value="Yes, Reboot" i18n:attributes="value" />
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Yes, Reboot</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -40,10 +41,11 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                <div class="row">
-                    <div>
-                        <input type="submit" class="button expand" value="Yes, Start Instance" i18n:attributes="value" />
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Yes, Start Instance</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -63,10 +65,11 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                <div class="row">
-                    <div>
-                        <input type="submit" class="button expand" value="Yes, Stop Instance" i18n:attributes="value" />
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Yes, Stop Instance</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -95,14 +98,11 @@
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
-                <div class="row">
-                    <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                        <button type="submit" class="button expand" i18n:translate=""
-                            ng-click="showProgress=true">Yes, Terminate</button>
-                    </div>
-                    <div ng-show="showProgress">
-                        <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Yes, Terminate</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -166,14 +166,11 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
-                <div class="row">
-                    <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                        <button type="submit" class="button expand" i18n:translate=""
-                            ng-click="showProgress=true">Associate Address with Instance</button>
-                    </div>
-                    <div ng-show="showProgress">
-                        <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Associate Address with Instance</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>
@@ -213,14 +210,11 @@
                 <div tal:condition="not landingpage" tal:omit-tag="">
                     <input type="hidden" name="ip_address" value="${instance.ip_address}" ng-non-bindable=""/>
                 </div>
-                <div class="row">
-                    <div ng-model="showProgress" ng-init="showProgress=false" ng-show="!showProgress">
-                        <button type="submit" class="button expand" i18n:translate=""
-                            ng-click="showProgress=true">Yes, Disassociate Address from Instance</button>
-                    </div>
-                    <div ng-show="showProgress">
-                        <span i18n:translate="">Sending request </span><em><span class="dots">&nbsp;</span></em>
-                    </div>
+                <div class="dialog-submit-button">
+                    <button type="submit" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                </div>
+                <div class="dialog-progress-display hide">
+                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <a href="#" class="close-reveal-modal">&#215;</a>

@@ -84,6 +84,10 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.getIPAddressData = function () {
             $http.get($scope.instanceIPAddressEndpoint).success(function(oData) {
