@@ -3,9 +3,13 @@ Pyramid configuration helpers
 
 """
 
+import boto
+import logging
+
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.settings import asbool
 
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
@@ -22,6 +26,8 @@ except ImportError:
 
 
 def get_configurator(settings, enable_auth=True):
+    connection_debug = asbool(settings.get('connection.debug'))
+    boto.set_stream_logger('boto', level=(logging.DEBUG if connection_debug else logging.CRITICAL))
     ensure_session_keys(settings)
     check_types()
     config = Configurator(root_factory=SiteRootFactory, settings=settings)
