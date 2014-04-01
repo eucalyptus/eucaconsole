@@ -73,24 +73,8 @@
                 </td>
             </metal:block>
         </div>
-        <div id="group-dialogs">
-            <div id="delete-group-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">Delete group</h3>
-                <p>
-                    <span i18n:translate="">Deleting a group also deletes all permissions associated with that group. Are you sure you want to delete group <strong>{{ group_name }}</strong></span>?
-                </p>
-                <form method="post" id="delete-form" action="${request.route_path('group_delete', name='_name_')}">
-                    ${structure:delete_form['csrf_token']}
-                    <div>&nbsp;</div>
-                    <div class="row">
-                        <div>
-                            <input type="submit" class="button expand" value="Yes, Delete Group" i18n:attributes="value" />
-                        </div>
-                    </div>
-                </form>
-                <a href="#" class="close-reveal-modal">&#215;</a>
-            </div>
-        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('group_dialogs', delete_form=delete_form, landingpage=True)}
     </div>
 </div>
 
