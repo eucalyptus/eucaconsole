@@ -14,9 +14,12 @@ def generate_keyini(target):
     ini.add_section('general')
     ini.set('general', 'session.validate_key', validate_key)
     ini.set('general', 'session.encrypt_key', encrypt_key)
-    with open(target, 'w') as f:
-        ini.write(f)
-    os.chmod(target, 0o600)
+    old_umask = os.umask(0o177)
+    try:
+        with open(target, 'w') as f:
+            ini.write(f)
+    finally:
+        os.umask(old_umask)
 
     return ini
 
@@ -45,8 +48,7 @@ def main(args):
         print
         return
 
-    generate_keyini(args[0])
-
+    enerate_keyini(args[0])
 
 if __name__ == '__main__':
     main(sys.argv[1:])
