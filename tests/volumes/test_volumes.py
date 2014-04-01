@@ -56,7 +56,9 @@ class VolumeUpdateFormTestCase(BaseFormTestCase):
     """Update Volume form on volume page"""
     form_class = VolumeForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -75,7 +77,9 @@ class VolumeDeleteFormTestCase(BaseFormTestCase):
     """Delete volume form on volume page"""
     form_class = DeleteVolumeForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -86,7 +90,9 @@ class VolumeAttachFormTestCase(BaseFormTestCase):
     """Attach Volume form on volume page"""
     form_class = AttachForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -101,7 +107,9 @@ class VolumeDetachFormTestCase(BaseFormTestCase):
     """Detach Volume form on volume page"""
     form_class = DetachForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -112,7 +120,9 @@ class VolumeCreateSnapshotFormTestCase(BaseFormTestCase):
     """Create snapshot form on volume page"""
     form_class = CreateSnapshotForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -129,7 +139,9 @@ class VolumeDeleteSnapshotFormTestCase(BaseFormTestCase):
     """Delete snapshot form on volume page"""
     form_class = DeleteSnapshotForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
