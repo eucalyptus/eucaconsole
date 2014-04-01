@@ -6,12 +6,14 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
 import logging
+
+from beaker.cache import cache_region
 from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
+
 import boto
 from boto.exception import BotoServerError
 
-from ..vmtypes import VmType
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 
 BLANK_CHOICE = ('', _(u'select...'))
@@ -54,11 +56,20 @@ class ChoicesManager(object):
         zones = zones or []
         if add_blank:
             choices.append(BLANK_CHOICE)
-        if not zones and self.conn is not None:
-            zones = self.conn.get_all_zones()
+        if not zones:
+            zones.extend(self.get_availability_zones())
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
+
+    def get_availability_zones(self):
+        @cache_region('extra_long_term', 'availability_zones')
+        def _get_zones_cache():
+            zones = []
+            if self.conn is not None:
+                zones = self.conn.get_all_zones()
+            return zones;
+        return _get_zones_cache()
 
     def instances(self, instances=None, state=None):
         from ..views import TaggedItemView
@@ -82,18 +93,21 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
-            if self.conn is not None:
-                types = self.conn.get_list('DescribeInstanceTypes', {}, [('item', VmType)], verb='POST')
-                for vmtype in types:
-                    vmtype_str = '{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)'.format(
-                        vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
-                    vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
-                    choices.append(vmtype_tuple)
-            else:
-                choices.append(BLANK_CHOICE)
+            @cache_region('extra_long_term', 'instance_types')
+            def _get_instance_types_cache():
+                choices = []
+                if self.conn is not None:
+                    types = self.conn.get_all_instance_types()
+                    for vmtype in types:
+                        vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
+                            vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                        vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
+                        choices.append(vmtype_tuple)
+                return choices
+            choices.extend(_get_instance_types_cache())
+            return choices
         elif cloud_type == 'aws':
-            choices.extend(AWS_INSTANCE_TYPE_CHOICES)
-        return choices
+            return choices.extend(AWS_INSTANCE_TYPE_CHOICES)
 
     def volumes(self, volumes=None):
         from ..views import TaggedItemView

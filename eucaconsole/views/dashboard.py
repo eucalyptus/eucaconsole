@@ -4,6 +4,7 @@ Pyramid views for Dashboard
 
 """
 from pyramid.view import view_config
+from ..forms import ChoicesManager
 from . import BaseView
 from . import boto_error_handler
 
@@ -18,7 +19,7 @@ class DashboardView(BaseView):
     def dashboard_home(self):
         availability_zones = []
         with boto_error_handler(self.request):
-            availability_zones = self.conn.get_all_zones()
+            availability_zones = ChoicesManager(self.conn).get_availability_zones()
         return dict(
             availability_zones=availability_zones
         )

@@ -13,6 +13,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
+from ..forms import ChoicesManager
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
@@ -220,7 +221,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
             snapshots = self.conn.get_all_snapshots() if self.conn else []
-            zones = self.conn.get_all_zones() if self.conn else []
+            zones = ChoicesManager(self.conn).get_availability_zones()
             instances = self.conn.get_only_instances() if self.conn else []
         self.volume_form = VolumeForm(
             self.request, conn=self.conn, volume=self.volume, snapshots=snapshots,
