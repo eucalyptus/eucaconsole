@@ -204,6 +204,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             policies=self.policies,
+            policies_count=len(self.policies),
             edit_form=self.edit_form,
             delete_form=self.delete_form,
             avail_zone_placeholder_text=_(u'Select one or more availability zones...'),

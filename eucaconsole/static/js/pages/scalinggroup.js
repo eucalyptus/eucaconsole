@@ -21,11 +21,14 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $scope.desiredCapacity = parseInt($('#desired_capacity').val(), 10);
             $scope.maxSize = parseInt($('#max_size').val(), 10);
         };
-        $scope.initController = function () {
+        $scope.initController = function (scalingGroupName, policiesCount) {
+            $scope.scalingGroupName = scalingGroupName;
+            $scope.policiesCount = policiesCount;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
             $scope.setFocus();
+            $scope.revealModal();
         };
         $scope.handleSizeChange = function () {
             // Adjust desired/max based on min size change
@@ -54,13 +57,28 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
+                    var modalLink = modal.find('a').get(0);
                     if (!!inputElement) {
                         inputElement.focus();
                     } else if (!!modalButton) {
                         modalButton.focus();
+                    } else if (!!modalLink) {
+                        modalLink.focus();
                     }
                }
             });
+        };
+        $scope.revealModal = function () {
+            var thisKey = "do-not-show-nextstep-for-" + $scope.scalingGroupName;
+            if( $scope.policiesCount == 0 && localStorage.getItem(thisKey) != "true" ){
+                var modal = $('#nextstep-scalinggroup-modal');
+                modal.foundation('reveal', 'open');
+                $(modal).on('click', '#link-do-not-show-me-again', function () {
+                    localStorage.setItem(thisKey, "true");
+                    var closeMark = modal.find('.close-reveal-modal');
+                    closeMark.trigger('click');
+                 });
+            }
         };
     })
 ;
