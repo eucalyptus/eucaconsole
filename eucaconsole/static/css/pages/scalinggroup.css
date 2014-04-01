@@ -132,3 +132,5 @@ input[type="number"] { width: 3rem; }
 #unit { position: relative; left: -9999rem; }
 
 .unit-label { position: relative; top: 6px; }
+
+.dialog-option { text-align: right; }
