@@ -28,9 +28,9 @@ class IAMPolicyWizardView(BaseView):
         self.iam_conn = self.get_connection(conn_type='iam')
         self.policy_json_endpoint = self.request.route_path('iam_policy_json')
         self.create_form = IAMPolicyWizardForm(request=self.request, formdata=self.request.params or None)
-        self.target_type = self.request.params.get('type', 'user')  # 'user' or 'group'
-        self.target_name = self.request.params.get('id', '')  # user or group name
-        self.target_route = '{0}_view'.format(self.target_type)  # 'user_view' or 'group_view'
+        self.target_type = self.request.params.get('type', 'user')  # 'user', 'group' or 'role'
+        self.target_name = self.request.params.get('id', '')  # user, group or role name
+        self.target_route = '{0}_view'.format(self.target_type)  # 'user_view', 'group_view' or 'role_view'
         self.location = self.request.route_path(self.target_route, name=self.target_name)
         with boto_error_handler(request):
             self.choices_manager = ChoicesManager(conn=self.ec2_conn)
@@ -69,8 +69,10 @@ class IAMPolicyWizardView(BaseView):
                 self.log_request(_(u"Creating policy {0} for {1} {2}").format(policy_name, self.target_type, self.target_name))
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
-                else:
+                elif self.target_type == 'group':
                     caller = self.iam_conn.put_group_policy
+                else:
+                    caller = self.iam_conn.put_role_policy
                 caller(self.target_name, policy_name, policy_json)
                 prefix = _(u'Successfully created IAM policy')
                 msg = '{0} {1}'.format(prefix, policy_name)

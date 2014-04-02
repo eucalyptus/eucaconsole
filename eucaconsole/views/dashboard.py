@@ -67,6 +67,7 @@ class DashboardJsonView(BaseView):
                     iam_conn = self.get_connection(conn_type="iam")
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
+                    roles_count = len(iam_conn.list_roles().roles)
 
             return dict(
                 instance_total=instances_total_count,
@@ -80,4 +81,5 @@ class DashboardJsonView(BaseView):
                 eips=elasticips_count,
                 users=users_count,
                 groups=groups_count,
+                roles=roles_count,
             )

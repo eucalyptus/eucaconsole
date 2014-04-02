@@ -222,6 +222,19 @@ urls = [
     Route(name='group_update_policy', pattern='/groups/{name}/policy/{policy}/save'),
     Route(name='group_delete_policy', pattern='/groups/{name}/policy/{policy}/delete'),
 
+    # Roles #####
+    Route(name='roles', pattern='/roles'),
+    Route(name='roles_json', pattern='/roles/json'),
+    Route(name='roles_delete', pattern='/roles/delete'),
+    Route(name='role_create', pattern='/roles/create'),
+    Route(name='role_view', pattern='/roles/{name}'),
+    Route(name='role_update', pattern='/roles/{name}/update'),
+    Route(name='role_delete', pattern='/roles/{name}/delete'),
+    Route(name='role_policies_json', pattern='/roles/{name}/policies_json'),
+    Route(name='role_policy_json', pattern='/roles/{name}/policies/{policy}'),
+    Route(name='role_update_policy', pattern='/roles/{name}/policy/{policy}/save'),
+    Route(name='role_delete_policy', pattern='/roles/{name}/policy/{policy}/delete'),
+
     # IAM Policies/Permissions #####
     Route(name='iam_policy_new', pattern='/policies/new'),
     Route(name='iam_policy_create', pattern='/policies/create'),

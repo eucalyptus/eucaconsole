@@ -1,0 +1,150 @@
+<metal:block use-macro="main_template">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/role.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users})">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
+                <li class="current">
+                    <a tal:condition="role" href="#" ng-non-bindable="">${role.role_name}</a>
+                    <a tal:condition="not role and role_route_id == 'new'" i18n:translate="">Create new role</a>
+                </li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block tal:condition="role">
+                <strong i18n:translate="">Details for role:</strong>
+                <em ng-non-bindable="">${role.role_name}</em>
+            </metal:block>
+            <metal:block tal:condition="not role and role_route_id == 'new'">
+                <strong i18n:translate="">Create new role</strong>
+            </metal:block>
+        </h3>
+        <div class="large-7 columns"
+            tal:define="readonly True if role else False;">
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="role">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a id="delete-role-action" data-reveal-id="delete-role-modal" i18n:translate="">
+                                Delete role
+                            </a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
+                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
+                         'error_msg': 'IAM role names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                    <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
+                        ${structure:role_form['csrf_token']}
+                        <div class="section">
+                            <div class="row controls-wrapper readonly">
+                                ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
+                            <h6>
+                                <a ng-click="expanded = !expanded">
+                                    <i class="fi-plus" ng-show="!expanded"></i>
+                                    <i class="fi-minus" ng-show="expanded"></i>
+                                    &nbsp;<span i18n:translate="">Advanced</span>
+                                </a>
+                            </h6>
+                            <div class="section" ng-show="expanded">
+                                <div class="row controls-wrapper readonly">
+                                    ${panel('form_field', field=role_form.path, leftcol_width=1, rightcol_width=11)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="row">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
+                                    <button type="submit" class="button" id="create-btn">
+                                        <span i18n:translate="">Create role</span>
+                                    </button>
+                                    <a href="${request.route_path('roles')}"
+                                        class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div tal:condition="role">
+                    <form action="${request.route_path('role_update', name=role.role_name)}" method="post" data-abide="abide">
+                        ${structure:role_update_form['csrf_token']}
+                        <div class="section">
+                            <h6 i18n:translate="">General</h6>
+                            <div>
+                                ${panel('form_field', field=role_update_form.role_name, leftcol_width=3, rightcol_width=9)}
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                                <div class="small-9 columns value">${role_create_date.strftime(layout.date_format)}</div>
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
+                                <div class="small-9 columns value inline breakword">${role.arn if role.arn else ''}</div>
+                            </div>
+                            <div class="top-bottom-padding">
+                                ${panel('form_field', field=role_update_form.path, leftcol_width=3, rightcol_width=9)}
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns">
+                                </div>
+                                <div class="small-9 columns">
+                                    <button type="submit" class="button" id="save-changes-btn">
+                                        <span tal:condition="role" i18n:translate="">Save Changes</span>
+                                    </button>
+                                    <a href="${request.route_path('roles')}"
+                                        class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                    <div tal:define="policies_url request.route_path('role_policies_json', name=role.role_name);
+                                     policy_url request.route_path('role_policy_json', name=role.role_name, policy='_policy_');
+                                     remove_url request.route_path('role_delete_policy', name=role.role_name, policy='_policy_');
+                                     update_url request.route_path('role_update_policy', name=role.role_name, policy='_policy_');
+                                     add_url request.route_path('iam_policy_new')+'?type=role&amp;id='+role.role_name">
+                        <div class="section">
+                            <h6 i18n:translate="">Permissions</h6>
+                            <div>
+                                <strong i18n:translate="">Role policies</strong>
+                                ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="large-5 columns">
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <!--! Help goes here -->
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('role_dialogs', role=role, delete_form=delete_form)}
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <div tal:condition="role">
+        <script src="${request.static_path('eucaconsole:static/js/pages/role.js')}"></script>
+    </div>
+    <div tal:condition="not:role">
+        <script src="${request.static_path('eucaconsole:static/js/pages/role_new.js')}"></script>
+    </div>
+</div>
+
+</metal:block>
+
