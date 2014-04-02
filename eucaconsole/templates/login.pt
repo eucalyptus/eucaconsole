@@ -28,6 +28,11 @@
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
+        <div id='javascript-warning' i18n:translate="">
+            <p> Warning! JavaScript is not enabled on your browser.
+            To use the Eucalyptus User Console, please enable JavaScript in your browser's settings.
+            </p>
+        </div>
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
                 <dl class="tabs" id="login-tabs" data-tab="">
@@ -131,6 +136,23 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div id="warning-modals">
+            <div id="browser-version-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Browser not supported</h3>
+                <p>
+                    <span i18n:translate="">The browser version you are using is not supported, and may result in unpredictable behavior or incomplete functionality. To use the Eucalyptus Management Console you should be running one of the following browsers (minimum required version): Chrome 30, Firefox 25, Safari 6, or IE 10.</span>
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+            <div id="ssl-off-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">SSL not enabled</h3>
+                <p>
+                    <span i18n:translate="">SSL is not enabled on the server. Passwords will be vulnerable during login.
+                    </span>
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>
