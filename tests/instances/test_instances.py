@@ -121,7 +121,9 @@ class InstanceDetachVolumeFormTestCase(BaseFormTestCase):
 class InstanceLaunchFormTestCase(BaseFormTestCase):
     form_class = LaunchInstanceForm
     request = testing.DummyRequest()
-    form = form_class(request)
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
