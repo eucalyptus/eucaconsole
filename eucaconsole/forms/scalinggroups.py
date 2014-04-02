@@ -161,7 +161,6 @@ class BaseScalingGroupForm(BaseSecureForm):
         )
 
 
-
 class ScalingGroupCreateForm(BaseScalingGroupForm):
     """Create Scaling Group form"""
     name_error_msg = _(u'Name is required')
@@ -182,6 +181,7 @@ class ScalingGroupCreateForm(BaseScalingGroupForm):
 
         # Set initial data
         self.availability_zones.data = [value for value, label in self.availability_zones.choices]
+
 
 class ScalingGroupEditForm(BaseScalingGroupForm):
     """Edit Scaling Group form"""
