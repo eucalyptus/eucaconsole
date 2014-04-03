@@ -104,7 +104,8 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn)
         self.set_initial_data()
         self.set_error_messages()
-        self.set_choices()
+        region = request.session.get('region')
+        self.set_choices(region)
         self.set_help_text()
 
     def set_initial_data(self):
@@ -117,12 +118,12 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             self.metric.data = 'GroupDesiredCapacity'
             self.unit.data = 'Count'
 
-    def set_choices(self):
+    def set_choices(self, region):
         self.comparison.choices = self.get_comparison_choices()
         self.statistic.choices = self.get_statistic_choices()
         self.metric.choices = self.get_metric_choices()
         self.unit.choices = self.get_unit_choices()
-        self.availability_zone.choices = self.ec2_choices_manager.availability_zones()
+        self.availability_zone.choices = self.ec2_choices_manager.availability_zones(region)
         self.instance_id.choices = self.ec2_choices_manager.instances()
         self.instance_type.choices = self.get_instance_type_choices()
         self.load_balancer_name.choices = self.elb_choices_manager.load_balancers()

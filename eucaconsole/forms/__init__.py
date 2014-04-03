@@ -50,20 +50,20 @@ class ChoicesManager(object):
     #### EC2 connection type choices
     ##
 
-    def availability_zones(self, zones=None, add_blank=True):
+    def availability_zones(self, region, zones=None, add_blank=True):
         """Returns a list of availability zone choices. Will fetch zones if not passed"""
         choices = []
         zones = zones or []
         if add_blank:
             choices.append(BLANK_CHOICE)
         if not zones:
-            zones.extend(self.get_availability_zones())
+            zones.extend(self.get_availability_zones(region))
         for zone in zones:
             choices.append((zone.name, zone.name))
         return sorted(choices)
 
-    def get_availability_zones(self):
-        @cache_region('extra_long_term', 'availability_zones')
+    def get_availability_zones(self, region):
+        @cache_region('extra_long_term', 'availability_zones_{region}'.format(region=region))
         def _get_zones_cache():
             zones = []
             if self.conn is not None:

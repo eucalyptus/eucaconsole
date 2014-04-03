@@ -100,7 +100,8 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         self.launch_config.choices = self.get_launch_config_choices()
         self.health_check_type.choices = self.get_healthcheck_type_choices()
-        self.availability_zones.choices = self.get_availability_zone_choices()
+        region = request.session.get('region')
+        self.availability_zones.choices = self.get_availability_zone_choices(region)
         self.load_balancers.choices = self.get_load_balancer_choices()
 
         # Set error messages
@@ -134,8 +135,8 @@ class BaseScalingGroupForm(BaseSecureForm):
             choices.append((launch_config_name, launch_config_name))
         return sorted(set(choices))
 
-    def get_availability_zone_choices(self):
-        return self.ec2_choices_manager.availability_zones(add_blank=False)
+    def get_availability_zone_choices(self, region):
+        return self.ec2_choices_manager.availability_zones(region, add_blank=False)
 
     def get_load_balancer_choices(self):
         choices = []
@@ -358,4 +359,5 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
         self.launch_config_name.choices = self.autoscale_choices_manager.launch_configs(add_blank=False)
-        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(add_blank=False)
+        region = request.session.get('region')
+        self.availability_zones.choices = self.ec2_choices_manager.availability_zones(region, add_blank=False)
