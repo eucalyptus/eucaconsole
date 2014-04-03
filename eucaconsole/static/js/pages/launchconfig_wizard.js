@@ -81,6 +81,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.keyPair = $scope.keyPairSelected;
             if( $scope.securityGroupSelected != '' ){
                 $scope.securityGroup = $scope.securityGroupSelected;
+                $scope.securityGroups = [];
                 $scope.securityGroups.push($scope.securityGroupSelected);
             }
             if( $scope.imageID == '' ){
