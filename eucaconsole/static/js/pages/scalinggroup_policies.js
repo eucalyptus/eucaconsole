@@ -4,13 +4,16 @@
  *
  */
 
-angular.module('ScalingGroupPolicies', [])
-    .controller('ScalingGroupPoliciesCtrl', function ($scope) {
+angular.module('ScalingGroupPolicies', ['CustomFilters'])
+    .controller('ScalingGroupPoliciesCtrl', function ($scope, $filter) {
         $scope.policyName = '';
         $scope.deleteModal = $('#delete-policy-modal');
         $scope.initPage = function () {
             $scope.setFocus();
             $scope.setDropdownMenusListener();
+        };
+        $scope.applyEscapeFilter = function (input) {
+            return $filter('escapeHTMLTagID')(input);
         };
         $scope.revealDeleteModal = function (policyName) {
             var modal = $scope.deleteModal;
