@@ -33,7 +33,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
     )
     keypair = wtforms.SelectField(label=_(u'Key name'))
     securitygroup_error_msg = _(u'Security group is required')
-    securitygroup = wtforms.SelectField(
+    securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
