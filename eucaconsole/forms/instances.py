@@ -96,7 +96,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
-        self.set_choices()
+        self.set_choices(request)
 
         if image is not None:
             self.image_id.data = self.image.id
@@ -106,7 +106,7 @@ class LaunchInstanceForm(BaseSecureForm):
     def set_help_text(self):
         self.userdata_file.help_text = self.userdata_file_helptext
 
-    def set_choices(self):
+    def set_choices(self, request):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
