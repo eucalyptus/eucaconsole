@@ -10,6 +10,18 @@ from pyramid.i18n import TranslationString as _
 
 from . import BaseSecureForm, ChoicesManager
 
+from wtforms.widgets import html_params, HTMLString, Select
+from cgi import escape
+
+
+class NgNonBindableOptionSelect(Select):
+    @classmethod
+    def render_option(cls, value, label, selected):
+        options = {'value': value}
+        if selected:
+            options['selected'] = u'selected'
+        return HTMLString(u'<option %s ng-non-bindable="">%s</option>' % (html_params(**options), escape(unicode(label))))
+
 
 class BaseScalingGroupForm(BaseSecureForm):
     """Base class for Create/Edit Scaling Group forms"""
@@ -19,6 +31,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         validators=[
             validators.InputRequired(message=launch_config_error_msg),
         ],
+        widget=NgNonBindableOptionSelect(),
     )
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(

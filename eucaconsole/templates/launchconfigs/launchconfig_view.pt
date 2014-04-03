@@ -20,7 +20,7 @@
                     <metal:actions metal:fill-slot="actions">
                         <li>
                             <a href="${request.route_path('scalinggroup_new')}?launch_config=${launch_config.name}"
-                               id="create-scalinggroup-action" i18n:translate="">
+                               id="create-scalinggroup-action" i18n:translate="" ng-non-bindable="">
                                 Use to create scaling group
                             </a>
                         </li>
