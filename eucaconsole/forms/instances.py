@@ -108,7 +108,8 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_choices(self):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
-        self.zone.choices = self.get_availability_zone_choices()
+        region = request.session.get('region')
+        self.zone.choices = self.get_availability_zone_choices(region)
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
@@ -133,9 +134,9 @@ class LaunchInstanceForm(BaseSecureForm):
         choices = self.choices_manager.keypairs(add_blank=False, no_keypair_option=True)
         return choices
 
-    def get_availability_zone_choices(self):
+    def get_availability_zone_choices(self, region):
         choices = [('', _(u'No preference'))]
-        choices.extend(self.choices_manager.availability_zones(add_blank=False))
+        choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
         return choices
 
 
@@ -281,15 +282,16 @@ class InstancesFiltersForm(BaseSecureForm):
         self.cloud_type = cloud_type
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
-        self.availability_zone.choices = self.get_availability_zone_choices()
+        region = request.session.get('region')
+        self.availability_zone.choices = self.get_availability_zone_choices(region)
         self.state.choices = self.get_status_choices()
         self.instance_type.choices = self.get_instance_type_choices()
         self.root_device_type.choices = self.get_root_device_type_choices()
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
 
-    def get_availability_zone_choices(self):
-        return self.ec2_choices_manager.availability_zones(add_blank=False)
+    def get_availability_zone_choices(self, region):
+        return self.ec2_choices_manager.availability_zones(region, add_blank=False)
 
     def get_instance_type_choices(self):
         return self.ec2_choices_manager.instance_types(
