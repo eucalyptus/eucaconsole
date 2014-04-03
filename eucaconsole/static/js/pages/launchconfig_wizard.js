@@ -50,7 +50,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.updateSelectedSecurityGroupRules = function () {
             $timeout(function() {
                 $scope.updateSecurityGroup();
-            }, 500);
+            }, 250);
         };
         $scope.getSecurityGroupIDByName = function (securityGroupName) {
             return $scope.securityGroupsIDMap[securityGroupName];
@@ -70,8 +70,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();
-            $scope.securityGroup = $('#securitygroup').find(':selected').val();
-            $scope.securityGroups.push($('#securitygroup').find(':selected').val());
+            $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
+            $scope.securityGroups.push($scope.securityGroup);
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
             $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
@@ -98,8 +98,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.activateChosen = function () {
-             $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
-             $scope.securityGroupSelect.trigger('chosen:updated');
+             $timeout(function(){
+                 $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
+                 $scope.securityGroupSelect.trigger('chosen:updated');
+             }, 250);
         };
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
@@ -198,7 +200,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
                 $timeout(function(){
                     $scope.securityGroupSelect.trigger('chosen:updated');
-                }, 500);
+                }, 250);
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
