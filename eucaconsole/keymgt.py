@@ -1,5 +1,5 @@
 import sys
-from Crypto.Random import random
+import random
 import os
 import string
 import ConfigParser
