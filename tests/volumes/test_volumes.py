@@ -56,6 +56,7 @@ class VolumeUpdateFormTestCase(BaseFormTestCase):
     """Update Volume form on volume page"""
     form_class = VolumeForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -77,6 +78,7 @@ class VolumeDeleteFormTestCase(BaseFormTestCase):
     """Delete volume form on volume page"""
     form_class = DeleteVolumeForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -90,6 +92,7 @@ class VolumeAttachFormTestCase(BaseFormTestCase):
     """Attach Volume form on volume page"""
     form_class = AttachForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -107,6 +110,7 @@ class VolumeDetachFormTestCase(BaseFormTestCase):
     """Detach Volume form on volume page"""
     form_class = DetachForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -120,6 +124,7 @@ class VolumeCreateSnapshotFormTestCase(BaseFormTestCase):
     """Create snapshot form on volume page"""
     form_class = CreateSnapshotForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -139,6 +144,7 @@ class VolumeDeleteSnapshotFormTestCase(BaseFormTestCase):
     """Delete snapshot form on volume page"""
     form_class = DeleteSnapshotForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
