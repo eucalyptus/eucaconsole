@@ -30,6 +30,7 @@ class LaunchConfigViewTests(BaseViewTestCase):
 class CreateLaunchConfigFormTestCase(BaseFormTestCase):
     form_class = CreateLaunchConfigForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
