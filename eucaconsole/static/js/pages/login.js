@@ -11,6 +11,20 @@ angular.module('LoginPage', [])
             $('#javascript-warning').css('display', 'none');
             $scope.prefillForms();
             $scope.addListeners();
+            Modernizr.load([
+                {
+                    test: Modernizr.localstorage,
+                    nope: function () {
+                        $('#browser-localstorage-warn-modal').foundation('reveal', 'open');
+                    }
+                },
+                {
+                    test: Modernizr.svg,
+                    nope: function () {
+                        $('#browser-svg-warn-modal').foundation('reveal', 'open');
+                    }
+                }
+            ])
             /* old-style browser version detection... modernizr instead?
             var supportedBrowser = false;
             if ($.browser.mozilla && parseInt($.browser.version, 10) > 24) {
@@ -29,10 +43,10 @@ angular.module('LoginPage', [])
             if (!supportedBrowser) {
                 $('#browser-version-modal').foundation('reveal', 'open');
             }
-            */
             if (window.location.protocol != 'https:') {
                 $('#ssl-off-modal').foundation('reveal', 'open');
             }
+            */
         };
         $scope.setFocus = function () {
             var inputs = [];
