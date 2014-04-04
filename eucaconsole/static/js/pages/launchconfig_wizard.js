@@ -38,6 +38,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.preventFormSubmitOnEnter();
             $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
+            $scope.setFocus();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
@@ -92,6 +93,26 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
+            });
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var modalID = $(this).attr('id');
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                    var closeMark = modal.find('.close-reveal-modal');
+                    if(!!closeMark){
+                        closeMark.focus();
+                    }
+                }else{
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    var modalButton = modal.find('button').get(0);
+                    if (!!inputElement) {
+                        inputElement.focus();
+                    } else if (!!modalButton) {
+                        modalButton.focus();
+                    }
+               }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
