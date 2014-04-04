@@ -43,7 +43,8 @@ class VolumeForm(BaseSecureForm):
         self.size.error_msg = self.size_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.choices_manager = ChoicesManager(conn=conn)
-        self.set_choices()
+        region = request.session.get('region')
+        self.set_choices(region)
 
         if volume is not None:
             self.name.data = volume.tags.get('Name', '')
@@ -51,9 +52,9 @@ class VolumeForm(BaseSecureForm):
             self.snapshot_id.data = volume.snapshot_id if volume.snapshot_id else ''
             self.zone.data = volume.zone
 
-    def set_choices(self):
+    def set_choices(self, region):
         self.set_volume_snapshot_choices()
-        self.zone.choices = self.choices_manager.availability_zones(zones=self.zones, add_blank=False)
+        self.zone.choices = self.choices_manager.availability_zones(region, zones=self.zones, add_blank=False)
 
         # default to first zone if new volume, and at least one zone in list
         if self.volume is None and len(self.zones) > 0:
@@ -178,11 +179,12 @@ class VolumesFiltersForm(BaseSecureForm):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
         self.choices_manager = ChoicesManager(conn=conn)
-        self.zone.choices = self.get_availability_zone_choices()
+        region = request.session.get('region')
+        self.zone.choices = self.get_availability_zone_choices(region)
         self.status.choices = self.get_status_choices()
 
-    def get_availability_zone_choices(self):
-        return self.choices_manager.availability_zones(add_blank=False)
+    def get_availability_zone_choices(self, region):
+        return self.choices_manager.availability_zones(region, add_blank=False)
 
     @staticmethod
     def get_status_choices():
