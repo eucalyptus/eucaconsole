@@ -20,6 +20,7 @@ angular.module('SecurityGroupRules', [])
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
             $scope.hasDuplicatedRule = false;
+            // Timeout is needed to delay the update for the ip protocol select refresh
             $timeout(function(){
                 $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
                 $('#ip-protocol-select').prop('selectedIndex', -1);
@@ -161,6 +162,7 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
+            // Timeout is needed to delay the update for the groupname select refresh
             $timeout(function(){
                 $('#groupname-select').chosen({'width': '50%', search_contains: true});
                 $('#groupname-select').prop('selectedIndex', -1);
