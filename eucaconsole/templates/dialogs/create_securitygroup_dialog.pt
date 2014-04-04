@@ -14,9 +14,14 @@
             <div class="row">
                 <div class="small-3 columns">&nbsp;</div>
                 <div class="small-9 columns field inline">
-                    <button type="submit" class="button" id="create-securitygroup-btn" i18n:translate="" >
-                        Create Security Group
-                    </button>
+                    <div class="dialog-submit-button">
+                        <button type="submit" class="button" id="create-securitygroup-btn" i18n:translate="" >
+                            Create Security Group 
+                        </button>
+                    </div>
+                    <div class="dialog-progress-display hide">
+                        <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                    </div>
                 </div>
             </div>
         </form>
