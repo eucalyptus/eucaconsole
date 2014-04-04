@@ -38,6 +38,12 @@ angular.module('SecurityGroupRules', [])
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
+            $(document).on('close', '[data-reveal]', function () {
+                $scope.$apply(function(){
+                    $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
+                    $scope.syncRules();
+                });
+            });
         };
         // In case of the duplicated rule, add the class 'disabled' to the submit button
         $scope.getAddRuleButtonClass = function () {

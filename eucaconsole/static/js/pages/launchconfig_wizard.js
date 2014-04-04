@@ -38,6 +38,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.preventFormSubmitOnEnter();
             $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
+            $scope.setFocus();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
@@ -79,6 +80,39 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input[type="number"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                var chosenSelect = modal.find('select');
+                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
+                    chosenSelect.prop('selectedIndex', 0);
+                    chosenSelect.trigger("chosen:updated");
+                }
+            });
+        };
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var modalID = $(this).attr('id');
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                    var closeMark = modal.find('.close-reveal-modal');
+                    if(!!closeMark){
+                        closeMark.focus();
+                    }
+                }else{
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    var modalButton = modal.find('button').get(0);
+                    if (!!inputElement) {
+                        inputElement.focus();
+                    } else if (!!modalButton) {
+                        modalButton.focus();
+                    }
+               }
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
