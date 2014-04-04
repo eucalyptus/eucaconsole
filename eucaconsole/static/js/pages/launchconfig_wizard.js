@@ -80,6 +80,19 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input[type="number"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                var chosenSelect = modal.find('select');
+                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
+                    chosenSelect.prop('selectedIndex', 0);
+                    chosenSelect.trigger("chosen:updated");
+                }
+            });
         };
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
