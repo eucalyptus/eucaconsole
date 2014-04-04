@@ -48,6 +48,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.updateSelectedSecurityGroupRules = function () {
+            // Timeout is needed for chosen widget to update the search choices 
             $timeout(function() {
                 $scope.updateSecurityGroup();
             }, 250);
@@ -99,6 +100,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.activateChosen = function () {
+             // Timeout is needed for chosen widget update
              $timeout(function(){
                  $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
                  $scope.securityGroupSelect.trigger('chosen:updated');
@@ -199,6 +201,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.securityGroups.push($scope.newSecurityGroupName);
                 $scope.selectedGroupRules = JSON.parse($('#rules').val());
                 $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                // Timeout is needed for chosen widget update
                 $timeout(function(){
                     $scope.securityGroupSelect.trigger('chosen:updated');
                 }, 250);
