@@ -5,7 +5,7 @@
  */
 
 angular.module('SecurityGroupRules', [])
-    .controller('SecurityGroupRulesCtrl', function ($scope) {
+    .controller('SecurityGroupRulesCtrl', function ($scope, $timeout) {
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
@@ -20,8 +20,11 @@ angular.module('SecurityGroupRules', [])
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
             $scope.hasDuplicatedRule = false;
-            $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
-            $('#ip-protocol-select').val('').trigger('chosen:updated');
+            $timeout(function(){
+                $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
+                $('#ip-protocol-select').prop('selectedIndex', -1);
+                $('#ip-protocol-select').trigger('chosen:updated');
+            }, 250);
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
@@ -158,8 +161,11 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            $('#groupname-select').chosen({'width': '50%', search_contains: true});
-            $('#groupname-select').val('').trigger('chosen:updated');
+            $timeout(function(){
+                $('#groupname-select').chosen({'width': '50%', search_contains: true});
+                $('#groupname-select').prop('selectedIndex', -1);
+                $('#groupname-select').trigger('chosen:updated');
+            }, 250);
         };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
