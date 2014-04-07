@@ -103,7 +103,6 @@ class SnapshotsView(LandingPageView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
-            import pdb; pdb.set_trace()
             # TODO: need validation error!
             msg = _(u'Unable to register snapshot')
             self.request.session.flash(msg, queue=Notification.ERROR)
