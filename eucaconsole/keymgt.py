@@ -1,5 +1,6 @@
 import sys
 from Crypto.Random import random
+import stat
 import os
 import string
 import ConfigParser
@@ -14,12 +15,18 @@ def generate_keyini(target):
     ini.add_section('general')
     ini.set('general', 'session.validate_key', validate_key)
     ini.set('general', 'session.encrypt_key', encrypt_key)
-    old_umask = os.umask(0o177)
-    try:
-        with open(target, 'w') as f:
-            ini.write(f)
-    finally:
-        os.umask(old_umask)
+
+    if os.path.exists(target):
+        os.remove(target)
+
+    # using this method of creating the file as
+    # os.umask() was showing bizarre results
+    f = os.open(target,
+                os.O_RDWR | os.O_CREAT,
+                stat.S_IREAD | stat.S_IWRITE)
+    os.close(f)
+    with open(target, 'a') as f:
+        ini.write(f)
 
     return ini
 
