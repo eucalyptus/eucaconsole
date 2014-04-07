@@ -10,7 +10,7 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'beaker >= 1.5.4',
-    'boto >= 2.25.0',
+    'boto >= 2.27.0',
     'chameleon >= 2.5.3',
     'gevent >= 0.13.8',  # Note: gevent 1.0 no longer requires libevent, it bundles libev instead
     # 'greenlet >= 0.3.1',

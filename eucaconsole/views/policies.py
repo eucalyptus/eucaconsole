@@ -163,9 +163,10 @@ class IAMPolicyWizardView(BaseView):
 
     def get_availability_zone_choices(self):
         resource_name = 'availabilityzone'
+        region = self.request.session.get('region')
         arn_prefix = self.get_arn_prefix(resource_name)
         choices = [(self.get_all_choice(resource_name), _(u'All zones...'))]
-        for avail_zone_choice in self.choices_manager.availability_zones(add_blank=False):
+        for avail_zone_choice in self.choices_manager.availability_zones(region, add_blank=False):
             value = '{0}{1}'.format(arn_prefix, avail_zone_choice[0])
             label = avail_zone_choice[0]
             choices.append((value, label))

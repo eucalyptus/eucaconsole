@@ -25,6 +25,7 @@ from ..forms.scalinggroups import (
 from ..models import Notification
 from ..views import LandingPageView, BaseView
 from . import boto_error_handler
+from hashlib import md5 
 
 
 class DeleteScalingGroupMixin(object):
@@ -371,9 +372,12 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
 
     def __init__(self, request):
         super(ScalingGroupPoliciesView, self).__init__(request)
+        policy_ids = {};
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
+            for policy in self.policies:
+                policy_ids[policy.name] = md5(policy.name).hexdigest()[:8] 
             self.alarms = self.get_alarms()
         self.create_form = ScalingGroupPolicyCreateForm(
             self.request, scaling_group=self.scaling_group, alarms=self.alarms, formdata=self.request.params or None)
@@ -383,6 +387,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
             create_form=self.create_form,
             delete_form=self.delete_form,
             policies=self.policies,
+            policy_ids=policy_ids,
             scale_down_text=_(u'Scale down by'),
             scale_up_text=_(u'Scale up by'),
         )

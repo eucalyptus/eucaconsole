@@ -19,7 +19,8 @@ class DashboardView(BaseView):
     def dashboard_home(self):
         availability_zones = []
         with boto_error_handler(self.request):
-            availability_zones = ChoicesManager(self.conn).get_availability_zones()
+            region = self.request.session.get('region')
+            availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
         return dict(
             availability_zones=availability_zones
         )
