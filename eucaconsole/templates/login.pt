@@ -29,7 +29,7 @@
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
         <div id='javascript-warning' i18n:translate="">
-            <p> Warning! JavaScript is not enabled on your browser.
+            <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
             To use the Eucalyptus User Console, please enable JavaScript in your browser's settings.
             </p>
         </div>
@@ -141,23 +141,19 @@
         <div id="warning-modals">
             <div id="browser-localstorage-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Browser doesn't support local storage</h3>
-                <p>
-                    <span i18n:translate="">The browser you are using is not supported. It lacks support for local storage which will affect some convenience features of this application</span>
+                <p i18n:translate="">The browser you are using is not supported. It lacks support for local storage which will affect some convenience features of this application
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
             <div id="browser-svg-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Browser doesn't support SVG</h3>
-                <p>
-                    <span i18n:translate="">The browser you are using is not supported. It lacks support for SVG images and many graphics this application uses won't display properly.</span>
+                <p i18n:translate="">The browser you are using is not supported. It lacks support for SVG images and many graphics this application uses won't display properly.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
             <div id="ssl-off-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">SSL not enabled</h3>
-                <p>
-                    <span i18n:translate="">SSL is not enabled on the server. Passwords will be vulnerable during login.
-                    </span>
+                <p i18n:translate="">SSL is not enabled on the server. Passwords will be vulnerable during login.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
