@@ -81,6 +81,16 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
+            $(document).on('open', '[data-reveal]', function () {
+                // When a dialog opens, reset the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'block');                
+                $(this).find('.dialog-progress-display').css('display', 'none');                
+            });
+            $(document).on('submit', '[data-reveal] form', function () {
+                // When a dialog is submitted, display the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
             $(document).on('close', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
