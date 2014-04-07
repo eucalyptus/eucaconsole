@@ -147,7 +147,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 return false;
             }
             // If all is well, click the relevant tab to go to next step
-            $('#tabStep' + nextStep).click();
+            // since clicking invokes this method again (via ng-click) and
+            // one ng action must complete before another can start
+            $('#tabStep' + currentStep).removeClass("active");
+            $('#step' + currentStep).removeClass("active");
+            $('#tabStep' + nextStep).addClass("active");
+            $('#step' + nextStep).addClass("active");
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
             $scope.currentStepIndex = nextStep;
