@@ -1,9 +1,11 @@
 import sys
-from Crypto.Random import random
+from random import SystemRandom
 import stat
 import os
 import string
 import ConfigParser
+
+random = SystemRandom()
 
 
 def generate_keyini(target):
