@@ -153,7 +153,7 @@
             </div>
             <div id="ssl-off-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">SSL not enabled</h3>
-                <p i18n:translate="">SSL is not enabled on the server. Passwords will be vulnerable during login.
+                <p i18n:translate="">This connection is untrusted because SSL in not enabled on the server. Credentials will be sent over the wire in clear text.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>
