@@ -34,8 +34,8 @@
                 <div class="tile item" tal:repeat="policy policies">
                     <div class="header">
                         <strong><a href="#" ng-non-bindable="">${policy.name}</a></strong>
-                        <a class="tiny secondary button dropdown right" data-dropdown="{{applyEscapeFilter('item-dropdown_${policy.name}')}}" ><i class="fi-widget"></i></a>
-                        <ul id="{{applyEscapeFilter('item-dropdown_${policy.name}')}}" class="f-dropdown" data-dropdown-content="" >
+                        <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
                         </ul>
                     </div>
@@ -80,7 +80,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_policies.js')}"></script>
 </div>
 
