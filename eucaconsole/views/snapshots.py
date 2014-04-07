@@ -88,6 +88,7 @@ class SnapshotsView(LandingPageView):
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
+                self.log_request(_(u"Registering snapshot {0} as image {1}").format(snapshot_id, name))
                 image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
@@ -102,6 +103,7 @@ class SnapshotsView(LandingPageView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
+            # TODO: need validation error!
             msg = _(u'Unable to register snapshot')
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)

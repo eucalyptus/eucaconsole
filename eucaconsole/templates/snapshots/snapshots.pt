@@ -33,7 +33,7 @@
                             Create volume from snapshot
                         </a>
                     </li>
-                    <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('register', item)">Register as image</a></li>
                     <li ng-show="item.status === 'completed'">
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete snapshot</a>
                     </li>
@@ -117,7 +117,7 @@
                                     Create volume from snapshot
                                 </a>
                             </li>
-                            <li><a i18n:translate="" ng-click="revealModal('register', item.id)">Register as image</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('register', item)">Register as image</a></li>
                             <li ng-show="item.status === 'completed'">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete snapshot</a>
                             </li>
