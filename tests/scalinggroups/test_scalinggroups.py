@@ -50,6 +50,7 @@ class ScalingGroupViewTests(BaseViewTestCase):
 class BaseScalingGroupFormTestCase(BaseFormTestCase):
     form_class = BaseScalingGroupForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -86,6 +87,7 @@ class BaseScalingGroupFormTestCase(BaseFormTestCase):
 class ScalingGroupCreateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupCreateForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -107,6 +109,7 @@ class ScalingGroupCreateFormTestCase(BaseFormTestCase):
 class ScalingGroupEditFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupEditForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -129,6 +132,7 @@ class ScalingGroupEditFormTestCase(BaseFormTestCase):
 class DeleteFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupDeleteForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -140,6 +144,7 @@ class DeleteFormTestCase(BaseFormTestCase):
 class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupPolicyCreateForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -166,6 +171,7 @@ class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
 class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupPolicyDeleteForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -177,6 +183,7 @@ class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
 class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesMarkUnhealthyForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)
@@ -188,6 +195,7 @@ class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
 class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesTerminateForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)

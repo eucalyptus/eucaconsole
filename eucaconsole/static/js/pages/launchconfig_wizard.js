@@ -41,7 +41,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.preventFormSubmitOnEnter();
             $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
-            $scope.activateChosen();
+            $scope.setFocus();
         };
         $scope.updateSecurityGroup = function () {
             $scope.securityGroup = $('div#securitygroup_chosen').find('li.search-choice:last').text() || $scope.securityGroup;
@@ -98,13 +98,55 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('securityGroups', function(){
                 $scope.updateSecurityGroup();
             });
+            // Timeout is needed for chosen widget update
+            $timeout(function(){
+                $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
+                $scope.securityGroupSelect.trigger('chosen:updated');
+            }, 250);
+            $(document).on('open', '[data-reveal]', function () {
+                // When a dialog opens, reset the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'block');                
+                $(this).find('.dialog-progress-display').css('display', 'none');                
+            });
+            $(document).on('submit', '[data-reveal] form', function () {
+                // When a dialog is submitted, display the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
+            $(document).on('close', '[data-reveal]', function () {
+                var modal = $(this);
+                modal.find('input[type="text"]').val('');
+                modal.find('input[type="number"]').val('');
+                modal.find('input:checked').attr('checked', false);
+                modal.find('textarea').val('');
+                modal.find('div.error').removeClass('error');
+                var chosenSelect = modal.find('select');
+                if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
+                    chosenSelect.prop('selectedIndex', 0);
+                    chosenSelect.trigger("chosen:updated");
+                }
+            });
         };
-        $scope.activateChosen = function () {
-             // Timeout is needed for chosen widget update
-             $timeout(function(){
-                 $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
-                 $scope.securityGroupSelect.trigger('chosen:updated');
-             }, 250);
+        $scope.setFocus = function () {
+            $(document).on('opened', '[data-reveal]', function () {
+                var modal = $(this);
+                var modalID = $(this).attr('id');
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                    var closeMark = modal.find('.close-reveal-modal');
+                    if(!!closeMark){
+                        closeMark.focus();
+                    }
+                }else{
+                    var inputElement = modal.find('input[type!=hidden]').get(0);
+                    var modalButton = modal.find('button').get(0);
+                    if (!!inputElement) {
+                        inputElement.focus();
+                    } else if (!!modalButton) {
+                        modalButton.focus();
+                    }
+               }
+            });
+>>>>>>> develop
         };
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
@@ -138,7 +180,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 return false;
             }
             // If all is well, click the relevant tab to go to next step
-            $('#tabStep' + nextStep).click();
+            // since clicking invokes this method again (via ng-click) and
+            // one ng action must complete before another can start
+            $('#tabStep' + currentStep).removeClass("active");
+            $('#step' + currentStep).removeClass("active");
+            $('#tabStep' + nextStep).addClass("active");
+            $('#step' + nextStep).addClass("active");
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
             $scope.currentStepIndex = nextStep;

@@ -121,6 +121,7 @@ class InstanceDetachVolumeFormTestCase(BaseFormTestCase):
 class InstanceLaunchFormTestCase(BaseFormTestCase):
     form_class = LaunchInstanceForm
     request = testing.DummyRequest()
+    request.session['region'] = 'dummy'
 
     def setUp(self):
         self.form = self.form_class(self.request)

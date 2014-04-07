@@ -62,18 +62,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="large-6 columns">
+                        <div class="large-6 columns" tal:define="non_bind_attrs {'ng-non-bindable': ''}">
                             <!-- Pull in select fields for dimension value choices.
                                  The appropriate field is displayed based on the dimension choice above -->
-                            <div tal:omit-tag="" tal:define="avail_zone_attrs {'ng-show': 'dimension == \'availability_zone\''}">
-                                ${structure:alarm_form.availability_zone(**avail_zone_attrs)}
-                            </div>
-                            ${structure:alarm_form.image_id(**{'ng-show': 'dimension === "image"', 'placeholder': 'Image ID'})}
-                            ${structure:alarm_form.instance_id(**{'ng-show': 'dimension === "instance"'})}
-                            ${structure:alarm_form.instance_type(**{'ng-show': 'dimension === "instance_type"'})}
-                            ${structure:alarm_form.load_balancer_name(**{'ng-show': 'dimension === "load_balancer"'})}
-                            ${structure:alarm_form.volume_id(**{'ng-show': 'dimension === "volume"'})}
-                            ${structure:alarm_form.scaling_group_name(**{'ng-show': 'dimension === "scaling_group"'})}
+                            <span ng-show='dimension == "availability_zone"'>
+                                ${structure:alarm_form.availability_zone(**non_bind_attrs)}
+                            </span>
+                            <span ng-show='dimension === "image"'>
+                                ${structure:alarm_form.image_id(**{'ng-non-bindable': '', 'placeholder': 'Image ID'})}
+                            </span>
+                            <span ng-show='dimension === "instance"'>
+                                ${structure:alarm_form.instance_id(**non_bind_attrs)}
+                            </span>
+                            <span ng-show='dimension === "instance_type"'>
+                                ${structure:alarm_form.instance_type(**non_bind_attrs)}
+                            </span>
+                            <span ng-show='dimension === "load_balancer"'>
+                                ${structure:alarm_form.load_balancer_name(**non_bind_attrs)}
+                            </span>
+                            <span ng-show='dimension === "volume"'>
+                                ${structure:alarm_form.volume_id(**non_bind_attrs)}
+                            </span>
+                            <span ng-show='dimension === "scaling_group"'>
+                                ${structure:alarm_form.scaling_group_name(**non_bind_attrs)}
+                            </span>
                         </div>
                     </div>
                     <div class="row">

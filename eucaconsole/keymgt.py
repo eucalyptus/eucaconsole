@@ -1,8 +1,11 @@
 import sys
-import random
+from random import SystemRandom
+import stat
 import os
 import string
 import ConfigParser
+
+random = SystemRandom()
 
 
 def generate_keyini(target):
@@ -14,9 +17,18 @@ def generate_keyini(target):
     ini.add_section('general')
     ini.set('general', 'session.validate_key', validate_key)
     ini.set('general', 'session.encrypt_key', encrypt_key)
-    with open(target, 'w') as f:
+
+    if os.path.exists(target):
+        os.remove(target)
+
+    # using this method of creating the file as
+    # os.umask() was showing bizarre results
+    f = os.open(target,
+                os.O_RDWR | os.O_CREAT,
+                stat.S_IREAD | stat.S_IWRITE)
+    os.close(f)
+    with open(target, 'a') as f:
         ini.write(f)
-    os.chmod(target, 0o600)
 
     return ini
 
@@ -45,8 +57,7 @@ def main(args):
         print
         return
 
-    generate_keyini(args[0])
-
+    enerate_keyini(args[0])
 
 if __name__ == '__main__':
     main(sys.argv[1:])

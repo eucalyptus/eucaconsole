@@ -104,6 +104,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             document.location.href = url;
         };
         $scope.setDialogFocus = function () {
+            $(document).on('open', '[data-reveal]', function () {
+                // When a dialog opens, reset the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'block');                
+                $(this).find('.dialog-progress-display').css('display', 'none');                
+            });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('div.error').removeClass('error');
@@ -123,6 +128,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     }
                }
             });
+            $(document).on('submit', '[data-reveal] form', function () {
+                // When a dialog is submitted, display the progress button status
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
             $(document).on('close', '[data-reveal]', function () {
                 var modal = $(this);
                 modal.find('input[type="text"]').val('');
@@ -131,7 +141,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 modal.find('div.error').removeClass('error');
                 var chosenSelect = modal.find('select');
                 if (chosenSelect.length > 0) {
-                    chosenSelect.chosen('destroy');
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.chosen();
                 }
