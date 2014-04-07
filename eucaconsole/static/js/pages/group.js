@@ -11,6 +11,7 @@ angular.module('GroupPage', ['PolicyList'])
         $scope.initController = function (group_users, all_users) {
             $scope.groupUsers = group_users;
             $scope.allUsers = all_users;
+            $scope.setWatch();
             $scope.setFocus();
             $timeout(function(){ $scope.activateChosen(); }, 100);
         };
@@ -50,6 +51,12 @@ angular.module('GroupPage', ['PolicyList'])
                 }
             }
            return false;
+        };
+        $scope.setWatch = function () {
+            $(document).on('submit', '[data-reveal] form', function () {
+                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {

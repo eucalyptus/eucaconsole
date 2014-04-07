@@ -1,0 +1,28 @@
+<!--! Modal dialogs for IAM groups on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="delete-group-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('groups_delete');
+                     detailpage_action request.route_path('group_delete', name=group.group_name) if group else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete group</h3>
+        <p>
+            <span i18n:translate="">Deleting a group also deletes all permissions associated with that group. Are you sure you want to delete group </span>
+            <span tal:condition="group" ng-non-bindable=""><strong>${group.group_name}</strong></span>
+            <span tal:condition="not group"><strong>{{ groupName }}</strong></span>
+            ?
+        </p>
+        <form method="post" id="delete-form" action="${action}">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ groupName }}"/>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Delete Group</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>

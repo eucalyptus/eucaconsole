@@ -7,6 +7,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 import collections
 import unittest
 
+import beaker
 from pyramid import testing
 from wtforms import Field
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
@@ -41,6 +42,26 @@ class BaseFormTestCase(unittest.TestCase):
     form_class = None
     request = None
     csrf_enabled = True
+    beaker.cache.CacheManager(cache_regions={
+        'short_term':{
+            'expire':60,
+            'type':'memory',
+            'key_length':'20'
+        },
+        'long_term':{
+            'expire':3600,
+            'type':'memory',
+            'key_length':'20'
+        },
+        'extra_long_term':{
+            'expire':43200,
+            'type':'memory',
+            'key_length':'20'
+        }
+    })
+
+    def setUp(self):
+        self.config = testing.setUp()
 
     def _make_form(self, csrf_enabled=False, *args, **kwargs):
         return self.form_class(request=self.request, csrf_enabled=self.csrf_enabled, *args, **kwargs)

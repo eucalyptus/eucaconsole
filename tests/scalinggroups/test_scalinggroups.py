@@ -50,7 +50,10 @@ class ScalingGroupViewTests(BaseViewTestCase):
 class BaseScalingGroupFormTestCase(BaseFormTestCase):
     form_class = BaseScalingGroupForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -84,7 +87,10 @@ class BaseScalingGroupFormTestCase(BaseFormTestCase):
 class ScalingGroupCreateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupCreateForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -103,7 +109,10 @@ class ScalingGroupCreateFormTestCase(BaseFormTestCase):
 class ScalingGroupEditFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupEditForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -123,7 +132,10 @@ class ScalingGroupEditFormTestCase(BaseFormTestCase):
 class DeleteFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupDeleteForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -132,7 +144,10 @@ class DeleteFormTestCase(BaseFormTestCase):
 class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupPolicyCreateForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -156,7 +171,10 @@ class ScalingGroupPolicyCreateFormTestCase(BaseFormTestCase):
 class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupPolicyDeleteForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -165,7 +183,10 @@ class ScalingGroupPolicyDeleteFormTestCase(BaseFormTestCase):
 class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesMarkUnhealthyForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')
@@ -174,7 +195,10 @@ class ScalingGroupInstancesMarkUnhealthyFormTestCase(BaseFormTestCase):
 class ScalingGroupInstancesTerminateFormTestCase(BaseFormTestCase):
     form_class = ScalingGroupInstancesTerminateForm
     request = testing.DummyRequest()
-    form = form_class(request)
+    request.session['region'] = 'dummy'
+
+    def setUp(self):
+        self.form = self.form_class(self.request)
 
     def test_secure_form(self):
         self.has_field('csrf_token')

@@ -70,7 +70,11 @@ class AWSAuthTestCase(BaseTestCase):
 
     def test_aws_authentication_failure(self):
         import logging; logging.info("url = "+self.expected_url)
-        self.assertRaises(HTTPError, self.auth.authenticate, timeout=1)
+        try:
+            self.auth.authenticate(timeout=10)
+            self.asertFalse(True, msg="Auth should have thrown an exception")
+        except (HTTPError, URLError):
+            self.assertTrue(True, msg="Auth threw an exception, to be expected")
 
 
 class UserTestCase(BaseTestCase):

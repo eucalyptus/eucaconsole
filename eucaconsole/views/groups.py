@@ -24,8 +24,10 @@ class GroupsView(LandingPageView):
 
     def __init__(self, request):
         super(GroupsView, self).__init__(request)
+        self.conn = self.get_connection(conn_type="iam")
         self.initial_sort_key = 'group_name'
         self.prefix = '/groups'
+        self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params or None)
 
     @view_config(route_name='groups', renderer=TEMPLATE)
     def groups_landing(self):
@@ -48,8 +50,25 @@ class GroupsView(LandingPageView):
             prefix=self.prefix,
             initial_sort_key=self.initial_sort_key,
             json_items_endpoint=json_items_endpoint,
-            delete_form=DeleteGroupForm(self.request),
+            delete_form=self.delete_form,
         )
+
+    @view_config(route_name='groups_delete', request_method='POST')
+    def groups_delete(self):
+        location = self.request.route_path('groups')
+        group_name = self.request.params.get('name')
+        group = self.conn.get_group(group_name=group_name)
+        if group and self.delete_form.validate():
+            with boto_error_handler(self.request, location):
+                self.log_request(_(u"Deleting group {0}").format(group.group_name))
+                params = {'GroupName': group.group_name, 'IsRecursive': 'true'}
+                self.conn.get_response('DeleteGroup', params)
+                msg = _(u'Successfully deleted group')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+        else:
+            msg = _(u'Unable to delete group.')  # TODO Pull in form validation error messages here
+            self.request.session.flash(msg, queue=Notification.ERROR)
+        return HTTPFound(location=location)
 
 
 class GroupsJsonView(BaseView):
