@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
-         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}', '${securitygroups_id_map_json}')">
+         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}', '${securitygroups_id_map_json}', '${roles_choices_json}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
@@ -128,6 +128,14 @@
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview')}
+                            <hr />
+                            <p class="description" i18n:translate="">Specify a role to grant special accewss to this instance.</p>
+                                <div class="small-3 columns">
+                                    <label class="right" ng-non-bindable="" i18n:translate="">Role</label>
+                                </div>
+                                <div class="small-9 columns field">
+                                    <select id="role" ng-options="r as v for (r, v) in roleList" name="role"/>
+                                </div>
                             <hr />
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>

@@ -28,12 +28,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.roleList = [];
         $scope.currentStepIndex = 1;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson, roles) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.roleList = JSON.parse(roles);
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();

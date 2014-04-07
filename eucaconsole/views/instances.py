@@ -708,9 +708,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
-            conn=self.conn, formdata=self.request.params or None)
+            conn=self.conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
@@ -722,6 +723,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = json.dumps(dict(self.launch_form.keypair.choices))
         self.securitygroup_choices_json = json.dumps(dict(self.launch_form.securitygroup.choices))
+        self.role_choices_json = json.dumps(dict(self.launch_form.role.choices))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -736,6 +738,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
+            role_choices_json=self.role_choices_json,
             security_group_names=[name for name, label in self.launch_form.securitygroup.choices],
         )
 
