@@ -131,7 +131,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 modal.find('div.error').removeClass('error');
                 var chosenSelect = modal.find('select');
                 if (chosenSelect.length > 0) {
-                    chosenSelect.chosen('destroy');
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.chosen();
                 }
