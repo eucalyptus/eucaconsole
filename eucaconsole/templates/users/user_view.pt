@@ -28,7 +28,7 @@
             <dl class="tabs" data-tab="">
                 <dd class="active"><a href="#general-tab" i18n:translate="">General</a></dd>
                 <dd><a href="#security-tab" i18n:translate="">Security credentials</a></dd>
-                <dd ng-cloak ng-show="userName != 'admin'"><a href="#quotas-tab" i18n:translate="">Quotas</a></dd>
+                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" i18n:translate="">Quotas</a></dd>
             </dl>
             <div class="tabs-content">
                 <div class="content active panel has-actions" id="general-tab">
@@ -133,7 +133,7 @@
                             <a href="" class="close-reveal-modal">&#215;</a>
                         </div>
                     </div>
-                    <div ng-cloak ng-show="userName != 'admin'">
+                    <div ng-cloak="" ng-show="userName != 'admin'">
                         <hr/>
                         <div tal:define="policies_url request.route_path('user_policies_json', name=user.user_name);
                                          policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
