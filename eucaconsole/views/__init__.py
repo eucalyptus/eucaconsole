@@ -123,7 +123,7 @@ class BaseView(object):
     def invalidate_connection_cache():
         """Empty connection objects cache"""
         for manager in cache_managers.values():
-            if manager.namespace_name in ['_aws_connection', '_euca_connection']:
+            if hasattr(manager, 'namespace_name') and manager.namespace_name in ['_aws_connection', '_euca_connection']:
                 manager.clear()
 
     @staticmethod
