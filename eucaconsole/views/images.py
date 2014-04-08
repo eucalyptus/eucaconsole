@@ -109,7 +109,8 @@ class ImagesJsonView(LandingPageView):
 
     def get_images(self, conn, owners, executors, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(owners=owners, executors=executors, region=region)
+        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
+            owners=owners, executors=executors, region=region)
 
         # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
@@ -160,7 +161,9 @@ class ImageView(TaggedItemView):
             image.block_device_names = []
             if attrs['block_device_mapping'] is not None:
                 for attr in attrs['block_device_mapping']:
-                    image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+                    image.block_device_names.append({
+                        'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__
+                    })
             image.platform = self.get_platform(image)
             image.platform_name = ImageView.get_platform_name(image.platform)
         return image
