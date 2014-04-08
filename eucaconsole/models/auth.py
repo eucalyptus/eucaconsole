@@ -8,8 +8,6 @@ import logging
 import urllib2
 import xml
 
-from datetime import datetime
-
 from beaker.cache import cache_region
 from boto import ec2
 from boto.ec2.connection import EC2Connection
