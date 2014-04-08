@@ -47,6 +47,12 @@ angular.module('UserNew', ['UserEditor'])
         }
         $scope.submit = function($event) {
             var form = $($event.target);
+            $('#quota-error').css('display', 'none');
+            var invalid = form.find('input[data-invalid]');
+            if (invalid.length > 0) {
+                $('#quota-error').css('display', 'block');
+                return false;
+            }
             var users = JSON.parse(form.find('textarea[name="users"]').val())
             var singleUser = Object.keys(users)[0]
             if (singleUser === undefined) {

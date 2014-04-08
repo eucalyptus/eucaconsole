@@ -348,13 +348,14 @@
                     </div>
                     <div ng-controller="UserQuotasCtrl" class="columns" ng-init="initController(
                                 '${request.route_path('user_update_quotas', name=user.user_name)}')">
-                        <form ng-submit="submit($event)" id="user-update-quotas-form">
+                        <form ng-submit="submit($event)" id="user-update-quotas-form" data-abide="">
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 ${structure:user_form['csrf_token']}
                                 ${panel('quotas_panel', quota_form=user_form)}
                             </div>
                             <hr />
+                            <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
                             <div>
                                 <button type="submit" class="button" id="save-quotas-btn">
                                     <span tal:condition="user" i18n:translate="">Save Quotas</span>
