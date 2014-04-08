@@ -38,17 +38,17 @@
                         </dd>
                         <dd ng-class="{disabled: step2Invalid}">
                             <a id="tabStep3" ng-click="visitNextStep(3, $event)"
-                               href="#step3" ng-cloak ng-if="!step2Invalid">
+                               href="#step3" ng-cloak="" ng-if="!step2Invalid">
                                 <span class="cir">3</span> <b>Security</b>
                             </a>
-                            <span class="cir" ng-cloak ng-if="step2Invalid">3</span> <b ng-cloak ng-if="step2Invalid">Security</b>
+                            <span class="cir" ng-cloak="" ng-if="step2Invalid">3</span> <b ng-cloak="" ng-if="step2Invalid">Security</b>
                         </dd>
                         <dd ng-class="{disabled: step3Invalid}">
                             <a id="tabStep4" ng-click="visitNextStep(4, $event)"
-                               href="#step4" ng-cloak ng-if="!step3Invalid">
+                               href="#step4" ng-cloak="" ng-if="!step3Invalid">
                                 <span class="cir">4</span> <b>Advanced</b>
                             </a>
-                            <span class="cir" ng-cloak ng-if="step3Invalid">4</span> <b ng-cloak ng-if="step3Invalid">Advanced</b>
+                            <span class="cir" ng-cloak="" ng-if="step3Invalid">4</span> <b ng-cloak="" ng-if="step3Invalid">Advanced</b>
                         </dd>
                     </dl>
                     <div class="tabs-content">
