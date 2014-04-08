@@ -33,6 +33,11 @@
             To use the Eucalyptus User Console, please enable JavaScript in your browser's settings.
             </p>
         </div>
+        <div id='ssl-warning' i18n:translate="" class="display:none;">
+            <strong>SSL not enabled</strong>
+            <p i18n:translate="">This connection is untrusted because SSL in not enabled on the server. Credentials will be sent over the wire in clear text.
+            </p>
+        </div>
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
                 <dl class="tabs" id="login-tabs" data-tab="">
@@ -148,12 +153,6 @@
             <div id="browser-svg-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Browser doesn't support SVG</h3>
                 <p i18n:translate="">The browser you are using is not supported. It lacks support for SVG images and many graphics this application uses won't display properly.
-                </p>
-                <a class="close-reveal-modal">&#215;</a>
-            </div>
-            <div id="ssl-off-modal" class="reveal-modal small" data-reveal="">
-                <h3 i18n:translate="">SSL not enabled</h3>
-                <p i18n:translate="">This connection is untrusted because SSL in not enabled on the server. Credentials will be sent over the wire in clear text.
                 </p>
                 <a class="close-reveal-modal">&#215;</a>
             </div>

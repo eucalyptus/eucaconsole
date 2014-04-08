@@ -25,28 +25,9 @@ angular.module('LoginPage', [])
                     }
                 }
             ])
-            /* old-style browser version detection... modernizr instead?
-            var supportedBrowser = false;
-            if ($.browser.mozilla && parseInt($.browser.version, 10) > 24) {
-                 supportedBrowser = true;
-            } else if (Object.hasOwnProperty.call(window, "ActiveXObject") && !window.ActiveXObject && parseInt($.browser.version, 10) > 9) {
-                 // this test is for IE 
-                 supportedBrowser = true;
-            } else if ($.browser.webkit) {
-                userAgent = navigator.userAgent.toLowerCase();
-                rwebkit = new RegExp("webkit/([0-9]+)");
-                res = rwebkit.exec(userAgent);
-                if (res && res[1] > 535) {
-                    supportedBrowser = true;
-                }
-            }
-            if (!supportedBrowser) {
-                $('#browser-version-modal').foundation('reveal', 'open');
-            }
             if (window.location.protocol != 'https:') {
-                $('#ssl-off-modal').foundation('reveal', 'open');
+                $('#ssl-warning').css('display', 'block');
             }
-            */
         };
         $scope.setFocus = function () {
             var inputs = [];
