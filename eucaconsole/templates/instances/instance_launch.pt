@@ -32,21 +32,23 @@
                         </dd>
                         <dd class="${'active' if image else 'disabled'}">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
-                               tal:attributes="href '#step2' if image else None" tal:omit-tag="not image">
+                               href="#step2" tal:omit-tag="not image">
                                 <span class="cir">2</span> <b>Details</b>
                             </a>
                         </dd>
-                        <dd class="${'' if image else 'disabled'}">
+                        <dd ng-class="{disabled: step2Invalid}">
                             <a id="tabStep3" ng-click="visitNextStep(3, $event)"
-                               tal:attributes="href '#step3' if image else None" tal:omit-tag="not image">
+                               href="#step3" ng-cloak ng-if="!step2Invalid">
                                 <span class="cir">3</span> <b>Security</b>
                             </a>
+                            <span class="cir" ng-cloak ng-if="step2Invalid">3</span> <b ng-cloak ng-if="step2Invalid">Security</b>
                         </dd>
-                        <dd class="${'' if image else 'disabled'}">
+                        <dd ng-class="{disabled: step3Invalid}">
                             <a id="tabStep4" ng-click="visitNextStep(4, $event)"
-                               tal:attributes="href '#step4' if image else None" tal:omit-tag="not image">
+                               href="#step4" ng-cloak ng-if="!step3Invalid">
                                 <span class="cir">4</span> <b>Advanced</b>
                             </a>
+                            <span class="cir" ng-cloak ng-if="step3Invalid">4</span> <b ng-cloak ng-if="step3Invalid">Advanced</b>
                         </dd>
                     </dl>
                     <div class="tabs-content">
