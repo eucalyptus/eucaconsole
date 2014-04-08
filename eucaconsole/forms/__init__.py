@@ -64,12 +64,12 @@ class ChoicesManager(object):
 
     def get_availability_zones(self, region):
         @cache_region('extra_long_term', 'availability_zones_{region}'.format(region=region))
-        def _get_zones_cache():
+        def _get_zones_cache(self):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
             return zones;
-        return _get_zones_cache()
+        return _get_zones_cache(self)
 
     def instances(self, instances=None, state=None):
         from ..views import TaggedItemView
