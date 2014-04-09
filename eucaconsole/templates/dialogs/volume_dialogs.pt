@@ -78,7 +78,7 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete volume</h3>
         <p><span i18n:translate="">All data on the volumes will be destroyed.</span></p>
-        <p><span i18n:translate="">Are you sure you want to delete volume</span><br />
+        <p><span i18n:translate="">Are you sure you want to delete volume</span>
            <span tal:condition="volume"><b ng-non-bindable="">${volume_name}</b></span>
            <span tal:condition="not volume"><b>{{ volumeID }}</b></span> 
            ?</p>

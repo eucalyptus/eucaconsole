@@ -23,7 +23,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.securityGroupsRules = {};
-        $scope.selectedGroupRules = [];
+        $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupSelect = $('select#securitygroup');
@@ -47,7 +47,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.updateSecurityGroup = function () {
             $scope.securityGroup = $('div#securitygroup_chosen').find('li.search-choice:last').text() || $scope.securityGroup;
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.selectedGroupRules[$scope.securityGroup] = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             // Timeout is needed for chosen widget to update the search choices 
@@ -263,8 +263,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
                 $scope.securityGroup = $scope.newSecurityGroupName;
                 $scope.securityGroups.push($scope.newSecurityGroupName);
-                $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                $scope.selectedGroupRules[$scope.securityGroup] = JSON.parse($('#rules').val());
+                $scope.securityGroupsRules[$scope.newSecurityGroupName] = JSON.parse($('#rules').val());
                 // Timeout is needed for chosen widget update
                 $timeout(function(){
                     $scope.securityGroupSelect.trigger('chosen:updated');

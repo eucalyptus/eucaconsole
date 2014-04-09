@@ -107,7 +107,10 @@ class ChoicesManager(object):
             choices.extend(_get_instance_types_cache(self))
             return choices
         elif cloud_type == 'aws':
-            return choices.extend(AWS_INSTANCE_TYPE_CHOICES)
+            if add_description:
+                return AWS_INSTANCE_TYPE_CHOICES
+            else:
+                return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
     def volumes(self, volumes=None):
         from ..views import TaggedItemView
@@ -140,7 +143,7 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if no_keypair_option:
-            choices.append(('', _(u'No Keypair')))
+            choices.append(('', _(u'None (advanced option)')))
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
