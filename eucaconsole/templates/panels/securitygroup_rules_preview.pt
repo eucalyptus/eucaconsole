@@ -1,58 +1,38 @@
 <!--! Security group rules preview (used in Launch Instance and Create Launch Configuration wizards) -->
 <div tal:omit-tag="">
-    <div ng-repeat="securityGroup in securityGroups">
-        <div ng-show="selectedGroupRules[securityGroup].length > 0 &amp;&amp; selectedGroupRules[securityGroup][0].ip_protocol != '-1'">
-            <div class="row">
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns rules-title">
-                    <span i18n:translate="">Incoming traffic rules for security group</span>
-                    <b>{{ securityGroup }}</b>:
-                </div>
-            </div>
-            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules[securityGroup]">
-                <div class="small-${leftcol_width} columns">&nbsp;</div>
-                <div class="small-${rightcol_width} columns">
-                    <strong i18n:translate="">Rule</strong>:
-                    {{ rule.ip_protocol.toUpperCase() }}
-                    ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
-                    <span ng-repeat="grant in rule.grants">
-                         <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
-                         <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
-                    </span>
-                </div>
+    <div ng-show="selectedGroupRules.length > 0 &amp;&amp; selectedGroupRules[0].ip_protocol != '-1'">
+        <div class="row">
+            <div class="small-${leftcol_width} columns">&nbsp;</div>
+            <div class="small-${rightcol_width} columns rules-title">
+                <span i18n:translate="">Incoming traffic rules for security group</span>
+                <b>{{ securityGroup }}</b>:
             </div>
         </div>
-        <div ng-show="selectedGroupRules[securityGroup].length === 0 || selectedGroupRules[securityGroup][0].ip_protocol == '-1'">
-             <div ng-show="securityGroups.length == 1">
-                 <div class="row">
-                    <div class="small-${leftcol_width} columns">&nbsp;</div>
-                    <div class="small-${rightcol_width} columns rules-title">
-                         <p>
-                             <span i18n:translate="">WARNING, NO RULES DEFINED!</span>
-                             Your instance(s) will not be accessible until you add rules to this security group
-                             (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
-                             You can add rules to security group
-                             <span class="breakword"><a ng-href="/securitygroups/{{ getSecurityGroupIDByName(securityGroup) }}" target="_blank">{{ securityGroup }}</a></span>
-                             after you launch the instance(s) if you select security group <span class="breakword">{{ securityGroup }}</span>.
-                        </p>
-                    </div>
-                 </div>
+        <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
+            <div class="small-${leftcol_width} columns">&nbsp;</div>
+            <div class="small-${rightcol_width} columns">
+                <strong i18n:translate="">Rule</strong>:
+                {{ rule.ip_protocol.toUpperCase() }}
+                ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+                <span ng-repeat="grant in rule.grants">
+                    <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                </span>
              </div>
-             <div ng-show="securityGroups.length > 1">
-                 <div class="row">
-                    <div class="small-${leftcol_width} columns">&nbsp;</div>
-                    <div class="small-${rightcol_width} columns rules-title">
-                        <span i18n:translate="">Incoming traffic rules for security group</span>
-                        <b>{{ securityGroup }}</b>:
-                    </div>
-                </div>
-                <div class="row controls-wrapper">
-                    <div class="small-${leftcol_width} columns">&nbsp;</div>
-                    <div class="small-${rightcol_width} columns">
-                        <strong i18n:translate="">Rule</strong>:
-                        <span i18n:translate=""> None defined</span>
-                    </div>
-                </div>
+        </div>
+    </div>
+    <div ng-show="selectedGroupRules.length === 0 || selectedGroupRules[0].ip_protocol == '-1'">
+        <div class="row">
+            <div class="small-${leftcol_width} columns">&nbsp;</div>
+            <div class="small-${rightcol_width} columns rules-title">
+                <p>
+                    <span i18n:translate="">WARNING, NO RULES DEFINED!</span>
+                    Your instance(s) will not be accessible until you add rules to this security group
+                    (commonly, open port 22 for SSH access to Linux instances and port 3389 for RDP access to Windows instances).
+                    You can add rules to security group
+                    <span class="breakword"><a ng-href="/securitygroups/{{ getSecurityGroupIDByName(securityGroup) }}" target="_blank">{{ securityGroup }}</a></span>
+                    after you launch the instance(s) if you select security group <span class="breakword">{{ securityGroup }}</span>.
+                </p>
             </div>
         </div>
     </div>
