@@ -13,7 +13,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.summarySection = $('.summary');
         $scope.instanceTypeSelected = '';
         $scope.securityGroup = '';
-        $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
         $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
@@ -26,7 +25,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
-        $scope.securityGroupSelect = $('select#securitygroup');
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
@@ -41,19 +39,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
-            $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
             $scope.setFocus();
-        };
-        $scope.updateSecurityGroup = function () {
-            $scope.securityGroup = $('div#securitygroup_chosen').find('li.search-choice:last').text() || $scope.securityGroup;
-            $scope.selectedGroupRules[$scope.securityGroup] = $scope.securityGroupsRules[$scope.securityGroup];
-        };
-        $scope.updateSelectedSecurityGroupRules = function () {
-            // Timeout is needed for chosen widget to update the search choices 
-            $timeout(function() {
-                $scope.updateSecurityGroup();
-            }, 250);
         };
         $scope.getSecurityGroupIDByName = function (securityGroupName) {
             return $scope.securityGroupsIDMap[securityGroupName];
@@ -74,7 +61,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();
             $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
-            $scope.securityGroups.push($scope.securityGroup);
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
             $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
@@ -84,8 +70,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.keyPair = $scope.keyPairSelected;
             if( $scope.securityGroupSelected != '' ){
                 $scope.securityGroup = $scope.securityGroupSelected;
-                $scope.securityGroups = [];
-                $scope.securityGroups.push($scope.securityGroupSelected);
             }
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -97,14 +81,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
-            $scope.$watch('securityGroups', function(){
-                $scope.updateSecurityGroup();
-            });
-            // Timeout is needed for chosen widget update
-            $timeout(function(){
-                $scope.securityGroupSelect.chosen({'width': '100%', 'search_contains': true});
-                $scope.securityGroupSelect.trigger('chosen:updated');
-            }, 250);
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
@@ -262,13 +238,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // Add new security group to choices and set it as selected
                 $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
                 $scope.securityGroup = $scope.newSecurityGroupName;
-                $scope.securityGroups.push($scope.newSecurityGroupName);
                 $scope.selectedGroupRules[$scope.securityGroup] = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[$scope.newSecurityGroupName] = JSON.parse($('#rules').val());
-                // Timeout is needed for chosen widget update
-                $timeout(function(){
-                    $scope.securityGroupSelect.trigger('chosen:updated');
-                }, 250);
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
