@@ -71,6 +71,8 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
         # Set default choices where applicable, defaulting to first non-blank choice
+        if len(self.securitygroup.choices) > 1:
+            self.securitygroup.data = 'default'
         if len(self.keypair.choices) > 1:
             self.keypair.data = self.keypair.choices[1][0]
 

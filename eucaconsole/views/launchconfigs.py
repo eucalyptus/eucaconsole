@@ -290,7 +290,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             image_id = self.image.id
             name = self.request.params.get('name')
             key_name = self.request.params.get('keypair')
-            security_groups = self.request.params.getall('securitygroup')
+            securitygroup = self.request.params.get('securitygroup', 'default')
+            security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
