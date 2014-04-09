@@ -52,13 +52,14 @@
                         </div>
                         <div>&nbsp;</div>
                         <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
-                            <h6>
+                            <div class="title">
                                 <a ng-click="expanded = !expanded">
                                     <i class="fi-plus" ng-show="!expanded"></i>
                                     <i class="fi-minus" ng-show="expanded"></i>
                                     &nbsp;<span i18n:translate="">Advanced</span>
                                 </a>
-                            </h6>
+                            </div>
+                            <div>&nbsp;</div>
                             <div class="section columns" ng-show="expanded">
                                 <div class="row controls-wrapper readonly">
                                     ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
