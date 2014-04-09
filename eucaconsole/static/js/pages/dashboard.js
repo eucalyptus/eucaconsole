@@ -13,7 +13,7 @@ angular.module('Dashboard', [])
         $scope.zoneDropdown = $('#zone-dropdown');
         $scope.itemsLoading = true;
         $scope.setInitialZone = function () {
-            var storedZone = localStorage.getItem($scope.storedZoneKey);
+            var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
         };
         $scope.initController = function (jsonItemsEndpoint) {
@@ -41,13 +41,13 @@ angular.module('Dashboard', [])
         $scope.setZone = function (zone) {
             $scope.itemsLoading = true;
             $scope.selectedZone = zone;
-            localStorage.setItem($scope.storedZoneKey, zone);
+            Modernizr.localstorage && localStorage.setItem($scope.storedZoneKey, zone);
             $scope.zoneDropdown.removeClass('open').removeAttr('style');
             $scope.getItemCounts();
         };
         $scope.storeAWSRegion = function () {
-            if( $('#region-dropdown').length > 0 ){
-                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id')); 
+            if ($('#region-dropdown').length > 0 && Modernizr.localstorage) {
+                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
             }
         };
     })
