@@ -222,7 +222,9 @@
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                        <div class="small-8 columns value">{{ securityGroups }}</div>
+                        <div class="small-8 columns value">
+                            <span ng-repeat="securityGroup in securityGroups">{{ securityGroup }}{{$last ? '' : ', '}}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="section step4 hide">
