@@ -16,7 +16,7 @@ from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPException
+from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -38,7 +38,9 @@ class JSONResponse(Response):
         )
 
 
-class JSONError(HTTPException):
+# Can use this for 1.5, but the fix below for 1.4 also works in 1.5.
+#class JSONError(HTTPException):
+class JSONError(HTTPUnprocessableEntity):
     def __init__(self, status=400, message=None, **kwargs):
         super(JSONError, self).__init__(**kwargs)
         self.status = status
