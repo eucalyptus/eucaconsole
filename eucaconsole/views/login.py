@@ -19,6 +19,7 @@ from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..constants import AWS_REGIONS
 
+
 @forbidden_view_config()
 def redirect_to_login_page(request):
     login_url = request.route_path('login')
@@ -40,7 +41,7 @@ class LoginView(BaseView):
             referrer = '/'  # never use the login form (or logout view) itself as came_from
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.login_form_errors = []
-        self.duration = str(int(self.request.registry.settings.get('session.cookie_expires'))+60)
+        self.duration = str(int(self.request.registry.settings.get('session.cookie_expires')) + 60)
         self.https_required = asbool(self.request.registry.settings.get('session.secure', False))
         self.render_dict = dict(
             https_required=self.https_required,
@@ -80,10 +81,11 @@ class LoginView(BaseView):
             username = self.request.params.get('username')
             password = self.request.params.get('password')
             try:
-                creds = auth.authenticate(account=account, user=username,
-                                passwd=password, new_passwd=new_passwd, timeout=8, duration=self.duration)
+                creds = auth.authenticate(
+                    account=account, user=username, passwd=password,
+                    new_passwd=new_passwd, timeout=8, duration=self.duration)
                 user_account = '{user}@{account}'.format(user=username, account=account)
-                self.invalidate_cache()  # Clear connection objects from cache
+                # self.invalidate_connection_cache()  # Uncomment if/when connection object cache is re-enabled
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
                 session['account'] = account
@@ -116,12 +118,12 @@ class LoginView(BaseView):
         if self.aws_login_form.validate():
             package = self.request.params.get('package')
             package = base64.decodestring(package);
-            aws_region = self.request.params.get('aws-region');
+            aws_region = self.request.params.get('aws-region')
             try:
                 auth = AWSAuthenticator(package=package)
                 creds = auth.authenticate(timeout=10)
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
-                self.invalidate_cache()  # Clear connection objects from cache
+                # self.invalidate_connection_cache()  # Uncomment if/when connection object cache is re-enabled
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
                 session['session_token'] = creds.session_token
@@ -154,6 +156,6 @@ class LogoutView(BaseView):
         if self.euca_logout_form.validate():
             forget(self.request)
             self.request.session.invalidate()
-            self.invalidate_cache()
+            # self.invalidate_connection_cache()  # Uncomment if/when connection object cache is re-enabled
             return HTTPFound(location=self.login_url)
 

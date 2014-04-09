@@ -296,6 +296,8 @@ class UserView(BaseView):
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
     def user_policies_json(self):
         """Return user policies list"""
+        if self.user.user_name == 'admin':
+            return dict(results=[])
         with boto_error_handler(self.request):
             policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
             return dict(results=policies.policy_names)

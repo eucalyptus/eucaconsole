@@ -8,8 +8,26 @@
 angular.module('LoginPage', [])
     .controller('LoginPageCtrl', function ($scope) {
         $scope.initController = function () {
+            $('#javascript-warning').css('display', 'none');
             $scope.prefillForms();
             $scope.addListeners();
+            Modernizr.load([
+                {
+                    test: Modernizr.localstorage,
+                    nope: function () {
+                        $('#browser-localstorage-warn-modal').foundation('reveal', 'open');
+                    }
+                },
+                {
+                    test: Modernizr.svg,
+                    nope: function () {
+                        $('#browser-svg-warn-modal').foundation('reveal', 'open');
+                    }
+                }
+            ])
+            if (window.location.protocol != 'https:') {
+                $('#ssl-warning').css('display', 'block');
+            }
         };
         $scope.setFocus = function () {
             var inputs = [];

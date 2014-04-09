@@ -120,10 +120,12 @@ class BaseView(object):
         return url or default_path
 
     @staticmethod
-    def invalidate_cache():
-        """Empty Beaker cache to clear connection objects"""
-        for _cache in cache_managers.values():
-            _cache.clear()
+    def invalidate_connection_cache():
+        """Empty connection objects cache"""
+        # TODO: Need workaround for Beaker < 1.6, which is missing Cache().namespace_name
+        for manager in cache_managers.values():
+            if hasattr(manager, 'namespace_name') and manager.namespace_name in ['_aws_connection', '_euca_connection']:
+                manager.clear()
 
     @staticmethod
     def log_message(request, message, level='info'):
@@ -168,8 +170,7 @@ class BaseView(object):
                 notice = _(u'Your session has timed out')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
-            for _cache in cache_managers.values():
-                _cache.clear()
+            BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:

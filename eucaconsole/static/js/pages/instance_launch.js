@@ -29,6 +29,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
+        $scope.step2Invalid = true;
+        $scope.step3Invalid = true;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
@@ -176,17 +178,32 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $event.preventDefault();
                 return false;
             }
+            if (nextStep == 3) { $scope.step2Invalid = false; }
+            if (nextStep == 4) { $scope.step3Invalid = false; }
             
-            // If all is well, hide current and show new tab without clicking
-            // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can start
-            $('#tabStep' + currentStep).removeClass("active");
-            $('#step' + currentStep).removeClass("active");
-            $('#tabStep' + nextStep).addClass("active");
-            $('#step' + nextStep).addClass("active");
-            // Unhide appropriate step in summary
-            $scope.summarySection.find('.step' + nextStep).removeClass('hide');
-            $scope.currentStepIndex = nextStep;
+            // since above lines affects DOM, need to let that take affect first
+            $timeout(function() {
+                // If all is well, hide current and show new tab without clicking
+                // since clicking invokes this method again (via ng-click) and
+                // one ng action must complete before another can start
+                var hash = "step"+nextStep;
+                $(".tabs").children("dd").each(function() {
+                    var link = $(this).find("a");
+                    if (link.length != 0) {
+                        var id = link.attr("href").substring(1);
+                        var $container = $("#" + id);
+                        $(this).removeClass("active");
+                        $container.removeClass("active");
+                        if (id == hash || $container.find("#" + hash).length) {
+                            $(this).addClass("active");
+                            $container.addClass("active");
+                        }
+                    }
+                });
+                // Unhide appropriate step in summary
+                $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+                $scope.currentStepIndex = nextStep;
+            },50);
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
