@@ -21,7 +21,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.securityGroupsRules = {};
         $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
@@ -39,6 +38,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
+            $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
             $scope.setFocus();
         };
@@ -53,6 +53,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     }
                 });
             });
+        };
+        $scope.updateSelectedSecurityGroupRules = function(){
+            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
