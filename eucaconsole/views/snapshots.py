@@ -98,7 +98,7 @@ class SnapshotsView(LandingPageView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.clear_images_cache()
+                ImagesView.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -282,7 +282,7 @@ class SnapshotView(TaggedItemView):
                     for img in self.images_registered:
                         img.deregister()
                     # Clear images cache
-                    ImagesView.clear_images_cache()
+                    ImagesView.invalidate_images_cache()
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
@@ -313,7 +313,7 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.clear_images_cache()
+                ImagesView.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
