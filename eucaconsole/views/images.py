@@ -63,9 +63,9 @@ class ImagesView(LandingPageView):
         ]
 
     @staticmethod
-    def clear_images_cache():
+    def invalidate_images_cache():
         for manager in cache_managers.values():
-            if hasattr(manager, 'namespace_name') and '_get_images_cache' in manager.namespace_name:
+            if '_get_images_cache' in manager.namespace.namespace:
                 manager.clear()
 
 
