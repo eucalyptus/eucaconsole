@@ -21,7 +21,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.selectedGroupRules = {};
+        $scope.selectedGroupRules = [];
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
@@ -38,7 +38,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
-            $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
             $scope.setFocus();
         };
@@ -54,8 +53,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 });
             });
         };
-        $scope.updateSelectedSecurityGroupRules = function(){
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        $scope.updateSecurityGroup = function () {
+             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -83,6 +82,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $scope.$watch('securityGroup', function(){
+                $scope.updateSecurityGroup();
             });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
@@ -166,7 +168,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $timeout(function() {
             // If all is well, click the relevant tab to go to next step
             // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can start
+            // one ng action must complete before another can star
             var hash = "step"+nextStep;
                 $(".tabs").children("dd").each(function() {
                     var link = $(this).find("a");
@@ -241,7 +243,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // Add new security group to choices and set it as selected
                 $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
                 $scope.securityGroup = $scope.newSecurityGroupName;
-                $scope.selectedGroupRules[$scope.securityGroup] = JSON.parse($('#rules').val());
+                $scope.selectedGroupRules = JSON.parse($('#rules').val());
+                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
