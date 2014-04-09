@@ -42,7 +42,7 @@ angular.module('SecurityGroupRules', [])
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
             $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
-            $(document).on('close', '[data-reveal]', function () {
+            $(document).on('closed', '[data-reveal]', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.syncRules();
