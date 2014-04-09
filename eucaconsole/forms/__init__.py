@@ -140,7 +140,7 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if no_keypair_option:
-            choices.append(('', _(u'No Keypair')))
+            choices.append(('', _(u'None (advanced option)')))
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
