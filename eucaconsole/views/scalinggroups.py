@@ -503,7 +503,8 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
-            avail_zones_placeholder_text=_(u'Select availability zones...')
+            launch_config_param=escape(self.request.params.get('launch_config', '')),
+            avail_zones_placeholder_text=_(u'Select availability zones...'),
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
