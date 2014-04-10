@@ -273,10 +273,14 @@ class VolumeView(TaggedItemView, BaseVolumeView):
     @view_config(route_name='volume_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def volume_update(self):
         if self.volume and self.volume_form.validate():
-            # Update tags
             location = self.request.route_path('volume_view', id=self.volume.id)
             with boto_error_handler(self.request, location):
+                # Update tags
                 self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
 
                 msg = _(u'Successfully modified volume')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

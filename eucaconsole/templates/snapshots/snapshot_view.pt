@@ -70,12 +70,8 @@
                             </span>
                         </div>
                     </div>
-                    <div tal:condition="not snapshot" tal:omit-tag="">
-                        ${panel('form_field', field=snapshot_form['name'], autofocus='', **html_attrs)}
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="snapshot">
-                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns field inline breakword" ng-non-bindable="">${snapshot.tags.get('Name')}</div>
+                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not snapshot else {};" ng-non-bindable="">
+                        ${panel('form_field', field=snapshot_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot and snapshot.description">
                         <div class="small-4 columns"><label i18n:translate="">Description</label></div>
