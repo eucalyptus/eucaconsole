@@ -401,7 +401,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 self.update_tags()
 
                 # Save Name tag
-                name = self.request.params.get('instance_name', '')
+                name = self.request.params.get('name', '')
                 self.update_name_tag(name)
 
                 # Update stopped instance

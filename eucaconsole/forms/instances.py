@@ -16,7 +16,7 @@ class InstanceForm(BaseSecureForm):
        Form to launch an instance is in LaunchInstanceForm
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
-    instance_name = wtforms.TextField(label=_(u'Name'))
+    name = wtforms.TextField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
@@ -36,7 +36,7 @@ class InstanceForm(BaseSecureForm):
         self.set_choices()
 
         if instance is not None:
-            self.instance_name.data = instance.tags.get('Name', '')
+            self.name.data = instance.tags.get('Name', '')
             self.instance_type.data = instance.instance_type
             self.ip_address.data = instance.ip_address or 'none'
             self.monitored.data = instance.monitored
