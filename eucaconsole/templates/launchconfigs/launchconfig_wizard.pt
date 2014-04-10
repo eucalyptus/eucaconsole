@@ -6,7 +6,9 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigWizard" ng-controller="LaunchConfigWizardCtrl"
-         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}', '${securitygroup_choices_json}', '${securitygroups_id_map_json}')">
+         ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}',
+                                '${securitygroup_choices_json}', '${securitygroups_id_map_json}',
+                                '${request.route_path('image_json', id='_id_')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
@@ -26,15 +28,16 @@
                     ${structure:create_form['image_id']}
                     <dl class="tabs" data-tab="">
                         <dd class="${'active' if not image else ''}">
-                            <a id="tabStep1" href="#step1">
+                            <a id="tabStep1" ng-click="visitNextStep(1, $event)" href="#step1">
                                 <span class="cir">1</span> <b>Image</b>
                             </a>
                         </dd>
-                        <dd class="${'active' if image else 'disabled'}">
+                        <dd ng-class="{disabled: step1Invalid}">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
-                               href="#step2" tal:omit-tag="not image">
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
                                 <span class="cir">2</span> <b>Details</b>
                             </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid">Details</b>
                         </dd>
                         <dd ng-class="{disabled: step2Invalid}">
                             <a id="tabStep3" ng-click="visitNextStep(3, $event)"
@@ -63,16 +66,15 @@
                                 </div>
                                 <div class="small-8 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
-                                    <a class="button small" i18n:translate="" id="image-id-btn"
-                                       ng-click="inputImageID('${request.route_path('launchconfig_new')}')">Next</a>
                                 </div>
                             </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
-                            <div class="row" tal:condition="image">
+                            <div class="row">
                                 <div class="small-6 columns">&nbsp;</div>
                                 <div class="small-6 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
                                         <span i18n:translate="">Next</span>
+                                        <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                     </a>
                                 </div>
                             </div>
@@ -185,24 +187,24 @@
             </div>
         </div>
         <div class="large-4 columns">
-           <div class="summary" ng-cloak="" tal:condition="image">
+           <div class="summary">
                 <h5 i18n:translate="" class="title">Summary</h5>
-                <div class="section">
+                <div class="section step1 hide">
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Image:</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${image.name or image.id}</div>
+                        <div class="small-8 columns value">{{ imageName }}</div>
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Platform:</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${image.platform_name}</div>
+                        <div class="small-8 columns value">{{ imagePlatform }}</div>
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Root device:</label></div>
-                        <div class="small-8 columns value">${image.root_device_type}</div>
+                        <div class="small-8 columns value">{{ imageRootDeviceType }}</div>
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Manifest:</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${image.location}</div>
+                        <div class="small-8 columns value">{{ imageLocation }}</div>
                     </div>
                 </div>
                 <div class="section step2 hide">

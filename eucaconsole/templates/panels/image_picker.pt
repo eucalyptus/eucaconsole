@@ -41,7 +41,7 @@
                         </td>
                     </tr>
                     <tr ng-show="!itemsLoading" ng-repeat="item in items"
-                        data-href="${request.route_path(prefix_route)}?image_id={{ item.id }}"
+                        ng-click="imageSelected(item)"
                         ng-class="{'selected': item.id == selectedImageParam}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>

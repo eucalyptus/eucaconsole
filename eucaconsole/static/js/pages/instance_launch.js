@@ -11,6 +11,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
+        $scope.imageName = '';
+        $scope.imagePlatform = '';
+        $scope.imageRootDeviceType = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
@@ -29,13 +32,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
+        $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
+        $scope.imageJsonURL = '';
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
+                                securityGroupChoices, securityGroupsIDMapJson,
+                                imageJsonURL) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
@@ -69,6 +77,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = 1;
             }else{
                 $scope.currentStepIndex = 2;
+                $scope.step1Invalid = false;
             }
         };
         $scope.updateTagsPreview = function () {
@@ -94,16 +103,28 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
+            $scope.$watch('imageID', function(newID, oldID){
+                if (newID != oldID) {
+                    $http({
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        method: 'GET',
+                        url: $scope.imageJsonURL.replace('_id_', newID),
+                        data: '',
+                    }).success(function (oData) {
+                        var item = oData.results;
+                        $scope.imageName = item.name;
+                        $scope.imagePlatform = item.platform_name;
+                        $scope.imageRootDeviceType = item.root_device_type;
+                        $scope.summarySection.find('.step1').removeClass('hide');
+                    });
+                }
+            });
         };
         $scope.focusEnterImageID = function () {
             // Focus on "Enter Image ID" field if passed appropriate URL param
             if ($scope.urlParams['input_image_id']) {
                 $('#image-id-input').focus();
             }
-        };
-        $scope.inputImageID = function (url) {
-            url += '?image_id=' + $scope.imageID;
-            document.location.href = url;
         };
         $scope.setDialogFocus = function () {
             $(document).on('open', '[data-reveal]', function () {
@@ -178,6 +199,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $event.preventDefault();
                 return false;
             }
+            if (nextStep == 2) { $scope.step1Invalid = false; }
             if (nextStep == 3) { $scope.step2Invalid = false; }
             if (nextStep == 4) { $scope.step3Invalid = false; }
             
@@ -205,6 +227,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = nextStep;
             },50);
         };
+        $scope.$on('imageSelected', function($event, item) {
+            $scope.imageID = item.id;
+            $scope.imageName = item.name;
+            $scope.imagePlatform = item.platform_name;
+            $scope.imageRootDeviceType = item.root_device_type;
+            $scope.summarySection.find('.step1').removeClass('hide');
+        });
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
             limit = parseInt(limit, 10);
