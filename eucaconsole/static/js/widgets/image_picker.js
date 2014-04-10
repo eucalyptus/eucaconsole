@@ -95,6 +95,7 @@ angular.module('ImagePicker', [])
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
         };
         $scope.imageSelected = function (item) {
+            $scope.selectedImageParam = item.id;
             $scope.$emit('imageSelected', item);
         };
     })
