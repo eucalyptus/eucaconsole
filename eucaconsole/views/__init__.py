@@ -207,6 +207,12 @@ class TaggedItemView(BaseView):
             self.remove_tags()
             self.add_tags()
 
+    def update_name_tag(self, value):
+        if self.tagged_obj is not None:
+            safe_value = escape(value)
+            if not safe_value.startswith('aws:'):
+                self.tagged_obj.add_tag('Name', safe_value)
+
     @staticmethod
     def get_display_name(resource):
         name = ''
