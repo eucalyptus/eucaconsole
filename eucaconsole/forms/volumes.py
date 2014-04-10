@@ -15,6 +15,7 @@ class VolumeForm(BaseSecureForm):
     """Volume form
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
+    name_error_msg = _(u'Not a valid name')
     name = wtforms.TextField(label=_(u'Name'))
     snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))
     size_error_msg = _(u'Volume size is required')
@@ -40,6 +41,7 @@ class VolumeForm(BaseSecureForm):
         self.volume = volume
         self.snapshots = snapshots or []
         self.zones = zones or []
+        self.name.error_msg = self.name_error_msg
         self.size.error_msg = self.size_error_msg
         self.zone.error_msg = self.zone_error_msg
         self.choices_manager = ChoicesManager(conn=conn)

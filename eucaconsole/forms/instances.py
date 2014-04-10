@@ -16,6 +16,7 @@ class InstanceForm(BaseSecureForm):
        Form to launch an instance is in LaunchInstanceForm
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
+    name_error_msg = _(u'Not a valid name')
     name = wtforms.TextField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
@@ -31,6 +32,7 @@ class InstanceForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.instance = instance
         self.conn = conn
+        self.name.error_msg = self.name_error_msg
         self.instance_type.error_msg = self.instance_type_error_msg
         self.choices_manager = ChoicesManager(conn=self.conn)
         self.set_choices()
