@@ -9,6 +9,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
     .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
+        $scope.imageName = '';
+        $scope.imagePlatform = '';
+        $scope.imageRootDeviceType = '';
+        $scope.imageLocation = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.instanceTypeSelected = '';
@@ -32,6 +36,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
+        $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
@@ -91,6 +96,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.currentStepIndex = 1;
             }else{
                 $scope.currentStepIndex = 2;
+                $scope.step1Invalid = false;
             }
         };
         $scope.setWatcher = function (){
@@ -180,6 +186,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $event.preventDefault();
                 return false;
             }
+            if (nextStep == 2) { $scope.step1Invalid = false; }
             if (nextStep == 3) { $scope.step2Invalid = false; }
             if (nextStep == 4) { $scope.step3Invalid = false; }
 
@@ -207,6 +214,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
             $scope.currentStepIndex = nextStep;
         };
+        $scope.$on('imageSelected', function($event, item) {
+            $scope.imageID = item.id
+            $scope.imageName = item.name;
+            $scope.imagePlatform = item.platform_name;
+            $scope.imageRootDeviceType = item.root_device_type;
+            $scope.imageLocation = item.location;
+            $scope.summarySection.find('.step1').removeClass('hide');
+        });
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);

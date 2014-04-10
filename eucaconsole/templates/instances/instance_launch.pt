@@ -26,15 +26,16 @@
                     ${structure:launch_form['image_id']}
                     <dl class="tabs" data-tab="">
                         <dd class="${'active' if not image else ''}">
-                            <a id="tabStep1" href="#step1">
+                            <a id="tabStep1" ng-click="visitNextStep(1, $event)" href="#step1">
                                 <span class="cir">1</span> <b>Image</b>
                             </a>
                         </dd>
-                        <dd class="${'active' if image else 'disabled'}">
+                        <dd ng-class="{disabled: step1Invalid}">
                             <a id="tabStep2" ng-click="visitNextStep(2, $event)"
-                               href="#step2" tal:omit-tag="not image">
+                               href="#step2" ng-cloak="" ng-if="!step1Invalid">
                                 <span class="cir">2</span> <b>Details</b>
                             </a>
+                            <span class="cir" ng-cloak="" ng-if="step1Invalid">2</span> <b ng-cloak="" ng-if="step1Invalid">Details</b>
                         </dd>
                         <dd ng-class="{disabled: step2Invalid}">
                             <a id="tabStep3" ng-click="visitNextStep(3, $event)"
@@ -63,12 +64,10 @@
                                 </div>
                                 <div class="small-9 columns value">
                                     <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
-                                    <a class="button small" i18n:translate="" id="image-id-btn"
-                                       ng-click="inputImageID('${request.route_path('instance_create')}')">Next</a>
                                 </div>
                             </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint)}
-                            <div class="row" tal:condition="image">
+                            <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
@@ -182,20 +181,20 @@
         </div>
         <div class="large-4 columns" ng-cloak="">
             <div class="help-padding">&nbsp;</div>
-            <div class="summary" ng-cloak="" tal:condition="image">
+            <div class="summary">
                 <h5 i18n:translate="" class="title">Summary</h5>
-                <div class="section">
+                <div class="section step1 hide">
                     <div class="row">
                         <label i18n:translate="">Image:</label>
-                        <div class="columns value" ng-non-bindable="">${image.name or image.id}</div>
+                        <div class="columns value">{{ imageName }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Platform:</label>
-                        <div class="columns value">${image.platform_name}</div>
+                        <div class="columns value">{{ imagePlatform }}</div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Root device:</label>
-                        <div class="columns value">${image.root_device_type}</div>
+                        <div class="columns value">{{ imageRootDeviceType }}</div>
                     </div>
                 </div>
                 <div class="section step2 ${'hide' if not image else ''}">

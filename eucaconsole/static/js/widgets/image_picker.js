@@ -27,7 +27,6 @@ angular.module('ImagePicker', [])
             $scope.cloudType = cloudType;
             $scope.initChosenSelectors();
             $scope.initFilters();
-            $scope.initImageSelectionListener();
             $scope.getItems();
         };
         $scope.initChosenSelectors = function () {
@@ -36,11 +35,6 @@ angular.module('ImagePicker', [])
                 'search_contains': true,
                 'placeholder_text_single': ' ',
                 'placeholder_text_multiple': ' '
-            });
-        };
-        $scope.initImageSelectionListener = function () {
-            $scope.imagePicker.on('click', '.table tr', function () {
-                document.location.href = $(this).attr('data-href').replace('http://', '');
             });
         };
         $scope.initFilters = function () {
@@ -99,6 +93,9 @@ angular.module('ImagePicker', [])
                 }
             });
             $scope.items = filterText ? filteredItems : $scope.unfilteredItems;
+        };
+        $scope.imageSelected = function (item) {
+            $scope.$emit('imageSelected', item);
         };
     })
 ;
