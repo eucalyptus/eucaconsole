@@ -13,12 +13,6 @@ angular.module('LoginPage', [])
             $scope.addListeners();
             Modernizr.load([
                 {
-                    test: Modernizr.localstorage,
-                    nope: function () {
-                        $('#browser-localstorage-warn-modal').foundation('reveal', 'open');
-                    }
-                },
-                {
                     test: Modernizr.svg,
                     nope: function () {
                         $('#browser-svg-warn-modal').foundation('reveal', 'open');
@@ -86,10 +80,11 @@ angular.module('LoginPage', [])
                 var hash = CryptoJS.HmacSHA256(string_to_sign, $('#secret_key').val());
                 var signature = hash.toString(CryptoJS.enc.Base64);
                 var encoded = encodeURIComponent(signature);
+                var storedRegion = Modernizr.localstorage && localStorage.getItem('aws-region') || '';
                 params = params + "&Signature=" + encoded;
                 $('#aws_csrf_token').val($('#csrf_token').val());
                 $('#package').val($.base64.encode(params));
-                $('#aws-region').val(localStorage.getItem('aws-region'));
+                $('#aws-region').val(storedRegion);
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });

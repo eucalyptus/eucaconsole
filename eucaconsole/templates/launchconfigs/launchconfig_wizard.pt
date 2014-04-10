@@ -127,7 +127,7 @@
                                 </div>
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroups', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                                 <div class="row">
                                     <div class="small-9 columns right">
                                         <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
@@ -224,9 +224,7 @@
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                        <div class="small-8 columns value">
-                            <span ng-repeat="securityGroup in securityGroups">{{ securityGroup }}{{$last ? '' : ', '}}</span>
-                        </div>
+                        <div class="small-8 columns value">{{ securityGroup }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">

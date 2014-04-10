@@ -45,10 +45,10 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             $scope.landingPageViewKey = $scope.pageResource + "-landingPageView";
         };
         $scope.setInitialSort = function (sortKey) {
-            var storedSort = sessionStorage.getItem($scope.sortByKey),
-                storedLandingPageView = localStorage.getItem($scope.landingPageViewKey);
+            var storedSort = Modernizr.sessionstorage && sessionStorage.getItem($scope.sortByKey),
+                storedLandingPageView = Modernizr.localstorage && localStorage.getItem($scope.landingPageViewKey) || "tableview";
             $scope.sortBy = storedSort || sortKey;
-            $scope.landingPageView = storedLandingPageView == null ? "tableview" : storedLandingPageView;
+            $scope.landingPageView = storedLandingPageView;
         };
         $scope.setWatch = function () {
             // Dismiss sorting dropdown on sort selection
@@ -58,8 +58,8 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                     sortingDropdown.removeClass('open');
                     sortingDropdown.removeAttr('style');
                 }
-                // Set sortBy in localStorage
-                sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
+                // Set sortBy in sessionStorage
+                Modernizr.sessionstorage && sessionStorage.setItem($scope.sortByKey, $scope.sortBy);
             });
             // Landing page display preference (table/tile view) watcher
             $scope.$watch('landingPageView', function () {
@@ -73,7 +73,7 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                    gridviewBtn.removeClass("selected");
                }
                // Set landingPageView in localStorage
-               localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
+               Modernizr.localstorage && localStorage.setItem($scope.landingPageViewKey, $scope.landingPageView);
             });
         };
         $scope.setFocus = function () {
@@ -127,8 +127,9 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             });
         };
         $scope.storeAWSRegion = function () {
-            if( $('#region-dropdown').length > 0 ){
-                localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id')); 
+            if ($('#region-dropdown').length > 0 && Modernizr.localstorage) {
+                localStorage.setItem(
+                    'aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
             }
         };
         $scope.getItems = function () {
