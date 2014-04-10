@@ -72,7 +72,7 @@
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};">
+                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};" ng-non-bindable="">
                         ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance_id">

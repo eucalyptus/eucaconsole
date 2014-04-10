@@ -104,7 +104,9 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div>${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}</div>
+                    <div ng-non-bindable="">
+                        ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
+                    </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
