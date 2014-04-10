@@ -17,7 +17,7 @@
             <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
                   ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
         </div>
-        <div class="row tagentry controls-wrapper">
+        <div class="row tagentry controls-wrapper" ng-show="tagsArray.length &lt; 10">
             <div>
                 <div class="small-4 columns">
                     <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
@@ -35,6 +35,9 @@
                        title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
+        </div>
+        <div ng-show="tagsArray.length &gt;= 10">
+            <p i18n:translate="">You may not add more than ten tags to a resource</p>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
