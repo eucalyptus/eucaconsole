@@ -39,11 +39,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
+        $scope.imageJsonURL = '';
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
+                                securityGroupChoices, securityGroupsIDMapJson,
+                                imageJsonURL) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.updateSelectedSecurityGroupRules();
@@ -105,6 +109,23 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
             $scope.$watch('securityGroups', function(){
                 $scope.updateSecurityGroup();
+            });
+            $scope.$watch('imageID', function(newID, oldID){
+                if (newID != oldID) {
+                    $http({
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                        method: 'GET',
+                        url: $scope.imageJsonURL.replace('_id_', newID),
+                        data: '',
+                    }).success(function (oData) {
+                        var item = oData.results;
+                        $scope.imageName = item.name;
+                        $scope.imagePlatform = item.platform_name;
+                        $scope.imageRootDeviceType = item.root_device_type;
+                        $scope.imageLocation = item.location;
+                        $scope.summarySection.find('.step1').removeClass('hide');
+                    });
+                }
             });
             // Timeout is needed for chosen widget update
             $timeout(function(){
@@ -171,10 +192,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 selectElement.focus();
             }
         };
-        $scope.inputImageID = function (url) {
-            url += '?image_id=' + $scope.imageID;
-            document.location.href = url;
-        };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
             $scope.launchForm.trigger('validate');
@@ -215,7 +232,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.currentStepIndex = nextStep;
         };
         $scope.$on('imageSelected', function($event, item) {
-            $scope.imageID = item.id
+            $scope.imageID = item.id;
             $scope.imageName = item.name;
             $scope.imagePlatform = item.platform_name;
             $scope.imageRootDeviceType = item.root_device_type;

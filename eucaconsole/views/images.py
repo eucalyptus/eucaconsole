@@ -94,6 +94,29 @@ class ImagesJsonView(LandingPageView):
             ))
         return dict(results=images)
 
+    @view_config(route_name='image_json', renderer='json', request_method='GET')
+    def image_json(self):
+        image_id = self.request.matchdict.get('id')
+        with boto_error_handler(self.request):
+            conn = self.get_connection()
+            images = conn.get_all_images(filters={'image-id': [image_id]})
+            image = images[0] if len(images) > 0 else None
+            if image is None:
+                return JSONResponse(status=400, message="image id not valid")
+            platform = ImageView.get_platform(image)
+            return dict(results=(dict(
+                architecture=image.architecture,
+                description=image.description,
+                id=image.id,
+                name=image.name,
+                location=image.location,
+                tagged_name=TaggedItemView.get_display_name(image),
+                owner_alias=image.owner_alias,
+                platform_name=ImageView.get_platform_name(platform),
+                platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
+                root_device_type=image.root_device_type,
+            )))
+
     def get_items(self):
         owner_alias = self.request.params.get('owner_alias')
         if not owner_alias and self.cloud_type == 'aws':
