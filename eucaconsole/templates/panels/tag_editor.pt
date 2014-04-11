@@ -9,7 +9,7 @@
                 <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>
-                <a href="#" class="remove" ng-click="removeTag($index, $event)"
+                <a href="#" class="remove" ng-click="removeTag($index, $event, tag)"
                    title="Remove tag"><i class="fi-x"></i></a>
             </span>
         </div>

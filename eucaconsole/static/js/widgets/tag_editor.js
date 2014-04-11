@@ -40,10 +40,14 @@ angular.module('TagEditor', ['ngSanitize'])
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
         };
-        $scope.removeTag = function (index, $event) {
+        $scope.removeTag = function (index, $event, tag) {
             $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
+            // Clear Name input field if Name tag is removed
+            if (tag.name === 'Name') {
+                $('input#name').val('');
+            }
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
