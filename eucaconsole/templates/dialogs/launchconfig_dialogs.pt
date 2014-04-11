@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Launch configurations on landing and detail page -->
 <div tal:omit-tag="" xmlns="http://www.w3.org/1999/html">
     <div id="delete-launchconfig-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('launchconfigs_delete');
+         tal:define="landingpage_action request.route_path('launchconfigs_delete') + layout.querystring;
                      detailpage_action request.route_path('launchconfig_delete', id=launch_config.name) if launch_config else '';
                      action landingpage_action if landingpage else detailpage_action;
                      launch_config_name launch_config.name if launch_config else '';">

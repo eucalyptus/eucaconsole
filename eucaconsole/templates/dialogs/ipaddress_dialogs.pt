@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Elastic IPs on landing and detail page -->
 <div tal:omit-tag="">
     <div id="associate-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('ipaddresses_associate');
+         tal:define="landingpage_action request.route_path('ipaddresses_associate') + layout.querystring;
                      detailpage_action request.route_path('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Associate elastic IP address with instance</h3>
@@ -23,7 +23,7 @@
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('ipaddresses_disassociate');
+         tal:define="landingpage_action request.route_path('ipaddresses_disassociate') + layout.querystring;
                      detailpage_action request.route_path('ipaddress_disassociate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;
                      instance_name eip.instance_name if eip else '';">
@@ -50,7 +50,7 @@
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('ipaddresses_release');
+         tal:define="landingpage_action request.route_path('ipaddresses_release') + layout.querystring;
                      detailpage_action request.route_path('ipaddress_release', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Release IP address to cloud</h3>

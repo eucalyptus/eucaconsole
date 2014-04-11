@@ -6,7 +6,8 @@
             Are you sure you want to terminate these instances?
             Remove any instances below that you do not wish to terminate.
         </p>
-        <form method="post" action="${request.route_path('instances_batch_terminate')}" id="batch-terminate-form">
+        <form method="post" action="${request.route_path('instances_batch_terminate') + layout.querystring}"
+              id="batch-terminate-form">
             ${structure:batch_terminate_form['csrf_token']}
             <div>
                 <select multiple="" name="instance_ids" id="instance-ids" ng-cloak="">
