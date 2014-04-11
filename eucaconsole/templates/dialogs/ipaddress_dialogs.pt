@@ -30,7 +30,7 @@
         <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
         <p i18n:translate="">If you disassociate an elastic IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
-        <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b><br />
+        <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
             from instance
             <span tal:condition="eip"><b ng-non-bindable="">${instance_name}</b></span>
             <span tal:condition="not eip"><b>{{ instanceID }}</b></span>
