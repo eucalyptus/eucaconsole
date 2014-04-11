@@ -9,10 +9,12 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
 from pyramid.httpexceptions import HTTPFound
+from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
+from ..models import Notification
 from ..views import BaseView
 
 
@@ -81,8 +83,11 @@ class ChangePasswordView(BaseView):
                     session['secret_key'] = creds.secret_key
                     session['username_label'] = user_account
                     headers = remember(self.request, user_account)
+                    msg = _(u'Successfully changed password.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=self.came_from, headers=headers)
                 except HTTPError, err:
+                    # the logging here and below is really very useful when debugging login problems.
                     logging.info("http error "+str(vars(err)))
                     if err.msg == u'Unauthorized':
                         self.changepassword_form_errors.append(u'Invalid user/account name and/or password.')
