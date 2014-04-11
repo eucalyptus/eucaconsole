@@ -194,7 +194,6 @@
                     <span>
                     <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
-                    <br />
                     <span i18n:translate=""> 
                     from instance
                     </span>
