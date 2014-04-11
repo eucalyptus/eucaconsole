@@ -1,7 +1,7 @@
 <!--! Modal dialogs for Snapshots on landing and detail page -->
 <div tal:omit-tag="">
     <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('snapshots_delete');
+         tal:define="landingpage_action request.route_path('snapshots_delete') + layout.querystring;
                      detailpage_action request.route_path('snapshot_delete', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete snapshot</h3>
@@ -27,7 +27,7 @@
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="register-snapshot-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('snapshots_register');
+         tal:define="landingpage_action request.route_path('snapshots_register') + layout.querystring;
                      detailpage_action request.route_path('snapshot_register', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'pattern': '^[a-zA-Z0-9\-\_\(\)\.\/]{3,128}$',

@@ -2,7 +2,7 @@
 <div tal:omit-tag="">
     <div id="change-state-dialogs">
         <div id="reboot-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_reboot');
+             tal:define="landingpage_action request.route_path('instances_reboot') + layout.querystring;
                          detailpage_action request.route_path('instance_reboot', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Reboot instance</h3>
@@ -27,7 +27,7 @@
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="start-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_start');
+             tal:define="landingpage_action request.route_path('instances_start') + layout.querystring;
                          detailpage_action request.route_path('instance_start', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Start instance</h3>
@@ -51,7 +51,7 @@
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="stop-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_stop');
+             tal:define="landingpage_action request.route_path('instances_stop') + layout.querystring;
                          detailpage_action request.route_path('instance_stop', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Stop instance</h3>
@@ -75,7 +75,7 @@
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="terminate-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_terminate');
+             tal:define="landingpage_action request.route_path('instances_terminate') + layout.querystring;
                          detailpage_action request.route_path('instance_terminate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Terminate instance</h3>
@@ -153,7 +153,7 @@
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="associate-ip-to-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_associate');
+             tal:define="landingpage_action request.route_path('instances_associate') + layout.querystring;
                          detailpage_action request.route_path('instance_associate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;
                          html_attrs {'data-placeholder': 'select IP...'};">
@@ -176,7 +176,7 @@
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="disassociate-ip-from-instance-modal" class="reveal-modal small" data-reveal=""
-             tal:define="landingpage_action request.route_path('instances_disassociate');
+             tal:define="landingpage_action request.route_path('instances_disassociate') + layout.querystring;
                          detailpage_action request.route_path('instance_disassociate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;">
             <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>

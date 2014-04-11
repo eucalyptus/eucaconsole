@@ -199,7 +199,10 @@
                                 <a i18n:translate="" ng-click="revealModal('terminate', item)">Terminate</a>
                             </li>
                             <li ng-show="item.status == 'terminated'">
-                                <a i18n:translate="" ng-click="removeFromView(item, '${request.route_path('instances_terminate', id='_id_')}')">Remove from view</a>
+                                <a i18n:translate=""
+                                   ng-click="removeFromView(item, '${request.route_path('instances_terminate', id='_id_')}${layout.querystring}')">
+                                    Remove from view
+                                </a>
                             </li>
                         </ul>
                    </span>
