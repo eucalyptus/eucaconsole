@@ -78,6 +78,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }else{
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
+                $scope.loadImageInfo($scope.imageID);
             }
         };
         $scope.updateTagsPreview = function () {
@@ -98,26 +99,29 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
-        $scope.setWatcher = function (){
+        $scope.setWatcher = function () {
             $scope.setDialogFocus();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
                 if (newID != oldID) {
-                    $http({
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        method: 'GET',
-                        url: $scope.imageJsonURL.replace('_id_', newID),
-                        data: '',
-                    }).success(function (oData) {
-                        var item = oData.results;
-                        $scope.imageName = item.name;
-                        $scope.imagePlatform = item.platform_name;
-                        $scope.imageRootDeviceType = item.root_device_type;
-                        $scope.summarySection.find('.step1').removeClass('hide');
-                    });
+                    $scope.loadImageInfo(newID);
                 }
+            });
+        };
+        $scope.loadImageInfo = function(id) {
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'GET',
+                url: $scope.imageJsonURL.replace('_id_', id),
+                data: '',
+            }).success(function (oData) {
+                var item = oData.results;
+                $scope.imageName = item.name;
+                $scope.imagePlatform = item.platform_name;
+                $scope.imageRootDeviceType = item.root_device_type;
+                $scope.summarySection.find('.step1').removeClass('hide');
             });
         };
         $scope.focusEnterImageID = function () {
