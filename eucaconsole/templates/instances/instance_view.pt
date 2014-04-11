@@ -239,7 +239,7 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=instance.tags)}
+                    ${panel('tag_editor', tags=instance.tags, show_name_tag=False)}
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)">

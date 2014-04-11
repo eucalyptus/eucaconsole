@@ -17,14 +17,28 @@ angular.module('TagEditor', ['ngSanitize'])
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
         $scope.tagsArray = [];
+        $scope.showNameTag = true;
+        $scope.visibleTagsCount = 0;
         $scope.syncTags = function () {
             var tagsObj = {};
             $scope.tagsArray.forEach(function(tag) {
                 tagsObj[tag.name] = tag.value;
             });
             $scope.tagsTextarea.val(JSON.stringify(tagsObj));
+            // Update visible tags count, ignoring "Name" tag when present.
+            $scope.updateVisibleTagsCount();
         };
-        $scope.initTags = function(tagsJson) {
+        $scope.updateVisibleTagsCount = function () {
+            if ($scope.showNameTag) {
+                $scope.visibleTagsCount = $scope.tagsArray.length;
+            } else {
+                // Adjust count if "Name" tag is in tagsArray
+                $scope.visibleTagsCount = $.map($scope.tagsArray, function (item) {
+                    if (item.name !== 'Name') { return item; }
+                }).length;
+            }
+        };
+        $scope.initTags = function(tagsJson, showNameTag) {
             // Parse tags JSON and convert to a list of tags.
             var tagsObj = JSON.parse(tagsJson);
             Object.keys(tagsObj).forEach(function(key) {
@@ -35,19 +49,16 @@ angular.module('TagEditor', ['ngSanitize'])
                     });
                 }
             });
+            $scope.showNameTag = showNameTag;
             $scope.syncTags();
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
         };
-        $scope.removeTag = function (index, $event, tag) {
+        $scope.removeTag = function (index, $event) {
             $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
-            // Clear Name input field if Name tag is removed
-            if (tag.name === 'Name') {
-                $('input#name').val('');
-            }
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();

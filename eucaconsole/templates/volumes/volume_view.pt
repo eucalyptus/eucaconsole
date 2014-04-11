@@ -117,7 +117,7 @@
                         <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=volume_tags)}
+                    ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
                     <div>
                         <button type="submit" class="button">
