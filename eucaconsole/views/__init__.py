@@ -16,7 +16,7 @@ from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
-from pyramid.httpexceptions import HTTPFound, HTTPException
+from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
 from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -38,7 +38,9 @@ class JSONResponse(Response):
         )
 
 
-class JSONError(HTTPException):
+# Can use this for 1.5, but the fix below for 1.4 also works in 1.5.
+#class JSONError(HTTPException):
+class JSONError(HTTPUnprocessableEntity):
     def __init__(self, status=400, message=None, **kwargs):
         super(JSONError, self).__init__(**kwargs)
         self.status = status
@@ -120,10 +122,12 @@ class BaseView(object):
         return url or default_path
 
     @staticmethod
-    def invalidate_cache():
-        """Empty Beaker cache to clear connection objects"""
-        for _cache in cache_managers.values():
-            _cache.clear()
+    def invalidate_connection_cache():
+        """Empty connection objects cache"""
+        # TODO: Need workaround for Beaker < 1.6, which is missing Cache().namespace_name
+        for manager in cache_managers.values():
+            if hasattr(manager, 'namespace_name') and manager.namespace_name in ['_aws_connection', '_euca_connection']:
+                manager.clear()
 
     @staticmethod
     def log_message(request, message, level='info'):
@@ -168,8 +172,7 @@ class BaseView(object):
                 notice = _(u'Your session has timed out')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
-            for _cache in cache_managers.values():
-                _cache.clear()
+            BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:
@@ -203,6 +206,12 @@ class TaggedItemView(BaseView):
         if self.tagged_obj is not None:
             self.remove_tags()
             self.add_tags()
+
+    def update_name_tag(self, value):
+        if self.tagged_obj is not None:
+            safe_value = escape(value)
+            if safe_value and not safe_value.startswith('aws:'):
+                self.tagged_obj.add_tag('Name', safe_value)
 
     @staticmethod
     def get_display_name(resource):

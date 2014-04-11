@@ -8,6 +8,7 @@ $(document).ready(function () {
     var idx = document.URL.indexOf("#");
     if (idx != -1) {
         var hash = document.URL.substring(idx + 1);
+        if (hash == '') return;
         $(".tabs").children("dd").each(function() {
             var id = $(this).find("a").attr("href").substring(1);
             var $container = $("#" + id);
@@ -500,6 +501,12 @@ angular.module('UserView', ['PolicyList'])
             $scope.jsonEndpoint = jsonEndpoint;
         };
         $scope.submit = function($event) {
+            $('#quota-error').css('display', 'none');
+            var invalid = $($event.target).find('input[data-invalid]');
+            if (invalid.length > 0) {
+                $('#quota-error').css('display', 'block');
+                return false;
+            }
             var data = $($event.target).serialize();
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).

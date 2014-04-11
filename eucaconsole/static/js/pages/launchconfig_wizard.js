@@ -6,12 +6,17 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules'])
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
+        $scope.imageName = '';
+        $scope.imagePlatform = '';
+        $scope.imageRootDeviceType = '';
+        $scope.imageLocation = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.instanceTypeSelected = '';
+        $scope.securityGroup = '';
         $scope.securityGroupsRules = {};
         $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
@@ -20,7 +25,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.securityGroupsRules = {};
         $scope.selectedGroupRules = [];
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
@@ -29,19 +33,22 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.currentStepIndex = 1;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson) {
+        $scope.step1Invalid = true;
+        $scope.step2Invalid = true;
+        $scope.step3Invalid = true;
+        $scope.imageJsonURL = '';
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
+                                securityGroupChoices, securityGroupsIDMapJson,
+                                imageJsonURL) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
-            $scope.updateSelectedSecurityGroupRules();
             $scope.setWatcher();
             $scope.setFocus();
-        };
-        $scope.updateSelectedSecurityGroupRules = function () {
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
         };
         $scope.getSecurityGroupIDByName = function (securityGroupName) {
             return $scope.securityGroupsIDMap[securityGroupName];
@@ -55,13 +62,16 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 });
             });
         };
+        $scope.updateSecurityGroup = function () {
+             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+        };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
             $scope.instanceTypeSelected = $scope.urlParams['instance_type'] || '';
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             $scope.keyPair = $('#keypair').find(':selected').val();
-            $scope.securityGroup = $('#securitygroup').find(':selected').val();
+            $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
             $scope.securityGroupSelected = $scope.urlParams['security_group'] || '';
@@ -69,17 +79,28 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.instanceType = $scope.instanceTypeSelected;
             if( $scope.keyPairSelected != '' )
                 $scope.keyPair = $scope.keyPairSelected;
-            if( $scope.securityGroupSelected != '' )
+            if( $scope.securityGroupSelected != '' ){
                 $scope.securityGroup = $scope.securityGroupSelected;
+            }
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
             }else{
                 $scope.currentStepIndex = 2;
+                $scope.step1Invalid = false;
+                $scope.loadImageInfo($scope.imageID);
             }
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $scope.$watch('securityGroup', function(){
+                $scope.updateSecurityGroup();
+            });
+            $scope.$watch('imageID', function(newID, oldID){
+                if (newID != oldID) {
+                    $scope.loadImageInfo(newID);
+                }
             });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
@@ -103,6 +124,21 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
+            });
+        };
+        $scope.loadImageInfo = function(id) {
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'GET',
+                url: $scope.imageJsonURL.replace('_id_', id),
+                data: '',
+            }).success(function (oData) {
+                var item = oData.results;
+                $scope.imageName = item.name;
+                $scope.imagePlatform = item.platform_name;
+                $scope.imageRootDeviceType = item.root_device_type;
+                $scope.imageLocation = item.location;
+                $scope.summarySection.find('.step1').removeClass('hide');
             });
         };
         $scope.setFocus = function () {
@@ -133,17 +169,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var modalButton = modal.find('button').get(0);
             if (!!textareaElement){
                 textareaElement.focus();
+            } else if (!!modalButton) {
+                modalButton.focus();
             } else if (!!inputElement) {
                 inputElement.focus();
             } else if (!!selectElement) {
                 selectElement.focus();
-            } else if (!!modalButton) {
-                modalButton.focus();
             }
-        };
-        $scope.inputImageID = function (url) {
-            url += '?image_id=' + $scope.imageID;
-            document.location.href = url;
         };
         $scope.visitNextStep = function (nextStep, $event) {
             // Trigger form validation before proceeding to next step
@@ -156,17 +188,47 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $event.preventDefault();
                 return false;
             }
+            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
+            if (nextStep == 3 && $scope.step2Invalid) { $scope.clearErrors(3); $scope.step2Invalid = false; }
+            if (nextStep == 4 && $scope.step3Invalid) { $scope.clearErrors(4); $scope.step3Invalid = false; }
+
+            // since above lines affects DOM, need to let that take affect first
+            $timeout(function() {
             // If all is well, click the relevant tab to go to next step
             // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can start
-            $('#tabStep' + currentStep).removeClass("active");
-            $('#step' + currentStep).removeClass("active");
-            $('#tabStep' + nextStep).addClass("active");
-            $('#step' + nextStep).addClass("active");
+            // one ng action must complete before another can star
+            var hash = "step"+nextStep;
+                $(".tabs").children("dd").each(function() {
+                    var link = $(this).find("a");
+                    if (link.length != 0) {
+                        var id = link.attr("href").substring(1);
+                        var $container = $("#" + id);
+                        $(this).removeClass("active");
+                        $container.removeClass("active");
+                        if (id == hash || $container.find("#" + hash).length) {
+                            $(this).addClass("active");
+                            $container.addClass("active");
+                        }
+                    }
+                });
+            },50);
             // Unhide appropriate step in summary
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
             $scope.currentStepIndex = nextStep;
         };
+        $scope.clearErrors = function(step) {
+            $('#step'+step).find('div.error').each(function(idx, val) {
+                $(val).removeClass('error');
+            });
+        }
+        $scope.$on('imageSelected', function($event, item) {
+            $scope.imageID = item.id;
+            $scope.imageName = item.name;
+            $scope.imagePlatform = item.platform_name;
+            $scope.imageRootDeviceType = item.root_device_type;
+            $scope.imageLocation = item.location;
+            $scope.summarySection.find('.step1').removeClass('hide');
+        });
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);

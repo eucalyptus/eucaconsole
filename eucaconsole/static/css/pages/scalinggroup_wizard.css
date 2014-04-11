@@ -45,3 +45,5 @@ form .row input[type="number"] { width: 3rem; }
 #health_check_period { width: 4rem; }
 
 [data-abide] #capacity-section .error small.error { position: absolute; width: 15rem; left: 8px; bottom: -1.5rem; }
+
+.launchconfig-value { line-height: 1.5rem; }

@@ -39,7 +39,18 @@
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
-                            ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
+                            <div tal:condition="launch_config_param" ng-non-bindable="">
+                                <input type="hidden" name="launch_config" value="${launch_config_param}" />
+                                <div class="row controls-wrapper">
+                                    <div class="small-4 columns">
+                                        <label class="right" i18n:translate="">Launch configuration</label>
+                                    </div>
+                                    <div class="small-8 columns launchconfig-value">${launch_config_param}</div>
+                                </div>
+                            </div>
+                            <div tal:condition="not launch_config_param">
+                                ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
+                            </div>
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
                                 <div class="medium-2 columns">
@@ -86,6 +97,7 @@
             </div>
         </div>
         <div class="large-4 columns" ng-cloak="">
+            <div class="help-padding">&nbsp;</div>
             <div class="summary" ng-cloak="">
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1">

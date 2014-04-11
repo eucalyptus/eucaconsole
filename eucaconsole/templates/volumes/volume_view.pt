@@ -72,6 +72,9 @@
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
+                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};" ng-non-bindable="">
+                        ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance_id">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
@@ -85,9 +88,6 @@
                     <div class="row controls-wrapper readonly" ng-show="attach_time">
                         <div class="small-4 columns"><label i18n:translate="">Attachment time</label></div>
                         <div class="small-8 columns value">{{attach_time | date:'${layout.angular_date_format}'}}</div>
-                    </div>
-                    <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['name'], autofocus='', **html_attrs)}
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['snapshot_id'], ng_attrs={'model': 'snapshotId', 'change': 'populateVolumeSize($event)'}, **html_attrs)}
@@ -117,7 +117,7 @@
                         <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=volume_tags)}
+                    ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
                     <div>
                         <button type="submit" class="button">

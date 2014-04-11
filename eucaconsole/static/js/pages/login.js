@@ -8,8 +8,20 @@
 angular.module('LoginPage', [])
     .controller('LoginPageCtrl', function ($scope) {
         $scope.initController = function () {
+            $('#javascript-warning').css('display', 'none');
             $scope.prefillForms();
             $scope.addListeners();
+            Modernizr.load([
+                {
+                    test: Modernizr.svg,
+                    nope: function () {
+                        $('#browser-svg-warn-modal').foundation('reveal', 'open');
+                    }
+                }
+            ])
+            if (window.location.protocol != 'https:') {
+                $('#ssl-warning').css('display', 'block');
+            }
         };
         $scope.setFocus = function () {
             var inputs = [];
@@ -68,10 +80,11 @@ angular.module('LoginPage', [])
                 var hash = CryptoJS.HmacSHA256(string_to_sign, $('#secret_key').val());
                 var signature = hash.toString(CryptoJS.enc.Base64);
                 var encoded = encodeURIComponent(signature);
+                var storedRegion = Modernizr.localstorage && localStorage.getItem('aws-region') || '';
                 params = params + "&Signature=" + encoded;
                 $('#aws_csrf_token').val($('#csrf_token').val());
                 $('#package').val($.base64.encode(params));
-                $('#aws-region').val(localStorage.getItem('aws-region'));
+                $('#aws-region').val(storedRegion);
                 evt.preventDefault();
                 $('#false-aws-login-form').submit();
             });

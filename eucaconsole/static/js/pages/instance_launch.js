@@ -11,6 +11,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
         $scope.imageID = '';
+        $scope.imageName = '';
+        $scope.imagePlatform = '';
+        $scope.imageRootDeviceType = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
@@ -30,12 +33,19 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.isLoadingSecurityGroup = false;
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
-        $scope.initController = function (securityGroupsRulesJson, keyPairChoices, securityGroupChoices, securityGroupsIDMapJson, roles) {
+        $scope.step1Invalid = true;
+        $scope.step2Invalid = true;
+        $scope.step3Invalid = true;
+        $scope.imageJsonURL = '';
+        $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
+                                securityGroupChoices, securityGroupsIDMapJson, roles,
+                                imageJsonURL) {
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.roleList = JSON.parse(roles);
+            $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
@@ -69,6 +79,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = 1;
             }else{
                 $scope.currentStepIndex = 2;
+                $scope.step1Invalid = false;
+                $scope.loadImageInfo($scope.imageID);
             }
         };
         $scope.updateTagsPreview = function () {
@@ -89,10 +101,29 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
-        $scope.setWatcher = function (){
+        $scope.setWatcher = function () {
             $scope.setDialogFocus();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $scope.$watch('imageID', function(newID, oldID){
+                if (newID != oldID) {
+                    $scope.loadImageInfo(newID);
+                }
+            });
+        };
+        $scope.loadImageInfo = function(id) {
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'GET',
+                url: $scope.imageJsonURL.replace('_id_', id),
+                data: '',
+            }).success(function (oData) {
+                var item = oData.results;
+                $scope.imageName = item.name;
+                $scope.imagePlatform = item.platform_name;
+                $scope.imageRootDeviceType = item.root_device_type;
+                $scope.summarySection.find('.step1').removeClass('hide');
             });
         };
         $scope.focusEnterImageID = function () {
@@ -100,10 +131,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if ($scope.urlParams['input_image_id']) {
                 $('#image-id-input').focus();
             }
-        };
-        $scope.inputImageID = function (url) {
-            url += '?image_id=' + $scope.imageID;
-            document.location.href = url;
         };
         $scope.setDialogFocus = function () {
             $(document).on('open', '[data-reveal]', function () {
@@ -178,18 +205,46 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $event.preventDefault();
                 return false;
             }
+            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
+            if (nextStep == 3 && $scope.step2Invalid) { $scope.clearErrors(3); $scope.step2Invalid = false; }
+            if (nextStep == 4 && $scope.step3Invalid) { $scope.clearErrors(4); $scope.step3Invalid = false; }
             
-            // If all is well, hide current and show new tab without clicking
-            // since clicking invokes this method again (via ng-click) and
-            // one ng action must complete before another can start
-            $('#tabStep' + currentStep).removeClass("active");
-            $('#step' + currentStep).removeClass("active");
-            $('#tabStep' + nextStep).addClass("active");
-            $('#step' + nextStep).addClass("active");
-            // Unhide appropriate step in summary
-            $scope.summarySection.find('.step' + nextStep).removeClass('hide');
-            $scope.currentStepIndex = nextStep;
+            // since above lines affects DOM, need to let that take affect first
+            $timeout(function() {
+                // If all is well, hide current and show new tab without clicking
+                // since clicking invokes this method again (via ng-click) and
+                // one ng action must complete before another can start
+                var hash = "step"+nextStep;
+                $(".tabs").children("dd").each(function() {
+                    var link = $(this).find("a");
+                    if (link.length != 0) {
+                        var id = link.attr("href").substring(1);
+                        var $container = $("#" + id);
+                        $(this).removeClass("active");
+                        $container.removeClass("active");
+                        if (id == hash || $container.find("#" + hash).length) {
+                            $(this).addClass("active");
+                            $container.addClass("active");
+                        }
+                    }
+                });
+                // Unhide appropriate step in summary
+                $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+                $scope.currentStepIndex = nextStep;
+            },50);
         };
+        $scope.clearErrors = function(step) {
+            $('#step'+step).find('div.error').each(function(idx, val) {
+                $(val).removeClass('error');
+            });
+        }
+        $scope.$on('imageSelected', function($event, item) {
+            $scope.imageID = item.id;
+            $scope.imageName = item.name;
+            $scope.imagePlatform = item.platform_name;
+            $scope.imageRootDeviceType = item.root_device_type;
+            $scope.summarySection.find('.step1').removeClass('hide');
+        });
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
             limit = parseInt(limit, 10);

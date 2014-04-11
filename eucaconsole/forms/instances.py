@@ -16,6 +16,8 @@ class InstanceForm(BaseSecureForm):
        Form to launch an instance is in LaunchInstanceForm
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
+    name_error_msg = _(u'Not a valid name')
+    name = wtforms.TextField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
@@ -30,11 +32,13 @@ class InstanceForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.instance = instance
         self.conn = conn
+        self.name.error_msg = self.name_error_msg
         self.instance_type.error_msg = self.instance_type_error_msg
         self.choices_manager = ChoicesManager(conn=self.conn)
         self.set_choices()
 
         if instance is not None:
+            self.name.data = instance.tags.get('Name', '')
             self.instance_type.data = instance.instance_type
             self.ip_address.data = instance.ip_address or 'none'
             self.monitored.data = instance.monitored
@@ -71,7 +75,8 @@ class LaunchInstanceForm(BaseSecureForm):
     zone = wtforms.SelectField(label=_(u'Availability zone'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
-        label=_(u'Key name')
+        label=_(u'Key name'),
+        validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
@@ -121,11 +126,9 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
-        # Set the defailt option to be "No Keypair" and "Default" security group
+        # Set the defailt option to be "Default" security group
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = "default"
-        if len(self.keypair.choices) > 1:
-            self.keypair.data = self.keypair.choices[1][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -134,7 +137,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
     def get_keypair_choices(self):
-        choices = self.choices_manager.keypairs(add_blank=False, no_keypair_option=True)
+        choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         return choices
 
     def get_availability_zone_choices(self, region):
@@ -248,7 +251,7 @@ class AttachVolumeForm(BaseSecureForm):
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
                 choices.append((volume.id, vol_name))
         if len(choices) == 1:
-            choices = [('', _(u'No available volumes in the availability zone'))]
+            choices = [('', _(u'No available volumes in this availability zone'))]
         self.volume_id.choices = choices
 
     def suggest_next_device_name(self):

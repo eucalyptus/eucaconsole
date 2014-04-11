@@ -21,15 +21,11 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
         };
-        $scope.setLaunchConfig = function () {
-            $scope.launchConfig = $scope.urlParams['launch_config'] || '';
-        };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
         };
         $scope.initController = function () {
             $scope.initChosenSelectors();
-            $scope.setLaunchConfig();
             $scope.setInitialValues();
             $scope.setWatcher();
         };

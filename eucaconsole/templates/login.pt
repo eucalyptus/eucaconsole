@@ -28,6 +28,18 @@
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
+        <div id='javascript-warning' i18n:translate="">
+            <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
+            To use the Eucalyptus User Console, please enable JavaScript in your browser's settings.
+            </p>
+        </div>
+        <div id='ssl-warning' i18n:translate="" class="display:none;">
+            <strong>SSL not enabled</strong>
+            <p i18n:translate="">
+                This connection is untrusted because SSL in not enabled on the server.
+                Credentials will be sent over the wire in clear text.
+            </p>
+        </div>
         <div class="large-12 large-centered columns">
             <div class="row" id="login-forms">
                 <dl class="tabs" id="login-tabs" data-tab="">
@@ -51,11 +63,16 @@
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     <div tal:condition="field.name == 'password'">
-                                        <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
-                                        <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                        <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
+                                            ${structure:field(autocomplete="off")}
+                                        </div>
+                                        <div tal:condition="layout.browser_password_save != 'false'" ng-non-bindable="">
+                                            ${structure:field}
+                                        </div>
                                     </div>
-                                    <div tal:condition="field.name != 'password'">${structure:field}</div>
-                                    
+                                    <div tal:condition="field.name != 'password'" ng-non-bindable="">
+                                        ${structure:field}
+                                    </div>
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
@@ -91,10 +108,16 @@
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
                                     <div tal:condition="field.name == 'secret_key'">
-                                        <div tal:condition="layout.browser_password_save == 'false'">${structure:field(autocomplete="off")}</div>
-                                        <div tal:condition="layout.browser_password_save != 'false'">${structure:field}</div>
+                                        <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
+                                            ${structure:field(autocomplete="off")}
+                                        </div>
+                                        <div tal:condition="layout.browser_password_save != 'false'" ng-non-bindable="">
+                                            ${structure:field}
+                                        </div>
                                     </div>
-                                    <div tal:condition="field.name != 'secret_key'">${structure:field}</div>
+                                    <div tal:condition="field.name != 'secret_key'" ng-non-bindable="">
+                                        ${structure:field}
+                                    </div>
                                     <div tal:condition="field.errors" class="server-validation">
                                         <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
@@ -131,6 +154,16 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div id="warning-modals">
+            <div id="browser-svg-warn-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Browser doesn't support SVG</h3>
+                <p i18n:translate="">
+                    The browser you are using is not supported. It lacks support for SVG images
+                    and many graphics this application uses won't display properly.
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
             </div>
         </div>
     </div>

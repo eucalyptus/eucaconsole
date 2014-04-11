@@ -64,12 +64,12 @@ class ChoicesManager(object):
 
     def get_availability_zones(self, region):
         @cache_region('extra_long_term', 'availability_zones_{region}'.format(region=region))
-        def _get_zones_cache():
+        def _get_zones_cache(self):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
             return zones;
-        return _get_zones_cache()
+        return _get_zones_cache(self)
 
     def instances(self, instances=None, state=None):
         from ..views import TaggedItemView
@@ -94,7 +94,7 @@ class ChoicesManager(object):
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
             @cache_region('extra_long_term', 'instance_types')
-            def _get_instance_types_cache():
+            def _get_instance_types_cache(self):
                 choices = []
                 if self.conn is not None:
                     types = self.conn.get_all_instance_types()
@@ -104,10 +104,13 @@ class ChoicesManager(object):
                         vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
                         choices.append(vmtype_tuple)
                 return choices
-            choices.extend(_get_instance_types_cache())
+            choices.extend(_get_instance_types_cache(self))
             return choices
         elif cloud_type == 'aws':
-            return choices.extend(AWS_INSTANCE_TYPE_CHOICES)
+            if add_description:
+                return AWS_INSTANCE_TYPE_CHOICES
+            else:
+                return [(name, name) for name, description in AWS_INSTANCE_TYPE_CHOICES]
 
     def volumes(self, volumes=None):
         from ..views import TaggedItemView
@@ -137,16 +140,20 @@ class ChoicesManager(object):
 
     def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False):
         choices = []
-        if add_blank:
-            choices.append(BLANK_CHOICE)
-        if no_keypair_option:
-            choices.append(('', _(u'No Keypair')))
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
-        return sorted(set(choices))
+        choices = sorted(set(choices))
+        # sort actual key pairs prior to prepending blank and appending 'none'
+        ret = []
+        if add_blank:
+            ret.append(BLANK_CHOICE)
+        ret.extend(choices)
+        if no_keypair_option:
+            ret.append(('none', _(u'None (advanced option)')))
+        return ret
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
         choices = []  # ('', _(u'None assigned'))]

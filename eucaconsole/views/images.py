@@ -13,7 +13,7 @@ from pyramid.view import view_config
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -63,9 +63,9 @@ class ImagesView(LandingPageView):
         ]
 
     @staticmethod
-    def clear_images_cache():
+    def invalidate_images_cache():
         for manager in cache_managers.values():
-            if '_get_images_cache' in manager.namespace_name:
+            if '_get_images_cache' in manager.namespace.namespace:
                 manager.clear()
 
 
@@ -85,6 +85,7 @@ class ImagesJsonView(LandingPageView):
                 description=image.description,
                 id=image.id,
                 name=image.name,
+                location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
@@ -92,6 +93,29 @@ class ImagesJsonView(LandingPageView):
                 root_device_type=image.root_device_type,
             ))
         return dict(results=images)
+
+    @view_config(route_name='image_json', renderer='json', request_method='GET')
+    def image_json(self):
+        image_id = self.request.matchdict.get('id')
+        with boto_error_handler(self.request):
+            conn = self.get_connection()
+            images = conn.get_all_images(filters={'image-id': [image_id]})
+            image = images[0] if len(images) > 0 else None
+            if image is None:
+                return JSONResponse(status=400, message="image id not valid")
+            platform = ImageView.get_platform(image)
+            return dict(results=(dict(
+                architecture=image.architecture,
+                description=image.description,
+                id=image.id,
+                name=image.name,
+                location=image.location,
+                tagged_name=TaggedItemView.get_display_name(image),
+                owner_alias=image.owner_alias,
+                platform_name=ImageView.get_platform_name(platform),
+                platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
+                root_device_type=image.root_device_type,
+            )))
 
     def get_items(self):
         owner_alias = self.request.params.get('owner_alias')
@@ -109,7 +133,8 @@ class ImagesJsonView(LandingPageView):
 
     def get_images(self, conn, owners, executors, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(owners=owners, executors=executors, region=region)
+        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
+            owners=owners, executors=executors, region=region)
 
         # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
@@ -160,7 +185,9 @@ class ImageView(TaggedItemView):
             image.block_device_names = []
             if attrs['block_device_mapping'] is not None:
                 for attr in attrs['block_device_mapping']:
-                    image.block_device_names.append({'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__})
+                    image.block_device_names.append({
+                        'name': attr, 'value': attrs['block_device_mapping'][attr].__dict__
+                    })
             image.platform = self.get_platform(image)
             image.platform_name = ImageView.get_platform_name(image.platform)
         return image

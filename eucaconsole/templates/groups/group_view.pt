@@ -45,36 +45,36 @@
                          'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
-                        <div class="section">
+                        <div class="section columns">
                             <div class="row controls-wrapper readonly">
                                 ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             </div>
                         </div>
-                        <hr />
+                        <div>&nbsp;</div>
                         <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
-                            <h6>
+                            <div class="title">
                                 <a ng-click="expanded = !expanded">
                                     <i class="fi-plus" ng-show="!expanded"></i>
                                     <i class="fi-minus" ng-show="expanded"></i>
                                     &nbsp;<span i18n:translate="">Advanced</span>
                                 </a>
-                            </h6>
-                            <div class="section" ng-show="expanded">
+                            </div>
+                            <div>&nbsp;</div>
+                            <div class="section columns" ng-show="expanded">
                                 <div class="row controls-wrapper readonly">
                                     ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
                                 </div>
                             </div>
+                            <div>&nbsp;</div>
                         </div>
+                        <hr />
                         <div class="section">
-                            <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
-                                <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" id="create-btn">
-                                        <span i18n:translate="">Create Group</span>
-                                    </button>
-                                    <a href="${request.route_path('groups')}"
-                                        class="cancel-link" i18n:translate="">Cancel</a>
-                                </div>
+                            <div>
+                                <button type="submit" class="button" id="create-btn">
+                                    <span i18n:translate="">Create Group</span>
+                                </button>
+                                <a href="${request.route_path('groups')}"
+                                    class="cancel-link" i18n:translate="">Cancel</a>
                             </div>
                         </div>
                     </form>

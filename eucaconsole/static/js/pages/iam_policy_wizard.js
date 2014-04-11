@@ -77,10 +77,10 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initSelectedTab = function () {
-            var lastSelectedTab = localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
+            var lastSelectedTab = Modernizr.localstorage && localStorage.getItem($scope.lastSelectedTabKey) || 'select-template-tab';
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
-                localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
+                Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
                 if (tabLinkId === 'custom-policy-tab') {
                     $scope.setPolicyName('custom');
                 }

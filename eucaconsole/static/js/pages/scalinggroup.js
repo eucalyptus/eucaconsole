@@ -70,11 +70,11 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         };
         $scope.revealModal = function () {
             var thisKey = "do-not-show-nextstep-for-" + $scope.scalingGroupName;
-            if( $scope.policiesCount == 0 && localStorage.getItem(thisKey) != "true" ){
+            if ($scope.policiesCount == 0 && Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
                 var modal = $('#nextstep-scalinggroup-modal');
                 modal.foundation('reveal', 'open');
                 $(modal).on('click', '#link-do-not-show-me-again', function () {
-                    localStorage.setItem(thisKey, "true");
+                    Modernizr.localstorage && localStorage.setItem(thisKey, "true");
                     var closeMark = modal.find('.close-reveal-modal');
                     closeMark.trigger('click');
                  });

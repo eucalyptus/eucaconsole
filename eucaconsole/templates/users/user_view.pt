@@ -28,7 +28,7 @@
             <dl class="tabs" data-tab="">
                 <dd class="active"><a href="#general-tab" i18n:translate="">General</a></dd>
                 <dd><a href="#security-tab" i18n:translate="">Security credentials</a></dd>
-                <dd><a href="#quotas-tab" i18n:translate="">Quotas</a></dd>
+                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" i18n:translate="">Quotas</a></dd>
             </dl>
             <div class="tabs-content">
                 <div class="content active panel has-actions" id="general-tab">
@@ -133,19 +133,21 @@
                             <a href="" class="close-reveal-modal">&#215;</a>
                         </div>
                     </div>
-                    <hr/>
-                    <div tal:define="policies_url request.route_path('user_policies_json', name=user.user_name);
-                                     policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
-                                     remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
-                                     update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
-                                     add_url request.route_path('iam_policy_new')+'?type=user&amp;id='+user.user_name">
-                        <div class="columns section">
-                            <h6 i18n:translate="">Permissions</h6>
-                            <div>
-                                <strong i18n:translate="">User policies</strong>
-                                <span>&nbsp;</span>
-                                <p i18n:translate="">Best practice: Only define user policies when group policies do not meet your needs.</p>
-                                ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
+                    <div ng-cloak="" ng-show="userName != 'admin'">
+                        <hr/>
+                        <div tal:define="policies_url request.route_path('user_policies_json', name=user.user_name);
+                                         policy_url request.route_path('user_policy_json', name=user.user_name, policy='_policy_');
+                                         remove_url request.route_path('user_delete_policy', name=user.user_name, policy='_policy_');
+                                         update_url request.route_path('user_update_policy', name=user.user_name, policy='_policy_');
+                                         add_url request.route_path('iam_policy_new')+'?type=user&amp;id='+user.user_name">
+                            <div class="columns section">
+                                <h6 i18n:translate="">Permissions</h6>
+                                <div>
+                                    <strong i18n:translate="">User policies</strong>
+                                    <span>&nbsp;</span>
+                                    <p i18n:translate="">Best practice: Only define user policies when group policies do not meet your needs.</p>
+                                    ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -346,13 +348,14 @@
                     </div>
                     <div ng-controller="UserQuotasCtrl" class="columns" ng-init="initController(
                                 '${request.route_path('user_update_quotas', name=user.user_name)}')">
-                        <form ng-submit="submit($event)" id="user-update-quotas-form">
+                        <form ng-submit="submit($event)" id="user-update-quotas-form" data-abide="">
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 ${structure:user_form['csrf_token']}
                                 ${panel('quotas_panel', quota_form=user_form)}
                             </div>
                             <hr />
+                            <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
                             <div>
                                 <button type="submit" class="button" id="save-quotas-btn">
                                     <span tal:condition="user" i18n:translate="">Save Quotas</span>

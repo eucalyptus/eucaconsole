@@ -14,6 +14,7 @@ class SnapshotForm(BaseSecureForm):
     """Snapshot form
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
+    name_error_msg = _(u'Not a valid name')
     name = wtforms.TextField(label=_(u'Name'))
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
@@ -33,6 +34,7 @@ class SnapshotForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.snapshot = snapshot
         self.conn = conn
+        self.name.error_msg = self.name_error_msg
         self.volume_id.error_msg = self.volume_error_msg
         self.description.error_msg = self.desc_error_msg
 

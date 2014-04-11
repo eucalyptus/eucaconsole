@@ -98,7 +98,7 @@ class SnapshotsView(LandingPageView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.clear_images_cache()
+                ImagesView.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -237,10 +237,15 @@ class SnapshotView(TaggedItemView):
     @view_config(route_name='snapshot_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshot_update(self):
         if self.snapshot and self.snapshot_form.validate():
-            # Update tags
             location = self.request.route_path('snapshot_view', id=self.snapshot.id)
             with boto_error_handler(self.request, location):
+                # Update tags
                 self.update_tags()
+
+                # Save Name tag
+                name = self.request.params.get('name', '')
+                self.update_name_tag(name)
+
                 msg = _(u'Successfully modified snapshot')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -282,7 +287,7 @@ class SnapshotView(TaggedItemView):
                     for img in self.images_registered:
                         img.deregister()
                     # Clear images cache
-                    ImagesView.clear_images_cache()
+                    ImagesView.invalidate_images_cache()
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
@@ -313,7 +318,7 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.clear_images_cache()
+                ImagesView.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
