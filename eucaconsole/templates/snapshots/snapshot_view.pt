@@ -102,7 +102,7 @@
                         ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
                     </div>
                     <hr />
-                    ${panel('tag_editor', tags=snapshot_tags)}
+                    ${panel('tag_editor', tags=snapshot_tags, show_tag_name=False)}
                     <hr  />
                     <div ng-show="snapshotStatus == 'deleted'">
                         <span i18n:translate="">Snapshot was successfully deleted.</span>

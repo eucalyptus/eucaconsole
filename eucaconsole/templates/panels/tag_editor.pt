@@ -1,21 +1,25 @@
 
 <!--! Tag editor -->
 <div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
-     ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}')">
+     ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
+    <style type="text/css" tal:condition="not show_name_tag">
+        .tagentry.Name { display: none; }
+    </style>
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
-    <div class="columns field">
+    <div class="columns field" ng-cloak="">
         <div class="items">
-            <span class="label radius secondary tagentry" ng-repeat="tag in tagsArray" ng-cloak="cloak">
+            <span class="label radius secondary tagentry {{ tag.name === 'Name' ? 'Name' : '' }}"
+                  ng-repeat="tag in tagsArray" ng-cloak="cloak">
                 <span title="{{ getSafeTitle(tag) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ tag.name | ellipsis: 20 }} <em>=</em> {{ tag.value | ellipsis: 40 }}
                 </span>
-                <a href="#" class="remove" ng-click="removeTag($index, $event, tag)"
+                <a href="#" class="remove" ng-click="removeTag($index, $event)"
                    title="Remove tag"><i class="fi-x"></i></a>
             </span>
         </div>
         <div class="add-label">
-            <span i18n:translate="" ng-show="tagsArray.length">Add another tag</span><span
-                  ng-show="tagsArray.length == 0" i18n:translate="">Add a tag</span>:
+            <span i18n:translate="" ng-show="visibleTagsCount">Add another tag</span><span
+                  ng-show="visibleTagsCount == 0" i18n:translate="">Add a tag</span>:
         </div>
         <div class="row tagentry controls-wrapper" ng-show="tagsArray.length &lt; 10">
             <div>
@@ -37,7 +41,12 @@
             </div>
         </div>
         <div ng-show="tagsArray.length &gt;= 10">
-            <p i18n:translate="">You may not add more than ten tags to a resource</p>
+            <p i18n:translate="">
+                <span i18n:translate="">You may not add more than ten tags to a resource.</span>
+                <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
+                    Note that one of your tags is the "Name" tag, which isn't displayed here.
+                </span>
+            </p>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
