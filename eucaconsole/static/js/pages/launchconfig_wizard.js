@@ -87,6 +87,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }else{
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
+                $scope.loadImageInfo($scope.imageID);
             }
         };
         $scope.setWatcher = function (){
@@ -98,19 +99,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
             $scope.$watch('imageID', function(newID, oldID){
                 if (newID != oldID) {
-                    $http({
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        method: 'GET',
-                        url: $scope.imageJsonURL.replace('_id_', newID),
-                        data: '',
-                    }).success(function (oData) {
-                        var item = oData.results;
-                        $scope.imageName = item.name;
-                        $scope.imagePlatform = item.platform_name;
-                        $scope.imageRootDeviceType = item.root_device_type;
-                        $scope.imageLocation = item.location;
-                        $scope.summarySection.find('.step1').removeClass('hide');
-                    });
+                    $scope.loadImageInfo(newID);
                 }
             });
             $(document).on('open', '[data-reveal]', function () {
@@ -135,6 +124,21 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
+            });
+        };
+        $scope.loadImageInfo = function(id) {
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'GET',
+                url: $scope.imageJsonURL.replace('_id_', id),
+                data: '',
+            }).success(function (oData) {
+                var item = oData.results;
+                $scope.imageName = item.name;
+                $scope.imagePlatform = item.platform_name;
+                $scope.imageRootDeviceType = item.root_device_type;
+                $scope.imageLocation = item.location;
+                $scope.summarySection.find('.step1').removeClass('hide');
             });
         };
         $scope.setFocus = function () {
@@ -184,9 +188,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $event.preventDefault();
                 return false;
             }
-            if (nextStep == 2) { $scope.step1Invalid = false; }
-            if (nextStep == 3) { $scope.step2Invalid = false; }
-            if (nextStep == 4) { $scope.step3Invalid = false; }
+            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
+            if (nextStep == 3 && $scope.step2Invalid) { $scope.clearErrors(3); $scope.step2Invalid = false; }
+            if (nextStep == 4 && $scope.step3Invalid) { $scope.clearErrors(4); $scope.step3Invalid = false; }
 
             // since above lines affects DOM, need to let that take affect first
             $timeout(function() {
@@ -212,6 +216,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.summarySection.find('.step' + nextStep).removeClass('hide');
             $scope.currentStepIndex = nextStep;
         };
+        $scope.clearErrors = function(step) {
+            $('#step'+step).find('div.error').each(function(idx, val) {
+                $(val).removeClass('error');
+            });
+        }
         $scope.$on('imageSelected', function($event, item) {
             $scope.imageID = item.id;
             $scope.imageName = item.name;

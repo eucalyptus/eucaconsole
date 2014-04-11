@@ -13,7 +13,7 @@ from pyramid.view import view_config
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView
+from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 

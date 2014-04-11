@@ -78,6 +78,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }else{
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
+                $scope.loadImageInfo($scope.imageID);
             }
         };
         $scope.updateTagsPreview = function () {
@@ -98,26 +99,29 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
-        $scope.setWatcher = function (){
+        $scope.setWatcher = function () {
             $scope.setDialogFocus();
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
                 if (newID != oldID) {
-                    $http({
-                        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                        method: 'GET',
-                        url: $scope.imageJsonURL.replace('_id_', newID),
-                        data: '',
-                    }).success(function (oData) {
-                        var item = oData.results;
-                        $scope.imageName = item.name;
-                        $scope.imagePlatform = item.platform_name;
-                        $scope.imageRootDeviceType = item.root_device_type;
-                        $scope.summarySection.find('.step1').removeClass('hide');
-                    });
+                    $scope.loadImageInfo(newID);
                 }
+            });
+        };
+        $scope.loadImageInfo = function(id) {
+            $http({
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'GET',
+                url: $scope.imageJsonURL.replace('_id_', id),
+                data: '',
+            }).success(function (oData) {
+                var item = oData.results;
+                $scope.imageName = item.name;
+                $scope.imagePlatform = item.platform_name;
+                $scope.imageRootDeviceType = item.root_device_type;
+                $scope.summarySection.find('.step1').removeClass('hide');
             });
         };
         $scope.focusEnterImageID = function () {
@@ -199,9 +203,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $event.preventDefault();
                 return false;
             }
-            if (nextStep == 2) { $scope.step1Invalid = false; }
-            if (nextStep == 3) { $scope.step2Invalid = false; }
-            if (nextStep == 4) { $scope.step3Invalid = false; }
+            if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
+            if (nextStep == 3 && $scope.step2Invalid) { $scope.clearErrors(3); $scope.step2Invalid = false; }
+            if (nextStep == 4 && $scope.step3Invalid) { $scope.clearErrors(4); $scope.step3Invalid = false; }
             
             // since above lines affects DOM, need to let that take affect first
             $timeout(function() {
@@ -227,6 +231,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = nextStep;
             },50);
         };
+        $scope.clearErrors = function(step) {
+            $('#step'+step).find('div.error').each(function(idx, val) {
+                $(val).removeClass('error');
+            });
+        }
         $scope.$on('imageSelected', function($event, item) {
             $scope.imageID = item.id;
             $scope.imageName = item.name;
