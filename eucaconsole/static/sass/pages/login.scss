@@ -42,6 +42,10 @@
     }
 }
 
+// Handle disabled JS
+.no-js #javascript-warning { display: block; }
+.js #javascript-warning { display: none; }
+
 
 // --- Media queries
 // --------------------

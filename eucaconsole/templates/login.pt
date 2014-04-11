@@ -131,7 +131,7 @@
                                            id="aws-login-button" value="Log in to AWS"
                                            ng-click="isLoggingIn=true" />
                                 </div>
-                                <div class="small-12 columns" ng-show="isLoggingIn">
+                                <div class="small-12 columns" ng-show="isLoggingIn" ng-cloak="">
                                     <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                                 </div>
                             </div>
