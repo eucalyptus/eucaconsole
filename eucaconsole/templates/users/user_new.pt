@@ -53,7 +53,7 @@
                             </a>
                         </h6>
                         <div class="advance-content" ng-show="adv_expanded">
-                            ${panel('form_field', field=user_form['path'])}
+                            ${panel('form_field', field=user_form['path'], **{ 'ng-non-bindable': ''})}
                         </div>
                     </div>
                     <hr />
