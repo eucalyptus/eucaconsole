@@ -140,16 +140,20 @@ class ChoicesManager(object):
 
     def keypairs(self, keypairs=None, add_blank=True, no_keypair_option=False):
         choices = []
-        if add_blank:
-            choices.append(BLANK_CHOICE)
-        if no_keypair_option:
-            choices.append(('', _(u'None (advanced option)')))
         keypairs = keypairs or []
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
             choices.append((keypair.name, keypair.name))
-        return sorted(set(choices))
+        choices = sorted(set(choices))
+        # sort actual key pairs prior to prepending blank and appending 'none'
+        ret = []
+        if add_blank:
+            ret.append(BLANK_CHOICE)
+        ret.extend(choices)
+        if no_keypair_option:
+            ret.append(('none', _(u'None (advanced option)')))
+        return ret
 
     def elastic_ips(self, instance=None, ipaddresses=None, add_blank=True):
         choices = []  # ('', _(u'None assigned'))]

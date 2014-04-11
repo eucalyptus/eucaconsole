@@ -75,7 +75,8 @@ class LaunchInstanceForm(BaseSecureForm):
     zone = wtforms.SelectField(label=_(u'Availability zone'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
-        label=_(u'Key name')
+        label=_(u'Key name'),
+        validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
     securitygroup = wtforms.SelectField(
@@ -122,11 +123,9 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
-        # Set the defailt option to be "No Keypair" and "Default" security group
+        # Set the defailt option to be "Default" security group
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = "default"
-        if len(self.keypair.choices) > 1:
-            self.keypair.data = self.keypair.choices[1][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
@@ -135,7 +134,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
     def get_keypair_choices(self):
-        choices = self.choices_manager.keypairs(add_blank=False, no_keypair_option=True)
+        choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         return choices
 
     def get_availability_zone_choices(self, region):

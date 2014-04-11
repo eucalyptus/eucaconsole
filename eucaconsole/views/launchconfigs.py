@@ -290,6 +290,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             image_id = self.image.id
             name = self.request.params.get('name')
             key_name = self.request.params.get('keypair')
+            if key_name and key_name == 'none':
+                key_name = None  # Handle "None (advanced)" option
             securitygroup = self.request.params.get('securitygroup', 'default')
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
