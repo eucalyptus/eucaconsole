@@ -149,6 +149,9 @@
 <div metal:fill-slot="tail_js">
     <script>
         angular.module('ImagePage', ['TagEditor']);
+        $(document).on('ready', function(){
+            $('.actions-menu').find('a').get(0).focus();
+        });
     </script>
 </div>
 
