@@ -69,6 +69,9 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.setFocus = function () {
+            $(document).on('ready', function(){
+                $('.actions-menu').find('a').get(0).focus();
+            });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
