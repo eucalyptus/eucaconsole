@@ -44,6 +44,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            $(document).on('click', '#close-modal-button', function(){
+                $(document).find('#nextstep-scalinggroup-modal').find('.close-reveal-modal').trigger('click')
+            });
         };
         $scope.setFocus = function () {
             $(document).on('opened', '[data-reveal]', function () {
