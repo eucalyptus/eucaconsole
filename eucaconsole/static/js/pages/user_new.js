@@ -47,17 +47,18 @@ angular.module('UserNew', ['UserEditor'])
         }
         $scope.submit = function($event) {
             var form = $($event.target);
+            $('#user-list-error').css('display', 'none');
             $('#quota-error').css('display', 'none');
+            var users = JSON.parse(form.find('textarea[name="users"]').val())
+            var singleUser = Object.keys(users)[0]
+            if (singleUser === undefined) {
+                $('#user-list-error').css('display', 'block');
+                return;
+            }
             var invalid = form.find('input[data-invalid]');
             if (invalid.length > 0) {
                 $('#quota-error').css('display', 'block');
                 return false;
-            }
-            var users = JSON.parse(form.find('textarea[name="users"]').val())
-            var singleUser = Object.keys(users)[0]
-            if (singleUser === undefined) {
-                $(".error").css("display", "block");
-                return;
             }
             var isSingleUser = Object.keys(users).length == 1;
             var csrf_token = form.find('input[name="csrf_token"]').val();
