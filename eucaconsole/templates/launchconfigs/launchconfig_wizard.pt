@@ -65,7 +65,7 @@
                                     <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
                                 </div>
                                 <div class="small-8 columns value">
-                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" autofocus="autofocus"/>
                                 </div>
                             </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}

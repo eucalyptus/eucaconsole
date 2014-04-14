@@ -786,6 +786,9 @@ textarea.hidden {
             top: 10px; right: 10px;
             .button.dropdown {
                 padding: 12px 38px 12px 22px;
+                a {
+                    color: white;
+                }
             }
             .f-dropdown {
                 box-shadow: 0px 0px 1px 1px lighten($euca-orange, 10%);

@@ -19,8 +19,12 @@ angular.module('Dashboard', [])
         $scope.initController = function (jsonItemsEndpoint) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.setInitialZone();
+            $scope.setFocus();
             $scope.getItemCounts();
             $scope.storeAWSRegion();
+        };
+        $scope.setFocus = function() {
+            $('#zone-selector').find('a').get(0).focus();
         };
         $scope.getItemCounts = function() {
             var jsonUrl = $scope.jsonEndpoint;
