@@ -149,18 +149,19 @@
                     <input type="file" id="file" name="file" class="ng-hide"/>
                 </div>
             </div>
-                
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="associate-ip-to-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_associate') + layout.querystring;
                          detailpage_action request.route_path('instance_associate', id=instance.id) if instance else '';
                          action landingpage_action if landingpage else detailpage_action;
-                         html_attrs {'data-placeholder': 'select IP...'};">
+                         html_attrs {'data-placeholder': 'select IP...'};
+                         ip_addresses_available len(associate_ip_form.ip_address.choices);">
             <h3 i18n:translate="">Associate elastic IP address with instance</h3>
             <p i18n:translate="" tal:condition="instance">Associate <b ng-non-bindable=''>${ instance_name }</b> with an elastic IP address.</p>
             <p i18n:translate="" tal:condition="not instance">Associate <b>{{ instanceName }}</b> with an elastic IP address.</p>
-            <form method="post" action="${action}" id="associate-ip-to-instance-form" data-abide="abide">
+            <form method="post" action="${action}" id="associate-ip-to-instance-form" data-abide="abide"
+                  tal:condition="ip_addresses_available">
                 ${structure:associate_ip_form['csrf_token']}
                 <div tal:condition="landingpage" tal:omit-tag="">
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
@@ -173,6 +174,16 @@
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
+            <div tal:condition="not ip_addresses_available">
+                <div i18n:translate="">
+                    There are no elastic IP addresses available.
+                    To associate an instance with an IP address, you will need to allocate elastic IPs from the cloud.
+                </div>
+                <div>&nbsp;</div>
+                <a class="button expand" href="${request.route_path('ipaddresses')}?allocate=1" i18n:translate="">
+                    Allocate IP addresses from the cloud
+                </a>
+            </div>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="disassociate-ip-from-instance-modal" class="reveal-modal small" data-reveal=""
@@ -191,7 +202,7 @@
                 <p>
                     <span i18n:translate=""> 
                         Are you sure you want to dissassociate 
-                    <span>
+                    </span>
                     <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
                     <span i18n:translate=""> 
