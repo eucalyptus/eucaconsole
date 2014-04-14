@@ -33,7 +33,7 @@ class CloudWatchAlarmsView(LandingPageView):
             self.request, ec2_conn=self.ec2_conn, elb_conn=self.elb_conn, autoscale_conn=self.autoscale_conn,
             formdata=self.request.params or None)
         self.delete_form = CloudWatchAlarmDeleteForm(self.request, formdata=self.request.params or None)
-        self.filter_keys = []
+        self.filter_keys = ['name']
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name')),
