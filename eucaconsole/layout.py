@@ -5,6 +5,7 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 
 """
 from collections import namedtuple
+from urllib import urlencode
 
 from beaker.cache import cache_region
 from pyramid.decorator import reify
@@ -52,6 +53,7 @@ class MasterLayout(object):
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
+        self.querystring = self.get_query_string()
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -72,6 +74,11 @@ class MasterLayout(object):
                 notification(message=error, type=queue, style=Notification.FOUNDATION_STYLES.get(queue))
             )
         return notifications
+
+    def get_query_string(self):
+        if self.request.GET:
+            return '?{0}'.format(urlencode(self.request.GET))
+        return ''
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

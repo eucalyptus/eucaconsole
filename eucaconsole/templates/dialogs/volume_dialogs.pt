@@ -2,7 +2,7 @@
 <div tal:omit-tag="">
     <!--! Attach/Detach/Delete modal dialogs -->
     <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('volumes_attach');
+         tal:define="landingpage_action request.route_path('volumes_attach') + layout.querystring;
                      detailpage_action request.route_path('volume_attach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'data-placeholder': 'select...'};">
@@ -31,7 +31,7 @@
         </div>
     </div>
     <div id="detach-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('volumes_detach');
+         tal:define="landingpage_action request.route_path('volumes_detach') + layout.querystring;
                      detailpage_action request.route_path('volume_detach', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Detach volume</h3>
@@ -73,7 +73,7 @@
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-volume-modal" class="reveal-modal small" data-reveal=""
-         tal:define="landingpage_action request.route_path('volumes_delete');
+         tal:define="landingpage_action request.route_path('volumes_delete') + layout.querystring;
                      detailpage_action request.route_path('volume_delete', id=volume.id) if volume else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete volume</h3>

@@ -8,7 +8,6 @@
 angular.module('LoginPage', [])
     .controller('LoginPageCtrl', function ($scope) {
         $scope.initController = function () {
-            $('#javascript-warning').css('display', 'none');
             $scope.prefillForms();
             $scope.addListeners();
             Modernizr.load([

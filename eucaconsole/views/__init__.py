@@ -391,7 +391,10 @@ class LandingPageView(BaseView):
         )
 
     def get_redirect_location(self, route):
-        return '{0}'.format(self.request.route_path(route))
+        location = '{0}'.format(self.request.route_path(route))
+        if self.request.GET:
+            location = '{0}?{1}'.format(location, urlencode(self.request.GET))
+        return location
 
 
 @notfound_view_config(renderer='../templates/notfound.pt')

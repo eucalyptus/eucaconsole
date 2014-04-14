@@ -32,23 +32,21 @@
 
 // Table view
 .table {
-    td {
-        .description {
-            word-break: break-all;
-        }
-        .label {
-            padding: 4px 6px;
-            &.i386 { background-color: $euca-grey; }
-            &.x86_64 { background-color: $euca-notificationblue; }
-            &.ebs { background-color: $euca-darkgreen; text-transform: uppercase; }
-            &.instance-store { background-color: darken($euca-grey, 15%); }
-        }
-        .emi-name {
-            display: inline-block;
-            width: 12rem;
-            word-break: break-all;
-        }
+    .description {
+        word-break: break-all;
     }
+    .label {
+        padding: 4px 6px;
+        &.i386 { background-color: $euca-grey; }
+        &.x86_64 { background-color: $euca-notificationblue; }
+        &.ebs { background-color: $euca-darkgreen; text-transform: uppercase; }
+        &.instance-store { background-color: darken($euca-grey, 15%); }
+    }
+    .emi-name {
+        display: inline-block;
+        width: 12rem;
+        word-break: break-all;
+     }
 }
 
 // Adjustment for Images landing page not having an "Add Image" button.

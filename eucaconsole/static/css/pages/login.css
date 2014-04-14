@@ -12,6 +12,10 @@
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #cccccc; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
 
+.no-js #javascript-warning { display: block; }
+
+.js #javascript-warning { display: none; }
+
 /* Medium/large screen */
 @media screen and (min-width: 920px) { #login-panel-wrapper { margin-top: 4rem; }
   #login-panel h6 { padding-left: 1rem; } }

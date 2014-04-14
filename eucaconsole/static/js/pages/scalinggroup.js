@@ -73,11 +73,12 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             if ($scope.policiesCount == 0 && Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
                 var modal = $('#nextstep-scalinggroup-modal');
                 modal.foundation('reveal', 'open');
-                $(modal).on('click', '#link-do-not-show-me-again', function () {
-                    Modernizr.localstorage && localStorage.setItem(thisKey, "true");
-                    var closeMark = modal.find('.close-reveal-modal');
-                    closeMark.trigger('click');
-                 });
+                modal.on('click', '#close-modal-button', function(){
+                    if( modal.find('input#check-do-not-show-me-again').is(':checked') ){
+                        Modernizr.localstorage && localStorage.setItem(thisKey, "true");
+                    }
+                    modal.find('.close-reveal-modal').trigger('click')
+                });
             }
         };
     })

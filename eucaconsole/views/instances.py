@@ -412,11 +412,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                     ramdisk = self.request.params.get('ramdisk')
                     self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(
                         self.instance.id, instance_type, kernel, ramdisk))
-                    self.instance.instance_type = instance_type
-                    self.instance.user_data = user_data
-                    self.instance.kernel = kernel
-                    self.instance.ramdisk = ramdisk
-                    self.instance.update()
+                    if self.instance.instance_type != instance_type:
+                        self.conn.modify_instance_attribute(self.instance.id, 'instanceType', instance_type)
+                    if len(user_data) > 0:
+                        self.conn.modify_instance_attribute(self.instance.id, 'userData', base64.b64encode(user_data))
+                    if kernel != '' and self.instance.kernel != kernel:
+                        self.conn.modify_instance_attribute(self.instance.id, 'kernel', kernel)
+                    if ramdisk != '' and self.instance.ramdisk != ramdisk:
+                        self.conn.modify_instance_attribute(self.instance.id, 'ramdisk', ramdisk)
 
                 # Start instance if desired
                 if self.request.params.get('start_later'):
