@@ -24,7 +24,7 @@
                 <form action="${request.route_path('instance_more_launch', id=instance.id)}" method="post"
                       data-abide="abide" enctype="multipart/form-data" id="launch-more-form">
                     ${structure:launch_more_form['csrf_token']}
-                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, autofocus='', ng_attrs={'model': 'instanceNumber'})}
+                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                     <hr />
                     <div class="row controls-wrapper" ng-cloak="">
                         <div class="small-4 columns">

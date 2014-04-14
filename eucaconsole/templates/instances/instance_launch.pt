@@ -84,7 +84,7 @@
                             <p class="description" i18n:translate="">
                                 Specify the number, name(s), size, availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'})}
+                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                             <div class="row controls-wrapper" ng-cloak="">
                                 <div class="small-3 columns">
                                     <label>
