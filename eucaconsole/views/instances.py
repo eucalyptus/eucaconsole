@@ -6,6 +6,7 @@ Pyramid views for Eucalyptus and AWS instances
 import base64
 from dateutil import parser
 from operator import attrgetter
+import os
 import simplejson as json
 from M2Crypto import RSA
 
@@ -775,8 +776,14 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
+            role = self.request.params.get('role')
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
+                instance_profile = None
+                if role != '':  # need to set up instance profile, add role and supply to run_instances
+                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=\n'))
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name)
+                    self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
@@ -792,6 +799,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
                     security_group_ids=security_groups,
+                    instance_profile_arn=instance_profile.arn if instance_profile else None
                 )
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)

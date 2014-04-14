@@ -119,7 +119,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.choices = self.get_availability_zone_choices(region)
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
-        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
