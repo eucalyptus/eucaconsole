@@ -24,7 +24,7 @@
             <div class="field columns">
                 <input class="userinput name" placeholder="name..." autofocus=""
                        ng-model="newUserName" ng-keypress="keyListener($event)" />
-                <small class="error" i18n:translate="">Must have at least one user</small>
+                <small id="user-list-error" class="error" i18n:translate="">Must have at least one user</small>
             </div>
             <div>&nbsp;</div>
             <div class="columns">
