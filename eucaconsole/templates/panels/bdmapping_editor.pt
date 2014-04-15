@@ -36,7 +36,7 @@
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>
-                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true" ng-show="!val.is_root" />
+                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
                     </td>
                     <td>
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
