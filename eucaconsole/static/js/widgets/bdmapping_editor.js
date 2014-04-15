@@ -84,5 +84,10 @@ angular.module('BlockDeviceMappingEditor', [])
                 }
             }
         };
+        $scope.showDOTflag = function (mapping) {
+            if (mapping.is_root) return true;
+            if (mapping.volume_type !== 'ephemeral') return true;
+            return false;
+        };
     })
 ;

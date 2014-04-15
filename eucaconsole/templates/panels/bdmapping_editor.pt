@@ -36,9 +36,7 @@
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>
-                        <span ng-show="val.volume_type !== 'ephemeral'">
-                            <input type="checkbox" ng-checked="val.delete_on_termination === true" ng-show="!val.is_root" />
-                        </span>
+                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true" ng-show="!val.is_root" />
                     </td>
                     <td>
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
