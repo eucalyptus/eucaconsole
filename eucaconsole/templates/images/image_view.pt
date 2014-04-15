@@ -16,25 +16,26 @@
         </h3>
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
-                        readonly True if image else False;">
+                        readonly True if image else False;
+                        image_id image.id if image else ''">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_path('instance_create')}?image_id=${image.id}"
+                            <a href="${request.route_path('instance_create')}?image_id=${image_id}"
                                id="launch-instance-action" i18n:translate="">
                                 Launch instance
                             </a>
                         </li>
                         <li>
-                            <a href="${request.route_path('launchconfig_new')}?image_id=${image.id}"
+                            <a href="${request.route_path('launchconfig_new')}?image_id=${image_id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
                             </a>
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('image_update', id=image.id)}" method="post" data-abide="abide">
+                <form action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">

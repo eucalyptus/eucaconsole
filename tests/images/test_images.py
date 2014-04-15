@@ -5,6 +5,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
+from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms.images import ImageForm
 from eucaconsole.views import TaggedItemView
@@ -32,23 +33,15 @@ class ImagesViewTests(BaseViewTestCase):
 
 
 class ImageViewTests(BaseViewTestCase):
-    request = testing.DummyRequest()
-    view = ImageView(request)
 
     def test_is_tagged_item_view(self):
-        self.assertTrue(isinstance(self.view, TaggedItemView))
+        request = testing.DummyRequest()
+        view = ImageView(request)
+        self.assertTrue(isinstance(view, TaggedItemView))
 
     def test_item_view(self):
-        itemview = ImageView(self.request).image_view()
-        self.assertEqual(itemview.get('image'), None)
-        self.assertTrue(itemview.get('image_display_name') is None)
-        self.assertTrue(itemview.get('image_form') is not None)
-
-    def test_image_update(self):
-        itemview = ImageView(self.request).image_view()
-        self.assertEqual(itemview.get('image'), None)
-        self.assertTrue(itemview.get('image_display_name') is None)
-        self.assertTrue(itemview.get('image_form') is not None)
+        request = testing.DummyRequest()
+        self.assertRaises(HTTPNotFound, ImageView(request).image_view)
 
 
 class ImageFormTestCase(BaseFormTestCase):
