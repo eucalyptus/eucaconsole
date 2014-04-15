@@ -5,6 +5,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 
 """
 from pyramid import testing
+from pyramid.httpexceptions import HTTPNotFound
 
 from eucaconsole.forms.images import ImageForm
 from eucaconsole.views import TaggedItemView
