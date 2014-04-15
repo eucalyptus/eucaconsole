@@ -20,7 +20,7 @@ angular.module('BlockDeviceMappingEditor', [])
         };
         // tempate-ed way to pass bdm in
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
-            if (bdmJson) {
+            if (bdmJson != '{}') {
                 $scope.bdMapping = JSON.parse(bdmJson);
             } else {
                 $scope.bdMapping = undefined;

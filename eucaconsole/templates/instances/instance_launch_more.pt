@@ -97,7 +97,6 @@
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
-                    <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">
