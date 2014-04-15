@@ -12,8 +12,8 @@
             <h3 i18n:translate="">Dashboard</h3>
             <div id="zone-selector">
                 <a href="#" data-dropdown="zone-dropdown">
-                    <span ng-if="selectedZone">{{ selectedZone }}</span>
-                    <span ng-if="!selectedZone" i18n:translate="">All availability zones</span>
+                    <span ng-cloak="" ng-if="selectedZone">{{ selectedZone }}</span>
+                    <span ng-cloak="" ng-if="!selectedZone" i18n:translate="">All availability zones</span>
                     <span class="down-caret"></span>
                 </a>
                 <ul id="zone-dropdown" class="f-dropdown" data-dropdown-content="">
