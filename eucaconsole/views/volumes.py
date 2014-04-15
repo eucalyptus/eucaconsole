@@ -393,11 +393,13 @@ class VolumeStateView(BaseVolumeView):
         attach_status = self.volume.attach_data.status
         attach_device = self.volume.attach_data.device
         attach_time = self.volume.attach_data.attach_time
+        attach_instance = self.volume.attach_data.instance_id
         return dict(
             results=dict(volume_status=volume_status,
                          attach_status=attach_status,
                          attach_device=attach_device,
-                         attach_time=attach_time)
+                         attach_time=attach_time,
+                         attach_instance=attach_instance)
         )
 
 
