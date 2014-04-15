@@ -122,6 +122,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.imagePlatform = item.platform_name;
                 $scope.imageRootDeviceType = item.root_device_type;
                 $scope.summarySection.find('.step1').removeClass('hide');
+                $scope.$broadcast('setBDM', item.block_device_mapping);
             });
         };
         $scope.focusEnterImageID = function () {

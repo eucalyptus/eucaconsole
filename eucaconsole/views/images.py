@@ -15,6 +15,7 @@ from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+import panels
 
 
 class ImagesView(LandingPageView):
@@ -99,17 +100,27 @@ class ImagesJsonView(LandingPageView):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
             conn = self.get_connection()
-            images = conn.get_all_images(filters={'image-id': [image_id]})
-            image = images[0] if len(images) > 0 else None
+            image = conn.get_image(image_id)
             if image is None:
                 return JSONResponse(status=400, message="image id not valid")
             platform = ImageView.get_platform(image)
+            bdm_dict = {}
+            bdm_object = image.block_device_mapping
+            for key, device in bdm_object.items():
+                bdm_dict[key] = dict(
+                    is_root = True if panels.get_root_device_name(image)==key else False,
+                    volume_type=device.volume_type,
+                    snapshot_id=device.snapshot_id,
+                    size=device.size,
+                    delete_on_termination=device.delete_on_termination,
+                )
             return dict(results=(dict(
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
                 name=image.name,
                 location=image.location,
+                block_device_mapping=bdm_dict,
                 tagged_name=TaggedItemView.get_display_name(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
