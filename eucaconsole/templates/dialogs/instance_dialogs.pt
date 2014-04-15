@@ -176,13 +176,11 @@
             </form>
             <div tal:condition="not ip_addresses_available">
                 <div i18n:translate="">
-                    There are no elastic IP addresses available.
-                    To associate an instance with an IP address, you will need to allocate elastic IPs from the cloud.
+                    <strong i18n:translate="">Note:</strong>
+                    <span i18n:translate="">There are no elastic IP addresses available.</span>
+                    <span i18n:translate="">To associate an instance with an IP address, you will need to</span>
+                    <a href="${request.route_path('ipaddresses')}?allocate=1"><strong>allocate elastic IPs from the cloud</strong></a>.
                 </div>
-                <div>&nbsp;</div>
-                <a class="button expand" href="${request.route_path('ipaddresses')}?allocate=1" i18n:translate="">
-                    Allocate IP addresses from the cloud
-                </a>
             </div>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
