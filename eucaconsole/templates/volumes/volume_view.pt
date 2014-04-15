@@ -78,7 +78,7 @@
                     <div class="row controls-wrapper readonly" ng-show="attach_instance">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_path('instance_view', id=instance_id)}">${instance_name}</a>
+                            <a href="${request.route_path('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="device_name">
