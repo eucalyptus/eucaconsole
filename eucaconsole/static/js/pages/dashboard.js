@@ -53,6 +53,8 @@ angular.module('Dashboard', [])
         $scope.storeAWSRegion = function () {
             if ($('#region-dropdown').length > 0 && Modernizr.localstorage) {
                 localStorage.setItem('aws-region', $('#region-dropdown').children('li[data-selected="True"]').children('a').attr('id'));
+                localStorage.removeItem($scope.storedZoneKey);
+                $scope.selectedZone = '';
             }
         };
     })
