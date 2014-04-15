@@ -94,9 +94,6 @@
             <div class="dialog-option">
                 <input type="checkbox" id="check-do-not-show-me-again">&nbsp;<span i18n:translate="">Do not show me this again</span>
             </div>
-            <div class="dialog-close-button">
-                <button id="close-modal-button" class="button expand" i18n:translate="">Close</button>
-            </div>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
