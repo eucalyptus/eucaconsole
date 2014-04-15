@@ -89,8 +89,18 @@
                             ${panel('form_field', field=launch_more_form['userdata_file'])}
                             ${panel('form_field', field=launch_more_form['kernel_id'])}
                             ${panel('form_field', field=launch_more_form['ramdisk_id'])}
-                            ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
-                            ${panel('form_field', field=launch_more_form['private_addressing'])}
+                            <div class="row">
+                                <div class="small-8 columns right">
+                                    ${structure:launch_more_form['monitoring_enabled']}
+                                    ${launch_more_form['monitoring_enabled'].label}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-8 columns right">
+                                    ${structure:launch_more_form['private_addressing']}
+                                    ${launch_more_form['private_addressing'].label}
+                                </div>
+                            </div>
                             <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
                                 Storage
                             </h6>

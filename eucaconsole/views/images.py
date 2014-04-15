@@ -108,7 +108,7 @@ class ImagesJsonView(LandingPageView):
             bdm_object = image.block_device_mapping
             for key, device in bdm_object.items():
                 bdm_dict[key] = dict(
-                    is_root = True if panels.get_root_device_name(image)==key else False,
+                    is_root=True if panels.get_root_device_name(image) == key else False,
                     volume_type=device.volume_type,
                     snapshot_id=device.snapshot_id,
                     size=device.size,
@@ -176,7 +176,7 @@ class ImageView(TaggedItemView):
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
-        self.image_display_name=self.get_display_name()
+        self.image_display_name = self.get_display_name()
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
