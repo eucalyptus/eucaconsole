@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS images
 import re
 
 from beaker.cache import cache_region, cache_managers
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
@@ -205,6 +205,8 @@ class ImageView(TaggedItemView):
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
+        if self.image is None:
+            raise HTTPNotFound
         return self.render_dict
  
     @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)
