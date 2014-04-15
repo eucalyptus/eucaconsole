@@ -9,15 +9,16 @@ angular.module('Dashboard', [])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.selectedZone = '';
-        $scope.storedZoneKey = 'dashboard_availability_zone';
+        $scope.storedZoneKey = '';
         $scope.zoneDropdown = $('#zone-dropdown');
         $scope.itemsLoading = true;
         $scope.setInitialZone = function () {
             var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
         };
-        $scope.initController = function (jsonItemsEndpoint) {
+        $scope.initController = function (jsonItemsEndpoint, cloud_type) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
+            $scope.storedZoneKey = 'dashboard_availability_zone_'+cloud_type;
             $scope.setInitialZone();
             $scope.setFocus();
             $scope.getItemCounts();

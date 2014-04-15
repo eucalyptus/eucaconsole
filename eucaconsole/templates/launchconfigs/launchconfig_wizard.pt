@@ -170,7 +170,7 @@
                                 ${panel('form_field', field=create_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
-                            <div class="row" tal:condition="image">
+                            <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="create-launchconfig-btn-step4">

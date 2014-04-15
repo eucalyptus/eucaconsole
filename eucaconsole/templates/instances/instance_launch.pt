@@ -165,7 +165,7 @@
                                 ${launch_form['private_addressing'].label}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
-                            <div class="row" tal:condition="image">
+                            <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="launch-instance-btn-step4">
