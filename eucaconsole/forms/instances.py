@@ -59,7 +59,7 @@ class LaunchInstanceForm(BaseSecureForm):
              The block device mappings are also pulled in via a panel
     """
     image_id = wtforms.HiddenField(label=_(u'Image'))
-    number_error_msg = _(u'Number of instances is required')
+    number_error_msg = _(u'Number of instances must be a whole number greater than 0')
     number = wtforms.IntegerField(
         label=_(u'Number of instances'),
         validators=[
@@ -145,7 +145,7 @@ class LaunchInstanceForm(BaseSecureForm):
 
 class LaunchMoreInstancesForm(BaseSecureForm):
     """Form class for launch more instances like this one"""
-    number_error_msg = _(u'Number of instances is required')
+    number_error_msg = _(u'Number of instances must be a whole number greater than 0')
     number = wtforms.IntegerField(
         label=_(u'How many instances would you like to launch?'),
         validators=[
