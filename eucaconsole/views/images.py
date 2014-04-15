@@ -206,7 +206,7 @@ class ImageView(TaggedItemView):
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
         if self.image is None:
-            raise HTTPNotFound
+            raise HTTPNotFound()
         return self.render_dict
  
     @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)
