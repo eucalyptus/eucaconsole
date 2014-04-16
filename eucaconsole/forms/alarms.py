@@ -77,13 +77,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=evaluation_periods_error_msg),
         ],
     )
-    unit_error_msg = _(u'Unit is required')
-    unit = wtforms.SelectField(
-        label=_(u'Unit'),
-        validators=[
-            validators.InputRequired(message=unit_error_msg),
-        ],
-    )
+    unit = wtforms.SelectField(label=_(u'Unit'))
     image_id = wtforms.TextField(label=_(u'Image'))
     availability_zone = wtforms.SelectField()
     instance_id = wtforms.SelectField()
@@ -143,7 +137,6 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
         self.threshold.error_msg = self.threshold_error_msg
         self.period.error_msg = self.period_error_msg
         self.evaluation_periods.error_msg = self.evaluation_periods_error_msg
-        self.unit.error_msg = self.unit_error_msg
 
     def get_instance_type_choices(self):
         return self.ec2_choices_manager.instance_types(cloud_type=self.cloud_type)

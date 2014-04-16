@@ -70,7 +70,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.instanceTypeSelected = $scope.urlParams['instance_type'] || '';
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
+            var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_lc');
+            if ($scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+                $('#keypair').val(lastKeyPair);
+            }
             $scope.keyPair = $('#keypair').find(':selected').val();
+            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
+            if ($scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+                $('#securitygroup').val(lastSecGroup);
+            }
             $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
             $scope.imageID = $scope.urlParams['image_id'] || '';
             $scope.keyPairSelected = $scope.urlParams['keypair'] || '';
@@ -90,9 +98,17 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.loadImageInfo($scope.imageID);
             }
         };
+        $scope.saveOptions = function() {
+            if (Modernizr.localstorage) {
+                localStorage.setItem('lastkeypair_lc', $('#keypair').find(':selected').val());
+                localStorage.setItem('lastsecgroup_lc', $('#securitygroup').find(':selected').val());
+            }
+        };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
-                 $scope.setWizardFocus($scope.currentStepIndex);
+                 if( $scope.currentStepIndex != 1 ){
+                     $scope.setWizardFocus($scope.currentStepIndex);
+                 }
             });
             $scope.$watch('securityGroup', function(){
                 $scope.updateSecurityGroup();
@@ -139,6 +155,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.imageRootDeviceType = item.root_device_type;
                 $scope.imageLocation = item.location;
                 $scope.summarySection.find('.step1').removeClass('hide');
+                $scope.$broadcast('setBDM', item.block_device_mapping);
             });
         };
         $scope.setFocus = function () {
@@ -167,14 +184,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var textareaElement = modal.find('textarea[class!=hidden]').get(0);
             var selectElement = modal.find('select').get(0);
             var modalButton = modal.find('button').get(0);
+            console.log(inputElement);
             if (!!textareaElement){
                 textareaElement.focus();
-            } else if (!!modalButton) {
-                modalButton.focus();
             } else if (!!inputElement) {
                 inputElement.focus();
             } else if (!!selectElement) {
                 selectElement.focus();
+            } else if (!!modalButton) {
+                modalButton.focus();
             }
         };
         $scope.visitNextStep = function (nextStep, $event) {
@@ -197,7 +215,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             // If all is well, click the relevant tab to go to next step
             // since clicking invokes this method again (via ng-click) and
             // one ng action must complete before another can star
-            var hash = "step"+nextStep;
+                var hash = "step"+nextStep;
                 $(".tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
@@ -211,10 +229,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                         }
                     }
                 });
+                // Unhide appropriate step in summary
+                $scope.summarySection.find('.step' + nextStep).removeClass('hide');
+                $scope.currentStepIndex = nextStep;
             },50);
-            // Unhide appropriate step in summary
-            $scope.summarySection.find('.step' + nextStep).removeClass('hide');
-            $scope.currentStepIndex = nextStep;
         };
         $scope.clearErrors = function(step) {
             $('#step'+step).find('div.error').each(function(idx, val) {

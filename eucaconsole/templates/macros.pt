@@ -230,7 +230,7 @@
 <metal:actionsmenu metal:define-macro="actions_menu">
     <div class="actions-menu">
         <span class="button dropdown" data-dropdown="actions-dropdown">
-            <span i18n:translate="">Actions</span>
+            <a href="" i18n:translate="">Actions</a>
         </span>
         <ul id="actions-dropdown" class="f-dropdown" data-dropdown-content="">
             <metal:block metal:define-slot="actions" />

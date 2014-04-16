@@ -24,7 +24,7 @@
                 <form action="${request.route_path('instance_more_launch', id=instance.id)}" method="post"
                       data-abide="abide" enctype="multipart/form-data" id="launch-more-form">
                     ${structure:launch_more_form['csrf_token']}
-                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, autofocus='', ng_attrs={'model': 'instanceNumber'})}
+                    ${panel('form_field', field=launch_more_form['number'], min=1, maxlength=2, leftcol_width=8, rightcol_width=4, autofocus='', ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                     <hr />
                     <div class="row controls-wrapper" ng-cloak="">
                         <div class="small-4 columns">
@@ -89,15 +89,24 @@
                             ${panel('form_field', field=launch_more_form['userdata_file'])}
                             ${panel('form_field', field=launch_more_form['kernel_id'])}
                             ${panel('form_field', field=launch_more_form['ramdisk_id'])}
-                            ${panel('form_field', field=launch_more_form['monitoring_enabled'])}
-                            ${panel('form_field', field=launch_more_form['private_addressing'])}
+                            <div class="row">
+                                <div class="small-8 columns right">
+                                    ${structure:launch_more_form['monitoring_enabled']}
+                                    ${launch_more_form['monitoring_enabled'].label}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="small-8 columns right">
+                                    ${structure:launch_more_form['private_addressing']}
+                                    ${launch_more_form['private_addressing'].label}
+                                </div>
+                            </div>
                             <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
                                 Storage
                             </h6>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
-                    <hr />
                     <div class="row">
                         <div class="small-4 columns">&nbsp;</div>
                         <div class="small-8 columns field inline">

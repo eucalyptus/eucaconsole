@@ -68,6 +68,7 @@ angular.module('VolumePage', ['TagEditor'])
                     $scope.volumeAttachStatus = results['attach_status'];
                     $scope.device_name = results['attach_device'];
                     $scope.attach_time = results['attach_time'];
+                    $scope.attach_instance = results['attach_instance'];
                     // Poll to obtain desired end state if current state is transitional
                     if ($scope.isTransitional($scope.volumeStatus) || $scope.isTransitional($scope.volumeAttachStatus)) {
                         $scope.isUpdating = true;
@@ -94,6 +95,9 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.setFocus = function () {
+            $(document).on('ready', function(){
+                $('.tabs').find('a').get(0).focus();
+            });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');

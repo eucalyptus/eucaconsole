@@ -6,7 +6,7 @@ Pyramid views for Eucalyptus and AWS images
 import re
 
 from beaker.cache import cache_region, cache_managers
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
@@ -15,6 +15,7 @@ from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+import panels
 
 
 class ImagesView(LandingPageView):
@@ -99,17 +100,27 @@ class ImagesJsonView(LandingPageView):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
             conn = self.get_connection()
-            images = conn.get_all_images(filters={'image-id': [image_id]})
-            image = images[0] if len(images) > 0 else None
+            image = conn.get_image(image_id)
             if image is None:
                 return JSONResponse(status=400, message="image id not valid")
             platform = ImageView.get_platform(image)
+            bdm_dict = {}
+            bdm_object = image.block_device_mapping
+            for key, device in bdm_object.items():
+                bdm_dict[key] = dict(
+                    is_root=True if panels.get_root_device_name(image) == key else False,
+                    volume_type=device.volume_type,
+                    snapshot_id=device.snapshot_id,
+                    size=device.size,
+                    delete_on_termination=device.delete_on_termination,
+                )
             return dict(results=(dict(
                 architecture=image.architecture,
                 description=image.description,
                 id=image.id,
                 name=image.name,
                 location=image.location,
+                block_device_mapping=bdm_dict,
                 tagged_name=TaggedItemView.get_display_name(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
@@ -165,7 +176,7 @@ class ImageView(TaggedItemView):
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
-        self.image_display_name=self.get_display_name()
+        self.image_display_name = self.get_display_name()
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
@@ -194,6 +205,8 @@ class ImageView(TaggedItemView):
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
+        if self.image is None:
+            raise HTTPNotFound()
         return self.render_dict
  
     @view_config(route_name='image_update', request_method='POST', renderer=TEMPLATE)

@@ -68,7 +68,7 @@
             <form action="${request.route_path('scalinggroup_policy_delete', id=scaling_group.name)}" method="post">
                 ${structure:delete_form['csrf_token']}
                 <input type="hidden" name="name" value="{{ policyName }}" />
-                <button type="submit" class="button" i18n:translate="" id="delete-policy-dialog-btn">
+                <button type="submit" class="button expand" i18n:translate="" id="delete-policy-dialog-btn">
                     Yes, Delete Policy
                 </button>
             </form>

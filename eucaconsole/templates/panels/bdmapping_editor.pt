@@ -1,7 +1,7 @@
 <!--! Block Device Mapping editor -->
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
-    <div class="columns" tal:condition="image and image.root_device_type == 'ebs'">
+    <div class="columns" ng-show="bdMapping">
         <hr />
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
@@ -36,9 +36,7 @@
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
                     <td>
-                        <span ng-show="val.volume_type !== 'ephemeral'">
-                            <input type="checkbox" ng-checked="val.delete_on_termination === true" ng-show="!val.is_root" />
-                        </span>
+                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
                     </td>
                     <td>
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"

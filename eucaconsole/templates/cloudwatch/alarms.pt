@@ -20,15 +20,17 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" i18n:translate="">Create alarm</a>
+                <!--! <a class="button" i18n:translate="">Create alarm</a> -->
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <!--!
                 <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.name }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-click="revealModal('delete', item)" i18n:translate="">Delete alarm</a>
                     </li>
                 </ul>
+                -->
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -39,13 +41,13 @@
                     <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
-                    {{ item.unit || 'instances' }}
+                    {{ item.unit !== 'None' ? item.unit : '' }}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">ID</th>
                 <th i18n:translate="">Triggered</th>
-                <th i18n:translate="" class="actions">Actions</th>
+                <!--! <th i18n:translate="" class="actions">Actions</th> -->
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id">{{ item.name || item.id }}</td>
@@ -56,8 +58,9 @@
                     <span i18n:translate="">is</span>
                     {{ item.comparison }}
                     {{ item.threshold }}
-                    {{ item.unit }}
+                    {{ item.unit !== 'None' ? item.unit : '' }}
                 </td>
+                <!--!
                 <td>
                    <span class="actions">
                         <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name }}"><i class="fi-widget"></i></span>
@@ -68,6 +71,7 @@
                         </ul>
                    </span>
                 </td>
+                -->
             </metal:block>
         </div>
         <!--! Modal dialogs -->

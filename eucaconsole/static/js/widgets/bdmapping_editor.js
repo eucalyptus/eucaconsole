@@ -18,13 +18,28 @@ angular.module('BlockDeviceMappingEditor', [])
         $scope.initChosenSelector = function () {
             $('#new-blockdevice-entry').find('select[name="snapshot_id"]').chosen({'width': '100%'});
         };
+        // tempate-ed way to pass bdm in
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
-            bdmJson = bdmJson || "{}";
-            $scope.bdMapping = JSON.parse(bdmJson);
+            if (bdmJson != '{}') {
+                $scope.bdMapping = JSON.parse(bdmJson);
+            } else {
+                $scope.bdMapping = undefined;
+            }
             $scope.bdmTextarea.val(bdmJson);
             $scope.setInitialNewValues();
             $scope.initChosenSelector();
         };
+        // live update of bdm json
+        $scope.$on('setBDM', function($event, bdm) {
+            if ($.isEmptyObject(bdm)) {
+                $scope.bdMapping = undefined;
+            } else {
+                $scope.bdMapping = bdm;
+            }
+            $scope.bdmTextarea.val(JSON.stringify(bdm));
+            $scope.setInitialNewValues();
+            $scope.initChosenSelector();
+        });
         $scope.addDevice = function () {
             // Validation checks
             var newMappingEntry = $('#new-mapping-path'),
@@ -68,6 +83,11 @@ angular.module('BlockDeviceMappingEditor', [])
                     $scope.bdmTextarea.val(JSON.stringify(bdMapping));
                 }
             }
+        };
+        $scope.showDOTflag = function (mapping) {
+            if (mapping.is_root) return true;
+            if (mapping.volume_type !== 'ephemeral') return true;
+            return false;
         };
     })
 ;
