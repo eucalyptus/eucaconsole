@@ -70,7 +70,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#number').val($scope.instanceNumber);
             $scope.instanceType = 'm1.small';
             $scope.instanceZone = $('#zone').find(':selected').val();
+            var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
+            if ($scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+                $('#keypair').val(lastKeyPair);
+            }
             $scope.keyPair = $('#keypair').find(':selected').val();
+            var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
+            if ($scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+                $('#securitygroup').val(lastSecGroup);
+            }
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
@@ -79,6 +87,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.currentStepIndex = 2;
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
+            }
+        };
+        $scope.saveOptions = function() {
+            if (Modernizr.localstorage) {
+                localStorage.setItem('lastkeypair_inst', $('#keypair').find(':selected').val());
+                localStorage.setItem('lastsecgroup_inst', $('#securitygroup').find(':selected').val());
             }
         };
         $scope.updateTagsPreview = function () {
