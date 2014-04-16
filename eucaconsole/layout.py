@@ -49,6 +49,7 @@ class MasterLayout(object):
         self.tag_pattern_key = '^(?!aws:).{0,128}$'
         self.tag_pattern_value = '^(?!aws:).{0,256}$'
         self.integer_gt_zero_pattern = '^[1-9]\d*$'
+        self.non_negative_pattern = '^[0-9]\d*$'
         self.cidr_pattern = '{0}{1}'.format(
             '^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}',
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
