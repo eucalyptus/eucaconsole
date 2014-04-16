@@ -124,9 +124,9 @@ class BaseView(object):
     @staticmethod
     def invalidate_connection_cache():
         """Empty connection objects cache"""
-        # TODO: Need workaround for Beaker < 1.6, which is missing Cache().namespace_name
         for manager in cache_managers.values():
-            if hasattr(manager, 'namespace_name') and manager.namespace_name in ['_aws_connection', '_euca_connection']:
+            namespace = manager.namespace.namespace
+            if '_aws_connection' in namespace or '_euca_connection' in namespace:
                 manager.clear()
 
     @staticmethod
