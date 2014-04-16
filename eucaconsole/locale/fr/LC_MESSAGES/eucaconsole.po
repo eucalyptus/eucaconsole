@@ -1,4 +1,4 @@
-# German translations for eucaconsole.
+# French translations for eucaconsole.
 # Copyright (C) 2014 ORGANIZATION
 # This file is distributed under the same license as the eucaconsole
 # project.
@@ -9,10 +9,10 @@ msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2014-04-16 12:49-0700\n"
-"PO-Revision-Date: 2014-03-25 13:16-0700\n"
+"PO-Revision-Date: 2014-04-16 12:49-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: de <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4527,58 +4527,4 @@ msgstr ""
 #: eucaconsole/views/volumes.py:492
 msgid "Successfully deleted the snapshot."
 msgstr ""
-
-#~ msgid "No Keypair"
-#~ msgstr ""
-
-#~ msgid "Unit is required"
-#~ msgstr ""
-
-#~ msgid "Number of instances is required"
-#~ msgstr ""
-
-#~ msgid "No available volumes in the availability zone"
-#~ msgstr ""
-
-#~ msgid "Delete alarm"
-#~ msgstr ""
-
-#~ msgid "Associate IP address to instance"
-#~ msgstr ""
-
-#~ msgid "Associate <dynamic element> with IP address"
-#~ msgstr ""
-
-#~ msgid "Associate address"
-#~ msgstr ""
-
-#~ msgid "Disassociate IP address from instance"
-#~ msgstr ""
-
-#~ msgid ""
-#~ msgstr ""
-
-#~ msgid "IP ADDRESS"
-#~ msgstr ""
-
-#~ msgid "INSTANCE"
-#~ msgstr ""
-
-#~ msgid "Yes, disassociate"
-#~ msgstr ""
-
-#~ msgid "Attach time"
-#~ msgstr ""
-
-#~ msgid "No device"
-#~ msgstr ""
-
-#~ msgid "Set Resource"
-#~ msgstr ""
-
-#~ msgid "Creating policy user {0}"
-#~ msgstr ""
-
-#~ msgid "Updating user {0}"
-#~ msgstr ""
 
