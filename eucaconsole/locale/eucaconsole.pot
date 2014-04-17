@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-04-16 12:49-0700\n"
+"POT-Creation-Date: 2014-04-17 11:42-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,8 +140,8 @@ msgstr ""
 #: eucaconsole/templates/images/images.pt:84
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:62
 #: eucaconsole/templates/securitygroups/securitygroups.pt:49
-#: eucaconsole/templates/snapshots/snapshot_view.pt:77
-#: eucaconsole/templates/snapshots/snapshots.pt:83 eucaconsole/views/images.py:63
+#: eucaconsole/templates/snapshots/snapshot_view.pt:80
+#: eucaconsole/templates/snapshots/snapshots.pt:85 eucaconsole/views/images.py:63
 #: eucaconsole/views/securitygroups.py:43
 msgid "Description"
 msgstr ""
@@ -261,7 +261,7 @@ msgstr ""
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:5
 #: eucaconsole/templates/panels/tag_editor.pt:8
 #: eucaconsole/templates/securitygroups/securitygroups.pt:51
-#: eucaconsole/templates/snapshots/snapshots.pt:84
+#: eucaconsole/templates/snapshots/snapshots.pt:86
 #: eucaconsole/templates/volumes/volumes.pt:91
 msgid "Tags"
 msgstr ""
@@ -397,7 +397,7 @@ msgstr ""
 #: eucaconsole/forms/instances.py:221
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:58
 #: eucaconsole/templates/panels/bdmapping_editor.pt:10
-#: eucaconsole/templates/snapshots/snapshots.pt:82
+#: eucaconsole/templates/snapshots/snapshots.pt:84
 #: eucaconsole/templates/volumes/volume_view.pt:67
 msgid "Volume"
 msgstr ""
@@ -419,8 +419,8 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_view.pt:101
 #: eucaconsole/templates/instances/instances.pt:127
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:85
-#: eucaconsole/templates/snapshots/snapshot_view.pt:60
-#: eucaconsole/templates/snapshots/snapshots.pt:80
+#: eucaconsole/templates/snapshots/snapshot_view.pt:63
+#: eucaconsole/templates/snapshots/snapshots.pt:82
 #: eucaconsole/templates/users/users.pt:81
 #: eucaconsole/templates/volumes/volume_view.pt:69
 #: eucaconsole/templates/volumes/volumes.pt:86 eucaconsole/views/snapshots.py:126
@@ -933,7 +933,7 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:45
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:73
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:77
-#: eucaconsole/templates/snapshots/snapshot_view.pt:116
+#: eucaconsole/templates/snapshots/snapshot_view.pt:119
 #: eucaconsole/templates/users/user_new.pt:65
 #: eucaconsole/templates/users/user_view.pt:74
 #: eucaconsole/templates/users/user_view.pt:220
@@ -1008,8 +1008,8 @@ msgid "Snapshots"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:114
-#: eucaconsole/templates/snapshots/snapshot_view.pt:114
-#: eucaconsole/templates/snapshots/snapshot_view.pt:143
+#: eucaconsole/templates/snapshots/snapshot_view.pt:117
+#: eucaconsole/templates/snapshots/snapshot_view.pt:146
 msgid "Create snapshot"
 msgstr ""
 
@@ -1157,7 +1157,7 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:60
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:86
 #: eucaconsole/templates/securitygroups/securitygroups.pt:52
-#: eucaconsole/templates/snapshots/snapshots.pt:86
+#: eucaconsole/templates/snapshots/snapshots.pt:88
 #: eucaconsole/templates/users/user_view.pt:158
 #: eucaconsole/templates/users/user_view.pt:336
 #: eucaconsole/templates/users/users.pt:86
@@ -1659,10 +1659,10 @@ msgid "Are you sure you want to delete security group"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:7
-#: eucaconsole/templates/snapshots/snapshot_view.pt:49
-#: eucaconsole/templates/snapshots/snapshots.pt:38
-#: eucaconsole/templates/snapshots/snapshots.pt:122
-#: eucaconsole/templates/volumes/volume_snapshots.pt:43
+#: eucaconsole/templates/snapshots/snapshot_view.pt:52
+#: eucaconsole/templates/snapshots/snapshots.pt:40
+#: eucaconsole/templates/snapshots/snapshots.pt:126
+#: eucaconsole/templates/volumes/volume_snapshots.pt:48
 msgid "Delete snapshot"
 msgstr ""
 
@@ -1857,7 +1857,7 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_view.pt:246
 #: eucaconsole/templates/panels/policy_list.pt:39
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:72
-#: eucaconsole/templates/snapshots/snapshot_view.pt:113
+#: eucaconsole/templates/snapshots/snapshot_view.pt:116
 #: eucaconsole/templates/users/user_view.pt:72
 #: eucaconsole/templates/volumes/volume_view.pt:124
 msgid "Save Changes"
@@ -1891,9 +1891,9 @@ msgstr ""
 #: eucaconsole/templates/securitygroups/securitygroups.pt:29
 #: eucaconsole/templates/securitygroups/securitygroups.pt:63
 #: eucaconsole/templates/snapshots/snapshots.pt:29
-#: eucaconsole/templates/snapshots/snapshots.pt:113
+#: eucaconsole/templates/snapshots/snapshots.pt:115
 #: eucaconsole/templates/users/users.pt:37 eucaconsole/templates/users/users.pt:119
-#: eucaconsole/templates/volumes/volume_snapshots.pt:41
+#: eucaconsole/templates/volumes/volume_snapshots.pt:42
 #: eucaconsole/templates/volumes/volumes.pt:30
 #: eucaconsole/templates/volumes/volumes.pt:118
 msgid "View details"
@@ -2147,8 +2147,8 @@ msgstr ""
 
 #: eucaconsole/templates/images/image_view.pt:107
 #: eucaconsole/templates/panels/bdmapping_editor.pt:12
-#: eucaconsole/templates/snapshots/snapshot_view.pt:57
-#: eucaconsole/templates/snapshots/snapshots.pt:79
+#: eucaconsole/templates/snapshots/snapshot_view.pt:60
+#: eucaconsole/templates/snapshots/snapshots.pt:81
 msgid "Snapshot"
 msgstr ""
 
@@ -2751,8 +2751,8 @@ msgid "Mapping"
 msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:14
-#: eucaconsole/templates/snapshots/snapshot_view.pt:85
-#: eucaconsole/templates/snapshots/snapshots.pt:81
+#: eucaconsole/templates/snapshots/snapshot_view.pt:88
+#: eucaconsole/templates/snapshots/snapshots.pt:83
 #: eucaconsole/templates/volumes/volumes.pt:87 eucaconsole/views/snapshots.py:123
 msgid "Size"
 msgstr ""
@@ -3338,43 +3338,47 @@ msgid "Create new snapshot"
 msgstr ""
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:38
+msgid "Waiting for snapshot to be completed..."
+msgstr ""
+
+#: eucaconsole/templates/snapshots/snapshot_view.pt:41
 #: eucaconsole/templates/snapshots/snapshots.pt:31
-#: eucaconsole/templates/snapshots/snapshots.pt:115
+#: eucaconsole/templates/snapshots/snapshots.pt:117
 msgid "Create volume from snapshot"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:44
-#: eucaconsole/templates/snapshots/snapshots.pt:36
-#: eucaconsole/templates/snapshots/snapshots.pt:120
-#: eucaconsole/templates/volumes/volume_snapshots.pt:42
+#: eucaconsole/templates/snapshots/snapshot_view.pt:47
+#: eucaconsole/templates/snapshots/snapshots.pt:37
+#: eucaconsole/templates/snapshots/snapshots.pt:123
+#: eucaconsole/templates/volumes/volume_snapshots.pt:45
 msgid "Register as image"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:61
+#: eucaconsole/templates/snapshots/snapshot_view.pt:64
 msgid "Progress"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:81
+#: eucaconsole/templates/snapshots/snapshot_view.pt:84
 msgid "Snapshot ID"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:89
+#: eucaconsole/templates/snapshots/snapshot_view.pt:92
 msgid "Created from volume"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:95
+#: eucaconsole/templates/snapshots/snapshot_view.pt:98
 msgid "Time started"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:108
+#: eucaconsole/templates/snapshots/snapshot_view.pt:111
 msgid "Snapshot was successfully deleted."
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:109
+#: eucaconsole/templates/snapshots/snapshot_view.pt:112
 msgid "Return to snapshots page"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshot_view.pt:144
+#: eucaconsole/templates/snapshots/snapshot_view.pt:147
 msgid "You must have volumes before you can create snapshots."
 msgstr ""
 
@@ -3382,7 +3386,7 @@ msgstr ""
 msgid "Create New Snapshot"
 msgstr ""
 
-#: eucaconsole/templates/snapshots/snapshots.pt:85
+#: eucaconsole/templates/snapshots/snapshots.pt:87
 msgid "Time Started"
 msgstr ""
 
@@ -3624,11 +3628,11 @@ msgstr ""
 msgid "Create a snapshot"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_snapshots.pt:84
+#: eucaconsole/templates/volumes/volume_snapshots.pt:90
 msgid "Create snapshot from volume"
 msgstr ""
 
-#: eucaconsole/templates/volumes/volume_snapshots.pt:85
+#: eucaconsole/templates/volumes/volume_snapshots.pt:91
 msgid "Add a snapshot for"
 msgstr ""
 
@@ -4276,11 +4280,11 @@ msgstr ""
 msgid "Successfully modified snapshot"
 msgstr ""
 
-#: eucaconsole/views/snapshots.py:264 eucaconsole/views/volumes.py:462
+#: eucaconsole/views/snapshots.py:264 eucaconsole/views/volumes.py:463
 msgid "Creating snapshot from volume {0}"
 msgstr ""
 
-#: eucaconsole/views/snapshots.py:273 eucaconsole/views/volumes.py:475
+#: eucaconsole/views/snapshots.py:273 eucaconsole/views/volumes.py:476
 msgid ""
 "Successfully sent create snapshot request.  It may take a moment to create "
 "the snapshot."
@@ -4485,7 +4489,7 @@ msgstr ""
 msgid "Detaching volume {0} from {1}"
 msgstr ""
 
-#: eucaconsole/views/volumes.py:492
+#: eucaconsole/views/volumes.py:493
 msgid "Successfully deleted the snapshot."
 msgstr ""
 
