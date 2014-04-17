@@ -40,7 +40,7 @@
                             </a>
                         </h6>
                         <div class="quotas-content" ng-show="quotas_expanded">
-                            ${panel('quotas_panel', quota_form=user_form)}
+                            ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
                         </div>
                     </div>
                     <hr/>

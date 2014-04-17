@@ -1,7 +1,6 @@
 <!--! Modal dialogs for Snapshots on landing and detail page -->
 <div tal:omit-tag="">
-    <div id="quotas-panel" class="section" tal:define="_ import: pyramid.i18n.TranslationString;
-                                        quota_err _('Requires non-negative integer (or may be empty)')">
+    <div id="quotas-panel" class="section">
         <p i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>
         <div class="expando" id="ec2-section" ng-cloak="">
             <span class="title" >

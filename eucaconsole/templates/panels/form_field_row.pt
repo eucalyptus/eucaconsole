@@ -20,7 +20,7 @@
     <div tal:condition="reverse">
         <div class="columns small-${leftcol_width} reverse">
             ${structure:field(**html_attrs)}
-            <small class="error" tal:condition="error_msg" ng-non-bindable="">${error_msg}</small>
+            <small class="error" tal:condition="error_msg">${error_msg}</small>
         </div>
         <div class="columns small-${rightcol_width}">
             <label for="${field.name}" class="reverse" ng-non-bindable="">
