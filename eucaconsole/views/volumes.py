@@ -444,6 +444,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     id=snapshot.id,
                     name=TaggedItemView.get_display_name(snapshot),
                     progress=snapshot.progress,
+                    transitional=self.is_transitional(snapshot),
                     volume_size=self.volume.size,
                     start_time=snapshot.start_time,
                     description=snapshot.description,
@@ -498,3 +499,9 @@ class VolumeSnapshotsView(BaseVolumeView):
     def get_snapshot(self, snapshot_id):
         snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
         return snapshots_list[0] if snapshots_list else None
+
+    @staticmethod
+    def is_transitional(snapshot):
+        if snapshot.status.lower() == 'completed':
+            return False
+        return int(snapshot.progress.replace('%', '')) < 100
