@@ -30,7 +30,7 @@ requires = [
 
 i18n_extras = [
     'Babel',
-    'lingua',
+    'lingua == 1.6',
 ]
 
 dev_extras = [
