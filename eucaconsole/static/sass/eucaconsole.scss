@@ -811,7 +811,12 @@ textarea.hidden {
     form .row.controls-wrapper {
         margin-bottom: 1rem;
     }
-    .button.expand { margin-bottom: 0; }
+    .button.expand {
+        margin-bottom: 0;
+        &:focus {
+            box-shadow: 0 0 3px 3px #7bb0e0;
+        }
+    }
 }
 
 /* -----------------------------------------
