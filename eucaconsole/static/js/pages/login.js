@@ -7,6 +7,7 @@
 
 angular.module('LoginPage', [])
     .controller('LoginPageCtrl', function ($scope) {
+        $scope.showHttpsWarning = false;
         $scope.initController = function () {
             $scope.prefillForms();
             $scope.addListeners();
@@ -17,10 +18,8 @@ angular.module('LoginPage', [])
                         $('#browser-svg-warn-modal').foundation('reveal', 'open');
                     }
                 }
-            ])
-            if (window.location.protocol != 'https:') {
-                $('#ssl-warning').css('display', 'block');
-            }
+            ]);
+            $scope.showHttpsWarning = window.location.protocol !== 'https:';
         };
         $scope.setFocus = function () {
             var inputs = [];
