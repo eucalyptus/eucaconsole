@@ -32,6 +32,7 @@ angular.module('SecurityGroupRules', [])
             $scope.resetValues();
         };
         $scope.initRules = function (rulesArray) {
+            console.log(rulesArray);
             // Get existing rules and shove into scope
             $scope.rulesArray = JSON.parse(rulesArray);
             $scope.syncRules();
@@ -40,8 +41,21 @@ angular.module('SecurityGroupRules', [])
         // Watch for those two attributes update to trigger the duplicated rule check in real time
         $scope.setWatchers = function () {
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
-            $scope.$watch('groupName', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('groupName', function(){
+  //              $scope.checkForDuplicatedRules();
+                $scope.trafficType = 'securitygroup';
+            });
             $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
+            $(document).on('keyup', '#input-cidr-ip', function () {
+                $scope.$apply(function() {
+                    $scope.trafficType = 'ip';
+                });
+            });
+            $(document).on('click', '#sgroup-use-my-ip', function () {
+                $scope.$apply(function() {
+                    $scope.trafficType = 'ip';
+                });
+            });
             $(document).on('closed', '[data-reveal]', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
