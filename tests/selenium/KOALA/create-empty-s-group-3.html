@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://10.111.101.112:8888/" />
+<title>create-empty-s-group-3</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">create-empty-s-group-3</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=resource-menu-netsec</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menuitem-securitygroups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=create-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>(Math.random().toString(36)+&quot;000000000&quot;).slice(2,7);</td>
+	<td>str</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=name</td>
+	<td>group${str}</td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>group${str}</td>
+	<td>group_3</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=description</td>
+	<td>test group 3</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=save-securitygroup-btn</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

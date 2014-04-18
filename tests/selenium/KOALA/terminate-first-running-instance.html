@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://10.111.101.112:8888/" />
+<title>terminate-first-running-instance</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">terminate-first-running-instance</td></tr>
+</thead><tbody>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=i.fi-cloud.icon</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=i.fi-refresh</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=a:contains(&quot;myinst&quot;)</td>
+	<td>inst</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${inst}</td>
+	<td>inst</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['inst'].slice(8,18);</td>
+	<td>id</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=item-dropdown_${id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=item-dropdown_${id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>Actions menu drop down did not drop</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Terminate</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>The Terminate link locator does not tell which instance this is </td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//div[@id='terminate-instance-modal']/div[2]/p/b</td>
+	<td>${id}</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//input[@value='Yes, terminate'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>This by itself terminates an instance when clicked from landing page</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
