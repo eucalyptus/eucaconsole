@@ -33,6 +33,7 @@ angular.module('UserEditor', [])
             }
         };
         $scope.validateUsername = function ($event) {
+           // Timeout is needed to react to the added 'error' class by Foundation's live validation
            $timeout(function(){ 
                 if( $('#user-name-field-div').hasClass("error") ){
                     $scope.isDisabled = true;
