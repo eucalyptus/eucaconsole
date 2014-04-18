@@ -22,7 +22,7 @@
         </h3>
         <div class="large-7 columns">
             <div class="panel no-title">
-                <form id="user-new-form" ng-submit="submit($event)" data-abide="abide" ng-cloak="">
+                <form id="user-new-form" ng-submit="submit($event)" data-abide="abide">
                     ${structure:user_form['csrf_token']}
                     <div class="section">
                         ${panel('user_editor')}
