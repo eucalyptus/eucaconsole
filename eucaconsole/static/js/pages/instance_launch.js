@@ -71,12 +71,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.instanceType = 'm1.small';
             $scope.instanceZone = $('#zone').find(':selected').val();
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
-            if ($scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== 'undefined') {
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
+            localStorage.removeItem('lastsecgroup_inst');
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
-            if ($scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
                 $('#securitygroup').val(lastSecGroup);
             }
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
