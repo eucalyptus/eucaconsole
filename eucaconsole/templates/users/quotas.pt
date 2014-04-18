@@ -1,5 +1,8 @@
-<!--! Modal dialogs for Snapshots on landing and detail page -->
+<!--! Quotas panel for create/edit user pages -->
 <div tal:omit-tag="">
+    <style type="text/css">
+        #quotas-panel .expando { margin-bottom: 1rem; }
+    </style>
     <div id="quotas-panel" class="section">
         <p i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>
         <div class="expando" id="ec2-section" ng-cloak="">
