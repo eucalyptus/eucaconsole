@@ -20,12 +20,10 @@ angular.module('SecurityGroupRules', [])
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
             $scope.hasDuplicatedRule = false;
-            // Timeout is needed to delay the update for the ip protocol select refresh
-            $timeout(function(){
-                $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
-                $('#ip-protocol-select').prop('selectedIndex', -1);
-                $('#ip-protocol-select').trigger('chosen:updated');
-            }, 250);
+            $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
+            $('#ip-protocol-select').prop('selectedIndex', -1);
+            $('#ip-protocol-select').trigger('chosen:updated');
+            $scope.cleanupSelections();
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
@@ -37,6 +35,16 @@ angular.module('SecurityGroupRules', [])
             $scope.syncRules();
             $scope.setWatchers();
         };
+        $scope.cleanupSelections = function () {
+            $timeout( function(){
+                if( $('#ip-protocol-select').children('option').first().html() == '' ){
+                    $('#ip-protocol-select').children('option').first().remove();
+                } 
+                if( $('#groupname-select').children('option').first().html() == '' ){
+                    $('#groupname-select').children('option').first().remove();
+                }
+            }, 500);
+        };
         // Watch for those two attributes update to trigger the duplicated rule check in real time
         $scope.setWatchers = function () {
             $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
@@ -44,6 +52,7 @@ angular.module('SecurityGroupRules', [])
                 if( $scope.groupName !== '' ){
                     $scope.trafficType = 'securitygroup';
                 }
+                $scope.checkForDuplicatedRules();
             });
             $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
             $(document).on('keyup', '#input-cidr-ip', function () {
@@ -176,12 +185,10 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            // Timeout is needed to delay the update for the groupname select refresh
-            $timeout(function(){
-                $('#groupname-select').chosen({'width': '50%', search_contains: true});
-                $('#groupname-select').prop('selectedIndex', -1);
-                $('#groupname-select').trigger('chosen:updated');
-            }, 250);
+            $('#groupname-select').chosen({'width': '50%', search_contains: true});
+            $('#groupname-select').prop('selectedIndex', -1);
+            $('#groupname-select').trigger('chosen:updated');
+            $scope.cleanupSelections();
         };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
