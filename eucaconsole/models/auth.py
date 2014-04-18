@@ -182,7 +182,7 @@ class EucaAuthenticator(object):
         self.port = port
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
-        if user == 'admin':  # admin cannot have more than 1 hour duration
+        if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
         self.auth_url = self.TEMPLATE.format(
