@@ -352,7 +352,7 @@
                             <div class="section">
                                 <h6 i18n:translate="">Quotas</h6>
                                 ${structure:user_form['csrf_token']}
-                                ${panel('quotas_panel', quota_form=user_form)}
+                                ${panel('quotas_panel', quota_form=user_form, quota_err=quota_err)}
                             </div>
                             <hr />
                             <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>

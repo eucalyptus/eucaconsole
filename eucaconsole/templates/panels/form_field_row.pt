@@ -20,6 +20,7 @@
     <div tal:condition="reverse">
         <div class="columns small-${leftcol_width} reverse">
             ${structure:field(**html_attrs)}
+            <small class="error" tal:condition="error_msg">${error_msg}</small>
         </div>
         <div class="columns small-${rightcol_width}">
             <label for="${field.name}" class="reverse" ng-non-bindable="">
@@ -27,7 +28,6 @@
             </label>
             <span tal:condition="getattr(field, 'help_text', None)"
                   class="helptext-icon" data-tooltip="" title="${field.help_text}">?</span>
-            <small class="error" tal:condition="error_msg" ng-non-bindable="">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
                 <span class="error" tal:repeat="error field.errors" ng-non-bindable="">${error}</span>
             </div>
