@@ -52,6 +52,7 @@ angular.module('SecurityGroupRules', [])
                 if( $scope.groupName !== '' ){
                     $scope.trafficType = 'securitygroup';
                 }
+                $scope.checkForDuplicatedRules();
             });
             $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
             $(document).on('keyup', '#input-cidr-ip', function () {
