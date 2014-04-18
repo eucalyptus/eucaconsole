@@ -8,7 +8,7 @@ import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPUseProxy
 from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
@@ -42,9 +42,11 @@ class LoginView(BaseView):
         self.came_from = self.sanitize_url(self.request.params.get('came_from', referrer))
         self.login_form_errors = []
         self.duration = str(int(self.request.registry.settings.get('session.cookie_expires')) + 60)
-        self.https_required = asbool(self.request.registry.settings.get('session.secure', False))
+        self.secure_session = asbool(self.request.registry.settings.get('session.secure', False))
+        self.https_proxy = self.request.environ.get('HTTP_X_FORWARDED_PROTO') == 'https'
+        self.https_scheme = self.request.scheme == 'https'
         self.render_dict = dict(
-            https_required=self.https_required,
+            https_required=self.show_https_warning(),
             euca_login_form=self.euca_login_form,
             aws_login_form=self.aws_login_form,
             login_form_errors=self.login_form_errors,
@@ -52,6 +54,13 @@ class LoginView(BaseView):
             duration=self.duration,
             came_from=self.came_from,
         )
+
+    def show_https_warning(self):
+        if any([self.https_proxy, self.https_scheme]) and not self.secure_session:
+            return True
+        if self.secure_session and not (any([self.https_proxy, self.https_scheme])):
+            return True
+        return False
 
     @view_config(route_name='login', request_method='GET', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
     @forbidden_view_config(request_method='GET', renderer=TEMPLATE)
@@ -117,7 +126,7 @@ class LoginView(BaseView):
         session = self.request.session
         if self.aws_login_form.validate():
             package = self.request.params.get('package')
-            package = base64.decodestring(package);
+            package = base64.decodestring(package)
             aws_region = self.request.params.get('aws-region')
             try:
                 auth = AWSAuthenticator(package=package)
