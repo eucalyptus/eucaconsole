@@ -18,6 +18,7 @@ angular.module('UserNew', ['UserEditor'])
         $scope.autoscale_expanded = false;
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
+        $scope.isDisabled = true;
         $scope.toggleQuotasContent = function () {
             $scope.quotas_expanded = !$scope.quotas_expanded;
         };
