@@ -38,9 +38,15 @@
                         <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.name || snapshot.id }}</a></strong>
                         <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ snapshot.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a></li>
-                            <li><a ng-click="revealRegisterSnapshotModal(snapshot.id)" i18n:translate="">Register as image</a></li>
-                            <li><a ng-click="revealDeleteModal('${volume.id}', snapshot)" i18n:translate="">Delete snapshot</a></li>
+                            <li>
+                                <a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a>
+                            </li>
+                            <li ng-show="!snapshot.transitional">
+                                <a ng-click="revealRegisterSnapshotModal(snapshot.id)" i18n:translate="">Register as image</a>
+                            </li>
+                            <li ng-show="!snapshot.transitional">
+                                <a ng-click="revealDeleteModal('${volume.id}', snapshot)" i18n:translate="">Delete snapshot</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="content">

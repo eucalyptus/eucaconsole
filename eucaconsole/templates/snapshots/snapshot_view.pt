@@ -34,18 +34,21 @@
             <div class="panel ${'has-actions' if snapshot else ''}">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="snapshot">
                     <metal:actions metal:fill-slot="actions">
-                        <li>
+                        <li ng-show="isUpdating">
+                            <a i18n:translate="">Waiting for snapshot to be completed...</a>
+                        </li>
+                        <li ng-show="!isUpdating">
                             <a href="${request.route_path('volume_view', id='new')}?from_snapshot=${snapshot.id}"
                                id="create-volume-action" i18n:translate="">
                                 Create volume from snapshot
                             </a>
                         </li>
-                        <li>
+                        <li ng-show="!isUpdating">
                             <a data-reveal-id="register-snapshot-modal" i18n:translate="" id="register-image-action">
                                 Register as image
                             </a>
                         </li>
-                        <li>
+                        <li ng-show="!isUpdating">
                             <a data-reveal-id="delete-snapshot-modal" i18n:translate="" id="delete-snapshot-action">
                                 Delete snapshot
                             </a>
