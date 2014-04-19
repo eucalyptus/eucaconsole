@@ -72,6 +72,6 @@
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" id="release_ip_submit_link" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="release_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
