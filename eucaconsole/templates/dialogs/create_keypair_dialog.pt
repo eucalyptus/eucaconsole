@@ -29,7 +29,7 @@
                 Download key pair file
             </button>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="create_keypair_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 
