@@ -16,13 +16,13 @@
             ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Attach Volume</button>
+                <button type="submit" id="attach_volume_submit_button" class="button expand" i18n:translate="">Attach Volume</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="attach_volume_close_link" class="close-reveal-modal">&#215;</a>
         <hr />
         <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
         <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
@@ -52,13 +52,13 @@
                 <input type="hidden" name="volume_id" value="{{ volumeID }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Yes, Detach Volume</button>
+                <button type="submit" id="detach_volume_submit_button" class="button expand" i18n:translate="">Yes, Detach Volume</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="detach_volume_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Detach volume</h3>
