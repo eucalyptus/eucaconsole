@@ -99,13 +99,13 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Terminate</button>
+                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="terminate_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 class="pagetitle">
