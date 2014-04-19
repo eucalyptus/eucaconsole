@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <a id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.instance_id">
                         <a i18n:translate=""
@@ -64,7 +64,7 @@
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">
-                        <a class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <a id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.instance_id">
                                 <a i18n:translate=""
