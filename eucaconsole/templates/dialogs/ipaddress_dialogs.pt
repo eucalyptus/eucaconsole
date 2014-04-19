@@ -66,12 +66,12 @@
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
+                <button type="submit" id="release_ip_submit_button" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="release_ip_submit_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
