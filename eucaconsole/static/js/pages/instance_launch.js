@@ -75,7 +75,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
-            localStorage.removeItem('lastsecgroup_inst');
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
                 $('#securitygroup').val(lastSecGroup);
