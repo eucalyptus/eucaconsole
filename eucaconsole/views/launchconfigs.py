@@ -319,6 +319,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
+            if self.request.params.get('create_sg_from_lc', False):
+                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(name))
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

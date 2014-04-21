@@ -147,6 +147,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
+                                    <input id="create-sg-from-lc" name="create_sg_from_lc" type="checkbox" checked="yes"></input><label i18n:translate="">Create scaling group using this launch configuration</label>
                                     <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step3">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button><br />
@@ -173,6 +174,7 @@
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
+                                    <input id="create-sg-from-lc" name="create_sg_from_lc" type="checkbox" checked="yes"></input><label i18n:translate="">Create scaling group using this launch configuration</label>
                                     <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step4">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button>
