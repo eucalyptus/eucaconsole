@@ -12,6 +12,8 @@
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #cccccc; }
 #login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
 
+#password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
+
 .no-js #javascript-warning { display: block; }
 
 .js #javascript-warning { display: none; }
