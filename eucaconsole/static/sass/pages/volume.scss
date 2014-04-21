@@ -9,6 +9,7 @@
 // Status colors
 $volume-status-color-creating: lighten($euca-green, 10%);
 $volume-status-color-available: $euca-green;
+$volume-status-color-deleting: $euca-lightgrey;
 $volume-status-color-deleted: $euca-grey;
 $volume-status-color-error: darkred;
 $volume-status-color-attached: darkorange;
@@ -25,6 +26,8 @@ $volume-status-color-attached: darkorange;
 .status.creating { background-color: $volume-status-color-creating; }
 .status.available { background-color: $volume-status-color-available; }
 .status.in-use { background-color: $volume-status-color-attached; }
+.status.deleting { background-color: $volume-status-color-deleting; }
+.status.deleted { background-color: $volume-status-color-deleted; }
 
 .reveal-modal {
     #device {

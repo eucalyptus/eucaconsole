@@ -1590,6 +1590,7 @@ footer .copyright { font-size: 0.9em; }
 ----------------------------------------- */
 .button { background-color: #f18f30; }
 .button.secondary { background-color: #777777; color: white; }
+.button.disabled, .button[disabled] { background-color: #f18f30; }
 .button:hover { background-color: #df750f; }
 .button:focus { background-color: #f18f30; }
 
