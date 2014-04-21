@@ -14,13 +14,13 @@
             </div>
             ${panel('form_field', field=associate_form.instance_id)}
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Associate Address with Instance</button>
+                <button type="submit" id="associate_ip_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="associate_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="disassociate-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('ipaddresses_disassociate') + layout.querystring;
@@ -41,13 +41,13 @@
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                <button type="submit" id="disassociate_ip_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="disassociate_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="release-ip-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('ipaddresses_release') + layout.querystring;
@@ -66,12 +66,12 @@
                 <input type="hidden" name="public_ip" value="{{ publicIP }}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
+                <button type="submit" id="release_ip_submit_button" class="button expand" i18n:translate="">Yes, Release Address to Cloud</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="release_ip_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>

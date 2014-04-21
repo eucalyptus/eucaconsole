@@ -13,11 +13,11 @@
             <div>&nbsp;</div>
             <div class="row">
                 <div>
-                    <input type="submit" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
+                    <input type="submit" id="disable_user_submit_button" class="button expand" value="Yes, Disable User" i18n:attributes="value" />
                 </div>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="disable_user_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="enable-user-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Enable user</h3>
@@ -33,11 +33,11 @@
             <div>&nbsp;</div>
             <div class="row">
                 <div>
-                    <input type="submit" class="button expand" value="Enable User" i18n:attributes="value" />
+                    <input type="submit" id="enable_user_submit_button" class="button expand" value="Enable User" i18n:attributes="value" />
                 </div>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="enable_user_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="delete-user-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Delete user</h3>
@@ -51,10 +51,10 @@
             <div>&nbsp;</div>
             <div class="row">
                 <div>
-                    <input type="submit" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
+                    <input type="submit" id="delete_user_submit_button" class="button expand" value="Yes, Delete User" i18n:attributes="value" />
                 </div>
             </div>
         </form>
-        <a href="" class="close-reveal-modal">&#215;</a>
+        <a href="" id="delete_user_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>

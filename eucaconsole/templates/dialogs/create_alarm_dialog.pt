@@ -135,7 +135,7 @@
                 </div>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="create_alarm_close_link" class="close-reveal-modal">&#215;</a>
         <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>

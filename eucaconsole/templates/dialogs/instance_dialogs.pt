@@ -18,13 +18,13 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Reboot</button>
+                    <button type="submit" id="reboot_instance_submit_button" class="button expand" i18n:translate="">Yes, Reboot</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="reboot_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="start-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_start') + layout.querystring;
@@ -42,13 +42,13 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Start Instance</button>
+                    <button type="submit" id="start_instance_submit_button" class="button expand" i18n:translate="">Yes, Start Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="start_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="stop-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_stop') + layout.querystring;
@@ -66,7 +66,7 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Stop Instance</button>
+                    <button type="submit" id="stop_instance_submit_button" class="button expand" i18n:translate="">Yes, Stop Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
@@ -99,13 +99,13 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Terminate</button>
+                    <button type="submit" id="terminate_instance_submit_button" class="button expand" i18n:translate="">Yes, Terminate</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="terminate_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 class="pagetitle">
@@ -114,7 +114,7 @@
                 <em tal:condition="landingpage">{{ instanceName }}</em>
             </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="console_output_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
         <h3 class="pagetitle">
@@ -149,7 +149,7 @@
                     <input type="file" id="file" name="file" class="ng-hide"/>
                 </div>
             </div>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="connect_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="associate-ip-to-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_associate') + layout.querystring;
@@ -168,7 +168,7 @@
                 </div>
                 ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Associate Address with Instance</button>
+                    <button type="submit" id="associate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
@@ -182,7 +182,7 @@
                     <a href="${request.route_path('ipaddresses')}?allocate=1"><strong>allocate elastic IPs from the cloud</strong></a>.
                 </div>
             </div>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="associate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="disassociate-ip-from-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_disassociate') + layout.querystring;
@@ -219,13 +219,13 @@
                     <input type="hidden" name="ip_address" value="${instance.ip_address}" ng-non-bindable=""/>
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
+                    <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
                     <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
-            <a href="#" class="close-reveal-modal">&#215;</a>
+            <a href="#" id="disassociate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>
