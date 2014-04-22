@@ -299,7 +299,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled', False)
             bdmapping_json = self.request.params.get('block_device_mapping')
-            block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json!='{}' else None
+            block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json != '{}' else None
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating launch configuration {0}").format(name))
                 launch_config = LaunchConfiguration(
@@ -319,7 +319,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                         u'It may take a moment to create the launch configuration.')
                 queue = Notification.SUCCESS
                 self.request.session.flash(msg, queue=queue)
-            if self.request.params.get('create_sg_from_lc', False):
+
+            if self.request.params.get('create_sg_from_lc') == 'y':
                 location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(name))
             return HTTPFound(location=location)
         else:
