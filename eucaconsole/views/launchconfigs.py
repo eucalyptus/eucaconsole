@@ -297,7 +297,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             instance_type = self.request.params.get('instance_type', 'm1.small')
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
-            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
+            monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json != '{}' else None
             with boto_error_handler(self.request, location):

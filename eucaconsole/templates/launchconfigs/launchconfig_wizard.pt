@@ -169,7 +169,8 @@
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
                             <div class="small-8 columns right">
-                                ${panel('form_field', field=create_form['monitoring_enabled'], reverse=True, ng_attrs={'model': 'monitoringEnabled'})}
+                                ${structure:create_form.monitoring_enabled(**{'ng-model': 'monitoringEnabled'})}
+                                ${structure:create_form.monitoring_enabled.label}
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row">
