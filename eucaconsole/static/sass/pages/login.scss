@@ -40,6 +40,9 @@
         margin-bottom: 12px;
         background-color: $euca-orange;
     }
+    #euca-tab.active, #aws-tab.active {
+        background-color: white;
+    }
 }
 
 #password, #secret_key {
