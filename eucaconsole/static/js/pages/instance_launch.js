@@ -98,7 +98,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
             $timeout(function() {
-                var tagsTextarea = $('#tags'),
+                var tagsTextarea = $('textarea#tags'),
                     tagsJson = tagsTextarea.val(),
                     removeButtons = $('.circle.remove');
                 removeButtons.on('click', function () {
