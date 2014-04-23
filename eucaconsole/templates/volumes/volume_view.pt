@@ -122,7 +122,7 @@
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" tal:condition="volume" ng-disabled="volumeStatus !== 'available'">
+                        <button type="submit" class="button" tal:condition="volume" ng-disabled="isUpdating || volumeStatus === 'deleted'">
                             <span  i18n:translate="" >Save Changes</span>
                         </button>
                         <button type="submit" class="button" tal:condition="not volume">
