@@ -27,13 +27,13 @@
                 <span id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li>
-                        <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
+                        <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
                     </li>
                     <li>
-                        <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                        <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
                     </li>
                     <li>
-                        <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                        <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate="">Manage policies</a>
                     </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
@@ -112,13 +112,13 @@
                         <span id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a ng-href="${prefix}/{{ item.name }}" i18n:translate="">View details</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}" i18n:translate="">View details</a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name }}/instances" i18n:translate="">Manage instances</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/instances" i18n:translate="">Manage instances</a>
                             </li>
                             <li>
-                                <a ng-href="${prefix}/{{ item.name }}/policies" i18n:translate="">Manage policies</a>
+                                <a ng-href="${prefix}/{{ item.name | escapeURL }}/policies" i18n:translate="">Manage policies</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete scaling group</a>
