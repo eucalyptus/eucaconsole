@@ -210,8 +210,10 @@ class TaggedItemView(BaseView):
     def update_name_tag(self, value):
         if self.tagged_obj is not None:
             safe_value = escape(value)
-            if safe_value and not safe_value.startswith('aws:'):
-                self.tagged_obj.add_tag('Name', safe_value)
+            if safe_value != self.tagged_obj.tags.get('Name'):
+                self.tagged_obj.remove_tag('Name')
+                if safe_value and not safe_value.startswith('aws:'):
+                    self.tagged_obj.add_tag('Name', safe_value)
 
     @staticmethod
     def get_display_name(resource):
