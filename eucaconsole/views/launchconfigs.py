@@ -3,7 +3,7 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-import re
+from urllib import quote
 import simplejson as json
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
@@ -165,6 +165,7 @@ class LaunchConfigView(BaseView):
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
+            escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
             image=self.image,
             security_groups=self.security_groups,

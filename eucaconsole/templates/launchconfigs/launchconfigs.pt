@@ -28,7 +28,7 @@
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                     <li><a i18n:translate=""
-                           ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
+                           ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
                 </ul>
             </div>
@@ -74,7 +74,7 @@
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
                             <li><a i18n:translate=""
-                                   ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
+                                   ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
                         </ul>
                     </span>
