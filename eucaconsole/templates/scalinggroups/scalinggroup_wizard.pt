@@ -107,7 +107,10 @@
                     </div>
                     <div class="row">
                         <label i18n:translate="">Launch configuration:</label>
-                        <div class="columns value">{{ launchConfig }}</div>
+                        <div class="columns value">
+                            <span tal:condition="not launch_config_param" tal:omit-tag="">{{ launchConfig }}</span>
+                            <span tal:condition="launch_config_param" tal:omit-tag="">${launch_config_param}</span>
+                        </div>
                     </div>
                     <div class="row">
                         <label i18n:translate="">Instances:</label>
