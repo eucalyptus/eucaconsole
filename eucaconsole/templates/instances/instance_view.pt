@@ -197,6 +197,10 @@
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
                         <div class="small-8 columns value">${instance.client_token}</div>
                     </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Monitoring</label></div>
+                        <div class="small-8 columns value">${instance.monitoring_state}</div>
+                    </div>
                     ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
                     <hr />
                     <h6 i18n:translate="">Image</h6>
