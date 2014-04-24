@@ -83,8 +83,8 @@ class SnapshotsView(LandingPageView):
         root_vol = BlockDeviceType(snapshot_id=snapshot_id)
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
-        # ok to keep this sda since we're setting new value
-        bdm['/dev/sda'] = root_vol
+        root_device_name = '/dev/sda' if self.cloud_type == 'euca' else '/dev/sda1'
+        bdm[root_device_name] = root_vol
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
@@ -92,6 +92,7 @@ class SnapshotsView(LandingPageView):
                 image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
+                    root_device_name=root_device_name,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm
                 )
@@ -306,13 +307,15 @@ class SnapshotView(TaggedItemView):
         root_vol = BlockDeviceType(snapshot_id=snapshot_id)
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
-        bdm['/dev/sda'] = root_vol
+        root_device_name = '/dev/sda' if self.cloud_type == 'euca' else '/dev/sda1'
+        bdm[root_device_name] = root_vol
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Registering snapshot {0} as image {1}").format(snapshot_id, name))
                 self.snapshot.connection.register_image(
                     name=name, description=description,
+                    root_device_name=root_device_name,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
                 prefix = _(u'Successfully registered snapshot')
