@@ -31,7 +31,7 @@
                 </div>
                 <div class="small-9 columns">
                     <select id="ip-protocol-select" name="ip_protocol" class="ip-protocol"
-                            ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)" data-placeholder="select...">
+                        ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)" data-placeholder="select..." >
                         <option tal:repeat="choice protocol_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                     </select>
                 </div>

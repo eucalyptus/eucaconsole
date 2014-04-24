@@ -31,11 +31,14 @@ $euca-validation-input-bgcolor: lighten(lightpink, 10%);
 $euca-input-field-height: 2rem;
 
 // Text
-$body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif;
-$euca-header-font: "Trebuchet MS", "Droid Sans", "OpenSans", "Helvetica Nueue", Helvetica, sans-serif;
+$body-font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif;
+$euca-header-font: "Trebuchet MS", "Droid Sans", "Helvetica Nueue", Helvetica, sans-serif;
 $euca-font-size: 0.8125rem;
 $euca-text-color: #333;
 $euca-link-color: darken($euca-darkgreen, 10%);
+
+// Prevent Google Fonts API call
+$include-open-sans: false;
 
 // Dimensions
 $euca-footer-height: 80px;

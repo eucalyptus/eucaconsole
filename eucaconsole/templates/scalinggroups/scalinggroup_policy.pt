@@ -5,7 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicy" ng-controller="ScalingGroupPolicyCtrl" ng-init="initPage()">
+    <div class="row" id="contentwrap" ng-app="ScalingGroupPolicy" ng-controller="ScalingGroupPolicyCtrl"
+         ng-init="initController(${alarm_choices})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
@@ -30,10 +31,15 @@
                     ${panel('form_field', field=policy_form['adjustment_amount'], leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['cooldown'], leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=policy_form['alarm'], leftcol_width=3, rightcol_width=9, **html_attrs)}
                     <div class="row controls-wrapper">
-                        <div class="small-3 columns">&nbsp;</div>
+                        <div class="small-3 columns">
+                            <label class="right"><span i18n:translate="">Alarm</span>&nbsp;<span class="req">*</span></label>
+                        </div>
                         <div class="small-9 columns">
+                            <select name="alarm" ng-model="$parent.alarm" style="margin-bottom: 0.5rem;"
+                                    ng-options="k as v for (k, v) in $parent.alarmChoices">
+                                <option value="" i18n:translate="">select alarm...</option>
+                            </select>
                             <a ng-click="revealAlarmModal()">Create alarm</a>
                         </div>
                     </div>

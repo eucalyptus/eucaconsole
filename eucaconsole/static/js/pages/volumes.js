@@ -57,6 +57,16 @@ angular.module('VolumesPage', ['LandingPage'])
                 }
             });
         };
+        $scope.getDeviceSuggestion = function () {
+            // TODO: the url shouldn't be built by hand, pass value from request.route_path!
+            var instanceId = $('#instance_id').val();
+            $http.get("/instances/"+instanceId+"/nextdevice/json").success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $('input#device').val(results);
+                }
+            });
+        };
     })
 ;
 

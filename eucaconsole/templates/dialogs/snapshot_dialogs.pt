@@ -18,13 +18,13 @@
                 <input type="hidden" name="volume_id" value="${volume_id}" />
             </div>
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Yes, Delete Snapshot</button>
+                <button type="submit" id="delete_snapshot_submit_button" class="button expand" i18n:translate="">Yes, Delete Snapshot</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="delete_snapshot_close_link" class="close-reveal-modal">&#215;</a>
     </div>
     <div id="register-snapshot-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('snapshots_register') + layout.querystring;
@@ -42,13 +42,13 @@
             ${panel('form_field', reverse='true', field=register_form['dot'])}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
             <div class="dialog-submit-button">
-                <button type="submit" class="button expand" i18n:translate="">Register as Image</button>
+                <button type="submit" id="register_snapshot_submit_button" class="button expand" i18n:translate="">Register as Image</button>
             </div>
             <div class="dialog-progress-display hide">
                 <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="regiser_snapshot_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 

@@ -92,7 +92,7 @@
                 <a href="${request.route_path('scalinggroup_policy_new', id=scaling_group.name)}" i18n:translate="">add scaling policies</a>
             </p>
             <div class="dialog-option">
-                <input type="checkbox" id="check-do-not-show-me-again">&nbsp;<span i18n:translate="">Do not show me this again</span>
+                <input type="checkbox" id="check-do-not-show-me-again" />&nbsp;<span i18n:translate="">Do not show me this again</span>
             </div>
             <a href="#" class="close-reveal-modal">&#215;</a>
         </div>

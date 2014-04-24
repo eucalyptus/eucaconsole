@@ -22,7 +22,7 @@ requires = [
     'pyramid >= 1.4',
     'pyramid_beaker >= 0.8',
     'pyramid_chameleon >= 0.1',
-    'pyramid_layout >= 0.8',
+    'pyramid_layout <= 0.8',
     'python-dateutil >= 1.4.1',  # Don't use 2.x series unless on Python 3
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
@@ -30,7 +30,7 @@ requires = [
 
 i18n_extras = [
     'Babel',
-    'lingua',
+    'lingua == 1.6',
 ]
 
 dev_extras = [

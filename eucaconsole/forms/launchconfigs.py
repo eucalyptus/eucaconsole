@@ -47,6 +47,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
+    create_sg_from_lc = wtforms.BooleanField(label=_(u'Create scaling group using this launch configuration'))
 
     def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
         super(CreateLaunchConfigForm, self).__init__(request, **kwargs)
@@ -56,6 +57,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
+        self.create_sg_from_lc.data = True
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
         self.set_choices()

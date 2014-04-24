@@ -23,7 +23,7 @@ from ..forms.scalinggroups import (
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
     ScalingGroupsFiltersForm)
 from ..models import Notification
-from ..views import LandingPageView, BaseView
+from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 from hashlib import md5 
 
@@ -430,6 +430,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            alarm_choices=json.dumps(dict(self.policy_form.alarm.choices)),
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
             create_alarm_redirect=self.request.route_path('scalinggroup_policy_new', id=self.scaling_group.name),

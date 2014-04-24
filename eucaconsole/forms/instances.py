@@ -164,9 +164,10 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, instance=None, conn=None, **kwargs):
         super(LaunchMoreInstancesForm, self).__init__(request, **kwargs)
         self.image = image
+        self.instance = instance
         self.conn = conn
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_error_messages()
@@ -185,8 +186,14 @@ class LaunchMoreInstancesForm(BaseSecureForm):
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
     def set_initial_data(self):
-        self.monitoring_enabled.data = True
+        self.monitoring_enabled.data = self.instance.monitored
+        self.private_addressing.data = self.enable_private_addressing()
         self.number.data = 1
+
+    def enable_private_addressing(self):
+        if self.instance.private_ip_address == self.instance.ip_address:
+            return True
+        return False
 
 
 class StopInstanceForm(BaseSecureForm):

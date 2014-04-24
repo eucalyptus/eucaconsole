@@ -3,6 +3,8 @@
 Pyramid views for Eucalyptus and AWS CloudWatch alarms
 
 """
+import simplejson as json
+
 from boto.ec2.cloudwatch import MetricAlarm
 
 from pyramid.httpexceptions import HTTPFound
@@ -12,7 +14,7 @@ from pyramid.view import view_config
 from ..constants.cloudwatch import METRIC_DIMENSION_NAMES, METRIC_DIMENSION_INPUTS
 from ..forms.alarms import CloudWatchAlarmCreateForm, CloudWatchAlarmDeleteForm
 from ..models import Notification
-from ..views import LandingPageView, BaseView
+from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
@@ -82,10 +84,18 @@ class CloudWatchAlarmsView(LandingPageView):
                 self.cloudwatch_conn.put_metric_alarm(alarm)
                 prefix = _(u'Successfully created alarm')
                 msg = '{0} {1}'.format(prefix, alarm.name)
+            if self.request.is_xhr:
+                resp = JSONResponse()
+                resp.body = json.dumps(dict(new_alarm=name))
+                return resp
+            else:
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+                return HTTPFound(location=location)
         else:
-            self.request.error_messages = self.create_form.get_errors_list()
+            error_msg_list = self.create_form.get_errors_list()
+            if self.request.is_xhr:
+                return JSONResponse(status=400, message=', '.join(error_msg_list))
+            self.request.error_messages = error_msg_list
         return self.render_dict
 
     @view_config(route_name='cloudwatch_alarms_delete', renderer=TEMPLATE, request_method='POST')

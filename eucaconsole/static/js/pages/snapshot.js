@@ -29,7 +29,7 @@ angular.module('SnapshotPage', ['TagEditor'])
                     modal.foundation('reveal', 'open');
                 }
             });
-        }
+        };
         $scope.initController = function (jsonEndpoint, status, progress) {
             $scope.initChosenSelector();
             $scope.snapshotStatusEndpoint = jsonEndpoint;

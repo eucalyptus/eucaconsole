@@ -6,10 +6,13 @@
 
 // Add Scaling Group Policy page includes the Create Alarm dialog, so pull in that module
 angular.module('ScalingGroupPolicy', ['CreateAlarm'])
-    .controller('ScalingGroupPolicyCtrl', function ($scope) {
+    .controller('ScalingGroupPolicyCtrl', function ($rootScope, $scope) {
         $scope.alarmModal = $('#create-alarm-modal');
         $scope.policyForm = $('#add-policy-form');
-        $scope.initPage = function (){
+        $rootScope.alarmChoices = {};
+        $rootScope.alarm = '';
+        $scope.initController = function (alarmChoices) {
+            $rootScope.alarmChoices = alarmChoices;
             $scope.setFocus();
         };
         $scope.revealAlarmModal = function () {

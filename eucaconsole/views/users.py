@@ -219,6 +219,7 @@ class UserView(BaseView):
             delete_form=self.delete_form,
             disable_form=DisableUserForm(self.request),
             enable_form=EnableUserForm(self.request),
+            quota_err=_(u"Requires non-negative integer (or may be empty)"),
         )
 
     def get_user(self):

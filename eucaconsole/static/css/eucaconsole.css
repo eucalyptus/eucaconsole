@@ -4,7 +4,6 @@
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
 /* ========================================================================== HTML5 display definitions ========================================================================== */
 /** Correct `block` display not defined in IE 8/9. */
-@import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
 
 /** Correct `inline-block` display not defined in IE 8/9. */
@@ -141,7 +140,7 @@ meta.foundation-mq-xxlarge { font-family: "/only screen and (min-width:120.063em
 
 html, body { font-size: 100%; }
 
-body { background: white; color: #222222; padding: 0; margin: 0; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: default; }
+body { background: white; color: #222222; padding: 0; margin: 0; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: default; }
 
 a:hover { cursor: pointer; }
 
@@ -316,7 +315,7 @@ select { width: 100%; }
 .breadcrumbs > *:before { content: ">"; color: #333333; margin: 0 0.375rem; position: relative; top: 1px; }
 .breadcrumbs > *:first-child:before { content: " "; margin: 0; }
 
-button, .button { cursor: pointer; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; /*     @else                            { font-size: $padding - rem-calc(2); } */ background-color: #8dc943; border-color: #80bc36; color: white; -webkit-transition: background-color 300ms ease-out; -moz-transition: background-color 300ms ease-out; transition: background-color 300ms ease-out; padding-top: 0.6875rem; padding-bottom: 0.625rem; -webkit-appearance: none; border: none; font-weight: normal !important; }
+button, .button { cursor: pointer; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; line-height: normal; margin: 0 0 1.25rem; position: relative; text-decoration: none; text-align: center; display: inline-block; padding-top: 0.625rem; padding-right: 1.25rem; padding-bottom: 0.6875rem; padding-left: 1.25rem; font-size: 1rem; /*     @else                            { font-size: $padding - rem-calc(2); } */ background-color: #8dc943; border-color: #80bc36; color: white; -webkit-transition: background-color 300ms ease-out; -moz-transition: background-color 300ms ease-out; transition: background-color 300ms ease-out; padding-top: 0.6875rem; padding-bottom: 0.625rem; -webkit-appearance: none; border: none; font-weight: normal !important; }
 button:hover, button:focus, .button:hover, .button:focus { background-color: #80bc36; }
 button:hover, button:focus, .button:hover, .button:focus { color: white; }
 button.secondary, .button.secondary { background-color: #777777; border-color: #6a6a6a; color: white; }
@@ -812,7 +811,7 @@ label.error { color: #f04124; }
 
 .keystroke, kbd { background-color: #ededed; border-color: #dbdbdb; color: #222222; border-style: solid; border-width: 1px; margin: 0; font-family: "Consolas", "Menlo", "Courier", monospace; font-size: 0.875rem; padding: 0.125rem 0.25rem 0; -webkit-border-radius: 3px; border-radius: 3px; }
 
-.label { font-weight: normal; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; text-align: center; text-decoration: none; line-height: 1; white-space: nowrap; display: inline-block; position: relative; margin-bottom: inherit; padding: 0.25rem 0.5rem 0.375rem; font-size: 0.6875rem; background-color: #8dc943; color: white; }
+.label { font-weight: normal; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; text-align: center; text-decoration: none; line-height: 1; white-space: nowrap; display: inline-block; position: relative; margin-bottom: inherit; padding: 0.25rem 0.5rem 0.375rem; font-size: 0.6875rem; background-color: #8dc943; color: white; }
 .label.radius { -webkit-border-radius: 3px; border-radius: 3px; }
 .label.round { -webkit-border-radius: 1000px; border-radius: 1000px; }
 .label.alert { background-color: #f04124; color: white; }
@@ -894,7 +893,7 @@ label.error { color: #f04124; }
 
 .sub-nav { display: block; width: auto; overflow: hidden; margin: -0.25rem 0 1.125rem; padding-top: 0.25rem; margin-right: 0; margin-left: -0.75rem; }
 .sub-nav dt { text-transform: uppercase; }
-.sub-nav dt, .sub-nav dd, .sub-nav li { float: left; display: inline; margin-left: 1rem; margin-bottom: 0.625rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: normal; font-size: 0.875rem; color: #999999; }
+.sub-nav dt, .sub-nav dd, .sub-nav li { float: left; display: inline; margin-left: 1rem; margin-bottom: 0.625rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: normal; font-size: 0.875rem; color: #999999; }
 .sub-nav dt a, .sub-nav dd a, .sub-nav li a { text-decoration: none; color: #999999; }
 .sub-nav dt a:hover, .sub-nav dd a:hover, .sub-nav li a:hover { color: #002f45; }
 .sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a { -webkit-border-radius: 3px; border-radius: 3px; font-weight: normal; background: #00415e; padding: 0.1875rem 1rem; cursor: default; color: white; }
@@ -952,7 +951,7 @@ table thead tr th, table tfoot tr th, table tbody tr td, table tr td, table tfoo
 .tabs:before, .tabs:after { content: " "; display: table; }
 .tabs:after { clear: both; }
 .tabs dd { position: relative; margin-bottom: 0 !important; top: 1px; float: left; }
-.tabs dd > a { display: block; background: #8dc943; color: #222222; padding-top: 0.25rem; padding-right: 0.5rem; padding-bottom: 0.3125rem; padding-left: 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 1rem; }
+.tabs dd > a { display: block; background: #8dc943; color: #222222; padding-top: 0.25rem; padding-right: 0.5rem; padding-bottom: 0.3125rem; padding-left: 0.5rem; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-size: 1rem; }
 .tabs dd > a:hover { background: #99cf57; }
 .tabs dd.active a { background: #fff; }
 .tabs.radius dd:first-child a { -moz-border-radius-bottomleft: 3px; -moz-border-radius-topleft: 3px; -webkit-border-bottom-left-radius: 3px; -webkit-border-top-left-radius: 3px; border-bottom-left-radius: 3px; border-top-left-radius: 3px; }
@@ -1020,7 +1019,7 @@ meta.foundation-mq-topbar { font-family: "/only screen and (min-width:40.063em)/
 .top-bar-section { left: 0; position: relative; width: auto; -webkit-transition: left 300ms ease-out; -moz-transition: left 300ms ease-out; transition: left 300ms ease-out; }
 .top-bar-section ul { width: 100%; height: auto; display: block; background: white; font-size: 16px; margin: 0; }
 .top-bar-section .divider, .top-bar-section [role="separator"] { border-top: solid 1px #e6e6e6; clear: both; height: 1px; width: 100%; }
-.top-bar-section ul li > a { display: block; width: 100%; color: black; padding: 12px 0 12px 0; padding-left: 15px; font-family: Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; background: white; }
+.top-bar-section ul li > a { display: block; width: 100%; color: black; padding: 12px 0 12px 0; padding-left: 15px; font-family: Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-size: 0.8125rem; font-weight: normal; background: white; }
 .top-bar-section ul li > a.button { background: #8dc943; font-size: 0.8125rem; padding-right: 15px; padding-left: 15px; }
 .top-bar-section ul li > a.button:hover { background: #73a930; }
 .top-bar-section ul li > a.button.secondary { background: #777777; }
@@ -1094,7 +1093,7 @@ p.lead { font-size: 1.21875rem; line-height: 1.6; }
 p aside { font-size: 0.875rem; line-height: 1.35; font-style: italic; }
 
 /* Default header styles */
-h1, h2, h3, h4, h5, h6 { font-family: "Open Sans", Verdana, Geneva, Lucida, "Lucida Grande", "OpenSans", Helvetica, Arial, sans-serif; font-weight: 300; font-style: normal; color: #222222; text-rendering: optimizeLegibility; margin-top: 0.2rem; margin-bottom: 0.5rem; line-height: 1.4; }
+h1, h2, h3, h4, h5, h6 { font-family: "Open Sans", Verdana, Geneva, Lucida, "Lucida Grande", Helvetica, Arial, sans-serif; font-weight: 300; font-style: normal; color: #222222; text-rendering: optimizeLegibility; margin-top: 0.2rem; margin-bottom: 0.5rem; line-height: 1.4; }
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small { font-size: 60%; color: #6f6f6f; line-height: 0; }
 
 h1 { font-size: 2.125rem; }
@@ -1571,6 +1570,7 @@ textarea.hidden.debug { display: block; }
 .reveal-modal h3 { font-weight: bold; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .button.expand { margin-bottom: 0; }
+.reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
@@ -1590,6 +1590,7 @@ footer .copyright { font-size: 0.9em; }
 ----------------------------------------- */
 .button { background-color: #f18f30; }
 .button.secondary { background-color: #777777; color: white; }
+.button.disabled, .button[disabled] { background-color: #f18f30; }
 .button:hover { background-color: #df750f; }
 .button:focus { background-color: #f18f30; }
 

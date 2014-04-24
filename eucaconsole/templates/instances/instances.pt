@@ -26,7 +26,7 @@
                    href="#" data-reveal-id="batch-terminate-modal">Terminate {{ unterminatedInstancesCount(items) }} Instances</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
+                <span id="tile-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
                 <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                     <li>
                         <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>
@@ -88,8 +88,9 @@
                     <a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a>
                 </div>
                 <div>
-                    <span class="label" title="Public IP address" i18n:attributes="title" data-tooltip="">IP</span>
-                    <a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a>
+                    <span class="label" title="IP address" i18n:attributes="title" data-tooltip="">IP</span>
+                    <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
+                    <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
                 </div>
                 <div>
                     <span class="label" title="Availability zone" i18n:attributes="title" data-tooltip="">AZ</span>
@@ -127,7 +128,7 @@
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="">Image ID</th>
                 <th i18n:translate="">Zone</th>
-                <th i18n:translate="">Public IP</th>
+                <th i18n:translate="">IP Address</th>
                 <th i18n:translate="">Key name</th>
                 <th i18n:translate="">Sec group</th>
                 <th i18n:translate="">Launched</th>
@@ -141,7 +142,10 @@
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
-                <td><a ng-href="/ipaddresses/{{ item.ip_address }}">{{ item.ip_address }}</a></td>
+                <td>
+                    <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
+                    <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
+                </td>
                 <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
                 <td class="breakword">
                     <div ng-repeat="security_group in item.security_groups">
@@ -151,7 +155,7 @@
                 <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                    <span class="actions">
-                        <span class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
+                        <span id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-href="${prefix}/{{ item.id }}" i18n:translate="">View details</a>

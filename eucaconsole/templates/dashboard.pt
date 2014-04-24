@@ -82,7 +82,9 @@
                             </i>
                         </a>
                     </div>
-                    <div class="footer"></div>
+                    <div class="footer">
+                        <a href="${request.route_path('ipaddresses')}?allocate=1">Allocate elastic IPs</a>
+                    </div>
                 </div>
             </li>
             <li class="panel" id="volumes">

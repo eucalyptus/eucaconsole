@@ -389,11 +389,11 @@ class VolumeStateView(BaseVolumeView):
     @view_config(route_name='volume_state_json', renderer='json', request_method='GET')
     def volume_state_json(self):
         """Return current volume status"""
-        volume_status = self.volume.status
-        attach_status = self.volume.attach_data.status
-        attach_device = self.volume.attach_data.device
-        attach_time = self.volume.attach_data.attach_time
-        attach_instance = self.volume.attach_data.instance_id
+        volume_status = self.volume.status if self.volume else 'deleted'
+        attach_status = self.volume.attach_data.status if self.volume else 'detached'
+        attach_device = self.volume.attach_data.device if self.volume else None
+        attach_time = self.volume.attach_data.attach_time if self.volume else None
+        attach_instance = self.volume.attach_data.instance_id if self.volume else None
         return dict(
             results=dict(volume_status=volume_status,
                          attach_status=attach_status,
@@ -444,6 +444,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     id=snapshot.id,
                     name=TaggedItemView.get_display_name(snapshot),
                     progress=snapshot.progress,
+                    transitional=self.is_transitional(snapshot),
                     volume_size=self.volume.size,
                     start_time=snapshot.start_time,
                     description=snapshot.description,
@@ -498,3 +499,9 @@ class VolumeSnapshotsView(BaseVolumeView):
     def get_snapshot(self, snapshot_id):
         snapshots_list = self.conn.get_all_snapshots(snapshot_ids=[snapshot_id])
         return snapshots_list[0] if snapshots_list else None
+
+    @staticmethod
+    def is_transitional(snapshot):
+        if snapshot.status.lower() == 'completed':
+            return False
+        return int(snapshot.progress.replace('%', '')) < 100
