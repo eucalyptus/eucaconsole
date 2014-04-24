@@ -352,6 +352,7 @@ class UserView(BaseView):
                     user_list.append(user_data)
                     if allow_all == 'y':
                         statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
+                        statements.append({'Effect': 'Deny', 'Action': 'iam:*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
                     self.add_quota_limit(
