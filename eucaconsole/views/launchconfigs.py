@@ -320,7 +320,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 self.request.session.flash(msg, queue=queue)
 
             if self.request.params.get('create_sg_from_lc') == 'y':
-                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(name))
+                escaped_name = quote(name)
+                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(escaped_name))
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()
