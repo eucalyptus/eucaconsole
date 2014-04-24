@@ -20,7 +20,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_path('scalinggroup_new')}?launch_config=${launch_config.name}"
+                            <a href="${request.route_path('scalinggroup_new')}?launch_config=${escaped_launch_config_name}"
                                id="create-scalinggroup-action" i18n:translate="" ng-non-bindable="">
                                 Use to create scaling group
                             </a>
