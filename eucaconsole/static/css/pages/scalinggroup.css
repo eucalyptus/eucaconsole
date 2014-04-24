@@ -121,6 +121,8 @@ input[type="number"] { width: 3rem; }
 
 .tile { background-color: white; border: 1px solid #cccccc; width: 190px; height: 160px; }
 .tile .footer { height: 24px; padding-top: 2px; }
+.tile.policy .header .title { cursor: default; color: black; }
+.tile.policy .header .title:hover { color: black; }
 
 .tile .footer.healthy { background-color: #8dc943; }
 .tile .footer.healthy.pending { background-color: #8dc640; }
