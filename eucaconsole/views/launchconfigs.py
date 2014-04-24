@@ -110,7 +110,7 @@ class LaunchConfigsJsonView(LandingPageView):
                     created_time=launchconfig.created_time.isoformat(),
                     image_id=image_id,
                     image_name=launchconfigs_image_mapping.get(image_id),
-                    instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
+                    instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups,
@@ -173,8 +173,6 @@ class LaunchConfigView(BaseView):
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
-        self.launch_config.instance_monitoring_boolean = re.match(
-            r'InstanceMonitoring\((\w+)\)', str(self.launch_config.instance_monitoring)).group(1)
         return self.render_dict
  
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
