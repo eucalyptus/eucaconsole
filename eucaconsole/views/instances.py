@@ -369,6 +369,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            instance_security_group=self.get_security_group(),
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -532,6 +533,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance:
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
+
+    def get_security_group(self):
+        instance_groups = self.instance.groups
+        return instance_groups[0].name if instance_groups else 'default'
 
     def get_redirect_location(self):
         if self.instance:

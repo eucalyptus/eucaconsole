@@ -9,7 +9,7 @@
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
                                      '${request.route_path('instance_ip_address_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
-                                     '${instance.state}', '${instance.id}', '${instance_name}', '${instance.groups[0].name}',
+                                     '${instance.state}', '${instance.id}', '${instance_name}', '${instance_security_group}',
                                      '${instance.key_name}', '${instance.ip_address}', '${instance.public_dns_name}',
                                      '${instance.platform}', '${has_elastic_ip}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -46,7 +46,7 @@
                         </li>
                         <li>
                             <a i18n:translate="" id="create-launchconfig-action"
-                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance.key_name}&amp;security_group=${instance.groups[0].name}&amp;preset=true">
+                               href="/launchconfigs/new?image_id=${instance.image_id}&amp;instance_type=${instance.instance_type}&amp;keypair=${instance.key_name}&amp;security_group=${instance_security_group}&amp;preset=true">
                                 Create launch configuration
                             </a>
                         </li>
@@ -260,7 +260,7 @@
             <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                ${panel('help_instances', 'connect_instance', instance.groups[0].name if instance.groups else 'default', instance.key_name, instance.ip_address)}
+                ${panel('help_instances', 'connect_instance', instance_security_group, instance.key_name, instance.ip_address)}
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
