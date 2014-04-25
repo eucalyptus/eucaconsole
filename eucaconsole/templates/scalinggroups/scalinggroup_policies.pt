@@ -31,9 +31,9 @@
                         <div i18n:translate="">Add a policy</div>
                     </a>
                 </div>
-                <div class="tile item" tal:repeat="policy policies">
+                <div class="tile item policy" tal:repeat="policy policies">
                     <div class="header">
-                        <strong><a href="#" ng-non-bindable="">${policy.name}</a></strong>
+                        <strong><a ng-non-bindable="" class="title">${policy.name}</a></strong>
                         <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
