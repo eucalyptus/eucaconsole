@@ -535,8 +535,10 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         return None
 
     def get_security_group(self):
-        instance_groups = self.instance.groups
-        return instance_groups[0].name if instance_groups else 'default'
+        if self.instance:
+            instance_groups = self.instance.groups
+            return instance_groups[0].name if instance_groups else 'default'
+        return ''
 
     def get_redirect_location(self):
         if self.instance:
