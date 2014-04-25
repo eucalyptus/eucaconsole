@@ -103,7 +103,7 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = self.get_launchconfig_security_groups(launchconfig)
+                security_groups = launchconfig.security_groups[0] if launchconfig.security_groups else [],
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -132,21 +132,6 @@ class LaunchConfigsJsonView(LandingPageView):
     def get_scalinggroups_launchconfig_names(self):
         if self.autoscale_conn:
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
-        return []
-
-    def get_launchconfig_security_groups(self, launch_config):
-        if self.ec2_conn:
-            groupids = launch_config.security_groups
-            security_groups = []
-            sgroup_name_map_array = []
-            if groupids:
-                if groupids[0].startswith('sg-'):
-                    security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
-                else:
-                    security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
-            for sgroup in security_groups:
-                sgroup_name_map_array.append(dict(id=sgroup.id, name=sgroup.name or sgroup.id))
-            return sgroup_name_map_array
         return []
 
 
