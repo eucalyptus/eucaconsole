@@ -23,7 +23,7 @@ from ..forms.scalinggroups import (
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
     ScalingGroupsFiltersForm)
 from ..models import Notification
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, TaggedItemView
 from . import boto_error_handler
 from hashlib import md5 
 
@@ -338,6 +338,8 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
     def __init__(self, request):
         super(ScalingGroupInstancesJsonView, self).__init__(request)
         self.scaling_group = self.get_scaling_group()
+        self.ec2_conn = self.get_connection()
+        self.instance_objects = self.get_instance_objects()
 
     @view_config(route_name='scalinggroup_instances_json', renderer='json', request_method='GET')
     def scalinggroup_instances_json(self):
@@ -352,6 +354,7 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
             ])
             instances.append(dict(
                 id=instance.instance_id,
+                name=self.get_display_name(instance.instance_id),
                 status=instance.health_status,
                 availability_zone=instance.availability_zone,
                 launch_config=instance.launch_config_name,
@@ -364,6 +367,20 @@ class ScalingGroupInstancesJsonView(BaseScalingGroupView):
         if self.scaling_group.instances is None:
             return []
         return sorted(self.scaling_group.instances, key=attrgetter('instance_id'))
+
+    def get_instance_objects(self):
+        if self.scaling_group.instances is None:
+            return []
+        scaling_group_instances_ids = [instance.instance_id for instance in self.scaling_group.instances]
+        instances = self.ec2_conn.get_only_instances(instance_ids=scaling_group_instances_ids)
+        return sorted(instances, key=attrgetter('id'))
+
+    def get_display_name(self, instance_id):
+        matched_instance = [instance for instance in self.instance_objects if instance.id == instance_id]
+        instance = matched_instance[0] if matched_instance else None
+        if instance is None:
+            return instance_id
+        return TaggedItemView.get_display_name(instance)
 
 
 class ScalingGroupPoliciesView(BaseScalingGroupView):
