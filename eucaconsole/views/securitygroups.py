@@ -105,15 +105,14 @@ class SecurityGroupsJsonView(LandingPageView):
     def securitygroups_json(self):
         securitygroups = []
         for securitygroup in self.filter_items(self.get_items()):
-            if securitygroup.vpc_id is None:
-                securitygroups.append(dict(
-                    id=securitygroup.id,
-                    description=securitygroup.description,
-                    name=securitygroup.name,
-                    owner_id=securitygroup.owner_id,
-                    rules=SecurityGroupsView.get_rules(securitygroup.rules),
-                    tags=TaggedItemView.get_tags_display(securitygroup.tags),
-                ))
+            securitygroups.append(dict(
+                id=securitygroup.id,
+                description=securitygroup.description,
+                name=securitygroup.name,
+                owner_id=securitygroup.owner_id,
+                rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                tags=TaggedItemView.get_tags_display(securitygroup.tags),
+            ))
         return dict(results=securitygroups)
 
     def get_items(self):
@@ -205,10 +204,10 @@ class SecurityGroupView(TaggedItemView):
         if group_param is None or group_param == 'new':
             return None  # If missing, we're going to return an empty security group form
         if group_param.startswith('sg-'):
-            security_groups = self.conn.get_all_security_groups(group_ids=[group_param])
+            security_groups = self.conn.get_all_security_groups(filters={'group_id': [group_param]})
             security_group = security_groups[0] if security_groups else None
         else:  # Try name lookup
-            security_groups = self.conn.get_all_security_groups(groupnames=[group_param])
+            security_groups = self.conn.get_all_security_groups(filters={'group-name': [group_param]})
             security_group = security_groups[0] if security_groups else None
         if security_group is None and group_param != 'new':
             raise HTTPNotFound()
