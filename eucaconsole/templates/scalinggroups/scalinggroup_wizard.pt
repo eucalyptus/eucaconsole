@@ -71,6 +71,7 @@
                                 <div class="small-8 columns field inline">
                                     <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
                                         <span i18n:translate="">Next</span>
+                                        <a class="cancel-link" href="${request.route_path('scalinggroups')}">Cancel</a>
                                     </a>
                                 </div>
                             </div>
