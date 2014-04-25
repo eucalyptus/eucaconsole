@@ -26,7 +26,7 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                     <li><a i18n:translate=""
                            ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
@@ -72,7 +72,7 @@
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li><a i18n:translate=""
                                    ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
