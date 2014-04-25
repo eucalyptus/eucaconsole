@@ -184,7 +184,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var textareaElement = modal.find('textarea[class!=hidden]').get(0);
             var selectElement = modal.find('select').get(0);
             var modalButton = modal.find('button').get(0);
-            console.log(inputElement);
             if (!!textareaElement){
                 textareaElement.focus();
             } else if (!!inputElement) {
