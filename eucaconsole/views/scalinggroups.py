@@ -182,8 +182,8 @@ class BaseScalingGroupView(BaseView):
         for tag in tags_list:
             tags.append(Tag(
                 resource_id=scaling_group_name,
-                key=escape(tag.get('name')),
-                value=escape(tag.get('value')),
+                key=tag.get('name'),
+                value=tag.get('value'),
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
