@@ -20,7 +20,7 @@
         </div>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a ng-click="createScalingGroup('${request.route_path('launchconfigs_json')}', '${request.route_path('scalinggroup_new')}')"
+                <a href="${request.route_path('scalinggroup_new')}"
                    class="button" i18n:translate="" id="create-scalinggroup-btn">Create New Scaling Group</a>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
@@ -130,14 +130,6 @@
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('scalinggroup_dialogs', landingpage=True, delete_form=delete_form)}
-        <div id='create-warn-modal' class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">No launch configurations found</h3>
-            <p i18n:translate="">
-                You must create a launch configuration before you can create a scaling group.
-            </p>
-            <a href="${request.route_path('launchconfig_new')}" i18n:translate="">Create launch configuration</a>
-            <a href="#" class="close-reveal-modal">&#215;</a>
-        </div>
     </div>
 </div>
 
