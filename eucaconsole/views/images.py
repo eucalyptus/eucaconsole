@@ -3,6 +3,7 @@
 Pyramid views for Eucalyptus and AWS images
 
 """
+import os
 import re
 
 from beaker.cache import cache_region, cache_managers
@@ -144,8 +145,8 @@ class ImagesJsonView(LandingPageView):
 
     def get_images(self, conn, owners, executors, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
-            owners=owners, executors=executors, region=region)
+        cache_key = 'images_cache_{owners}_{executors}_{region}_{pid}'.format(
+            owners=owners, executors=executors, region=region, pid=os.getpid())
 
         # Heads up!  Update cache key if we allow filters to be passed here
         @cache_region('long_term', cache_key)
