@@ -206,9 +206,9 @@ class TaggedItemView(BaseView):
                 self.tagged_obj.add_tag(key, value)
 
     def remove_tags(self):
-        for tagkey, tagvalue in self.tagged_obj.tags.items():
+        for tagkey in self.tagged_obj.tags.keys():
             if not tagkey.startswith('aws:'):
-                self.tagged_obj.remove_tag(tagkey, tagvalue)
+                self.tagged_obj.remove_tag(tagkey)
 
     def update_tags(self):
         if self.tagged_obj is not None:
