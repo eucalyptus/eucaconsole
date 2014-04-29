@@ -202,6 +202,7 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            volume_count=len(self.snapshot_form.volume_id.choices),
         )
 
     def get_root_device_name(self, img):
