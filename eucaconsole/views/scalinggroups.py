@@ -182,8 +182,8 @@ class BaseScalingGroupView(BaseView):
         for tag in tags_list:
             tags.append(Tag(
                 resource_id=scaling_group_name,
-                key=escape(tag.get('name')),
-                value=escape(tag.get('value')),
+                key=tag.get('name'),
+                value=tag.get('value'),
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
@@ -521,6 +521,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
+            launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
         )

@@ -6,7 +6,7 @@
 
 // Volume page includes the AutoScale tag editor, so pull in that module as well.
 angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupPageCtrl', function ($scope) {
+    .controller('ScalingGroupPageCtrl', function ($scope, $timeout) {
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
@@ -22,13 +22,15 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $scope.maxSize = parseInt($('#max_size').val(), 10);
         };
         $scope.initController = function (scalingGroupName, policiesCount) {
-            $scope.scalingGroupName = scalingGroupName;
+            $scope.scalingGroupName = scalingGroupName.replace(/__apos__/g, "\'");
             $scope.policiesCount = policiesCount;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
             $scope.setWatch();
             $scope.setFocus();
-            $scope.revealModal();
+            $timeout(function () {  // timeout needed to prevent childNodes lookup error
+                $scope.revealModal();
+            }, 100);
         };
         $scope.handleSizeChange = function () {
             // Adjust desired/max based on min size change
@@ -73,7 +75,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         };
         $scope.revealModal = function () {
             var thisKey = "do-not-show-nextstep-for-" + $scope.scalingGroupName;
-            if ($scope.policiesCount == 0 && Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
+            if ($scope.policiesCount === 0 && Modernizr.localstorage && localStorage.getItem(thisKey) != "true") {
                 var modal = $('#nextstep-scalinggroup-modal');
                 modal.foundation('reveal', 'open');
                 modal.on('click', '.close-reveal-modal', function(){

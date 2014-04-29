@@ -84,7 +84,7 @@ def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, s
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags = tags or {}
-    tags_json = json.dumps(tags)
+    tags_json = json.dumps(tags).replace("\'", "__apos__")
     return dict(
         tags=tags,
         tags_json=tags_json,
@@ -123,7 +123,7 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
             value=tag.value,
             propagate_at_launch=tag.propagate_at_launch,
         ))
-    tags_json = json.dumps(tags_list)
+    tags_json = json.dumps(tags_list).replace("\'", "__apos__")
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 

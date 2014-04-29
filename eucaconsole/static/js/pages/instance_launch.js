@@ -39,6 +39,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
+            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
