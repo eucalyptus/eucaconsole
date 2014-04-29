@@ -183,7 +183,7 @@ class BaseView(object):
         replace_mapping = {
             "\'": "__apos__",
             '\\"': "__dquote__",
-            "\\": "__blash__",
+            "\\": "__bslash__",
         }
         for key, value in replace_mapping.items():
             json_string = json_string.replace(key, value)
@@ -196,19 +196,22 @@ class TaggedItemView(BaseView):
     def __init__(self, request):
         super(TaggedItemView, self).__init__(request)
         self.tagged_obj = None
+        self.conn = None
 
     def add_tags(self):
-        tags_json = self.request.params.get('tags')
-        tags = json.loads(tags_json) if tags_json else {}
-
-        for key, value in tags.items():
-            if not key.strip().startswith('aws:'):
-                self.tagged_obj.add_tag(key, value)
+        if self.conn:
+            tags_json = self.request.params.get('tags')
+            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags = {}
+            for key, value in tags_dict.items():
+                if not key.strip().startswith('aws:'):
+                    tags[key] = value
+            self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
-        for tagkey in self.tagged_obj.tags.keys():
-            if not tagkey.startswith('aws:'):
-                self.tagged_obj.remove_tag(tagkey)
+        if self.conn:
+            tagkeys = [tagkey for tagkey in self.tagged_obj.tags.keys() if not tagkey.startswith('aws:')]
+            self.conn.delete_tags([self.tagged_obj.id], tagkeys)
 
     def update_tags(self):
         if self.tagged_obj is not None:
