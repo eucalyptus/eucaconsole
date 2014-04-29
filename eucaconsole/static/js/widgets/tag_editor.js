@@ -73,7 +73,11 @@ angular.module('TagEditor', ['ngSanitize'])
             if (tagKeyField.val() && tagValueField.val()) {
                 // Trigger validation to avoid tags that start with 'aws:'
                 form.trigger('validate');
-                if (invalidFields.length) {
+                // checking for keypair here since the keypair widget will always be invalid
+                // till the user selects something on the launch wizard. Assume we don't care
+                // about keypair validation errors here, but if there's at least one non-
+                // keypair error, we'll honor that.
+                if (invalidFields.length && invalidFields[0].name!="keypair") {
                     invalidFields.focus();
                     return false;
                 }
