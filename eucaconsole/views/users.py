@@ -741,7 +741,9 @@ class UserView(BaseView):
                 for cond in s['Condition'].keys():
                     if cond == "NumericLessThanEquals": 
                         for policy_val in s['Condition'][cond].keys():
-                            limit = int(s['Condition'][cond][policy_val])
+                            limit = s['Condition'][cond][policy_val]
+                            # convert value to int, but if no value, set limit high
+                            limit = int(limit) if limit else sys.maxint
                             if policy_val == condition:
                                 # need to see if this was the policy with the lowest value.
                                 if limit < lowest_val:
