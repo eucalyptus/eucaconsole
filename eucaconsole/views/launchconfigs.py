@@ -226,7 +226,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
-            self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
@@ -235,12 +234,13 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map())
+        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules()).replace("\'", "__apos__")
+        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map()).replace("\'", "__apos__")
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
-        self.securitygroup_choices_json = json.dumps(dict(self.create_form.securitygroup.choices))
+        self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices)).replace("\'", "__apos__")
+        self.securitygroup_choices_json = json.dumps(
+            dict(self.create_form.securitygroup.choices)).replace("\'", "__apos__")
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,

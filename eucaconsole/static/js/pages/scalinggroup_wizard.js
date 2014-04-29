@@ -24,10 +24,13 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
         };
-        $scope.initController = function () {
+        $scope.initController = function (launchConfigCount) {
             $scope.initChosenSelectors();
             $scope.setInitialValues();
             $scope.setWatcher();
+            $(document).ready(function () {
+                $scope.displayLaunchConfigWarning(launchConfigCount);
+            });
         };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
@@ -76,6 +79,11 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             }
             if ($scope.maxSize < $scope.desiredCapacity) {
                 $scope.maxSize = $scope.desiredCapacity;
+            }
+        };
+        $scope.displayLaunchConfigWarning = function (launchConfigCount) {
+            if (launchConfigCount === 0) {
+                $('#create-warn-modal').foundation('reveal', 'open');
             }
         };
     })

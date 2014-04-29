@@ -8,7 +8,6 @@ import simplejson as json
 import textwrap
 
 from contextlib import contextmanager
-from markupsafe import escape
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -193,9 +192,7 @@ class TaggedItemView(BaseView):
 
         for key, value in tags.items():
             if not key.strip().startswith('aws:'):
-                safe_key = escape(key)
-                safe_value = escape(value)
-                self.tagged_obj.add_tag(safe_key, safe_value)
+                self.tagged_obj.add_tag(key, value)
 
     def remove_tags(self):
         for tagkey, tagvalue in self.tagged_obj.tags.items():
@@ -209,11 +206,10 @@ class TaggedItemView(BaseView):
 
     def update_name_tag(self, value):
         if self.tagged_obj is not None:
-            safe_value = escape(value)
-            if safe_value != self.tagged_obj.tags.get('Name'):
+            if value != self.tagged_obj.tags.get('Name'):
                 self.tagged_obj.remove_tag('Name')
-                if safe_value and not safe_value.startswith('aws:'):
-                    self.tagged_obj.add_tag('Name', safe_value)
+                if value and not value.startswith('aws:'):
+                    self.tagged_obj.add_tag('Name', value)
 
     @staticmethod
     def get_display_name(resource):
