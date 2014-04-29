@@ -219,7 +219,7 @@ class SnapshotView(TaggedItemView):
         images = self.conn.get_all_images(owners='self')
         for img in images:
             if img.block_device_mapping is not None:
-                vol = img.block_device_mapping[self.get_root_device_name(img)]
+                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
         return ret or None
