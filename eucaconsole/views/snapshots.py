@@ -202,7 +202,13 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            volume_count=self.get_volume_count()
         )
+
+    def get_volume_count(self):
+        if self.snapshot_form and self.snapshot_form.volume_id and self.snapshot_form.volume_id.choices:
+            return len(self.snapshot_form.volume_id.choices)
+        return 0
 
     def get_root_device_name(self, img):
         return img.root_device_name.replace('&#x2f;', '/').replace(
