@@ -183,7 +183,7 @@ class BaseView(object):
         replace_mapping = {
             "\'": "__apos__",
             '\\"': "__dquote__",
-            "\\\\": "__blash__",
+            "\\": "__blash__",
         }
         for key, value in replace_mapping.items():
             json_string = json_string.replace(key, value)
