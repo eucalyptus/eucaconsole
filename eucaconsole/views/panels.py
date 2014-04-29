@@ -14,6 +14,7 @@ from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
+from ..views import BaseView
 
 
 @panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
@@ -78,13 +79,14 @@ def form_field_row(context, request, field=None, reverse=False, leftcol_width=4,
         leftcol_width=leftcol_width, rightcol_width=rightcol_width, reverse=reverse
     )
 
+
 @panel_config('tag_editor', renderer='../templates/panels/tag_editor.pt')
 def tag_editor(context, request, tags=None, leftcol_width=4, rightcol_width=8, show_name_tag=True):
     """ Tag editor panel.
         Usage example (in Chameleon template): ${panel('tag_editor', tags=security_group.tags)}
     """
     tags = tags or {}
-    tags_json = json.dumps(tags).replace("\'", "__apos__")
+    tags_json = BaseView.escape_json(json.dumps(tags))
     return dict(
         tags=tags,
         tags_json=tags_json,
@@ -123,7 +125,7 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
             value=tag.value,
             propagate_at_launch=tag.propagate_at_launch,
         ))
-    tags_json = json.dumps(tags_list).replace("\'", "__apos__")
+    tags_json = BaseView.escape_json(json.dumps(tags_list))
     return dict(tags=tags, tags_json=tags_json, leftcol_width=leftcol_width, rightcol_width=rightcol_width)
 
 

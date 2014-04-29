@@ -178,6 +178,17 @@ class BaseView(object):
             location = request.current_route_url()
         raise HTTPFound(location)
 
+    @staticmethod
+    def escape_json(json_string):
+        replace_mapping = {
+            "\'": "__apos__",
+            '\\"': "__dquote__",
+            "\\\\": "__blash__",
+        }
+        for key, value in replace_mapping.items():
+            json_string = json_string.replace(key, value)
+        return json_string
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
