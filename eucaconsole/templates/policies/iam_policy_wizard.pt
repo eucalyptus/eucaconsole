@@ -150,6 +150,10 @@
             <p i18n:translate="">
                 The existing policy will be replaced with this policy if you do not choose a different name.
             </p>
+            <div>
+                <input id="dont-show-again" type="checkbox" />
+                <label for="dont-show-again" i18n:translate="">Do not show me this again</label>
+            </div>
             <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
                 I understand the risks
             </a>

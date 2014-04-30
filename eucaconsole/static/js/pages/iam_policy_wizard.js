@@ -21,7 +21,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';
-        $scope.warningConfirmed = false;
+        $scope.nameConflictKey = 'displayPolicyNameConflictWarning';
         $scope.initController = function (options) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
@@ -66,16 +66,24 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initNameConflictWarningListener = function () {
+            if (Modernizr.localstorage && localStorage.getItem($scope.nameConflictKey)) {
+                return true;
+            }
             $('#name').on('keyup blur', function() {
                 var newValue = $(this).val();
-                if ($scope.existingPolicies.indexOf(newValue) !== -1 && !$scope.warningConfirmed) {
-                    $('#conflict-warn-modal').foundation('reveal', 'open');
+                if ($scope.existingPolicies.indexOf(newValue) !== -1) {
+                    if (Modernizr.localstorage && localStorage.getItem($scope.nameConflictKey)) {
+                        $('#conflict-warn-modal').foundation('reveal', 'open');
+                    }
                 }
             });
         };
         $scope.confirmWarning = function () {
-            $scope.warningConfirmed = true;
-            $('#conflict-warn-modal').foundation('reveal', 'close');
+            var modal = $('#conflict-warn-modal');
+            if (modal.find('#dont-show-again').is(':checked') && Modernizr.localstorage) {
+                localStorage.setItem($scope.nameConflictKey, false);
+            }
+            modal.foundation('reveal', 'close');
         };
         $scope.initSelectActionListener = function () {
             // Handle Allow/Deny selection for a given action
