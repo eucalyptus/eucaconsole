@@ -14,8 +14,7 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}',
-                 '${instance_name}'
+                 '${volume.attach_data.status if volume else ''}'
                  )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
