@@ -68,17 +68,11 @@ angular.module('TagEditor', ['ngSanitize'])
                 tagValueField = tagEntry.find('.value'),
                 tagsArrayLength = $scope.tagsArray.length,
                 existingTagFound = false,
-                form = $($event.currentTarget).closest('form'),
-                invalidFields = form.find('[data-invalid]');
+                form = $($event.currentTarget).closest('form');
             if (tagKeyField.val() && tagValueField.val()) {
-                // Trigger validation to avoid tags that start with 'aws:'
-                form.trigger('validate');
-                // checking for keypair here since the keypair widget will always be invalid
-                // till the user selects something on the launch wizard. Assume we don't care
-                // about keypair validation errors here, but if there's at least one non-
-                // keypair error, we'll honor that.
-                if (invalidFields.length && invalidFields[0].name!="keypair") {
-                    invalidFields.focus();
+                // disallow adding tags starting with aws:. abide handles
+                // alerting the user
+                if (tagKeyField.val().indexOf("aws:") == 0) {
                     return false;
                 }
                 // Avoid adding a new tag if the name duplicates an existing one.
