@@ -68,13 +68,11 @@ angular.module('TagEditor', ['ngSanitize'])
                 tagValueField = tagEntry.find('.value'),
                 tagsArrayLength = $scope.tagsArray.length,
                 existingTagFound = false,
-                form = $($event.currentTarget).closest('form'),
-                invalidFields = form.find('[data-invalid]');
+                form = $($event.currentTarget).closest('form');
             if (tagKeyField.val() && tagValueField.val()) {
-                // Trigger validation to avoid tags that start with 'aws:'
-                form.trigger('validate');
-                if (invalidFields.length) {
-                    invalidFields.focus();
+                // disallow adding tags starting with aws:. abide handles
+                // alerting the user
+                if (tagKeyField.val().indexOf("aws:") == 0) {
                     return false;
                 }
                 // Avoid adding a new tag if the name duplicates an existing one.
