@@ -57,7 +57,7 @@ def main(args):
         print
         return
 
-    enerate_keyini(args[0])
+    generate_keyini(args[0])
 
 if __name__ == '__main__':
     main(sys.argv[1:])
