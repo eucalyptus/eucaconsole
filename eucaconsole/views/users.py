@@ -210,6 +210,8 @@ class UserView(BaseView):
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
         self.delete_form = DeleteUserForm(self.request)
+        self.already_member_text = _(u"User already a member of all groups")
+        self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
@@ -254,6 +256,8 @@ class UserView(BaseView):
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
         self.render_dict['user_form'] = self.user_form
         self.render_dict['has_password'] = 'true' if has_password else 'false'
+        self.render_dict['already_member_text'] = self.already_member_text
+        self.render_dict['no_groups_defined_text'] = self.no_groups_defined_text
         return self.render_dict
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
@@ -289,9 +293,9 @@ class UserView(BaseView):
             avail_groups = list(set(all_groups) - set(taken_groups))
             if len(avail_groups) == 0:
                 if len(all_groups) == 0:
-                    avail_groups.append(_(u"There are no groups defined"))
+                    avail_groups.append(self.no_groups_defined_text)
                 else:
-                    avail_groups.append(_(u"User already a member of all groups"))
+                    avail_groups.append(self.already_member_text)
             return dict(results=avail_groups)
 
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')

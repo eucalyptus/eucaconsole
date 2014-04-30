@@ -394,13 +394,17 @@ angular.module('UserView', ['PolicyList'])
         $scope.itemsLoading = true;
         $scope.policyName = '';
         $scope.policyJson = '';
-        $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint, jsonGroupPoliciesEndpoint, jsonGroupPolicyEndpoint) {
+        $scope.noAvailableGroups = false;
+        $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint,
+                                          jsonGroupPoliciesEndpoint, jsonGroupPolicyEndpoint, alreadyMemberText, noGroupsDefinedText) {
             $scope.addEndpoint = addEndpoint;
             $scope.removeEndpoint = removeEndpoint;
             $scope.jsonItemsEndpoint = jsonItemsEndpoint;
             $scope.jsonGroupsEndpoint = jsonGroupsEndpoint;
             $scope.jsonGroupPoliciesEndpoint = jsonGroupPoliciesEndpoint;
             $scope.jsonGroupPolicyEndpoint = jsonGroupPolicyEndpoint;
+            $scope.alreadyMemberText = alreadyMemberText;
+            $scope.noGroupsDefinedText = noGroupsDefinedText;
             $scope.getItems(jsonItemsEndpoint);
             $scope.getAvailableGroups();
         };
@@ -435,6 +439,7 @@ angular.module('UserView', ['PolicyList'])
             $http.get($scope.jsonGroupsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.groupNames = results;
+                $scope.noAvailableGroups = results.indexOf($scope.alreadyMemberText) !== -1 || results.indexOf($scope.noGroupsDefinedText) !== -1;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
@@ -443,8 +448,8 @@ angular.module('UserView', ['PolicyList'])
             });
         };
         $scope.addUserToGroup = function ($event) {
-            group_name = $scope.groupNames[$('#group_name').val()];
-            url = $scope.addEndpoint.replace("_group_", group_name);
+            var group_name = $scope.groupNames[$('#group_name').val()];
+            var url = $scope.addEndpoint.replace("_group_", group_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
@@ -462,8 +467,8 @@ angular.module('UserView', ['PolicyList'])
               });
         };
         $scope.removeUserFromGroup = function (item) {
-            group_name = item.group_name;
-            url = $scope.removeEndpoint.replace("_group_", group_name);
+            var group_name = item.group_name;
+            var url = $scope.removeEndpoint.replace("_group_", group_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).

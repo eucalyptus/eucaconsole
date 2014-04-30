@@ -46,7 +46,6 @@
                     </metal:block>
                     <div ng-controller="UserUpdateCtrl"
                          ng-init="initController('${request.route_path('user_update', name=user.user_name)}')">
-
                         <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
                             <div class="columns section">
@@ -85,7 +84,8 @@
                                 '${request.route_path('user_groups_json', name=user.user_name)}',
                                 '${request.route_path('user_avail_groups_json', name=user.user_name)}',
                                 '${request.route_path('group_policies_json', name='_name_')}',
-                                '${request.route_path('group_policy_json', name='_name_', policy='_policy_')}')">
+                                '${request.route_path('group_policy_json', name='_name_', policy='_policy_')}',
+                                '${already_member_text}', '${no_groups_defined_text}')">
                         <div class="columns section">
                             <h6 i18n:translate="">Groups</h6>
                             <div>&nbsp;</div>
@@ -95,10 +95,13 @@
                                     <div class="row controls-wrapper controls_group_name">
                                         <div class="column small-6">
                                             <select id="group_name" name="group_name" ng-options="item for item in groupNames"
-                                                    ng-init="getAvailableGroups(); index=0" ng-model="groupNames[index]">{{item}}</select>
+                                                    ng-init="getAvailableGroups()" ng-model="groupNames[$index]">
+                                                <option value="" i18n:translate="" ng-if="!noAvailableGroups">Select group...</option>
+                                            </select>
                                         </div>
                                         <div class="column small-6">
-                                            <button type="submit" class="button" id="add-user-to-group-btn">
+                                            <button type="submit" class="button" id="add-user-to-group-btn"
+                                                    ng-disabled="noAvailableGroups">
                                                 <span tal:condition="user" i18n:translate="">Add User to Group</span>
                                             </button>
                                         </div>
