@@ -271,6 +271,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }
             return result;
         };
+        $scope.showCreateKeypairModal = function() {
+            $scope.showKeyPairMaterial = false;
+            var form = $('#launch-instance-form');
+            var invalid_attr = 'data-invalid';
+            form.removeAttr(invalid_attr);
+            $(invalid_attr, form).removeAttr(invalid_attr);
+            $('.error', form).not('small').removeClass('error');
+            $scope.keyPairModal.foundation('reveal', 'open');
+        };
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
             var form = $($event.target);
