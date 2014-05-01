@@ -21,15 +21,17 @@
             </div>
         </div>
         <div class="row userentry controls-wrapper">
-            <div class="field columns">
+            <div id="user-name-field-div" class="field columns">
                 <input class="userinput name" placeholder="name..." id="user-name-field"
-                       ng-model="newUserName" ng-keypress="keyListener($event)" />
-                <small id="user-list-error" class="error" i18n:translate="">Must have at least one user</small>
+                       ng-model="newUserName" ng-keypress="keyListener($event)" ng-keyup="validateUsername($event)" pattern="^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$" />
+                <small id="user-list-error" class="error" i18n:translate="">
+                    Must have at least one user, and the names of users must be alphanumeric, including the following common characters: plus (+), equal (=), comma (,), period (.), at (@), and dash (-).
+                </small>
             </div>
             <div>&nbsp;</div>
             <div class="columns">
-                <a ng-click="addUser($event)" class="button round tiny" id="add-user-btn"
-                   title="Add user" i18n:translate="">Add User</a>
+                <button ng-click="addUser($event)" ng-disabled="isDisabled" class="button round tiny" id="add-user-btn"
+                   title="Add user" i18n:translate="">Add User</button>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view users data posted by form -->

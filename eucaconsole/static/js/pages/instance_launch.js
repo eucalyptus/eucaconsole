@@ -39,6 +39,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
+            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
@@ -75,7 +79,6 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
-            localStorage.removeItem('lastsecgroup_inst');
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
                 $('#securitygroup').val(lastSecGroup);
@@ -99,7 +102,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.updateTagsPreview = function () {
             // Need timeout to give the tags time to capture in hidden textarea
             $timeout(function() {
-                var tagsTextarea = $('#tags'),
+                var tagsTextarea = $('textarea#tags'),
                     tagsJson = tagsTextarea.val(),
                     removeButtons = $('.circle.remove');
                 removeButtons.on('click', function () {

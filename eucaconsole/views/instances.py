@@ -273,17 +273,13 @@ class InstancesJsonView(LandingPageView):
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
-        elastic_ips = self.conn.get_all_addresses()
+        elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
-            has_elastic_ip = False
-            if instance.ip_address:
-                for ip in elastic_ips:
-                    if instance.ip_address == ip.public_ip:
-                        has_elastic_ip = True  
+            has_elastic_ip = instance.ip_address in elastic_ips
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),
@@ -373,6 +369,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            instance_security_group=self.get_security_group(),
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -536,6 +533,12 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance:
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
+
+    def get_security_group(self):
+        if self.instance:
+            instance_groups = self.instance.groups
+            return instance_groups[0].name if instance_groups else 'default'
+        return ''
 
     def get_redirect_location(self):
         if self.instance:
@@ -723,12 +726,12 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map())
+        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
+        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = json.dumps(dict(self.launch_form.keypair.choices))
-        self.securitygroup_choices_json = json.dumps(dict(self.launch_form.securitygroup.choices))
+        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
+        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -767,8 +770,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             availability_zone = self.request.params.get('zone') or None
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
-            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
-            private_addressing = self.request.params.get('private_addressing', False)
+            monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
+            private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
@@ -841,7 +844,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
         self.location = self.request.route_path('instances')
         self.launch_more_form = LaunchMoreInstancesForm(
-            self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
+            self.request, image=self.image, instance=self.instance,
+            conn=self.conn, formdata=self.request.params or None)
         self.render_dict = dict(
             image=self.image,
             instance=self.instance,
@@ -867,8 +871,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             availability_zone = self.instance.placement
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
-            monitoring_enabled = self.request.params.get('monitoring_enabled', False)
-            private_addressing = self.request.params.get('private_addressing', False)
+            monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
+            private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
@@ -878,6 +882,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
+                    min_count=num_instances,
                     max_count=num_instances,
                     key_name=key_name,
                     user_data=self.get_user_data(),

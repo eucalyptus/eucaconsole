@@ -4,10 +4,11 @@
  *
  */
 angular.module('UserEditor', [])
-    .controller('UserEditorCtrl', function ($scope) {
+    .controller('UserEditorCtrl', function ($scope, $timeout) {
         $scope.userEditor = $('#user-editor');
         $scope.userInputs = $scope.userEditor.find('.userinput');
         $scope.usersTextarea = $scope.userEditor.find('textarea#users');
+        $scope.isDisabled = true;
         $scope.usersArray = [];
         $scope.syncUsers = function () {
             var usersObj = {};
@@ -27,11 +28,26 @@ angular.module('UserEditor', [])
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
                 $scope.addUser($event)
+            }else{
+                $scope.isDisabled = true;
             }
         };
+        $scope.validateUsername = function ($event) {
+           // Timeout is needed to react to the added 'error' class by Foundation's live validation
+           $timeout(function(){ 
+                if( $('#user-name-field-div').hasClass("error") ){
+                    $scope.isDisabled = true;
+                }else{
+                    $scope.isDisabled = false;
+                }
+            }, 1000);
+        }
         $scope.addUser = function ($event) {
             $event.preventDefault();
-            $(".error").css("display", "none");
+            if( $('#user-name-field-div').hasClass("error") ){
+                $scope.isDisabled = true;
+                return false;
+            }
             var userEntry = $($event.currentTarget).closest('.userentry'),
                 userNameField = userEntry.find('.name'),
                 //userEmailField = userEntry.find('.email'),

@@ -93,18 +93,20 @@ class ChoicesManager(object):
         if add_blank:
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
+            types = []
             @cache_region('extra_long_term', 'instance_types')
             def _get_instance_types_cache(self):
-                choices = []
+                types = []
                 if self.conn is not None:
                     types = self.conn.get_all_instance_types()
-                    for vmtype in types:
-                        vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
-                            vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
-                        vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
-                        choices.append(vmtype_tuple)
-                return choices
-            choices.extend(_get_instance_types_cache(self))
+                return types
+            types.extend(_get_instance_types_cache(self))
+            choices = []
+            for vmtype in types:
+                vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
+                    vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
+                choices.append(vmtype_tuple)
             return choices
         elif cloud_type == 'aws':
             if add_description:

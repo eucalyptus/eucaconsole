@@ -25,7 +25,7 @@
                 </div>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="create_securitygroup_close_link" class="close-reveal-modal">&#215;</a>
     </div>
 </div>
 

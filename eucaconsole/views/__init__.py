@@ -8,7 +8,6 @@ import simplejson as json
 import textwrap
 
 from contextlib import contextmanager
-from markupsafe import escape
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -179,6 +178,17 @@ class BaseView(object):
             location = request.current_route_url()
         raise HTTPFound(location)
 
+    @staticmethod
+    def escape_json(json_string):
+        replace_mapping = {
+            "\'": "__apos__",
+            '\\"': "__dquote__",
+            "\\": "__bslash__",
+        }
+        for key, value in replace_mapping.items():
+            json_string = json_string.replace(key, value)
+        return json_string
+
 
 class TaggedItemView(BaseView):
     """Common view for items that have tags (e.g. security group)"""
@@ -186,21 +196,22 @@ class TaggedItemView(BaseView):
     def __init__(self, request):
         super(TaggedItemView, self).__init__(request)
         self.tagged_obj = None
+        self.conn = None
 
     def add_tags(self):
-        tags_json = self.request.params.get('tags')
-        tags = json.loads(tags_json) if tags_json else {}
-
-        for key, value in tags.items():
-            if not key.strip().startswith('aws:'):
-                safe_key = escape(key)
-                safe_value = escape(value)
-                self.tagged_obj.add_tag(safe_key, safe_value)
+        if self.conn:
+            tags_json = self.request.params.get('tags')
+            tags_dict = json.loads(tags_json) if tags_json else {}
+            tags = {}
+            for key, value in tags_dict.items():
+                if not key.strip().startswith('aws:'):
+                    tags[key] = value
+            self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
-        for tagkey, tagvalue in self.tagged_obj.tags.items():
-            if not tagkey.startswith('aws:'):
-                self.tagged_obj.remove_tag(tagkey, tagvalue)
+        if self.conn:
+            tagkeys = [tagkey for tagkey in self.tagged_obj.tags.keys() if not tagkey.startswith('aws:')]
+            self.conn.delete_tags([self.tagged_obj.id], tagkeys)
 
     def update_tags(self):
         if self.tagged_obj is not None:
@@ -209,9 +220,10 @@ class TaggedItemView(BaseView):
 
     def update_name_tag(self, value):
         if self.tagged_obj is not None:
-            safe_value = escape(value)
-            if safe_value and not safe_value.startswith('aws:'):
-                self.tagged_obj.add_tag('Name', safe_value)
+            if value != self.tagged_obj.tags.get('Name'):
+                self.tagged_obj.remove_tag('Name')
+                if value and not value.startswith('aws:'):
+                    self.tagged_obj.add_tag('Name', value)
 
     @staticmethod
     def get_display_name(resource):

@@ -40,6 +40,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
+            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
@@ -184,7 +188,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var textareaElement = modal.find('textarea[class!=hidden]').get(0);
             var selectElement = modal.find('select').get(0);
             var modalButton = modal.find('button').get(0);
-            console.log(inputElement);
             if (!!textareaElement){
                 textareaElement.focus();
             } else if (!!inputElement) {

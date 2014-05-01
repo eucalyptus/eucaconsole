@@ -352,6 +352,7 @@ class UserView(BaseView):
                     user_list.append(user_data)
                     if allow_all == 'y':
                         statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
+                        statements.append({'Effect': 'Deny', 'Action': 'iam:*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
                     self.add_quota_limit(
@@ -365,7 +366,7 @@ class UserView(BaseView):
                     self.add_quota_limit(
                         statements, 'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
                     self.add_quota_limit(
-                        statements, 'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
+                        statements, 'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
                     ## s3
                     self.add_quota_limit(
                         statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
@@ -664,7 +665,7 @@ class UserView(BaseView):
             self.update_quota_limit(policy_list, new_stmts,
                                     'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                                    'ec2_total_size_all_vols', 'ec2:createvolume', 'ec2:quota-volumetotalsize')
+                                    'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
             ## s3
             self.update_quota_limit(policy_list, new_stmts,
                                     's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
@@ -700,13 +701,13 @@ class UserView(BaseView):
                                     'elasticloadbalancing:quota-loadbalancernumber')
 
             # save policies that were modified
-            for i in range(0, len(policy_list)-1):
+            for i in range(0, len(policy_list)):
                 if 'dirty' in policy_list[i].keys():
                     del policy_list[i]['dirty']
                     self.log_request(_(u"Updating policy {0} for user {1}").format(
-                        policies.policies_name[i], self.user.user_name))
+                        policies.policy_names[i], self.user.user_name))
                     self.conn.put_user_policy(
-                        self.user.user_name, policies.policies_names[i], json.dumps(policy_list[i]))
+                        self.user.user_name, policies.policy_names[i], json.dumps(policy_list[i]))
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
                 if self.EUCA_DEFAULT_POLICY in policies.policy_names:
@@ -741,6 +742,8 @@ class UserView(BaseView):
                     if cond == "NumericLessThanEquals": 
                         for policy_val in s['Condition'][cond].keys():
                             limit = s['Condition'][cond][policy_val]
+                            # convert value to int, but if no value, set limit high
+                            limit = int(limit) if limit else sys.maxint
                             if policy_val == condition:
                                 # need to see if this was the policy with the lowest value.
                                 if limit < lowest_val:
@@ -755,7 +758,7 @@ class UserView(BaseView):
                     'Condition': {'NumericLessThanEquals': {condition: new_limit}}
                 })
         else:
-            if new_limit != '': # need to remove the value
+            if new_limit == '': # need to remove the value
                 del lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val]
             else:  # need to change the value
                 lowest_stmt['Condition']['NumericLessThanEquals'][lowest_policy_val] = new_limit

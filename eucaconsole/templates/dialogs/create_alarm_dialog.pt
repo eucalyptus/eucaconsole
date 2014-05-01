@@ -4,7 +4,8 @@
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
         <p i18n:translate="">&nbsp;</p>
-        <form action="${request.route_path('cloudwatch_alarms_create')}" method="post" data-abide="">
+        <form method="post" data-abide="" id="create-alarm-form"
+              ng-submit="handleCreateAlarm('${request.route_path('cloudwatch_alarms_create')}', $event)">
             ${structure:alarm_form['csrf_token']}
             <input type="hidden" name="redirect_location" value="${redirect_location}" ng-non-bindable=""/>
             <input type="hidden" name="namespace" value="{{ namespace }}" />
@@ -125,14 +126,16 @@
             </div>
             <hr />
             <div class="row">
-                <div>
-                    <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn">
-                        Create Alarm
-                    </button>
+                <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn" ng-show="!isCreatingAlarm">
+                    Create Alarm
+                </button>
+                <div ng-show="isCreatingAlarm">
+                    <span i18n:translate="">Creating alarm...</span>
+                    <span class="dots">&nbsp;</span>
                 </div>
             </div>
         </form>
-        <a href="#" class="close-reveal-modal">&#215;</a>
+        <a href="#" id="create_alarm_close_link" class="close-reveal-modal">&#215;</a>
         <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>
