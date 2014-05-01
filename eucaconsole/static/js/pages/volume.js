@@ -16,6 +16,8 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.instanceId = '';
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
+        $scope.volumeSize = 1;
+        $scope.snapshotSize = 1;
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.volumeStatusEndpoint = jsonEndpoint;
@@ -34,7 +36,8 @@ angular.module('VolumePage', ['TagEditor'])
             $http.get("/snapshots/"+$scope.snapshotId+"/size/json").success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $('input#size').val(results);
+                    $scope.snapshotSize = results;
+                    $scope.volumeSize = results;
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
@@ -87,6 +90,13 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$watch('volumeSize', function () {
+                if( $scope.volumeSize < $scope.snapshotSize ){
+                    $('div#volume_size_error').removeClass('hide');
+                }else{
+                    $('div#volume_size_error').addClass('hide');
+                }
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
