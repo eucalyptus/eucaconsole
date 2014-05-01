@@ -38,7 +38,6 @@ class CTHeadersTweenFactory(object):
             'PRAGMA': 'NO-CACHE',
         },
         'text/html': {
-            'a': 'b',
             'X-FRAME-OPTIONS': 'SAMEORIGIN',
             'CACHE-CONTROL': 'NO-CACHE',
             'PRAGMA': 'NO-CACHE',
