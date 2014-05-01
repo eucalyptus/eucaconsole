@@ -440,6 +440,9 @@ angular.module('UserView', ['PolicyList'])
                 var results = oData ? oData.results : [];
                 $scope.groupNames = results;
                 $scope.noAvailableGroups = results.indexOf($scope.alreadyMemberText) !== -1 || results.indexOf($scope.noGroupsDefinedText) !== -1;
+                if (!$scope.noAvailableGroups) {
+                    $('#group_name').val('');
+                }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
