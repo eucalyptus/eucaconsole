@@ -40,6 +40,15 @@
         margin-bottom: 12px;
         background-color: $euca-orange;
     }
+    #euca-tab.active, #aws-tab.active {
+        background-color: white;
+    }
+}
+
+#password, #secret_key {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 1rem;
+    color: black;
 }
 
 // Handle disabled JS

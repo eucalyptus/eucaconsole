@@ -2,6 +2,7 @@
 <div tal:omit-tag="">
     <style type="text/css">
         #quotas-panel .expando { margin-bottom: 1rem; }
+        #quotas-panel .expando .title { margin-bottom: 0.5rem; display: block; }
     </style>
     <div id="quotas-panel" class="section">
         <p i18n:translate="">Define limits on resources that this user is allowed to create. Leave blank for unlimited rights.</p>

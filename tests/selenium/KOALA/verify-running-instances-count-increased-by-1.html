@@ -17,13 +17,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>setTimeout</td>
-	<td>240000</td>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>setTimeout</td>
+	<td>240000</td>
 	<td></td>
 </tr>
 <tr>
@@ -39,16 +39,6 @@
 <tr>
 	<td>echo</td>
 	<td>${running_instances_new}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>storeEval</td>
-	<td>${running_instances_new}</td>
-	<td>running_instances</td>
-</tr>
-<tr>
-	<td>echo</td>
-	<td>${running_instances}</td>
 	<td></td>
 </tr>
 <tr>
@@ -68,7 +58,7 @@
 </tr>
 <tr>
 	<td>while</td>
-	<td>${count}&lt;${running_instances}&amp;&amp; ${k}&lt;20</td>
+	<td>${count}&lt;${running_instances_new}&amp;&amp; ${k}&lt;20</td>
 	<td></td>
 </tr>
 <tr>
@@ -104,7 +94,17 @@
 <tr>
 	<td>waitForText</td>
 	<td>id=running-instances-count</td>
+	<td>${running_instances_new}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=running-instances-count</td>
+	<td>running_instances</td>
+</tr>
+<tr>
+	<td>echo</td>
 	<td>${running_instances}</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

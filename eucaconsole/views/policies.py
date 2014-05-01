@@ -91,7 +91,16 @@ class IAMPolicyWizardView(BaseView):
             'actionsList': self.get_all_actions(),
             'languageCode': self.get_language_code(),
             'awsRegions': AWS_REGIONS,
+            'existingPolicies': json.dumps(self.get_existing_policies()),
         }
+
+    def get_existing_policies(self):
+        if self.target_type == 'user':
+            fetch_policies = self.iam_conn.get_all_user_policies
+        else:
+            fetch_policies = self.iam_conn.get_all_group_policies
+        iam_policies = fetch_policies(self.target_name)
+        return iam_policies.policy_names if iam_policies else []
 
     def get_instance_choices(self):
         resource_name = 'instance'

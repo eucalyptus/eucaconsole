@@ -6,7 +6,8 @@
 
 angular.module('LaunchConfigPage', [])
     .controller('LaunchConfigPageCtrl', function ($scope) {
-        $scope.initController = function () {
+        $scope.initController = function (inUse) {
+            $scope.launchConfigInUse = inUse;
             $scope.setWatch();
             $scope.setFocus();
         };

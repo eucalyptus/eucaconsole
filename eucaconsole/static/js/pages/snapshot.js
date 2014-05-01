@@ -24,13 +24,10 @@ angular.module('SnapshotPage', ['TagEditor'])
             $(document).ready(function() {
                 $('#volume_id').chosen({'width': '75%', search_contains: true});
                 $('#volume_id').val('').trigger('chosen:updated'); 
-                if ($('#volume_id').children().length == 1) {
-                    var modal = $('#create-warn-modal');
-                    modal.foundation('reveal', 'open');
-                }
             });
         };
-        $scope.initController = function (jsonEndpoint, status, progress) {
+        $scope.initController = function (jsonEndpoint, status, progress, volumeCount) {
+            $scope.displayVolumeWarning(volumeCount);
             $scope.initChosenSelector();
             $scope.snapshotStatusEndpoint = jsonEndpoint;
             $scope.snapshotStatus = status;
@@ -40,6 +37,11 @@ angular.module('SnapshotPage', ['TagEditor'])
             }
             $scope.setWatch();
             $scope.setFocus();
+        };
+        $scope.displayVolumeWarning = function (volumeCount) {
+            if (volumeCount === 0) {
+                $('#create-warn-modal').foundation('reveal', 'open');
+            }
         };
         $scope.getSnapshotState = function () {
             $http.get($scope.snapshotStatusEndpoint).success(function(oData) {

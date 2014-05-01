@@ -144,6 +144,21 @@
                  </div>
             </div>
         </div>
+        <!--! Modal to warn of conflicting policy name -->
+        <div id="conflict-warn-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning: Policy name conflict</h3>
+            <p i18n:translate="">
+                The existing policy will be replaced with this policy if you do not choose a different name.
+            </p>
+            <div>
+                <input id="dont-show-again" type="checkbox" />
+                <label for="dont-show-again" i18n:translate="">Do not show me this again</label>
+            </div>
+            <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
+                I understand the risks
+            </a>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
     </div>
 </div>
 

@@ -14,8 +14,7 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}',
-                 '${instance_name}'
+                 '${volume.attach_data.status if volume else ''}'
                  )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -68,7 +67,9 @@
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="label radius status {{ volumeStatus }}">{{ volumeAttachStatus || volumeStatus }}</span>
+                            <span class="label radius status {{ volumeStatus || 'deleted' }}">
+                                {{ volumeAttachStatus || volumeStatus || 'deleted' }}
+                            </span>
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
@@ -120,8 +121,10 @@
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
                     <div>
-                        <button type="submit" class="button">
-                            <span tal:condition="volume" i18n:translate="" ng-show="volumeStatus !== 'deleted'">Save Changes</span>
+                        <button type="submit" class="button" tal:condition="volume" ng-disabled="isUpdating || volumeStatus === 'deleted'">
+                            <span  i18n:translate="" >Save Changes</span>
+                        </button>
+                        <button type="submit" class="button" tal:condition="not volume">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"

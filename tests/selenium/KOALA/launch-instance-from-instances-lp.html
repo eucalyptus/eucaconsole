@@ -17,13 +17,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>setTimeout</td>
-	<td>120000</td>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
-	<td>id=resource-menu-dashboard</td>
+	<td>setTimeout</td>
+	<td>120000</td>
 	<td></td>
 </tr>
 <tr>
@@ -79,7 +79,17 @@
 <tr>
 	<td>type</td>
 	<td>id=instance_type</td>
-	<td>m1.small</td>
+	<td>m1.medium</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=visit-step-3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=securitygroup</td>
+	<td>label=default</td>
 </tr>
 <tr>
 	<td>select</td>
@@ -89,6 +99,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=launch-instance-btn-step3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 </tbody></table>

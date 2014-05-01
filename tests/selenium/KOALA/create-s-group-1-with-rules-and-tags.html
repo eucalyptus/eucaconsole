@@ -17,7 +17,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForVisible</td>
+	<td>setTimeout</td>
+	<td>120000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
 	<td>id=resource-menu-netsec</td>
 	<td></td>
 </tr>
@@ -107,6 +112,16 @@
 	<td>value=22</td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>name=from_port</td>
+	<td>22</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=to_port</td>
+	<td>22</td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>id=sgroup-use-my-ip</td>
 	<td></td>
@@ -179,6 +194,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>id=save-securitygroup-btn</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 </tbody></table>

@@ -216,7 +216,6 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
 #breadcrumbs {
     position: relative;
     overflow: hidden;
-    margin-top: 0;
     margin-bottom: 0.7rem;
     padding-left: 16px;
     padding-top: 6px;
@@ -226,6 +225,7 @@ $breadcrumb-border-color: darken($breadcrumb-background-color, 20%);
     letter-spacing: 1px;
     font-weight: normal;
     li {
+        margin-top: 0.3rem;
         font-size: 0.9rem;
         &.current a {
             color: #444;
@@ -850,6 +850,9 @@ footer {
         background-color: $euca-grey;
         color: white;
     }
+    &.disabled, &[disabled] {
+        background-color: $euca-orange;
+    }
     &:hover {
         background-color: darken($euca-orange, 10%);
     }
@@ -987,6 +990,17 @@ footer {
     }
     #navbar {
         display: none;
+    }
+}
+
+/* Responsive tweaks for landing page title */
+@media screen and (max-width: $row-width) {
+    #pagetitle.landingpage {
+        top: -0.5rem;
+    }
+    #landing-page-filters {
+        padding-top: 1rem;
+        margin-bottom: 1rem;
     }
 }
 
