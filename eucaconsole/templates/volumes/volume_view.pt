@@ -132,7 +132,7 @@
                         <button type="submit" class="button" tal:condition="volume" ng-disabled="isUpdating || volumeStatus === 'deleted'">
                             <span  i18n:translate="" >Save Changes</span>
                         </button>
-                        <button type="submit" class="button" tal:condition="not volume">
+                        <button type="submit" id="create_volume_submit_button" class="button" tal:condition="not volume">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"
