@@ -75,12 +75,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_lc');
-            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
-            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
             $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
