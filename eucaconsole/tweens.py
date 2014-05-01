@@ -7,7 +7,7 @@ def setup_tweens(config):
 
     config.add_tween('eucaconsole.tweens.https_tween_factory')
     config.add_tween('eucaconsole.tweens.request_id_tween_factory')
-    config.add_tween('eucaconsole.tweens.HtmlHeadersTweenFactory')
+    config.add_tween('eucaconsole.tweens.CTHeadersTweenFactory')
 
 
 def https_tween_factory(handler, registry):
@@ -27,15 +27,21 @@ def request_id_tween_factory(handler, registry):
     return tween
 
 
-class HtmlHeadersTweenFactory(object):
+class CTHeadersTweenFactory(object):
     '''Tween factory for ensuring certain response headers are set iff content
-    type is html
+    type is mapped.
     '''
 
-    html_headers = {
-        'X-FRAME-OPTIONS': 'SAMEORIGIN',
-        'CACHE-CONTROL': 'NO-CACHE',
-        'PRAGMA': 'NO-CACHE',
+    header_map = {
+        'application/json': {
+            'CACHE-CONTROL': 'NO-CACHE',
+            'PRAGMA': 'NO-CACHE',
+        },
+        'text/html': {
+            'X-FRAME-OPTIONS': 'SAMEORIGIN',
+            'CACHE-CONTROL': 'NO-CACHE',
+            'PRAGMA': 'NO-CACHE',
+        },
     }
 
     def __init__(self, handler, registry):
@@ -45,7 +51,8 @@ class HtmlHeadersTweenFactory(object):
     def __call__(self, request):
         response = self.handler(request)
         ct = response.content_type
-        if ct and ct.strip().lower() == 'text/html':
-            for name, value in self.html_headers.items():
+        map = self.header_map.get(ct.strip().lower(), None)
+        if map:
+            for name, value in map.items():
                 response.headers[name] = value
         return response
