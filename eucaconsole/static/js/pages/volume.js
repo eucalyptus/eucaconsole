@@ -94,7 +94,10 @@ angular.module('VolumePage', ['TagEditor'])
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
-                $('.tabs').find('a').get(0).focus();
+                var tabs = $('.tabs').find('a');
+                if( tabs.length > 0 ){
+                    tabs.get(0).focus();
+                }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
