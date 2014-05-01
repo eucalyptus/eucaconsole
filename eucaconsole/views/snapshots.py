@@ -61,6 +61,13 @@ class SnapshotsView(LandingPageView):
             location = self.request.route_path('volume_snapshots', id=volume_id)
         if snapshot and self.delete_form.validate():
             with boto_error_handler(self.request, location):
+                images_registered = self.get_images_registered(snapshot_id)
+                if images_registered is not None:
+                    for img in images_registered:
+                        self.log_request(_(u"Deregistering image {0}").format(img.id))
+                        img.deregister()
+                    # Clear images cache
+                    ImagesView.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -71,6 +78,21 @@ class SnapshotsView(LandingPageView):
             msg = _(u'Unable to delete snapshot')
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
+
+    # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
+    def get_root_device_name(self, img):
+        return img.root_device_name.replace('&#x2f;', '/').replace(
+            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
+
+    def get_images_registered(self, snap_id):
+        ret = []
+        images = self.conn.get_all_images(owners='self')
+        for img in images:
+            if img.block_device_mapping is not None:
+                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
+                if vol is not None and snap_id == vol.snapshot_id:
+                    ret.append(img)
+        return ret or None
 
     @view_config(route_name='snapshots_register', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_register(self):
@@ -289,12 +311,13 @@ class SnapshotView(TaggedItemView):
         if self.snapshot and self.delete_form.validate():
             snapshot_name = TaggedItemView.get_display_name(self.snapshot)
             with boto_error_handler(self.request, self.request.route_path('snapshots')):
-                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 if self.images_registered is not None:
                     for img in self.images_registered:
+                        self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
                     ImagesView.invalidate_images_cache()
+                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
