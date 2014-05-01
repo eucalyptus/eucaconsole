@@ -24,16 +24,16 @@ class TestSetup(unittest.TestCase):
         self.assertTrue(len(config.tweens) > 1)
 
 
-class TestHtmlHeaders(unittest.TestCase):
+class TestCTHeaders(unittest.TestCase):
     def test_factory(self):
         from eucaconsole.tweens import \
-            HtmlHeadersTweenFactory as factory
+            CTHeadersTweenFactory as factory
         tween = factory(None, None)
         self.assertTrue(callable(tween))
 
     def test_tween(self):
         from eucaconsole.tweens import \
-            HtmlHeadersTweenFactory as factory
+            CTHeadersTweenFactory as factory
 
         class MockHandler(object):
             def __init__(self, content_type):
@@ -46,13 +46,13 @@ class TestHtmlHeaders(unittest.TestCase):
 
         tween = factory(MockHandler('image/jpeg'), None)
         res = tween(None)
-        for name, value in factory.html_headers.items():
-            # make sure non html resources aren't getting header
-            self.assertTrue(name not in res.headers)
+        for name, value in factory.header_map['text/html'].items():
+            # make sure html resources *are* getting header
+            self.assertFalse(name in res.headers)
 
         tween = factory(MockHandler('text/html'), None)
         res = tween(None)
-        for name, value in factory.html_headers.items():
+        for name, value in factory.header_map['text/html'].items():
             # make sure html resources *are* getting header
             self.assertTrue(name in res.headers)
             self.assertTrue(res.headers[name] == value)
