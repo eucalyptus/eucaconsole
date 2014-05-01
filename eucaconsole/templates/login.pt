@@ -13,8 +13,8 @@
              tal:condition="https_required">
             <span i18n:translate="">
                 HTTPS not detected.
-                You will not be able to log in unless the session.secure setting is properly configured.
-                Please contact your cloud administrator.
+                You will not be able to log in via HTTP unless the session.secure setting is properly configured.
+                Please try again with a URL that begins with "https" instead of "http", and if the problem persists contact your cloud administrator.
             </span>
             <a href="#" class="close">&times;</a>
         </div>
