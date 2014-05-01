@@ -98,7 +98,7 @@ class ChangePasswordView(BaseView):
         return dict(
             changepassword_form=changepassword_form,
             changepassword_form_errors=self.changepassword_form_errors,
-            password_expired=True,
+            password_expired=True if self.request.params.get('expired') == 'true' else False,
             came_from=self.came_from,
             account=account,
             username=username
