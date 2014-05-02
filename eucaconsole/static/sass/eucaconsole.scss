@@ -852,6 +852,9 @@ footer {
     }
     &.disabled, &[disabled] {
         background-color: $euca-orange;
+        &:hover {
+            background-color: $euca-orange;
+        }
     }
     &:hover {
         background-color: darken($euca-orange, 10%);
