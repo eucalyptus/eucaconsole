@@ -14,7 +14,7 @@ from ..forms import BaseSecureForm
 class IAMPolicyWizardForm(BaseSecureForm):
     """Create IAM Policy form"""
 
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Name is required and may not contain spaces')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],

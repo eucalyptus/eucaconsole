@@ -122,10 +122,10 @@
                 <form action="${request.route_path('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
-                    <input type="hidden" name="type" value="${request.params.get('type', '')}" ng-non-bindalbe=""/>
+                    <input type="hidden" name="type" value="${request.params.get('type', '')}" ng-non-bindable=""/>
                     <input type="hidden" name="id" value="${request.params.get('id', '')}" ng-non-bindable=""/>
                     <label><strong i18n:translate="">Name</strong></label>
-                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, autofocus='')}
+                    ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, autofocus='', pattern='^\S+$')}
                     <label><strong i18n:translate="">Policy</strong></label>
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
                     <div>
@@ -155,7 +155,7 @@
                 <label for="dont-show-again" i18n:translate="">Do not show me this again</label>
             </div>
             <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
-                I understand the risks
+                I Understand the Risks
             </a>
             <a class="close-reveal-modal">&#215;</a>
         </div>
