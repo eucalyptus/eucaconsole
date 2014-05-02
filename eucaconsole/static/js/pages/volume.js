@@ -33,6 +33,11 @@ angular.module('VolumePage', ['TagEditor'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
+           if( $scope.snapshotId == '' ){
+                $scope.snapshotSize = 1;
+                $scope.volumeSize = 1;
+                return;
+            }
             $http.get("/snapshots/"+$scope.snapshotId+"/size/json").success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
