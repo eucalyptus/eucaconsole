@@ -18,11 +18,12 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
-        $scope.initController = function (jsonEndpoint, status, attachStatus) {
+        $scope.initController = function (jsonEndpoint, status, attachStatus, volumeCreateTime) {
             $scope.initChosenSelectors();
             $scope.volumeStatusEndpoint = jsonEndpoint;
             $scope.volumeStatus = status.replace('-', ' ');
             $scope.volumeAttachStatus = attachStatus;
+            $scope.volumeCreateTime = volumeCreateTime;
             if (jsonEndpoint) {
                 $scope.getVolumeState();
             }

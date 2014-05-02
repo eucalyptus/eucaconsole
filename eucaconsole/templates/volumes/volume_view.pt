@@ -14,7 +14,8 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}'
+                 '${volume.attach_data.status if volume else ''}',
+                 '${volume.create_time}'
                  )">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -125,7 +126,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
-                        <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            {{ volumeCreateTime | date: '${layout.angular_date_format}' }}
+                        </div>
                     </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
