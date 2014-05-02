@@ -94,7 +94,7 @@ class LoginView(BaseView):
                     account=account, user=username, passwd=password,
                     new_passwd=new_passwd, timeout=8, duration=self.duration)
                 user_account = '{user}@{account}'.format(user=username, account=account)
-                self.invalidate_connection_cache()
+                # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'euca'
                 session['account'] = account
@@ -132,7 +132,7 @@ class LoginView(BaseView):
                 auth = AWSAuthenticator(package=package)
                 creds = auth.authenticate(timeout=10)
                 default_region = self.request.registry.settings.get('aws.default.region', 'us-east-1')
-                self.invalidate_connection_cache()
+                # self.invalidate_connection_cache()
                 session.invalidate()  # Refresh session
                 session['cloud_type'] = 'aws'
                 session['session_token'] = creds.session_token
@@ -165,6 +165,6 @@ class LogoutView(BaseView):
         if self.euca_logout_form.validate():
             forget(self.request)
             self.request.session.invalidate()
-            self.invalidate_connection_cache()
+            # self.invalidate_connection_cache()
             return HTTPFound(location=self.login_url)
 
