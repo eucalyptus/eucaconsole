@@ -101,10 +101,12 @@
                         ${panel('form_field', field=volume_form['size'], min=1, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="not volume">
-                        <div class="small-4 columns"><label class="error"></div>
-                        <div class="small-8 columns field error hide" id="volume_size_error" i18n:translate="">
+                        <div class="small-4 columns"></div>
+                        <div class="small-8 columns field error hide" id="volume_size_error"> 
                             <small class="error">
-                                Volume size must be greater than or equal to {{ snapshotSize }}
+                                <span i18n:translate="">
+                                    Volume size must be greater than or equal to {{ snapshotSize }}
+                                </span>
                             </small>
                         </div>
                     </div>
