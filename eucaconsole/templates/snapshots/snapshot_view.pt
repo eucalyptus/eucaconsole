@@ -9,7 +9,7 @@
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
                  '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}',
-                 ${volume_count}, '${snapshot_start_time}')">
+                 ${volume_count}, '${snapshot.start_time}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>

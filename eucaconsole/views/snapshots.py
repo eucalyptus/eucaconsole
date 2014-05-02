@@ -218,7 +218,6 @@ class SnapshotView(TaggedItemView):
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
-            snapshot_start_time=self.get_start_time(),
             volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
@@ -248,12 +247,6 @@ class SnapshotView(TaggedItemView):
     def get_snapshot_name(self):
         if self.snapshot:
             return TaggedItemView.get_display_name(self.snapshot)
-        return None
-
-    def get_start_time(self):
-        """Returns instance launch time as a python datetime.datetime object"""
-        if self.snapshot and self.snapshot.start_time:
-            return parser.parse(self.snapshot.start_time).isoformat()
         return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
