@@ -3,7 +3,6 @@
 Pyramid views for Eucalyptus and AWS snapshots
 
 """
-from dateutil import parser
 import simplejson as json
 
 from boto.exception import BotoServerError

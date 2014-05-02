@@ -4,7 +4,6 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
-from dateutil import parser
 from operator import attrgetter
 import simplejson as json
 from M2Crypto import RSA
