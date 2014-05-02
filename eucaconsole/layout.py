@@ -44,7 +44,7 @@ class MasterLayout(object):
         self.account = self.request.session.get('account')
         self.username_label = self.request.session.get('username_label')
         self.euca_logout_form = EucaLogoutForm(request=self.request)
-        self.date_format = _(u'%H:%M:%S %p %b %d %Y')
+        self.date_format = _(u'%I:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
         self.tag_pattern_key = '^(?!aws:).{0,128}$'
         self.tag_pattern_value = '^(?!aws:).{0,256}$'
