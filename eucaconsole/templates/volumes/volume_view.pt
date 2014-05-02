@@ -14,9 +14,7 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}',
-                 '${volume.create_time}'
-                 )">
+                 '${volume.attach_data.status if volume else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
@@ -127,7 +125,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            {{ volumeCreateTime | date: '${layout.angular_date_format}' }}
+                            {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
                     <hr />

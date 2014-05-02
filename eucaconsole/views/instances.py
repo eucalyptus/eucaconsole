@@ -362,7 +362,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             self.request, conn=self.conn, formdata=self.request.params or None)
         self.disassociate_ip_form = DisassociateIpFromInstanceForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.instance
-        self.launch_time = self.get_launch_time()
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
@@ -373,7 +372,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
-            instance_launch_time=self.launch_time,
             start_form=self.start_form,
             stop_form=self.stop_form,
             reboot_form=self.reboot_form,
@@ -522,12 +520,6 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
         return self.render_dict
-
-    def get_launch_time(self):
-        """Returns instance launch time as a python datetime.datetime object"""
-        if self.instance and self.instance.launch_time:
-            return parser.parse(self.instance.launch_time)
-        return None
 
     def get_scaling_group(self):
         if self.instance:

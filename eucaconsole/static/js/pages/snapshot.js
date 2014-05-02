@@ -26,13 +26,12 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $('#volume_id').val('').trigger('chosen:updated'); 
             });
         };
-        $scope.initController = function (jsonEndpoint, status, progress, volumeCount, snapshotStartTime) {
+        $scope.initController = function (jsonEndpoint, status, progress, volumeCount) {
             $scope.displayVolumeWarning(volumeCount);
             $scope.initChosenSelector();
             $scope.snapshotStatusEndpoint = jsonEndpoint;
             $scope.snapshotStatus = status;
             $scope.snapshotProgress = progress;
-            $scope.snapshotStartTime = snapshotStartTime;
             if (jsonEndpoint) {
                 $scope.getSnapshotState();
             }

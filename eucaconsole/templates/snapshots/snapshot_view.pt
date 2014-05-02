@@ -8,8 +8,7 @@
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
-                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}',
-                 ${volume_count}, '${snapshot.start_time}')">
+                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
@@ -98,7 +97,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Time started</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            {{ snapshotStartTime | date: '${layout.angular_date_format}' }}
+                            {{ '${snapshot.start_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
