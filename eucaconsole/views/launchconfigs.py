@@ -200,9 +200,9 @@ class LaunchConfigView(BaseView):
             security_groups = []
             if groupids:
                 if groupids[0].startswith('sg-'):
-                    security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
+                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-id': groupids})
                 else:
-                    security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
+                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
             return security_groups
         return []
 
