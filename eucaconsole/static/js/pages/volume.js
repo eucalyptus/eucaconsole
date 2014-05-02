@@ -92,11 +92,11 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.setWatch = function () {
             $scope.$watch('volumeSize', function () {
                 if( $scope.volumeSize < $scope.snapshotSize ){
-                    $('div#volume_size_error').removeClass('hide');
-                    $('button#create_volume_submit_button').attr('disabled','disabled');
+                    $('#volume_size_error').removeClass('hide');
+                    $('#create_volume_submit_button').attr('disabled','disabled');
                 }else{
-                    $('div#volume_size_error').addClass('hide');
-                    $('button#create_volume_submit_button').removeAttr('disabled');
+                    $('#volume_size_error').addClass('hide');
+                    $('#create_volume_submit_button').removeAttr('disabled');
                 }
             });
             $(document).on('submit', '[data-reveal] form', function () {
