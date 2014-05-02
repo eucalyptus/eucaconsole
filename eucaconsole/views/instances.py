@@ -370,6 +370,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
+            instance_security_group=self.get_security_group(),
             image=self.image,
             scaling_group=self.scaling_group,
             instance_form=self.instance_form,
@@ -533,6 +534,12 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         if self.instance:
             return self.instance.tags.get('aws:autoscaling:groupName')
         return None
+
+    def get_security_group(self):
+        if self.instance:
+            instance_groups = self.instance.groups
+            return instance_groups[0].name if instance_groups else 'default'
+        return ''
 
     def get_redirect_location(self):
         if self.instance:
@@ -721,13 +728,13 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map())
+        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
+        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = json.dumps(dict(self.launch_form.keypair.choices))
-        self.securitygroup_choices_json = json.dumps(dict(self.launch_form.securitygroup.choices))
-        self.role_choices_json = json.dumps(dict(self.launch_form.role.choices))
+        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
+        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
+        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -886,6 +893,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
+                    min_count=num_instances,
                     max_count=num_instances,
                     key_name=key_name,
                     user_data=self.get_user_data(),

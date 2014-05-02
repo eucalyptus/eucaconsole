@@ -1403,8 +1403,8 @@ h1, h2, h3, h4, h5, h6 { font-family: Oswald, Helvetica, Arial, sans-serif; lett
 #navbar .dropdown li a { text-transform: none; }
 #navbar .dropdown li a:hover { background-color: #eee; }
 
-#breadcrumbs { position: relative; overflow: hidden; margin-top: 0; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
-#breadcrumbs li { font-size: 0.9rem; }
+#breadcrumbs { position: relative; overflow: hidden; margin-bottom: 0.7rem; padding-left: 16px; padding-top: 6px; padding-bottom: 1px; color: #444444; background-color: #eef7e3; letter-spacing: 1px; font-weight: normal; }
+#breadcrumbs li { margin-top: 0.3rem; font-size: 0.9rem; }
 #breadcrumbs li.current a { color: #444; }
 #breadcrumbs .icon-block { display: none; position: absolute; top: 0; bottom: 0; right: 0; vertical-align: middle; padding-top: 8px; }
 #breadcrumbs .help-icon { position: relative; padding: 8px 16px; border-left: 1px solid #bee094; font-weight: bold; text-align: center; }
@@ -1591,6 +1591,7 @@ footer .copyright { font-size: 0.9em; }
 .button { background-color: #f18f30; }
 .button.secondary { background-color: #777777; color: white; }
 .button.disabled, .button[disabled] { background-color: #f18f30; }
+.button.disabled:hover, .button[disabled]:hover { background-color: #f18f30; }
 .button:hover { background-color: #df750f; }
 .button:focus { background-color: #f18f30; }
 
@@ -1633,6 +1634,9 @@ footer .copyright { font-size: 0.9em; }
   #logobar #offcanvas-icon { display: inline-block !important; margin-right: 12px; }
   #logobar #user-dropdown-section { position: relative; left: -10px; }
   #navbar { display: none; } }
+/* Responsive tweaks for landing page title */
+@media screen and (max-width: 65rem) { #pagetitle.landingpage { top: -0.5rem; }
+  #landing-page-filters { padding-top: 1rem; margin-bottom: 1rem; } }
 /* Other Small screen tweaks */
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; }
   .sub-nav { top: 0; left: 0; margin-top: -28px; margin-left: 4px; margin-bottom: 1.5rem; } }

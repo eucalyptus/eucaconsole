@@ -54,7 +54,7 @@
                     <li>
                         <a i18n:translate="" data-reveal-id="about-modal">About your cloud</a>
                     </li>
-                    <li><a href="#" onclick="$('#euca-logout-form').submit();" i18n:translate="">Logout</a></li>
+                    <li><a href="#" id="logout" onclick="$('#euca-logout-form').submit();" i18n:translate="">Log out</a></li>
                 </ul>
             </section>
             <section tal:condition="request.user.is_authenticated() and layout.cloud_type == 'aws'">
@@ -124,7 +124,7 @@
     <div id="timed-out-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Session Timeout</h3>
         <p>
-            <span i18n:translate="">Your session has timed out due to inactivity or an unexpected error. Please log in again.</span>
+            <span i18n:translate="">Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.</span>
         </p>
         <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
     </div>

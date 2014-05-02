@@ -61,6 +61,13 @@ class SnapshotsView(LandingPageView):
             location = self.request.route_path('volume_snapshots', id=volume_id)
         if snapshot and self.delete_form.validate():
             with boto_error_handler(self.request, location):
+                images_registered = self.get_images_registered(snapshot_id)
+                if images_registered is not None:
+                    for img in images_registered:
+                        self.log_request(_(u"Deregistering image {0}").format(img.id))
+                        img.deregister()
+                    # Clear images cache
+                    ImagesView.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -71,6 +78,21 @@ class SnapshotsView(LandingPageView):
             msg = _(u'Unable to delete snapshot')
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
+
+    # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
+    def get_root_device_name(self, img):
+        return img.root_device_name.replace('&#x2f;', '/').replace(
+            '&#x2f;', '/') if img.root_device_name is not None else '/dev/sda'
+
+    def get_images_registered(self, snap_id):
+        ret = []
+        images = self.conn.get_all_images(owners='self')
+        for img in images:
+            if img.block_device_mapping is not None:
+                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
+                if vol is not None and snap_id == vol.snapshot_id:
+                    ret.append(img)
+        return ret or None
 
     @view_config(route_name='snapshots_register', renderer=VIEW_TEMPLATE, request_method='POST')
     def snapshots_register(self):
@@ -83,8 +105,8 @@ class SnapshotsView(LandingPageView):
         root_vol = BlockDeviceType(snapshot_id=snapshot_id)
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
-        # ok to keep this sda since we're setting new value
-        bdm['/dev/sda'] = root_vol
+        root_device_name = '/dev/sda' if self.cloud_type == 'euca' else '/dev/sda1'
+        bdm[root_device_name] = root_vol
         location = self.get_redirect_location('snapshots')
         if snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
@@ -92,6 +114,7 @@ class SnapshotsView(LandingPageView):
                 image_id = snapshot.connection.register_image(
                     name=name,
                     description=description,
+                    root_device_name=root_device_name,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm
                 )
@@ -201,7 +224,13 @@ class SnapshotView(TaggedItemView):
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
             register_form=self.register_form,
+            volume_count=self.get_volume_count()
         )
+
+    def get_volume_count(self):
+        if self.snapshot_form and self.snapshot_form.volume_id and self.snapshot_form.volume_id.choices:
+            return len(self.snapshot_form.volume_id.choices)
+        return 0
 
     def get_root_device_name(self, img):
         return img.root_device_name.replace('&#x2f;', '/').replace(
@@ -212,7 +241,7 @@ class SnapshotView(TaggedItemView):
         images = self.conn.get_all_images(owners='self')
         for img in images:
             if img.block_device_mapping is not None:
-                vol = img.block_device_mapping[self.get_root_device_name(img)]
+                vol = img.block_device_mapping.get(self.get_root_device_name(img), None)
                 if vol is not None and snap_id == vol.snapshot_id:
                     ret.append(img)
         return ret or None
@@ -282,12 +311,13 @@ class SnapshotView(TaggedItemView):
         if self.snapshot and self.delete_form.validate():
             snapshot_name = TaggedItemView.get_display_name(self.snapshot)
             with boto_error_handler(self.request, self.request.route_path('snapshots')):
-                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 if self.images_registered is not None:
                     for img in self.images_registered:
+                        self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
                     ImagesView.invalidate_images_cache()
+                self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
                 msg = '{prefix} {name}'.format(prefix=prefix, name=snapshot_name)
@@ -306,13 +336,15 @@ class SnapshotView(TaggedItemView):
         root_vol = BlockDeviceType(snapshot_id=snapshot_id)
         root_vol.delete_on_termination = dot
         bdm = BlockDeviceMapping()
-        bdm['/dev/sda'] = root_vol
+        root_device_name = '/dev/sda' if self.cloud_type == 'euca' else '/dev/sda1'
+        bdm[root_device_name] = root_vol
         location = self.request.route_path('snapshot_view', id=snapshot_id)
         if self.snapshot and self.register_form.validate():
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Registering snapshot {0} as image {1}").format(snapshot_id, name))
                 self.snapshot.connection.register_image(
                     name=name, description=description,
+                    root_device_name=root_device_name,
                     kernel_id=('windows' if reg_as_windows else None),
                     block_device_map=bdm)
                 prefix = _(u'Successfully registered snapshot')

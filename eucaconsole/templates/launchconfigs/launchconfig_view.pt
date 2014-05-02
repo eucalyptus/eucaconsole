@@ -1,7 +1,8 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
+         ng-init="initController(${'true' if in_use else 'false'})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
@@ -19,7 +20,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="launch_config">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="${request.route_path('scalinggroup_new')}?launch_config=${launch_config.name}"
+                            <a href="${request.route_path('scalinggroup_new')}?launch_config=${escaped_launch_config_name}"
                                id="create-scalinggroup-action" i18n:translate="" ng-non-bindable="">
                                 Use to create scaling group
                             </a>
@@ -51,17 +52,11 @@
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly"
-                         tal:define="monitored launch_config.instance_monitoring_boolean">
-                        <div class="small-3 columns"><label i18n:translate="">Monitored</label></div>
+                         tal:define="monitored launch_config.instance_monitoring.enabled == 'true'">
+                        <div class="small-3 columns"><label i18n:translate="">Monitoring</label></div>
                         <div class="small-9 columns value">
-                            <span tal:condition="monitored" tal:omit-tag="">
-                                <i class="fi-check"></i>
-                                <span i18n:translate="">Yes</span>
-                            </span>
-                            <span tal:condition="not monitored" tal:omit-tag="">
-                                <i class="fi-x"></i>
-                                <span i18n:translate="">No</span>
-                            </span>
+                            <span tal:condition="monitored" i18n:translate="">enabled</span>
+                            <span tal:condition="not monitored" i18n:translate="">disabled</span>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">

@@ -40,6 +40,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
+            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
@@ -71,12 +75,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.instanceNumber = '1';
             $scope.instanceZone = $('#zone').find(':selected').val();
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_lc');
-            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_lc');
-            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
             $scope.securityGroup = $('#securitygroup').find(':selected').val() || 'default';
@@ -184,7 +188,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var textareaElement = modal.find('textarea[class!=hidden]').get(0);
             var selectElement = modal.find('select').get(0);
             var modalButton = modal.find('button').get(0);
-            console.log(inputElement);
             if (!!textareaElement){
                 textareaElement.focus();
             } else if (!!inputElement) {

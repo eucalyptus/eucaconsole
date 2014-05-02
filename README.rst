@@ -152,6 +152,10 @@ To run the tests with nose and report test coverage:
 
 Note that you will need to `pip install nose, coverage, nose-cov` to use nose with coverage
 
+To run a single test (this is not obvious with nose integrated with setup.py)::
+
+    python nosetests --tests tests.somepkg.somemodule
+
 
 Configuring i18n
 ----------------

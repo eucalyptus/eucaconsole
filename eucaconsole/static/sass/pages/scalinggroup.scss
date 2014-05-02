@@ -51,7 +51,16 @@ input[type="number"] {
 // Scaling group policies page and instances page
 .tile {
     @include panel-tile-mixin;
+    &.policy .header .title {
+        cursor: default;
+        color: black;
+        &:hover {
+            color: black;
+        }
+    }
 }
+
+
 
 // Scaling group instances page
 .tile {

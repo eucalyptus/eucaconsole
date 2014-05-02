@@ -26,9 +26,9 @@
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                     <li><a i18n:translate=""
-                           ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
+                           ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                     <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
                 </ul>
             </div>
@@ -44,7 +44,7 @@
                 <div ng-show="item.security_groups">
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <a ng-repeat="sgroup in item.security_groups"
-                       ng-href="/securitygroups/{{ sgroup.id }}">{{ sgroup.name }}<span ng-show="!$last">, </span></a>
+                       ng-href="/securitygroups/{{ sgroup | escapeURL }}">{{ sgroup }}<span ng-show="!$last">, </span></a>
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
@@ -65,16 +65,16 @@
                 <td class="breakword"><a ng-href="/keypairs/{{ item.key_name }}">{{ item.key_name | ellipsis: 30 }}</a></td>
                 <td class="breakword">
                     <a ng-repeat="sgroup in item.security_groups"
-                       ng-href="/securitygroups/{{ sgroup.id }}">{{ sgroup.name }}<span ng-show="!$last">, </span></a>
+                       ng-href="/securitygroups/{{ sgroup | escapeURL }}">{{ sgroup }}<span ng-show="!$last">, </span></a>
                 </td>
                 <td>{{ item.created_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
                         <a id="table-item-dropdown_{{ item.name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
-                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name }}">View details</a></li>
+                            <li><a i18n:translate="" ng-href="${prefix}/{{ item.name | escapeURL }}">View details</a></li>
                             <li><a i18n:translate=""
-                                   ng-href="/scalinggroups/new?launch_config={{ item.name }}">Use to create scaling group</a></li>
+                                   ng-href="/scalinggroups/new?launch_config={{ item.name | escapeURL }}">Use to create scaling group</a></li>
                             <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete launch configuration</a></li>
                         </ul>
                     </span>

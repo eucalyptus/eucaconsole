@@ -19,15 +19,12 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, name, group_name, key_name, public_ip, public_dns_name, platform, has_elastic_ip) {
+        $scope.initController = function (jsonEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
             $scope.instanceStateEndpoint = jsonEndpoint;
             $scope.instanceIPAddressEndpoint = ipaddressEndpoint;
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
             $scope.instanceID = id;
-            $scope.instance_name = name;
-            $scope.groupName = group_name;
-            $scope.keyName = key_name;
             $scope.instancePublicIP = public_ip;
             $scope.publicDNS = public_dns_name;
             $scope.platform = platform;

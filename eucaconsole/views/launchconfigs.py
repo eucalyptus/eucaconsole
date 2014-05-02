@@ -3,7 +3,7 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-import re
+from urllib import quote
 import simplejson as json
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
@@ -103,14 +103,14 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = self.get_launchconfig_security_groups(launchconfig)
+                security_groups = launchconfig.security_groups[0] if launchconfig.security_groups else [],
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
                     created_time=launchconfig.created_time.isoformat(),
                     image_id=image_id,
                     image_name=launchconfigs_image_mapping.get(image_id),
-                    instance_monitoring='monitored' if bool(launchconfig.instance_monitoring) else 'unmonitored',
+                    instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
                     security_groups=security_groups,
@@ -134,21 +134,6 @@ class LaunchConfigsJsonView(LandingPageView):
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return []
 
-    def get_launchconfig_security_groups(self, launch_config):
-        if self.ec2_conn:
-            groupids = launch_config.security_groups
-            security_groups = []
-            sgroup_name_map_array = []
-            if groupids:
-                if groupids[0].startswith('sg-'):
-                    security_groups = self.ec2_conn.get_all_security_groups(group_ids=groupids)
-                else:
-                    security_groups = self.ec2_conn.get_all_security_groups(groupnames=groupids)
-            for sgroup in security_groups:
-                sgroup_name_map_array.append(dict(id=sgroup.id, name=sgroup.name or sgroup.id))
-            return sgroup_name_map_array
-        return []
-
 
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
@@ -165,6 +150,7 @@ class LaunchConfigView(BaseView):
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
+            escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
             image=self.image,
             security_groups=self.security_groups,
@@ -173,8 +159,6 @@ class LaunchConfigView(BaseView):
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
     def launchconfig_view(self):
-        self.launch_config.instance_monitoring_boolean = re.match(
-            r'InstanceMonitoring\((\w+)\)', str(self.launch_config.instance_monitoring)).group(1)
         return self.render_dict
  
     @view_config(route_name='launchconfig_delete', request_method='POST', renderer=TEMPLATE)
@@ -242,7 +226,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
-            self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
             formdata=self.request.params or None)
@@ -251,12 +234,12 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
-        self.securitygroups_rules_json = json.dumps(self.get_securitygroups_rules())
-        self.securitygroups_id_map_json = json.dumps(self.get_securitygroups_id_map())
+        self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
+        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
-        self.keypair_choices_json = json.dumps(dict(self.create_form.keypair.choices))
-        self.securitygroup_choices_json = json.dumps(dict(self.create_form.securitygroup.choices))
+        self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.keypair.choices)))
+        self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.securitygroup.choices)))
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -321,7 +304,8 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 self.request.session.flash(msg, queue=queue)
 
             if self.request.params.get('create_sg_from_lc') == 'y':
-                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(name))
+                escaped_name = quote(name)
+                location = self.request.route_path('scalinggroup_new')+("?launch_config={0}".format(escaped_name))
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.create_form.get_errors_list()

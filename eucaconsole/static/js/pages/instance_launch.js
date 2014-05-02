@@ -40,6 +40,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
+            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
@@ -73,12 +77,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.instanceType = 'm1.small';
             $scope.instanceZone = $('#zone').find(':selected').val();
             var lastKeyPair = Modernizr.localstorage && localStorage.getItem('lastkeypair_inst');
-            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== 'undefined') {
+            if (lastKeyPair != null && $scope.keyPairChoices[lastKeyPair] !== undefined) {
                 $('#keypair').val(lastKeyPair);
             }
             $scope.keyPair = $('#keypair').find(':selected').val();
             var lastSecGroup = Modernizr.localstorage && localStorage.getItem('lastsecgroup_inst');
-            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== 'undefined') {
+            if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
             $scope.securityGroup = $('#securitygroup').find(':selected').val();
@@ -268,6 +272,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 result.push(i);
             }
             return result;
+        };
+        $scope.showCreateKeypairModal = function() {
+            $scope.showKeyPairMaterial = false;
+            var form = $('#launch-instance-form');
+            var invalid_attr = 'data-invalid';
+            form.removeAttr(invalid_attr);
+            $(invalid_attr, form).removeAttr(invalid_attr);
+            $('.error', form).not('small').removeClass('error');
+            $scope.keyPairModal.foundation('reveal', 'open');
         };
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
