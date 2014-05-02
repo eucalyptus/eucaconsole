@@ -155,7 +155,7 @@
                 <label for="dont-show-again" i18n:translate="">Do not show me this again</label>
             </div>
             <a id="name-conflict-warning-button" class="button expand" ng-click="confirmWarning()" i18n:translate="">
-                I Understand The Risks
+                I Understand the Risks
             </a>
             <a class="close-reveal-modal">&#215;</a>
         </div>
