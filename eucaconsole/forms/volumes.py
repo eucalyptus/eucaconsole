@@ -18,7 +18,7 @@ class VolumeForm(BaseSecureForm):
     name_error_msg = _(u'Not a valid name')
     name = wtforms.TextField(label=_(u'Name'))
     snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))
-    size_error_msg = _(u'Volume size is required')
+    size_error_msg = _(u'Volume size is required and must be an integer')
     size = wtforms.TextField(
         label=_(u'Volume size (GB)'),
         validators=[validators.DataRequired(message=size_error_msg)],
