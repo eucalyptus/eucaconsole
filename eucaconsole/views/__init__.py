@@ -204,13 +204,18 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                if not key.strip().startswith('aws:'):
-                    tags[key] = value
+                key = key.strip()
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    tags[key] = value.strip()
             self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:
-            tagkeys = [tagkey for tagkey in self.tagged_obj.tags.keys() if not tagkey.startswith('aws:')]
+            tagkeys = []
+            object_tags = self.tagged_obj.tags.keys()
+            for tagkey in object_tags:
+                if not any([tagkey.startswith('aws:'), tagkey.startswith('euca:')]):
+                    tagkeys.append(tagkey)
             self.conn.delete_tags([self.tagged_obj.id], tagkeys)
 
     def update_tags(self):
@@ -242,7 +247,7 @@ class TaggedItemView(BaseView):
            Skips the 'Name' tag by default. no wrapping by default, otherwise honor wrap_width"""
         tags_array = []
         for key, val in tags.items():
-            if not key.startswith('aws:'):
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
                 template = '{0}={1}'
                 if skip_name and key == 'Name':
                     continue
