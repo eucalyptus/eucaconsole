@@ -451,7 +451,7 @@ angular.module('UserView', ['PolicyList'])
             });
         };
         $scope.addUserToGroup = function ($event) {
-            var group_name = $scope.groupNames[$('#group_name').val()];
+            var group_name = $scope.groupName;
             var url = $scope.addEndpoint.replace("_group_", group_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,

@@ -95,7 +95,7 @@
                                     <div class="row controls-wrapper controls_group_name">
                                         <div class="column small-6">
                                             <select id="group_name" name="group_name" ng-options="item for item in groupNames | orderBy:'toString()'"
-                                                    ng-init="getAvailableGroups()" ng-model="groupNames[$index]">
+                                                    ng-init="getAvailableGroups()" ng-model="groupName">
                                                 <option value="" i18n:translate="" ng-if="!noAvailableGroups">Select group...</option>
                                             </select>
                                         </div>
