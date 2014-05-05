@@ -19,6 +19,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.currentStepIndex = 1;
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
+            $('#load_balancers').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
