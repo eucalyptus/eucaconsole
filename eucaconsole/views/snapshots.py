@@ -83,10 +83,13 @@ class SnapshotsView(LandingPageView):
     def snapshot_images_json(self):
         id = self.request.matchdict.get('id')
         images = self.get_images_registered(id)
-        image_list = []
-        for img in images:
-            image_list.append(dict(id=img.id, name=img.name))
-        return dict(results=image_list)
+        if images is not None:
+            image_list = []
+            for img in images:
+                image_list.append(dict(id=img.id, name=img.name))
+            return dict(results=image_list)
+        else:
+            return dict(results=None)
 
     # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
     def get_root_device_name(self, img):
