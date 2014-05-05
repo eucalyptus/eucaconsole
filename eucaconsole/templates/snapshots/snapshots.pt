@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/snapshots.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="SnapshotsPage" ng-controller="SnapshotsCtrl">
+<div metal:fill-slot="main_content" ng-app="SnapshotsPage" ng-controller="SnapshotsCtrl"
+        ng-init="initSnapshots('${request.route_path('snapshot_images_json', id='_id_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('snapshots', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">

@@ -139,6 +139,7 @@ urls = [
     Route(name='snapshot_register', pattern='/snapshots/{id}/register'),
     Route(name='snapshot_size_json', pattern='/snapshots/{id}/size/json'),
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
+    Route(name='snapshot_images_json', pattern='/snapshots/{id}/images/json'),
 
     # Security Groups #####
     # Landing page

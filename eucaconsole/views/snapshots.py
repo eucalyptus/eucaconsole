@@ -79,6 +79,15 @@ class SnapshotsView(LandingPageView):
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
 
+    @view_config(route_name='snapshot_images_json', renderer='json', request_method='GET')
+    def snapshot_images_json(self):
+        id = self.request.matchdict.get('id')
+        images = self.get_images_registered(id)
+        image_list = []
+        for img in images:
+            image_list.append(dict(id=img.id, name=img.name))
+        return dict(results=image_list)
+
     # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
     def get_root_device_name(self, img):
         return img.root_device_name.replace('&#x2f;', '/').replace(
