@@ -7,7 +7,11 @@
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'data-placeholder': 'select...'};">
         <h3 i18n:translate="">Attach volume</h3>
-        <p><span i18n:translate="">Attach a volume to an instance</span></p>
+        <p>
+            <span i18n:translate="">Attach</span>
+            <strong>${'{{ volumeName }}' if landingpage else volume_name}</strong>
+            <span i18n:translate="">to an instance</span>
+        </p>
         <form method="post" action="${action}" id="attach-form" data-abide="">
             ${structure:attach_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">
