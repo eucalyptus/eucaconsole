@@ -4,7 +4,6 @@ Pyramid views for Eucalyptus and AWS Users
 
 """
 import csv
-from dateutil import parser
 import os
 import random
 import string
@@ -205,7 +204,6 @@ class UserView(BaseView):
         else:
             self.location = self.request.route_path('user_view', name=self.user.user_name)
         self.prefix = '/users'
-        create_date = parser.parse(self.user.create_date) if hasattr(self.user, 'create_date') else None
         self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
@@ -215,7 +213,7 @@ class UserView(BaseView):
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
-            user_create_date=create_date,
+            user_create_date=getattr(self.user, 'create_date', None),
             change_password_form=self.change_password_form,
             generate_form=self.generate_form,
             delete_form=self.delete_form,

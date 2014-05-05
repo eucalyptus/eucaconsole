@@ -107,7 +107,7 @@ class LaunchConfigsJsonView(LandingPageView):
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
-                    created_time=launchconfig.created_time.isoformat(),
+                    created_time=self.dt_isoformat(launchconfig.created_time),
                     image_id=image_id,
                     image_name=launchconfigs_image_mapping.get(image_id),
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
@@ -150,6 +150,7 @@ class LaunchConfigView(BaseView):
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             launch_config=self.launch_config,
+            lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
             image=self.image,

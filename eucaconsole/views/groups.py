@@ -122,10 +122,9 @@ class GroupView(BaseView):
         self.group_form = GroupForm(self.request, group=self.group, formdata=self.request.params or None)
         self.group_update_form = GroupUpdateForm(self.request, group=self.group, formdata=self.request.params or None)
         self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params)
-        create_date = parser.parse(self.group.create_date) if self.group else datetime.now()
         self.render_dict = dict(
             group=self.group,
-            group_create_date=create_date,
+            group_create_date=self.group.create_date if self.group else datetime.now().isoformat(),
             group_route_id=self.group_route_id,
             group_users=self.group_users,
             all_users=self.all_users,

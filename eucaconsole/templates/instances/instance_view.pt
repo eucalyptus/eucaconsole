@@ -172,7 +172,9 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Launch time</label></div>
-                        <div class="small-8 columns value">${instance_launch_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            {{ '${instance.launch_time}' | date: '${layout.angular_date_format}' }}
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
