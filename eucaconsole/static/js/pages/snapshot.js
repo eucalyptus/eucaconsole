@@ -98,8 +98,6 @@ angular.module('SnapshotPage', ['TagEditor'])
         };
         $scope.deleteModal = function () {
             var modal = $('#delete-snapshot-modal');
-            //$scope.snapshotID = snapshot['id'];
-            //$scope.snapshotName = snapshot['name'];
             $scope.images = undefined;
             $scope.getSnapshotImages($scope.imagesURL);
             modal.foundation('reveal', 'open');
