@@ -596,7 +596,7 @@ class UserView(BaseView):
         with boto_error_handler(self.request):
             self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
             result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
-            return dict(message=_(u"Successfully removed user to group"),
+            return dict(message=_(u"Successfully removed user from group"),
                         results=result)
 
     @view_config(route_name='user_delete', request_method='POST')
