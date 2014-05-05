@@ -144,21 +144,21 @@ class ImagesJsonView(LandingPageView):
 
     def get_images(self, conn, owners, executors, region):
         """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        acct = self.request.session.get('account', '')
-        if acct == '':
-            acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
-            acct = ''
-        cache_key = 'images_cache_{owners}_{executors}_{region}_{acct}'.format(
-            owners=owners, executors=executors, region=region, acct=acct)
+            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
+                owners=owners, executors=executors, region=region)
 
-        # Heads up!  Update cache key if we allow filters to be passed here
-        @cache_region('long_term', cache_key)
-        def _get_images_cache(_owners, _executors, _region):
+            # Heads up!  Update cache key if we allow filters to be passed here
+            @cache_region('long_term', cache_key)
+            def _get_images_cache(_owners, _executors, _region):
+                with boto_error_handler(self.request):
+                    filters = {'image-type': 'machine'}
+                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
+            return _get_images_cache(owners, executors, region)
+        else:
             with boto_error_handler(self.request):
                 filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-        return _get_images_cache(owners, executors, region)
+                return conn.get_all_images(owners=owners, executable_by=executors, filters=filters) if conn else []
 
     def filter_by_platform(self, items):
         filtered_items = []
