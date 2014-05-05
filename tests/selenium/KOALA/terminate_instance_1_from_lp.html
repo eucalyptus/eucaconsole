@@ -72,8 +72,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>assertText</td>
+	<td>//div[@id='terminate-instance-modal']/div[2]/p/strong</td>
+	<td>${instance_1} (${instance_1_id})</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>css=#terminate-form &gt; div.dialog-submit-button &gt; button.button.expand</td>
+	<td>id=terminate_instance_submit_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 </tbody></table>

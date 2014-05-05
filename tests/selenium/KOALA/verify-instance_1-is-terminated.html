@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="https://10.111.5.53/" />
+<title>verify-instance_1-is-terminated</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">verify-instance_1-is-terminated</td></tr>
+</thead><tbody>
+<tr>
+	<td>setSpeed</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertVisible</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-dashboard</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>id=resource-menu-instances</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=resource-menu-instances</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>link=${instance_1} (${instance_1_id})</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=${instance_1} (${instance_1_id})</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>waitForVisible</td>
+	<td>//form[@id='instance-form']/div/div[2]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='instance-form']/div/div[2]/span</td>
+	<td>status</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>javascript{storedVars['status']=${status}};</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${status}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['terminated']=&quot;terminated&quot;;</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${terminated}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['status']==storedVars['terminated']</td>
+	<td>is_terminated</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_terminated}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>javascript{storedVars['is_terminated']=${is_terminated}};</td>
+	<td></td>
+</tr>
+<tr>
+	<td>while</td>
+	<td>${k}&lt;20&amp;&amp;!${is_terminated}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>30000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='instance-form']/div/div[2]/span</td>
+	<td>status</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${status}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>storedVars['status']==storedVars['terminated']</td>
+	<td>is_terminated</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${is_terminated}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>${k}+1</td>
+	<td>k</td>
+</tr>
+<tr>
+	<td>endWhile</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${instance_1} (${instance_1_id}) is running</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

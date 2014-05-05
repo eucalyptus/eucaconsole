@@ -97,7 +97,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Time started</label></div>
-                        <div class="small-8 columns value">${snapshot_start_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            {{ '${snapshot.start_time}' | date: '${layout.angular_date_format}' }}
+                        </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}

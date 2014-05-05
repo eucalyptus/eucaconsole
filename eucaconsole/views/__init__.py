@@ -8,6 +8,7 @@ import simplejson as json
 import textwrap
 
 from contextlib import contextmanager
+from dateutil import tz
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -180,6 +181,7 @@ class BaseView(object):
 
     @staticmethod
     def escape_json(json_string):
+        """Escape JSON strings passed to AngularJS controllers in templates"""
         replace_mapping = {
             "\'": "__apos__",
             '\\"': "__dquote__",
@@ -188,6 +190,11 @@ class BaseView(object):
         for key, value in replace_mapping.items():
             json_string = json_string.replace(key, value)
         return json_string
+
+    @staticmethod
+    def dt_isoformat(dt_obj, tzone='UTC'):
+        """Convert a timezone-unaware datetime object to tz-aware one and return it as an ISO-8601 formatted string"""
+        return dt_obj.replace(tzinfo=tz.gettz(tzone)).isoformat()
 
 
 class TaggedItemView(BaseView):
