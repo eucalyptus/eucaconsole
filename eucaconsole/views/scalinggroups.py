@@ -466,9 +466,9 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         if self.policy_form.validate():
             adjustment_amount = self.request.params.get('adjustment_amount')
             adjustment_direction = self.request.params.get('adjustment_direction', 'up')
-            scaling_adjustment = adjustment_amount
+            scaling_adjustment = int(adjustment_amount)
             if adjustment_direction == 'down':
-                scaling_adjustment = -adjustment_direction
+                scaling_adjustment = -scaling_adjustment
             scaling_policy = ScalingPolicy(
                 name=self.request.params.get('name'),
                 as_name=self.scaling_group.name,
