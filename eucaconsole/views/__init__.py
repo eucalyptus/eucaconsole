@@ -172,7 +172,7 @@ class BaseView(object):
                 notice = _(u'Your session has timed out')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
-            BaseView.invalidate_connection_cache()
+            # BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:
