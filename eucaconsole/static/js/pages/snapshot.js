@@ -101,6 +101,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             $scope.images = undefined;
             $scope.getSnapshotImages($scope.imagesURL);
             modal.foundation('reveal', 'open');
+            modal.find('h3').click();
         };
         $scope.getSnapshotImages = function (url) {
             $http.get(url).success(function(oData) {
