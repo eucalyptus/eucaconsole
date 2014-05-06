@@ -64,7 +64,6 @@ class VolumeForm(BaseSecureForm):
 
     def set_volume_snapshot_choices(self):
         choices = [('', _(u'None'))]
-        # TODO: May need to filter get_all_snapshots() call for AWS?
         for snapshot in self.snapshots:
             value = snapshot.id
             name = snapshot.tags.get('Name', None)

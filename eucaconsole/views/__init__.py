@@ -295,7 +295,7 @@ class BlockDeviceMappingItemView(BaseView):
 
     def get_snapshot_choices(self):
         choices = [('', _(u'None'))]
-        for snapshot in self.conn.get_all_snapshots():
+        for snapshot in self.conn.get_all_snapshots(owner='self'):
             value = snapshot.id
             snapshot_name = snapshot.tags.get('Name')
             label = '{id}{name} ({size} GB)'.format(

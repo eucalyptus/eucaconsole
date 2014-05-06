@@ -152,7 +152,7 @@ class IAMPolicyWizardView(BaseView):
         resource_name = 'snapshot'
         arn_prefix = self.get_arn_prefix(resource_name)
         choices = [(self.get_all_choice(resource_name), _(u'All snapshots...'))]
-        for snapshot in self.ec2_conn.get_all_snapshots():
+        for snapshot in self.ec2_conn.get_all_snapshots(owner='self'):
             value = '{0}{1}'.format(arn_prefix, snapshot.id)
             label = TaggedItemView.get_display_name(snapshot)
             choices.append((value, label))
