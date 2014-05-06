@@ -62,8 +62,8 @@
                             <label class="right" i18n:translate="">Load balancers</label>
                         </div>
                         <div class="small-8 columns">
-                            <div tal:repeat="elbs scaling_group.load_balancers" class="value">
-                                ${elbs}<br/>
+                            <div tal:repeat="elb scaling_group.load_balancers" class="value">
+                                ${elb}<br/>
                             </div>
                         </div>
                     </div>
