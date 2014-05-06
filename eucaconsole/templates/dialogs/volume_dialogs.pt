@@ -8,7 +8,7 @@
                      html_attrs {'data-placeholder': 'select...'};">
         <h3 i18n:translate="">Attach volume</h3>
         <p>
-            <span i18n:translate="">Attach</span>
+            <span i18n:translate="">Attach volume</span>
             <strong>${'{{ volumeName }}' if landingpage else volume_name}</strong>
             <span i18n:translate="">to an instance</span>
         </p>
