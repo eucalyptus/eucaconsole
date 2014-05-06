@@ -220,7 +220,7 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.location = self.request.route_path('volume_view', id=self.request.matchdict.get('id'))
         with boto_error_handler(request, self.location):
             self.volume = self.get_volume()
-            snapshots = self.conn.get_all_snapshots() if self.conn else []
+            snapshots = self.conn.get_all_snapshots(owner='self') if self.conn else []
             region = self.request.session.get('region')
             zones = ChoicesManager(self.conn).get_availability_zones(region)
             instances = self.conn.get_only_instances() if self.conn else []
