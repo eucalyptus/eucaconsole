@@ -93,11 +93,16 @@
                                 ${structure:user_form['csrf_token']}
                                 <div class="columns field inline">
                                     <div class="row controls-wrapper controls_group_name">
-                                        <div class="column small-6">
-                                            <select id="group_name" name="group_name" ng-options="item for item in groupNames | orderBy:'toString()'"
-                                                    ng-init="getAvailableGroups()" ng-model="groupNames[$index]">
-                                                <option value="" i18n:translate="" ng-if="!noAvailableGroups">Select group...</option>
+                                        <div class="column small-6" ng-cloak="">
+                                            <select id="group_name" name="group_name" ng-show="!noAvailableGroups"
+                                                    ng-init="getAvailableGroups()" ng-model="groupName">
+                                                <option value="" i18n:translate="">Select group...</option>
+                                                <option value="{{ item }}" ng-repeat="item in groupNames | orderBy: 'toString()'">
+                                                    {{ item }}
+                                                </option>
                                             </select>
+                                            <span ng-show="alreadyMemberOfAllGroups">{{ alreadyMemberText }}</span>
+                                            <span ng-show="noGroupsDefined">{{ noGroupsDefinedText }}</span>
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn"
