@@ -42,9 +42,7 @@ def https_tween_factory(handler, registry):
 
 
 class CTHeadersTweenFactory(object):
-    '''Tween factory for ensuring certain response headers are set iff content
-    type is mapped.
-    '''
+    """Tween factory for ensuring certain response headers are set iff content type is mapped."""
 
     header_map = {
         'application/json': {
@@ -64,9 +62,10 @@ class CTHeadersTweenFactory(object):
 
     def __call__(self, request):
         response = self.handler(request)
-        ct = response.content_type
-        map = self.header_map.get(ct.strip().lower(), None)
-        if map:
-            for name, value in map.items():
+        ct = response.content_type or ''
+        ct_key = ct.strip().lower()
+        ct_header_map = self.header_map.get(ct_key, None)
+        if ct_header_map:
+            for name, value in ct_header_map.items():
                 response.headers[name] = value
         return response
