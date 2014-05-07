@@ -351,7 +351,7 @@ class BlockDeviceMappingItemView(BaseView):
                 bdm = BlockDeviceMapping()
                 for key, val in mapping.items():
                     device = BlockDeviceType()
-                    device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
+                    device.volume_type = 'standard' #val.get('volume_type')  # 'EBS' or 'ephemeral'
                     device.snapshot_id = val.get('snapshot_id') or None
                     device.size = val.get('size')
                     device.delete_on_termination = val.get('delete_on_termination', False)
