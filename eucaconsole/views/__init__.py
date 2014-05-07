@@ -29,6 +29,7 @@ Core views
 
 """
 import logging
+import os
 import simplejson as json
 import textwrap
 
@@ -157,6 +158,7 @@ class BaseView(object):
     @staticmethod
     def log_message(request, message, level='info'):
         prefix = ''
+        logging_id = os.urandom(16).encode('base64').rstrip('=\n')
         cloud_type = request.session.get('cloud_type', 'euca')
         if cloud_type == 'euca':
             account = request.session.get('account', '')
@@ -166,7 +168,7 @@ class BaseView(object):
             account = request.session.get('username_label', '')
             region = request.session.get('region')
             prefix = '{0}/{1}'.format(account, region)
-        log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=request.id, msg=message)
+        log_message = "{prefix} [{id}]: {msg}".format(prefix=prefix, id=logging_id, msg=message)
         if level == 'info':
             logging.info(log_message)
         elif level == 'error':
