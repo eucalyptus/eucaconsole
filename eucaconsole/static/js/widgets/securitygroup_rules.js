@@ -29,9 +29,9 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesArray) {
-            // Get existing rules and shove into scope
-            $scope.rulesArray = JSON.parse(rulesArray);
+        $scope.initRules = function (rulesJson) {
+            rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            $scope.rulesArray = JSON.parse(rulesJson);
             $scope.syncRules();
             $scope.setWatchers();
         };

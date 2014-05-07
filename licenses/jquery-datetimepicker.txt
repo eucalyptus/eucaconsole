@@ -1,3 +1,12 @@
+=== DateTimePicker ===
+
+== Files ==
+
+eucaconsole/static/css/thirdparty/jquery.datetimepicker.css
+eucaconsole/static/js/thirdparty/jquery/jquery.datetimepicker.js
+
+== License (MIT) ==
+
 Copyright (c) 2013 http://xdsoft.net
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
