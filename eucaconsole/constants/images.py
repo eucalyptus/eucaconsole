@@ -61,11 +61,11 @@ OwnerChoice = namedtuple('OwnerChoice', ['key', 'label'])
 
 EUCA_IMAGE_OWNER_ALIAS_CHOICES = (
     OwnerChoice(key='', label='Anyone'),
-    OwnerChoice(key='self', label='Me')
+    OwnerChoice(key='self', label='Me (or shared with me)')
 )
 
 AWS_IMAGE_OWNER_ALIAS_CHOICES = (
-    OwnerChoice(key='self', label=_(u'Owned by me')),
+    OwnerChoice(key='self', label=_(u'Me (or shared with me)')),
     OwnerChoice(key='amazon', label=_(u'Amazon AMIs')),
     OwnerChoice(key='aws-marketplace', label=_(u'AWS Marketplace')),
 )
