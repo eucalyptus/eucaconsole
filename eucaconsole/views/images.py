@@ -5,7 +5,11 @@ Pyramid views for Eucalyptus and AWS images
 """
 import re
 
-from beaker.cache import cache_region, cache_managers
+import logging
+
+from dogpile.cache import make_region
+from dogpile.cache.util import sha1_mangle_key
+
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -142,23 +146,30 @@ class ImagesJsonView(LandingPageView):
             items.extend(self.get_images(conn, [], ['self'], region))
         return items
 
-    def get_images(self, conn, owners, executors, region):
-        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        if 'amazon' in owners or 'aws-marketplace' in owners:
-            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
-                owners=owners, executors=executors, region=region)
+    def get_images(self, conn, owners, executors, ec2_region):
+        region = make_region(key_mangler=sha1_mangle_key).configure(
+            'dogpile.cache.memcached',
+            expiration_time = 3600,
+            arguments = {
+                'url':["127.0.0.1:11211"],
+            },
+        )
 
-            # Heads up!  Update cache key if we allow filters to be passed here
-            @cache_region('long_term', cache_key)
-            def _get_images_cache(_owners, _executors, _region):
-                with boto_error_handler(self.request):
-                    filters = {'image-type': 'machine'}
-                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-            return _get_images_cache(owners, executors, region)
-        else:
+        @region.cache_on_arguments()
+        def _get_images_cached_(_owners, _executors, _ec2_region, acct):
             with boto_error_handler(self.request):
+                logging.info("loading images from server (not cache)")
                 filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=owners, executable_by=executors, filters=filters) if conn else []
+                return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
+
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        if 'amazon' in owners or 'aws-marketplace' in owners:
+            acct = ''
+        logging.info("get_images args = ({0}, {1}, {2}, {3})".format(owners, executors, ec2_region, acct))
+        return _get_images_cached_(owners, executors, ec2_region, acct)
+
 
     def filter_by_platform(self, items):
         filtered_items = []
