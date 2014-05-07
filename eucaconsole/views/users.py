@@ -1,10 +1,34 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Pyramid views for Eucalyptus and AWS Users
 
 """
 import csv
-from dateutil import parser
 import os
 import random
 import string
@@ -205,7 +229,6 @@ class UserView(BaseView):
         else:
             self.location = self.request.route_path('user_view', name=self.user.user_name)
         self.prefix = '/users'
-        create_date = parser.parse(self.user.create_date) if hasattr(self.user, 'create_date') else None
         self.user_form = None
         self.change_password_form = ChangePasswordForm(self.request)
         self.generate_form = GeneratePasswordForm(self.request)
@@ -215,7 +238,7 @@ class UserView(BaseView):
         self.render_dict = dict(
             user=self.user,
             prefix=self.prefix,
-            user_create_date=create_date,
+            user_create_date=getattr(self.user, 'create_date', None),
             change_password_form=self.change_password_form,
             generate_form=self.generate_form,
             delete_form=self.delete_form,
@@ -596,7 +619,7 @@ class UserView(BaseView):
         with boto_error_handler(self.request):
             self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
             result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
-            return dict(message=_(u"Successfully removed user to group"),
+            return dict(message=_(u"Successfully removed user from group"),
                         results=result)
 
     @view_config(route_name='user_delete', request_method='POST')

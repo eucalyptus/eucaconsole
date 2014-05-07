@@ -13,6 +13,8 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
         $scope.isUpdating = false;
+        $scope.imagesURL = '';
+        $scope.images = undefined;
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -26,12 +28,13 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $('#volume_id').val('').trigger('chosen:updated'); 
             });
         };
-        $scope.initController = function (jsonEndpoint, status, progress, volumeCount) {
+        $scope.initController = function (jsonEndpoint, status, progress, volumeCount, imagesURL) {
             $scope.displayVolumeWarning(volumeCount);
             $scope.initChosenSelector();
             $scope.snapshotStatusEndpoint = jsonEndpoint;
             $scope.snapshotStatus = status;
             $scope.snapshotProgress = progress;
+            $scope.imagesURL = imagesURL;
             if (jsonEndpoint) {
                 $scope.getSnapshotState();
             }
@@ -72,7 +75,8 @@ angular.module('SnapshotPage', ['TagEditor'])
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
-                $('.actions-menu').find('a').get(0).focus();
+                var actionsMenu = $('.actions-menu');
+                if (actionsMenu.length) actionsMenu.find('a').get(0).focus();
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
@@ -91,6 +95,26 @@ angular.module('SnapshotPage', ['TagEditor'])
                         modalButton.focus();
                     }
                }
+            });
+        };
+        $scope.deleteModal = function () {
+            var modal = $('#delete-snapshot-modal');
+            $scope.images = undefined;
+            $scope.getSnapshotImages($scope.imagesURL);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();
+        };
+        $scope.getSnapshotImages = function (url) {
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results && results.length > 0) {
+                    $scope.images = results;
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || null;
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
             });
         };
     })

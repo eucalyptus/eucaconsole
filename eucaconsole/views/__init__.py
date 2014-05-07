@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Core views
 
@@ -8,6 +33,7 @@ import simplejson as json
 import textwrap
 
 from contextlib import contextmanager
+from dateutil import tz
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -171,7 +197,7 @@ class BaseView(object):
                 notice = _(u'Your session has timed out')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
-            BaseView.invalidate_connection_cache()
+            # BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:
@@ -180,6 +206,7 @@ class BaseView(object):
 
     @staticmethod
     def escape_json(json_string):
+        """Escape JSON strings passed to AngularJS controllers in templates"""
         replace_mapping = {
             "\'": "__apos__",
             '\\"': "__dquote__",
@@ -188,6 +215,11 @@ class BaseView(object):
         for key, value in replace_mapping.items():
             json_string = json_string.replace(key, value)
         return json_string
+
+    @staticmethod
+    def dt_isoformat(dt_obj, tzone='UTC'):
+        """Convert a timezone-unaware datetime object to tz-aware one and return it as an ISO-8601 formatted string"""
+        return dt_obj.replace(tzinfo=tz.gettz(tzone)).isoformat()
 
 
 class TaggedItemView(BaseView):
@@ -204,13 +236,18 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                if not key.strip().startswith('aws:'):
-                    tags[key] = value
+                key = key.strip()
+                if not any([key.startswith('aws:'), key.startswith('euca:')]):
+                    tags[key] = value.strip()
             self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:
-            tagkeys = [tagkey for tagkey in self.tagged_obj.tags.keys() if not tagkey.startswith('aws:')]
+            tagkeys = []
+            object_tags = self.tagged_obj.tags.keys()
+            for tagkey in object_tags:
+                if not any([tagkey.startswith('aws:'), tagkey.startswith('euca:')]):
+                    tagkeys.append(tagkey)
             self.conn.delete_tags([self.tagged_obj.id], tagkeys)
 
     def update_tags(self):
@@ -242,7 +279,7 @@ class TaggedItemView(BaseView):
            Skips the 'Name' tag by default. no wrapping by default, otherwise honor wrap_width"""
         tags_array = []
         for key, val in tags.items():
-            if not key.startswith('aws:'):
+            if not any([key.startswith('aws:'), key.startswith('euca:')]):
                 template = '{0}={1}'
                 if skip_name and key == 'Name':
                     continue

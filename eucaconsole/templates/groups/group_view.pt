@@ -89,7 +89,9 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                                <div class="small-9 columns value">${group_create_date.strftime(layout.date_format)}</div>
+                                <div class="small-9 columns value" ng-cloak="">
+                                    {{ '${group_create_date}' | date: '${layout.angular_date_format}' }}
+                                </div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
@@ -106,7 +108,7 @@
                                 <div class="small-10 columns">
                                     <select name="input-users-select" id="users-select" class="chosen"
                                         multiple="true" i18n:attributes="data-placeholder" data-placeholder="Search users and select to add">
-	                                <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
+                                    <option ng-repeat="user in allUsers" ng-selected="isSelected(user)">{{user}}</option>
                                     </select>
                                 </div>
                             </div> 

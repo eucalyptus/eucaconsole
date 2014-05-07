@@ -14,8 +14,7 @@
          ng-app="VolumePage" ng-controller="VolumePageCtrl"
          ng-init="initController('${request.route_path('volume_state_json', id=volume.id) if volume else ''}',
                  '${volume.status if volume else ''}',
-                 '${volume.attach_data.status if volume else ''}'
-                 )">
+                 '${volume.attach_data.status if volume else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
@@ -98,7 +97,17 @@
                         <div class="small-8 columns field inline" ng-non-bindable="">${volume.snapshot_id}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
-                        ${panel('form_field', field=volume_form['size'], **html_attrs)}
+                        ${panel('form_field', field=volume_form['size'], min=1, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="not volume">
+                        <div class="small-4 columns"></div>
+                        <div class="small-8 columns field error hide" id="volume_size_error"> 
+                            <small class="error">
+                                <span i18n:translate="">
+                                    Volume size must be greater than or equal to {{ snapshotSize }}
+                                </span>
+                            </small>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Volume size</label></div>
@@ -115,7 +124,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
-                        <div class="small-8 columns value">${volume_create_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
+                        </div>
                     </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
@@ -124,7 +135,7 @@
                         <button type="submit" class="button" tal:condition="volume" ng-disabled="isUpdating || volumeStatus === 'deleted'">
                             <span  i18n:translate="" >Save Changes</span>
                         </button>
-                        <button type="submit" class="button" tal:condition="not volume">
+                        <button type="submit" id="create_volume_submit_button" class="button" tal:condition="not volume">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"

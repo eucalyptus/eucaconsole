@@ -8,7 +8,8 @@
     <div class="row" id="contentwrap"
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
-                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count})">
+                 '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count},
+                 '${request.route_path('snapshot_images_json', id=snapshot.id) if snapshot else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
@@ -49,7 +50,7 @@
                             </a>
                         </li>
                         <li ng-show="!isUpdating">
-                            <a data-reveal-id="delete-snapshot-modal" i18n:translate="" id="delete-snapshot-action">
+                            <a ng-click="deleteModal()" i18n:translate="" id="delete-snapshot-action">
                                 Delete snapshot
                             </a>
                         </li>
@@ -96,7 +97,9 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="snapshot">
                         <div class="small-4 columns"><label i18n:translate="">Time started</label></div>
-                        <div class="small-8 columns value">${snapshot_start_time.strftime(layout.date_format)}</div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            {{ '${snapshot.start_time}' | date: '${layout.angular_date_format}' }}
+                        </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}

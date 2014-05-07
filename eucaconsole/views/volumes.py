@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Pyramid views for Eucalyptus and AWS volumes
 
@@ -234,7 +259,6 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.tagged_obj = self.volume
         self.attach_data = self.volume.attach_data if self.volume else None
         self.volume_name = self.get_volume_name()
-        self.create_time = self.get_create_time()
         self.instance_name = None
         if self.attach_data is not None and self.attach_data.instance_id is not None:
             instance = self.get_instance(self.attach_data.instance_id)
@@ -242,7 +266,6 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         self.render_dict = dict(
             volume=self.volume,
             volume_name=self.volume_name,
-            volume_create_time=self.create_time,
             instance_name=self.instance_name,
             device_name=self.attach_data.device if self.attach_data else None,
             attachment_time=self.get_attachment_time(),
@@ -257,12 +280,6 @@ class VolumeView(TaggedItemView, BaseVolumeView):
         if self.volume is None and self.request.matchdict.get('id') != 'new':
             raise HTTPNotFound
         return self.render_dict
-
-    def get_create_time(self):
-        """Returns volume create time as a python datetime.datetime object"""
-        if self.volume and self.volume.create_time:
-            return parser.parse(self.volume.create_time)
-        return None
 
     def get_attachment_time(self):
         """Returns volume attach time as a python datetime.datetime object"""

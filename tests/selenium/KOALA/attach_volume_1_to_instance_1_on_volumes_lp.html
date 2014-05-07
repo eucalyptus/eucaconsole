@@ -67,8 +67,13 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForVisible</td>
+	<td>xpath=(//a[contains(text(),'Attach to instance')])[2]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>link=Attach to instance</td>
+	<td>xpath=(//a[contains(text(),'Attach to instance')])[2]</td>
 	<td></td>
 </tr>
 <tr>
@@ -114,6 +119,16 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=${volume_1_name_id}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>id=notifications</td>
+	<td>breadcrumbs</td>
+</tr>
+<tr>
+	<td>echo</td>
+	<td>${breadcrumbs}</td>
 	<td></td>
 </tr>
 <tr>

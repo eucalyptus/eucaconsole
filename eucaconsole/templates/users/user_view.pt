@@ -52,10 +52,10 @@
                                 <h6 i18n:translate="">User</h6>
                                 ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
-                                <div class="row controls-wrapper readonly">
+                                <div class="row controls-wrapper readonly" tal:condition="user_create_date">
                                     <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                                    <div class="small-9 columns field inline breakword">
-                                        ${user_create_date.strftime(layout.date_format)}
+                                    <div class="small-9 columns field inline breakword" ng-cloak="">
+                                        {{ '${user_create_date}' | date: '${layout.angular_date_format}' }}
                                     </div>
                                 </div>
                                 <div class="row controls-wrapper readonly">
@@ -93,11 +93,16 @@
                                 ${structure:user_form['csrf_token']}
                                 <div class="columns field inline">
                                     <div class="row controls-wrapper controls_group_name">
-                                        <div class="column small-6">
-                                            <select id="group_name" name="group_name" ng-options="item for item in groupNames | orderBy:'toString()'"
-                                                    ng-init="getAvailableGroups()" ng-model="groupNames[$index]">
-                                                <option value="" i18n:translate="" ng-if="!noAvailableGroups">Select group...</option>
+                                        <div class="column small-6" ng-cloak="">
+                                            <select id="group_name" name="group_name" ng-show="!noAvailableGroups"
+                                                    ng-init="getAvailableGroups()" ng-model="groupName">
+                                                <option value="" i18n:translate="">Select group...</option>
+                                                <option value="{{ item }}" ng-repeat="item in groupNames | orderBy: 'toString()'">
+                                                    {{ item }}
+                                                </option>
                                             </select>
+                                            <span ng-show="alreadyMemberOfAllGroups">{{ alreadyMemberText }}</span>
+                                            <span ng-show="noGroupsDefined">{{ noGroupsDefinedText }}</span>
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn"

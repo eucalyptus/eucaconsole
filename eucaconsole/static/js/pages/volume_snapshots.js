@@ -14,8 +14,11 @@ angular.module('VolumeSnapshots', ['TagEditor'])
         $scope.deleteFormAction = '';
         $scope.snapshotID = '';
         $scope.snapshotName = '';
-        $scope.initController = function (jsonEndpoint) {
+        $scope.imagesURL = '';
+        $scope.images = undefined;
+        $scope.initController = function (jsonEndpoint, imagesURL) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.imagesURL = imagesURL;
             $scope.getVolumeSnapshots();
             $scope.setFocus();
             $scope.setDropdownMenusListener();
@@ -30,6 +33,8 @@ angular.module('VolumeSnapshots', ['TagEditor'])
             $scope.volumeID = volume_id;
             $scope.snapshotID = snapshot['id'];
             $scope.snapshotName = snapshot['name'];
+            $scope.images = undefined;
+            $scope.getSnapshotImages(snapshot, $scope.imagesURL);
             modal.foundation('reveal', 'open');
         };
         $scope.setFocus = function () {
@@ -68,6 +73,20 @@ angular.module('VolumeSnapshots', ['TagEditor'])
                 // Auto-refresh snapshots if any of them are in progress
                 if (inProgressCount > 0) {
                     $timeout(function() { $scope.getVolumeSnapshots(); }, 4000);  // Poll every 4 seconds
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || null;
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
+            });
+        };
+        $scope.getSnapshotImages = function (snapshot, url) {
+            var url = url.replace('_id_', snapshot.id)
+            $http.get(url).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results && results.length > 0) {
+                    $scope.images = results;
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;

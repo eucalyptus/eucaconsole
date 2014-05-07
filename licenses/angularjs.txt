@@ -1,3 +1,11 @@
+=== AngularJS ===
+
+== Files ==
+
+eucaconsole/static/js/thirdparty/angular
+
+== License (MIT) ==
+
 The MIT License
 
 Copyright (c) 2010-2012 Google, Inc. http://angularjs.org

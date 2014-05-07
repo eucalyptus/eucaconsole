@@ -1,9 +1,33 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Pyramid views for Eucalyptus and AWS snapshots
 
 """
-from dateutil import parser
 import simplejson as json
 
 from boto.exception import BotoServerError
@@ -67,7 +91,7 @@ class SnapshotsView(LandingPageView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    ImagesView.invalidate_images_cache()
+                    #ImagesView.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -78,6 +102,18 @@ class SnapshotsView(LandingPageView):
             msg = _(u'Unable to delete snapshot')
             self.request.session.flash(msg, queue=Notification.ERROR)
             return HTTPFound(location=location)
+
+    @view_config(route_name='snapshot_images_json', renderer='json', request_method='GET')
+    def snapshot_images_json(self):
+        id = self.request.matchdict.get('id')
+        images = self.get_images_registered(id)
+        if images is not None:
+            image_list = []
+            for img in images:
+                image_list.append(dict(id=img.id, name=img.name))
+            return dict(results=image_list)
+        else:
+            return dict(results=None)
 
     # same code is in SnapshotView below. Remove duplicate when GUI-662 refactoring happens
     def get_root_device_name(self, img):
@@ -121,7 +157,7 @@ class SnapshotsView(LandingPageView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.invalidate_images_cache()
+                #ImagesView.invalidate_images_cache()
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -211,7 +247,6 @@ class SnapshotView(TaggedItemView):
             self.request, snapshot=self.snapshot, conn=self.conn, formdata=self.request.params or None)
         self.delete_form = DeleteSnapshotForm(self.request, formdata=self.request.params or None)
         self.register_form = RegisterSnapshotForm(self.request, formdata=self.request.params or None)
-        self.start_time = self.get_start_time()
         self.tagged_obj = self.snapshot
         with boto_error_handler(request, self.location):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
@@ -219,7 +254,6 @@ class SnapshotView(TaggedItemView):
             snapshot=self.snapshot,
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
-            snapshot_start_time=self.start_time,
             volume_name=self.volume_name,
             snapshot_form=self.snapshot_form,
             delete_form=self.delete_form,
@@ -249,12 +283,6 @@ class SnapshotView(TaggedItemView):
     def get_snapshot_name(self):
         if self.snapshot:
             return TaggedItemView.get_display_name(self.snapshot)
-        return None
-
-    def get_start_time(self):
-        """Returns instance launch time as a python datetime.datetime object"""
-        if self.snapshot and self.snapshot.start_time:
-            return parser.parse(self.snapshot.start_time)
         return None
 
     @view_config(route_name='snapshot_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -316,7 +344,7 @@ class SnapshotView(TaggedItemView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    ImagesView.invalidate_images_cache()
+                    #ImagesView.invalidate_images_cache()
                 self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -350,7 +378,7 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                ImagesView.invalidate_images_cache()
+                #ImagesView.invalidate_images_cache()
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
