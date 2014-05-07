@@ -1,3 +1,12 @@
+=== jQuery ===
+
+== Files ==
+
+eucaconsole/static/js/thirdparty/jquery/jquery-2.0.3.js
+eucaconsole/static/js/thirdparty/jquery/jquery-2.0.3.min.js
+
+== License (MIT) ==
+
 Copyright 2013 jQuery Foundation and other contributors
 http://jquery.com/
 

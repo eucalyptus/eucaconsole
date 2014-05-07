@@ -1,3 +1,12 @@
+=== CryptoJS ===
+
+== Files ==
+
+eucaconsole/static/js/thirdparty/utils/enc-base64.js
+eucaconsole/static/js/thirdparty/utils/hmac-sha256.js
+
+== License (BSD (3 clause)) ==
+
 Copyright (c) 2013, Jeff Mott
 All rights reserved.
 

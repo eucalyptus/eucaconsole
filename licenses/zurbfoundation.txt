@@ -1,3 +1,13 @@
+=== ZURB Foundation ===
+
+== Files ==
+
+eucaconsole/static/fonts/foundation
+eucaconsole/static/js/thirdparty/foundation
+eucaconsole/static/sass/foundation
+
+== License (MIT) ==
+
 Copyright (c) 2013 ZURB, inc.
 
 MIT License
