@@ -101,7 +101,7 @@
                         <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
                         <div class="small-9 columns value breakword" ng-non-bindable="">${image.location}</div>
                     </div>
-                    ${panel('bdmapping_editor', image=image, read_only=True)}
+                    ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>
             </div>
