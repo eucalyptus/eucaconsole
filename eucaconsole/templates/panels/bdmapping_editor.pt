@@ -32,14 +32,14 @@
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
                     <td>
-                        <span ng-hide="isEphemeral(val)">
+                        <span ng-if="!isEphemeral(val)">
                             <input class="number" value="{{ val.size }}" required="required" pattern="integer"
                                    ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
                             <small class="error" i18n:translate="">Size is required</small>
                         </span>
                     </td>
                     <td>
-                        <span ng-hide="isEphemeral(val)">
+                        <span ng-if="!isEphemeral(val)">
                             <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
                         </span>
                     </td>
