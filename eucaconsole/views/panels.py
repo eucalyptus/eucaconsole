@@ -200,7 +200,7 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, snapshot_choices=None):
+def bdmapping_editor(context, request, image=None, snapshot_choices=None, read_only=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
@@ -217,7 +217,7 @@ def bdmapping_editor(context, request, image=None, snapshot_choices=None):
                 delete_on_termination=device.delete_on_termination,
             )
     bdm_json = json.dumps(bdm_dict)
-    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json)
+    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
 def get_root_device_name(img):

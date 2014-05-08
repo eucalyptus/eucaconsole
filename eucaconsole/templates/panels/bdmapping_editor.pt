@@ -30,14 +30,16 @@
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
-                    <td>
+                    <td tal:condition="not read_only">
                         <input class="number" value="{{ val.size }}" required="required" pattern="integer"
                                ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
                         <small class="error" i18n:translate="">Size is required</small>
                     </td>
-                    <td>
+                    <td tal:condition="read_only">{{ val.size }}</td>
+                    <td tal:condition="not read_only">
                         <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
                     </td>
+                    <td tal:condition="read_only">{{ val.delete_on_termination }}</td>
                     <td>
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
                            title="Remove device" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
@@ -45,7 +47,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="row" id="new-blockdevice-entry">
+        <div class="row" id="new-blockdevice-entry" tal:condition="not read_only">
             <div class="medium-2 columns">
                 <label i18n:translate="">Volume:</label>
                 <select name="volume_type" ng-model="newVolumeType">
