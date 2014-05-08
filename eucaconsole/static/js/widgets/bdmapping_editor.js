@@ -73,6 +73,10 @@ angular.module('BlockDeviceMappingEditor', [])
             delete bdMapping[key];
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
         };
+        $scope.isEphemeral = function(val) {
+            if (val.virtual_name && val.virtual_name.indexOf('ephemeral') == 0) return true;
+            return false;
+        };
         $scope.updateRootDevice = function ($event, key, is_root) {
             var bdMappingText = $scope.bdmTextarea.val();
             if (bdMappingText && is_root) {
