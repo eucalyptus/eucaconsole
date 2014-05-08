@@ -27,16 +27,21 @@
                     <td>
                         <span ng-show="val.is_root">Root</span>
                         <span ng-show="!val.is_root">{{ val.volume_type }}</span>
+                        <span ng-show="isEphemeral(val)">{{ val.virtual_name }}</span>
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
                     <td>
-                        <input class="number" value="{{ val.size }}" required="required" pattern="integer"
-                               ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
-                        <small class="error" i18n:translate="">Size is required</small>
+                        <span ng-if="!isEphemeral(val)">
+                            <input class="number" value="{{ val.size }}" required="required" pattern="integer"
+                                   ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
+                            <small class="error" i18n:translate="">Size is required</small>
+                        </span>
                     </td>
                     <td>
-                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                        <span ng-if="!isEphemeral(val)">
+                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                        </span>
                     </td>
                     <td>
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
