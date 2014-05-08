@@ -19,7 +19,7 @@
                         <span i18n:translate="" class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
                     </th>
-                    <th>&nbsp;</th>
+                    <th tal:condition="not read_only">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,7 +40,7 @@
                         <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
                     </td>
                     <td tal:condition="read_only">{{ val.delete_on_termination }}</td>
-                    <td>
+                    <td tal:condition="not read_only">
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
                            title="Remove device" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
                     </td>
