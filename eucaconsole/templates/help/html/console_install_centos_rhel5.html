@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="Install on Centos / RHEL 5.8"/>
+<meta name="abstract" content=""/>
+<meta name="description" content=""/>
+<meta name="DC.Relation" scheme="URI" content="../shared/console_install_intro.html"/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="3.2"/>
+<meta name="copyright" content="Eucalyptus Systems 2012" type="primary"/>
+<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2012" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="console_install_console_centos_rhel5_package"/>
+<link rel="stylesheet" type="text/css" href="../commonltr.css"/>
+<title>Install on Centos / RHEL 5.8</title>
+</head>
+<body id="console_install_console_centos_rhel5_package">
+
+
+    <h1 class="title topictitle1">Install on Centos / RHEL 5.8</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"/>
+
+        <div class="section context">
+            <p class="p">To install the Eucalyptus Console from packages on Centos and RHEL 5.8:</p>
+
+        </div>
+
+        <ol class="ol steps"><li class="li step">
+                <span class="ph cmd">Configure the EPEL repository by editing the file <samp class="ph codeph">/etc/yum.repos.d/epel.repo</samp>:</span>
+                 
+                    <pre class="pre codeblock">[epel]
+name=Extra Packages for Enterprise Linux - $basearch
+baseurl=http://mirror.eucalyptus/epel/$releasever/$basearch
+enabled=1
+gpgcheck=0</pre>
+
+                
+            </li>
+<li class="li step">
+                <span class="ph cmd">
+                    Create a new file mamed <samp class="ph codeph">/etc/yum.repos.d/eucalyptus-ui.repo</samp> and add the following content:
+                </span>
+                 
+                    <pre class="pre codeblock">[eucalyptus-ui]
+name = Eucalyptus UI
+mirrorlist = http://packages.release.eucalyptus-systems.com/api/1/genrepo/?distro=centos&amp;releasever=5&amp;arch=x86_64&amp;url=git://github.com/eucalyptus/eucalyptus-ui.git&amp;ref=master
+enabled = 1
+gpgcheck = 0</pre>
+
+                
+            </li>
+<li class="li step">
+                <span class="ph cmd">Install the package using yum:</span>
+                 
+                    <pre class="pre codeblock">yum install python26 python26-eucalyptus-ui</pre>
+
+                
+            </li>
+</ol>
+
+        <div class="section result">
+            Your installation is now complete.
+        </div>
+
+        <div class="section postreq">
+            You are now ready to <a class="xref" href="console_configure_intro.html" title="This section covers how to configure the Eucalyptus Console.">configure
+                the Eucalyptus Console</a>.
+        </div>
+
+    </div>
+
+<div class="related-links">
+<div class="familylinks">
+<div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../shared/console_install_intro.html" title="This section covers how to install the Eucalyptus Console.">Installing the Eucalyptus Console</a></div>
+</div>
+</div>
+
+</body>
+</html>
