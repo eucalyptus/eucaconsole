@@ -78,7 +78,7 @@
                 <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
             </div>
         </div>
-        <div>
+        <div tal:condition="not read_only">
             <a class="button round tiny" ng-click="addDevice()" i18n:translate="">
                 Add device
             </a>
