@@ -141,9 +141,9 @@ class BaseScalingGroupForm(BaseSecureForm):
             self.launch_config.data = scaling_group.launch_config_name
             self.availability_zones.data = scaling_group.availability_zones
             self.load_balancers.data = scaling_group.load_balancers
-            self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group.desired_capacity else 1
-            self.max_size.data = int(scaling_group.max_size) if scaling_group.max_size else 1
-            self.min_size.data = int(scaling_group.min_size) if scaling_group.min_size else 1
+            self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group else 1
+            self.max_size.data = int(scaling_group.max_size) if scaling_group else 1
+            self.min_size.data = int(scaling_group.min_size) if scaling_group else 1
             self.health_check_type.data = scaling_group.health_check_type
             self.health_check_period.data = scaling_group.health_check_period
 
