@@ -549,6 +549,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
+            elb_placeholder_text=_(u'Select load balancers...'),
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')

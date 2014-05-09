@@ -166,7 +166,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     def get_load_balancer_choices(self):
         choices = []
         if self.elb_choices_manager is not None:
-            choices.extend(self.elb_choices_manager.load_balancers())
+            choices.extend(self.elb_choices_manager.load_balancers(add_blank=False))
         if self.scaling_group and self.scaling_group.load_balancers:
             for load_balancer_name in self.scaling_group.load_balancers:
                 choices.append((load_balancer_name, load_balancer_name))

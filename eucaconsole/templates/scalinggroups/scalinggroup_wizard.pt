@@ -21,8 +21,7 @@
         <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
             <div class="wizard no-title">
                 <form action="${request.route_path('scalinggroup_create')}" id="scalinggroup-wizard-form"
-                      method="post" data-abide="abide"
-                      tal:define="load_balancers_html_attrs {'data-placeholder': ' '}">
+                      method="post" data-abide="abide">
                     ${structure:create_form['csrf_token']}
                     <dl class="tabs" data-tab="">
                         <dd class="active">
@@ -52,7 +51,6 @@
                             <div tal:condition="not launch_config_param">
                                 ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
                             </div>
-                            ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
                                 <div class="medium-2 columns">
@@ -79,10 +77,12 @@
                             </div>
                         </div>
                         <!--! Step 2: Membership tab content -->
-                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text}">
+                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
+                                            load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
                             ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                            ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
                             <div class="row">
