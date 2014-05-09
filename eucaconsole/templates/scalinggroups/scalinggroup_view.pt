@@ -88,8 +88,14 @@
         <div class="large-5 columns">
             <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
+                 <div id="help-html-div"
+                     tal:define="help_html_0 layout.help_path('console_edit_scaling_group.html');
+                                 help_html_1 layout.help_path('console_delete_scaling_group.html');">
+                     <div id="help-html-console_edit_scaling_group" ng-include="'${help_html_0}'"></div> 
+                     <div id="help-html-console_delete_scaling_group" ng-include="'${help_html_1}'"></div> 
+                 </div>
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
