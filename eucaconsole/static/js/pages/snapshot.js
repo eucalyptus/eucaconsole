@@ -52,6 +52,10 @@ angular.module('SnapshotPage', ['TagEditor'])
                 if (results) {
                     $scope.snapshotStatus = results['status'];
                     $scope.snapshotProgress = results['progress'];
+                    if ($scope.snapshotStatus == 'failed') {
+                        $scope.isUpdating = false;
+                        return true;
+                    }
                     // Poll to obtain desired end state if current state is transitional or snapshot is in progress
                     if ($scope.isTransitional($scope.snapshotStatus) || $scope.inProgress($scope.snapshotProgress)) {
                         $scope.isUpdating = true;
