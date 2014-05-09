@@ -80,6 +80,7 @@ class MasterLayout(object):
             '(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\/\d+)$'
         )
         self.querystring = self.get_query_string()
+        self.help_html_dir = 'eucaconsole:static/html/help/'
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -105,6 +106,10 @@ class MasterLayout(object):
         if self.request.GET:
             return '?{0}'.format(urlencode(self.request.GET))
         return ''
+
+    def help_path(self, help_html):
+        path = self.help_html_dir + help_html;
+        return self.request.static_path(path);
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

@@ -90,10 +90,11 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
-                 <div tal:define="help_html_0 request.static_path('eucaconsole:static/html/help/console_edit_scaling_group.html');
-                                  help_html_1 request.static_path('eucaconsole:static/html/help/console_delete_scaling_group.html');">
-                     <div ng-include="'${help_html_0}'"></div> 
-                     <div ng-include="'${help_html_1}'"></div> 
+                 <div id="help-html-div"
+                     tal:define="help_html_0 layout.help_path('console_edit_scaling_group.html');
+                                 help_html_1 layout.help_path('console_delete_scaling_group.html');">
+                     <div id="help-html-console_edit_scaling_group" ng-include="'${help_html_0}'"></div> 
+                     <div id="help-html-console_delete_scaling_group" ng-include="'${help_html_1}'"></div> 
                  </div>
             </div>
         </div>
