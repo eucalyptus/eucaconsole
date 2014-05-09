@@ -105,7 +105,7 @@
 
 .status.completed { background-color: #8dc943; }
 
-.status.failed { background-color: #990000; }
+.status.failed { background-color: #777777; }
 
 .table td.status { position: relative; }
 .table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }

@@ -25,7 +25,7 @@ angular.module('SnapshotsPage', ['LandingPage'])
             modal.foundation('reveal', 'open');
         };
         $scope.getSnapshotImages = function (snapshot, url) {
-            var url = url.replace('_id_', snapshot.id)
+            url = url.replace('_id_', snapshot.id);
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results && results.length > 0) {
