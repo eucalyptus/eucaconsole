@@ -797,6 +797,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
                     image_id,
+                    min_count=num_instances,
                     max_count=num_instances,
                     key_name=key_name,
                     user_data=self.get_user_data(),
