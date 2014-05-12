@@ -152,9 +152,6 @@
             </div>
             <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_volumes', 'manage_snapshot', request.route_path('volume_snapshots', id=volume.id))}
-                <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div> 
-                <div id="help-html-console_detach_volume" ng-include="'${layout.help_path('console_detach_volume.html')}'"></div> 
-                <div id="help-html-console_delete_volumes" ng-include="'${layout.help_path('console_delete_volumes.html')}'"></div> 
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
                     <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
