@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('LaunchConfigPage', [])
+angular.module('LaunchConfigPage', ['BlockDeviceMappingEditor'])
     .controller('LaunchConfigPageCtrl', function ($scope) {
         $scope.initController = function (inUse) {
             $scope.launchConfigInUse = inUse;

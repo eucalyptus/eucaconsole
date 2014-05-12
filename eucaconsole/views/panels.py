@@ -200,24 +200,38 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, snapshot_choices=None):
+def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None, read_only=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
     snapshot_choices = snapshot_choices or []
     bdm_dict = {}
-    if image:
+    if image is not None:
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
                 is_root = True if get_root_device_name(image)==key else False,
                 volume_type=device.volume_type,
+                virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
                 delete_on_termination=device.delete_on_termination,
             )
+    if launch_config is not None:
+        bdm_list = launch_config.block_device_mappings
+        for bdm in bdm_list:
+            if bdm.device_name in bdm_dict.keys():
+                continue
+            ebs = bdm.ebs
+            bdm_dict[bdm.device_name] = dict(
+                is_root = False,  # because we can't redefine root in a launch config
+                volume_type=getattr(device, 'volume_type'),
+                snapshot_id=getattr(ebs, 'snapshot_id'),
+                size=getattr(ebs, 'volume_size'),
+                delete_on_termination=getattr(ebs, 'delete_on_termination', False),
+            )
     bdm_json = json.dumps(bdm_dict)
-    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json)
+    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
 def get_root_device_name(img):
