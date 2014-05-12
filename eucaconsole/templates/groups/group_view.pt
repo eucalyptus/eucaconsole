@@ -153,9 +153,11 @@
         </div>
         <div class="large-5 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-            <!--! Help goes here -->
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                <div id="help-html-console_edit_iam_group" ng-include="'${layout.help_path('console_edit_iam_group.html')}'"></div> 
+                <!--! Help goes here -->
+                <div tal:condition="not group">
+                    <div id="help-html-console_create_iam_group" ng-include="'${layout.help_path('console_create_iam_group.html')}'"></div> 
+                </div>
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
