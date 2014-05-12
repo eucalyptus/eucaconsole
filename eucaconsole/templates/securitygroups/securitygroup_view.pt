@@ -83,8 +83,12 @@
         <div class="large-5 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
-                ${panel('help_securitygroups', 'create_securitygroup')}
-                ${panel('help_securitygroups', 'delete_securitygroup')}
+                <div tal:condition="not security_group">
+                    <div id="help-html-console_create_security_group" ng-include="'${layout.help_path('console_create_security_group.html')}'"></div> 
+                </div>
+                <div tal:condition="security_group">
+                    <div id="help-html-console_delete_security_group" ng-include="'${layout.help_path('console_delete_security_group.html')}'"></div> 
+                </div>
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
