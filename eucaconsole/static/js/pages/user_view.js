@@ -202,6 +202,7 @@ angular.module('UserView', ['PolicyList'])
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
+                $('#password-word').text('');
                 $scope.has_password = true;
                 $.generateFile({
                     csrf_token: csrf_token,
