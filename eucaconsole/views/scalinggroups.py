@@ -282,7 +282,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         # Delete existing tags first
         if self.scaling_group.tags:
             self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if updated_tags_list:
+            self.autoscale_conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
