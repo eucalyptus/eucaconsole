@@ -264,18 +264,11 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_instances', 'connect_instance', instance_security_group, instance.key_name, instance.ip_address)}
-                <div id="help-html-div"
-                     tal:define="help_html_0 layout.help_path('console_launch_more_instances.html');
-                                 help_html_1 layout.help_path('console_create_launch_config_from_instance.html');
-                                 help_html_2 layout.help_path('console_stop_instances.html');
-                                 help_html_3 layout.help_path('console_reboot_instances.html');
-                                 help_html_4 layout.help_path('console_terminate_instances.html');">
-                     <div id="help-html-console_launch_more_instances" ng-include="'${help_html_0}'"></div> 
-                     <div id="help-html-console_create_launch_config_from_instance" ng-include="'${help_html_1}'"></div> 
-                     <div id="help-html-console_stop_instances" ng-include="'${help_html_2}'"></div> 
-                     <div id="help-html-console_reboot_instances" ng-include="'${help_html_3}'"></div> 
-                     <div id="help-html-console_terminate_instances" ng-include="'${help_html_4}'"></div> 
-                 </div>
+                <div id="help-html-console_launch_more_instances" ng-include="'${layout.help_path('console_launch_more_instances.html')}'"></div> 
+                <div id="help-html-console_create_launch_config_from_instance" ng-include="'${layout.help_path('console_create_launch_config_from_instance.html')}'"></div> 
+                <div id="help-html-console_stop_instances" ng-include="'${layout.help_path('console_stop_instances.html')}'"></div> 
+                <div id="help-html-console_reboot_instances" ng-include="'${layout.help_path('console_reboot_instances.html')}'"></div> 
+                <div id="help-html-console_terminate_instances" ng-include="'${layout.help_path('console_terminate_instances.html')}'"></div> 
                 <!--! Tag editor help content -->
                 <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
             </div>
