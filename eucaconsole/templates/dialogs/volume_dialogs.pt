@@ -32,6 +32,7 @@
         <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
             <!--! Volume device help -->
             <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+            <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div> 
         </div>
     </div>
     <div id="detach-volume-modal" class="reveal-modal small" data-reveal=""
