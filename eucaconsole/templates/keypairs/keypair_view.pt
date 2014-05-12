@@ -108,13 +108,13 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="keypair" tal:omit-tag="">
-                    ${panel('help_keypairs', 'delete_keypair')}
+                    <div id="help-html-console_delete_keypair" ng-include="'${layout.help_path('console_delete_keypair.html')}'"></div> 
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new'" tal:omit-tag="">
-                    ${panel('help_keypairs', 'create_keypair')}
+                    <div id="help-html-console_create_keypair" ng-include="'${layout.help_path('console_create_keypair.html')}'"></div> 
                 </div>
                 <div tal:condition="not keypair and keypair_route_id == 'new2'" tal:omit-tag="">
-                    ${panel('help_keypairs', 'import_keypair')}
+                    <div id="help-html-console_import_keypair" ng-include="'${layout.help_path('console_import_keypair.html')}'"></div> 
                 </div>
             </div>
         </div>
