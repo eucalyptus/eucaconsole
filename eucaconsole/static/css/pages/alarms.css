@@ -11,7 +11,7 @@
 .clear-link { color: #777777; }
 .clear-link:hover { color: #8dc943; }
 
-#breadcrumbs .icon-block { display: inline-block; }
+#breadcrumbs .icon-block { display: none; }
 
 #primary-buttons .button { padding: 8px 3rem; }
 

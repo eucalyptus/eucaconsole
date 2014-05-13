@@ -18,7 +18,10 @@ angular.module('BlockDeviceMappingEditor', [])
         };
         $scope.initChosenSelector = function () {
             $scope.newSnapshotID = '';
-            $('#new-blockdevice-entry').find('select[name="snapshot_id"]').chosen({'width': '100%'});
+            var select = $('#new-blockdevice-entry').find('select[name="snapshot_id"]')
+            if (select.length > 0) {
+                select.chosen({'width': '100%'});
+            }
             $scope.cleanupSelections();
         };
         $scope.cleanupSelections = function () {
