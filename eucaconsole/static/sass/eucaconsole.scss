@@ -531,6 +531,14 @@ textarea.policy-area {
 .help-content {
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
+    h1 { font-size: 1.2rem; }
+    h2 { font-size: 1.1rem; }
+    .p, .section {
+        line-height: 1.4rem;
+    }
+    .topictitle1 {
+        margin-top: 1rem;
+    }
     p {
         margin-bottom: 0.5rem;
     }
