@@ -208,7 +208,9 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
     bdm_dict = {}
     if image is not None:
         bdm_object = image.block_device_mapping
+        print "BDM OBJECT: ",  bdm_object
         for key, device in bdm_object.items():
+            print "Volume Type: " , device.volume_type
             bdm_dict[key] = dict(
                 is_root = True if get_root_device_name(image)==key else False,
                 volume_type=device.volume_type,

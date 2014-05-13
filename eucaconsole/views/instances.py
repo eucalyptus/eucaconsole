@@ -790,7 +790,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
+            print "BDM JSON: " , bdmapping_json
             block_device_map = self.get_block_device_map(bdmapping_json)
+            print
+            print "BDM: " , block_device_map
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
@@ -892,7 +895,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             private_addressing = self.request.params.get('private_addressing') == 'y'
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
+            print "BDM JSON: " , bdmapping_json
             block_device_map = self.get_block_device_map(bdmapping_json)
+            print
+            print "BDM: " , block_device_map
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
