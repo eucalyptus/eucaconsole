@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
-         ng-init="initController(${'true' if in_use else 'false'}, '${image}')">
+         ng-init="initController(${'true' if in_use else 'false'}, '${'true' if image else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
