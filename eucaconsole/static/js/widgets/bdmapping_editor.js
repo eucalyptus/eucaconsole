@@ -4,19 +4,29 @@
  *
  */
 angular.module('BlockDeviceMappingEditor', [])
-    .controller('BlockDeviceMappingEditorCtrl', function ($scope) {
+    .controller('BlockDeviceMappingEditorCtrl', function ($scope, $timeout) {
         $scope.bdmTextarea = $('#bdmapping');
         $scope.bdMapping = {};
         $scope.ephemeralCount = 0;
         $scope.setInitialNewValues = function () {
             $scope.newVolumeType = 'EBS';
+            $scope.virtualName = '';
             $scope.newSnapshotID = '';
             $scope.newMappingPath = '';
             $scope.newSize = '2';
             $scope.newDOT = true;
         };
         $scope.initChosenSelector = function () {
+            $scope.newSnapshotID = '';
             $('#new-blockdevice-entry').find('select[name="snapshot_id"]').chosen({'width': '100%'});
+            $scope.cleanupSelections();
+        };
+        $scope.cleanupSelections = function () {
+            $timeout( function(){
+                if( $('#new-blockdevice-entry').find('select[name="snapshot_id"]').children('option').first().html() == '' ){
+                    $('#new-blockdevice-entry').find('select[name="snapshot_id"]').children('option').first().remove();
+                } 
+            }, 250);
         };
         // tempate-ed way to pass bdm in
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
@@ -54,18 +64,25 @@ angular.module('BlockDeviceMappingEditor', [])
                 newSizeEntry.focus();
                 return false;
             }
+            if ($scope.newVolumeType === 'ephemeral') {
+                $scope.virtualName = "ephemeral" + $scope.ephemeralCount; 
+                $scope.ephemeralCount += 1;
+                $scope.newSnapshotID = '';
+                $scope.newSize = '';
+                $scope.newDOT = false;
+            }
             var bdMapping = $scope.bdMapping;
             bdMapping[$scope.newMappingPath] = {
-                'volume_type': $scope.newVolumeType,
+                'virtual_name' : $scope.virtualName,
+                'volume_type': 'None',
+                'is_root': false,
                 'snapshot_id': $scope.newSnapshotID,
                 'size': $scope.newSize,
                 'delete_on_termination': $scope.newDOT
             };
             $scope.bdmTextarea.val(JSON.stringify(bdMapping));
-            if ($scope.newVolumeType === 'ephemeral') {
-                $scope.ephemeralCount += 1;
-            }
             $scope.setInitialNewValues();  // Reset values
+            $scope.initChosenSelector();
             newMappingEntry.focus();
         };
         $scope.removeDevice = function (key) {

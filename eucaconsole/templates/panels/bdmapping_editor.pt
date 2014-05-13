@@ -26,7 +26,7 @@
                 <tr ng-repeat="(key, val) in bdMapping">
                     <td>
                         <span ng-show="val.is_root">Root</span>
-                        <span ng-show="!val.is_root">{{ val.volume_type }}</span>
+                        <span ng-show="!val.is_root && !isEphemeral(val)">EBS</span>
                         <span ng-show="isEphemeral(val)">{{ val.virtual_name }}</span>
                     </td>
                     <td>{{ key }}</td>
@@ -73,6 +73,7 @@
             <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label i18n:translate="">Create from snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
+                    <option value="">None</option>
                     <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
                 </select>
             </div>

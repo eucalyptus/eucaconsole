@@ -351,8 +351,8 @@ class BlockDeviceMappingItemView(BaseView):
                 bdm = BlockDeviceMapping()
                 for key, val in mapping.items():
                     device = BlockDeviceType()
-                    if val.get('volume_type') == 'ephemeral':
-                        device.ephemeral_name = 'ephemeral0'
+                    if val.get('virtual_name') is not None and val.get('virtual_name').startswith('ephemeral'):
+                        device.ephemeral_name = val.get('virtual_name')
                     else:
                         device.volume_type = 'standard'
                         device.snapshot_id = val.get('snapshot_id') or None
