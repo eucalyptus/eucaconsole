@@ -16,7 +16,10 @@ angular.module('BlockDeviceMappingEditor', [])
             $scope.newDOT = true;
         };
         $scope.initChosenSelector = function () {
-            $('#new-blockdevice-entry').find('select[name="snapshot_id"]').chosen({'width': '100%'});
+            var select = $('#new-blockdevice-entry').find('select[name="snapshot_id"]')
+            if (select.length > 0) {
+                select.chosen({'width': '100%'});
+            }
         };
         // tempate-ed way to pass bdm in
         $scope.initBlockDeviceMappingEditor = function (bdmJson) {
