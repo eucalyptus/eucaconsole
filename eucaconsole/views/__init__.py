@@ -191,10 +191,7 @@ class BaseView(object):
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
         if status == 403:
-            if any(['Invalid access key' in message, 'Invalid security token' in message]):
-                notice = message
-            else:
-                notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
+            notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
             # BaseView.invalidate_connection_cache()
