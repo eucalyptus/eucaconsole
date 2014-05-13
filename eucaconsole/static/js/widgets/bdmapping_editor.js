@@ -22,9 +22,11 @@ angular.module('BlockDeviceMappingEditor', [])
             $scope.cleanupSelections();
         };
         $scope.cleanupSelections = function () {
+            // Timeout is needed to remove the empty option inject issue caused by Angular
             $timeout( function(){
-                if( $('#new-blockdevice-entry').find('select[name="snapshot_id"]').children('option').first().html() == '' ){
-                    $('#new-blockdevice-entry').find('select[name="snapshot_id"]').children('option').first().remove();
+                var snapshotSelector = $('#new-blockdevice-entry').find('select[name="snapshot_id"]');
+                if( snapshotSelector.children('option').first().html() == '' ){
+                    snapshotSelector.children('option').first().remove();
                 } 
             }, 250);
         };
