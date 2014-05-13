@@ -216,6 +216,8 @@ class LaunchConfigView(BaseView):
         if self.ec2_conn:
             images = self.ec2_conn.get_all_images(image_ids=[self.launch_config.image_id])
             image = images[0] if images else None
+            if image is None:
+                return None
             image.platform = ImageView.get_platform(image)
             return image
         return None

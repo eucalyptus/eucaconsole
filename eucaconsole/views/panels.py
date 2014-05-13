@@ -218,16 +218,16 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 delete_on_termination=device.delete_on_termination,
             )
     if launch_config is not None:
-        bdm_list = launch_config.block_device_mappings
+        bdm_list = launch_config.block_device_mappings or []
         for bdm in bdm_list:
             if bdm.device_name in bdm_dict.keys():
                 continue
             ebs = bdm.ebs
             bdm_dict[bdm.device_name] = dict(
                 is_root = False,  # because we can't redefine root in a launch config
-                volume_type=getattr(device, 'volume_type'),
-                snapshot_id=getattr(ebs, 'snapshot_id'),
-                size=getattr(ebs, 'volume_size'),
+                volume_type=getattr(device, 'volume_type', None),
+                snapshot_id=getattr(ebs, 'snapshot_id', None),
+                size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=getattr(ebs, 'delete_on_termination', False),
             )
     bdm_json = json.dumps(bdm_dict)
