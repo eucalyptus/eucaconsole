@@ -381,6 +381,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
+                <div id="help-html-console_user_detail_general" ng-include="'${layout.help_path('console_user_detail_general.html')}'"></div> 
+                <div id="help-html-console_user_detail_security" ng-include="'${layout.help_path('console_user_detail_security.html')}'"></div> 
+                <div id="help-html-console_user_detail_quotas" ng-include="'${layout.help_path('console_user_detail_quotas.html')}'"></div> 
             </div>
         </div>
         ${panel('user_dialogs', delete_form=delete_form, disable_form=disable_form, enable_form=enable_form)}
