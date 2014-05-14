@@ -132,13 +132,9 @@
                     <div id="help-html-console_create_snapshot" ng-include="'${layout.help_path('console_create_snapshot.html')}'"></div> 
                 </div>
                 <div tal:condition="snapshot" tal:omit-tag="">
-                    ${panel('help_snapshots', 'register_snapshot')}
-                    ${panel('help_snapshots', 'delete_snapshot')}
                 </div>
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                    <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
-                </metal:block>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->

@@ -140,8 +140,7 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                </metal:block>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
     </div>
