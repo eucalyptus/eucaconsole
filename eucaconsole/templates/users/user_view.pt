@@ -26,9 +26,9 @@
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" data-tab="">
-                <dd class="active"><a href="#general-tab" ng-click="currentTab = 'general'" i18n:translate="">General</a></dd>
-                <dd><a href="#security-tab" ng-click="currentTab = 'security'" i18n:translate="">Security credentials</a></dd>
-                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="currentTab = 'quotas'" i18n:translate="">Quotas</a></dd>
+                <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general')" i18n:translate="">General</a></dd>
+                <dd><a href="#security-tab" ng-click="clickTab($event, 'security')" i18n:translate="">Security credentials</a></dd>
+                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas')" i18n:translate="">Quotas</a></dd>
             </dl>
             <div class="tabs-content">
                 <div class="content active panel has-actions" id="general-tab">

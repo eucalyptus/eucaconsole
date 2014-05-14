@@ -49,6 +49,10 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
+        $scope.clickTab = function ($event, tab){
+           $scope.currentTab = tab; 
+           $event.preventDefault();
+        };
         $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
             $scope.userName = user_name;
             $scope.disable_url = disable_url;
