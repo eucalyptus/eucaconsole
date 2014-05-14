@@ -63,8 +63,8 @@
                 </div>
                 <div tal:condition="eip.instance_id">
                     <div id="help-html-console_disassociate_eip" ng-include="'${layout.help_path('console_disassociate_eip.html')}'"></div> 
-                    <div id="help-html-console_release_eip" ng-include="'${layout.help_path('console_release_eip.html')}'"></div> 
                 </div>
+                <div id="help-html-console_release_eip" ng-include="'${layout.help_path('console_release_eip.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs -->

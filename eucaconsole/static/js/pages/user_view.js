@@ -33,6 +33,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.autoscale_expanded = false;
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
+        $scope.currentTab = 'general';
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
@@ -47,6 +48,10 @@ angular.module('UserView', ['PolicyList'])
         };
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
+        };
+        $scope.clickTab = function ($event, tab){
+           $scope.currentTab = tab; 
+           $event.preventDefault();
         };
         $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
             $scope.userName = user_name;
