@@ -26,9 +26,9 @@
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" data-tab="">
-                <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general')" i18n:translate="">General</a></dd>
-                <dd><a href="#security-tab" ng-click="clickTab($event, 'security')" i18n:translate="">Security credentials</a></dd>
-                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas')" i18n:translate="">Quotas</a></dd>
+                <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
+                <dd><a href="#security-tab" ng-click="clickTab($event, 'security-tab')" i18n:translate="">Security credentials</a></dd>
+                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas-tab')" i18n:translate="">Quotas</a></dd>
             </dl>
             <div class="tabs-content">
                 <div class="content active panel has-actions" id="general-tab">
@@ -381,9 +381,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <div id="help-html-console_user_detail_general" ng-show="currentTab == 'general'" ng-include="'${layout.help_path('console_user_detail_general.html')}'"></div> 
-                <div id="help-html-console_user_detail_security" ng-show="currentTab == 'security'" ng-include="'${layout.help_path('console_user_detail_security.html')}'"></div> 
-                <div id="help-html-console_user_detail_quotas" ng-show="currentTab == 'quotas'" ng-include="'${layout.help_path('console_user_detail_quotas.html')}'"></div> 
+                <div id="help-html-console_user_detail_general" ng-show="currentTab == 'general-tab'" ng-include="'${layout.help_path('console_user_detail_general.html')}'"></div> 
+                <div id="help-html-console_user_detail_security" ng-show="currentTab == 'security-tab'" ng-include="'${layout.help_path('console_user_detail_security.html')}'"></div> 
+                <div id="help-html-console_user_detail_quotas" ng-show="currentTab == 'quotas-tab'" ng-include="'${layout.help_path('console_user_detail_quotas.html')}'"></div> 
             </div>
         </div>
         ${panel('user_dialogs', delete_form=delete_form, disable_form=disable_form, enable_form=enable_form)}
