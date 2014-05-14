@@ -107,10 +107,11 @@ class TestHTTPSTween(unittest.TestCase):
 
 class TestRequestIDTween(unittest.TestCase):
     def test_it(self):
-        from eucaconsole.tweens import \
-            request_id_tween_factory as factory
+        from eucaconsole.tweens import request_id_tween_factory as factory
         tween = factory(MockHandler(), None)
 
         request = Mock(id=None)
+        request.session = dict(account='foo')
         tween(request)
         self.assertFalse(request.id is None)
+

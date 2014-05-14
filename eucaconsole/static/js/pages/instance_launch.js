@@ -129,6 +129,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $scope.loadImageInfo(newID);
                 }
             });
+            $('#number').on('keyup blur', function () {
+                var val = $(this).val();
+                if (val > 10) {
+                    $(this).val(10);
+                }
+            });
         };
         $scope.loadImageInfo = function(id) {
             $http({
@@ -256,7 +262,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $('#step'+step).find('div.error').each(function(idx, val) {
                 $(val).removeClass('error');
             });
-        }
+        };
         $scope.$on('imageSelected', function($event, item) {
             $scope.imageID = item.id;
             $scope.imageName = item.name;
@@ -264,12 +270,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.summarySection.find('.step1').removeClass('hide');
         });
-        $scope.buildNumberList = function (limit) {
+        $scope.buildNumberList = function () {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
-            limit = parseInt(limit, 10);
+            var limit = parseInt($scope.instanceNumber, 10) || 10;
             var result = [];
             for (var i = 1; i <= limit; i++) {
-                result.push(i);
+                if (limit <= 10) result.push(i);
             }
             return result;
         };

@@ -12,3 +12,10 @@
     }
 }
 
+.label.status {
+    text-transform: capitalize;
+    &.failed {
+        background-color: $euca-darkgrey;
+    }
+}
+

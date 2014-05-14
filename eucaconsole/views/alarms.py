@@ -92,7 +92,7 @@ class CloudWatchAlarmsView(LandingPageView):
                 statistic = self.request.params.get('statistic')
                 comparison = self.request.params.get('comparison')
                 threshold = self.request.params.get('threshold')
-                period = self.request.params.get('period')
+                period = int(self.request.params.get('period', 5)) * 60  # Convert to seconds
                 evaluation_periods = self.request.params.get('evaluation_periods')
                 unit = self.request.params.get('unit')
                 description = self.request.params.get('description', '')

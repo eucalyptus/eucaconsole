@@ -4,12 +4,15 @@
  *
  */
 
-angular.module('LaunchConfigPage', [])
+angular.module('LaunchConfigPage', ['BlockDeviceMappingEditor'])
     .controller('LaunchConfigPageCtrl', function ($scope) {
-        $scope.initController = function (inUse) {
+        $scope.initController = function (inUse, image) {
             $scope.launchConfigInUse = inUse;
             $scope.setWatch();
             $scope.setFocus();
+            if (image == '') {
+                $('#image-missing-modal').foundation('reveal', 'open');
+            }
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {

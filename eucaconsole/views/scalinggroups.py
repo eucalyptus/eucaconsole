@@ -155,7 +155,6 @@ class ScalingGroupsJsonView(LandingPageView):
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
-                load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
                 launch_config=group.launch_config_name,
                 max_size=group.max_size,
@@ -282,7 +281,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         # Delete existing tags first
         if self.scaling_group.tags:
             self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if updated_tags_list:
+            self.autoscale_conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
@@ -549,6 +549,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
+            elb_placeholder_text=_(u'Select load balancers...'),
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
@@ -567,7 +568,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     name=scaling_group_name,
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
-                    load_balancers=self.request.params.getall('load_balancers'),
+                    # load_balancers=self.request.params.getall('load_balancers'),
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),

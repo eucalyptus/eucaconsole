@@ -84,7 +84,8 @@ class LaunchInstanceForm(BaseSecureForm):
              The block device mappings are also pulled in via a panel
     """
     image_id = wtforms.HiddenField(label=_(u'Image'))
-    number_error_msg = _(u'Number of instances must be a whole number greater than 0')
+    number_error_msg = _(u'Number of instances must be a whole number between 1-10')
+    number_helptext = _(u'You cannot launch more than 10 instances in a single security group')
     number = wtforms.IntegerField(
         label=_(u'Number of instances'),
         validators=[
@@ -136,6 +137,7 @@ class LaunchInstanceForm(BaseSecureForm):
             self.ramdisk_id.data = image.ramdisk_id or ''
 
     def set_help_text(self):
+        self.number.help_text = self.number_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self, request):

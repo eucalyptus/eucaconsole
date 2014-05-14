@@ -299,8 +299,8 @@
                                     <td>{{ item.status }}</td>
                                     <td>
                                         <span class="actions">
-                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></a>
-                                            <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
+                                            <a class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.access_key_id }}"><i class="fi-widget"></i></a>
+                                            <ul id="item-dropdown_{{ item.access_key_id }}" class="f-dropdown" data-dropdown-content="">
                                                 <li ng-show="item.status === 'Active'">
                                                     <a i18n:translate="" ng-click="makeAjaxCall('${request.route_path('user_deactivate_key', name='_name_', key='_key_')}', item)">Deactivate</a>
                                                 </li>
@@ -379,7 +379,9 @@
         <div class="large-4 columns">
             <div class="help-padding">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
-            <!--! Help goes here -->
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
+                <!--! Help goes here -->
+            </div>
         </div>
         ${panel('user_dialogs', delete_form=delete_form, disable_form=disable_form, enable_form=enable_form)}
     </div>

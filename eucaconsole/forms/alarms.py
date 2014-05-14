@@ -78,15 +78,15 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
             validators.InputRequired(message=statistic_error_msg),
         ],
     )
-    threshold_error_msg = _(u'Trigger threshold is required')
+    threshold_error_msg = _(u'Trigger threshold amount is required')
     threshold = wtforms.IntegerField(
         label=_(u'Trigger threshold'),
         validators=[
             validators.InputRequired(message=threshold_error_msg),
         ],
     )
-    period_help_text = _(u'Length of measurement period in seconds.')
-    period_error_msg = _(u'Period length is required')
+    period_help_text = _(u'Length of measurement period in minutes.')
+    period_error_msg = _(u'Period length is required and must be a whole number greater than zero')
     period = wtforms.IntegerField(
         label=_(u'Period length'),
         validators=[
@@ -129,7 +129,7 @@ class CloudWatchAlarmCreateForm(BaseSecureForm):
 
     def set_initial_data(self):
         self.evaluation_periods.data = 1
-        self.period.data = 120
+        self.period.data = 5
 
         if self.scaling_group is not None:
             self.scaling_group_name.data = self.scaling_group.name
