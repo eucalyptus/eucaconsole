@@ -4,23 +4,6 @@
  *
  */
 
-$(document).ready(function () {
-    var idx = document.URL.indexOf("#");
-    if (idx != -1) {
-        var hash = document.URL.substring(idx + 1);
-        if (hash == '') return;
-        $(".tabs").children("dd").each(function() {
-            var id = $(this).find("a").attr("href").substring(1);
-            var $container = $("#" + id);
-            $(this).removeClass("active");
-            $container.removeClass("active");
-            if (id == hash || $container.find("#" + hash).length) {
-                $(this).addClass("active");
-                $container.addClass("active");
-            }
-        });
-    }
-});
 
 // user view page includes the User Editor editor
 angular.module('UserView', ['PolicyList'])
@@ -60,6 +43,25 @@ angular.module('UserView', ['PolicyList'])
             $('#delete-user-form').attr('action', delete_url);
             $scope.setFocus();
             $scope.setDropdownMenusListener();
+            $scope.adjustTab();
+        };
+        $scope.adjustTab = function() {
+            var idx = document.URL.indexOf("?");
+            if (idx != -1) {
+                var hash = document.URL.substring(idx + 5); // Count the index for '?tab=', thus + 5
+                if (hash == '') return;
+                $(".tabs").children("dd").each(function() {
+                    var id = $(this).find("a").attr("href").substring(1);
+                    var $container = $("#" + id);
+                    $(this).removeClass("active");
+                    $container.removeClass("active");
+                    if (id == hash || $container.find("#" + hash).length) {
+                        $(this).addClass("active");
+                        $container.addClass("active");
+                        $scope.currentTab = id;    // Update the currentTab value for the help display
+                    }
+                });
+            }
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
