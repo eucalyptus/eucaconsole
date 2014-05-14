@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="DC.Type" content="task"/>
+<meta name="DC.Title" content="User Detail - Quotas"/>
+<meta name="abstract" content="This screen shows you the general details for am IAM user. From this page, you can change a user name, disable a user, delete a user, or modify a user's quotas and credentials."/>
+<meta name="description" content="This screen shows you the general details for am IAM user. From this page, you can change a user name, disable a user, delete a user, or modify a user's quotas and credentials."/>
+<meta name="prodname" content="Eucalyptus"/>
+<meta name="version" content="3.3"/>
+<meta name="copyright" content="Eucalyptus Systems 2013" type="primary"/>
+<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2013" type="primary"/>
+<meta name="DC.Format" content="XHTML"/>
+<meta name="DC.Identifier" content="user_detail_ui_context"/>
+<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
+<title>User Detail - Quotas</title>
+</head>
+<body id="user_detail_ui_context">
+
+
+    <h1 class="title topictitle1">User Detail - Quotas</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This screen shows you the general details for am IAM user. From this page, you can
+        change a user name, disable a user, delete a user, or modify a user's quotas and
+        credentials. </p>
+</div>
+
+
+    <div class="topic task nested1" id="user_detail_general">
+        <h2 class="title topictitle2">Quotas tab</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This tab lets you define limits on resources that this user is allowed to
+            create.</p>
+</div>
+
+        <div class="topic task nested2" id="create_iam_users_ui_quotas">
+            <h3 class="title topictitle3">Quotas</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">In this section, you can define limits on what resources your users can
+                create.</p>
+
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Expand the section for each service that you want to specify limits
+                            for, and type in the maximum number of that resource in the text field.
+                            Leaving a text field blank means no limit is assigned to that
+                            resource.</span>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">When you are finished setting quotas, click the <span class="ph uicontrol">Save
+                                Quotas</span> button to save your work, or click the
+                                <span class="ph uicontrol">Cancel</span> button to cancel..</span>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <div class="topic task nested1" id="user_detail_ui_context_menu">
+        <h2 class="title topictitle2">Actions menu</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
+            that you can perform on the selected user.</p>
+
+            <div class="section context">The following context menu actions are availabe:</div>
+
+        </div>
+
+
+        <div class="topic task nested2" id="user_details_ui_manage_snapshots_steps">
+            <h3 class="title topictitle3">Disable</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"/>
+
+                <div class="li step p">
+                        <span class="ph cmd">This item deletes the selected user's password and creates an IAM
+                            access "deny all actions" policy that prevents them from executing any
+                            actions against the cloud. The user's other information, including
+                            active access keys, is maintained until you either make the user active
+                            again or delete them. </span>
+                    </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="topic task nested2" id="user_details_ui_delete_steps">
+            <h3 class="title topictitle3">Delete</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"> </p>
+
+                <div class="li step p">
+                        <span class="ph cmd">This item allows you to delete the specified user.</span>
+                         
+                            <div class="note note"><span class="notetitle">Note:</span>  This menu item deletes the selected user and all keys, passwords
+                                and permissions associated with that user.</div>
+
+                        
+                    </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>
