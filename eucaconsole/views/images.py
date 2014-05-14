@@ -187,7 +187,20 @@ class ImagesJsonView(LandingPageView):
         with boto_error_handler(self.request):
             logging.info("loading images from server (not cache)")
             filters = {'image-type': 'machine'}
-            return self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            ret = []
+            for img in images:
+                img.connection = None
+                img.block_device_mapping = None
+                dict = img.__dict__
+                class Img:
+                    def __init__(self):
+                        pass
+                obj = Img()
+                obj.__dict__.update(dict)
+                logging.info("img = "+str(obj.__dict__))
+                ret.append(obj)
+            return ret
 
     def get_images(self, conn, owners, executors, ec2_region):
         acct = self.request.session.get('account', '')
