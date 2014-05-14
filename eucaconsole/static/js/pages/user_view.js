@@ -33,6 +33,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.autoscale_expanded = false;
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
+        $scope.currentTab = 'general';
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
