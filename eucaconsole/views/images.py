@@ -139,6 +139,7 @@ class ImagesJsonView(LandingPageView):
                 bdm_dict[key] = dict(
                     is_root=True if panels.get_root_device_name(image) == key else False,
                     volume_type=device.volume_type,
+                    virtual_name=device.ephemeral_name,
                     snapshot_id=device.snapshot_id,
                     size=device.size,
                     delete_on_termination=device.delete_on_termination,

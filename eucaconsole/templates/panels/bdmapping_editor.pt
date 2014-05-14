@@ -19,33 +19,42 @@
                         <span i18n:translate="" class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
                     </th>
-                    <th>&nbsp;</th>
+                    <th tal:condition="not read_only">&nbsp;</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="(key, val) in bdMapping">
                     <td>
                         <span ng-show="val.is_root">Root</span>
-                        <span ng-show="!val.is_root">{{ val.volume_type }}</span>
+                        <span ng-show="!val.is_root &amp;&amp; !isEphemeral(val)">EBS</span>
+                        <span ng-show="isEphemeral(val)">{{ val.virtual_name }}</span>
                     </td>
                     <td>{{ key }}</td>
                     <td>{{ val.snapshot_id }}</td>
-                    <td>
-                        <input class="number" value="{{ val.size }}" required="required" pattern="integer"
-                               ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
-                        <small class="error" i18n:translate="">Size is required</small>
+                    <td tal:condition="not read_only">
+                        <span ng-if="!isEphemeral(val)">
+                            <input class="number" value="{{ val.size }}" required="required" pattern="integer"
+                                   ng-keyup="updateRootDevice($event, key, val.is_root)" ng-show="val.volume_type !== 'ephemeral'" />
+                            <small class="error" i18n:translate="">Size is required</small>
+                        </span>
                     </td>
-                    <td>
-                        <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                    <td tal:condition="read_only">{{ val.size }}</td>
+                    <td tal:condition="not read_only">
+                        <span ng-if="!isEphemeral(val)">
+                            <input ng-show="showDOTflag(val)" type="checkbox" ng-checked="val.delete_on_termination === true"/>
+                        </span>
                     </td>
-                    <td>
+                    <td tal:condition="read_only">
+                        <span ng-if="!isEphemeral(val)"> {{ val.delete_on_termination }} </span>
+                    </td>
+                    <td tal:condition="not read_only">
                         <a ng-show="!val.is_root" class="circle remove has-tip" ng-click="removeDevice(key)"
                            title="Remove device" i18n:attributes="title"><i class="fi-minus-circle"></i></a>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div class="row" id="new-blockdevice-entry">
+        <div class="row" id="new-blockdevice-entry" tal:condition="not read_only">
             <div class="medium-2 columns">
                 <label i18n:translate="">Volume:</label>
                 <select name="volume_type" ng-model="newVolumeType">
@@ -76,7 +85,7 @@
                 <input type="checkbox" name="delete_on_termination"  checked="checked" ng-model="newDOT" />
             </div>
         </div>
-        <div>
+        <div tal:condition="not read_only">
             <a class="button round tiny" ng-click="addDevice()" i18n:translate="">
                 Add device
             </a>

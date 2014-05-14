@@ -23,7 +23,9 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import os
+import string
+
+from random import choice
 
 
 def setup_tweens(config):
@@ -46,16 +48,15 @@ def https_tween_factory(handler, registry):
 
 def request_id_tween_factory(handler, registry):
     def tween(request):
-        request.id = os.urandom(16).encode('base64').rstrip('=\n')
+        chars = string.letters + string.digits
+        request.id = ''.join(choice(chars) for i in range(16))
         response = handler(request)
         return response
     return tween
 
 
 class CTHeadersTweenFactory(object):
-    '''Tween factory for ensuring certain response headers are set iff content
-    type is mapped.
-    '''
+    """Tween factory for ensuring certain response headers are set iff content type is mapped."""
 
     header_map = {
         'application/json': {
@@ -75,9 +76,10 @@ class CTHeadersTweenFactory(object):
 
     def __call__(self, request):
         response = self.handler(request)
-        ct = response.content_type
-        map = self.header_map.get(ct.strip().lower(), None)
-        if map:
-            for name, value in map.items():
+        ct = response.content_type or ''
+        ct_key = ct.strip().lower()
+        ct_header_map = self.header_map.get(ct_key, None)
+        if ct_header_map:
+            for name, value in ct_header_map.items():
                 response.headers[name] = value
         return response

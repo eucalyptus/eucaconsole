@@ -223,7 +223,7 @@ class SnapshotsJsonView(LandingPageView):
 
     @staticmethod
     def is_transitional(snapshot):
-        if snapshot.status.lower() == 'completed':
+        if snapshot.status.lower() in ['completed', 'failed']:
             return False
         return int(snapshot.progress.replace('%', '')) < 100
 
