@@ -26,7 +26,7 @@
                 <tr ng-repeat="(key, val) in bdMapping">
                     <td>
                         <span ng-show="val.is_root">Root</span>
-                        <span ng-show="!val.is_root">{{ val.volume_type }}</span>
+                        <span ng-show="!val.is_root &amp;&amp; !isEphemeral(val)">EBS</span>
                         <span ng-show="isEphemeral(val)">{{ val.virtual_name }}</span>
                     </td>
                     <td>{{ key }}</td>
