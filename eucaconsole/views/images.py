@@ -99,7 +99,17 @@ class ImagesView(LandingPageView):
                 manager.clear()
 
 
+cache_region = make_region(key_mangler=sha1_mangle_key).configure(
+    'dogpile.cache.memcached',
+    expiration_time = 3600,
+    arguments = {
+        'url':["127.0.0.1:11211"],
+        'log':logging.info(">>>>>>> initializing the cache_region")
+    },
+)
+
 class ImagesJsonView(LandingPageView):
+
     """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
@@ -172,29 +182,21 @@ class ImagesJsonView(LandingPageView):
             items.extend(self.get_images(conn, [], ['self'], region))
         return items
 
+    @cache_region.cache_on_arguments()
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        with boto_error_handler(self.request):
+            logging.info("loading images from server (not cache)")
+            filters = {'image-type': 'machine'}
+            return self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+
     def get_images(self, conn, owners, executors, ec2_region):
-        region = make_region(key_mangler=sha1_mangle_key).configure(
-            'dogpile.cache.memcached',
-            expiration_time = 3600,
-            arguments = {
-                'url':["127.0.0.1:11211"],
-            },
-        )
-
-        @region.cache_on_arguments()
-        def _get_images_cached_(_owners, _executors, _ec2_region, acct):
-            with boto_error_handler(self.request):
-                logging.info("loading images from server (not cache)")
-                filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
         logging.info("get_images args = ({0}, {1}, {2}, {3})".format(owners, executors, ec2_region, acct))
-        return _get_images_cached_(owners, executors, ec2_region, acct)
+        return self._get_images_cached_(owners, executors, ec2_region, acct)
 
 
     def filter_by_platform(self, items):
