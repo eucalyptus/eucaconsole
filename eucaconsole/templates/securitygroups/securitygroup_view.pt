@@ -87,12 +87,12 @@
                     <div id="help-html-console_create_security_group" ng-include="'${layout.help_path('console_create_security_group.html')}'"></div> 
                 </div>
                 <div tal:condition="security_group">
-                    <div id="help-html-console_delete_security_group" ng-include="'${layout.help_path('console_delete_security_group.html')}'"></div> 
+                    <div id="help-html-console_edit_security_group" ng-include="'${layout.help_path('console_edit_security_group.html')}'"></div> 
                 </div>
             </div>
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']" />
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->

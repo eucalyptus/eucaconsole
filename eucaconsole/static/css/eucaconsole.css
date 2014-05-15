@@ -1488,6 +1488,7 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .help-content { font-size: 0.9rem; margin-bottom: 1.5rem; }
 .help-content h1 { font-size: 1.2rem; }
 .help-content h2 { font-size: 1.1rem; }
+.help-content h3, .help-content h4 { font-size: 1rem; }
 .help-content .p, .help-content .section { line-height: 1.4rem; }
 .help-content .topictitle1 { margin-top: 1rem; }
 .help-content p { margin-bottom: 0.5rem; }

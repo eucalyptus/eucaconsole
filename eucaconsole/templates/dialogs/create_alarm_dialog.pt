@@ -138,6 +138,12 @@
             </div>
         </form>
         <a href="#" id="create_alarm_close_link" class="close-reveal-modal">&#215;</a>
+        <br />
+        <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
+        <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+            <!--! Create alarm help -->
+            <div id="help-html-console_create_alarm" ng-include="'${layout.help_path('console_create_alarm.html')}'"></div> 
+        </div>
         <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>
