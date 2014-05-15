@@ -104,7 +104,6 @@ cache_region = make_region(key_mangler=sha1_mangle_key).configure(
     expiration_time = 3600,
     arguments = {
         'url':["127.0.0.1:11211"],
-        'log':logging.info(">>>>>>> initializing the cache_region")
     },
 )
 
@@ -182,24 +181,26 @@ class ImagesJsonView(LandingPageView):
             items.extend(self.get_images(conn, [], ['self'], region))
         return items
 
-    @cache_region.cache_on_arguments()
+    @cache_region.cache_on_arguments(namespace='images')
     def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
         with boto_error_handler(self.request):
             logging.info("loading images from server (not cache)")
             filters = {'image-type': 'machine'}
             images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
             ret = []
-            for img in images:
-                img.connection = None
-                img.block_device_mapping = None
-                dict = img.__dict__
-                class Img:
-                    def __init__(self):
-                        pass
-                obj = Img()
-                obj.__dict__.update(dict)
-                logging.info("img = "+str(obj.__dict__))
-                ret.append(obj)
+            for idx, img in enumerate(images):
+                del img.connection
+                del img.region
+                img.product_codes = None
+                img.billing_products = None
+                ret.append(img)
+                #imgdict = img.__dict__
+                #for key in imgdict.keys():
+                #    clsname = imgdict[key].__class__.__name__
+                #    if clsname not in ['unicode', 'NoneType', 'str', 'bool', 'dict']:
+                #        logging.info("key:"+key+" is a "+imgdict[key].__class__.__name__)
+            #import pickle
+            #logging.info("pickled size = "+str(len(pickle.dumps(ret))))
             return ret
 
     def get_images(self, conn, owners, executors, ec2_region):
