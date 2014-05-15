@@ -1,3 +1,11 @@
+=== Purl ===
+
+== Files ==
+
+eucaconsole/static/js/thirdparty/utils/purl.js
+
+== License (MIT) ==
+
 Copyright (c) 2012 Mark Perkins, http://allmarkedup.com/
 
 Permission is hereby granted, free of charge, to any person obtaining

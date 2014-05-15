@@ -9,7 +9,7 @@
          ng-app="SnapshotPage" ng-controller="SnapshotPageCtrl"
          ng-init="initController('${request.route_path('snapshot_state_json', id=snapshot.id) if snapshot else ''}',
                  '${snapshot.status if snapshot else ''}', '${snapshot.progress if snapshot else ''}', ${volume_count},
-                 '${request.route_path('snapshot_images_json', id=snapshot.id)}')">
+                 '${request.route_path('snapshot_images_json', id=snapshot.id) if snapshot else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
@@ -38,13 +38,13 @@
                         <li ng-show="isUpdating">
                             <a i18n:translate="">Waiting for snapshot to be completed...</a>
                         </li>
-                        <li ng-show="!isUpdating">
+                        <li ng-show="!isUpdating &amp;&amp; snapshotStatus !== 'failed'">
                             <a href="${request.route_path('volume_view', id='new')}?from_snapshot=${snapshot.id}"
                                id="create-volume-action" i18n:translate="">
                                 Create volume from snapshot
                             </a>
                         </li>
-                        <li ng-show="!isUpdating">
+                        <li ng-show="!isUpdating &amp;&amp; snapshotStatus !== 'failed'">
                             <a data-reveal-id="register-snapshot-modal" i18n:translate="" id="register-image-action">
                                 Register as image
                             </a>
@@ -61,15 +61,15 @@
                     <h6 i18n:translate="">Snapshot</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
                         <div class="small-4 columns">
-                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus === 'completed'">Status</label>
-                            <label i18n:translate="" id="snapshot-status-label" ng-show="snapshotStatus !== 'completed'">Progress</label>
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="!isUpdating">Status</label>
+                            <label i18n:translate="" id="snapshot-status-label" ng-show="isUpdating">Progress</label>
                         </div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <div class="progress round" ng-show="snapshotStatus !== 'completed'"><span
+                            <div class="progress round" ng-show="isUpdating"><span
                                     class="meter" style="width: {{ snapshotProgress }}">{{ snapshotProgress }}</span>
                             </div>
                             <span class="label radius status {{ snapshotStatus }}" id="current-status"
-                                  ng-bind="snapshotStatus" ng-show="snapshotStatus == 'completed'">
+                                  ng-bind="snapshotStatus" ng-show="!isUpdating">
                                 ${snapshot.status}
                             </span>
                         </div>
@@ -129,18 +129,12 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <div tal:condition="not snapshot" tal:omit-tag="">
-                    ${panel('help_snapshots', 'create_snapshot')}
+                    <div id="help-html-console_create_snapshot" ng-include="'${layout.help_path('console_create_snapshot.html')}'"></div> 
                 </div>
                 <div tal:condition="snapshot" tal:omit-tag="">
-                    ${panel('help_snapshots', 'register_snapshot')}
-                    ${panel('help_snapshots', 'delete_snapshot')}
                 </div>
-            </div>
-            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                    <div tal:condition="not snapshot" metal:fill-slot="delete_tags"></div>
-                </metal:block>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->

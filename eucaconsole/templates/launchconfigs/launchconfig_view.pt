@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
-         ng-init="initController(${'true' if in_use else 'false'})">
+         ng-init="initController(${'true' if in_use else 'false'}, '${'true' if image else ''}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
@@ -71,36 +71,42 @@
                         <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
                         <div class="small-9 columns value" ng-non-bindable="">${launch_config.instance_type}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Image</label></div>
-                        <div class="small-9 columns value">
-                            <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
+                    <div tal:condition="image">
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Image</label></div>
+                            <div class="small-9 columns value">
+                                <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
+                            <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
+                            <div class="small-9 columns value">${image.id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Root device</label></div>
+                            <div class="small-9 columns value">${image.root_device_type}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
+                            <div class="small-9 columns value" ng-non-bindable="">${image.platform.name}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
+                            <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
+                            <div class="small-9 columns value">${launch_config.kernel_id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="launch_config.ramdisk_id">
+                            <div class="small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
+                            <div class="small-9 columns value">${launch_config.ramdisk_id}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
+                            <div class="small-9 columns value breakword" ng-non-bindable="">${image.location}</div>
                         </div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
-                        <div class="small-3 columns"><label i18n:translate="">Image ID</label></div>
-                        <div class="small-9 columns value">${image.id}</div>
+                    <div tal:condition="not image" style="text-align:center;">
+                        <strong style="color:red;" i18n:translate="">Image not found</strong>
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Root device</label></div>
-                        <div class="small-9 columns value">${image.root_device_type}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                        <div class="small-9 columns value" ng-non-bindable="">${image.platform.name}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
-                        <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
-                        <div class="small-9 columns value">${launch_config.kernel_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="launch_config.ramdisk_id">
-                        <div class="small-3 columns"><label i18n:translate="">Ramdisk ID</label></div>
-                        <div class="small-9 columns value">${launch_config.ramdisk_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div class="small-9 columns value breakword" ng-non-bindable="">${image.location}</div>
-                    </div>
+                    ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>
             </div>
@@ -109,10 +115,23 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs -->
         ${panel('launchconfig_dialogs', launch_config=launch_config, in_use=in_use, delete_form=delete_form)}
+        <div id="warning-modals">
+            <div id="image-missing-modal" class="reveal-modal small" data-reveal="">
+                <h3 i18n:translate="">Launch configuration broken: No image found</h3>
+                <p i18n:translate="">
+                    This launch configuration will no longer function, because the image associated with this launch configuration can no longer be found in the cloud. It may have been deregistered. 
+                </p>
+                <p i18n:translate="">
+                    Please delete this launch configuration.
+                </p>
+                <a class="close-reveal-modal">&#215;</a>
+            </div>
+        </div>
     </div>
 </div>
 

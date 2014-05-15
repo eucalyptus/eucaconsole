@@ -7,6 +7,7 @@
 angular.module('VolumesPage', ['LandingPage'])
     .controller('VolumesCtrl', function ($scope, $http, $timeout) {
         $scope.volumeID = '';
+        $scope.volumeName = '';
         $scope.volumeZone = '';
         $scope.instanceName = '';
         $scope.instancesByZone = '';
@@ -18,6 +19,7 @@ angular.module('VolumesPage', ['LandingPage'])
             var modal = $('#' + action + '-volume-modal'),
                 volumeZone = volume['zone'];
             $scope.volumeID = volume['id'];
+            $scope.volumeName = volume['name'];
             if (action === 'detach') {
                 $scope.instanceName = volume['instance_name'];
             }

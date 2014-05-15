@@ -97,7 +97,8 @@
                             ${structure:alarm_form['comparison']}
                         </div>
                         <div class="small-3 columns">
-                            ${structure:alarm_form.threshold(**{'placeholder': 'amount...', 'type': 'number'})}
+                            ${structure:alarm_form.threshold(**{'placeholder': 'amount...', 'type': 'number', 'required': 'required', 'pattern': layout.integer_gt_zero_pattern})}
+                            <small class="error">${alarm_form.threshold.error_msg}</small>
                         </div>
                         <div class="small-6 columns">
                             <div class="unit-label">{{ unitLabel }}</div>
@@ -119,8 +120,9 @@
                     </div>
                     <div>
                         <span i18n:translate="">with each measurement lasting</span>
-                        ${structure:alarm_form.period(**{'type': 'number', 'min': 30, 'step': 30})}
-                        <span i18n:translate="">seconds</span>
+                        ${structure:alarm_form.period(**{'type': 'number', 'min': 1, 'step': 1, 'required': 'required', 'pattern': layout.integer_gt_zero_pattern})}
+                        <span i18n:translate="">minutes</span><br />
+                        <small class="error">${alarm_form.period.error_msg}</small>
                     </div>
                 </div>
             </div>
@@ -136,6 +138,12 @@
             </div>
         </form>
         <a href="#" id="create_alarm_close_link" class="close-reveal-modal">&#215;</a>
+        <br />
+        <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
+        <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+            <!--! Create alarm help -->
+            <div id="help-html-console_create_alarm" ng-include="'${layout.help_path('console_create_alarm.html')}'"></div> 
+        </div>
         <script src="${request.static_path('eucaconsole:static/js/pages/create_alarm.js')}"></script>
     </div>
 </div>

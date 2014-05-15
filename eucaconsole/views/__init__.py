@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Core views
 
@@ -166,10 +191,7 @@ class BaseView(object):
         if request.is_xhr:
             raise JSONError(message=message, status=status or 403)
         if status == 403:
-            if any(['Invalid access key' in message, 'Invalid security token' in message]):
-                notice = message
-            else:
-                notice = _(u'Your session has timed out')
+            notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
             # Empty Beaker cache to clear connection objects
             # BaseView.invalidate_connection_cache()
@@ -295,7 +317,7 @@ class BlockDeviceMappingItemView(BaseView):
 
     def get_snapshot_choices(self):
         choices = [('', _(u'None'))]
-        for snapshot in self.conn.get_all_snapshots():
+        for snapshot in self.conn.get_all_snapshots(owner='self'):
             value = snapshot.id
             snapshot_name = snapshot.tags.get('Name')
             label = '{id}{name} ({size} GB)'.format(
@@ -326,10 +348,13 @@ class BlockDeviceMappingItemView(BaseView):
                 bdm = BlockDeviceMapping()
                 for key, val in mapping.items():
                     device = BlockDeviceType()
-                    device.volume_type = val.get('volume_type')  # 'EBS' or 'ephemeral'
-                    device.snapshot_id = val.get('snapshot_id') or None
-                    device.size = val.get('size')
-                    device.delete_on_termination = val.get('delete_on_termination', False)
+                    if val.get('virtual_name') is not None and val.get('virtual_name').startswith('ephemeral'):
+                        device.ephemeral_name = val.get('virtual_name')
+                    else:
+                        device.volume_type = 'standard'
+                        device.snapshot_id = val.get('snapshot_id') or None
+                        device.size = val.get('size')
+                        device.delete_on_termination = val.get('delete_on_termination', False)
                     bdm[key] = device
                 return bdm
             return None

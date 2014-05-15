@@ -4,23 +4,6 @@
  *
  */
 
-$(document).ready(function () {
-    var idx = document.URL.indexOf("#");
-    if (idx != -1) {
-        var hash = document.URL.substring(idx + 1);
-        if (hash == '') return;
-        $(".tabs").children("dd").each(function() {
-            var id = $(this).find("a").attr("href").substring(1);
-            var $container = $("#" + id);
-            $(this).removeClass("active");
-            $container.removeClass("active");
-            if (id == hash || $container.find("#" + hash).length) {
-                $(this).addClass("active");
-                $container.addClass("active");
-            }
-        });
-    }
-});
 
 // user view page includes the User Editor editor
 angular.module('UserView', ['PolicyList'])
@@ -33,6 +16,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.autoscale_expanded = false;
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
+        $scope.currentTab = 'general-tab';
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
@@ -48,6 +32,10 @@ angular.module('UserView', ['PolicyList'])
         $scope.toggleIAMContent = function () {
             $scope.iam_expanded = !$scope.iam_expanded;
         };
+        $scope.clickTab = function ($event, tab){
+           $scope.currentTab = tab; 
+           $event.preventDefault();
+        };
         $scope.initController = function(user_name, disable_url, allRedirect, delete_url) {
             $scope.userName = user_name;
             $scope.disable_url = disable_url;
@@ -55,6 +43,25 @@ angular.module('UserView', ['PolicyList'])
             $('#delete-user-form').attr('action', delete_url);
             $scope.setFocus();
             $scope.setDropdownMenusListener();
+            $scope.adjustTab();
+        };
+        $scope.adjustTab = function() {
+            var idx = document.URL.indexOf("?");
+            if (idx != -1) {
+                var hash = document.URL.substring(idx + 5); // Count the index for '?tab=', thus + 5
+                if (hash == '') return;
+                $(".tabs").children("dd").each(function() {
+                    var id = $(this).find("a").attr("href").substring(1);
+                    var $container = $("#" + id);
+                    $(this).removeClass("active");
+                    $container.removeClass("active");
+                    if (id == hash || $container.find("#" + hash).length) {
+                        $(this).addClass("active");
+                        $container.addClass("active");
+                        $scope.currentTab = id;    // Update the currentTab value for the help display
+                    }
+                });
+            }
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
@@ -202,6 +209,7 @@ angular.module('UserView', ['PolicyList'])
                 $('#new_password').val("");
                 $('#new_password2').val("");
                 $('#password-strength').removeAttr('class');
+                $('#password-word').text('');
                 $scope.has_password = true;
                 $.generateFile({
                     csrf_token: csrf_token,
@@ -395,6 +403,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.policyName = '';
         $scope.policyJson = '';
         $scope.noAvailableGroups = false;
+        $scope.alreadyMemberOfAllGroups = false;
+        $scope.noGroupsDefined = false;
         $scope.initController = function (addEndpoint, removeEndpoint, jsonItemsEndpoint, jsonGroupsEndpoint,
                                           jsonGroupPoliciesEndpoint, jsonGroupPolicyEndpoint, alreadyMemberText, noGroupsDefinedText) {
             $scope.addEndpoint = addEndpoint;
@@ -439,10 +449,10 @@ angular.module('UserView', ['PolicyList'])
             $http.get($scope.jsonGroupsEndpoint).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.groupNames = results;
-                $scope.noAvailableGroups = results.indexOf($scope.alreadyMemberText) !== -1 || results.indexOf($scope.noGroupsDefinedText) !== -1;
-                if (!$scope.noAvailableGroups) {
-                    $('#group_name').val('');
-                }
+                $scope.alreadyMemberOfAllGroups = results.indexOf($scope.alreadyMemberText) !== -1;
+                $scope.noGroupsDefined = results.indexOf($scope.noGroupsDefinedText) !== -1;
+                $scope.noAvailableGroups = $scope.alreadyMemberOfAllGroups || $scope.noGroupsDefined;
+                $scope.groupName = '';
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
@@ -451,7 +461,7 @@ angular.module('UserView', ['PolicyList'])
             });
         };
         $scope.addUserToGroup = function ($event) {
-            var group_name = $scope.groupNames[$('#group_name').val()];
+            var group_name = $scope.groupName;
             var url = $scope.addEndpoint.replace("_group_", group_name);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,

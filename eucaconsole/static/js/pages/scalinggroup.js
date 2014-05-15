@@ -4,7 +4,7 @@
  *
  */
 
-// Volume page includes the AutoScale tag editor, so pull in that module as well.
+// Scaling Group page includes the AutoScale tag editor, so pull in that module as well.
 angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
     .controller('ScalingGroupPageCtrl', function ($scope, $timeout) {
         $scope.minSize = 1;
@@ -13,7 +13,6 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '60%', search_contains: true});
             $('#availability_zones').chosen({'width': '80%', search_contains: true});
-            $('#load_balancers').chosen({'width': '80%', search_contains: true});
             $('#termination_policies').chosen({'width': '80%', search_contains: true});
         };
         $scope.setInitialValues = function () {

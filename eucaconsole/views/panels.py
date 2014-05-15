@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Panels (reusable, parameterized template snippets) used across the app.
 
@@ -155,7 +180,7 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
     return dict(
         rules=rules_sorted,
         groupnames=groupnames,
-        rules_json=json.dumps(rules_list),
+        rules_json=BaseView.escape_json(json.dumps(rules_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
         remote_addr=getattr(request, 'remote_addr', ''),
@@ -175,24 +200,37 @@ def securitygroup_rules_preview(context, request, leftcol_width=3, rightcol_widt
 
 
 @panel_config('bdmapping_editor', renderer='../templates/panels/bdmapping_editor.pt')
-def bdmapping_editor(context, request, image=None, snapshot_choices=None):
+def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_choices=None, read_only=False):
     """ Block device mapping editor (e.g. for Launch Instance page).
         Usage example (in Chameleon template): ${panel('bdmapping_editor', image=image, snapshot_choices=choices)}
     """
     snapshot_choices = snapshot_choices or []
     bdm_dict = {}
-    if image:
+    if image is not None:
         bdm_object = image.block_device_mapping
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
                 is_root = True if get_root_device_name(image)==key else False,
-                volume_type=device.volume_type,
+                virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
                 delete_on_termination=device.delete_on_termination,
             )
+    if launch_config is not None:
+        bdm_list = launch_config.block_device_mappings or []
+        for bdm in bdm_list:
+            if bdm.device_name in bdm_dict.keys():
+                continue
+            ebs = bdm.ebs
+            bdm_dict[bdm.device_name] = dict(
+                is_root = False,  # because we can't redefine root in a launch config
+                virtual_name=bdm.virtual_name,
+                snapshot_id=getattr(ebs, 'snapshot_id', None),
+                size=getattr(ebs, 'volume_size', None),
+                delete_on_termination=getattr(ebs, 'delete_on_termination', False),
+            )
     bdm_json = json.dumps(bdm_dict)
-    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json)
+    return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
 
 
 def get_root_device_name(img):

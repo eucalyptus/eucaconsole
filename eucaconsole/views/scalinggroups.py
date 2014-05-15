@@ -1,4 +1,29 @@
 # -*- coding: utf-8 -*-
+# Copyright 2013-2014 Eucalyptus Systems, Inc.
+#
+# Redistribution and use of this software in source and binary forms,
+# with or without modification, are permitted provided that the following
+# conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Pyramid views for Eucalyptus and AWS scaling groups
 
@@ -130,7 +155,6 @@ class ScalingGroupsJsonView(LandingPageView):
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
-                load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
                 launch_config=group.launch_config_name,
                 max_size=group.max_size,
@@ -257,7 +281,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         # Delete existing tags first
         if self.scaling_group.tags:
             self.autoscale_conn.delete_tags(self.scaling_group.tags)
-        self.autoscale_conn.create_or_update_tags(updated_tags_list)
+        if updated_tags_list:
+            self.autoscale_conn.create_or_update_tags(updated_tags_list)
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
@@ -466,9 +491,9 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
         if self.policy_form.validate():
             adjustment_amount = self.request.params.get('adjustment_amount')
             adjustment_direction = self.request.params.get('adjustment_direction', 'up')
-            scaling_adjustment = adjustment_amount
+            scaling_adjustment = int(adjustment_amount)
             if adjustment_direction == 'down':
-                scaling_adjustment = -adjustment_direction
+                scaling_adjustment = -scaling_adjustment
             scaling_policy = ScalingPolicy(
                 name=self.request.params.get('name'),
                 as_name=self.scaling_group.name,
@@ -524,6 +549,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
+            elb_placeholder_text=_(u'Select load balancers...'),
         )
 
     @view_config(route_name='scalinggroup_new', renderer=TEMPLATE, request_method='GET')
@@ -542,7 +568,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     name=scaling_group_name,
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
-                    load_balancers=self.request.params.getall('load_balancers'),
+                    # load_balancers=self.request.params.getall('load_balancers'),
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),

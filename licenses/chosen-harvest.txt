@@ -1,3 +1,12 @@
+=== Chosen (Harvest) ===
+
+== Files ==
+
+eucaconsole/static/css/thirdparty/chosen*
+eucaconsole/static/js/thirdparty/jquery/chosen*
+
+== License (MIT) ==
+
 #### Chosen
 - by Patrick Filler for [Harvest](http://getharvest.com)
 - Copyright (c) 2011-2013 by Harvest

@@ -1,3 +1,11 @@
+=== Lato fonts ===
+
+== Files ==
+
+eucaconsole/static/fonts/Lato
+
+== License (OFL) ==
+
 Copyright (c) 2010-2011 by tyPoland Lukasz Dziedzic with Reserved Font Name "Lato".
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

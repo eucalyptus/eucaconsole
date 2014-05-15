@@ -77,7 +77,8 @@
                             </div>
                         </div>
                         <!--! Step 2: Membership tab content -->
-                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text}">
+                        <div class="content" id="step2" tal:define="avail_zones_attrs {'data-placeholder': avail_zones_placeholder_text};
+                                            load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
                             ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
@@ -142,6 +143,7 @@
                 <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                 <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                     <!-- HELP CONTENT -->
+                    <div id="help-html-console_create_scaling_group" ng-include="'${layout.help_path('console_create_scaling_group.html')}'"></div> 
                 </div>
             </div>
         </div>

@@ -84,7 +84,7 @@
                             <p class="description" i18n:translate="">
                                 Specify the number, name(s), size, availability zone, and tags.
                             </p>
-                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
+                            ${panel('form_field', field=launch_form['number'], leftcol_width=3, rightcol_width=9, min=1, max=10, maxlength=2, ng_attrs={'model': 'instanceNumber'}, pattern=layout.integer_gt_zero_pattern)}
                             <div class="row controls-wrapper" ng-cloak="">
                                 <div class="small-3 columns">
                                     <label>
@@ -92,7 +92,7 @@
                                     </label>
                                 </div>
                                 <div class="small-9 columns field inline">
-                                    <span ng-repeat="name in buildNumberList(instanceNumber)">
+                                    <span ng-repeat="name in buildNumberList()">
                                         <input class="name" placeholder="instance{{ $index + 1 }}"
                                                name="name_{{ $index }}" ng-model="instanceNames[$index]" />
                                     </span>
@@ -259,6 +259,7 @@
                 <metal:block metal:use-macro="layout.global_macros['help_expando']" />
                 <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                     <!-- HELP CONTENT -->
+                    <div id="help-html-console_create_instances" ng-include="'${layout.help_path('console_create_instances.html')}'"></div> 
                 </div>
             </div>
         </div>

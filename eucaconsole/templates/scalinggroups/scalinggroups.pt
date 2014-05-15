@@ -62,10 +62,6 @@
                     <span class="label" title="Availability zones" i18n:attributes="title" data-tooltip="">AZ</span>
                     {{ item.availability_zones }}
                 </div>
-                <div ng-show="item.load_balancers">
-                    <span class="label" title="Load balancers" i18n:attributes="title" data-tooltip="">LB</span>
-                    {{ item.load_balancers }}
-                </div>
                 <div ng-show="item.placement_group">
                     <span class="label" title="Placement group" i18n:attributes="title" data-tooltip="">PG</span>
                     {{ item.placement_group }}
@@ -80,7 +76,6 @@
                 <th i18n:translate="">Launch config</th>
                 <th i18n:translate="">Instances</th>
                 <th i18n:translate="">Avail zones</th>
-                <th i18n:translate="">Load balancers</th>
                 <th i18n:translate="">Capacity</th>
                 <th i18n:translate="">Status</th>
                 <th i18n:translate="" class="actions">Actions</th>
@@ -94,7 +89,6 @@
                     </a>
                 </td>
                 <td>{{ item.availability_zones }}</td>
-                <td>{{ item.load_balancers }}</td>
                 <td><!--! Capacity -->
                     <span i18n:translate="">Min:</span> <b>{{ item.min_size }}</b>,
                     <span i18n:translate="">Desired:</span> <b>{{ item.desired_capacity }}</b>,
