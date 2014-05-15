@@ -71,9 +71,15 @@ Copy the default ini file to the application root.  At the repo root...
 
     cp conf/console.default.ini ./console.ini
 
-The default settings assume an SSL environment.  To disable SSL, set session.secure to false in console.ini
+The default settings assume an HTTPS/SSL environment.  To disable HTTPS/SSL, set session.secure to false in console.ini
 
     session.secure = false
+
+The session keys are written to a file specified in console.ini.
+You may need to change the session.keyini setting if you don't have write access to the default location,
+or you may comment out the following line to have the session keys generated at the repo root.
+
+    session.keyini = /etc/eucaconsole/session-keys.ini
 
 Run the server with
 
@@ -134,8 +140,8 @@ A production deployment assumes an SSL setup, requiring nginx. To configure ngin
 
 1. Copy the nginx.conf file at conf/nginx.conf to your system's nginx.conf location
     - Location is usually /etc/nginx/nginx.conf on Linux and /usr/local/etc/nginx/nginx.conf on OS X
-2. Configure the location of the static folder (location /static/.*)
-3. Configure SSL (specify paths to certificate and key files)
+2. Configure SSL (specify paths to certificate and key files)
+3. Visit the site via an HTTPS url (e.g. https://localhost)
 
 
 Running the tests
