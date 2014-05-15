@@ -211,7 +211,6 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
         for key, device in bdm_object.items():
             bdm_dict[key] = dict(
                 is_root = True if get_root_device_name(image)==key else False,
-                volume_type=device.volume_type,
                 virtual_name=device.ephemeral_name,
                 snapshot_id=device.snapshot_id,
                 size=device.size,
@@ -225,7 +224,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
             ebs = bdm.ebs
             bdm_dict[bdm.device_name] = dict(
                 is_root = False,  # because we can't redefine root in a launch config
-                volume_type=getattr(device, 'volume_type', None),
+                virtual_name=bdm.virtual_name,
                 snapshot_id=getattr(ebs, 'snapshot_id', None),
                 size=getattr(ebs, 'volume_size', None),
                 delete_on_termination=getattr(ebs, 'delete_on_termination', False),

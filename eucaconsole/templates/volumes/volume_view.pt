@@ -153,9 +153,7 @@
             <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_volumes', 'manage_snapshot', request.route_path('volume_snapshots', id=volume.id))}
                 <!--! Tag editor help content -->
-                <metal:block metal:use-macro="layout.global_macros['tageditor_help']">
-                    <div tal:condition="not volume" metal:fill-slot="delete_tags"></div>
-                </metal:block>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
