@@ -156,8 +156,15 @@
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
                 <div tal:condition="not group">
-                    <div id="help-html-console_create_iam_group" ng-include="'${layout.help_path('console_create_iam_group.html')}'"></div> 
+                    <div id="help-html-console_create_iam_group"
+                        ng-include="'${layout.help_path('console_create_iam_group.html')}'">
+                    </div> 
                 </div>
+                <div tal:condition="group">
+                    <div id="help-html-console_edit_iam_group"
+                        ng-include="'${layout.help_path('console_edit_iam_group.html')}'">
+                    </div>
+                </div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
