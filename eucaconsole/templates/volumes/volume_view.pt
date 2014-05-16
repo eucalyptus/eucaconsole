@@ -148,12 +148,16 @@
             <div class="help-padding" tal:condition="volume">&nbsp;</div>
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" tal:condition="not volume" ng-show="isHelpExpanded" ng-cloak="">
-                <div id="help-html-console_create_volume" ng-include="'${layout.help_path('console_create_volume.html')}'"></div> 
+                <div id="help-html-console_create_volume"
+                    ng-include="'${layout.help_path('console_create_volume.html')}'">
+                </div> 
             </div>
             <div class="help-content" tal:condition="volume" ng-show="isHelpExpanded" ng-cloak="">
                 ${panel('help_volumes', 'manage_snapshot', request.route_path('volume_snapshots', id=volume.id))}
                 <!--! Tag editor help content -->
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <div id="help-html-console_volume_detail"
+                    ng-include="'${layout.help_path('console_volume_detail.html')}'">
+                </div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
