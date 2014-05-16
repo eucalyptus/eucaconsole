@@ -58,6 +58,7 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
+                <div id="help-html-console_create_scaling_policy" ng-include="'${layout.help_path('console_create_scaling_policy.html')}'"></div> 
             </div>
         </div>
         <!--! Create Alarm modal dialog -->
