@@ -32,9 +32,6 @@ import re
 
 import logging
 
-from dogpile.cache import make_region
-from dogpile.cache.util import sha1_mangle_key
-
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
@@ -44,6 +41,7 @@ from ..forms.images import ImageForm, ImagesFiltersForm
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+from .. import long_term
 import panels
 
 
@@ -98,14 +96,6 @@ class ImagesView(LandingPageView):
             if '_get_images_cache' in manager.namespace.namespace:
                 manager.clear()
 
-
-cache_region = make_region(key_mangler=sha1_mangle_key).configure(
-    'dogpile.cache.memcached',
-    expiration_time = 3600,
-    arguments = {
-        'url':["127.0.0.1:11211"],
-    },
-)
 
 class ImagesJsonView(LandingPageView):
 
@@ -181,7 +171,7 @@ class ImagesJsonView(LandingPageView):
             items.extend(self.get_images(conn, [], ['self'], region))
         return items
 
-    @cache_region.cache_on_arguments(namespace='images')
+    @long_term.cache_on_arguments(namespace='images')
     def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
         with boto_error_handler(self.request):
             logging.info("loading images from server (not cache)")

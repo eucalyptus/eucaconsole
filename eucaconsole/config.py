@@ -43,6 +43,11 @@ from .tweens import setup_tweens
 from .chamext import setup_exts
 from .keymgt import ensure_session_keys
 from .mime import check_types
+import eucaconsole
+#import short_term
+#import default_term
+#import long_term
+#import extra_long_term
 
 try:
     from version import __version__
@@ -72,4 +77,35 @@ def get_configurator(settings, enable_auth=True):
     setup_tweens(config)
     setup_exts(config)
     config.scan()
+
+    memory_cache = settings.get('cache.memory')
+    memory_cache_url = settings.get('cache.memory.url')
+    eucaconsole.short_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.short_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+        },
+    )
+    eucaconsole.default_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.default_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+        },
+    )
+    eucaconsole.long_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.long_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+        },
+    )
+    eucaconsole.extra_long_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.extra_long_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+        },
+    )
     return config
