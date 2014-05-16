@@ -3,12 +3,12 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<title>Create Instances</title>
+<title>Launch a New Instance</title>
 </head>
 <body id="launch_instances_ui_context">
 
 
-    <h1 class="title topictitle1">Create Instances</h1>
+    <h1 class="title topictitle1">Launch a New Instance</h1>
 
     
     <div class="body taskbody"><p class="shortdesc"> This screen allows you create a new instance.</p>
@@ -204,6 +204,49 @@
                         new instance should use private addressing only. Private addresses cannot
                         connect directly to the Internet and must go through a NAT (Network Address
                         Translation) device or an elastic IP address mapped to the instance. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">You can configure additional storage for your instance in the Storage
+                        section:</span>
+                    <ol type="a" class="ol substeps" id="launch_instances_ui_advanced_steps__launch_instances_ui_advanced_storage_steps">
+                        <li class="li substep">
+                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Type the desired mapping for the storage into the
+                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
+                                if you would like the attached storage to be deleted when the
+                                instance is terminated. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
                 </li>
 <li class="li step">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Launch instance(s)</span> button to launch your
