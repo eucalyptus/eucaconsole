@@ -321,7 +321,7 @@
                                     <p>
                                         <span i18n:translate="">Are you sure you want to delete this access key?</span>
                                     </p>
-                                    <form id="delete-key-form" ng-submit="deleteKey('${request.route_path('user_delete_key', name='_name_', key='_key_')}')">
+                                    <form id="delete-key-form" ng-submit="deleteKey($event, '${request.route_path('user_delete_key', name='_name_', key='_key_')}')">
                                         ${structure:user_form['csrf_token']}
                                         <div>&nbsp;</div>
                                         <div class="row">

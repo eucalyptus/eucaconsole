@@ -351,7 +351,8 @@ angular.module('UserView', ['PolicyList'])
             $scope.keyToDelete = item.access_key_id;
             modal.foundation('reveal', 'open');
         };
-        $scope.deleteKey = function (url) {
+        $scope.deleteKey = function ($event, url) {
+            $event.preventDefault();
             url = url.replace("_name_", $scope.userWithKey).replace("_key_", $scope.keyToDelete);
             var data = "csrf_token="+$('#csrf_token').val();
             $http({method:'POST', url:url, data:data,
