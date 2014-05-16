@@ -36,16 +36,13 @@ use = egg:eucaconsole
 main = eucaconsole:main
 
 """
-from dogpile.cache import make_region
-from dogpile.cache.util import sha1_mangle_key
-
 from .config import get_configurator
 
 # caches available within the app
-short_term = make_region(key_mangler=sha1_mangle_key)
-default_term = make_region(key_mangler=sha1_mangle_key)
-long_term = make_region(key_mangler=sha1_mangle_key)
-extra_long_term = make_region(key_mangler=sha1_mangle_key)
+short_term = None
+default_term = None
+long_term = None
+extra_long_term = None
 
 def main(global_config, **settings):
     """Return a Pyramid WSGI application"""
