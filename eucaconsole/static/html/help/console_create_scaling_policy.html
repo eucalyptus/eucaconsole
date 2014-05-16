@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Create Scaling Policy</title>
+</head>
+<body id="create_scaling_policy_ui_help_context">
+
+
+    <h1 class="title topictitle1">Create Scaling Policy</h1>
+
+    
+
+        <div class="body taskbody"><p class="shortdesc"> An Auto Scaling policy defines how to perform scaling actions in response to CloudWatch
+        alarms. Auto scaling policies can either scale-in, which terminates instances in your
+        Auto Scaling group, or scale-out, which will launch new instances in your Auto Scaling
+        group. For more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in
+        the <em class="ph i">Eucalyptus User Guide</em>. </p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">Type a name for the scaling policy in the <span class="ph uicontrol">Name</span> text
+                        box.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Select an action type using the <span class="ph uicontrol">Action</span> control. The
+                        action specifies what to do when a scaling condition is met.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Type the numerical unit for the scaling action in the
+                            <span class="ph uicontrol">Amount</span> text box. This value is used in
+                        conjunction with the value entered in the <span class="ph uicontrol">Measure</span>
+                        control to determine how many instances to scale for this policy.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Select the measure for the scaling action using the
+                            <span class="ph uicontrol">Measure</span> control. This can be either a number of
+                        instances (for example: 'scale up by 2 instances') or a percentage value
+                        (for example: 'scale down by 10 percent').</span>
+                </li>
+<li class="li step">
+                    <div class="note note"><span class="notetitle">Note:</span> A CloudWatch alarm cannot be associated with more than
+                        5 scaling policies.</div>
+
+                    <span class="ph cmd">Select a CloudWatch alarm from the <span class="ph uicontrol">Alarm</span> control.
+                        You can click the <span class="ph uicontrol">Create Alarm</span> link to display the
+                            <span class="ph uicontrol">Create Alarm</span> dialog. Auto Scaling uses CloudWatch
+                        alarms to determine when to take scaling actions.</span>
+                </li>
+</ol>
+
+        </div>
+
+
+    <div class="topic task nested1" id="create_scaling_policy_ui_help_steps_finishing">
+        <h2 class="title topictitle2">Saving the Scaling Group</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="li step p">
+                    <span class="ph cmd">Once you're satisfied with the properties you've defined for your scaling
+                        policy, click the <span class="ph uicontrol">Add Policy</span> button to
+                        save your work, or click the <span class="ph uicontrol">Cancel</span> button to cancel.</span>
+                </div>
+
+            <div class="section result">For more information on Auto Scaling, see Eucalyptus User Guide.</div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>

@@ -3,18 +3,6 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="DC.Type" content="task"/>
-<meta name="DC.Title" content="Create a Scaling Group"/>
-<meta name="abstract" content="This dialog allows you to create a scaling group. An Auto Scaling group defines the parameters for the Eucalyptus instances that are used for scaling, as well as the minimum, maximum, and (optionally) the desired number of instances to use for Auto Scaling your application. For more information on Auto Scaling, please see Using Auto Scaling in the Eucalyptus User Guide."/>
-<meta name="description" content="This dialog allows you to create a scaling group. An Auto Scaling group defines the parameters for the Eucalyptus instances that are used for scaling, as well as the minimum, maximum, and (optionally) the desired number of instances to use for Auto Scaling your application. For more information on Auto Scaling, please see Using Auto Scaling in the Eucalyptus User Guide."/>
-<meta name="prodname" content="Eucalyptus"/>
-<meta name="version" content="3.3"/>
-<meta name="copyright" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Format" content="XHTML"/>
-<meta name="DC.Identifier" content="create_scaling_group_ui_help_context"/>
-<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
 <title>Create a Scaling Group</title>
 </head>
 <body id="create_scaling_group_ui_help_context">
@@ -87,20 +75,11 @@
                         box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you wish to add additional tags, click the <strong class="ph b">+</strong> button to the right
-                        of the <span class="ph uicontrol">Value</span> text box.</span>
+                    <span class="ph cmd">If you wish to add additional tags, click the <strong class="ph b">Add Tag</strong> button.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you want to edit a tag you've already entered, click the pencil icon to
-                        the right of the <span class="ph uicontrol">Value</span> text box.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">-</strong>
-                        button to the right of the <span class="ph uicontrol">Value</span> text box.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd"> When you are finished adding tags, click the <span class="ph uicontrol">Next: Select
-                            membership</span> button. </span>
+                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">x</strong>
+                        on the tag icon.</span>
                 </li>
 </ol>
 
@@ -135,64 +114,13 @@
                      You can add another availability zone to the new auto scaling group by
                         clicking the <strong class="ph b">+</strong> button next to the drop-down list box.
                 </li>
-<li class="li step">
-                    <span class="ph cmd">Select one or more load balancers for this auto scaling group from the
-                            <span class="ph uicontrol">Load balancers</span> drop-down list box.</span>
-                     You can add another load balancer to the new auto scaling group by
-                        clicking the <strong class="ph b">+</strong> button next to the drop-down list box.
-                </li>
 </ol>
 
         </div>
 
     </div>
 
-    <div class="topic task nested1" id="create_scaling_group_ui_help_steps_policies">
-        <h2 class="title topictitle2">Policies</h2>
-
-        
-        <div class="body taskbody"><p class="shortdesc">In this section, you can define the scaling policies for your auto scaling group.
-            An Auto Scaling policy defines how to perform scaling actions in response to CloudWatch
-            alarms. Auto scaling policies can either scale-in, which terminates instances in your
-            Auto Scaling group, or scale-out, which will launch new instances in your Auto Scaling
-            group. </p>
-
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Type a name for the scaling policy in the <span class="ph uicontrol">Name</span> text
-                        box.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Select an action type using the <span class="ph uicontrol">Action</span> control. The
-                        action specifies what to do when a scaling condition is met.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Type the numerical unit for the scaling action in the
-                            <span class="ph uicontrol">Amount</span> text box. This value is used in
-                        conjunction with the value entered in the <span class="ph uicontrol">Measure</span>
-                        control to determine how many instances to scale for this policy.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Select the measure for the scaling action using the
-                            <span class="ph uicontrol">Measure</span> control. This can be either a number of
-                        instances (for example: 'scale up by 2 instances') or a percentage value
-                        (for example: 'scale down by 10 percent').</span>
-                </li>
-<li class="li step">
-                    <div class="note note"><span class="notetitle">Note:</span> A CloudWatch alarm cannot be associated with more than
-                        5 scaling policies.</div>
-
-                    <span class="ph cmd">Select a CloudWatch alarm from the <span class="ph uicontrol">Alarm</span> control.
-                        You can click the <span class="ph uicontrol">Create Alarm</span> link to display the
-                            <span class="ph uicontrol">Create Alarm</span> dialog. Auto Scaling uses CloudWatch
-                        alarms to determine when to take scaling actions.</span>
-                </li>
-</ol>
-
-        </div>
-
-
-    </div>
-
+    
     <div class="topic task nested1" id="create_scaling_group_ui_help_steps_finishing">
         <h2 class="title topictitle2">Saving the Scaling Group</h2>
 

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en-us" lang="en-us">
+<head>
+<title>Scaling Group Detail - General</title>
+</head>
+<body id="scaling_group_detail_ui_help_context">
+
+
+    <h1 class="title topictitle1">Scaling Group Detail - General</h1>
+
+    
+    <div class="body taskbody"><p class="shortdesc"> This dialog allows you to create a scaling group. An Auto Scaling group defines the
+        parameters for the Eucalyptus instances that are used for scaling, as well as the minimum,
+        maximum, and (optionally) the desired number of instances to use for Auto Scaling your
+        application. For more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in
+        the <em class="ph i">Eucalyptus User Guide</em>. </p>
+</div>
+
+    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_general">
+        <h2 class="title topictitle2">Capacity</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section is where you specify the minimum, maximum, and average number of
+            instances your scaling group will keep running.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">Select the maximum number of instances you want running in your autoscaling
+                        group using the <span class="ph uicontrol">Maximum</span> control.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Specify the minimum number of instances you want running using the
+                            <span class="ph uicontrol">Minimum</span> control. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Specify the desired number of instances you want running using the
+                            <span class="ph uicontrol">Desired</span> control. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">A termination policy defines how instances that are no longer needed in the
+                        scaling group are terminated. Select one or more termination policies from
+                        the T<span class="ph uicontrol">ermination policies</span> drop-down list box. The
+                        termination policies will be executed in the order you select them.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_tags">
+        <h2 class="title topictitle2">Details</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">A tag is a key/value pair containing data that you can attach to resources in
+            your cloud. This section of the <span class="ph uicontrol">Create Scaling Group</span> wizard
+            allows you to define tags for for your scaling group and for instances that run in your
+            scaling group.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd"> Select a launch configuration from the <span class="ph uicontrol">Launch
+                        Configuration</span> drop-down list box. A launch configuration
+                        defines the properties of the instances that are launched as part of your
+                        auto scaling group.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Select the availability zone for your new scaling group from the
+                        <span class="ph uicontrol">Availability zones</span> drop-down list box.</span>
+                     You can add another availability zone to the new auto scaling group by
+                        clicking the <strong class="ph b">+</strong> button next to the drop-down list box.
+                </li>
+<li class="li step">
+                    <span class="ph cmd">The <em class="ph i">cooldown period</em> is the number of seconds after a scaling activity completes before any new scaling activity can start.
+                        Use the <span class="ph uicontrol">Default cooldown period (seconds)</span> control to select the cooldown period for your auto scaling group.
+                    </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_membership">
+        <h2 class="title topictitle2">Health Check</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">In this section, you can specify load balancers, availability zones, and health
+            checks for the instances that run in your auto scaling group. </p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">Select the type of health check for your auto scaling group from the
+                            <span class="ph uicontrol">Type</span> drop-down list box. The auto scaling health
+                        check uses EC2 instance status checks to determine the health state of each
+                        instance in your auto scaling group. If your auto scaling group is using a
+                        load balancer, auto scaling will use both EC2 instance status checks and
+                        load balancing instance health checks.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Type the amount of grace period, in seconds, into the <span class="ph uicontrol">Grace
+                            period</span> text box. This is the amount of time after a new
+                        instance is launched in your auto scaling group before health checks start
+                        for the instance. </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="scaling_group_detail_general_tags">
+        <h2 class="title topictitle2">Tags</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">A tag is a key/value pair containing data that you can attach to resources in
+            your cloud. This section of the <span class="ph uicontrol">Create Scaling Group</span> wizard
+            allows you to define tags for for your scaling group and for instances that run in your
+            scaling group.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">If you want to apply the new tag to instances running in the scaling group,
+                        select the <span class="ph uicontrol">Propagate</span> check box.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">Key</span> text
+                        box.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">Value</span> text
+                        box.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">If you wish to add additional tags, click the <strong class="ph b">Add Tag</strong> button.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">x</strong>
+                        on the tag icon.</span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="scaling_group_detail_ui_help_steps_finishing">
+        <h2 class="title topictitle2">Saving Your Changes</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="li step p">
+                    <span class="ph cmd">Once you're satisfied with the edits to your scaling
+                        group, click the <span class="ph uicontrol">Save changes</span> button.</span>
+                </div>
+
+            <div class="section result">For more information on Auto Scaling, see Eucalyptus User Guide.</div>
+
+        </div>
+
+    </div>
+
+
+</body>
+</html>
