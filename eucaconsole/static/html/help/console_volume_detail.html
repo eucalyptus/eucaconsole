@@ -27,7 +27,8 @@
 
             <div class="body taskbody">
                 <div class="li step p">
-                        <span class="ph cmd">Type the new name of the volume in the Name text field.</span>
+                        <span class="ph cmd">Type the new name of the volume in the <span class="ph uicontrol">Name</span> text
+                            field.</span>
                     </div>
 
             </div>
@@ -93,68 +94,49 @@
     
 </div>
 
+        <div class="topic task nested2" id="volume_detail_ui_help_steps_finishing">
+            <h3 class="title topictitle3">Saving Your Changes</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"/>
+
+                <div class="li step p">
+                        <span class="ph cmd">Once you're satisfied with the edits to your volume, click the <span class="ph uicontrol">Save changes</span> button.</span>
+                    </div>
+
+                
+            </div>
+
+        </div>
+
     </div>
 
         
     
 
-    <div class="topic task nested1" id="instance_detail_ui_context_menu">
+    <div class="topic task nested1" id="volume_detail_ui_context_menu">
         <h2 class="title topictitle2">Action menu</h2>
 
         
         <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
-            that you can perform on the selected instance.</p>
+            that you can perform on the selected volume.</p>
 
             <div class="section context">The following context menu actions are availabe:</div>
 
         </div>
 
         
-        
-        
-        <div class="topic task nested2" id="instance_detail_connect_steps">
-            <h3 class="title topictitle3">Connect to instance</h3>
+        <div class="topic task nested2" id="volume_detail_ui_attach_steps">
+            <h3 class="title topictitle3">Attach to instance</h3>
 
             
             <div class="body taskbody"><p class="shortdesc"/>
 
                 <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog with instructions detailing
-                            how to connect to the selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_launch_more_steps">
-            <h3 class="title topictitle3">Launch more like this</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog that allows you to create and
-                            customize an instance like the selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_launch_config_steps">
-            <h3 class="title topictitle3">Create launch configuration</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">A launch configuration is used to define the parameters for new
-                            instances that are launched as part of your auto scaling group.
-                            Selecting this menu displays the <span class="ph uicontrol">Create new launch
-                                configuration</span> wizard. </span>
-                         <div class="note note"><span class="notetitle">Note:</span> For more information on Auto Scaling, please see <em class="ph i">Using Auto
-                            Scaling</em> in the <em class="ph i">Eucalyptus User Guide</em>.</div>
+                        <span class="ph cmd">This item allows you to attach the volume to a running instance.</span>
+                         
+                            <div class="note note"><span class="notetitle">Note:</span> 
+                                This menu item will not appear if the volume is already attached to an instance.</div>
 
                         
                     </div>
@@ -163,61 +145,20 @@
 
         </div>
 
-        <div class="topic task nested2" id="instance_detail_console_output_steps">
-            <h3 class="title topictitle3">View console output</h3>
+        
+        <div class="topic task nested2" id="volume_detail_ui_detach_steps">
+            <h3 class="title topictitle3">Detach from instance</h3>
 
             
             <div class="body taskbody"><p class="shortdesc"/>
 
                 <div class="li step p">
-                        <span class="ph cmd">Selecting this menu will display a dialog box showing the selected
-                            instance's console output.</span>
-                    </div>
+                        <span class="ph cmd">This item allows you to detach the volume from a running instance.</span>
+                         
+                            <div class="note note"><span class="notetitle">Note:</span> 
+                                This menu item will not appear if the volume is not attached to an instance.</div>
 
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_manage_volumes_steps">
-            <h3 class="title topictitle3">Manage volumes</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">This menu item allows you to associate an elastic IP address with the
-                            selected instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_associate_ip_steps">
-            <h3 class="title topictitle3">Associate IP address</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select <span class="ph uicontrol">Associate IP address</span> from the
-                            <span class="ph uicontrol">Actions</span> menu to show the volume management
-                            page that will allow you to attach and detach volumes for the selected
-                            instance.</span>
-                    </div>
-
-            </div>
-
-        </div>
-
-        <div class="topic task nested2" id="instance_detail_ui_stop_steps">
-            <h3 class="title topictitle3">Stop</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this item to stop the selected instance.</span>
+                        
                     </div>
 
             </div>
@@ -225,14 +166,19 @@
         </div>
 
         
-        <div class="topic task nested2" id="instance_detail_ui_reboot_steps">
-            <h3 class="title topictitle3">Reboot</h3>
+        <div class="topic task nested2" id="volume_detail_ui_delete_steps">
+            <h3 class="title topictitle3">Deleting Volumes</h3>
 
             
-            <div class="body taskbody"><p class="shortdesc"/>
+            <div class="body taskbody"><p class="shortdesc"> </p>
 
                 <div class="li step p">
-                        <span class="ph cmd">Select this item to reboot the selected instance.</span>
+                        <span class="ph cmd">This item allows you to delete a volume.</span>
+                         
+                            <div class="note note"><span class="notetitle">Note:</span> 
+                                This menu item will not appear if the volume is attached to an instance.</div>
+
+                        
                     </div>
 
             </div>
@@ -240,24 +186,7 @@
         </div>
 
         
-        
-        
-        <div class="topic task nested2" id="instance_detail_ui_terminate_steps">
-            <h3 class="title topictitle3">Terminate</h3>
-
-            
-            <div class="body taskbody"><p class="shortdesc"/>
-
-                <div class="li step p">
-                        <span class="ph cmd">Select this to terminate the selected instance.</span>
-                         <div class="note note"><span class="notetitle">Note:</span> A terminated instance can't be restarted.</div>
-
-                    </div>
-
-            </div>
-
-        </div>
-
+       
     </div>
 
 
