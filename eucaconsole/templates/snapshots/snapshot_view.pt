@@ -133,8 +133,10 @@
                 </div>
                 <div tal:condition="snapshot" tal:omit-tag="">
                 </div>
-                <!--! Tag editor help content -->
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <!--! help content -->
+                <div id="help-html-console_snapshot_details" 
+                    ng-include="'${layout.help_path('console_snapshot_details.html')}'">
+                </div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
