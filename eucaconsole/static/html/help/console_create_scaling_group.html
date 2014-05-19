@@ -11,7 +11,7 @@
     <h1 class="title topictitle1">Create a Scaling Group</h1>
 
     
-    <div class="body taskbody"><p class="shortdesc"> This dialog allows you to create a scaling group. An Auto Scaling group defines the
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to create a scaling group. An Auto Scaling group defines the
         parameters for the Eucalyptus instances that are used for scaling, as well as the minimum,
         maximum, and (optionally) the desired number of instances to use for Auto Scaling your
         application. For more information on Auto Scaling, please see <em class="ph i">Using Auto Scaling</em> in
@@ -53,6 +53,30 @@
 
     </div>
 
+    <div class="topic task nested1" id="create_scaling_group_ui_help_steps_capacity">
+        <h2 class="title topictitle2">Capacity</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc">This section is where you specify the minimum, maximum, and average number of instances for your scaling group.</p>
+
+            <ol class="ol steps"><li class="li step">
+                    <span class="ph cmd">Select the maximum number of instances you want running in your autoscaling
+                        group using the <span class="ph uicontrol">Maximum</span> control.</span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Specify the minimum number of instances you want running using the
+                        <span class="ph uicontrol">Minimum</span> control. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Specify the desired number of instance you want running using the
+                        <span class="ph uicontrol">Desired</span> control. </span>
+                </li>
+</ol>
+
+        </div>
+
+    </div>
+
     <div class="topic task nested1" id="create_scaling_group_ui_help_steps_tags">
         <h2 class="title topictitle2">Tags</h2>
 
@@ -75,7 +99,7 @@
                         box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">If you wish to add additional tags, click the <strong class="ph b">Add Tag</strong> button.</span>
+                    <span class="ph cmd">To add this tag, click the <strong class="ph b">Add Tag</strong> button.</span>
                 </li>
 <li class="li step">
                     <span class="ph cmd">If you wish to delete a tag that you've already entered, click the <strong class="ph b">x</strong>
@@ -91,8 +115,8 @@
         <h2 class="title topictitle2">Membership</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">In this section, you can specify load balancers, availability zones, and health
-            checks for the instances that run in your auto scaling group. </p>
+        <div class="body taskbody"><p class="shortdesc">In this section, you can specify availability zones and health checks for the
+            instances that run in your auto scaling group. </p>
 
             <ol class="ol steps"><li class="li step">
                     <span class="ph cmd">Select the type of health check for your auto scaling group from the
@@ -109,10 +133,11 @@
                         for the instance. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select the availability zone for your new scaling group from the
+                    <span class="ph cmd">Select one or more availability zones for your new scaling group from the
                             <span class="ph uicontrol">Availability zones</span> drop-down list box.</span>
-                     You can add another availability zone to the new auto scaling group by
-                        clicking the <strong class="ph b">+</strong> button next to the drop-down list box.
+                     You can remove a selected availability zone by clicking on the
+                            <span class="ph uicontrol">x</span> next to the availability zone's name in the
+                            <span class="ph uicontrol">Availability Zones</span> field.
                 </li>
 </ol>
 

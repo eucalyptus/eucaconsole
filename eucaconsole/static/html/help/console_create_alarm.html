@@ -3,17 +3,17 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<title>Create Alarm</title>
+<title>Create CloudWatch Alarm</title>
 </head>
 <body id="create_load_balancer_ui_help_context">
 
 
-    <h1 class="title topictitle1">Create Alarm</h1>
+    <h1 class="title topictitle1">Create CloudWatch Alarm</h1>
 
     
     <div class="body taskbody"><p class="shortdesc"> Auto Scaling uses CloudWatch alarms to trigger scaling actions. An alarm watches a
         single metric (for example: CPU utilization) over a time period you set, and performs one or
-        more actions based on the value of the metric relative to a given threshold.  CloudWatch
+        more actions based on the value of the metric relative to a given threshold. CloudWatch
         alarms will not invoke actions just because they are in a particular state. For more
         information, please see the Eucalyptus CloudWatch documentation in the <em class="ph i">Eucalyptus User
             Guide.</em></p>
@@ -34,9 +34,12 @@
                         text box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select a metric from the metric drop-down list box, or click the
-                            <span class="ph uicontrol">Enter custom metric</span> link to display the
-                            <span class="ph uicontrol">Enter custom metric</span> dialog box. A metric is a
+                    <span class="ph cmd">Select a statistic from the first drop-down list box. A statistic is
+                        computed aggregation of metric data over a specified period of time; valid
+                        values are minimum, maximum, average, sum, and sample count. </span>
+                </li>
+<li class="li step">
+                    <span class="ph cmd">Select a metric from the next drop-down list box. A metric is a
                         time-ordered set of data points - for example, CPU utilization or volume
                         write ops. You can get metric data from Eucalyptus cloud resources (like
                         instances or volumes), or you can publish your own set of custom metric data
@@ -44,41 +47,34 @@
                         as an ordered set of time-series data.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select a trigger dimension using the <span class="ph uicontrol">Trigger
-                            dimension</span> drop-down list box. A dimension is a name-value
-                        pair that uniquely identifies a metric. </span>
+                    <span class="ph cmd">Select trigger dimensions. A dimension is
+                        a name-value pair that uniquely identifies a metric; for example:
+                            "<samp class="ph codeph">Scaling group</samp>" = "<samp class="ph codeph">myscalinggroup</samp>".
+                    </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select a statistic using the <span class="ph uicontrol">Statistic</span> drop-down
-                        list box. A statistic is computed aggregation of metric data over a
-                        specified period of time; valid values are minimum, maximum, average, sum,
-                        and sample count. </span>
+                    <span class="ph cmd">Select a comparison operator for the statistic value.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select a comparison operator for the statistic value using the
-                            <span class="ph uicontrol">Comparison</span> drop-down list box.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd">Select a trigger threshold value using the <span class="ph uicontrol">Trigger
-                            threshold</span> text box. This is value is used in combination
-                        with the comparison operator and the measurement period and time length to
+                    <span class="ph cmd">Select a trigger threshold value. This is value is used in combination with
+                        the comparison operator and the measurement period and time length to
                         determine whether the alarm should be triggered. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">Select the number of measurement periods and the perioud length, using the
-                            <span class="ph uicontrol">Measurement periods</span> text box and the
-                            <span class="ph uicontrol">Period length</span> text box and time unit drop-down
-                        list box (to specify the time unit as either minutes or seconds). Periods
-                        define the time period over which the metric value is compared to the
-                        trigger threshold, as well as how many consecutive periods the trigger
+                    <span class="ph cmd">Select the number of measurement periods and the period lengths using the
+                        controls in the <span class="ph uicontrol">Evalution</span> section of the dialog box.
+                        Periods define the time period over which the metric value is compared to
+                        the trigger threshold, as well as how many consecutive periods the trigger
                         threshold must be breached before the alarm is triggered.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">To save your new alarm, click the <span class="ph uicontrol">Save changes</span> button.</span>
+                    <span class="ph cmd">To save your new alarm, click the <span class="ph uicontrol">Create Alarm</span>
+                        button.</span>
                 </li>
 </ol>
 
-            <div class="section result">For more information on Auto Scaling and CloudWatch, see Eucalyptus User Guide.</div>
+            <div class="section result">For more information on Auto Scaling and CloudWatch, see the Eucalyptus User
+                Guide.</div>
 
         </div>
 

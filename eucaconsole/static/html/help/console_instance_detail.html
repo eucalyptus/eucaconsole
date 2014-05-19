@@ -11,9 +11,8 @@
     <h1 class="title topictitle1">Instance Detail</h1>
 
     
-    <div class="body taskbody"><p class="shortdesc"> This screen shows you the details for an instance. From this page, you can add tags
-        to an image, launch an instance based on this image, or create a launch configuration based
-        on this image. </p>
+    <div class="body taskbody"><p class="shortdesc"> This page shows you the details for an instance. From this page, you can view
+        details for and perform actions on a selected instance. </p>
 </div>
 
     
@@ -22,7 +21,7 @@
 
     
     <div class="body taskbody"><p class="shortdesc"> To help you manage your cloud's instances, images, and other Eucalyptus resources,
-        you can optionally assign your own metadata to each resource in the form of tags. You can
+        you can optionally assign your own metadata to resources in the form of tags. You can
         use tags to create user-friendly names, make resource searching easier, and improve
         coordination between multiple users. You can optionally add tags by performing the following
         steps:</p>
@@ -39,6 +38,8 @@
             <ol class="ol steps"><li class="li step">
                     <span class="ph cmd">Type the key name for your tag into the <span class="ph uicontrol">name...</span> text
                         box.</span>
+                     <div class="note note"><span class="notetitle">Note:</span> Tags cannot start with "<samp class="ph codeph">euca:</samp>" or "<samp class="ph codeph">aws:</samp>".</div>
+
                 </li>
 <li class="li step">
                     <span class="ph cmd">Type the value for your tag into the <span class="ph uicontrol">value...</span> text
@@ -57,7 +58,7 @@
     </div>
 
     
-    <div class="topic task nested2" id="d13e62">
+    <div class="topic task nested2" id="d13e72">
         <h3 class="title topictitle3"/>
 
         
@@ -85,7 +86,7 @@
         <div class="body taskbody"><p class="shortdesc">Clicking the <span class="ph uicontrol">Actions</span> button brings up a menu of actions
             that you can perform on the selected instance.</p>
 
-            <div class="section context">The following context menu actions are availabe:</div>
+            <div class="section context">The following context menu actions are available:</div>
 
         </div>
 
@@ -115,7 +116,7 @@
 
                 <div class="li step p">
                         <span class="ph cmd">Selecting this menu will display a dialog that allows you to create and
-                            customize an instance like the selected instance.</span>
+                            customize one or more instances like the selected instance.</span>
                     </div>
 
             </div>
@@ -197,7 +198,21 @@
             <div class="body taskbody"><p class="shortdesc"/>
 
                 <div class="li step p">
-                        <span class="ph cmd">Select this item to stop the selected instance.</span>
+                        <span class="ph cmd">Select this item to stop the selected EBS-backed instance.</span>
+                    </div>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="instance_detail_ui_start_steps">
+            <h3 class="title topictitle3">Start</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"/>
+
+                <div class="li step p">
+                        <span class="ph cmd">Select this item to start the selected EBS-backed instance.</span>
                     </div>
 
             </div>
