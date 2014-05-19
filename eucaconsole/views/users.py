@@ -572,7 +572,7 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
-            self.log_request(_(u"Creating access key {0} for user {1}").format(key_id, self.user.user_name))
+            self.log_request(_(u"Deleting access key {0} for user {1}").format(key_id, self.user.user_name))
             result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
             return dict(message=_(u"Successfully deleted key"))
 

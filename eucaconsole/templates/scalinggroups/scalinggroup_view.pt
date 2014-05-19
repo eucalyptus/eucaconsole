@@ -90,7 +90,9 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                  <!--! Help goes here -->
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <div id="help-html-console_scaling_group_detail_general"
+                    ng-include="'${layout.help_path('console_scaling_group_detail_general.html')}'">
+                </div> 
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
