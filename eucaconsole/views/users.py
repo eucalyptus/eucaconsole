@@ -130,6 +130,8 @@ class UsersView(LandingPageView):
                 account = self.request.session['account']
                 string_output = StringIO.StringIO()
                 csv_w = csv.writer(string_output)
+                header = [_(u'Account'), _(u'User Name'), _(u'Password')]
+                csv_w.writerow(header)
                 row = [account, user_name, password]
                 csv_w.writerow(row)
                 self._store_file_("{acct}-{user}-login.csv".format(acct=account, user=user_name),
@@ -437,6 +439,13 @@ class UserView(BaseView):
             if not (access_keys == 'n' and random_password == 'n'):
                 string_output = StringIO.StringIO()
                 csv_w = csv.writer(string_output)
+                header = [_(u'Account'), _(u'User Name')]
+                if random_password == 'y':
+                    header.append(_(u'Password'))
+                if access_keys == 'y':
+                    header.append(_(u'Access Key'))
+                    header.append(_(u'Secret Key'))
+                csv_w.writerow(header)
                 for user in user_list:
                     row = [user['account'], user['username']]
                     if random_password == 'y':
@@ -495,6 +504,8 @@ class UserView(BaseView):
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
+            header = [_(u'Account'), _(u'User Name'), _(u'Password')]
+            csv_w.writerow(header)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
             self._store_file_("{acct}-{user}-login.csv".format(
@@ -529,6 +540,8 @@ class UserView(BaseView):
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
+            header = [_(u'Account'), _(u'User Name'), _(u'Password')]
+            csv_w.writerow(header)
             row = [account, self.user.user_name, new_pass]
             csv_w.writerow(row)
             self._store_file_(
@@ -557,6 +570,8 @@ class UserView(BaseView):
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
+            header = [_(u'Account'), _(u'User Name'), _(u'Access Key'), _(u'Secret Key')]
+            csv_w.writerow(header)
             row = [account, self.user.user_name, result.access_key.access_key_id, result.access_key.secret_access_key]
             csv_w.writerow(row)
             self._store_file_(
