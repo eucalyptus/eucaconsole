@@ -3,15 +3,15 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<title>User Detail - Security</title>
+<title>IAM User Detail - Security</title>
 </head>
 <body id="user_detail_ui_context">
 
 
-    <h1 class="title topictitle1">User Detail - Security </h1>
+    <h1 class="title topictitle1">IAM User Detail - Security </h1>
 
     
-    <div class="body taskbody"><p class="shortdesc"> This screen shows you the security credentials for an IAM user.</p>
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to view and edit the details for am IAM user. </p>
 </div>
 
 
@@ -19,7 +19,7 @@
         <h2 class="title topictitle2">Security credentials tab</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc">This tab lets you create or modify a password and generate an access key for a
+        <div class="body taskbody"><p class="shortdesc">This tab lets you create or modify a password and generate access keys for a
             user.</p>
 </div>
 
@@ -91,7 +91,9 @@
             <div class="body taskbody"><p class="shortdesc">If a password is set for the user, the word "Yes" will appear next to the
                 Password set? label. You can delete this password.</p>
 
-                <div class="section context">To delete a password:</div>
+                <div class="section context">To delete a password:<div class="note note"><span class="notetitle">Note:</span> Deleting the password will disable console
+                        access for the user.</div>
+</div>
 
                 <ol class="ol steps"><li class="li step">
                         <span class="ph cmd">Click the <span class="ph uicontrol">Delete password</span> link on the screen. A
@@ -104,6 +106,91 @@
                             delete operation.</span>
                     </li>
 </ol>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="user_detail_access_keys">
+            <h3 class="title topictitle3">Generate access keys</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">To access to the cloud through Euca2ools or other third party tools, the user
+                will need a set of access keys. </p>
+
+                <div class="section context">To generate access keys:</div>
+
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Click the <span class="ph uicontrol">Generate Access Keys</span> button. A dialog
+                            box will appear, prompting you to save the comma-separated value file
+                            containing the access keys. </span>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">Save the generated key file in a secure place.</span>
+                    </li>
+</ol>
+
+                <div class="section postreq">The generated access key will appear in the list of access keys.</div>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="user_detail_access_keys_manage">
+            <h3 class="title topictitle3">Manage access keys</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"> Each access key associated with the selected user is shown in a list in the
+                    <span class="ph uicontrol">Access keys</span> section of the page. The list shows the
+                access key ID, and a status of either <samp class="ph codeph">Active</samp> or
+                    <samp class="ph codeph">Inactive</samp>. Each entry in the list of access keys has a context
+                menu, accessible in the <span class="ph uicontrol">Actions</span> column. Clicking the action
+                icon brings up a menu of actions that you can perform on the selected
+                instance.</p>
+
+                <div class="section context">The following context menu actions are availabe:</div>
+
+            </div>
+
+            <div class="topic task nested3" id="user_details_access_keys_manage_activate">
+                <h4 class="title topictitle4">Activate</h4>
+
+                
+                <div class="body taskbody"><p class="shortdesc"/>
+
+                    <div class="li step p">
+                            <span class="ph cmd">Activates the selected access key.</span>
+                        </div>
+
+                </div>
+
+            </div>
+
+            <div class="topic task nested3" id="user_details_access_keys_manage_deactivate">
+                <h4 class="title topictitle4">Deactivate</h4>
+
+                
+                <div class="body taskbody"><p class="shortdesc"/>
+
+                    <div class="li step p">
+                            <span class="ph cmd">Deactivates the selected access key.</span>
+                        </div>
+
+                </div>
+
+            </div>
+
+            <div class="topic task nested3" id="user_details_access_keys_manage_delete">
+                <h4 class="title topictitle4">Delete</h4>
+
+                
+                <div class="body taskbody"><p class="shortdesc"/>
+
+                    <div class="li step p">
+                            <span class="ph cmd">Deletes the selected access key.</span>
+                        </div>
+
+                </div>
 
             </div>
 
