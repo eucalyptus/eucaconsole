@@ -65,6 +65,10 @@
                             <div tal:repeat="group instance.groups" ng-non-bindable="">${group.name}</div>
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="role">
+                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="small-8 columns value">${role}</div>
+                    </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Tags</label></div>
                         <div class="small-8 columns value">
