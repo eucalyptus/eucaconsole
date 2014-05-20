@@ -87,6 +87,7 @@ class DashboardJsonView(BaseView):
             # IAM counts
             users_count = 0
             groups_count = 0
+            roles_count = 0
             session = self.request.session
             if session['cloud_type'] == 'euca':
                 if session['username'] == 'admin':
