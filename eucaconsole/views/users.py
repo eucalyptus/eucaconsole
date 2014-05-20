@@ -278,7 +278,7 @@ class UserView(BaseView):
             pass
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
+        self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
         self.render_dict['user_form'] = self.user_form
         self.render_dict['has_password'] = 'true' if has_password else 'false'
         self.render_dict['already_member_text'] = self.already_member_text
@@ -287,7 +287,7 @@ class UserView(BaseView):
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
-        self.user_form = UserForm(self.request, user=self.user, conn=self.conn, formdata=self.request.params or None)
+        self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
         self.render_dict['user_form'] = self.user_form
         return self.render_dict
  
