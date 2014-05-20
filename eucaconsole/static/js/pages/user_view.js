@@ -191,6 +191,7 @@ angular.module('UserView', ['PolicyList'])
             }
             $scope.data = $($event.target).serialize();
             // open modal to get current password
+            $('#password').val('');
             $('#change-password-modal').foundation('reveal', 'open');
         };
         // handles server call for changing the password
