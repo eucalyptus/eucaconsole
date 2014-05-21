@@ -50,7 +50,10 @@
                             ${structure:user_form['csrf_token']}
                             <div class="columns section">
                                 <h6 i18n:translate="">User</h6>
-                                ${panel('form_field', field=user_form['user_name'], leftcol_width=3, rightcol_width=9)}
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-3 columns"><label i18n:translate="">Name</label></div>
+                                    <div class="small-9 columns value">${user.user_name}</div>
+                                </div>
                                 <!-- ${panel('form_field', field=user_form['email'])} -->
                                 <div class="row controls-wrapper readonly" tal:condition="user_create_date">
                                     <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
