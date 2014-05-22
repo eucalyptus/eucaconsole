@@ -922,8 +922,8 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                         instance.add_tag('Name', name)
                     if source_instance_tags:
                         for tagname, tagvalue in source_instance_tags.items():
-                            # Don't copy 'Name' tag, and avoid tags that start with 'aws:'
-                            if all([tagname != 'Name', not tagname.startswith('aws:')]):
+                            # Don't copy 'Name' tag, and avoid tags that start with 'aws:' and 'euca:'
+                            if all([tagname != 'Name', not tagname.startswith('aws:'), not tagname.startswith('euca:')]):
                                 instance.add_tag(tagname, tagvalue)
                 msg = _(u'Successfully sent launch instances request.  It may take a moment to launch instances ')
                 msg += ', '.join(new_instance_ids)
