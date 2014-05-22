@@ -32,6 +32,7 @@ import logging
 import simplejson as json
 import textwrap
 
+from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
 from urllib import urlencode
@@ -331,7 +332,7 @@ class BlockDeviceMappingItemView(BaseView):
     def get_user_data(self):
         userdata_input = self.request.params.get('userdata')
         userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if userdata_file_param else None
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
         userdata = userdata_file or userdata_input or None  # Look up file upload first
         return userdata
 
