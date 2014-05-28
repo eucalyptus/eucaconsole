@@ -3,18 +3,6 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="DC.Type" content="task"/>
-<meta name="DC.Title" content="Create Launch Configuration"/>
-<meta name="abstract" content="This screen allows you create a new launch configuration. The launch configuration is used to define the parameters for new instances that are launched as part of your auto scaling group. For more information on Auto Scaling, please see Using Auto Scaling in the Eucalyptus User Guide."/>
-<meta name="description" content="This screen allows you create a new launch configuration. The launch configuration is used to define the parameters for new instances that are launched as part of your auto scaling group. For more information on Auto Scaling, please see Using Auto Scaling in the Eucalyptus User Guide."/>
-<meta name="prodname" content="Eucalyptus"/>
-<meta name="version" content="3.3"/>
-<meta name="copyright" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Format" content="XHTML"/>
-<meta name="DC.Identifier" content="console_create_launch_configuration"/>
-<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
 <title>Create Launch Configuration</title>
 </head>
 <body id="console_create_launch_configuration">
@@ -38,15 +26,15 @@
 
             <ol class="ol steps"><li class="li step">
                     <span class="ph cmd">Refine and filter your results by typing search criteria into the
-                            <span class="ph uicontrol">Search</span> text box.</span>
+                            <span class="ph uicontrol">Search</span> text box or using the <span class="ph uicontrol">Filter by</span> section on the left side of the page.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Select an image by clicking on the image in the <span class="ph uicontrol">Select
-                            image</span> list. </span>
+                    <span class="ph cmd"> Type an image ID into the <span class="ph uicontrol">Enter an Image ID</span> text
+                        box, or select an image by clicking on the image in the list. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Next: Select type</span> button to proceed to
-                        the <span class="ph uicontrol">Type</span> panel. </span>
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed to the
+                            <span class="ph uicontrol">Details</span> panel. </span>
                 </li>
 </ol>
 
@@ -55,7 +43,7 @@
     </div>
 
     <div class="topic task nested1" id="create_launch_configuration__ui_type_steps">
-        <h2 class="title topictitle2">Select a Type</h2>
+        <h2 class="title topictitle2">Details</h2>
 
         
         <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the instance size for new instance in your auto
@@ -66,7 +54,7 @@
                             <span class="ph uicontrol">Name</span> text box.</span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Select an instance size from the <span class="ph uicontrol">Instance size</span>
+                    <span class="ph cmd"> Select an instance size from the <span class="ph uicontrol">Instance type</span>
                         drop-down list.. </span>
                      
                         <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
@@ -75,8 +63,8 @@
                     
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Next: Select security</span> button to proceed
-                        to the <span class="ph uicontrol">Security</span> panel. </span>
+                    <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed to the
+                            <span class="ph uicontrol">Security</span> panel. </span>
                 </li>
 </ol>
 
@@ -95,7 +83,7 @@
             instances. </p>
 
             <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key pair</span> drop-down list
+                    <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key name</span> drop-down list
                         box. </span>
                      
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new key pair by clicking the <span class="ph uicontrol">Create
@@ -120,11 +108,17 @@
                     
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> You can optionally specify advanced options by clicking the
-                            <span class="ph uicontrol">Select advanced options</span> link. </span>
+                    <span class="ph cmd"> You can optionally choose to create a new auto scaling group based on this
+                        launch configuration by selecting the <span class="ph uicontrol">Create scaling group using
+                            this launch configuration</span> check box. When this is selected,
+                        the <span class="ph uicontrol">New Scaling Group</span> dialog will display after
+                        you've clicked the <span class="ph uicontrol">Create launch configuration</span>
+                        button, with the Launch configuration field pre-populated with the name of
+                        your new launch configuration. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">Advanced</span> button. </span>
+                    <span class="ph cmd"> You can optionally specify advanced options by clicking the
+                            <span class="ph uicontrol">Select advanced options</span> link. </span>
                 </li>
 </ol>
 
@@ -154,13 +148,47 @@
                             <span class="ph uicontrol">RAM disk ID</span> drop-down list box. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd"> You can optionally choose to create a new auto scaling group based on this
-                        launch configuration by selecting the <span class="ph uicontrol">Create scaling group using
-                            this launch configuration</span> check box. When this is selected,
-                        the <span class="ph uicontrol">New Scaling Group</span> dialog will display after
-                        you've clicked the <span class="ph uicontrol">Create launch configuration</span>
-                        button, with the Launch configuration field pre-populated with the name of
-                        your new launch configuration. </span>
+                    <span class="ph cmd">You can configure additional storage for your instance in the Storage
+                        section:</span>
+                    <ol type="a" class="ol substeps" id="create_launch_configuration_ui_advanced_steps__create_launch_config_ui_advanced_storage_steps">
+                        <li class="li substep">
+                            <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
+                                drop-down list box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Type the desired mapping for the storage into the
+                                <span class="ph uicontrol">Mapping</span> text box (for example:<samp class="ph codeph">
+                                    /dev/sdb</samp>).</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">If you want to create the storage from an existing snapshot,
+                                specify it in the <span class="ph uicontrol">Create from snapshot</span>
+                                drop-down list box.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Type the size of the attached storage in gigabytes into the
+                                <span class="ph uicontrol">Size (GB) </span>text box. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd"> Select the <span class="ph uicontrol">Delete on termination</span> check box
+                                if you would like the attached storage to be deleted when the
+                                instance is terminated. </span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">Click the <span class="ph uicontrol">Add device</span> button to add this storage.</span>
+                        </li>
+
+                        <li class="li substep">
+                            <span class="ph cmd">You can delete storage you've already added by clicking the minus button on the right side of the storage list item.</span>
+                        </li>
+
+                    </ol>
+
                 </li>
 <li class="li step">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Create launch configuration</span> button.

@@ -3,18 +3,6 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="DC.Type" content="task"/>
-<meta name="DC.Title" content="Manage Key Pairs"/>
-<meta name="abstract" content="This screen allows you to view a list of your key pairs, create new key pairs, and delete key pairs. You can page through the list of key pairs by clicking the navigation buttons at the bottom of the screen."/>
-<meta name="description" content="This screen allows you to view a list of your key pairs, create new key pairs, and delete key pairs. You can page through the list of key pairs by clicking the navigation buttons at the bottom of the screen."/>
-<meta name="prodname" content="Eucalyptus"/>
-<meta name="version" content="3.3"/>
-<meta name="copyright" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Format" content="XHTML"/>
-<meta name="DC.Identifier" content="manage_keypair_ui_context"/>
-<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
 <title>Manage Key Pairs</title>
 </head>
 <body id="manage_keypair_ui_context">
@@ -29,48 +17,61 @@
         screen. </p>
 </div>
 
-    <div class="topic task nested1" id="manage_keypair_ui_sorting_steps">
-        <h2 class="title topictitle2">Sorting the Key Pair List</h2>
+    <div class="topic task nested1" id="manage_keypairss_ui_change_view_steps">
+        <h2 class="title topictitle2">Changing the View</h2>
 
         
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="li step p">
-                    <span class="ph cmd">Click on the <span class="ph uicontrol">Name</span> column header
-                        to toggle sorting the list of key pairs in ascending or
-                        descending order.</span>
+                    <span class="ph cmd">You can toggle between the table view and the grid view by clicking the
+                        appropriate icon next to the <span class="ph uicontrol">View</span> label at the top
+                        right of the screen.</span>
                 </div>
 
         </div>
 
     </div>
 
-    <div class="topic task nested1" id="manage_keypair_ui_searching_steps">
-        <h2 class="title topictitle2">Searching the Key Pair List</h2>
+    <div class="topic task nested1" id="manage_keypairss_ui_sorting_steps">
+        <h2 class="title topictitle2">Sorting the Key Pairs List</h2>
 
         
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="li step p">
-                    <span class="ph cmd">Type some search text into the
-                            <span class="ph uicontrol">Search</span> text box to filter the
-                        list of key pairs. </span>
+                    <span class="ph cmd">Sort the key pairs list by selecting a sort order using the <span class="ph uicontrol">Sort
+                        by</span> drop-down list box.</span>
                 </div>
 
         </div>
 
     </div>
 
-    <div class="topic task nested1" id="manage_keypair_ui_create_steps">
-        <h2 class="title topictitle2">Creating Key Pairs</h2>
+    <div class="topic task nested1" id="manage_keypairss_ui_searching_steps">
+        <h2 class="title topictitle2">Searching and Filtering the Key Pairs List</h2>
 
         
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="li step p">
-                    <span class="ph cmd">Click the <span class="ph uicontrol">Create new key pair</span>
-                        button. The <span class="ph uicontrol">Create Key Pair</span>
-                        dialog box will appear.</span>
+                    <span class="ph cmd">To perform a simple search/filter, type some search text into the search
+                        text box at the top right of the page.</span>
+                </div>
+
+        </div>
+
+    </div>
+
+    <div class="topic task nested1" id="manage_keypairs_ui_create_steps">
+        <h2 class="title topictitle2">Creating a Key Pair</h2>
+
+        
+        <div class="body taskbody"><p class="shortdesc"/>
+
+            <div class="li step p">
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Create New Key Pair</span> button. The
+                            <span class="ph uicontrol">Create new key pair</span> page will appear.</span>
                 </div>
 
         </div>
@@ -84,9 +85,8 @@
         <div class="body taskbody"><p class="shortdesc"/>
 
             <div class="li step p">
-                    <span class="ph cmd">Click the <span class="ph uicontrol">Import key pair</span>
-                        button. The <span class="ph uicontrol">Import key pair</span>
-                        dialog box will appear.</span>
+                    <span class="ph cmd">Click the <span class="ph uicontrol">Import Public Key</span> button. The
+                            <span class="ph uicontrol">Import key pair</span> page will appear.</span>
                 </div>
 
         </div>
@@ -94,22 +94,28 @@
     </div>
 
     <div class="topic task nested1" id="manage_keypair_ui_delete_steps">
-        <h2 class="title topictitle2">Deleting Key Pairs</h2>
+        <h2 class="title topictitle2">Actions</h2>
 
         
-        <div class="body taskbody"><p class="shortdesc"/>
+        <div class="body taskbody"><p class="shortdesc">Each entry in the key pairs list has a context menu, accessible in the
+            <span class="ph uicontrol">Actions</span> column. Clicking the action icon brings up a menu of
+            actions that you can perform on the selected image.</p>
 
-            <ol class="ol steps"><li class="li step">
-                    <span class="ph cmd">Click the checkbox next to the key pair.</span>
-                </li>
-<li class="li step">
-                    <span class="ph cmd"> Click the <span class="ph uicontrol">More actions</span> button
-                        at the top of the list and and select
-                            <span class="ph uicontrol">Delete</span> from the drop-down
-                        menu . The <span class="ph uicontrol">Delete Key Pair</span> dialog
-                        box will appear. </span>
-                </li>
-</ol>
+            <div class="section context">The following context menu actions are availabe:</div>
+
+        </div>
+
+        <div class="topic task nested2" id="manage_keypair_ui_view_image_details_steps">
+            <h3 class="title topictitle3">Delete key</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc"/>
+
+                <div class="li step p">
+                        <span class="ph cmd">This item will bring up the key pair delete confirmation dialog box.</span>
+                    </div>
+
+            </div>
 
         </div>
 

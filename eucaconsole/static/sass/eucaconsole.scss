@@ -596,6 +596,11 @@ form {
         &[type=file] {
             background-color: transparent;
         }
+        &[type=password] {
+            font-family: Arial, Helvetica, sans-serif !important;
+            font-size: 1rem;
+            color: black;
+        }
     }
     select, textarea {
         background-color: $euca-extralightgreen;

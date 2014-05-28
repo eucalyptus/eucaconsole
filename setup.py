@@ -30,8 +30,6 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
-with open(os.path.join(here, 'CHANGES.txt')) as f:
-    CHANGES = f.read()
 
 requires = [
     'beaker >= 1.5.4',
@@ -72,7 +70,7 @@ setup(
     name='eucaconsole',
     version='4.0.0',
     description='Eucalyptus Management Console',
-    long_description=README + '\n\n' + CHANGES,
+    long_description=README,
     classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",
