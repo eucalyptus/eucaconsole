@@ -37,7 +37,7 @@
                 <div class="tile item" ng-repeat="snapshot in snapshots | orderBy: '-start_time'" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/snapshots/{{ snapshot.id }}">{{ snapshot.name || snapshot.id }}</a></strong>
-                        <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ snapshot.id }}"><i class="fi-widget"></i></span>
+                        <span id="tile-item-dropdown_{{ snapshot.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ snapshot.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ snapshot.id }}" class="f-dropdown" data-dropdown-content="">
                             <li>
                                 <a ng-href="/snapshots/{{ snapshot.id }}" i18n:translate="">View details</a>
