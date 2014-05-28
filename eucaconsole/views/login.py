@@ -42,6 +42,7 @@ from pyramid.view import view_config, forbidden_view_config
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
+from ..views import JSONResponse
 from ..constants import AWS_REGIONS
 
 
@@ -90,6 +91,11 @@ class LoginView(BaseView):
     @view_config(route_name='login', request_method='GET', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
     @forbidden_view_config(request_method='GET', renderer=TEMPLATE)
     def login_page(self):
+        if self.request.is_xhr:
+            message = getattr(self.request.exception, 'message', _(u"Session Timed Out"))
+            status = getattr(self.request.exception, 'status', "403 Forbidden")
+            status = int(status[:status.index(' ')]) or 403
+            return JSONResponse(status=status, message=message)
         return self.render_dict
 
     @view_config(route_name='login', request_method='POST', renderer=TEMPLATE, permission=NO_PERMISSION_REQUIRED)
