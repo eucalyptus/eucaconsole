@@ -36,7 +36,7 @@
                 <div class="tile item" ng-repeat="volume in volumes | orderBy: -attach_time" ng-cloak="">
                     <div class="header">
                         <strong><a ng-href="/volumes/{{ volume.id }}">{{ volume.name || volume.id }}</a></strong>
-                        <span class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ volume.id }}"><i class="fi-widget"></i></span>
+                        <span id="tile-item-dropdown_{{ volume.id }}" class="tiny secondary button dropdown" data-dropdown="item-dropdown_{{ volume.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ volume.id }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.status !== 'terminated' &amp;&amp; !item.transitional">
                                 <a ng-click="detachModal(volume.id, volume.device, '${request.route_path('instance_json', id=instance.id)}', volume.detach_form_action)"
