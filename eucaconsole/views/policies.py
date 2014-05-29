@@ -83,7 +83,7 @@ class IAMPolicyWizardView(BaseView):
         """Displays the Create IAM Policy wizard"""
         return self.render_dict
 
-    @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
+    @view_config(route_name='iam_policy_create', request_method='POST', renderer='json')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
         # redirect to detail page after submit
@@ -96,14 +96,11 @@ class IAMPolicyWizardView(BaseView):
                     caller = self.iam_conn.put_user_policy
                 else:
                     caller = self.iam_conn.put_group_policy
-                caller(self.target_name, policy_name, policy_json)
-                prefix = _(u'Successfully created IAM policy')
-                msg = '{0} {1}'.format(prefix, policy_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
+                result = caller(self.target_name, policy_name, policy_json)
+                return dict(message=_(u"Successfully updated user policy"), results=result)
         else:
-            self.request.error_messages = self.create_form.get_errors_list()
-        return self.render_dict
+            error_messages = self.create_form.get_errors_list()
+            return JSONResponse(status=400, message=str(error_messages))
 
     def get_page_title(self):
         prefix = _(u'Add access policy for')

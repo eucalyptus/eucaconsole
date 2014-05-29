@@ -6,6 +6,7 @@
 
 angular.module('IAMPolicyWizard', [])
     .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
         $scope.policyJsonEndpoint = '';
@@ -23,13 +24,14 @@ angular.module('IAMPolicyWizard', [])
         $scope.languageCode = 'en';
         $scope.confirmed = false;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
-        $scope.initController = function (options) {
+        $scope.initController = function (options, save_url) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
             $scope.cloudType = options['cloudType'];
             $scope.actionsList = options['actionsList'];
             $scope.languageCode = options['languageCode'] || 'en';
             $scope.awsRegions = options['awsRegions'];
             $scope.existingPolicies = JSON.parse(options['existingPolicies'] || '[]');
+            $scope.saveUrl = save_url;
             $scope.initSelectedTab();
             $scope.initChoices();
             $scope.initCodeMirror();
@@ -67,17 +69,16 @@ angular.module('IAMPolicyWizard', [])
             });
         };
         $scope.initNameConflictWarningListener = function () {
-            if (Modernizr.localstorage && localStorage.getItem($scope.nameConflictKey)) {
-                return true;
-            }
             $scope.wizardForm.on('submit', function(evt) {
+                evt.preventDefault();
                 var policyName = $('#name').val();
                 if ($scope.existingPolicies.indexOf(policyName) !== -1) {
-                    if (!$scope.confirmed) evt.preventDefault();
                     if (Modernizr.localstorage && !localStorage.getItem($scope.nameConflictKey)) {
                         $('#conflict-warn-modal').foundation('reveal', 'open');
+                        return;  // to prevent save 3 lines down
                     }
                 }
+                $scope.savePolicy();
             });
         };
         $scope.confirmWarning = function () {
@@ -87,7 +88,40 @@ angular.module('IAMPolicyWizard', [])
             }
             $scope.confirmed = true;
             modal.foundation('reveal', 'close');
-            $scope.wizardForm.submit();
+            $scope.savePolicy();
+        };
+        $scope.savePolicy = function() {
+            try {
+                $('#json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                //var policy_json = $('#policy').val();
+                JSON.parse(policy_json);
+                // now, save the policy
+                var policy_name = $('#name').val();
+                var type = $('#type').val();
+                var id = $('#id').val();
+                var data = "csrf_token="+$('#csrf_token').val()+
+                           "&type="+type+
+                           "&id="+id+
+                           "&name="+policy_name+
+                           "&policy="+policy_json;
+                $http({
+                    method:'POST', url:$scope.saveUrl, data:data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+                ).success(function(oData) {
+                    Notify.success(oData.message);
+                    window.location = $('#return-link').attr('href');
+                }).error(function (oData) {
+                    var errorMsg = oData['message'] || '';
+                    if (errorMsg && status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    }
+                    Notify.failure(errorMsg);
+                });
+            } catch (e) {
+                $('#json-error').text(e);
+                $('#json-error').css('display', 'block');
+            }
         };
         $scope.initSelectActionListener = function () {
             // Handle Allow/Deny selection for a given action
