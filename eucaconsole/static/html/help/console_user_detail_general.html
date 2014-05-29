@@ -3,29 +3,15 @@
   PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en-us" lang="en-us">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="DC.Type" content="task"/>
-<meta name="DC.Title" content="User Detail - General"/>
-<meta name="abstract" content="This screen shows you the general details for am IAM user. From this page, you can change a user name, disable a user, delete a user, or modify a user's quotas and credentials."/>
-<meta name="description" content="This screen shows you the general details for am IAM user. From this page, you can change a user name, disable a user, delete a user, or modify a user's quotas and credentials."/>
-<meta name="prodname" content="Eucalyptus"/>
-<meta name="version" content="3.3"/>
-<meta name="copyright" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Rights.Owner" content="Eucalyptus Systems 2013" type="primary"/>
-<meta name="DC.Format" content="XHTML"/>
-<meta name="DC.Identifier" content="user_detail_ui_context"/>
-<link rel="stylesheet" type="text/css" href="..//commonltr.css"/>
-<title>User Detail - General</title>
+<title>IAM User Detail - General</title>
 </head>
 <body id="user_detail_ui_context">
 
 
-    <h1 class="title topictitle1">User Detail - General </h1>
+    <h1 class="title topictitle1">IAM User Detail - General </h1>
 
     
-    <div class="body taskbody"><p class="shortdesc"> This screen shows you the general details for am IAM user. From this page, you can
-        change a user name, disable a user, delete a user, or modify a user's quotas and
-        credentials. </p>
+    <div class="body taskbody"><p class="shortdesc"> This page allows you to view and edit the details for am IAM user. </p>
 </div>
 
 
@@ -44,9 +30,35 @@
             <div class="body taskbody">
                 <div class="section context">To rename a user:</div>
 
-                <div class="li step p">
+                <ol class="ol steps"><li class="li step">
                         <span class="ph cmd">Type the name into the <span class="ph uicontrol">Name</span> text field.</span>
-                    </div>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">Click the <span class="ph uicontrol">Save Changes</span> button to save your work,
+                            or click the <span class="ph uicontrol">Cancel</span> button to abandon your
+                            changes.</span>
+                    </li>
+</ol>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="user_detail_ui_advanced">
+            <h3 class="title topictitle3">Change the path</h3>
+
+
+            <div class="body taskbody">
+                <ol class="ol steps"><li class="li step">
+                        <span class="ph cmd">Use the <span class="ph uicontrol">Path</span> text field to change the path for
+                            the user. For more information, see <a class="xref" href="http://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html">IAM Identifiers</a>.</span>
+                    </li>
+<li class="li step">
+                        <span class="ph cmd">Click the <span class="ph uicontrol">Save Changes</span> button to save your work,
+                            or click the <span class="ph uicontrol">Cancel</span> button to abandon your
+                            changes.</span>
+                    </li>
+</ol>
 
             </div>
 
@@ -72,7 +84,7 @@
 
         </div>
 
-        <div class="topic task nested2" id="user_detail_general_add_to_groups">
+        <div class="topic task nested2" id="user_detail_general_remove_from_group">
             <h3 class="title topictitle3">Remove the user from a group</h3>
 
 
@@ -80,13 +92,70 @@
                 <div class="section context">To remove the user from a group:</div>
 
                 <ol class="ol steps"><li class="li step">
-                        <span class="ph cmd">Click on the gear icon to the right of the group name in the groups
-                            list. A context menu will appear.</span>
+                        <span class="ph cmd">Click on the gear icon in the group tile. A context menu will
+                            appear.</span>
                     </li>
 <li class="li step">
                         <span class="ph cmd">Select <span class="ph uicontrol">Remove user</span> from the context menu.</span>
                     </li>
 </ol>
+
+            </div>
+
+        </div>
+
+        <div class="topic task nested2" id="user_detail_add_policy">
+            <h3 class="title topictitle3">Add user policies</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">An IAM access policy allows you to explicitly define permissions over what
+                your users and groups can access. </p>
+
+
+                <div class="section context">To add a policy: <div class="note note"><span class="notetitle">Note:</span> As a best practice, you should use group policies
+                        instead of creating individual policies for each user. </div>
+</div>
+
+                <div class="li step p">
+                        <span class="ph cmd">Click on the <span class="ph uicontrol">Add Policy</span> button to bring up the
+                                <span class="ph uicontrol">Add Access Policy</span> page.</span>
+                    </div>
+
+            </div>
+
+        </div>
+
+        
+        <div class="topic task nested2" id="user_detail_delete_policy">
+            <h3 class="title topictitle3">Delete a policy</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">An IAM access policy allows you to explicitly define permissions over what your users
+                and groups can access. </p>
+
+                <div class="section context">To delete a policy:</div>
+
+                <div class="li step p">
+                        <span class="ph cmd">Click on the <span class="ph uicontrol">Remove policy</span> icon (a minus sign in a circle) next to a policy to delete that policy.</span>
+                    </div>
+
+            </div>
+
+        </div>
+
+        
+        <div class="topic task nested2" id="user_detail_edit_policy">
+            <h3 class="title topictitle3">View/edit a policy</h3>
+
+            
+            <div class="body taskbody"><p class="shortdesc">An IAM access policy allows you to explicitly define permissions over what your users
+                and groups can access. </p>
+
+                <div class="section context">To view or edit a policy:</div>
+
+                <div class="li step p">
+                        <span class="ph cmd">Click on the <span class="ph uicontrol">View/edit</span> icon (a pencil) next to a policy to view or edit the text of that policy.</span>
+                    </div>
 
             </div>
 
@@ -136,10 +205,10 @@
             <div class="body taskbody"><p class="shortdesc"> </p>
 
                 <div class="li step p">
-                        <span class="ph cmd">This item allows you to delete a volume.</span>
+                        <span class="ph cmd">This item allows you to delete a user.</span>
                          
                             <div class="note note"><span class="notetitle">Note:</span>  This menu item deletes a user and all keys, passwords and
-                                permissions associated with that user..</div>
+                                permissions associated with that user.</div>
 
                         
                     </div>
@@ -149,6 +218,7 @@
         </div>
 
     </div>
+
 
 
 </body>

@@ -32,6 +32,7 @@ import logging
 import simplejson as json
 import textwrap
 
+from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
 from urllib import urlencode
@@ -99,22 +100,22 @@ class BaseView(object):
             port = int(self.request.registry.settings.get('clcport', 8773))
             if conn_type == 'ec2':
                 host = self.request.registry.settings.get('ec2.host', host)
-                port = self.request.registry.settings.get('ec2.port', port)
+                port = int(self.request.registry.settings.get('ec2.port', port))
             elif conn_type == 'autoscale':
                 host = self.request.registry.settings.get('autoscale.host', host)
-                port = self.request.registry.settings.get('autoscale.port', port)
+                port = int(self.request.registry.settings.get('autoscale.port', port))
             elif conn_type == 'cloudwatch':
                 host = self.request.registry.settings.get('cloudwatch.host', host)
-                port = self.request.registry.settings.get('cloudwatch.port', port)
+                port = int(self.request.registry.settings.get('cloudwatch.port', port))
             elif conn_type == 'elb':
                 host = self.request.registry.settings.get('elb.host', host)
-                port = self.request.registry.settings.get('elb.port', port)
+                port = int(self.request.registry.settings.get('elb.port', port))
             elif conn_type == 'iam':
                 host = self.request.registry.settings.get('iam.host', host)
-                port = self.request.registry.settings.get('iam.port', port)
+                port = int(self.request.registry.settings.get('iam.port', port))
             elif conn_type == 'sts':
                 host = self.request.registry.settings.get('sts.host', host)
-                port = self.request.registry.settings.get('sts.port', port)
+                port = int(self.request.registry.settings.get('sts.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -331,7 +332,7 @@ class BlockDeviceMappingItemView(BaseView):
     def get_user_data(self):
         userdata_input = self.request.params.get('userdata')
         userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if userdata_file_param else None
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
         userdata = userdata_file or userdata_input or None  # Look up file upload first
         return userdata
 
