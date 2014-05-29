@@ -135,6 +135,9 @@
                             Create Policy
                         </button>
                         <a class="cancel-link" id="return-link" href="${cancel_link_url}">Cancel</a>
+                        <div class="small-12 columns" ng-show="isCreating">
+                            <span i18n:translate="">Creating Policy</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                        </div>
                     </div>
                 </form>
             </div>

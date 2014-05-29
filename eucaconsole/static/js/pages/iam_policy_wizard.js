@@ -23,6 +23,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';
         $scope.confirmed = false;
+        $scope.isCreating = false;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
         $scope.initController = function (options, save_url) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
@@ -105,13 +106,16 @@ angular.module('IAMPolicyWizard', [])
                            "&id="+id+
                            "&name="+policy_name+
                            "&policy="+policy_json;
+                $scope.isCreating = true;
                 $http({
                     method:'POST', url:$scope.saveUrl, data:data,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
                 ).success(function(oData) {
                     Notify.success(oData.message);
+                    $scope.isCreating = false;
                     window.location = $('#return-link').attr('href');
                 }).error(function (oData) {
+                    $scope.isCreating = false;
                     var errorMsg = oData['message'] || '';
                     if (errorMsg && status === 403) {
                         $('#timed-out-modal').foundation('reveal', 'open');
