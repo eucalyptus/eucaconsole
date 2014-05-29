@@ -1508,6 +1508,7 @@ form label .req { color: darkred; }
 form input { background-color: #eef7e3; }
 form input[type=text], form input[type=password], form input[type=number] { background-color: #eef7e3; }
 form input[type=file] { background-color: transparent; }
+form input[type=password] { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
 form select, form textarea { background-color: #eef7e3; }
 form .row .inline-label { line-height: 2rem; }
 form .row input[type='text'], form .row input[type='password'] { margin: 0 0 0 0; height: 2rem; line-height: 2rem; }

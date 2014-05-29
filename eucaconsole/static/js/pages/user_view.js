@@ -174,6 +174,7 @@ angular.module('UserView', ['PolicyList'])
             $("#change-password-modal").on('show', function () {
                 $('#password').focus(); // doesn't seem to work.
             });
+            $('#wrong-password').css('display', 'none');
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitChange = function($event) {
@@ -191,10 +192,12 @@ angular.module('UserView', ['PolicyList'])
             }
             $scope.data = $($event.target).serialize();
             // open modal to get current password
+            $('#password').val('');
             $('#change-password-modal').foundation('reveal', 'open');
         };
         // handles server call for changing the password
         $scope.changePassword = function($event) {
+            $event.preventDefault();
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             $('#wrong-password').css('display', 'none');

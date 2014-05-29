@@ -227,7 +227,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 virtual_name=bdm.virtual_name,
                 snapshot_id=getattr(ebs, 'snapshot_id', None),
                 size=getattr(ebs, 'volume_size', None),
-                delete_on_termination=getattr(ebs, 'delete_on_termination', False),
+                delete_on_termination=True,
             )
     bdm_json = json.dumps(bdm_dict)
     return dict(image=image, snapshot_choices=snapshot_choices, bdm_json=bdm_json, read_only=read_only)
