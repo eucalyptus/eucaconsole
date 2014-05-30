@@ -12,6 +12,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
+        $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.imagesURL = '';
         $scope.images = undefined;
@@ -72,6 +73,13 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
+            $(document).on('change', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                

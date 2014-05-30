@@ -24,10 +24,6 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             $scope.$on('securityGroupUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
-            $(document).on('change', 'input[type="text"]', function() {
-                $scope.isNotChanged = false;    
-                $scope.$apply();
-            });
             $(document).on('ready', function(){
                 if( $('.actions-menu').length > 0 ){
                     $('.actions-menu').find('a').get(0).focus();
