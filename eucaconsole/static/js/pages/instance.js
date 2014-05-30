@@ -13,6 +13,7 @@ angular.module('InstancePage', ['TagEditor'])
         // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
+        $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
         $scope.instanceForm = $('#instance-form');
@@ -81,6 +82,13 @@ angular.module('InstancePage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
+            $(document).on('change', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });
