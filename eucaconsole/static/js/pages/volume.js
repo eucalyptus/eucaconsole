@@ -112,7 +112,7 @@ angular.module('VolumePage', ['TagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
-            $(document).on('keyup', 'input[type="text"]', function () {
+            $(document).on('change', 'input[type="text"]', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
