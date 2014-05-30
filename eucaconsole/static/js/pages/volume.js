@@ -14,6 +14,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
         $scope.instanceId = '';
+        $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
@@ -95,6 +96,9 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
             $scope.$watch('volumeSize', function () {
                 if( $scope.volumeSize < $scope.snapshotSize ){
                     $('#volume_size_error').removeClass('hide');
@@ -107,6 +111,10 @@ angular.module('VolumePage', ['TagEditor'])
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
+            $(document).on('keyup', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
             });
         };
         $scope.setFocus = function () {

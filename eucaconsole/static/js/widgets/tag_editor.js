@@ -60,6 +60,7 @@ angular.module('TagEditor', ['ngSanitize'])
             $event.preventDefault();
             $scope.tagsArray.splice(index, 1);
             $scope.syncTags();
+            $scope.$emit('tagUpdate');
         };
         $scope.addTag = function ($event) {
             $event.preventDefault();
@@ -93,6 +94,7 @@ angular.module('TagEditor', ['ngSanitize'])
                     $scope.syncTags();
                     tagKeyField.val('').focus();
                     tagValueField.val('');
+                    $scope.$emit('tagUpdate');
                 }
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
