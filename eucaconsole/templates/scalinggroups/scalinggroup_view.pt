@@ -77,7 +77,7 @@
                     <hr />
                     <div>
                         <button type="submit" class="button" id="save-change-btn" ng-disabled="isNotChanged">
-                            <span tal:condition="scaling_group" i18n:translate="">Save changes</span>
+                            <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"
                            class="cancel-link" i18n:translate="">Cancel</a>

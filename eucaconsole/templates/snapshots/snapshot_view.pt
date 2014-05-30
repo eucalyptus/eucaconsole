@@ -115,10 +115,10 @@
                         <a href="${request.route_path('snapshots')}" i18n:translate="">Return to snapshots page</a>
                     </div>
                     <div>
-                        <button type="submit" class="button" tal:condition="snapshot" ng-disabled="isNotChanged">
+                        <button tal:condition="snapshot" type="submit" class="button" id="save_changes_snapshot_submit_button" ng-disabled="isNotChanged">
                             <span i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
                         </button>
-                        <button type="submit" class="button" tal:condition="not snapshot">
+                        <button tal:condition="not snapshot" type="submit" class="button" id="create_snapshot_submit_button">
                             <span i18n:translate="">Create snapshot</span>
                         </button>
                         <a href="${request.route_path('snapshots')}"
