@@ -32,13 +32,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson,
+                                securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
@@ -48,6 +49,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.roleList = JSON.parse(roles);
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();

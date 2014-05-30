@@ -124,8 +124,10 @@ class IAMPolicyWizardView(BaseView):
     def get_existing_policies(self):
         if self.target_type == 'user':
             fetch_policies = self.iam_conn.get_all_user_policies
-        else:
+        elif self.target_type == 'group':
             fetch_policies = self.iam_conn.get_all_group_policies
+        else:
+            fetch_policies = self.iam_conn.list_role_policies
         iam_policies = fetch_policies(self.target_name)
         return iam_policies.policy_names if iam_policies else []
 
