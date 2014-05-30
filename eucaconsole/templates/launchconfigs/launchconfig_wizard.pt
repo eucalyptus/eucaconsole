@@ -143,6 +143,7 @@
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview')}
+                            <hr />
                             <p class="description" i18n:translate="">Specify a role to grant special access to this instance.</p>
                             <div class="row">
                                 <div class="small-3 columns">
@@ -237,6 +238,10 @@
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
                         <div class="small-8 columns value">{{ securityGroup }}</div>
+                    </div>
+                    <div class="row" ng-show="role">
+                        <div class="small-4 columns"><label i18n:translate="" class="right">Role:</label></div>
+                        <div class="small-8 columns value">{{ role }}</div>
                     </div>
                 </div>
                 <div class="section step4 hide">
