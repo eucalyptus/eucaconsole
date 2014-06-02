@@ -74,7 +74,7 @@ class VolumesView(LandingPageView, BaseVolumeView):
         self.prefix = '/volumes'
         self.location = self.get_redirect_location('volumes')
         with boto_error_handler(request, self.location):
-            self.instances = self.get_instances_by_state(self.conn.get_only_instances() if self.conn else [], "running")
+            self.instances = self.conn.get_only_instances(filters={'instance-state-name':['running', 'stopped']}) if self.conn else []
         self.delete_form = DeleteVolumeForm(self.request, formdata=self.request.params or None)
         self.attach_form = AttachForm(self.request, instances=self.instances, formdata=self.request.params or None)
         self.detach_form = DetachForm(self.request, formdata=self.request.params or None)
@@ -161,14 +161,6 @@ class VolumesView(LandingPageView, BaseVolumeView):
                     zone_instances.append({'id': instance.id, 'name': instance_name})
             instances_by_zone[zone] = zone_instances
         return instances_by_zone
-
-    @staticmethod
-    def get_instances_by_state(instances, state="running"):
-        instances_by_state = []
-        for instance in instances:
-            if instance.state == state:
-                instances_by_state.append(instance)
-        return instances_by_state
 
     @staticmethod
     def get_sort_keys():
