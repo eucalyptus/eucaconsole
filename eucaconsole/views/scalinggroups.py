@@ -155,6 +155,7 @@ class ScalingGroupsJsonView(LandingPageView):
             all_healthy = all(instance.health_status == 'Healthy' for instance in group_instances)
             scalinggroups.append(dict(
                 availability_zones=', '.join(sorted(group.availability_zones)),
+                load_balancers=', '.join(sorted(group.load_balancers)),
                 desired_capacity=group.desired_capacity,
                 launch_config=group.launch_config_name,
                 max_size=group.max_size,
@@ -568,7 +569,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                     name=scaling_group_name,
                     launch_config=self.request.params.get('launch_config'),
                     availability_zones=self.request.params.getall('availability_zones'),
-                    # load_balancers=self.request.params.getall('load_balancers'),
+                    load_balancers=self.request.params.getall('load_balancers'),
                     health_check_type=self.request.params.get('health_check_type'),
                     health_check_period=self.request.params.get('health_check_period'),
                     desired_capacity=self.request.params.get('desired_capacity'),
