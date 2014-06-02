@@ -49,7 +49,9 @@ angular.module('UserView', ['PolicyList'])
             var hash = $scope.currentTab;
             var matches = document.URL.match(/tab=([\w|-]+)/);
             if (matches.length > 0) {
-                hash = matches[1];
+                if(matches[1] == 'general-tab' || matches[1] == 'security-tab' || matches[1] == 'quotas-tab'){
+                    hash = matches[1];
+                }
             }
             $(".tabs").children("dd").each(function() {
                 var id = $(this).find("a").attr("href").substring(1);
