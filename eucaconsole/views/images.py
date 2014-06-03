@@ -97,6 +97,7 @@ class ImagesView(LandingPageView):
         acct = request.session.get('account', '')
         if acct == '':
             acct = request.session.get('access_id', '')
+        invalidate_cache(long_term, 'images', None, [], [], region, acct)
         invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
         invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
 
