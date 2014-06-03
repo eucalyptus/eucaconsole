@@ -83,28 +83,28 @@ def get_configurator(settings, enable_auth=True):
 
     memory_cache = settings.get('cache.memory')
     memory_cache_url = settings.get('cache.memory.url')
-    eucaconsole.short_term = make_region(function_key_generator=euca_key_generator).configure(
+    eucaconsole.short_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.short_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.default_term = make_region(function_key_generator=euca_key_generator).configure(
+    eucaconsole.default_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.default_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.long_term = make_region(function_key_generator=euca_key_generator).configure(
+    eucaconsole.long_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.long_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.extra_long_term = make_region(function_key_generator=euca_key_generator).configure(
+    eucaconsole.extra_long_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.extra_long_term.expire')),
         arguments = {
@@ -112,23 +112,4 @@ def get_configurator(settings, enable_auth=True):
         },
     )
     return config
-
-def euca_key_generator(namespace, fn):
-    fname = fn.__name__
-    def generate_key(*arg):
-        # generate a key template:
-        # "fname_%d_arg1_arg2_arg3..."
-        key_template = fname + "_" + \
-                            "%d" + \
-                            "_".join(str(s) for s in arg[1:])
-
-        # store key template
-        #user_keys.add(key_template)
-
-        # return cache key
-        user_id = arg[0]
-        return key_template % user_id
-
-    return generate_key
-
 

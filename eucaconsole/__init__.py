@@ -36,13 +36,41 @@ use = egg:eucaconsole
 main = eucaconsole:main
 
 """
+from hashlib import sha1
+from dogpile.cache import make_region
+
 from .config import get_configurator
 
+def euca_key_generator(namespace, fn):
+    def generate_key(*arg):
+        print str(arg)
+        # generate a key:
+        # "namespace_arg1_arg2_arg3..."
+        key = namespace + "_" + \
+                          "_".join(str(s) for s in arg[1:])
+
+        # store key template
+        #user_keys.add(key_template)
+
+        # return cache key
+        print "cache key : "+key
+        # apply sha1 to obfuscate key contents
+        #return sha1(key).hexdigest()
+        return key
+
+    return generate_key
+
+def invalidate_cache(cache, namespace, *arg):
+    key = euca_key_generator(namespace, None)(*arg)
+    print "$$$$$$$  invalidating cache key : "+key
+    cache.delete(key)
+
 # caches available within the app
-short_term = None
-default_term = None
-long_term = None
-extra_long_term = None
+short_term = make_region(function_key_generator=euca_key_generator)
+default_term = make_region(function_key_generator=euca_key_generator)
+long_term = make_region(function_key_generator=euca_key_generator)
+extra_long_term = make_region(function_key_generator=euca_key_generator)
+
 
 def main(global_config, **settings):
     """Return a Pyramid WSGI application"""

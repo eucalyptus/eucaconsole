@@ -42,6 +42,7 @@ from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 from .. import long_term
+from .. import invalidate_cache
 import panels
 
 
@@ -91,10 +92,12 @@ class ImagesView(LandingPageView):
         ]
 
     @staticmethod
-    def invalidate_images_cache():
-        for manager in cache_managers.values():
-            if '_get_images_cache' in manager.namespace.namespace:
-                manager.clear()
+    def invalidate_images_cache(request):
+        region = request.session.get('region')
+        acct = request.session.get('account', '')
+        if acct == '':
+            acct = request.session.get('access_id', '')
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
 
 
 class ImagesJsonView(LandingPageView):
@@ -168,7 +171,7 @@ class ImagesJsonView(LandingPageView):
         items = self.get_images(conn, owners, [], region)
         # This is to included shared images in the owned images list per GUI-374
         if owner_alias == 'self':
-            items.extend(self.get_images(conn, [], ['self'], region))
+            items.extend(self.get_images(conn, [], [u'self'], region))
         return items
 
     @long_term.cache_on_arguments(namespace='images')
@@ -181,6 +184,7 @@ class ImagesJsonView(LandingPageView):
             for idx, img in enumerate(images):
                 del img.connection
                 del img.region
+                img.block_device_mapping = None
                 img.product_codes = None
                 img.billing_products = None
                 ret.append(img)
@@ -263,7 +267,7 @@ class ImageView(TaggedItemView):
             self.update_tags()
 
             # Clear images cache
-            ImagesView.invalidate_images_cache()
+            ImagesView.invalidate_images_cache(self.request)
 
             location = self.request.route_path('image_view', id=self.image.id)
             msg = _(u'Successfully modified image')

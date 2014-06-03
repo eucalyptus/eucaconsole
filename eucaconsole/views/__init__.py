@@ -38,7 +38,6 @@ from dateutil import tz
 from urllib import urlencode
 from urlparse import urlparse
 
-from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -146,14 +145,6 @@ class BaseView(object):
                 return default_path
             url = parsed_url.path
         return url or default_path
-
-    @staticmethod
-    def invalidate_connection_cache():
-        """Empty connection objects cache"""
-        for manager in cache_managers.values():
-            namespace = manager.namespace.namespace
-            if '_aws_connection' in namespace or '_euca_connection' in namespace:
-                manager.clear()
 
     @staticmethod
     def log_message(request, message, level='info'):
