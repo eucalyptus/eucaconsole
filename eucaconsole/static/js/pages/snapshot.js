@@ -76,7 +76,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
-            $(document).on('keyup', 'input[type="text"]', function () {
+            $(document).on('input', 'input[type="text"]', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
