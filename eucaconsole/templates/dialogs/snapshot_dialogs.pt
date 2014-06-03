@@ -38,7 +38,8 @@
                      detailpage_action request.route_path('snapshot_register', id=snapshot.id) if snapshot else '';
                      action landingpage_action if landingpage else detailpage_action;
                      html_attrs {'pattern': '^[a-zA-Z0-9\-\_\(\)\.\/]{3,128}$',
-                         'error_msg': 'AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\''};">
+                         'error_msg': 'AMI names must be between 3 and 128 characters long, and may contain letters, numbers, \'(\', \')\', \'.\', \'-\', \'/\' and \'_\''};
+                     dot_html_attrs {'checked': 'checked'};">
         <h3 i18n:translate="">Register snapshot as image</h3>
         <p><span i18n:translate="">You can register a snapshot as an image if it was created from a volume containing a root file system. The image can then be used to launch EBS-backed instances.</span></p>
         <form action="${action}" method="post" data-abide="">
@@ -46,7 +47,7 @@
             <input type="hidden" name="snapshot_id" value="{{ snapshotID }}" />
             ${panel('form_field', field=register_form['name'], **html_attrs)}
             ${panel('form_field', field=register_form['description'])}
-            ${panel('form_field', reverse='true', field=register_form['dot'])}
+            ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
             <div class="dialog-submit-button">
                 <button type="submit" id="register_snapshot_submit_button" class="button expand" i18n:translate="">Register as Image</button>

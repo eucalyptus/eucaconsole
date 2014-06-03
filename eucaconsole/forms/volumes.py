@@ -174,7 +174,7 @@ class AttachForm(BaseSecureForm):
         if self.volume:
             choices = [BLANK_CHOICE]
             for instance in self.instances:
-                if instance.state == "running" and self.volume.zone == instance.placement:
+                if instance.state in ["running", "stopped"] and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
                     extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                     vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
