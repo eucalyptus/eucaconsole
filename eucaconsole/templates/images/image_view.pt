@@ -1,8 +1,9 @@
 <metal:block use-macro="main_template">
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="ImagePage">
-        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+    <div class="row" id="contentwrap" 
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
+       <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
@@ -127,7 +128,7 @@
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                             <span tal:condition="image" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('images')}"
@@ -148,12 +149,8 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script>
-        angular.module('ImagePage', ['TagEditor']);
-        $(document).on('ready', function(){
-            $('.actions-menu').find('a').get(0).focus();
-        });
-    </script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/image.js')}"></script>
 </div>
 
 </metal:block>
