@@ -64,7 +64,8 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || 
+                    modalID.match(/release/) || modalID.match(/reboot/) ){
                     var closeMark = modal.find('.close-reveal-modal');
                     if(!!closeMark){
                         closeMark.focus();
