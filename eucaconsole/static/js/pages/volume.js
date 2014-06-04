@@ -114,6 +114,8 @@ angular.module('VolumePage', ['TagEditor'])
                 var tabs = $('.tabs').find('a');
                 if( tabs.length > 0 ){
                     tabs.get(0).focus();
+                }else if( $('input[type="text"]').length > 0 ){
+                    $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {
