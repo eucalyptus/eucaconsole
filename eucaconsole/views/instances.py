@@ -32,6 +32,7 @@ import base64
 from operator import attrgetter
 import simplejson as json
 from M2Crypto import RSA
+import magic
 
 from boto.exception import BotoServerError
 
@@ -589,6 +590,22 @@ class InstanceStateView(BaseInstanceView):
     def instance_state_json(self):
         """Return current instance state"""
         return dict(results=self.instance.state)
+
+    @view_config(route_name='instance_userdata_json', renderer='json', request_method='GET')
+    def instance_userdata_json(self):
+        """Return current instance state"""
+        with boto_error_handler(self.request):
+            user_data = self.conn.get_instance_attribute(self.instance.id, 'userData')
+            user_data = user_data['userData']
+            unencoded = base64.b64decode(user_data)
+            type = magic.from_buffer(unencoded, mime=True)
+            if type.find('text') == 0:
+                user_data=unencoded
+            else:
+                # get more descriptive text
+                type = magic.from_buffer(unencoded)
+                user_data=None
+            return dict(results=dict(type=type, data=user_data))
 
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):

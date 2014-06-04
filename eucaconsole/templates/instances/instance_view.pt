@@ -7,6 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
+                                     '${request.route_path('instance_userdata_json', id=instance.id)}',
                                      '${request.route_path('instance_ip_address_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}', '${instance.id}', '${instance.ip_address}',

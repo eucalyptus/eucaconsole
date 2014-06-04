@@ -9,6 +9,7 @@ angular.module('InstancePage', ['TagEditor'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
+        $scope.instanceUserDataEndpoint = '';
         // Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped"
         // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
@@ -20,8 +21,9 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
+        $scope.initController = function (jsonEndpoint, userDataEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
             $scope.instanceStateEndpoint = jsonEndpoint;
+            $scope.instanceUserDataEndpoint = userDataEndpoint;
             $scope.instanceIPAddressEndpoint = ipaddressEndpoint;
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
@@ -31,6 +33,7 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.platform = platform;
             $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
             $scope.getInstanceState();
+            $scope.getUserData();
             $scope.activateWidget();
             $scope.setWatch();
             $scope.setFocus();
@@ -119,6 +122,17 @@ angular.module('InstancePage', ['TagEditor'])
                     $scope.isUpdating = false;
                 }
                 $scope.isNotStopped = $scope.instanceState != 'stopped';
+            });
+        };
+        $scope.getUserData = function () {
+            $http.get($scope.instanceUserDataEndpoint).success(function(oData) {
+                var userData = oData ? oData.results : '';
+                if (userData.type.indexOf('text') === 0) {
+                    $('#userdata').val(userData.data);
+                }
+                else {
+                    $('#userdata').val(userData.type);
+                }
             });
         };
         $scope.submitSaveChanges = function($event){
