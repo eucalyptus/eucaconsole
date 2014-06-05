@@ -58,7 +58,7 @@
                 </table>
                 <div class="row">
                     <div class="small-4 columns">
-                        <label i18n:translate="" class="right inline-label">Enter an image ID</label>
+                        <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
                     </div>
                     <div class="small-4 columns value">
                         <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
