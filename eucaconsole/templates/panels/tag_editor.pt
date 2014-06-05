@@ -51,5 +51,14 @@
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
+    <div id="unsaved-tag-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Unsaved tag warning</h3>
+        <p>
+            <span i18n:translate="">
+                Detected an unsaved tag
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/tag_editor.js')}"></script>
 </div>
