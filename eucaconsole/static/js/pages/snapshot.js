@@ -88,7 +88,11 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var actionsMenu = $('.actions-menu');
-                if (actionsMenu.length) actionsMenu.find('a').get(0).focus();
+                if (actionsMenu.length) {
+                    actionsMenu.find('a').get(0).focus();
+                }else if( $('input[type="text"]').length > 0 ){
+                    $('input[type="text"]').get(0).focus();
+                }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
