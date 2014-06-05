@@ -26,7 +26,7 @@
                         </td>
                     </tr>
                     <tr ng-show="!itemsLoading &amp;&amp; items.length == 0">
-                        <td colspan="2">
+                        <td colspan="3">
                             <span i18n:translate="">No images were found matching the criteria.</span>
                         </td>
                     </tr>
@@ -36,7 +36,7 @@
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>
                         </td>
-                        <td>
+                        <td class="desc">
                             <div class="name">
                                 <strong class="image-title">{{ item.name || item.id }}</strong>
                                 <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
@@ -49,6 +49,10 @@
                                 {{ item.description }}
                             </div>
                             <div class="clearfix"></div>
+                        </td>
+                        <td class="btns">
+                            <a class="button tiny" i18n:translate=""
+                               ng-click="loadImageInfo(item.id); visitNextStep(2, $event)">Select</a>
                         </td>
                     </tr>
                     </tbody>
