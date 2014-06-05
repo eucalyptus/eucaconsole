@@ -45,7 +45,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form tal:attributes="action form_action" method="post" data-abide="abide">
+                <form tal:attributes="action form_action" id="security-group-detail-form" method="post" data-abide="abide">
                     ${structure:securitygroup_form['csrf_token']}
                     <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">

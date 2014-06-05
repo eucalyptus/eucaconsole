@@ -65,7 +65,7 @@ angular.module('SecurityGroupRules', [])
                     $scope.trafficType = 'ip';
                 });
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed', '#create-securitygroup-modal', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.syncRules();
