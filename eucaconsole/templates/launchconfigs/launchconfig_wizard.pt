@@ -57,27 +57,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
-                            <p class="description" i18n:translate="">
-                                Please specify a machine image for your virtual machine.
-                            </p>
-                            <div class="row">
-                                <div class="small-4 columns">
-                                    <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
-                                </div>
-                                <div class="small-8 columns value">
-                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" autofocus="autofocus"/>
-                                </div>
-                            </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
-                            <div class="row">
-                                <div class="small-6 columns">&nbsp;</div>
-                                <div class="small-6 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
-                                        <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
