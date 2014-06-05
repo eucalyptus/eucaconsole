@@ -31,7 +31,6 @@
                         </td>
                     </tr>
                     <tr ng-show="!itemsLoading" ng-repeat="item in items"
-                        ng-click="imageSelected(item)"
                         ng-class="{'selected': item.id == selectedImageParam}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>
@@ -52,7 +51,7 @@
                         </td>
                         <td class="btns">
                             <a class="button tiny" i18n:translate=""
-                               ng-click="loadImageInfo(item.id); visitNextStep(2, $event)">Select</a>
+                               ng-click="imageSelected(item); loadImageInfo(item.id); visitNextStep(2, $event)">Select</a>
                         </td>
                     </tr>
                     </tbody>
