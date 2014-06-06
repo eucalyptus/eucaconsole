@@ -30,14 +30,12 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
-from ..models import Notification
 from ..views import BaseView, JSONResponse, TaggedItemView
 from . import boto_error_handler
 
@@ -91,7 +89,8 @@ class IAMPolicyWizardView(BaseView):
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Creating policy {0} for {1} {2}").format(policy_name, self.target_type, self.target_name))
+                self.log_request(_(u"Creating policy {0} for {1} {2}").format(
+                    policy_name, self.target_type, self.target_name))
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
