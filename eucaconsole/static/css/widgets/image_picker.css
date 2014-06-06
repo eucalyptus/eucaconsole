@@ -2,12 +2,16 @@
 /* @fileOverview Image picker widget Sass CSS styles */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
-#image-picker .table { width: 100% !important; }
-#image-picker .table tbody { display: block; overflow-y: scroll; }
+#image-picker .search-filter { position: relative; }
+#image-picker .search-filter .search-icon { position: absolute; top: 10px; right: 10px; }
+#image-picker .table { width: 100% !important; border: 1px solid #cccccc; }
+#image-picker .table tbody { display: block; overflow-y: scroll; height: 22rem; }
 #image-picker .table tbody tr { display: block; border-bottom: 1px solid #cccccc; }
-#image-picker .table tbody tr.selected, #image-picker .table tbody tr:hover { background-color: #eef7e3; cursor: pointer; }
+#image-picker .table tbody tr.selected { background-color: #eef7e3; }
 #image-picker .table tbody tr.selected:hover { cursor: inherit; }
 #image-picker .table tbody td { word-break: break-all; }
+#image-picker .table tbody td.desc { width: 100%; }
+#image-picker .table tbody td.btns { width: 5rem; min-width: 5rem; padding-top: 1.5rem; }
 #image-picker .table .icon { padding: 15px; }
 #image-picker .table .icon .image { display: inline-block; width: 50px; height: 50px; background: url(../../img/image-platform-icons.png) no-repeat top left; }
 #image-picker .table .icon .image.redhat { background-position: 0 0; }
@@ -24,5 +28,6 @@
 #image-picker .table .label { padding: 3px 4px; }
 #image-picker .table .label.i386 { background-color: #6a6a6a; }
 #image-picker .table .label.x86_64 { background-color: #40a8c6; }
+#image-picker .cancel-link { margin-left: 1.5rem; }
 
 #filters label { margin-top: 8px; margin-bottom: 2px; }
