@@ -141,5 +141,5 @@ setup(
     main = eucaconsole:main
     """,
     cmdclass={'build_py': build_py_with_git_version,
-              'sdist': sdist_with_git_version})
+              'sdist': sdist_with_git_version}
 )
