@@ -1,16 +1,18 @@
 <div tal:omit-tag="">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
-    <div id="image-picker" ng-app="ImagePicker"
+    <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
         <!--! Image picker widget -->
         <div class="row">
             <div class="large-3 columns" ng-cloak="">
-                    ${panel('landingpage_filters', filters_form=filters_form)}
+                ${panel('landingpage_filters', filters_form=filters_form)}
             </div>
             <div class="large-9 columns">
-                <label i18n:translate="">
-                    Select a machine image for your virtual machine instance:
+                <label>
+                    <span i18n:translate="">Select a machine image for your</span>
+                    <span i18n:translate="" tal:condition="not launchconfig_wizard">virtual machine instance</span>
+                    <span i18n:translate="" tal:condition="launchconfig_wizard">launch configuration</span>
                 </label>
                 <div class="search-filter">
                     <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
