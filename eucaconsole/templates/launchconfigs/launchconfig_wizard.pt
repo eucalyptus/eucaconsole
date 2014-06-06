@@ -170,7 +170,8 @@
             </div>
         </div>
         <div class="large-4 columns">
-           <div class="summary">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary">
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1 hide">
                     <div class="row">
