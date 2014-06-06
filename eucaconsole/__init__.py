@@ -25,7 +25,7 @@
 
 try:    
     from .version import __version__
-except:
+except ImportError:
     __version__ = 'DEVELOPMENT'
     
 

@@ -29,6 +29,9 @@ from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from setuptools import setup, find_packages
 
+from eucaconsole import __version__
+
+
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
