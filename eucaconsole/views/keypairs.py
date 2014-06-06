@@ -164,13 +164,12 @@ class KeyPairView(BaseView):
                                   new_keypair.material)
                 msg_template = _(u'Successfully created key pair {keypair}')
                 msg = msg_template.format(keypair=name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
             if self.request.is_xhr:
-                import logging; logging.info(">>>>>>>>> using create keypair xhr... fix this")
                 keypair_material = new_keypair.material if new_keypair else None
                 resp_body = json.dumps(dict(message=msg, payload=keypair_material))
                 return Response(status=200, body=resp_body, content_type='application/x-pem-file;charset=ISO-8859-1')
             else:
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
                 location = self.request.route_path('keypair_view', id=name)
                 return HTTPFound(location=location)
         if self.request.is_xhr:
