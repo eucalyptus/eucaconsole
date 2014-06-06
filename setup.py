@@ -138,7 +138,7 @@ setup(
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
-    main = eucaconsole:main
+    main = eucaconsole.config:main
     """,
     cmdclass={'build_py': build_py_with_git_version,
               'sdist': sdist_with_git_version}
