@@ -100,7 +100,7 @@ class IAMPolicyWizardView(BaseView):
                 return dict(message=_(u"Successfully updated user policy"), results=result)
         else:
             error_messages = self.create_form.get_errors_list()
-            return JSONResponse(status=400, message=str(error_messages))
+            return JSONResponse(status=400, message=", ".join(error_messages))
 
     def get_page_title(self):
         prefix = _(u'Add access policy for')
