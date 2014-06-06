@@ -115,7 +115,7 @@ message_extractors = {'.': [
 
 setup(
     name='eucaconsole',
-    version='4.0.0',
+    version='4.0.1',
     description='Eucalyptus Management Console',
     long_description=README,
     classifiers=[
