@@ -25,11 +25,58 @@
 
 import os
 
+from distutils.command.build_py import build_py
+from distutils.command.sdist import sdist
 from setuptools import setup, find_packages
+
+from eucaconsole import __version__
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
+
+class build_py_with_git_version(build_py):
+    '''Like build_py, but also hardcoding the version in version.__version__
+       so it's consistent even outside of the source tree'''
+
+    def build_module(self, module, module_file, package):
+        build_py.build_module(self, module, module_file, package)
+        print module, module_file, package
+        if module == 'version' and '.' not in package:
+            version_line = "__version__ = '{0}'\n".format(__version__)
+            old_ver_name = self.get_module_outfile(self.build_lib, (package,),
+                                                    module)
+            new_ver_name = old_ver_name + '.new'
+            with open(new_ver_name, 'w') as new_ver:
+                with open(old_ver_name) as old_ver:
+                    for line in old_ver:
+                        if line.startswith('__version__ ='):
+                            new_ver.write(version_line)
+                        else:
+                            new_ver.write(line)
+                new_ver.flush()
+            os.rename(new_ver_name, old_ver_name)
+
+
+class sdist_with_git_version(sdist):
+    '''Like sdist, but also hardcoding the version in version.__version__ so
+       it's consistent even outside of the source tree'''
+
+    def make_release_tree(self, base_dir, files):
+        sdist.make_release_tree(self, base_dir, files)
+        version_line = "__version__ = '{0}'\n".format(__version__)
+        old_ver_name = os.path.join(base_dir, 'eucaconsole/version.py')
+        new_ver_name = old_ver_name + '.new'
+        with open(new_ver_name, 'w') as new_ver:
+            with open(old_ver_name) as old_ver:
+                for line in old_ver:
+                    if line.startswith('__version__ ='):
+                        new_ver.write(version_line)
+                    else:
+                        new_ver.write(line)
+            new_ver.flush()
+        os.rename(new_ver_name, old_ver_name)
 
 requires = [
     'beaker >= 1.5.4',
@@ -68,7 +115,7 @@ message_extractors = {'.': [
 
 setup(
     name='eucaconsole',
-    version='4.0.0',
+    version='4.0.1',
     description='Eucalyptus Management Console',
     long_description=README,
     classifiers=[
@@ -94,6 +141,8 @@ setup(
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
-    main = eucaconsole:main
+    main = eucaconsole.config:main
     """,
+    cmdclass={'build_py': build_py_with_git_version,
+              'sdist': sdist_with_git_version}
 )
