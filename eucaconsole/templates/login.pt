@@ -1,11 +1,10 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="head_css" tal:omit-tag="">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/login.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
-
     <!-- Notifications -->
     <div id="notifications-wrapper" class="row">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />

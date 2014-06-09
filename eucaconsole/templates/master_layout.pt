@@ -5,7 +5,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="eucaconsole">
 <head>
-    <title>Eucalyptus Management Console</title>
+    <title i18n:translate="">Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
