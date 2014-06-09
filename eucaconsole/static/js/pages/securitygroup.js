@@ -22,6 +22,17 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                     }
                 });
             });
+            window.addEventListener("beforeunload", function(event) {
+                var existsUnsavedTag = false;
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        existsUnsavedTag = true;
+                    }
+                });
+                if(existsUnsavedTag){
+                    return "You must click the \"Add\" button before you submit this for your tag to be included.";
+                }
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
