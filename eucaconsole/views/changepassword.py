@@ -34,11 +34,11 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView
 

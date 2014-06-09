@@ -34,7 +34,6 @@ import simplejson as json
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms import GenerateFileForm
@@ -42,6 +41,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm
 from ..forms.securitygroups import SecurityGroupForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView

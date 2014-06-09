@@ -36,8 +36,7 @@ import wtforms
 from wtforms import validators
 from wtforms import widgets
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm
 
 

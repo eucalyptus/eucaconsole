@@ -36,7 +36,6 @@ from M2Crypto import RSA
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.images import ImagesFiltersForm
@@ -47,6 +46,7 @@ from ..forms.instances import (
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView

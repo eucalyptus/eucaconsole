@@ -32,14 +32,15 @@ import re
 
 from beaker.cache import cache_region, cache_managers
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+
 import panels
 
 

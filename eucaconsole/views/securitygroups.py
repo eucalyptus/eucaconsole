@@ -31,10 +31,10 @@ Pyramid views for Eucalyptus and AWS security groups
 import simplejson as json
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler

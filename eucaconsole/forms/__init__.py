@@ -33,13 +33,13 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 import logging
 
 from beaker.cache import cache_region
-from pyramid.i18n import TranslationString as _
 from wtforms.ext.csrf import SecureForm
 
 import boto
 from boto.exception import BotoServerError
 
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
+from ..i18n import _
 
 BLANK_CHOICE = ('', _(u'select...'))
 
