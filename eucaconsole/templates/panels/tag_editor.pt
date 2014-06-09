@@ -52,10 +52,10 @@
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
     <div id="unsaved-tag-warn-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Unsaved tag warning</h3>
+        <h3 i18n:translate=""></h3>
         <p>
             <span i18n:translate="">
-                Detected an unsaved tag
+                You must click the "Add" button before you submit this for your tag to be included.
             </span>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
