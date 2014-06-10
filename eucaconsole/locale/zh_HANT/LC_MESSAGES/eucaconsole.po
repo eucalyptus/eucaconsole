@@ -1,4 +1,4 @@
-# French translations for eucaconsole.
+# Chinese (Traditional) translations for eucaconsole.
 # Copyright (C) 2014 ORGANIZATION
 # This file is distributed under the same license as the eucaconsole
 # project.
@@ -6,13 +6,13 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eucaconsole 4.0.0\n"
+"Project-Id-Version: eucaconsole 4.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2014-06-09 20:59-0700\n"
-"PO-Revision-Date: 2014-04-16 12:49-0700\n"
+"PO-Revision-Date: 2014-06-09 20:57-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language-Team: zh_Hant <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4776,82 +4776,4 @@ msgstr ""
 #: eucaconsole/views/volumes.py:502
 msgid "Successfully deleted the snapshot."
 msgstr ""
-
-#~ msgid "%H:%M:%S %p %b %d %Y"
-#~ msgstr ""
-
-#~ msgid "Owned by me"
-#~ msgstr ""
-
-#~ msgid "Trigger threshold is required"
-#~ msgstr ""
-
-#~ msgid "Length of measurement period in seconds."
-#~ msgstr ""
-
-#~ msgid "Period length is required"
-#~ msgstr ""
-
-#~ msgid "Volume size is required"
-#~ msgstr ""
-
-#~ msgid ""
-#~ msgstr ""
-
-#~ msgid "Logout"
-#~ msgstr ""
-
-#~ msgid "seconds"
-#~ msgstr ""
-
-#~ msgid "Attach a volume to an instance"
-#~ msgstr ""
-
-#~ msgid "Specify a machine image for your virtual machine instance"
-#~ msgstr ""
-
-#~ msgid "Enter an image ID"
-#~ msgstr ""
-
-#~ msgid "Public IP"
-#~ msgstr ""
-
-#~ msgid "Monitored"
-#~ msgstr ""
-
-#~ msgid "Yes"
-#~ msgstr ""
-
-#~ msgid "No"
-#~ msgstr ""
-
-#~ msgid "Please specify a machine image for your virtual machine."
-#~ msgstr ""
-
-#~ msgid "Enter an Image ID:"
-#~ msgstr ""
-
-#~ msgid "OR select an image below"
-#~ msgstr ""
-
-#~ msgid "Must have at least one user"
-#~ msgstr ""
-
-#~ msgid "Save changes"
-#~ msgstr ""
-
-#~ msgid "Your session has timed out"
-#~ msgstr ""
-
-#~ msgid "Successfully created IAM policy"
-#~ msgstr ""
-
-#~ msgid "Creating access key {0} for user {1}"
-#~ msgstr ""
-
-#~ msgid "Successfully removed user to group"
-#~ msgstr ""
-
-#~ msgid "foobar"
-#~ msgstr ""
 
