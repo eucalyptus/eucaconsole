@@ -59,13 +59,19 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             });
             window.addEventListener("beforeunload", function(event) {
                 var existsUnsavedTag = false;
-                $('input.taginput').each(function(){
+                $('input.taginput[type!="checkbox"]').each(function(){
                     if($(this).val() !== ''){
+                        console.log($(this).val());
                         existsUnsavedTag = true;
                     }
                 });
                 if(existsUnsavedTag){
                     return "You must click the \"Add\" button before you submit this for your tag to be included.";
+                }else if($scope.isNotChanged === false){
+                    if( event.target.activeElement.id === 'save-changes-btn' ){ 
+                        return;
+                    }
+                    return "You must click the \"Save Changes\" button before you leave this page.";
                 }
             });
         };

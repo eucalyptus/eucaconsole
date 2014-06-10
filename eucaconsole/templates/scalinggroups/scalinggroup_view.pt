@@ -76,7 +76,7 @@
                     ${panel('autoscale_tag_editor', tags=scaling_group.tags)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-change-btn" ng-disabled="isNotChanged">
+                        <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                             <span tal:condition="scaling_group" i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('scalinggroups')}"
