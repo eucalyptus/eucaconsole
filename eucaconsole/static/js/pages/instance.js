@@ -14,6 +14,7 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
         $scope.instanceForm = $('#instance-form');
@@ -97,6 +98,9 @@ angular.module('InstancePage', ['TagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            $(document).on('submit', function () {
+                $scope.isSubmitted = true;
+            });
             window.addEventListener("beforeunload", function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
@@ -107,7 +111,7 @@ angular.module('InstancePage', ['TagEditor'])
                 if(existsUnsavedTag){
                     return "You must click the \"Add\" button before you submit this for your tag to be included.";
                 }else if($scope.isNotChanged === false){
-                    if( event.target.activeElement.id === 'save-changes-btn' ){ 
+                    if( $scope.isSubmitted === true ){
                         return;
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
