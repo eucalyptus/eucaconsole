@@ -30,12 +30,12 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
+from ..i18n import _
 from ..views import BaseView, JSONResponse, TaggedItemView
 from . import boto_error_handler
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2013-2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
@@ -25,33 +24,38 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Forms for IAM policies
+i18n config
 
 """
-import wtforms
-from wtforms import validators
-
-from ..forms import BaseSecureForm
-from ..i18n import _
+from pyramid.events import NewRequest
+from pyramid.events import subscriber
+from pyramid.i18n import TranslationStringFactory
 
 
-class IAMPolicyWizardForm(BaseSecureForm):
-    """Create IAM Policy form"""
+_ = TranslationStringFactory('eucaconsole')
 
-    name_error_msg = _(u'Name is required and may not contain spaces')
-    name = wtforms.TextField(
-        label=_(u'Name'),
-        validators=[validators.InputRequired(message=name_error_msg)],
-    )
-    policy = wtforms.TextAreaField(label=_(u'Policy'))
-    policy_file = wtforms.FileField(label='')
+LOCALES = ('en', 'de', 'es', 'fr', 'it', 'ru')
 
-    def __init__(self, request, conn=None, **kwargs):
-        super(IAMPolicyWizardForm, self).__init__(request, **kwargs)
-        self.conn = conn
-        self.cloud_type = request.session.get('cloud_type', 'euca')
-        self.set_error_messages()
 
-    def set_error_messages(self):
-        self.name.error_msg = self.name_error_msg
+@subscriber(NewRequest)
+def set_accepted_languages_locale(event):
+    if not event.request.accept_language:
+        return
+    accepted = event.request.accept_language
+    event.request._LOCALE_ = accepted.best_match(LOCALES, 'en')
+
+
+def custom_locale_negotiator(request):
+    """
+    Determine the locale from the request object, a URL param, cookies, or the browser's Accept-Language header
+    Fall back to pyramid.default_local_name setting
+    """
+    name = '_LOCALE_'
+    locale_name = getattr(request, name, None) or request.params.get(name) or request.cookies.get(name)
+    if locale_name is None:
+        default_locale = request.registry.settings.get('pyramid.default_locale_name', 'en')
+        locale_name = request.accept_language.best_match(LOCALES, default_locale)
+        if not request.accept_language:
+            locale_name = default_locale
+    return locale_name
 

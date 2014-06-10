@@ -36,6 +36,7 @@ from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.settings import asbool
 
+from .i18n import custom_locale_negotiator
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
 from .routes import urls
@@ -67,6 +68,8 @@ def get_configurator(settings, enable_auth=True):
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
+    config.add_translation_dirs('eucaconsole:locale')
+    config.set_locale_negotiator(custom_locale_negotiator)
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
@@ -91,4 +94,4 @@ def main(global_config, **settings):
     Returns a Pyramid WSGI application"""
     app_config = get_configurator(settings)
     return app_config.make_wsgi_app()
-    
+

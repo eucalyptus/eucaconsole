@@ -33,13 +33,12 @@ import simplejson as json
 from boto.exception import BotoServerError
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
-from ..views.images import ImagesView
 from . import boto_error_handler
 
 

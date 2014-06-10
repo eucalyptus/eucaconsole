@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_launch.css')}" />
@@ -20,7 +20,7 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Launch new instance</strong>
         </h3>
-        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
+        <div class="large-8 columns">
             <div class="wizard no-title">
                 <form action="${request.route_path('instance_launch')}" id="launch-instance-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">

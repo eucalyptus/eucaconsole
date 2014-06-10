@@ -108,7 +108,7 @@ dev_extras = [
     'waitress',
 ]
 
-message_extractors = {'.': [
+message_extractors = {'eucaconsole': [
     ('**.py', 'lingua_python', None),
     ('**.pt', 'lingua_xml', None),
 ]}

@@ -30,11 +30,11 @@ Forms for Scaling Group
 """
 import wtforms
 
-from pyramid.i18n import TranslationString as _
 from wtforms import validators
 from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
+from ..i18n import _
 from . import BaseSecureForm, ChoicesManager
 
 
