@@ -70,8 +70,6 @@ def get_configurator(settings, enable_auth=True):
                       'eucaconsole.layout:templates/master_layout.pt')
     config.add_translation_dirs('eucaconsole:locale')
     config.set_locale_negotiator(custom_locale_negotiator)
-    config.add_subscriber('eucaconsole.i18n.add_renderer_globals', 'pyramid.events.BeforeRender')
-    config.add_subscriber('eucaconsole.i18n.add_localizer', 'pyramid.events.NewRequest')
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)

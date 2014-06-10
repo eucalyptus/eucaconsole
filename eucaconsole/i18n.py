@@ -29,8 +29,7 @@ i18n config
 """
 from pyramid.events import NewRequest
 from pyramid.events import subscriber
-from pyramid.i18n import get_localizer, TranslationStringFactory
-from pyramid.threadlocal import get_current_request
+from pyramid.i18n import TranslationStringFactory
 
 
 _ = TranslationStringFactory('eucaconsole')
@@ -50,7 +49,6 @@ def custom_locale_negotiator(request):
     """
     Determine the locale from the request object, a URL param, cookies, or the browser's Accept-Language header
     Fall back to pyramid.default_local_name setting
-
     """
     name = '_LOCALE_'
     locale_name = getattr(request, name, None) or request.params.get(name) or request.cookies.get(name)
@@ -61,20 +59,3 @@ def custom_locale_negotiator(request):
             locale_name = default_locale
     return locale_name
 
-
-def add_renderer_globals(event):
-    request = event.get('request')
-    if request is None:
-        request = get_current_request()
-    event['_'] = request.translate
-    event['localizer'] = request.localizer
-
-
-def add_localizer(event):
-    request = event.request
-    localizer = get_localizer(request)
-
-    def auto_translate(string):
-        return localizer.translate(_(string))
-    request.localizer = localizer
-    request.translate = auto_translate
