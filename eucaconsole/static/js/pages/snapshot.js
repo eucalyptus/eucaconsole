@@ -84,6 +84,17 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            window.addEventListener("beforeunload", function(event) {
+                var existsUnsavedTag = false;
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        existsUnsavedTag = true;
+                    }
+                });
+                if(existsUnsavedTag){
+                    return "You must click the \"Add\" button before you submit this for your tag to be included.";
+                }
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
