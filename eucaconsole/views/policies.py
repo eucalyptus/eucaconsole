@@ -30,14 +30,12 @@ Pyramid views for IAM Policies (permissions)
 """
 import simplejson as json
 
-from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants import policies, permissions, AWS_REGIONS
 from ..forms import ChoicesManager
 from ..forms.policies import IAMPolicyWizardForm
-from ..models import Notification
+from ..i18n import _
 from ..views import BaseView, JSONResponse, TaggedItemView
 from . import boto_error_handler
 
@@ -83,7 +81,7 @@ class IAMPolicyWizardView(BaseView):
         """Displays the Create IAM Policy wizard"""
         return self.render_dict
 
-    @view_config(route_name='iam_policy_create', renderer=TEMPLATE, request_method='POST')
+    @view_config(route_name='iam_policy_create', request_method='POST', renderer='json')
     def iam_policy_create(self):
         """Handles the POST from the Create IAM Policy wizard"""
         # redirect to detail page after submit
@@ -91,19 +89,17 @@ class IAMPolicyWizardView(BaseView):
             policy_name = self.request.params.get('name')
             policy_json = self.request.params.get('policy', '{}')
             with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Creating policy {0} for {1} {2}").format(policy_name, self.target_type, self.target_name))
+                self.log_request(_(u"Creating policy {0} for {1} {2}").format(
+                    policy_name, self.target_type, self.target_name))
                 if self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 else:
                     caller = self.iam_conn.put_group_policy
-                caller(self.target_name, policy_name, policy_json)
-                prefix = _(u'Successfully created IAM policy')
-                msg = '{0} {1}'.format(prefix, policy_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
+                result = caller(self.target_name, policy_name, policy_json)
+                return dict(message=_(u"Successfully updated user policy"), results=result)
         else:
-            self.request.error_messages = self.create_form.get_errors_list()
-        return self.render_dict
+            error_messages = self.create_form.get_errors_list()
+            return JSONResponse(status=400, message=", ".join(error_messages))
 
     def get_page_title(self):
         prefix = _(u'Add access policy for')

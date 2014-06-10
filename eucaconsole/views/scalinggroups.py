@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS scaling groups
 import simplejson as json
 import time
 
+from hashlib import md5
 from markupsafe import escape
 from operator import attrgetter
 
@@ -38,7 +39,6 @@ from boto.ec2.autoscale import AutoScalingGroup, ScalingPolicy
 from boto.ec2.autoscale.tag import Tag
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..constants.cloudwatch import METRIC_TYPES
@@ -47,10 +47,10 @@ from ..forms.scalinggroups import (
     ScalingGroupDeleteForm, ScalingGroupEditForm, ScalingGroupCreateForm, ScalingGroupInstancesMarkUnhealthyForm,
     ScalingGroupInstancesTerminateForm, ScalingGroupPolicyCreateForm, ScalingGroupPolicyDeleteForm,
     ScalingGroupsFiltersForm)
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, TaggedItemView
 from . import boto_error_handler
-from hashlib import md5 
 
 
 class DeleteScalingGroupMixin(object):

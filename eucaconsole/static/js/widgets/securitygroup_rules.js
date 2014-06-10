@@ -131,6 +131,7 @@ angular.module('SecurityGroupRules', [])
             $event.preventDefault();
             $scope.rulesArray.splice(index, 1);
             $scope.syncRules();
+            $scope.$emit('securityGroupUpdate');
         };
         // Adjust the IP Protocol atrributes for specical cases
         $scope.adjustIpProtocol = function () {
@@ -173,6 +174,7 @@ angular.module('SecurityGroupRules', [])
             // Add the rule
             $scope.rulesArray.push($scope.createRuleArrayBlock());
             $scope.syncRules();
+            $scope.$emit('securityGroupUpdate');
         };
         $scope.cancelRule = function ($event) {
             $event.preventDefault();

@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
@@ -68,11 +68,11 @@
                     ${panel('tag_editor', tags=sgroup_tags, leftcol_width=3, rightcol_width=9)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-securitygroup-btn">
-                            <span tal:condition="security_group" i18n:translate="">Save Changes</span>
-                            <span tal:condition="not security_group" i18n:translate="">
-                                Create Security Group
-                            </span>
+                        <button tal:condition="security_group" type="submit" class="button" id="save-securitygroup-btn" ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <button tal:condition="not security_group" type="submit" class="button" id="create-securitygroup-btn">
+                            <span i18n:translate="">Create Security Group</span>
                         </button>
                         <a href="${request.route_path('securitygroups')}"
                            class="cancel-link" i18n:translate="">Cancel</a>

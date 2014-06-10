@@ -27,7 +27,7 @@ import os.path
 import subprocess
 
 
-__version__ = '4.0.0'
+__version__ = 'devel'
 
 
 if '__file__' in globals():

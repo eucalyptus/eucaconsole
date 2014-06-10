@@ -39,6 +39,7 @@ from pyramid.settings import asbool
 from dogpile.cache import make_region
 from dogpile.cache.util import sha1_mangle_key
 
+from .i18n import custom_locale_negotiator
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
 from .routes import urls
@@ -46,11 +47,10 @@ from .tweens import setup_tweens
 from .chamext import setup_exts
 from .keymgt import ensure_session_keys
 from .mime import check_types
-import eucaconsole
-#import short_term
-#import default_term
-#import long_term
-#import extra_long_term
+from .caches import short_term
+from .caches import default_term
+from .caches import long_term
+from .caches import extra_long_term
 
 try:
     from version import __version__
@@ -75,6 +75,8 @@ def get_configurator(settings, enable_auth=True):
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
+    config.add_translation_dirs('eucaconsole:locale')
+    config.set_locale_negotiator(custom_locale_negotiator)
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
@@ -83,28 +85,28 @@ def get_configurator(settings, enable_auth=True):
 
     memory_cache = settings.get('cache.memory')
     memory_cache_url = settings.get('cache.memory.url')
-    eucaconsole.short_term.configure(
+    short_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.short_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.default_term.configure(
+    default_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.default_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.long_term.configure(
+    long_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.long_term.expire')),
         arguments = {
             'url':[memory_cache_url],
         },
     )
-    eucaconsole.extra_long_term.configure(
+    extra_long_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.extra_long_term.expire')),
         arguments = {
@@ -112,4 +114,21 @@ def get_configurator(settings, enable_auth=True):
         },
     )
     return config
+
+def main(global_config, **settings):
+    """
+    Main WSGI app
+
+    The WSGI app object returned from main() is invoked from the following section in the console.ini config file...
+
+    [app:main]
+    use = egg:eucaconsole
+
+    ...which points to eucaconsole.egg-info/entry_points.txt
+    [paste.app_factory]
+    main = eucaconsole.config:main
+
+    Returns a Pyramid WSGI application"""
+    app_config = get_configurator(settings)
+    return app_config.make_wsgi_app()
 

@@ -103,7 +103,7 @@
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
 .row .status.running { background-color: #73a930; }
 
-.row .status.pending { background-color: #777777; }
+.row .status.pending { background-color: #bee094; }
 
 .row .status.stopped { background-color: #990000; }
 

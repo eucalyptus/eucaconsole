@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
@@ -249,7 +249,7 @@
                     ${panel('tag_editor', tags=instance.tags, show_name_tag=False)}
                     <hr />
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)">
+                        <button type="submit" class="button" id="save-changes-btn" ng-click="submitSaveChanges($event)" ng-disabled="isNotChanged">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('instances')}" id="cancel-update-link"

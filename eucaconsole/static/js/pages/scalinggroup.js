@@ -10,6 +10,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
+        $scope.isNotChanged = true;
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '60%', search_contains: true});
             $('#availability_zones').chosen({'width': '80%', search_contains: true});
@@ -41,9 +42,20 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             }
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
+            $(document).on('change', 'input[type="number"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('change', 'select', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
             });
         };
         $scope.setFocus = function () {
