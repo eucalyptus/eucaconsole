@@ -17,6 +17,9 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
         $scope.tagInputs = $scope.tagEditor.find('.taginput');
         $scope.tagsTextarea = $scope.tagEditor.find('textarea#tags');
         $scope.tagsArray = [];
+        $scope.newTagKey = '';
+        $scope.newTagValue = '';
+        $scope.isTagNotComplete = true;
         $scope.syncTags = function () {
             $scope.tagsTextarea.val(JSON.stringify($scope.tagsArray));
         };
@@ -34,6 +37,7 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
                 }
             });
             $scope.syncTags();
+            $scope.setWatch();
         };
         $scope.getSafeTitle = function (tag) {
             return $sanitize(tag.name + ' = ' + tag.value);
@@ -87,10 +91,27 @@ angular.module('AutoScaleTagEditor', ['ngSanitize'])
                     tagValueField.val('');
                     tagPropagateField.prop('checked', false);
                     $scope.$emit('tagUpdate');
+                    $scope.newTagKey = '';
+                    $scope.newTagValue = '';
                 }
             } else {
                 tagKeyField.val() ? tagValueField.focus() : tagKeyField.focus();
             }
+        };
+        $scope.checkRequiredInput = function () {
+            if($scope.newTagKey === '' || $scope.newTagValue === ''){
+               $scope.isTagNotComplete = true;
+            } else {
+               $scope.isTagNotComplete = false;
+            } 
+        }; 
+        $scope.setWatch = function () {
+            $scope.$watch('newTagKey', function () {
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('newTagValue', function () {
+                $scope.checkRequiredInput();
+            });
         };
     })
 ;

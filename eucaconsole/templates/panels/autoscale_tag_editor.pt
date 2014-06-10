@@ -31,14 +31,15 @@
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div class="small-5 columns">
-                    <input class="taginput value" placeholder="value..." pattern="${layout.tag_pattern_value}" />
+                    <input class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length be longer than 128 chars</small>
                 </div>
             </div>
             <div>&nbsp;</div>
             <div>
                 <div class="columns">
-                    <a href="#" ng-click="addTag($event)" class="button round tiny" id="add-tag-btn"
+                    <a href="#" ng-click="addTag($event)" ng-disabled="isTagNotComplete"  
+                       class="button round tiny" id="add-tag-btn"
                        title="Add tag" i18n:translate="">Add Tag</a>
                 </div>
             </div>
