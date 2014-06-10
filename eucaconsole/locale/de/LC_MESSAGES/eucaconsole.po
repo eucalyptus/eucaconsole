@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-09 15:56-0700\n"
+"POT-Creation-Date: 2014-06-09 18:14-0700\n"
 "PO-Revision-Date: 2014-03-25 13:16-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: de <LL@li.org>\n"
@@ -1127,6 +1127,10 @@ msgid ""
 " Management Console, please enable JavaScript in your browser's settings."
 msgstr ""
 
+#: eucaconsole/templates/login.pt:37
+msgid "SSL not enabled"
+msgstr ""
+
 #: eucaconsole/templates/login.pt:38
 msgid ""
 "This connection is untrusted because SSL is not enabled on the server. "
@@ -1151,12 +1155,20 @@ msgstr ""
 msgid "AWS"
 msgstr ""
 
+#: eucaconsole/templates/login.pt:85
+msgid "Log in to Eucalyptus"
+msgstr ""
+
 #: eucaconsole/templates/login.pt:90 eucaconsole/templates/login.pt:135
 msgid "Logging in"
 msgstr ""
 
 #: eucaconsole/templates/login.pt:96
 msgid "Forgot your password?"
+msgstr ""
+
+#: eucaconsole/templates/login.pt:130
+msgid "Log in to AWS"
 msgstr ""
 
 #: eucaconsole/templates/login.pt:141
