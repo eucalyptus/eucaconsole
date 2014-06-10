@@ -13,6 +13,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.imagesURL = '';
         $scope.images = undefined;
@@ -84,6 +85,9 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            $(document).on('submit', function () {
+                $scope.isSubmitted = true;
+            });
             window.addEventListener("beforeunload", function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
@@ -94,7 +98,7 @@ angular.module('SnapshotPage', ['TagEditor'])
                 if(existsUnsavedTag){
                     return "You must click the \"Add\" button before you submit this for your tag to be included.";
                 }else if($scope.isNotChanged === false){
-                    if( event.target.activeElement.id === 'save_changes_snapshot_submit_button' ){ 
+                    if( $scope.isSubmitted === true ){
                         return;
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";

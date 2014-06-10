@@ -15,6 +15,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.snapshotId = '';
         $scope.instanceId = '';
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
@@ -118,6 +119,9 @@ angular.module('VolumePage', ['TagEditor'])
                     }
                 });
             });
+            $(document).on('submit', function () {
+                $scope.isSubmitted = true;
+            });
             window.addEventListener("beforeunload", function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
@@ -128,7 +132,7 @@ angular.module('VolumePage', ['TagEditor'])
                 if(existsUnsavedTag){
                     return "You must click the \"Add\" button before you submit this for your tag to be included.";
                 }else if($scope.isNotChanged === false){
-                    if( event.target.activeElement.id === 'save_changes_volume_submit_button' ){ 
+                    if( $scope.isSubmitted === true ){
                         return;
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
