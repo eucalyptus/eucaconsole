@@ -5,17 +5,25 @@
 @import "../includes/eucavariables";
 
 #image-picker {
+    .search-filter {
+        position: relative;
+        .search-icon {
+            position: absolute;
+            top: 10px; right: 10px;
+        }
+    }
     .table {
         width: 100% !important;
+        border: 1px solid $euca-lightgrey;
         tbody {
             display: block;
             overflow-y: scroll;
+            height: 22rem;
             tr {
                 display: block;
                 border-bottom: 1px solid $euca-lightgrey;
-                &.selected, &:hover {
+                &.selected {
                     background-color: $euca-extralightgreen;
-                    cursor: pointer;
                 }
                 &.selected:hover {
                     cursor: inherit;
@@ -23,6 +31,12 @@
             }
             td {
                 word-break: break-all;
+                &.desc { width: 100%; }
+                &.btns {
+                    width: 5rem;
+                    min-width: 5rem;
+                    padding-top: 1.5rem;
+                }
             }
         }
         .icon {
@@ -58,6 +72,7 @@
             }
         }
     }
+    .cancel-link { margin-left: 1.5rem; }
 }
 
 #filters {

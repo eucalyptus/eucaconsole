@@ -31,8 +31,7 @@ Forms for Images
 import wtforms
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm
 
 

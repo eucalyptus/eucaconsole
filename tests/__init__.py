@@ -63,7 +63,7 @@ See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html
 import collections
 import unittest
 
-import beaker
+from beaker import cache
 from pyramid import testing
 from wtforms import Field
 from wtforms.validators import DataRequired, InputRequired, Length, Email, Optional, NumberRange
@@ -92,27 +92,27 @@ class BaseTestCase(unittest.TestCase):
 
 
 class BaseFormTestCase(unittest.TestCase):
-    """Base form class, modified from wtforms-txt to better work with CSRF forms.
+    """Base form class, modified from wtforms-test to better work with CSRF forms.
        See https://github.com/kvesteri/wtforms-test/blob/master/wtforms_test/__init__.py
     """
     form_class = None
     request = None
     csrf_enabled = True
-    beaker.cache.CacheManager(cache_regions={
-        'short_term':{
-            'expire':60,
-            'type':'memory',
-            'key_length':'20'
+    cache.CacheManager(cache_regions={
+        'short_term': {
+            'expire': 60,
+            'type': 'memory',
+            'key_length': '20'
         },
-        'long_term':{
-            'expire':3600,
-            'type':'memory',
-            'key_length':'20'
+        'long_term': {
+            'expire': 3600,
+            'type': 'memory',
+            'key_length': '20'
         },
-        'extra_long_term':{
-            'expire':43200,
-            'type':'memory',
-            'key_length':'20'
+        'extra_long_term': {
+            'expire': 43200,
+            'type': 'memory',
+            'key_length': '20'
         }
     })
 

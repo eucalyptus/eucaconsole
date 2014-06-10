@@ -46,22 +46,24 @@ angular.module('UserView', ['PolicyList'])
             $scope.adjustTab();
         };
         $scope.adjustTab = function() {
-            var idx = document.URL.indexOf("?");
-            if (idx != -1) {
-                var hash = document.URL.substring(idx + 5); // Count the index for '?tab=', thus + 5
-                if (hash == '') return;
-                $(".tabs").children("dd").each(function() {
-                    var id = $(this).find("a").attr("href").substring(1);
-                    var $container = $("#" + id);
-                    $(this).removeClass("active");
-                    $container.removeClass("active");
-                    if (id == hash || $container.find("#" + hash).length) {
-                        $(this).addClass("active");
-                        $container.addClass("active");
-                        $scope.currentTab = id;    // Update the currentTab value for the help display
-                    }
-                });
+            var hash = $scope.currentTab;
+            var matches = document.URL.match(/tab=([\w|-]+)/);
+            if (matches.length > 0) {
+                if(matches[1] == 'general-tab' || matches[1] == 'security-tab' || matches[1] == 'quotas-tab'){
+                    hash = matches[1];
+                }
             }
+            $(".tabs").children("dd").each(function() {
+                var id = $(this).find("a").attr("href").substring(1);
+                var $container = $("#" + id);
+                $(this).removeClass("active");
+                $container.removeClass("active");
+                if (id == hash || $container.find("#" + hash).length) {
+                    $(this).addClass("active");
+                    $container.addClass("active");
+                    $scope.currentTab = id;    // Update the currentTab value for the help display
+                }
+            });
         };
         $scope.setDropdownMenusListener = function () {
             var modals = $('[data-reveal]');
@@ -174,7 +176,6 @@ angular.module('UserView', ['PolicyList'])
             $("#change-password-modal").on('show', function () {
                 $('#password').focus(); // doesn't seem to work.
             });
-            $('#wrong-password').css('display', 'none');
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitChange = function($event) {
@@ -197,7 +198,6 @@ angular.module('UserView', ['PolicyList'])
         };
         // handles server call for changing the password
         $scope.changePassword = function($event) {
-            $event.preventDefault();
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             $('#wrong-password').css('display', 'none');

@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
@@ -256,7 +256,7 @@
                             <p>
                                 <span i18n:translate="">This operation requires the password of the person making the request. Please enter your password below</span>?
                             </p>
-                            <form method="post" id="change-form" ng-submit="changePassword($event)">
+                            <form method="post" id="change-form" data-abide="" ng-submit="changePassword($event)">
                                 ${structure:change_password_form['csrf_token']}
                                 ${panel('form_field', field=change_password_form['password'])}
                                 <div class="small-4 columns">&nbsp;</div>

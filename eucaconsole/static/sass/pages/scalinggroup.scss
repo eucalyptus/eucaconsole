@@ -72,6 +72,11 @@ input[type="number"] {
     }
 }
 
+// Scaling group policy page
+#adjustment_amount {
+    width: 4rem;
+}
+
 // Scaling group alarms page
 #evaluation_periods, #period {
     display: inline-block;

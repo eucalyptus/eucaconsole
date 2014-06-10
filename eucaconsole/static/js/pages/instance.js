@@ -13,6 +13,7 @@ angular.module('InstancePage', ['TagEditor'])
         // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
+        $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
         $scope.instanceForm = $('#instance-form');
@@ -64,7 +65,8 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if( modalID.match(/terminate/)  || modalID.match(/delete/) || 
+                    modalID.match(/release/) || modalID.match(/reboot/) ){
                     var closeMark = modal.find('.close-reveal-modal');
                     if(!!closeMark){
                         closeMark.focus();
@@ -81,6 +83,13 @@ angular.module('InstancePage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
+            $(document).on('input', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });

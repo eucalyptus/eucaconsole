@@ -29,11 +29,11 @@ Pyramid views for Eucalyptus and AWS Elastic IP Addresses
 
 """
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.ipaddresses import (
     AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm, IPAddressesFiltersForm)
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 from . import boto_error_handler

@@ -12,6 +12,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
+        $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.imagesURL = '';
         $scope.images = undefined;
@@ -72,6 +73,13 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$on('tagUpdate', function($event) {
+                $scope.isNotChanged = false;
+            });
+            $(document).on('input', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
@@ -80,7 +88,11 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var actionsMenu = $('.actions-menu');
-                if (actionsMenu.length) actionsMenu.find('a').get(0).focus();
+                if (actionsMenu.length) {
+                    actionsMenu.find('a').get(0).focus();
+                }else if( $('input[type="text"]').length > 0 ){
+                    $('input[type="text"]').get(0).focus();
+                }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);

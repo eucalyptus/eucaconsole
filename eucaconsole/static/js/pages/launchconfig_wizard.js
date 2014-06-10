@@ -153,7 +153,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'GET',
                 url: $scope.imageJsonURL.replace('_id_', id),
-                data: '',
+                data: ''
             }).success(function (oData) {
                 var item = oData.results;
                 $scope.imageName = item.name;
@@ -282,6 +282,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 if (oData.message) {
@@ -315,6 +316,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $('textarea#rules').val('');
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {

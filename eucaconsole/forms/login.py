@@ -31,8 +31,7 @@ Eucalyptus and AWS login forms
 import wtforms
 from wtforms import validators, widgets
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm
 
 
