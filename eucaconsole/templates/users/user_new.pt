@@ -59,7 +59,7 @@
                     <hr />
                     <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
                     <div>
-                        <button type="submit" class="button" id="create-user-btn">
+                        <button type="submit" class="button" id="create-user-btn" ng-disabled="isNotValid">
                             <span i18n:translate="">Create Users</span>
                         </button>
                         <a href="${request.route_path('users')}"

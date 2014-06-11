@@ -18,6 +18,7 @@ angular.module('UserNew', ['UserEditor'])
         $scope.autoscale_expanded = false;
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
+        $scope.isNotValid = true;
         $scope.toggleQuotasContent = function () {
             $scope.quotas_expanded = !$scope.quotas_expanded;
         };
@@ -44,8 +45,17 @@ angular.module('UserNew', ['UserEditor'])
             $scope.allUsersRedirect = allRedirect;
             $scope.singleUserRedirect = singleRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
+            $scope.setWatch();
             $('#user-name-field').focus();
         }
+        $scope.setWatch = function () {
+            $scope.$on('userAdded', function () {
+                $scope.isNotValid = false;
+            });
+            $scope.$on('emptyUsersArray', function () {
+                $scope.isNotValid = true;
+            });
+        };
         $scope.submit = function($event) {
             var form = $($event.target);
             $('#user-list-error').css('display', 'none');

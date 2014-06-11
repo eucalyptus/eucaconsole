@@ -24,6 +24,9 @@ angular.module('UserEditor', [])
             $event.preventDefault();
             $scope.usersArray.splice(index, 1);
             $scope.syncUsers();
+            if( $scope.usersArray.length == 0 ){
+                $scope.$emit('emptyUsersArray');
+            }
         };
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
@@ -80,6 +83,7 @@ angular.module('UserEditor', [])
                     $scope.syncUsers();
                     userNameField.val('').focus();
                     //userEmailField.val('');
+                    $scope.$emit('userAdded');
                 }
             } else {
                 //userNameField.val() ? userEmailField.focus() : userNameField.focus();
