@@ -284,7 +284,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Unhide appropriate step in summary
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
-                $scope.inNotValid = true;
+                $scope.checkRequiredInput();
             },50);
         };
         $scope.clearErrors = function(step) {
