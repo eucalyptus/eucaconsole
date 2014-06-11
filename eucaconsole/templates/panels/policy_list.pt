@@ -1,6 +1,6 @@
 
 <!--! Policy list -->
-<div id="policy-list" class="row controls-wrapper" ng-app="PolicyList"
+<div id="policy-list" class="row controls-wrapper" ng-app="PolicyList" i18n:domain="eucaconsole"
      ng-controller="PolicyListCtrl" ng-init="initPolicies('${policies_url}', '${policy_url}', '${remove_url}', '${update_url}')">
      
     <div class="small-12 columns field">

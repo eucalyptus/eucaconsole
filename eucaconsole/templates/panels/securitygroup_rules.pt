@@ -1,6 +1,6 @@
 
 <!--! Security group rules editor -->
-<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules"
+<div id="rules-editor" class="row controls-wrapper" ng-app="SecurityGroupRules" i18n:domain="eucaconsole"
      ng-controller="SecurityGroupRulesCtrl" ng-init="initRules('${rules_json}')">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/widgets/securitygroup_rules.css')}"
           type="text/css" charset="utf-8" />

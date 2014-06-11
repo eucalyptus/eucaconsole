@@ -1,5 +1,5 @@
 <!--! Block Device Mapping editor -->
-<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
+<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
     <div class="columns" ng-show="bdMapping">
         <hr />

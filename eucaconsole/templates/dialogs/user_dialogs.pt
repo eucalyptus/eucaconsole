@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Volumes landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="disable-user-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">Disable user</h3>
         <p>

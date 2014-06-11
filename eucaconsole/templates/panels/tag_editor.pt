@@ -1,6 +1,6 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
+<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
      ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
     <style type="text/css" tal:condition="not show_name_tag">
         .tagentry.Name { display: none; }

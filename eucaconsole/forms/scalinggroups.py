@@ -174,7 +174,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
     @staticmethod
     def get_healthcheck_type_choices():
-        return [(u'EC2', u'EC2'), (u'ELB', _(u'Load Balancer'))]
+        return [(u'EC2', u'EC2'), (u'ELB', _(u'Load balancer'))]
 
     @staticmethod
     def get_termination_policy_choices():

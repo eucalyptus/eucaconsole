@@ -5,7 +5,7 @@
 <head>
     <title>Macros</title>
 </head>
-<body>
+<body i18n:domain="eucaconsole">
 
 <h1>Reusable macros</h1>
 

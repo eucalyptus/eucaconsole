@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-09 19:55-0700\n"
+"POT-Creation-Date: 2014-06-11 16:09-0700\n"
 "PO-Revision-Date: 2014-03-25 13:16-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: it <LL@li.org>\n"
@@ -659,7 +659,8 @@ msgid "Select a launch configuration..."
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:177
-msgid "Load Balancer"
+#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
+msgid "Load balancer"
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:182
@@ -797,6 +798,7 @@ msgid "Image name is required"
 msgstr ""
 
 #: eucaconsole/forms/snapshots.py:103 eucaconsole/forms/volumes.py:141
+#: eucaconsole/templates/panels/bdmapping_editor.pt:19
 msgid "Delete on terminate"
 msgstr ""
 
@@ -991,6 +993,7 @@ msgid "Cancel"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:12
+#: eucaconsole/templates/panels/top_nav.pt:3
 msgid "Dashboard"
 msgstr ""
 
@@ -1028,12 +1031,14 @@ msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:77
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:33
 msgid "Elastic IPs"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:92
 #: eucaconsole/templates/instances/instance_view.pt:30
 #: eucaconsole/templates/instances/instance_volumes.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:20
 #: eucaconsole/templates/volumes/volume_snapshots.pt:14
 #: eucaconsole/templates/volumes/volume_view.pt:20
 #: eucaconsole/templates/volumes/volumes.pt:12
@@ -1046,6 +1051,7 @@ msgid "Create volume"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:107
+#: eucaconsole/templates/panels/top_nav.pt:22
 #: eucaconsole/templates/snapshots/snapshot_view.pt:15
 #: eucaconsole/templates/snapshots/snapshots.pt:13
 #: eucaconsole/templates/snapshots/snapshots.pt:19
@@ -1353,10 +1359,6 @@ msgstr ""
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:42
 msgid "for"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
-msgid "Load balancer"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:113
@@ -1683,6 +1685,7 @@ msgstr ""
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:28
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:19
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:96
+#: eucaconsole/templates/panels/policy_list.pt:55
 msgid "Yes, Delete"
 msgstr ""
 
@@ -1801,6 +1804,10 @@ msgstr ""
 msgid "Are you sure you want to disable user <dynamic element>"
 msgstr ""
 
+#: eucaconsole/templates/dialogs/user_dialogs.pt:16
+msgid "Yes, Disable User"
+msgstr ""
+
 #: eucaconsole/templates/dialogs/user_dialogs.pt:23
 msgid "Enable user"
 msgstr ""
@@ -1820,6 +1827,10 @@ msgid ""
 "detail page once they are active."
 msgstr ""
 
+#: eucaconsole/templates/dialogs/user_dialogs.pt:36
+msgid "Enable User"
+msgstr ""
+
 #: eucaconsole/templates/dialogs/user_dialogs.pt:43
 #: eucaconsole/templates/users/user_view.pt:41
 #: eucaconsole/templates/users/user_view.pt:176
@@ -1832,6 +1843,10 @@ msgid ""
 "Deleting a user also deletes all keys, passwords and permissions "
 "associated with that user. Are you sure you want to delete user <dynamic "
 "element>"
+msgstr ""
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:54
+msgid "Yes, Delete User"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:9
@@ -1975,6 +1990,7 @@ msgid "Group policies"
 msgstr ""
 
 #: eucaconsole/templates/groups/groups.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:41
 msgid "IAM Groups"
 msgstr ""
 
@@ -2176,6 +2192,7 @@ msgstr ""
 #: eucaconsole/templates/images/image_view.pt:8
 #: eucaconsole/templates/images/images.pt:12
 #: eucaconsole/templates/images/images.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:5
 msgid "Images"
 msgstr ""
 
@@ -2313,6 +2330,7 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_volumes.pt:13
 #: eucaconsole/templates/instances/instances.pt:12
 #: eucaconsole/templates/instances/instances.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:6
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:26
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:77
 msgid "Instances"
@@ -2777,6 +2795,7 @@ msgid "Import"
 msgstr ""
 
 #: eucaconsole/templates/keypairs/keypairs.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:31
 msgid "Key Pairs"
 msgstr ""
 
@@ -2874,6 +2893,7 @@ msgid "Key pair:"
 msgstr ""
 
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:13
 msgid "Launch Configurations"
 msgstr ""
 
@@ -2897,6 +2917,10 @@ msgstr ""
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:18
 #: eucaconsole/templates/panels/tag_editor.pt:21
 msgid "Add a tag"
+msgstr ""
+
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
+msgid "Propagate to instances launched by this scaling group"
 msgstr ""
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
@@ -2933,6 +2957,10 @@ msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:38
 msgid "Size is required"
+msgstr ""
+
+#: eucaconsole/templates/panels/bdmapping_editor.pt:51
+msgid "Remove device"
 msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:59
@@ -3081,6 +3109,19 @@ msgid ""
 "here."
 msgstr ""
 
+#: eucaconsole/templates/panels/top_nav.pt:10
+msgid "Scaling Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:28
+msgid "Security Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:39
+#: eucaconsole/templates/users/users.pt:24
+msgid "IAM Users"
+msgstr ""
+
 #: eucaconsole/templates/panels/user_editor.pt:13
 #: eucaconsole/templates/users/user_view.pt:52
 msgid "User"
@@ -3212,6 +3253,10 @@ msgstr ""
 
 #: eucaconsole/templates/policies/policy_generator.pt:82
 msgid "Set another resource (ARN):"
+msgstr ""
+
+#: eucaconsole/templates/policies/policy_generator.pt:85
+msgid "All resources"
 msgstr ""
 
 #: eucaconsole/templates/policies/policy_generator.pt:89
@@ -3819,10 +3864,6 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:372
 msgid "Save Quotas"
-msgstr ""
-
-#: eucaconsole/templates/users/users.pt:24
-msgid "IAM Users"
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:30
@@ -4904,5 +4945,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "foobar"
+#~ msgstr ""
+
+#~ msgid "Load Balancer"
 #~ msgstr ""
 

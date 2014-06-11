@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Instances landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="change-state-dialogs">
         <div id="reboot-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_reboot') + layout.querystring;

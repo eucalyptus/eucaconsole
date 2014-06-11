@@ -1,5 +1,5 @@
 <!--! Create Security Group modal dialog (used in Launch Instance and Create Launch Configuration wizards -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Create security group</h3>
         <p i18n:translate=""></p>
