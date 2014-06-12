@@ -90,6 +90,10 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            $(document).on('change', 'select', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             // Handle the unsaved tag issue
             $(document).on('submit', '#instance-form', function(event) {
                 $('input.taginput').each(function(){
