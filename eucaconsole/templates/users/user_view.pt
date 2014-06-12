@@ -368,7 +368,7 @@
                             <hr />
                             <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
                             <div>
-                                <button type="submit" class="button" id="save-quotas-btn">
+                                <button type="submit" class="button" id="save-quotas-btn" ng-disabled="isQuotaNotChanged">
                                     <span tal:condition="user" i18n:translate="">Save Quotas</span>
                                 </button>
                                 <a href="${request.route_path('users')}"
