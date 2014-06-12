@@ -1,5 +1,5 @@
 <!--! Security group rules preview (used in Launch Instance and Create Launch Configuration wizards) -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div ng-show="selectedGroupRules.length > 0 &amp;&amp; selectedGroupRules[0].ip_protocol != '-1'">
         <div class="row">
             <div class="small-${leftcol_width} columns">&nbsp;</div>

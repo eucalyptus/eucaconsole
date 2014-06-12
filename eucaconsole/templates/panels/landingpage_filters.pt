@@ -1,5 +1,5 @@
 <!-- Landing page filters form -->
-<div id="filters">
+<div id="filters" i18n:domain="eucaconsole">
     <strong i18n:translate="">Filter by:</strong>
     <form method="get" action="${request.current_route_path()}" ng-cloak="">
         <div tal:repeat="field filters_form" id="filterfieldwrapper_${field.short_name}">

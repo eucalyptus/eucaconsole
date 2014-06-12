@@ -1,6 +1,6 @@
 
 <!--! User editor -->
-<div id="user-editor" class="row controls-wrapper" ng-app="UserEditor"
+<div id="user-editor" class="row controls-wrapper" ng-app="UserEditor" i18n:domain="eucaconsole"
      ng-controller="UserEditorCtrl" ng-init="initUsers()">
     <div class="small-12 columns field">
         <div class="row userentry existing inline controls-wrapper"

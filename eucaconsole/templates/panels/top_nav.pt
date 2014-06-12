@@ -1,40 +1,44 @@
 <!-- top nav links (reused in off-canvas menu) -->
 <ul class="resources-nav left-align ${'off-canvas-list' if off_canvas else ''}">
-    <li><a id="resource-menu-dashboard" class="lnk-dashboard" href="${request.route_path('dashboard')}">Dashboard</a></li>
-    <li><a id="resource-menu-images" href="${request.route_path('images')}">Images</a></li>
-    <li><a id="resource-menu-instances" href="${request.route_path('instances')}">Instances</a></li>
+    <li><a id="resource-menu-dashboard" class="lnk-dashboard" i18n:translate=""
+           href="${request.route_path('dashboard')}">Dashboard</a></li>
+    <li><a id="resource-menu-images" href="${request.route_path('images')}" i18n:translate="">Images</a></li>
+    <li><a id="resource-menu-instances" href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
     <li class="has-dropdown">
         <a id="resource-menu-autoscaling">Auto Scaling</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-scalinggroups" href="${request.route_path('scalinggroups')}">Scaling Groups</a></li>
+            <li><a id="resource-menuitem-scalinggroups" i18n:translate=""
+                   href="${request.route_path('scalinggroups')}">Scaling Groups</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-launchconfigs" href="${request.route_path('launchconfigs')}">Launch Configurations</a></li>
+            <li><a id="resource-menuitem-launchconfigs" i18n:translate=""
+                   href="${request.route_path('launchconfigs')}">Launch Configurations</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
         <a id="resource-menu-storage">Storage</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-volumes" href="${request.route_path('volumes')}">Volumes</a></li>
+            <li><a id="resource-menuitem-volumes" href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}">Snapshots</a></li>
+            <li><a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
         <a id="resource-menu-netsec">Network &amp; Security</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-securitygroups" href="${request.route_path('securitygroups')}">Security Groups</a></li>
+            <li><a id="resource-menuitem-securitygroups" i18n:translate=""
+                   href="${request.route_path('securitygroups')}">Security Groups</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-keypairs" href="${request.route_path('keypairs')}">Key Pairs</a></li>
+            <li><a id="resource-menuitem-keypairs" href="${request.route_path('keypairs')}" i18n:translate="">Key Pairs</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}">Elastic IPs</a></li>
+            <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IPs</a></li>
         </ul>
     </li>
     <li class="has-dropdown" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
         <a id="resource-menu-iam">IAM</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-users" href="${request.route_path('users')}">IAM Users</a></li>
+            <li><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">IAM Users</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-groups" href="${request.route_path('groups')}">IAM Groups</a></li>
+            <li><a id="resource-menuitem-groups" href="${request.route_path('groups')}" i18n:translate="">IAM Groups</a></li>
         </ul>
     </li>
 </ul>
