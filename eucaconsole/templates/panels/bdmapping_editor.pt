@@ -16,7 +16,7 @@
                     </th>
                     <th class="delete-on-terminate">
                         <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
-                        <span i18n:translate="" class="show-for-small"
+                        <span class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
                     </th>
                     <th tal:condition="not read_only">&nbsp;</th>

@@ -5,7 +5,11 @@
                      detailpage_action request.route_path('ipaddress_associate', public_ip=eip.public_ip) if eip else '';
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Associate elastic IP address with instance</h3>
-        <p i18n:translate="">Associate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> with an instance</p>
+        <p>
+            <span i18n:translate="">Associate</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">with an instance</span>
+        </p>
         <form action="${action}"
               method="post" data-abide="abide">
             ${structure:associate_form['csrf_token']}
@@ -30,8 +34,10 @@
         <h3 i18n:translate="">Disassociate elastic IP address from instance</h3>
         <p i18n:translate="">If you disassociate an elastic IP address from an instance,
             you will no longer be able to connect to that instance using that IP address.</p>
-        <p i18n:translate="">Are you sure you want to disassociate <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
-            from instance
+        <p>
+            <span i18n:translate="">Are you sure you want to disassociate</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">from instance</span>
             <span tal:condition="eip"><b ng-non-bindable="">${instance_name}</b></span>
             <span tal:condition="not eip"><b>{{ instanceID }}</b></span>
             ?</p>
@@ -59,7 +65,11 @@
             If the elastic IP address is currently associated with an instance when you release it to the cloud,
             the instance will get a new IP address as long as you did not
             specify private addressing when you launched the instance.</p>
-        <p i18n:translate="">Are you sure you want to release <b>${eip.public_ip if eip else '{{ publicIP }}'}</b> to the cloud?</p>
+        <p>
+            <span i18n:translate="">Are you sure you want to release</span>
+            <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
+            <span i18n:translate="">to the cloud?</span>
+        </p>
         <form action="${action}" method="post">
             ${structure:release_form['csrf_token']}
             <div tal:condition="landingpage" tal:omit-tag="">

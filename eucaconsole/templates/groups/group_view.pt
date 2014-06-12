@@ -40,7 +40,8 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <div tal:condition="not group and group_route_id == 'new'" i18n:translate=""
+                <!--! TODO: Move IAM group name error_msg to view and mark for i18n -->
+                <div tal:condition="not group and group_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
                          'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">

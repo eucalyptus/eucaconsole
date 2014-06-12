@@ -41,7 +41,7 @@
             </div>
         </div>
         <div ng-show="tagsArray.length &gt;= 10">
-            <p i18n:translate="">
+            <p>
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
                 <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
                     Note that one of your tags is the "Name" tag, which isn't displayed here.

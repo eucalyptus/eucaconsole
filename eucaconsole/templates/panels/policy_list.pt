@@ -45,7 +45,8 @@
         <div id="delete-modal" class="reveal-modal small" data-reveal="">
             <h3 i18n:translate="">Delete policy</h3>
             <p>
-                <span i18n:translate="">Are you sure you want to delete the policy <strong>{{ policyName }}</strong></span>?
+                <span i18n:translate="">Are you sure you want to delete the policy</span>
+                <strong>{{ policyName }}</strong>?
             </p>
             
             <form ng-submit="doDelete($event)" id="delete-policy-form">
