@@ -185,19 +185,17 @@ class ImagesJsonView(LandingPageView):
             images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
             ret = []
             for idx, img in enumerate(images):
+                # trim some un-necessary items we don't need to cache
                 del img.connection
                 del img.region
-                img.block_device_mapping = None
-                img.product_codes = None
-                img.billing_products = None
+                del img.product_codes
+                del img.billing_products
+                # alter things we want to cache, but are un-picklable
+                if img.block_device_mapping:
+                    for bdm in img.block_device_mapping.keys():
+                        mapping_type = img.block_device_mapping[bdm]
+                        del mapping_type.connection
                 ret.append(img)
-                #imgdict = img.__dict__
-                #for key in imgdict.keys():
-                #    clsname = imgdict[key].__class__.__name__
-                #    if clsname not in ['unicode', 'NoneType', 'str', 'bool', 'dict']:
-                #        logging.info("key:"+key+" is a "+imgdict[key].__class__.__name__)
-            #import pickle
-            #logging.info("pickled size = "+str(len(pickle.dumps(ret))))
             return ret
 
     def get_images(self, conn, owners, executors, ec2_region):
