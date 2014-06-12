@@ -17,7 +17,6 @@ angular.module('UserView', ['PolicyList'])
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
         $scope.currentTab = 'general-tab';
-        $scope.isNotChanged = true;
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
@@ -42,7 +41,6 @@ angular.module('UserView', ['PolicyList'])
             $scope.disable_url = disable_url;
             $scope.allUsersRedirect = allRedirect;
             $('#delete-user-form').attr('action', delete_url);
-            $scope.setWatch();
             $scope.setFocus();
             $scope.setDropdownMenusListener();
             $scope.adjustTab();
@@ -74,12 +72,6 @@ angular.module('UserView', ['PolicyList'])
             });
             modals.on('close', function () {
                 $('.gridwrapper').find('.f-dropdown').filter('.open').css('display', 'block');
-            });
-        };
-        $scope.setWatch = function () {
-            $(document).on('input', 'input[type="text"]', function () {
-                $scope.isNotChanged = false;
-                $scope.$apply();
             });
         };
         $scope.setFocus = function () {
@@ -130,8 +122,16 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             var data = $($event.target).serialize();
@@ -142,6 +142,7 @@ angular.module('UserView', ['PolicyList'])
                 // could put data back into form, but form already contains changes
                 if (oData.error == undefined) {
                     Notify.success(oData.message);
+                    $scope.isNotChanged = true;
                 } else {
                     Notify.failure(oData.message);
                 }
