@@ -56,7 +56,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                <form tal:attributes="action form_action" id="snapshot-detail-form" method="post" data-abide="abide" ng-cloak="">
                     ${structure:snapshot_form['csrf_token']}
                     <h6 i18n:translate="">Snapshot</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="snapshot">
