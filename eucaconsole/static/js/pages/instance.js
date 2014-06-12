@@ -94,16 +94,6 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
-            // Handle the unsaved tag issue
-            $(document).on('submit', '#instance-form', function(event) {
-                $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
-                        event.preventDefault(); 
-                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-                        return false;
-                    }
-                });
-            });
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });
@@ -137,7 +127,17 @@ angular.module('InstancePage', ['TagEditor'])
         };
         $scope.submitSaveChanges = function($event){
             $event.preventDefault();
-            if( $scope.instanceState == 'stopped' ){
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                    return false;
+                }
+            });
+            if( existsUnsavedTag === true ){
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+            }else if( $scope.instanceState == 'stopped' ){
                 $('#update-instance-modal').foundation('reveal', 'open');
             }else{
                 $scope.instanceForm.submit();
