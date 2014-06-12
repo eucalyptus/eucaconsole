@@ -21,6 +21,12 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                         return false;
                     }
                 });
+                // Handle the unsaved security group rule issue
+                if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
+                        event.preventDefault(); 
+                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
+                        return false;
+                }
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
