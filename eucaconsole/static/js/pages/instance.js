@@ -90,6 +90,16 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#instance-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
+            });
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });
