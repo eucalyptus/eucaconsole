@@ -1,5 +1,5 @@
 <!--! Quotas panel for create/edit user pages -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <style type="text/css">
         #quotas-panel .expando { margin-bottom: 1rem; }
         #quotas-panel .expando .title { margin-bottom: 0.5rem; display: block; }

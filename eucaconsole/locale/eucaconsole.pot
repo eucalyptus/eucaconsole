@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-09 19:55-0700\n"
+"POT-Creation-Date: 2014-06-11 18:50-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -302,7 +302,7 @@ msgid "User data"
 msgstr ""
 
 #: eucaconsole/forms/instances.py:48
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:58
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:59
 msgid "Public IP address"
 msgstr ""
 
@@ -655,7 +655,8 @@ msgid "Select a launch configuration..."
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:177
-msgid "Load Balancer"
+#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
+msgid "Load balancer"
 msgstr ""
 
 #: eucaconsole/forms/scalinggroups.py:182
@@ -791,6 +792,7 @@ msgid "Image name is required"
 msgstr ""
 
 #: eucaconsole/forms/snapshots.py:103 eucaconsole/forms/volumes.py:141
+#: eucaconsole/templates/panels/bdmapping_editor.pt:19
 msgid "Delete on terminate"
 msgstr ""
 
@@ -931,7 +933,7 @@ msgid "Instance"
 msgstr ""
 
 #: eucaconsole/forms/volumes.py:182
-msgid "No available instances in availability zone "
+msgid "No available instances in availability zone"
 msgstr ""
 
 #: eucaconsole/templates/changepassword.pt:11
@@ -959,8 +961,8 @@ msgid "Passwords must match"
 msgstr ""
 
 #: eucaconsole/templates/changepassword.pt:60
-#: eucaconsole/templates/groups/group_view.pt:76
-#: eucaconsole/templates/groups/group_view.pt:131
+#: eucaconsole/templates/groups/group_view.pt:77
+#: eucaconsole/templates/groups/group_view.pt:132
 #: eucaconsole/templates/images/image_view.pt:134
 #: eucaconsole/templates/instances/instance_launch.pt:154
 #: eucaconsole/templates/instances/instance_launch_more.pt:117
@@ -983,7 +985,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: eucaconsole/templates/dashboard.pt:12
+#: eucaconsole/templates/dashboard.pt:12 eucaconsole/templates/panels/top_nav.pt:3
 msgid "Dashboard"
 msgstr ""
 
@@ -996,6 +998,8 @@ msgid "Running instances"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:41
+#: eucaconsole/templates/instances/instance_launch.pt:119
+#: eucaconsole/templates/instances/instance_launch.pt:152
 #: eucaconsole/templates/instances/instance_launch_more.pt:115
 msgid "Launch Instance"
 msgstr ""
@@ -1008,12 +1012,6 @@ msgstr ""
 msgid "Instances in scaling groups"
 msgstr ""
 
-#: eucaconsole/templates/dashboard.pt:60 eucaconsole/templates/login.pt:31
-#: eucaconsole/templates/groups/group_view.pt:43
-#: eucaconsole/templates/panels/bdmapping_editor.pt:19
-msgid "<dynamic element>"
-msgstr ""
-
 #: eucaconsole/templates/dashboard.pt:71
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:13
 msgid "Create scaling group"
@@ -1021,12 +1019,14 @@ msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:77
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:33
 msgid "Elastic IPs"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:92
 #: eucaconsole/templates/instances/instance_view.pt:30
 #: eucaconsole/templates/instances/instance_volumes.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:20
 #: eucaconsole/templates/volumes/volume_snapshots.pt:14
 #: eucaconsole/templates/volumes/volume_view.pt:20
 #: eucaconsole/templates/volumes/volumes.pt:12
@@ -1039,6 +1039,7 @@ msgid "Create volume"
 msgstr ""
 
 #: eucaconsole/templates/dashboard.pt:107
+#: eucaconsole/templates/panels/top_nav.pt:22
 #: eucaconsole/templates/snapshots/snapshot_view.pt:15
 #: eucaconsole/templates/snapshots/snapshots.pt:13
 #: eucaconsole/templates/snapshots/snapshots.pt:19
@@ -1130,12 +1131,6 @@ msgid ""
 "Credentials will be sent over the wire in clear text."
 msgstr ""
 
-#: eucaconsole/templates/login.pt:36
-#: eucaconsole/templates/keypairs/keypair_view.pt:80
-#: eucaconsole/templates/panels/tag_editor.pt:44
-msgid "<dynamic element> <dynamic element>"
-msgstr ""
-
 #: eucaconsole/templates/login.pt:48 eucaconsole/templates/login.pt:53
 msgid "Log in to"
 msgstr ""
@@ -1194,8 +1189,8 @@ msgstr ""
 msgid "Displaying"
 msgstr ""
 
-#: eucaconsole/templates/macros.pt:115
-msgid "No items were found <dynamic element>"
+#: eucaconsole/templates/macros.pt:116
+msgid "No items were found"
 msgstr ""
 
 #: eucaconsole/templates/macros.pt:125
@@ -1209,7 +1204,7 @@ msgstr ""
 #: eucaconsole/templates/macros.pt:233 eucaconsole/templates/groups/groups.pt:56
 #: eucaconsole/templates/images/images.pt:88
 #: eucaconsole/templates/instances/instances.pt:135
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:60
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:61
 #: eucaconsole/templates/keypairs/keypairs.pt:48
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:60
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:81
@@ -1259,8 +1254,13 @@ msgstr ""
 msgid "Volume device options for Windows"
 msgstr ""
 
-#: eucaconsole/templates/macros.pt:349
-msgid "Note: <dynamic element> is reserved for root device"
+#: eucaconsole/templates/macros.pt:350
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:192
+msgid "Note:"
+msgstr ""
+
+#: eucaconsole/templates/macros.pt:351
+msgid "is reserved for root device"
 msgstr ""
 
 #: eucaconsole/templates/master_layout.pt:8
@@ -1277,21 +1277,21 @@ msgid "Log out"
 msgstr ""
 
 #: eucaconsole/templates/master_layout.pt:121
-msgid "Eucalyptus cloud software version: <dynamic element>"
+msgid "Eucalyptus cloud software version:"
 msgstr ""
 
-#: eucaconsole/templates/master_layout.pt:126
+#: eucaconsole/templates/master_layout.pt:127
 msgid "Session Timeout"
 msgstr ""
 
-#: eucaconsole/templates/master_layout.pt:128 eucaconsole/views/__init__.py:195
+#: eucaconsole/templates/master_layout.pt:129 eucaconsole/views/__init__.py:195
 msgid ""
 "Your session has timed out. This may be due to inactivity, a policy that does"
 " not provide login permissions, or an unexpected error. Please log in again, "
 "and contact your cloud administrator if the problem persists."
 msgstr ""
 
-#: eucaconsole/templates/master_layout.pt:130
+#: eucaconsole/templates/master_layout.pt:131
 msgid "Login"
 msgstr ""
 
@@ -1347,10 +1347,6 @@ msgstr ""
 msgid "for"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
-msgid "Load balancer"
-msgstr ""
-
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:113
 msgid "Evaluation"
 msgstr ""
@@ -1404,11 +1400,11 @@ msgstr ""
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:48
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:72
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:105
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:174
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:225
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:20
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:47
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:72
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:187
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:238
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:24
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:53
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:82
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:25
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:40
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:22
@@ -1418,7 +1414,7 @@ msgstr ""
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:26
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:63
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:99
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:103
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:104
 msgid "Sending request"
 msgstr ""
 
@@ -1525,19 +1521,17 @@ msgid ""
 "}}.pem\""
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:130
-msgid ""
-"Run the following command to set the correct permissions for your key "
-"file:<dynamic element> <dynamic element>"
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:131
+msgid "Run the following command to set the correct permissions for your key file:"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:132
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:135
 msgid ""
 "Connect to your instance via its public IP address by running the following "
-"command: <dynamic element><dynamic element>"
+"command:"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:136
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:141
 msgid ""
 "To connect to your instance, be sure security group \"{{ groupName }}\" has "
 "TCP port 3389 open to inbound traffic and then perform the following steps "
@@ -1545,105 +1539,103 @@ msgid ""
 "launched this instance):"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:138
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:143
 msgid ""
 "Browse to your key file \"{{ keyName }}.pem\" in your local file system and "
 "use it to retrieve your instance password."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:139
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:144
 msgid "Open a remote desktop client."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:140
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:145
 msgid "Use the following for your username and password:"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:143
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:148
 msgid "USERNAME"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:144
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:149
 msgid "PASSWORD"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:147
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:152
 msgid "get password for {{ keyName }}"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:160
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:165
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:7
 msgid "Associate elastic IP address with instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:161
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:162
-msgid "Associate <dynamic element> with an elastic IP address."
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:167
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:172
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:9
+msgid "Associate"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:171
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:17
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:169
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:174
+msgid "with an elastic IP address."
+msgstr ""
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:184
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:21
 msgid "Associate Address with Instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:179
-msgid "Note:"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:180
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:193
 msgid "There are no elastic IP addresses available."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:181
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:194
 msgid "To associate an instance with an IP address, you will need to"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:178
-msgid "<dynamic element> <dynamic element> <dynamic element> <dynamic element>."
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:191
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:30
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:204
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:34
 msgid "Disassociate elastic IP address from instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:194
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:31
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:207
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:35
 msgid ""
 "If you disassociate an elastic IP address from an instance, you will no "
 "longer be able to connect to that instance using that IP address."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:201
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:214
 msgid "Are you sure you want to dissassociate"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:206
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:219
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:40
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:50
+#: eucaconsole/templates/instances/instance_volumes.pt:114
 msgid "from instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:222
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:44
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:235
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:50
 msgid "Yes, Disassociate Address from Instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:8
-msgid "Associate <dynamic element> with an instance"
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:11
+msgid "with an instance"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:33
-msgid ""
-"Are you sure you want to disassociate <dynamic element> from instance "
-"<dynamic element> <dynamic element> ?"
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:38
+msgid "Are you sure you want to disassociate"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:56
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:62
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:38
 msgid "Release IP address to cloud"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:57
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:63
 msgid ""
 "If you release an elastic IP address to the cloud, you can no longer "
 "associate that IP address with any of your instances. If the elastic IP "
@@ -1652,11 +1644,15 @@ msgid ""
 "private addressing when you launched the instance."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:62
-msgid "Are you sure you want to release <dynamic element> to the cloud?"
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:69
+msgid "Are you sure you want to release"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:69
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:71
+msgid "to the cloud?"
+msgstr ""
+
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:79
 msgid "Yes, Release Address to Cloud"
 msgstr ""
 
@@ -1675,6 +1671,7 @@ msgstr ""
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:28
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:19
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:96
+#: eucaconsole/templates/panels/policy_list.pt:56
 msgid "Yes, Delete"
 msgstr ""
 
@@ -1789,21 +1786,25 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/dialogs/user_dialogs.pt:9
-msgid "Are you sure you want to disable user <dynamic element>"
+msgid "Are you sure you want to disable user"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:23
+#: eucaconsole/templates/dialogs/user_dialogs.pt:17
+msgid "Yes, Disable User"
+msgstr ""
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:24
 msgid "Enable user"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:25
+#: eucaconsole/templates/dialogs/user_dialogs.pt:26
 msgid ""
 "Enabling a user removes the policy that was in place denying the user access "
 "to the cloud. When this user is active, they will be able to execute actions "
 "against the cloud."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:28
+#: eucaconsole/templates/dialogs/user_dialogs.pt:29
 msgid ""
 "The user will need a new password only if they access the cloud using the "
 "Management Console. If you want to set a specific password rather than let "
@@ -1811,17 +1812,25 @@ msgid ""
 " once they are active."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:43
+#: eucaconsole/templates/dialogs/user_dialogs.pt:37
+msgid "Enable User"
+msgstr ""
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:44
 #: eucaconsole/templates/users/user_view.pt:41
 #: eucaconsole/templates/users/user_view.pt:176
 #: eucaconsole/templates/users/user_view.pt:354
 msgid "Delete user"
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:45
+#: eucaconsole/templates/dialogs/user_dialogs.pt:46
 msgid ""
 "Deleting a user also deletes all keys, passwords and permissions associated "
 "with that user. Are you sure you want to delete user <dynamic element>"
+msgstr ""
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:55
+msgid "Yes, Delete User"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:9
@@ -1843,7 +1852,7 @@ msgstr ""
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:69
 #: eucaconsole/templates/instances/instance_volumes.pt:42
 #: eucaconsole/templates/instances/instance_volumes.pt:107
-#: eucaconsole/templates/instances/instance_volumes.pt:130
+#: eucaconsole/templates/instances/instance_volumes.pt:129
 msgid "Detach volume"
 msgstr ""
 
@@ -1853,15 +1862,17 @@ msgid "If you detach a volume, the instance can no longer read or write to it."
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:47
+#: eucaconsole/templates/instances/instance_volumes.pt:112
 msgid "Are you sure you want to detach volume"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:60
-#: eucaconsole/templates/instances/instance_volumes.pt:123
+#: eucaconsole/templates/instances/instance_volumes.pt:122
 msgid "Yes, Detach Volume"
 msgstr ""
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:71
+#: eucaconsole/templates/instances/instance_volumes.pt:131
 msgid ""
 "This operation is not available because you cannot detach the root volume of "
 "an EBS-backed instance. If you want to delete this volume, terminate instance"
@@ -1891,18 +1902,18 @@ msgstr ""
 msgid "Details for group:"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:59
+#: eucaconsole/templates/groups/group_view.pt:60
 #: eucaconsole/templates/instances/instance_launch_more.pt:85
 #: eucaconsole/templates/users/user_new.pt:52
 msgid "Advanced"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:74
+#: eucaconsole/templates/groups/group_view.pt:75
 #: eucaconsole/templates/groups/groups.pt:20
 msgid "Create Group"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:86
+#: eucaconsole/templates/groups/group_view.pt:87
 #: eucaconsole/templates/instances/instance_view.pt:28
 #: eucaconsole/templates/instances/instance_volumes.pt:25
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:24
@@ -1914,7 +1925,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:91
+#: eucaconsole/templates/groups/group_view.pt:92
 #: eucaconsole/templates/groups/groups.pt:43
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:63
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:50
@@ -1925,22 +1936,22 @@ msgstr ""
 msgid "Creation time"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:97
+#: eucaconsole/templates/groups/group_view.pt:98
 #: eucaconsole/templates/users/user_view.pt:65
 msgid "ARN"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:106
+#: eucaconsole/templates/groups/group_view.pt:107
 #: eucaconsole/templates/groups/groups.pt:35
 #: eucaconsole/templates/groups/groups.pt:53
 msgid "Users"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:109
+#: eucaconsole/templates/groups/group_view.pt:110
 msgid "Search users and select to add"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:129
+#: eucaconsole/templates/groups/group_view.pt:130
 #: eucaconsole/templates/images/image_view.pt:132
 #: eucaconsole/templates/instances/instance_view.pt:253
 #: eucaconsole/templates/panels/policy_list.pt:39
@@ -1952,18 +1963,19 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:144
+#: eucaconsole/templates/groups/group_view.pt:145
 #: eucaconsole/templates/groups/groups.pt:39
 #: eucaconsole/templates/groups/groups.pt:54
 #: eucaconsole/templates/users/user_view.pt:155
 msgid "Permissions"
 msgstr ""
 
-#: eucaconsole/templates/groups/group_view.pt:146
+#: eucaconsole/templates/groups/group_view.pt:147
 msgid "Group policies"
 msgstr ""
 
 #: eucaconsole/templates/groups/groups.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:41
 msgid "IAM Groups"
 msgstr ""
 
@@ -2014,34 +2026,6 @@ msgstr ""
 msgid "Creation Time"
 msgstr ""
 
-#: eucaconsole/templates/help/help_instances.pt:31
-msgid "Attach a volume to this instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:34
-msgid "Click the <dynamic element> icon"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:35
-msgid ""
-"The <dynamic element> dialog box will appear. Select the volume you want to "
-"attach to this instance."
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:41
-msgid "Detach a volume from this instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:44
-msgid "Click the <dynamic element> icon for the instance you want to detach."
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:47
-msgid ""
-"The <dynamic element> dialog box will appear. Click confirm to detach the "
-"volume."
-msgstr ""
-
 #: eucaconsole/templates/help/help_ipaddresses.pt:12
 msgid "Associate an Elastic IP Address with an Instance"
 msgstr ""
@@ -2050,72 +2034,6 @@ msgstr ""
 msgid ""
 "This dialog box lets you associate an elastic IP address with a running "
 "instance."
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:27
-msgid "Disassociate an Elastic IP Address from an Instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:29
-msgid ""
-"This dialog box lets you verify that you wish to disassociate one or more "
-"elastic IP addresses from running instance(s)."
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:43
-msgid "Release IP Addresses"
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:45
-msgid ""
-"This dialog box allows you to confirm or cancel an IP address release "
-"operation."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:12
-msgid "Create a Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:13
-msgid ""
-"Eucalyptus uses cryptographic key pairs to verify access to instances. Before"
-" you can run an instance, you must create a key pair. Creating a key pair "
-"generates two keys: a public key (saved within Eucalyptus) and a "
-"corresponding private key (output to the user as a character string). To "
-"enable this private key you must save it to a file and set appropriate access"
-" permissions (using the chmod command), as shown in the example below."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:20
-msgid ""
-"When you create a VM instance, the public key is then injected into the VM. "
-"Later, when attempting to login to the VM instance using SSH, the public key "
-"is checked against your private key to verify access. Note that the private "
-"key becomes obsolete when the public key is deleted."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:25
-msgid "Create Key Pairs with the Console"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:57
-msgid "Import a Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:59
-msgid "This dialog box allows you import an existing key pair."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:79
-msgid "Delete Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:81
-msgid "This dialog box allows you to confirm or cancel a key pair delete operation."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:82
-msgid "Verify Key Pair Deletion"
 msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:12
@@ -2157,6 +2075,7 @@ msgstr ""
 #: eucaconsole/templates/images/image_view.pt:8
 #: eucaconsole/templates/images/images.pt:12
 #: eucaconsole/templates/images/images.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:5
 msgid "Images"
 msgstr ""
 
@@ -2294,6 +2213,7 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_volumes.pt:13
 #: eucaconsole/templates/instances/instances.pt:12
 #: eucaconsole/templates/instances/instances.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:6
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:26
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:77
 msgid "Instances"
@@ -2316,11 +2236,6 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch.pt:98
 msgid "Specify key pair and security group."
-msgstr ""
-
-#: eucaconsole/templates/instances/instance_launch.pt:119
-#: eucaconsole/templates/instances/instance_launch.pt:152
-msgid "Launch Instance<dynamic element>"
 msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch.pt:125
@@ -2582,17 +2497,6 @@ msgstr ""
 msgid "Attach a volume to instance"
 msgstr ""
 
-#: eucaconsole/templates/instances/instance_volumes.pt:113
-msgid "Are you sure you want to detach volume <dynamic element> from instance"
-msgstr ""
-
-#: eucaconsole/templates/instances/instance_volumes.pt:132
-msgid ""
-"This operation is not available because you cannot detach the root volume of "
-"an EBS-backed instance. If you want to delete this volume, terminate instance"
-" <dynamic element>."
-msgstr ""
-
 #: eucaconsole/templates/instances/instances.pt:23
 msgid "Launch New Instance"
 msgstr ""
@@ -2644,8 +2548,8 @@ msgid "Associate with an instance"
 msgstr ""
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:33
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:44
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:70
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:45
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:71
 msgid "Disassociate from instance"
 msgstr ""
 
@@ -2661,37 +2565,37 @@ msgstr ""
 msgid "Allocate Elastic IP Addresses"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:34
-msgid "Associated with <dynamic element>"
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:35
+msgid "Associated with"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:37
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:38
 msgid "Not associated with any instances"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:48
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:74
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:49
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:75
 msgid "Associate with instance"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:52
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:77
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:53
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:78
 msgid "Release to cloud"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:59
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:60
 msgid "Assigned to instance"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:87
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:88
 msgid "Allocate elastic IP addresses"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:92
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:93
 msgid "How many IP addresses would you like to allocate?"
 msgstr ""
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:99
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:100
 msgid "Allocate Addresses From Cloud"
 msgstr ""
 
@@ -2741,10 +2645,6 @@ msgstr ""
 msgid "Create and Download"
 msgstr ""
 
-#: eucaconsole/templates/keypairs/keypair_view.pt:64
-msgid "<dynamic element> <dynamic element> <dynamic element>"
-msgstr ""
-
 #: eucaconsole/templates/keypairs/keypair_view.pt:81
 msgid ""
 "Importing a public key allows you to use an existing SSH key to access your "
@@ -2756,6 +2656,7 @@ msgid "Import"
 msgstr ""
 
 #: eucaconsole/templates/keypairs/keypairs.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:31
 msgid "Key Pairs"
 msgstr ""
 
@@ -2853,6 +2754,7 @@ msgid "Key pair:"
 msgstr ""
 
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:13
 msgid "Launch Configurations"
 msgstr ""
 
@@ -2876,6 +2778,10 @@ msgstr ""
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:18
 #: eucaconsole/templates/panels/tag_editor.pt:21
 msgid "Add a tag"
+msgstr ""
+
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
+msgid "Propagate to instances launched by this scaling group"
 msgstr ""
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
@@ -2910,6 +2816,10 @@ msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:38
 msgid "Size is required"
+msgstr ""
+
+#: eucaconsole/templates/panels/bdmapping_editor.pt:51
+msgid "Remove device"
 msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:59
@@ -2987,7 +2897,8 @@ msgid "Delete policy"
 msgstr ""
 
 #: eucaconsole/templates/panels/policy_list.pt:48
-msgid "Are you sure you want to delete the policy <dynamic element>"
+#: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:68
+msgid "Are you sure you want to delete the policy"
 msgstr ""
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:8
@@ -3052,6 +2963,19 @@ msgstr ""
 
 #: eucaconsole/templates/panels/tag_editor.pt:46
 msgid "Note that one of your tags is the \"Name\" tag, which isn't displayed here."
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:10
+msgid "Scaling Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:28
+msgid "Security Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:39
+#: eucaconsole/templates/users/users.pt:24
+msgid "IAM Users"
 msgstr ""
 
 #: eucaconsole/templates/panels/user_editor.pt:13
@@ -3183,6 +3107,10 @@ msgstr ""
 
 #: eucaconsole/templates/policies/policy_generator.pt:82
 msgid "Set another resource (ARN):"
+msgstr ""
+
+#: eucaconsole/templates/policies/policy_generator.pt:85
+msgid "All resources"
 msgstr ""
 
 #: eucaconsole/templates/policies/policy_generator.pt:89
@@ -3383,10 +3311,6 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:66
 msgid "Delete scaling group policy"
-msgstr ""
-
-#: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:68
-msgid "Are you sure you want to delete the policy"
 msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:74
@@ -3786,10 +3710,6 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:372
 msgid "Save Quotas"
-msgstr ""
-
-#: eucaconsole/templates/users/users.pt:24
-msgid "IAM Users"
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:30

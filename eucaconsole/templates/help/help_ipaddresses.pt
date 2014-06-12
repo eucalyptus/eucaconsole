@@ -24,9 +24,9 @@
 
     <!-- HELP IPADDRESS: DISASSOCIATE IP-->
     <div tal:condition="display == 'disassociate_ip'">
-        <h5 class="title" i18n:translate="">Disassociate an Elastic IP Address from an Instance</h5>
+        <h5 class="title">Disassociate an Elastic IP Address from an Instance</h5>
 
-        <p i18n:translate="">This dialog box lets you verify that you wish to disassociate one or more elastic IP
+        <p>This dialog box lets you verify that you wish to disassociate one or more elastic IP
             addresses from running instance(s).</p>
         <ol>
             <li>
@@ -40,9 +40,9 @@
 
     <!-- HELP IPADDRESS: RELEASE IP-->
     <div tal:condition="display == 'release_ip'">
-        <h5 class="title" i18n:translate="">Release IP Addresses</h5>
+        <h5 class="title">Release IP Addresses</h5>
 
-        <p i18n:translate="">This dialog box allows you to confirm or cancel an IP address release operation. </p>
+        <p>This dialog box allows you to confirm or cancel an IP address release operation. </p>
         <ol>
             <li>
                 To verify that you wish to release the selected IP address(es), click the <strong>Yes, release</strong>

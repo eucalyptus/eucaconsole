@@ -1,6 +1,6 @@
 
 <!--! Tag editor -->
-<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor"
+<div id="tag-editor" class="row controls-wrapper" ng-app="TagEditor" i18n:domain="eucaconsole"
      ng-controller="TagEditorCtrl" ng-init="initTags('${tags_json}', ${str(show_name_tag).lower()})">
     <style type="text/css" tal:condition="not show_name_tag">
         .tagentry.Name { display: none; }
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div ng-show="tagsArray.length &gt;= 10">
-            <p i18n:translate="">
+            <p>
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
                 <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
                     Note that one of your tags is the "Name" tag, which isn't displayed here.
