@@ -55,6 +55,8 @@ The CSS files are pre-processed using Sass, so you'll need to set up a Sass-to-C
 
 To set up Compass as the file watcher...
 
+::
+
     sudo gem install compass
     cd eucaconsole/static
     compass watch .
@@ -126,6 +128,8 @@ The Pyramid Debug Toolbar can be enabled by adding pyramid_debugtoolbar to the a
 
 You may also find it useful to set the logging level to DEBUG in the console.ini config file...
 
+::
+
     [logger_root]
     # ...
     handlers = logfile, screen_debug
@@ -171,6 +175,9 @@ http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/i18n.html#i18n-cha
 The translations require Babel and lingua, which can be install via `pip install -e .[i18n]`
 
 To generate the translation files, run 'make translations' at the repo root.
+
+To contribute translations, follow the instructions at
+https://github.com/eucalyptus/eucaconsole/wiki/Contributing-Translations
 
 
 Technology Stack

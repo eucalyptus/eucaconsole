@@ -28,12 +28,12 @@
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
-        <div id='javascript-warning' i18n:translate="">
+        <div id="javascript-warning">
             <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
             To use the Eucalyptus Management Console, please enable JavaScript in your browser's settings.
             </p>
         </div>
-        <div id="ssl-warning" i18n:translate="" ng-show="showHttpsWarning" ng-cloak="">
+        <div id="ssl-warning" ng-show="showHttpsWarning" ng-cloak="">
             <strong i18n:translate="">SSL not enabled</strong>
             <p i18n:translate="">
                 This connection is untrusted because SSL is not enabled on the server.

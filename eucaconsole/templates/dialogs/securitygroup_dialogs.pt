@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Security groups on landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('securitygroups_delete') + layout.querystring;
                      detailpage_action request.route_path('securitygroup_delete', id=security_group.id) if security_group else '';

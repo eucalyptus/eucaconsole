@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Instances landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="change-state-dialogs">
         <div id="reboot-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_reboot') + layout.querystring;
@@ -127,9 +127,14 @@
                 <ol>
                     <li i18n:translate="">Open an SSH terminal window.</li>
                     <li i18n:translate="">Change your directory to the one where you stored your key file "{{ keyName }}.pem"</li>
-                    <li i18n:translate="">Run the following command to set the correct permissions for your key file:<br/>
-                        <strong>chmod 400 {{ keyName }}.pem</strong></li>
-                    <li i18n:translate="">Connect to your instance via its public IP address by running the following command: <br/><strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong></li>
+                    <li>
+                        <span i18n:translate="">Run the following command to set the correct permissions for your key file:</span><br/>
+                        <strong>chmod 400 {{ keyName }}.pem</strong>
+                    </li>
+                    <li>
+                        <span i18n:translate="">Connect to your instance via its public IP address by running the following command:</span><br/>
+                        <strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong>
+                    </li>
                 </ol>
             </div>
             <div ng-show="platform == 'windows'">
@@ -158,8 +163,16 @@
                          html_attrs {'data-placeholder': 'select IP...'};
                          ip_addresses_available len(associate_ip_form.ip_address.choices);">
             <h3 i18n:translate="">Associate elastic IP address with instance</h3>
-            <p i18n:translate="" tal:condition="instance">Associate <b ng-non-bindable=''>${ instance_name }</b> with an elastic IP address.</p>
-            <p i18n:translate="" tal:condition="not instance">Associate <b>{{ instanceName }}</b> with an elastic IP address.</p>
+            <p tal:condition="instance">
+                <span i18n:translate="">Associate</span>
+                <b ng-non-bindable=''>${ instance_name }</b>
+                <span i18n:translate="">with an elastic IP address.</span>
+            </p>
+            <p tal:condition="not instance">
+                <span i18n:translate="">Associate</span>
+                <b>{{ instanceName }}</b>
+                <span i18n:translate="">with an elastic IP address.</span>
+            </p>
             <form method="post" action="${action}" id="associate-ip-to-instance-form" data-abide="abide"
                   tal:condition="ip_addresses_available">
                 ${structure:associate_ip_form['csrf_token']}
@@ -171,11 +184,11 @@
                     <button type="submit" id="associate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request</span>&nbsp;&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <div tal:condition="not ip_addresses_available">
-                <div i18n:translate="">
+                <div>
                     <strong i18n:translate="">Note:</strong>
                     <span i18n:translate="">There are no elastic IP addresses available.</span>
                     <span i18n:translate="">To associate an instance with an IP address, you will need to</span>

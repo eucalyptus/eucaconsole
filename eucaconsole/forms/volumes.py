@@ -179,7 +179,7 @@ class AttachForm(BaseSecureForm):
                     vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
                     choices.append((instance.id, vol_name))
             if len(choices) == 1:
-                prefix = _(u'No available instances in availability zone ')
+                prefix = _(u'No available instances in availability zone')
                 msg = '{0} {1}'.format(prefix, self.volume.zone)
                 choices = [('', msg)]
             self.instance_id.choices = choices
