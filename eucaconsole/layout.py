@@ -32,11 +32,11 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from collections import namedtuple
 from urllib import urlencode
 
-from beaker.cache import cache_region
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
+from .caches import extra_long_term
 from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
 from .i18n import _
@@ -112,9 +112,9 @@ class MasterLayout(object):
         return self.request.static_path(path);
 
     @staticmethod
-    @cache_region('extra_long_term', 'selected_region_label')
+    @extra_long_term.cache_on_arguments(namespace='selected_region_label')
     def get_selected_region_label(region_name):
-        """Get the label from the selected region, pulling from Beaker cache"""
+        """Get the label from the selected region, pulling from cache"""
         regions = [reg for reg in AWS_REGIONS if reg.get('name') == region_name]
         if regions:
             return regions[0].get('label')
