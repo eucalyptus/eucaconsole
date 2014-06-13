@@ -48,7 +48,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.adjustTab = function() {
             var hash = $scope.currentTab;
             var matches = document.URL.match(/tab=([\w|-]+)/);
-            if (matches.length > 0) {
+            if (matches != null && matches.length > 0) {
                 if(matches[1] == 'general-tab' || matches[1] == 'security-tab' || matches[1] == 'quotas-tab'){
                     hash = matches[1];
                 }
