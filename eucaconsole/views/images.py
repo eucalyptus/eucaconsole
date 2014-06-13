@@ -204,7 +204,6 @@ class ImagesJsonView(LandingPageView):
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
-        logging.info("get_images args = ({0}, {1}, {2}, {3})".format(owners, executors, ec2_region, acct))
         return self._get_images_cached_(owners, executors, ec2_region, acct)
 
 

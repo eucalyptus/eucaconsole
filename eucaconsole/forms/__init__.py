@@ -32,12 +32,12 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 """
 import logging
 
-from beaker.cache import cache_region
 from wtforms.ext.csrf import SecureForm
 
 import boto
 from boto.exception import BotoServerError
 
+from ..caches import extra_long_term
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -88,13 +88,13 @@ class ChoicesManager(object):
         return sorted(choices)
 
     def get_availability_zones(self, region):
-        @cache_region('extra_long_term', 'availability_zones_{region}'.format(region=region))
-        def _get_zones_cache(self):
+        @extra_long_term.cache_on_arguments(namespace='availability_zones')
+        def _get_zones_cache(self, region):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
             return zones;
-        return _get_zones_cache(self)
+        return _get_zones_cache(self, region)
 
     def instances(self, instances=None, state=None):
         from ..views import TaggedItemView
@@ -119,7 +119,7 @@ class ChoicesManager(object):
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
             types = []
-            @cache_region('extra_long_term', 'instance_types')
+            @extra_long_term.cache_on_arguments(namespace='instance_types')
             def _get_instance_types_cache(self):
                 types = []
                 if self.conn is not None:
