@@ -10,6 +10,7 @@ angular.module('UserEditor', [])
         $scope.usersTextarea = $scope.userEditor.find('textarea#users');
         $scope.isDisabled = true;
         $scope.usersArray = [];
+        $scope.validationTimeout = '';
         $scope.syncUsers = function () {
             var usersObj = {};
             $scope.usersArray.forEach(function(user) {
@@ -28,13 +29,11 @@ angular.module('UserEditor', [])
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
                 $scope.addUser($event)
-            }else{
-                $scope.isDisabled = true;
             }
         };
         $scope.validateUsername = function ($event) {
            // Timeout is needed to react to the added 'error' class by Foundation's live validation
-           $timeout(function(){ 
+           $scope.validationTimeout = $timeout(function(){ 
                 if( $('#user-name-field-div').hasClass("error") ){
                     $scope.isDisabled = true;
                 }else{
@@ -44,6 +43,7 @@ angular.module('UserEditor', [])
         }
         $scope.addUser = function ($event) {
             $event.preventDefault();
+            $timeout.cancel($scope.validationTimeout);
             if( $('#user-name-field-div').hasClass("error") ){
                 $scope.isDisabled = true;
                 return false;
@@ -79,6 +79,7 @@ angular.module('UserEditor', [])
                     });
                     $scope.syncUsers();
                     userNameField.val('').focus();
+                    $scope.isDisabled = true;
                     //userEmailField.val('');
                 }
             } else {
