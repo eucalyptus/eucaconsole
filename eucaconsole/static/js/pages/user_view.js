@@ -122,8 +122,16 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', '#user-update-form input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             var data = $($event.target).serialize();
@@ -134,6 +142,7 @@ angular.module('UserView', ['PolicyList'])
                 // could put data back into form, but form already contains changes
                 if (oData.error == undefined) {
                     Notify.success(oData.message);
+                    $scope.isNotChanged = true;
                 } else {
                     Notify.failure(oData.message);
                 }
@@ -522,8 +531,16 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserQuotasCtrl', function($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isQuotaNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', '#quotas-panel input[type="text"]', function () {
+                $scope.isQuotaNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             $('#quota-error').css('display', 'none');
@@ -538,6 +555,7 @@ angular.module('UserView', ['PolicyList'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
