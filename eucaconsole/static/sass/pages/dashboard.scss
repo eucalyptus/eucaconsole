@@ -50,7 +50,6 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             width: $dashboard-panel-icon-size;
             height: $dashboard-panel-icon-size;
-            border-radius: 100px;
             text-align: center;
             color: white;
             font-size: 3rem;
@@ -83,21 +82,12 @@ $dashboard-panel-icon-size: 100px;
                 }
             }
         }
-        a:hover .icon {
-            background-color: lighten($euca-darkblue, 20%);
-        }
     }
 }
 
 // SVG icons
-#instances-running .icon {
-    background-image: url(../../img/svg/icon_running_instances.svg);
-    border-bottom-left-radius: 20px;
-}
-#instances-stopped .icon {
-    background-image: url(../../img/svg/icon_stopped_instances.svg);
-    border-bottom-left-radius: 20px;
-}
+#instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }
+#instances-stopped .icon { background-image: url(../../img/svg/icon_stopped_instances.svg); }
 #scaling-groups .icon { background-image: url(../../img/svg/icon_instances_scaling_groups.svg); }
 #elastic-ips .icon { background-image: url(../../img/svg/icon_elastic_IP.svg); }
 #volumes .icon { background-image: url(../../img/svg/icon_volumes.svg); }
