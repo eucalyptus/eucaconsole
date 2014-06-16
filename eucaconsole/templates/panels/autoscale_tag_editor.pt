@@ -51,7 +51,7 @@
         <h3 i18n:translate=""></h3>
         <p>
             <span i18n:translate="">
-                You must click the "Add" button before you submit this for your tag to be included.
+                You must click the "Add Tag" button before you submit this for your tag to be included.
             </span>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>

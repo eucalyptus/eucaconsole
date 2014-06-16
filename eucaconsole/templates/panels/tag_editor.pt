@@ -45,7 +45,7 @@
             <p i18n:translate="">
                 <span i18n:translate="">You may not add more than ten tags to a resource.</span>
                 <span tal:condition="not show_name_tag" ng-show="visibleTagsCount &lt; tagsArray.length" i18n:translate="">
-                    Note that one of your tags is the "Name" tag, which isn't displayed here.
+                    Note that one of your tags is being used to display the resource name.
                 </span>
             </p>
         </div>
@@ -56,7 +56,7 @@
         <h3 i18n:translate=""></h3>
         <p>
             <span i18n:translate="">
-                You must click the "Add" button before you submit this for your tag to be included.
+                You must click the "Add Tag" button before you submit this for your tag to be included.
             </span>
         </p>
         <a href="#" class="close-reveal-modal">&#215;</a>
