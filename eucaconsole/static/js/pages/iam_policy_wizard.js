@@ -24,6 +24,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.languageCode = 'en';
         $scope.confirmed = false;
         $scope.isCreating = false;
+        $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
         $scope.initController = function (options, save_url) {
             $scope.policyJsonEndpoint = options['policyJsonEndpoint'];
@@ -59,6 +60,7 @@ angular.module('IAMPolicyWizard', [])
         };
         $scope.setupListeners = function () {
             $(document).ready(function() {
+                $scope.pageLoading = false;
                 $scope.initToggleAdvancedListener();
                 $scope.initSelectActionListener();
                 $scope.initNameConflictWarningListener();
