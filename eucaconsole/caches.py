@@ -29,8 +29,11 @@ from hashlib import sha1
 from dogpile.cache import make_region
 
 def euca_key_generator(namespace, fn):
-    args = inspect.getargspec(fn)
-    has_self = args[0] and args[0][0] in ('self', 'cls')
+    if fn is None:
+        has_self = True
+    else:
+        args = inspect.getargspec(fn)
+        has_self = args[0] and args[0][0] in ('self', 'cls')
     def generate_key(*arg):
         # generate a key:
         # "namespace_arg1_arg2_arg3..."
