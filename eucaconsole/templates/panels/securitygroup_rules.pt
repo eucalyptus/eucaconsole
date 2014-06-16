@@ -106,7 +106,6 @@
         <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
     </div>
     <div id="unsaved-rule-warn-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate=""></h3>
         <p>
             <span i18n:translate="">
                 You must click the "Add Rule" button before you submit this for your rule to be included.
