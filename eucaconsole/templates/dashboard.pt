@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/dashboard.css')}" />
@@ -57,7 +57,7 @@
             </li>
             <li class="panel" id="scaling-groups">
                 <div class="tile" id="in-scaling-group">
-                    <h5 class="subheader" i18n:translate="">
+                    <h5 class="subheader">
                         <span i18n:translate=""> Instances in scaling groups</span>
                     </h5>
                     <div class="content">

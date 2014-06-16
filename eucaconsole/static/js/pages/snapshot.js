@@ -89,6 +89,16 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#snapshot-detail-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
@@ -97,7 +107,11 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var actionsMenu = $('.actions-menu');
-                if (actionsMenu.length) actionsMenu.find('a').get(0).focus();
+                if (actionsMenu.length) {
+                    actionsMenu.find('a').get(0).focus();
+                }else if( $('input[type="text"]').length > 0 ){
+                    $('input[type="text"]').get(0).focus();
+                }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);

@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/launchconfig_wizard.css')}" />
@@ -20,7 +20,7 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Create new launch configuration</strong>
         </h3>
-        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
+        <div class="large-8 columns">
             <div class="wizard no-title">
                 <form action="${request.route_path('launchconfig_create')}" id="launch-config-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
@@ -57,27 +57,7 @@
                     <div class="tabs-content">
                         <!--! Step 1: Image tab content -->
                         <div class="content ${'active' if not image else ''}" id="step1">
-                            <p class="description" i18n:translate="">
-                                Please specify a machine image for your virtual machine.
-                            </p>
-                            <div class="row">
-                                <div class="small-4 columns">
-                                    <label i18n:translate="" class="right inline-label">Enter an Image ID:</label>
-                                </div>
-                                <div class="small-8 columns value">
-                                    <input type="text" name="image_id" id="image-id-input" ng-model="imageID" autofocus="autofocus"/>
-                                </div>
-                            </div>
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
-                            <div class="row">
-                                <div class="small-6 columns">&nbsp;</div>
-                                <div class="small-6 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
-                                        <span i18n:translate="">Next</span>
-                                        <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                         <!--! Step 2: Type tab content -->
                         <div class="content ${'active' if image else ''}" id="step2">
@@ -190,7 +170,8 @@
             </div>
         </div>
         <div class="large-4 columns">
-           <div class="summary">
+            <div class="help-padding">&nbsp;</div>
+            <div class="summary">
                 <h5 i18n:translate="" class="title">Summary</h5>
                 <div class="section step1 hide">
                     <div class="row">

@@ -57,7 +57,10 @@ angular.module('KeypairPage', [])
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
-                $('.actions-menu').find('a').get(0).focus();
+                var firstLink = $('.actions-menu').find('a');
+                if( firstLink.length > 0 ){
+                    firstLink.get(0).focus();
+                }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);

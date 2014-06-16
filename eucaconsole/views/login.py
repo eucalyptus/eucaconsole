@@ -33,13 +33,13 @@ import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
-from pyramid.httpexceptions import HTTPFound, HTTPUseProxy
-from pyramid.i18n import TranslationString as _
+from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.settings import asbool
 from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
+from ..i18n import _
 from ..models.auth import AWSAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse

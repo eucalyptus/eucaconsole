@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
@@ -36,7 +36,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
+                <form id="image-detail-form" action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">

@@ -34,12 +34,12 @@ from urllib import urlencode
 
 from beaker.cache import cache_region
 from pyramid.decorator import reify
-from pyramid.i18n import TranslationString as _
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
 
 from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
+from .i18n import _
 from .models import Notification
 
 try:

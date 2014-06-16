@@ -34,7 +34,6 @@ import simplejson as json
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms import GenerateFileForm
@@ -42,6 +41,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm
 from ..forms.securitygroups import SecurityGroupForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
@@ -128,7 +128,7 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = launchconfig.security_groups[0] if launchconfig.security_groups else [],
+                security_groups = [sg for sg in launchconfig.security_groups]
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(

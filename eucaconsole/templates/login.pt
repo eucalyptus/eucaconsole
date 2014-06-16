@@ -1,11 +1,10 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="head_css" tal:omit-tag="">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/login.css')}" />
 </div>
 
 <div metal:fill-slot="main_content">
-
     <!-- Notifications -->
     <div id="notifications-wrapper" class="row">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
@@ -29,13 +28,13 @@
 
     <div class="row large-6 medium-10 columns large-centered medium-centered" id="login-wrapper"
          ng-app="LoginPage" ng-controller="LoginPageCtrl" ng-init="initController()">
-        <div id='javascript-warning' i18n:translate="">
+        <div id="javascript-warning">
             <p i18n:translate=""> Warning! JavaScript is not enabled on your browser.
             To use the Eucalyptus Management Console, please enable JavaScript in your browser's settings.
             </p>
         </div>
-        <div id="ssl-warning" i18n:translate="" ng-show="showHttpsWarning" ng-cloak="">
-            <strong>SSL not enabled</strong>
+        <div id="ssl-warning" ng-show="showHttpsWarning" ng-cloak="">
+            <strong i18n:translate="">SSL not enabled</strong>
             <p i18n:translate="">
                 This connection is untrusted because SSL is not enabled on the server.
                 Credentials will be sent over the wire in clear text.
@@ -85,7 +84,7 @@
                                 <div class="small-12 columns">
                                     <input type="submit" class="submit button"
                                            id="euca-login-button" value="Log in to Eucalyptus"
-                                           ng-click="isLoggingIn=true" />
+                                           ng-click="isLoggingIn=true" i18n:attributes="value" />
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn">
                                     <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
@@ -130,7 +129,7 @@
                                 <div class="small-12 columns">
                                     <input type="submit" class="submit button"
                                            id="aws-login-button" value="Log in to AWS"
-                                           ng-click="isLoggingIn=true" />
+                                           ng-click="isLoggingIn=true" i18n:attributes="value" />
                                 </div>
                                 <div class="small-12 columns" ng-show="isLoggingIn" ng-cloak="">
                                     <span i18n:translate="">Logging in</span>&nbsp;<em><span class="dots">&nbsp;</span></em>

@@ -1,52 +1,43 @@
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
-    <div id="image-picker" ng-app="ImagePicker"
+    <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
          ng-controller="ImagePickerCtrl" ng-init="initImagePicker('${images_json_endpoint}', '${layout.cloud_type}')">
         <!--! Image picker widget -->
         <div class="row">
-            <div class="medium-7 columns">
-                <p i18n:translate="">OR select an image below</p>
-            </div>
-            <div class="medium-5 columns">
-                <div class="row sort-search" ng-cloak="cloak">
-                    <div class="small-12 columns search-filter">
-                        <div class="row collapse">
-                            <div class="small-10 columns">
-                                <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
-                            </div>
-                            <div class="small-2 columns">
-                                <button class="button secondary postfix go"><i class="fi-magnifying-glass"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="large-3 columns" ng-cloak="">
-                    ${panel('landingpage_filters', filters_form=filters_form)}
+                ${panel('landingpage_filters', filters_form=filters_form)}
             </div>
             <div class="large-9 columns">
+                <label>
+                    <span i18n:translate="">Select a machine image for your</span>
+                    <span i18n:translate="" tal:condition="not launchconfig_wizard">virtual machine instance</span>
+                    <span i18n:translate="" tal:condition="launchconfig_wizard">launch configuration</span>
+                </label>
+                <div class="search-filter">
+                    <input type="search" ng-model="searchFilter" id="search-filter" ng-keyup="searchImages()" />
+                    <i class="fi-magnifying-glass search-icon"></i>
+                </div>
                 <table class="table" ng-cloak="">
                     <tbody style="max-height: ${maxheight}">
                     <tr ng-show="itemsLoading">
                         <td colspan="2">
-                            <div i18n:translate="" ng-show="itemsLoading">Loading...</div>
+                            <div ng-show="itemsLoading">
+                                <span i18n:translate="">Loading...</span>&nbsp;&nbsp;<span class="dots"></span>
+                            </div>
                         </td>
                     </tr>
                     <tr ng-show="!itemsLoading &amp;&amp; items.length == 0">
-                        <td colspan="2">
+                        <td colspan="3">
                             <span i18n:translate="">No images were found matching the criteria.</span>
                         </td>
                     </tr>
                     <tr ng-show="!itemsLoading" ng-repeat="item in items"
-                        ng-click="imageSelected(item)"
-                        ng-class="{'selected': item.id == selectedImageParam}">
+                        ng-class="{'selected': item.id == selectedImageParam || item.id == imageID}">
                         <td class="icon">
                             <span class="image {{ item.platform_key }}"></span>
                         </td>
-                        <td>
+                        <td class="desc">
                             <div class="name">
                                 <strong class="image-title">{{ item.name || item.id }}</strong>
                                 <span ng-show="!item.name" class="label radius {{ item.architecture }}">{{ item.architecture }}</span>
@@ -60,9 +51,27 @@
                             </div>
                             <div class="clearfix"></div>
                         </td>
+                        <td class="btns">
+                            <a class="button tiny" i18n:translate=""
+                               ng-click="imageSelected(item); loadImageInfo(item.id); visitNextStep(2, $event)">Select</a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
+                <div class="row">
+                    <div class="small-4 columns">
+                        <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
+                    </div>
+                    <div class="small-4 columns value">
+                        <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                    </div>
+                    <div class="small-4 columns value">
+                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)">
+                            <span i18n:translate="">Next</span>
+                            <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="${request.static_path('eucaconsole:static/js/widgets/image_picker.js')}"></script>

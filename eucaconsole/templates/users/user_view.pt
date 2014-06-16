@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
@@ -70,7 +70,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="save-user-btn">
+                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isNotChanged">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('users')}"
@@ -368,7 +368,7 @@
                             <hr />
                             <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
                             <div>
-                                <button type="submit" class="button" id="save-quotas-btn">
+                                <button type="submit" class="button" id="save-quotas-btn" ng-disabled="isQuotaNotChanged">
                                     <span tal:condition="user" i18n:translate="">Save Quotas</span>
                                 </button>
                                 <a href="${request.route_path('users')}"

@@ -10,6 +10,7 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
         $scope.selectedProtocol = '';
+        $scope.isRuleNotComplete = true;
         $scope.resetValues = function () {
             $scope.trafficType = 'ip';
             $scope.fromPort = '';
@@ -45,16 +46,59 @@ angular.module('SecurityGroupRules', [])
                 }
             }, 500);
         };
+        $scope.checkRequiredInput = function () {
+            // By default, the Add Rule button is enabled when entering the check
+            $scope.isRuleNotComplete = false;
+            // If any of the required input fields are mising, disable the Add Rule button
+            if( $scope.hasDuplicatedRule == true ){
+                $scope.isRuleNotComplete = true;
+            }
+            if( $scope.selectedProtocol !== 'icmp' ){
+                if( $scope.fromPort === '' || $scope.fromPort === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }else if( $scope.toPort === '' || $scope.toPort === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }
+            if( $scope.trafficType === 'ip' ){
+                if( $scope.cidrIp === '' || $scope.cidrIp === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }else if( $scope.trafficType === 'securitygroup' ){
+                if( $scope.groupName === '' || $scope.groupName === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }
+        };
         // Watch for those two attributes update to trigger the duplicated rule check in real time
         $scope.setWatchers = function () {
-            $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('selectedProtocol', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('fromPort', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('toPort', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('icmpRange', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('cidrIp', function(){ 
+                $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
+            });
             $scope.$watch('groupName', function(){
                 if( $scope.groupName !== '' ){
                     $scope.trafficType = 'securitygroup';
                 }
                 $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
             });
-            $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('trafficType', function(){ 
+                $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
+            });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
                     $scope.trafficType = 'ip';

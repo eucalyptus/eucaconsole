@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/ipaddresses.css')}" />
@@ -31,7 +31,8 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Instance ID" i18n:attributes="title" data-tooltip="">IN</span>
-                    <span ng-show="item.instance_id" i18n:translate="">Associated with
+                    <span ng-show="item.instance_id">
+                        <span i18n:translate="">Associated with</span>
                         <b><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name }}</a></b>
                     </span>
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>

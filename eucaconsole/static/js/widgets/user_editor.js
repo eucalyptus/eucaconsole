@@ -9,6 +9,7 @@ angular.module('UserEditor', [])
         $scope.userInputs = $scope.userEditor.find('.userinput');
         $scope.usersTextarea = $scope.userEditor.find('textarea#users');
         $scope.isDisabled = true;
+        $scope.newUserName = '';
         $scope.usersArray = [];
         $scope.syncUsers = function () {
             var usersObj = {};
@@ -19,6 +20,12 @@ angular.module('UserEditor', [])
         };
         $scope.initUsers = function() {
             $scope.syncUsers();
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('newUserName', function () {
+                $scope.validateUsername();
+            });
         };
         $scope.removeUser = function (index, $event) {
             $event.preventDefault();
@@ -38,7 +45,7 @@ angular.module('UserEditor', [])
         $scope.validateUsername = function ($event) {
            // Timeout is needed to react to the added 'error' class by Foundation's live validation
            $timeout(function(){ 
-                if( $('#user-name-field-div').hasClass("error") ){
+                if( $('#user-name-field-div').hasClass("error") || $scope.newUserName === '' || $scope.newUserName === undefined ){
                     $scope.isDisabled = true;
                 }else{
                     $scope.isDisabled = false;
@@ -81,6 +88,8 @@ angular.module('UserEditor', [])
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
+                    $scope.isDisabled = true;
+                    $scope.newUserName = '';
                     userNameField.val('').focus();
                     //userEmailField.val('');
                     $scope.$emit('userAdded');

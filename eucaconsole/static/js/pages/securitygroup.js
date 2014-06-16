@@ -37,6 +37,12 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                         return false;
                     }
                 });
+                // Handle the unsaved security group rule issue
+                if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
+                        event.preventDefault(); 
+                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
+                        return false;
+                }
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
@@ -51,8 +57,9 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 $scope.isNotChanged = false;
             });
             $(document).on('ready', function(){
-                if( $('.actions-menu').length > 0 ){
-                    $('.actions-menu').find('a').get(0).focus();
+                var firstLink = $('.actions-menu').find('a');
+                if( firstLink.length > 0 ){
+                    firstLink.get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {

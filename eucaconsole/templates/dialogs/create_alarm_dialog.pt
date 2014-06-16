@@ -1,5 +1,5 @@
 <!--! Create alarm dialog -->
-<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl"
+<div id="create-alarm-wrapper" ng-app="CreateAlarm" ng-controller="CreateAlarmCtrl" i18n:domain="eucaconsole"
      ng-init="initController('${metric_unit_mapping}')">
     <div id="create-alarm-modal" class="reveal-modal ${modal_size}" data-reveal="">
         <h3 i18n:translate="">Create alarm</h3>
