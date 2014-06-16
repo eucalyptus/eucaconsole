@@ -18,9 +18,9 @@
 .panel .tile .footer .button:hover { text-decoration: none; }
 .panel .tile a:hover .icon { background-color: #0088c4; }
 
-#instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); }
+#instances-running .icon { background-image: url(../../img/svg/icon_running_instances.svg); border-bottom-left-radius: 20px; }
 
-#instances-stopped .icon { background-image: url(../../img/svg/icon_stopped_instances.svg); }
+#instances-stopped .icon { background-image: url(../../img/svg/icon_stopped_instances.svg); border-bottom-left-radius: 20px; }
 
 #scaling-groups .icon { background-image: url(../../img/svg/icon_instances_scaling_groups.svg); }
 
