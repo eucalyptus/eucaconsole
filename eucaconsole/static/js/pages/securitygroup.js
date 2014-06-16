@@ -12,6 +12,22 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             $scope.setFocus();
         };
         $scope.setWatch = function () {
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#security-group-detail-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
+                // Handle the unsaved security group rule issue
+                if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
+                        event.preventDefault(); 
+                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
+                        return false;
+                }
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                

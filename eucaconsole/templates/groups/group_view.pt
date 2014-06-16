@@ -126,7 +126,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
-                                    <button type="submit" class="button" id="save-changes-btn">
+                                    <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                                         <span tal:condition="group" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('groups')}"
