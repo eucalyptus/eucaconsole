@@ -113,6 +113,18 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $event.preventDefault();
                 return false;
             }
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag === true ){
+                $event.preventDefault(); 
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                return false;
+            }
             // If all is well, click the relevant tab to go to next step
             $('#tabStep' + nextStep).click();
             $scope.currentStepIndex = nextStep;
