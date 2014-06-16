@@ -890,9 +890,9 @@ footer {
         color: white;
     }
     &.disabled, &[disabled] {
-        background-color: $euca-orange;
+        background-color: $euca-grey;
         &:hover {
-            background-color: $euca-orange;
+            background-color: $euca-grey;
         }
     }
     &:hover {

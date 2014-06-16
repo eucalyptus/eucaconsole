@@ -128,7 +128,7 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = launchconfig.security_groups[0] if launchconfig.security_groups else [],
+                security_groups = [sg for sg in launchconfig.security_groups]
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(

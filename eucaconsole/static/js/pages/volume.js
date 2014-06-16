@@ -108,6 +108,16 @@ angular.module('VolumePage', ['TagEditor'])
                     $('#create_volume_submit_button').removeAttr('disabled');
                 }
             });
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#volume-detail-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                

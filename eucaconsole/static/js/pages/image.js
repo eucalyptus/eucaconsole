@@ -16,6 +16,16 @@ angular.module('ImagePage', ['TagEditor'])
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#image-detail-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
