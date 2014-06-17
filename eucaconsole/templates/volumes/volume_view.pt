@@ -128,7 +128,7 @@
                             {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
-                    <div>
+                    <div tal:condition="not volume">
                         <label>
                             <span class="req">*</span>
                             <span i18n:translate="">Required fields</span>
