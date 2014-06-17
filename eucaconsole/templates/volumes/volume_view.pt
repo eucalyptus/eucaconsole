@@ -128,6 +128,12 @@
                             {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
+                    <div>
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
