@@ -129,7 +129,7 @@
                     <label><strong i18n:translate="">Policy</strong></label>
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
                     <div>&nbsp;</div>
-                    <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
+                    <small id="json-error" class="error" style="display:none;"></small>
                     <div>
                         <button type="submit" class="button" id="create-iam-policy-btn" i18n:translate="">
                             Create Policy
