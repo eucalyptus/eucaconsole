@@ -62,6 +62,12 @@
                                     ${panel('form_field', field=create_form['max_size'], maxlength=2, ng_attrs={'model': 'maxSize', 'change': 'handleSizeChange()'})}
                                 </div>
                             </div>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
                             <hr />
@@ -84,6 +90,12 @@
                             ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
                             ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <hr />
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
