@@ -57,6 +57,12 @@ angular.module('UserNew', ['UserEditor'])
             });
         };
         $scope.submit = function($event) {
+            // Handle the unsaved user issue
+            if($('#user-name-field').val() !== ''){
+                $event.preventDefault(); 
+                $('#unsaved-user-warn-modal').foundation('reveal', 'open');
+                return false;
+            }
             var form = $($event.target);
             $('#user-list-error').css('display', 'none');
             $('#quota-error').css('display', 'none');

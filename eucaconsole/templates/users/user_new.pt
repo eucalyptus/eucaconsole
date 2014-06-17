@@ -76,6 +76,14 @@
             </div>
         </div>
     </div>
+    <div id="unsaved-user-warn-modal" class="reveal-modal small" data-reveal="">
+        <p>
+            <span i18n:translate="">
+                You must click the "Add User" button before you submit this for your user to be included.
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
 </div>
 
 <div metal:fill-slot="tail_js">
