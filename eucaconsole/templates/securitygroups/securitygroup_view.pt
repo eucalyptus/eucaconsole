@@ -62,6 +62,12 @@
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
                         <div class="small-9 columns field inline" ng-non-bindable="">${security_group.description}</div>
                     </div>
+                    <div tal:condition="not security_group">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
                     <hr />
