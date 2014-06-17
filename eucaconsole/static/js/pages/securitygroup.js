@@ -30,13 +30,17 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             });
             // Handle the unsaved tag issue
             $(document).on('submit', '#security-group-detail-form', function(event) {
+                var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
                     if($(this).val() !== ''){
-                        event.preventDefault(); 
-                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-                        return false;
+                        existsUnsavedTag = true;
                     }
                 });
+                if( existsUnsavedTag === true ){
+                    event.preventDefault(); 
+                    $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                    return false;
+                }
                 // Handle the unsaved security group rule issue
                 if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
                         event.preventDefault(); 
