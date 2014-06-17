@@ -9,6 +9,7 @@ angular.module('ElasticIPsPage', ['LandingPage'])
     .controller('ElasticIPsCtrl', function ($scope) {
         $scope.publicIP = '';
         $scope.instanceID = '';
+        $scope.isNotValid = true;
         $scope.urlParams = $.url().param();
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
@@ -19,6 +20,17 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             if ($scope.urlParams['allocate']) {
                 $('#allocate-ip-modal').foundation('reveal', 'open');
             }
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', '#ipcount', function () {
+                $scope.isNotValid = false;
+                $scope.$apply();
+            });
+            $(document).on('close', '[data-reveal]', function () {
+                $scope.isNotValid = true;
+                $scope.$apply();
+            });
         };
         $scope.revealModal = function (action, eip) {
             var modal = $('#' + action + '-ip-modal');
