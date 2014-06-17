@@ -107,6 +107,12 @@
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
                     </div>
+                    <div>
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags, show_name_tag=False)}
                     <hr  />
