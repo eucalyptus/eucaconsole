@@ -75,6 +75,12 @@
                                     <input type="hidden" name="instance_type" value="{{ instanceTypeSelected }}" />
                                 </div>
                             </div>
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <hr />
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
@@ -123,6 +129,12 @@
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview')}
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <hr />
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
