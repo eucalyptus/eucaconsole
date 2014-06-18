@@ -39,6 +39,10 @@ angular.module('ElasticIPsPage', ['LandingPage'])
                 });
             });
             $(document).on('close', '[data-reveal]', function () {
+                // Turn off the listeners on #ipcount
+                $(document).off('input', '#ipcount');
+                $(document).off('change', '#ipcount');
+                // Reset the submit button to be disabled
                 $scope.isNotValid = true;
                 $scope.$apply();
             });
