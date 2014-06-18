@@ -53,6 +53,7 @@
         <textarea id="tags" name="tags" class="hidden"></textarea>
     </div>
     <div id="unsaved-tag-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3></h3>
         <p>
             <span i18n:translate="">
                 You must click the "Add Tag" button before you submit this for your tag to be included.

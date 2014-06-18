@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-11 18:50-0700\n"
+"POT-Creation-Date: 2014-06-16 20:34-0700\n"
 "PO-Revision-Date: 2014-03-25 13:15-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: es <LL@li.org>\n"
@@ -1258,7 +1258,7 @@ msgstr ""
 #: eucaconsole/templates/help/help_snapshots.pt:5
 #: eucaconsole/templates/help/help_users.pt:4
 #: eucaconsole/templates/help/help_volumes.pt:5
-#: eucaconsole/templates/users/users.pt:136
+#: eucaconsole/templates/users/users.pt:137
 msgid "Help"
 msgstr ""
 
@@ -2029,7 +2029,7 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:30
 #: eucaconsole/templates/snapshots/snapshots.pt:116
 #: eucaconsole/templates/users/users.pt:37
-#: eucaconsole/templates/users/users.pt:119
+#: eucaconsole/templates/users/users.pt:120
 #: eucaconsole/templates/volumes/volume_snapshots.pt:43
 #: eucaconsole/templates/volumes/volumes.pt:30
 #: eucaconsole/templates/volumes/volumes.pt:118
@@ -2040,7 +2040,7 @@ msgstr ""
 #: eucaconsole/templates/groups/groups.pt:69
 #: eucaconsole/templates/users/user_view.pt:314
 #: eucaconsole/templates/users/users.pt:46
-#: eucaconsole/templates/users/users.pt:128
+#: eucaconsole/templates/users/users.pt:129
 msgid "Delete"
 msgstr ""
 
@@ -2370,6 +2370,7 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:105
 #: eucaconsole/templates/panels/bdmapping_editor.pt:6
+#: eucaconsole/templates/panels/top_nav.pt:18
 msgid "Storage"
 msgstr ""
 
@@ -2847,6 +2848,13 @@ msgstr ""
 msgid "Add Tag"
 msgstr "Añadir Etiqueta"
 
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:53
+#: eucaconsole/templates/panels/tag_editor.pt:58
+msgid ""
+"You must click the \"Add Tag\" button before you submit this for your tag"
+" to be included."
+msgstr ""
+
 #: eucaconsole/templates/panels/bdmapping_editor.pt:11
 msgid "Mapping"
 msgstr ""
@@ -2986,6 +2994,12 @@ msgstr "Ya existe regla"
 msgid "Add Rule"
 msgstr "Añadir Regla"
 
+#: eucaconsole/templates/panels/securitygroup_rules.pt:111
+msgid ""
+"You must click the \"Add Rule\" button before you submit this for your "
+"rule to be included."
+msgstr ""
+
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:7
 msgid "Incoming traffic rules for security group"
 msgstr ""
@@ -2995,8 +3009,21 @@ msgid "Rule"
 msgstr "Regla"
 
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:29
-msgid "WARNING, NO RULES DEFINED!"
-msgstr "¡Advertencia, no hay reglas definidas!"
+msgid "WARNING:"
+msgstr ""
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:30
+msgid ""
+"Your instance(s) will not be accessible until you add ingress rules to "
+"security group {{ securityGroup }} (for example, open port 22 for SSH "
+"access to Linux instances)."
+msgstr ""
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:33
+msgid ""
+"Please remember to edit your security group after you launch your "
+"instance(s)."
+msgstr ""
 
 #: eucaconsole/templates/panels/tag_editor.pt:32
 msgid ""
@@ -3004,22 +3031,35 @@ msgid ""
 "chars"
 msgstr ""
 
-#: eucaconsole/templates/panels/tag_editor.pt:45
+#: eucaconsole/templates/panels/tag_editor.pt:46
 msgid "You may not add more than ten tags to a resource."
 msgstr ""
 
-#: eucaconsole/templates/panels/tag_editor.pt:46
-msgid ""
-"Note that one of your tags is the \"Name\" tag, which isn't displayed "
-"here."
+#: eucaconsole/templates/panels/tag_editor.pt:47
+msgid "Note that one of your tags is being used to display the resource name."
 msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:8
+#, fuzzy
+#| msgid "Create scaling group"
+msgid "Auto Scaling"
+msgstr "Crear grupo de escala"
 
 #: eucaconsole/templates/panels/top_nav.pt:10
 msgid "Scaling Groups"
 msgstr ""
 
+#: eucaconsole/templates/panels/top_nav.pt:26
+msgid "Network &amp; Security"
+msgstr ""
+
 #: eucaconsole/templates/panels/top_nav.pt:28
 msgid "Security Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:37
+#: eucaconsole/templates/users/quotas.pt:72
+msgid "IAM"
 msgstr ""
 
 #: eucaconsole/templates/panels/top_nav.pt:39
@@ -3586,10 +3626,6 @@ msgstr ""
 msgid "Elastic load balancing"
 msgstr ""
 
-#: eucaconsole/templates/users/quotas.pt:72
-msgid "IAM"
-msgstr ""
-
 #: eucaconsole/templates/users/user_new.pt:15
 #: eucaconsole/templates/users/user_new.pt:21
 msgid "Create new users"
@@ -3622,7 +3658,7 @@ msgstr ""
 #: eucaconsole/templates/users/user_view.pt:173
 #: eucaconsole/templates/users/user_view.pt:351
 #: eucaconsole/templates/users/users.pt:40
-#: eucaconsole/templates/users/users.pt:122
+#: eucaconsole/templates/users/users.pt:123
 msgid "Disable"
 msgstr ""
 
@@ -3772,7 +3808,7 @@ msgid "Create New Users"
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:43
-#: eucaconsole/templates/users/users.pt:125
+#: eucaconsole/templates/users/users.pt:126
 msgid "Enable"
 msgstr ""
 
@@ -3808,7 +3844,7 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:108
+#: eucaconsole/templates/users/users.pt:109
 msgid "active"
 msgstr ""
 
@@ -4719,4 +4755,13 @@ msgstr ""
 #: eucaconsole/views/volumes.py:502
 msgid "Successfully deleted the snapshot."
 msgstr ""
+
+#~ msgid "WARNING, NO RULES DEFINED!"
+#~ msgstr "¡Advertencia, no hay reglas definidas!"
+
+#~ msgid ""
+#~ "Note that one of your tags is "
+#~ "the \"Name\" tag, which isn't displayed"
+#~ " here."
+#~ msgstr ""
 

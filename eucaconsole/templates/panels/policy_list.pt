@@ -35,7 +35,7 @@
             <form ng-submit="savePolicy($event)">
                 <textarea id="policy-area" class="policy-area" ng-model="policyJson"></textarea>
                 <div>&nbsp;</div>
-                <small id="json-error" class="error" style="display:none;" i18n:translate=""></small>
+                <small id="json-error" class="error" style="display:none;"></small>
                 <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
                     Save Changes
                 </button>
