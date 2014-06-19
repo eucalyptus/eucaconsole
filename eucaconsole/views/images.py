@@ -116,6 +116,7 @@ class ImagesJsonView(LandingPageView):
                 name=image.name,
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
+                name_id=ImageView.get_image_name_id(image),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
@@ -215,6 +216,7 @@ class ImageView(TaggedItemView):
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
+            image_name_id=ImageView.get_image_name_id(self.image),
             image_form=self.image_form,
             deregister_form=self.deregister_form,
         )
@@ -264,7 +266,7 @@ class ImageView(TaggedItemView):
         if self.deregister_form.validate():
             with boto_error_handler(self.request):
                 delete_snapshot = all([
-                    self.image.root_device_type == 'EBS', self.request.params.get('delete_snapshot') == 'y'])
+                    self.image.root_device_type == 'ebs', self.request.params.get('delete_snapshot') == 'y'])
                 self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
                 ImagesView.invalidate_images_cache()  # clear images cache
                 location = self.request.route_path('images')
@@ -290,6 +292,16 @@ class ImageView(TaggedItemView):
                         if re.findall(choice.pattern, attr_value, re.IGNORECASE):
                             return choice
             return unknown
+
+    @staticmethod
+    def get_image_name_id(image):
+        """Return the name (ID) of an image, with the name lookup performed via the "Name" tag, falling back
+        to the image name if missing.
+        """
+        name_tag = image.tags.get('Name')
+        if name_tag is None and not image.name:
+            return image.id
+        return '{0} ({1})'.format(name_tag or image.name, image.id)
 
     def get_display_name(self):
         if self.image:

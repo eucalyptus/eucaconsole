@@ -48,7 +48,7 @@ class DeregisterImageForm(BaseSecureForm):
     Deregister image form
     Note: delete_snapshot option only applies to EBS-backed images
     """
-    delete_snapshot = wtforms.BooleanField(label=_(u'Delete snapshot'))
+    delete_snapshot = wtforms.BooleanField(label=_(u'Delete associated snapshot'))
 
 
 class ImagesFiltersForm(BaseSecureForm):

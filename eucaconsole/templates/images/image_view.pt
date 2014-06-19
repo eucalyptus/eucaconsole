@@ -36,7 +36,7 @@
                         </li>
                         <li>
                             <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
-                                Deregister image
+                                Remove from cloud
                             </a>
                         </li>
                     </metal:actions>
@@ -151,7 +151,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('image_dialogs', image=image, deregister_form=deregister_form)}
+        ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form)}
     </div>
 </div>
 

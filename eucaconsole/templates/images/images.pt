@@ -38,7 +38,7 @@
                     <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                            i18n:translate="">Create launch configuration</a>
                     </li>
-                    <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Deregister image</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
@@ -104,7 +104,7 @@
                             <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                                    i18n:translate="">Create launch configuration</a>
                             </li>
-                            <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Deregister image</a></li>
+                            <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a></li>
                         </ul>
                     </span>
                 </td>

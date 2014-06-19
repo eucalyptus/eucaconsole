@@ -10,6 +10,8 @@ angular.module('ImagesPage', ['LandingPage'])
         $scope.revealModal = function (action, image) {
             var modal = $('#' + action + '-image-modal');
             $scope.imageID = image['id'];
+            $scope.imageNameID = image['name_id'];
+            $scope.imageRootDeviceType = image['root_device_type'];
             modal.foundation('reveal', 'open');
             var form = $('#deregister-form');
             var formAction = form.attr('action').replace("_id_", image['id']);
