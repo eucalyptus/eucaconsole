@@ -298,6 +298,8 @@ class ImageView(TaggedItemView):
         """Return the name (ID) of an image, with the name lookup performed via the "Name" tag, falling back
         to the image name if missing.
         """
+        if image is None:
+            return ''
         name_tag = image.tags.get('Name')
         if name_tag is None and not image.name:
             return image.id
