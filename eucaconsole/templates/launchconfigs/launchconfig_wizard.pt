@@ -76,6 +76,12 @@
                                 </div>
                             </div>
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
@@ -124,6 +130,12 @@
                             </div>
                             ${panel('securitygroup_rules_preview')}
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">

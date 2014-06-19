@@ -180,6 +180,12 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
+                <div>
+                    <label>
+                        <span class="req">*</span>
+                        <span i18n:translate="">Required fields</span>
+                    </label>
+                </div>
                 <div class="dialog-submit-button">
                     <button type="submit" id="associate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
                 </div>

@@ -65,6 +65,12 @@
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
@@ -85,6 +91,12 @@
                             ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
