@@ -128,15 +128,15 @@
                             {{ '${volume.create_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
+                    <hr />
+                    ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
+                    <hr />
                     <div tal:condition="not volume">
                         <label>
                             <span class="req">*</span>
                             <span i18n:translate="">Required fields</span>
                        </label>
                     </div>
-                    <hr />
-                    ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
-                    <hr />
                     <div>
                         <button tal:condition="volume" type="submit" id="save_changes_volume_submit_button" class="button" ng-disabled="isNotChanged || isUpdating || volumeStatus === 'deleted'">
                             <span i18n:translate="">Save Changes</span>

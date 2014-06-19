@@ -107,15 +107,15 @@
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
                     </div>
+                    <hr />
+                    ${panel('tag_editor', tags=snapshot_tags, show_name_tag=False)}
+                    <hr  />
                     <div tal:condition="not snapshot">
                         <label>
                             <span class="req">*</span>
                             <span i18n:translate="">Required fields</span>
                        </label>
                     </div>
-                    <hr />
-                    ${panel('tag_editor', tags=snapshot_tags, show_name_tag=False)}
-                    <hr  />
                     <div ng-show="snapshotStatus == 'deleted'">
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
                         <a href="${request.route_path('snapshots')}" i18n:translate="">Return to snapshots page</a>
