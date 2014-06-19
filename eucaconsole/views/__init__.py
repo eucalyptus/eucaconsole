@@ -38,6 +38,7 @@ from dateutil import tz
 from urllib import urlencode
 from urlparse import urlparse
 
+from dogpile.cache.api import NoValue
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -46,6 +47,7 @@ from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
+from ..caches import default_term
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
 from ..i18n import _
@@ -125,12 +127,10 @@ class BaseView(object):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 
     def _store_file_(self, filename, mime_type, contents):
-        session = self.request.session
-        session['file_cache'] = (filename, mime_type, contents)
+        default_term.set('file_cache', (filename, mime_type, contents))
 
     def _has_file_(self):
-        session = self.request.session
-        return 'file_cache' in session
+        return not isinstance(default_term.get('file_cache'), NoValue)
 
     @staticmethod
     def sanitize_url(url):
@@ -462,11 +462,10 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
-    session = request.session
-    if session.get('file_cache'):
-        (filename, mime_type, contents) = session['file_cache']
-        # Clean the session information regrading the new keypair
-        del session['file_cache']
+    file_value = default_term.get('file_cache')
+    if not isinstance(file_value, NoValue):
+        (filename, mime_type, contents) = file_value
+        default_term.delete('file_cache')
         response = Response(content_type=mime_type)
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
