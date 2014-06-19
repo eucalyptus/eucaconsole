@@ -36,7 +36,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                         existsUnsavedTag = true;
                     }
                 });
-                if( existsUnsavedTag === true ){
+                if( existsUnsavedTag ){
                     event.preventDefault(); 
                     $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                     return false;

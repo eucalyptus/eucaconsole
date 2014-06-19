@@ -135,7 +135,7 @@ angular.module('InstancePage', ['TagEditor'])
                     return false;
                 }
             });
-            if( existsUnsavedTag === true ){
+            if( existsUnsavedTag ){
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
             }else if( $scope.instanceState == 'stopped' ){
                 $('#update-instance-modal').foundation('reveal', 'open');
