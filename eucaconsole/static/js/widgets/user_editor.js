@@ -55,12 +55,11 @@ angular.module('UserEditor', [])
             }
             var userEntry = $($event.currentTarget).closest('.userentry'),
                 userNameField = userEntry.find('.name'),
-                //userEmailField = userEntry.find('.email'),
                 usersArrayLength = $scope.usersArray.length,
                 existingUserFound = false,
                 form = $($event.currentTarget).closest('form'),
                 invalidFields = form.find('[data-invalid]');
-            if (userNameField.val()) {// && userEmailField.val()) {
+            if (userNameField.val()) {
                 // Trigger validation to avoid users that start with 'aws:'
                 form.trigger('validate');
                 if (invalidFields.length) {
@@ -79,7 +78,6 @@ angular.module('UserEditor', [])
                 } else {
                     $scope.usersArray.push({
                         'name': userNameField.val(),
-                        //'email': userEmailField.val(),
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
@@ -87,11 +85,9 @@ angular.module('UserEditor', [])
                     $scope.newUserName = '';
                     userNameField.val('').focus();
                     $scope.isDisabled = true;
-                    //userEmailField.val('');
                     $scope.$emit('userAdded');
                 }
             } else {
-                //userNameField.val() ? userEmailField.focus() : userNameField.focus();
                 userNameField.focus();
             }
         };
