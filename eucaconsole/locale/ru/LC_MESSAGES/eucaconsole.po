@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eucaconsole 4.0.0\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-11 18:50-0700\n"
+"POT-Creation-Date: 2014-06-16 20:34-0700\n"
 "PO-Revision-Date: 2014-03-25 13:16-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
@@ -1240,7 +1240,7 @@ msgstr ""
 #: eucaconsole/templates/help/help_snapshots.pt:5
 #: eucaconsole/templates/help/help_users.pt:4
 #: eucaconsole/templates/help/help_volumes.pt:5
-#: eucaconsole/templates/users/users.pt:136
+#: eucaconsole/templates/users/users.pt:137
 msgid "Help"
 msgstr ""
 
@@ -2010,7 +2010,7 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:30
 #: eucaconsole/templates/snapshots/snapshots.pt:116
 #: eucaconsole/templates/users/users.pt:37
-#: eucaconsole/templates/users/users.pt:119
+#: eucaconsole/templates/users/users.pt:120
 #: eucaconsole/templates/volumes/volume_snapshots.pt:43
 #: eucaconsole/templates/volumes/volumes.pt:30
 #: eucaconsole/templates/volumes/volumes.pt:118
@@ -2021,7 +2021,7 @@ msgstr ""
 #: eucaconsole/templates/groups/groups.pt:69
 #: eucaconsole/templates/users/user_view.pt:314
 #: eucaconsole/templates/users/users.pt:46
-#: eucaconsole/templates/users/users.pt:128
+#: eucaconsole/templates/users/users.pt:129
 msgid "Delete"
 msgstr ""
 
@@ -2350,6 +2350,7 @@ msgstr ""
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:105
 #: eucaconsole/templates/panels/bdmapping_editor.pt:6
+#: eucaconsole/templates/panels/top_nav.pt:18
 msgid "Storage"
 msgstr ""
 
@@ -2826,6 +2827,13 @@ msgstr ""
 msgid "Add Tag"
 msgstr ""
 
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:53
+#: eucaconsole/templates/panels/tag_editor.pt:58
+msgid ""
+"You must click the \"Add Tag\" button before you submit this for your tag"
+" to be included."
+msgstr ""
+
 #: eucaconsole/templates/panels/bdmapping_editor.pt:11
 msgid "Mapping"
 msgstr ""
@@ -2965,6 +2973,12 @@ msgstr ""
 msgid "Add Rule"
 msgstr ""
 
+#: eucaconsole/templates/panels/securitygroup_rules.pt:111
+msgid ""
+"You must click the \"Add Rule\" button before you submit this for your "
+"rule to be included."
+msgstr ""
+
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:7
 msgid "Incoming traffic rules for security group"
 msgstr ""
@@ -2974,7 +2988,20 @@ msgid "Rule"
 msgstr ""
 
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:29
-msgid "WARNING, NO RULES DEFINED!"
+msgid "WARNING:"
+msgstr ""
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:30
+msgid ""
+"Your instance(s) will not be accessible until you add ingress rules to "
+"security group {{ securityGroup }} (for example, open port 22 for SSH "
+"access to Linux instances)."
+msgstr ""
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:33
+msgid ""
+"Please remember to edit your security group after you launch your "
+"instance(s)."
 msgstr ""
 
 #: eucaconsole/templates/panels/tag_editor.pt:32
@@ -2983,22 +3010,33 @@ msgid ""
 "chars"
 msgstr ""
 
-#: eucaconsole/templates/panels/tag_editor.pt:45
+#: eucaconsole/templates/panels/tag_editor.pt:46
 msgid "You may not add more than ten tags to a resource."
 msgstr ""
 
-#: eucaconsole/templates/panels/tag_editor.pt:46
-msgid ""
-"Note that one of your tags is the \"Name\" tag, which isn't displayed "
-"here."
+#: eucaconsole/templates/panels/tag_editor.pt:47
+msgid "Note that one of your tags is being used to display the resource name."
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:8
+msgid "Auto Scaling"
 msgstr ""
 
 #: eucaconsole/templates/panels/top_nav.pt:10
 msgid "Scaling Groups"
 msgstr ""
 
+#: eucaconsole/templates/panels/top_nav.pt:26
+msgid "Network &amp; Security"
+msgstr ""
+
 #: eucaconsole/templates/panels/top_nav.pt:28
 msgid "Security Groups"
+msgstr ""
+
+#: eucaconsole/templates/panels/top_nav.pt:37
+#: eucaconsole/templates/users/quotas.pt:72
+msgid "IAM"
 msgstr ""
 
 #: eucaconsole/templates/panels/top_nav.pt:39
@@ -3565,10 +3603,6 @@ msgstr ""
 msgid "Elastic load balancing"
 msgstr ""
 
-#: eucaconsole/templates/users/quotas.pt:72
-msgid "IAM"
-msgstr ""
-
 #: eucaconsole/templates/users/user_new.pt:15
 #: eucaconsole/templates/users/user_new.pt:21
 msgid "Create new users"
@@ -3601,7 +3635,7 @@ msgstr ""
 #: eucaconsole/templates/users/user_view.pt:173
 #: eucaconsole/templates/users/user_view.pt:351
 #: eucaconsole/templates/users/users.pt:40
-#: eucaconsole/templates/users/users.pt:122
+#: eucaconsole/templates/users/users.pt:123
 msgid "Disable"
 msgstr ""
 
@@ -3751,7 +3785,7 @@ msgid "Create New Users"
 msgstr ""
 
 #: eucaconsole/templates/users/users.pt:43
-#: eucaconsole/templates/users/users.pt:125
+#: eucaconsole/templates/users/users.pt:126
 msgid "Enable"
 msgstr ""
 
@@ -3786,7 +3820,7 @@ msgstr ""
 msgid "User name"
 msgstr ""
 
-#: eucaconsole/templates/users/users.pt:108
+#: eucaconsole/templates/users/users.pt:109
 msgid "active"
 msgstr ""
 
@@ -4890,51 +4924,10 @@ msgstr ""
 #~ msgid "Disassociate an Elastic IP Address from an Instance"
 #~ msgstr ""
 
-#~ msgid ""
-#~ "This dialog box lets you verify "
-#~ "that you wish to disassociate one "
-#~ "or more elastic IP addresses from "
-#~ "running instance(s)."
-#~ msgstr ""
-
 #~ msgid "Release IP Addresses"
 #~ msgstr ""
 
-#~ msgid ""
-#~ "This dialog box allows you to "
-#~ "confirm or cancel an IP address "
-#~ "release operation."
-#~ msgstr ""
-
 #~ msgid "Create a Key Pair"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Eucalyptus uses cryptographic key pairs "
-#~ "to verify access to instances. Before"
-#~ " you can run an instance, you "
-#~ "must create a key pair. Creating a"
-#~ " key pair generates two keys: a "
-#~ "public key (saved within Eucalyptus) and"
-#~ " a corresponding private key (output "
-#~ "to the user as a character "
-#~ "string). To enable this private key "
-#~ "you must save it to a file "
-#~ "and set appropriate access permissions "
-#~ "(using the chmod command), as shown "
-#~ "in the example below."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "When you create a VM instance, the"
-#~ " public key is then injected into "
-#~ "the VM. Later, when attempting to "
-#~ "login to the VM instance using "
-#~ "SSH, the public key is checked "
-#~ "against your private key to verify "
-#~ "access. Note that the private key "
-#~ "becomes obsolete when the public key "
-#~ "is deleted."
 #~ msgstr ""
 
 #~ msgid "Create Key Pairs with the Console"
@@ -4949,12 +4942,15 @@ msgstr ""
 #~ msgid "Delete Key Pair"
 #~ msgstr ""
 
-#~ msgid ""
-#~ "This dialog box allows you to "
-#~ "confirm or cancel a key pair "
-#~ "delete operation."
+#~ msgid "Verify Key Pair Deletion"
 #~ msgstr ""
 
-#~ msgid "Verify Key Pair Deletion"
+#~ msgid "WARNING, NO RULES DEFINED!"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note that one of your tags is "
+#~ "the \"Name\" tag, which isn't displayed"
+#~ " here."
 #~ msgstr ""
 
