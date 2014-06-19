@@ -31,6 +31,19 @@ from setuptools import setup, find_packages
 
 from eucaconsole import __version__
 
+DATA_DIR='./'
+
+def get_data_files(path):
+    data_files = {}
+    for root, _, filenames in os.walk(path, followlinks=True):
+        data_file_dir = os.path.join(DATA_DIR, root)
+        for filename in filenames:
+            data_files.setdefault(data_file_dir, [])
+            data_files[data_file_dir].append(os.path.join(root, filename))
+    return list(data_files.items())
+
+
+DATA_FILES = get_data_files("eucaconsole/locale")
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
@@ -138,6 +151,7 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
+    data_files=DATA_FILES,
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
