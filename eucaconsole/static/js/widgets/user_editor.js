@@ -11,7 +11,6 @@ angular.module('UserEditor', [])
         $scope.isDisabled = true;
         $scope.newUserName = '';
         $scope.usersArray = [];
-        $scope.validationTimeout = '';
         $scope.syncUsers = function () {
             var usersObj = {};
             $scope.usersArray.forEach(function(user) {
@@ -42,20 +41,16 @@ angular.module('UserEditor', [])
             }
         };
         $scope.validateUsername = function ($event) {
-           // Timeout is needed to react to the added 'error' class by Foundation's live validation
-           $scope.validationTimeout = $timeout(function(){ 
-                if( $('#user-name-field-div').hasClass("error") || $scope.newUserName === '' || $scope.newUserName === undefined ){
-                    $scope.isDisabled = true;
-                }else{
-                    $scope.isDisabled = false;
-                }
-            }, 1000);
+           if( $scope.newUserName.match(/^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$/) ){
+                $scope.isDisabled = false;
+           }else{
+                $scope.isDisabled = true;
+           }
         }
         $scope.addUser = function ($event) {
             $event.preventDefault();
-            $timeout.cancel($scope.validationTimeout);
-            if( $('#user-name-field-div').hasClass("error") ){
-                $scope.isDisabled = true;
+            $scope.validateUsername();
+            if( $scope.isDisabled ){
                 return false;
             }
             var userEntry = $($event.currentTarget).closest('.userentry'),
