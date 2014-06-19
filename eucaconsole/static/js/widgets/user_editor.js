@@ -9,6 +9,7 @@ angular.module('UserEditor', [])
         $scope.userInputs = $scope.userEditor.find('.userinput');
         $scope.usersTextarea = $scope.userEditor.find('textarea#users');
         $scope.isDisabled = true;
+        $scope.newUserName = '';
         $scope.usersArray = [];
         $scope.validationTimeout = '';
         $scope.syncUsers = function () {
@@ -20,11 +21,20 @@ angular.module('UserEditor', [])
         };
         $scope.initUsers = function() {
             $scope.syncUsers();
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $scope.$watch('newUserName', function () {
+                $scope.validateUsername();
+            });
         };
         $scope.removeUser = function (index, $event) {
             $event.preventDefault();
             $scope.usersArray.splice(index, 1);
             $scope.syncUsers();
+            if( $scope.usersArray.length == 0 ){
+                $scope.$emit('emptyUsersArray');
+            }
         };
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
@@ -34,7 +44,7 @@ angular.module('UserEditor', [])
         $scope.validateUsername = function ($event) {
            // Timeout is needed to react to the added 'error' class by Foundation's live validation
            $scope.validationTimeout = $timeout(function(){ 
-                if( $('#user-name-field-div').hasClass("error") ){
+                if( $('#user-name-field-div').hasClass("error") || $scope.newUserName === '' || $scope.newUserName === undefined ){
                     $scope.isDisabled = true;
                 }else{
                     $scope.isDisabled = false;
@@ -78,9 +88,12 @@ angular.module('UserEditor', [])
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
+                    $scope.isDisabled = true;
+                    $scope.newUserName = '';
                     userNameField.val('').focus();
                     $scope.isDisabled = true;
                     //userEmailField.val('');
+                    $scope.$emit('userAdded');
                 }
             } else {
                 //userNameField.val() ? userEmailField.focus() : userNameField.focus();

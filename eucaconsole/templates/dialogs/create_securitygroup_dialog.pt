@@ -2,7 +2,7 @@
 <div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="create-securitygroup-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Create security group</h3>
-        <p i18n:translate=""></p>
+        <p></p>
         <form method="post" data-abide="abide" id="create-securitygroup-form"
               ng-submit="handleSecurityGroupCreate($event, '${request.route_path('securitygroup_create')}')">
             ${structure:securitygroup_form['csrf_token']}

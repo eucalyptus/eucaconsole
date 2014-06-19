@@ -93,17 +93,26 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-show="selectedProtocol">
+        <div class="row" id="add-rule-button-div" ng-show="selectedProtocol">
             <div class="small-3 columns">&nbsp;</div>
             <div class="small-9 columns">
                 <a href="#" id="button-add-rule" class="button round small" i18n:translate="" ng-class="getAddRuleButtonClass()"
-                        ng-click="addRule($event)">Add Rule</a>
+                        ng-click="addRule($event)" ng-disabled="isRuleNotComplete">Add Rule</a>
                 <a href="#" id="button-cancel-rule" class="cancel-link" i18n:translate="" 
                         ng-click="cancelRule($event)">Cancel</a>
             </div>
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="rules" name="rules" class="hidden" style="height: 8rem;"></textarea>
+    </div>
+    <div id="unsaved-rule-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3></h3>
+        <p>
+            <span i18n:translate="">
+                You must click the "Add Rule" button before you submit this for your rule to be included.
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/securitygroup_rules.js')}"></script>
     <script>setTimeout(function(){ $(document).foundation({abide : { timeout : 2000 } })}, 500);</script>

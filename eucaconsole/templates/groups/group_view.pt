@@ -48,7 +48,7 @@
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                         </div>
                         <div>&nbsp;</div>
@@ -69,9 +69,15 @@
                             <div>&nbsp;</div>
                         </div>
                         <hr />
+                        <div tal:condition="not group">
+                            <label>
+                                <span class="req">*</span>
+                                <span i18n:translate="">Required fields</span>
+                           </label>
+                        </div>
                         <div class="section">
                             <div>
-                                <button type="submit" class="button" id="create-btn">
+                                <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
                                     <span i18n:translate="">Create Group</span>
                                 </button>
                                 <a href="${request.route_path('groups')}"
@@ -126,7 +132,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
-                                    <button type="submit" class="button" id="save-changes-btn">
+                                    <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                                         <span tal:condition="group" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('groups')}"

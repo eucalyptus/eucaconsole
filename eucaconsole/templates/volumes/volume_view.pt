@@ -60,7 +60,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form tal:attributes="action form_action" method="post" data-abide="abide" ng-cloak="">
+                <form tal:attributes="action form_action" id="volume-detail-form" method="post" data-abide="abide" ng-cloak="">
                     ${structure:volume_form['csrf_token']}
                     <h6 i18n:translate="">Volume</h6>
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
@@ -131,11 +131,17 @@
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
+                    <div tal:condition="not volume">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div>
                         <button tal:condition="volume" type="submit" id="save_changes_volume_submit_button" class="button" ng-disabled="isNotChanged || isUpdating || volumeStatus === 'deleted'">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button">
+                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button" ng-disabled="isNotValid">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"

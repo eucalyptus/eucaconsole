@@ -14,6 +14,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
         $scope.instanceId = '';
+        $scope.isNotValid = true;
         $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
@@ -100,13 +101,23 @@ angular.module('VolumePage', ['TagEditor'])
                 $scope.isNotChanged = false;
             });
             $scope.$watch('volumeSize', function () {
-                if( $scope.volumeSize < $scope.snapshotSize ){
+                if( $scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined ){
                     $('#volume_size_error').removeClass('hide');
-                    $('#create_volume_submit_button').attr('disabled','disabled');
+                    $scope.isNotValid = true;
                 }else{
                     $('#volume_size_error').addClass('hide');
-                    $('#create_volume_submit_button').removeAttr('disabled');
+                    $scope.isNotValid = false;
                 }
+            });
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#volume-detail-form', function(event) {
+                $('input.taginput').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                

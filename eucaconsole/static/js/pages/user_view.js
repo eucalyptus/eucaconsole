@@ -48,7 +48,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.adjustTab = function() {
             var hash = $scope.currentTab;
             var matches = document.URL.match(/tab=([\w|-]+)/);
-            if (matches.length > 0) {
+            if (matches != null && matches.length > 0) {
                 if(matches[1] == 'general-tab' || matches[1] == 'security-tab' || matches[1] == 'quotas-tab'){
                     hash = matches[1];
                 }
@@ -122,8 +122,16 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', '#user-update-form input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             var data = $($event.target).serialize();
@@ -134,6 +142,7 @@ angular.module('UserView', ['PolicyList'])
                 // could put data back into form, but form already contains changes
                 if (oData.error == undefined) {
                     Notify.success(oData.message);
+                    $scope.isNotChanged = true;
                 } else {
                     Notify.failure(oData.message);
                 }
@@ -176,6 +185,7 @@ angular.module('UserView', ['PolicyList'])
             $("#change-password-modal").on('show', function () {
                 $('#password').focus(); // doesn't seem to work.
             });
+            $('#wrong-password').css('display', 'none');
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitChange = function($event) {
@@ -198,6 +208,7 @@ angular.module('UserView', ['PolicyList'])
         };
         // handles server call for changing the password
         $scope.changePassword = function($event) {
+            $event.preventDefault();
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             $('#wrong-password').css('display', 'none');
@@ -522,8 +533,16 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserQuotasCtrl', function($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isQuotaNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
+            $scope.setWatch();
+        };
+        $scope.setWatch = function () {
+            $(document).on('input', '#quotas-panel input[type="text"]', function () {
+                $scope.isQuotaNotChanged = false;
+                $scope.$apply();
+            });
         };
         $scope.submit = function($event) {
             $('#quota-error').css('display', 'none');
@@ -538,6 +557,7 @@ angular.module('UserView', ['PolicyList'])
               success(function(oData) {
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
+                $scope.isQuotaNotChanged = true;
               }).
               error(function (oData, status) {
                 var errorMsg = oData['message'] || '';

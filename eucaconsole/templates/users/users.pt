@@ -93,6 +93,7 @@
                 <td>
                     <span class="label radius item status active" ng-show="item.user_enabled == true" i18n:translate="">Active</span>
                     <span class="label radius item status disabled" ng-show="item.user_enabled == false" i18n:translate="">Disabled</span>
+                    <span class="label radius item status undefined" ng-show="item.user_enabled == undefined">&nbsp;</span>
                     <span class="dots" ng-show="item.user_enabled == undefined">&nbsp;</span>
                 </td>
                 <td>
