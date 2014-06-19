@@ -43,6 +43,14 @@ class ImageForm(BaseSecureForm):
     pass
 
 
+class DeregisterImageForm(BaseSecureForm):
+    """
+    Deregister image form
+    Note: delete_snapshot option only applies to EBS-backed images
+    """
+    delete_snapshot = wtforms.BooleanField(label=_(u'Delete snapshot'))
+
+
 class ImagesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     owner_alias = wtforms.SelectField(label=_(u'Images owned by'))

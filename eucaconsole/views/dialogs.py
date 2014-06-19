@@ -197,3 +197,12 @@ def group_dialogs(context, request, group=None, landingpage=False, delete_form=N
         delete_form=delete_form,
     )
 
+
+@panel_config('image_dialogs', renderer='../templates/dialogs/image_dialogs.pt')
+def image_dialogs(context, request, image=None, landingpage=False, deregister_form=None):
+    """ Modal dialogs for Image landing and detail page."""
+    return dict(
+        image=image,
+        landingpage=landingpage,
+        deregister_form=deregister_form,
+    )

@@ -1,0 +1,32 @@
+<!--! Modal dialogs for Images on landing and detail page -->
+<div tal:omit-tag="" i18n:domain="eucaconsole">
+    <div id="deregister-image-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('image_deregister', id='_id_');
+                     detailpage_action request.route_path('image_deregister', id=image.id) if image else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Deregister image</h3>
+        <p>
+            <span i18n:translate="">Deregistering an image removes it from your cloud.</span>
+            <span i18n:translate="">Are you sure you want to deregister image</span>
+            <strong ng-non-bindable="" tal:condition="not landingpage">${image.id}</strong>
+            <strong tal:condition="landingpage">{{ imageID }}</strong>
+            <span i18n:translate="">?</span>
+        </p>
+        <form action="${action}" method="post" data-abide="" id="deregister-form">
+            ${structure:deregister_form['csrf_token']}
+            <input type="hidden" name="image_id" value="{{ imageID }}" />
+            &nbsp;${structure:deregister_form['delete_snapshot']}
+            ${structure:deregister_form['delete_snapshot'].label}
+            <div class="dialog-submit-button">
+                <button type="submit" id="deregister-image-button" class="button expand" i18n:translate="">
+                    Yes, Deregister Image
+                </button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="#" id="deregister-image-dialog-close" class="close-reveal-modal">&#215;</a>
+    </div>
+</div>
+

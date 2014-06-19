@@ -35,7 +35,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
-from ..forms.images import ImageForm, ImagesFiltersForm
+from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
@@ -54,6 +54,7 @@ class ImagesView(LandingPageView):
         self.json_items_endpoint = self.get_json_endpoint('images_json')
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+        self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.render_dict = dict(
@@ -64,6 +65,7 @@ class ImagesView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             filter_fields=True,
             filters_form=self.filters_form,
+            deregister_form=self.deregister_form,
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)
@@ -207,16 +209,18 @@ class ImageView(TaggedItemView):
         self.conn = self.get_connection()
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
+        self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
             image_form=self.image_form,
+            deregister_form=self.deregister_form,
         )
 
     def get_image(self):
-        image_param = self.request.matchdict.get('id')
+        image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
         images_param = [image_param]
         images = []
         if self.conn:
@@ -253,7 +257,20 @@ class ImageView(TaggedItemView):
             msg = _(u'Successfully modified image')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        return self.render_dict
 
+    @view_config(route_name='image_deregister', request_method='POST')
+    def image_deregister(self):
+        if self.deregister_form.validate():
+            with boto_error_handler(self.request):
+                delete_snapshot = all([
+                    self.image.root_device_type == 'EBS', self.request.params.get('delete_snapshot') == 'y'])
+                self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
+                ImagesView.invalidate_images_cache()  # clear images cache
+                location = self.request.route_path('images')
+                msg = _(u'Successfully sent request to deregistered image.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
         return self.render_dict
 
     @staticmethod

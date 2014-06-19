@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/images.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -38,6 +38,7 @@
                     <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                            i18n:translate="">Create launch configuration</a>
                     </li>
+                    <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Deregister image</a></li>
                 </ul>
             </div>
             <div metal:fill-slot="tile_header">
@@ -103,11 +104,14 @@
                             <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                                    i18n:translate="">Create launch configuration</a>
                             </li>
+                            <li><a i18n:translate="" ng-click="revealModal('deregister', item)">Deregister image</a></li>
                         </ul>
                     </span>
                 </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('image_dialogs', deregister_form=deregister_form, landingpage=True)}
     </div>
 </div>
 
@@ -122,6 +126,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
     <script tal:condition="layout.cloud_type == 'aws'">
         // Set "owned by Amazon" as default filter if on AWS
         $(document).ready(function () {

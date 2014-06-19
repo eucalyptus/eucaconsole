@@ -63,6 +63,7 @@ urls = [
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
+    Route(name='image_deregister', pattern='/images/{id}/deregister'),
 
     # Instances #####
     # Landing page

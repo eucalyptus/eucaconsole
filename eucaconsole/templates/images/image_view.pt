@@ -3,7 +3,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
          ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
-       <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
@@ -32,6 +32,11 @@
                             <a href="${request.route_path('launchconfig_new')}?image_id=${image_id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
+                                Deregister image
                             </a>
                         </li>
                     </metal:actions>
@@ -119,7 +124,7 @@
                                             <td>${row.value.delete_on_termination if row.value.delete_on_termination else ''}</td>
                                             <td ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</td>
                                         </tr>
-                                    </tbody> 
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -141,10 +146,12 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div> 
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div>
             </div>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('image_dialogs', image=image, deregister_form=deregister_form)}
     </div>
 </div>
 
