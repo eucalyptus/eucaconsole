@@ -582,9 +582,6 @@ form {
         color: $euca-grey;
         font-weight: bold;
         cursor: default;
-        .req {
-            color: darkred;
-        }
     }
     input {
         background-color: $euca-extralightgreen;
@@ -604,6 +601,9 @@ form {
     }
     select, textarea {
         background-color: $euca-extralightgreen;
+    }
+    .req {
+        color: darkred;
     }
     .row {
         .inline-label {
