@@ -42,9 +42,9 @@ angular.module('UserEditor', [])
         };
         $scope.validateUsername = function ($event) {
            if( $scope.newUserName.match(/^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$/) ){
-                $scope.isDisabled = false;
-           }else{
-                $scope.isDisabled = true;
+               $scope.isDisabled = false;
+           }else {
+               $scope.isDisabled = true;
            }
         }
         $scope.addUser = function ($event) {
@@ -64,24 +64,25 @@ angular.module('UserEditor', [])
                 form.trigger('validate');
                 if (invalidFields.length) {
                     invalidFields.focus();
+                    $scope.isDisabled = true;
                     return false;
                 }
                 // Avoid adding a new user if the name duplicates an existing one.
                 for (var i=0; i < usersArrayLength; i++) {
-                    if ($scope.usersArray[i].name === userNameField.val()) {
+                    if ($scope.usersArray[i].name === $scope.newUserName) {
                         existingUserFound = true;
                         break;
                     }
                 }
                 if (existingUserFound) {
                     userNameField.focus();
+                    $scope.isDisabled = true;
                 } else {
                     $scope.usersArray.push({
-                        'name': userNameField.val(),
+                        'name': $scope.newUserName,
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
-                    $scope.isDisabled = true;
                     $scope.newUserName = '';
                     userNameField.val('').focus();
                     $scope.isDisabled = true;
@@ -89,6 +90,7 @@ angular.module('UserEditor', [])
                 }
             } else {
                 userNameField.focus();
+                $scope.isDisabled = true;
             }
         };
     })
