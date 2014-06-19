@@ -69,6 +69,12 @@
                             <div>&nbsp;</div>
                         </div>
                         <hr />
+                        <div tal:condition="not group">
+                            <label>
+                                <span class="req">*</span>
+                                <span i18n:translate="">Required fields</span>
+                           </label>
+                        </div>
                         <div class="section">
                             <div>
                                 <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">

@@ -45,6 +45,12 @@
                     </div>
                     <hr />
                     <div>
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                        </label>
+                    </div>
+                    <div>
                         <button type="submit" class="button" i18n:translate="" id="create-policy-btn" ng-disabled="isNotValid">
                             Add Policy
                         </button>
