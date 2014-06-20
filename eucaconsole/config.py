@@ -30,6 +30,7 @@ Pyramid configuration helpers
 
 import boto
 import logging
+import os
 
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
@@ -68,9 +69,8 @@ def get_configurator(settings, enable_auth=True):
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',
                       'eucaconsole.layout:templates/master_layout.pt')
-    config.add_translation_dirs('eucaconsole:locale')
+    config.add_translation_dirs(os.path.join(os.getcwd(), 'locale'), '/usr/share/locale')
     config.set_locale_negotiator(custom_locale_negotiator)
-    config.add_translation_dirs('/usr/share/locale')
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
