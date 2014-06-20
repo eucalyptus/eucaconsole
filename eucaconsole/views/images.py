@@ -38,6 +38,7 @@ from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
+from ..models.auth import User
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
@@ -55,6 +56,8 @@ class ImagesView(LandingPageView):
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
+        self.iam_conn = self.get_connection(conn_type='iam')
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.render_dict = dict(
@@ -66,6 +69,7 @@ class ImagesView(LandingPageView):
             filter_fields=True,
             filters_form=self.filters_form,
             deregister_form=self.deregister_form,
+            account_id=self.account_id,
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)
@@ -117,6 +121,7 @@ class ImagesJsonView(LandingPageView):
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
                 name_id=ImageView.get_image_name_id(image),
+                owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
@@ -208,6 +213,8 @@ class ImageView(TaggedItemView):
     def __init__(self, request):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn)
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
@@ -219,6 +226,7 @@ class ImageView(TaggedItemView):
             image_name_id=ImageView.get_image_name_id(self.image),
             image_form=self.image_form,
             deregister_form=self.deregister_form,
+            account_id=self.account_id,
         )
 
     def get_image(self):

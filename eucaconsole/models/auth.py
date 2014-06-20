@@ -49,9 +49,7 @@ from pyramid.security import Authenticated, authenticated_userid
 
 
 class User(object):
-    """Authenticated/Anonymous User object for Pyramid Auth.
-       Note: This is not an IAM User object (maybe not yet anyway)
-    """
+    """Authenticated/Anonymous User object for Pyramid Auth."""
     def __init__(self, user_id=None):
         self.user_id = user_id
 
@@ -66,6 +64,14 @@ class User(object):
     def is_authenticated(self):
         """user_id will be None if the user isn't authenticated"""
         return self.user_id
+
+    @staticmethod
+    def get_account_id(iam_conn=None):
+        """Get 12-digit account ID for the currently signed-in user's account"""
+        if iam_conn:
+            user = iam_conn.get_user()
+            if user and user.arn:
+                return user.arn.split(':')[4]
 
 
 class ConnectionManager(object):
