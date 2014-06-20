@@ -40,7 +40,6 @@ def get_data_files(path):
         for file in filenames:
             files.append(os.path.join(root, file))
         data_files.append((os.path.join(DATA_DIR, root), files))
-    print "data_files = "+str(data_files)
     return data_files
 
 
