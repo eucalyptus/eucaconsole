@@ -70,6 +70,7 @@ def get_configurator(settings, enable_auth=True):
                       'eucaconsole.layout:templates/master_layout.pt')
     config.add_translation_dirs('eucaconsole:locale')
     config.set_locale_negotiator(custom_locale_negotiator)
+    config.add_translation_dirs('/usr/share/locale')
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
