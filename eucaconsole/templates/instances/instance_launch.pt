@@ -92,7 +92,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                         <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                     </a>
@@ -127,8 +127,8 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3">
-                                        <span i18n:translate="">Launch Instance</span><span ng-show="instanceNumber > 1">s</span>
+                                    <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3" ng-disabled="isNotValid">
+                                        <span i18n:translate="">Launch Instance<span ng-show="instanceNumber > 1">s</span></span>
                                     </button>
                                     <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                     <br />

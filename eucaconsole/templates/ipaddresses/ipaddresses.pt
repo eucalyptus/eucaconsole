@@ -103,7 +103,7 @@
                     </label>
                 </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn"
+                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn" ng-disabled="isNotValid"
                         i18n:translate="">Allocate Addresses From Cloud</button>
                 </div>
                 <div class="dialog-progress-display hide">

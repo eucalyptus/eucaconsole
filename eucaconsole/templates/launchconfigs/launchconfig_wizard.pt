@@ -85,7 +85,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                     </a>
                                 </div>
@@ -141,7 +141,7 @@
                                 <div class="small-9 columns field inline">
                                     ${structure:create_form['create_sg_from_lc']}
                                     ${structure:create_form['create_sg_from_lc'].label}
-                                    <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step3">
+                                    <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button><br />
                                     <span class="or">Or:</span>

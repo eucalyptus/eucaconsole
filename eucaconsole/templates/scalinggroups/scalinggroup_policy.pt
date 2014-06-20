@@ -26,11 +26,11 @@
                       method="post" data-abide="" id="add-policy-form">
                     ${structure:policy_form['csrf_token']}
                     <div>&nbsp;</div>
-                    ${panel('form_field', field=policy_form['name'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_direction'], leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=policy_form['adjustment_amount'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['adjustment_amount'], ng_attrs={'model': 'adjustmentAmount'},leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=policy_form['cooldown'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['cooldown'], ng_attrs={'model': 'coolDown'}, leftcol_width=3, rightcol_width=9)}
                     <div class="row controls-wrapper">
                         <div class="small-3 columns">
                             <label class="right"><span i18n:translate="">Alarm</span>&nbsp;<span class="req">*</span></label>
@@ -51,7 +51,7 @@
                         </label>
                     </div>
                     <div>
-                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
+                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn" ng-disabled="isNotValid">
                             Add Policy
                         </button>
                         <a class="cancel-link" i18n:translate=""

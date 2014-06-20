@@ -63,10 +63,10 @@
                         <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
                     </div>
                     <div class="small-4 columns value">
-                        <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                        <input type="text" name="image_id" id="image-id-input" ng-model="$parent.imageID" />
                     </div>
                     <div class="small-4 columns value">
-                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)">
+                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)" ng-disabled="isNotValid">
                             <span i18n:translate="">Next</span>
                             <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                         </a>

@@ -48,7 +48,7 @@
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                         </div>
                         <div>&nbsp;</div>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="section">
                             <div>
-                                <button type="submit" class="button" id="create-btn">
+                                <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
                                     <span i18n:translate="">Create Group</span>
                                 </button>
                                 <a href="${request.route_path('groups')}"
