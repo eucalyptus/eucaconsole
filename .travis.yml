@@ -6,7 +6,7 @@ python:
 install:
     - sudo apt-get -y update
     - sudo apt-get -y install openssl build-essential python-dev swig
-    - chmod 777 /usr/share/locale
+    - sudo chmod 777 /usr/share/locale
     - python setup.py install
     - pip install Babel lingua
 # command to run tests, e.g. python setup.py test
