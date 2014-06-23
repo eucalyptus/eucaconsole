@@ -231,7 +231,7 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            $('#groupname-select').chosen({'width': '50%', search_contains: true});
+            $('#groupname-select').chosen({'width': '50%', search_contains: true, allow_arbitrary_text: true,});
             $('#groupname-select').prop('selectedIndex', -1);
             $('#groupname-select').trigger('chosen:updated');
             $scope.cleanupSelections();

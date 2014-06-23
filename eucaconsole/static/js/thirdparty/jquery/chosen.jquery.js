@@ -152,6 +152,7 @@
       this.max_selected_options = this.options.max_selected_options || Infinity;
       this.inherit_select_classes = this.options.inherit_select_classes || false;
       this.display_selected_options = this.options.display_selected_options != null ? this.options.display_selected_options : true;
+      this.allow_arbitrary_text = this.options.allow_arbitrary_text || false;
       return this.display_disabled_options = this.options.display_disabled_options != null ? this.options.display_disabled_options : true;
     };
 
@@ -923,6 +924,12 @@
     Chosen.prototype.result_select = function(evt) {
       var high, item, selected_index;
 
+      if (this.allow_arbitrary_text == true) {
+        var newval = this.search_field.val();
+        if (newval !== undefined && newval != '') {
+            this.form_field.append(new Option(newval, newval)).selected = true;
+        }
+      }
       if (this.result_highlight) {
         high = this.result_highlight;
         this.result_clear_highlight();

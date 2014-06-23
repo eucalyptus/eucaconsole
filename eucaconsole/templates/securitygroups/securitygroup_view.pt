@@ -103,7 +103,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/securitygroup.js')}"></script>
 </div>
 
