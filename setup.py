@@ -24,6 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import re
 
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
@@ -33,12 +34,13 @@ from eucaconsole import __version__
 
 DATA_DIR='/usr/share/'
 
-def get_data_files(path):
+def get_data_files(path, regex):
     data_files = []
     for root, _, filenames in os.walk(path, followlinks=True):
         files = []
         for file in filenames:
-            files.append(os.path.join(root, file))
+            if re.match(regex, file) is not None:
+                files.append(os.path.join(root, file))
         data_files.append((os.path.join(DATA_DIR, root), files))
     return data_files
 
@@ -149,7 +151,7 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
-    data_files=get_data_files("locale"),
+    data_files=get_data_files("locale", r'.*\.mo$'),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
