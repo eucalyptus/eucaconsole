@@ -53,7 +53,7 @@
                                 <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">platform</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
                                 <div class="small-8 columns value">${image.platform_name if image.platform_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
@@ -63,10 +63,6 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
                                 <div class="small-8 columns value">${image.root_device_type if image.root_device_type else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Root device mapping</label></div>
-                                <div class="small-8 columns value">${image.root_device_name if image.root_device_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Owner account (ID)</label></div>
