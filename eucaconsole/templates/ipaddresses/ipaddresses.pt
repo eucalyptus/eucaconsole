@@ -96,8 +96,14 @@
                          'error_msg': 'Please enter a whole number greater than zero'};">
                 ${structure:allocate_form['csrf_token']}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
+                <div>
+                    <label>
+                        <span class="req">*</span>
+                        <span i18n:translate="">Required fields</span>
+                    </label>
+                </div>
                 <div class="dialog-submit-button">
-                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn"
+                    <button type="submit" class="button expand" id="allocate-ipaddresses-dialog-btn" ng-disabled="isNotValid"
                         i18n:translate="">Allocate Addresses From Cloud</button>
                 </div>
                 <div class="dialog-progress-display hide">

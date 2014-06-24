@@ -131,11 +131,17 @@
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
+                    <div tal:condition="not volume">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div>
                         <button tal:condition="volume" type="submit" id="save_changes_volume_submit_button" class="button" ng-disabled="isNotChanged || isUpdating || volumeStatus === 'deleted'">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button">
+                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button" ng-disabled="isNotValid">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"

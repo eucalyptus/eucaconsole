@@ -49,6 +49,12 @@
             ${panel('form_field', field=register_form['description'])}
             ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="register_snapshot_submit_button" class="button expand" i18n:translate="">Register as Image</button>
             </div>

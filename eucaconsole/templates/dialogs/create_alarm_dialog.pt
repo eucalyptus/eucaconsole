@@ -127,6 +127,12 @@
                 </div>
             </div>
             <hr />
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="row">
                 <button type="submit" class="button expand" i18n:translate="" id="create-alarm-btn" ng-show="!isCreatingAlarm">
                     Create Alarm
