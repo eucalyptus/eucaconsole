@@ -270,16 +270,15 @@ class SecurityGroupView(TaggedItemView):
             for grant in grants:
                 cidr_ip = grant.get('cidr_ip')
                 group_name = grant.get('name')
-                if group_name:
-                    src_groups = self.conn.get_all_security_groups(filters={'group-name': [group_name]})
-                    if src_groups:
-                        src_group = src_groups[0]
+                owner_id = grant.get('owner_id')
 
-            auth_args = dict(ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-            if src_group:
-                auth_args['src_group'] = src_group
+            auth_args = dict(group_name=security_group.name, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            if group_name:
+                auth_args['src_security_group_name'] = group_name
+            if owner_id:
+                auth_args['src_security_group_owner_id'] = owner_id
 
-            security_group.authorize(**auth_args)
+            self.conn.authorize_security_group(**auth_args)
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update

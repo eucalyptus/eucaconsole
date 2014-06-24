@@ -189,6 +189,15 @@ angular.module('SecurityGroupRules', [])
         };
         // Create an array block that represents a new security group rule submiitted by user
         $scope.createRuleArrayBlock = function () {
+            var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
+            var owner_id = null;
+            if (name !== null) {
+                var idx = name.indexOf('/');
+                if (idx > 0) {
+                    owner_id = name.substring(0, idx);
+                    name = name.substring(idx+1);
+                }
+            }
             return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
@@ -197,7 +206,8 @@ angular.module('SecurityGroupRules', [])
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
                     'group_id': null,
-                    'name': $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null
+                    'name': name,
+                    'owner_id': owner_id
                 }],
                 'fresh': 'new'
             }; 
