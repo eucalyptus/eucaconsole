@@ -927,7 +927,10 @@
       if (this.allow_arbitrary_text == true) {
         var newval = this.search_field.val();
         if (newval !== undefined && newval != '') {
-            this.form_field.append(new Option(newval, newval)).selected = true;
+            //this.form_field.append(new Option(newval, newval)).selected = true;
+            var opts = this.form_field.options;
+            opts[opts.length] = new Option(newval, newval, selected=true)
+            this.results_update_field();
         }
       }
       if (this.result_highlight) {
