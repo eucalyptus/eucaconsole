@@ -89,6 +89,7 @@
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
                         <div class="duplicated-rule-error"><span ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</span></div>
+                        <div class="invalid-owner-error"><span ng-show="hasInvalidOwner" i18n:translate="">Owner ID must be 12 digit number followed by / and group name</span></div>
                     </div>
                 </div>
             </div>
