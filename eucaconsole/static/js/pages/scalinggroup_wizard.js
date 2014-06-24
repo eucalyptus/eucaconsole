@@ -29,9 +29,15 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
         };
+        $scope.checkLaunchConfigParam = function () {
+            if( $('#hidden_launch_config_input').length > 0 ){
+                $scope.launchConfig = $('#hidden_launch_config_input').val();
+            }
+        };
         $scope.initController = function (launchConfigCount) {
             $scope.initChosenSelectors();
             $scope.setInitialValues();
+            $scope.checkLaunchConfigParam();
             $scope.setWatcher();
             $(document).ready(function () {
                 $scope.displayLaunchConfigWarning(launchConfigCount);

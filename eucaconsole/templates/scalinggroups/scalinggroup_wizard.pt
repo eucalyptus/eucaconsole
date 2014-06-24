@@ -40,7 +40,7 @@
                         <div class="content active" id="step1">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
                             <div tal:condition="launch_config_param" ng-non-bindable="">
-                                <input type="hidden" name="launch_config" value="${launch_config_param}" />
+                                <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
                                 <div class="row controls-wrapper">
                                     <div class="small-4 columns">
                                         <label class="right" i18n:translate="">Launch configuration</label>
