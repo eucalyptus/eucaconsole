@@ -273,8 +273,9 @@ class ImageView(TaggedItemView):
     def image_deregister(self):
         if self.deregister_form.validate():
             with boto_error_handler(self.request):
-                delete_snapshot = all([
-                    self.image.root_device_type == 'ebs', self.request.params.get('delete_snapshot') == 'y'])
+                delete_snapshot = False
+                if self.image.root_device_type == 'ebs' and self.request.params.get('delete_snapshot') == 'y':
+                    delete_snapshot = True
                 self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
                 ImagesView.invalidate_images_cache()  # clear images cache
                 location = self.request.route_path('images')
