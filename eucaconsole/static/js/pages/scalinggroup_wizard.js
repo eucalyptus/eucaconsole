@@ -6,7 +6,7 @@
 
 // Scaling Group wizard includes the AutoScale Tag Editor
 angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupWizardCtrl', function ($scope) {
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -131,8 +131,26 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 return false;
             }
-            // If all is well, click the relevant tab to go to next step
-            $('#tabStep' + nextStep).click();
+            // since above lines affects DOM, need to let that take affect first
+            $timeout(function() {
+                // If all is well, hide current and show new tab without clicking
+                // since clicking invokes this method again (via ng-click) and
+                // one ng action must complete before another can start
+                var hash = "step"+nextStep;
+                $(".tabs").children("dd").each(function() {
+                    var link = $(this).find("a");
+                    if (link.length != 0) {
+                        var id = link.attr("href").substring(1);
+                        var $container = $("#" + id);
+                        $(this).removeClass("active");
+                        $container.removeClass("active");
+                        if (id == hash || $container.find("#" + hash).length) {
+                            $(this).addClass("active");
+                            $container.addClass("active");
+                        }
+                    }
+                });
+            });
             $scope.currentStepIndex = nextStep;
             $scope.checkRequiredInput();
             // Unhide step 2 of summary
