@@ -5,4 +5,3 @@
 .progress .meter { padding-left: 6px; padding-top: 4px; font-size: 0.825rem; font-weight: bold; }
 
 .label.status { text-transform: capitalize; }
-.label.status.failed { background-color: #444444; }

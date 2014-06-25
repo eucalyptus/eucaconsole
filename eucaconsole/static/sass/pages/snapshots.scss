@@ -5,9 +5,9 @@
 
 
 // Status colors
-$snapshot-status-color-pending: lighten($euca-lightgreen, 20%);
-$snapshot-status-color-completed: $euca-green;
-$snapshot-status-color-failed: $euca-grey;
+$snapshot-status-color-pending: lighten($euca-darkblue, 20%);
+$snapshot-status-color-completed: $euca-darkblue;
+$snapshot-status-color-failed: darken(red, 20%);
 
 // Mixin for the "in-progress" dots indicator
 @mixin progress-dots {
