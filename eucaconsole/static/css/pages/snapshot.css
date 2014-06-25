@@ -4,4 +4,7 @@
 .progress { display: inline-block; width: 50%; }
 .progress .meter { padding-left: 6px; padding-top: 4px; font-size: 0.825rem; font-weight: bold; }
 
-.label.status { text-transform: capitalize; }
+label.status { text-transform: capitalize; }
+label.status.failed { background-color: #990000; }
+label.status.completed { background-color: #7a853b; }
+label.status.pending { background-color: #0683c2; }

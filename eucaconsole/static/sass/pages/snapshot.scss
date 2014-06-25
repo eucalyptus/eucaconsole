@@ -12,7 +12,15 @@
     }
 }
 
-.label.status {
+label.status {
     text-transform: capitalize;
+    &.failed {
+        background-color: darken(red, 20%);
     }
-
+    &.completed { 
+        background-color: $euca-olive; 
+    }
+    &.pending { 
+        background-color: lighten($euca-darkblue, 20%); 
+    }
+}    
