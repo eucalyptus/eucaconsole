@@ -31,6 +31,7 @@ $snapshot-status-color-failed: darken(red, 20%);
             font-size: 0.825rem;
             margin-bottom: 0;
             .meter {
+                background-color: lighten($euca-darkblue, 20%);
                 padding-left: 4px;
                 color: black;
                 font-weight: bold;
@@ -58,6 +59,7 @@ $snapshot-status-color-failed: darken(red, 20%);
             position: relative;
             border: none;
             .meter {
+                background-color: lighten($euca-darkblue, 20%);
                 color: black;
                 position: relative;
                 top: -2px; left: -2px;
