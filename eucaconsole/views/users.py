@@ -400,7 +400,7 @@ class UserView(BaseView):
                     self.add_quota_limit(
                         statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
                     self.add_quota_limit(
-                        statements, 's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                        statements, 's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
                     self.add_quota_limit(
                         statements, 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
                     self.add_quota_limit(
