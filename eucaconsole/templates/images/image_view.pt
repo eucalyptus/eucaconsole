@@ -121,7 +121,7 @@
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
-        ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form)}
+        ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form, snapshot_images_registered=snapshot_images_registered)}
     </div>
 </div>
 

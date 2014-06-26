@@ -227,6 +227,7 @@ class ImageView(TaggedItemView):
             image_form=self.image_form,
             deregister_form=self.deregister_form,
             account_id=self.account_id,
+            snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
     def get_image(self):
@@ -248,6 +249,17 @@ class ImageView(TaggedItemView):
             image.platform = self.get_platform(image)
             image.platform_name = ImageView.get_platform_name(image.platform)
         return image
+
+    def get_images_registered_from_snapshot_count(self):
+        if self.image and self.image.root_device_type == 'ebs':
+            bdm_values = self.image.block_device_mapping.values()
+            if bdm_values:
+                snapshot_id = getattr(bdm_values[0], 'snapshot_id', None)
+                if snapshot_id:
+                    with boto_error_handler(self.request):
+                        images = self.conn.get_all_images(filters={'block-device-mapping.snapshot-id': [snapshot_id]})
+                        return len(images)
+        return 0
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):

@@ -16,16 +16,20 @@
             <strong tal:condition="landingpage">{{ imageNameID }}</strong>
             <span i18n:translate="">from the cloud?</span>
         </p>
-        <form action="${action}" method="post" data-abide="" id="deregister-form">
+        <form action="${action}" method="post" data-abide="" id="deregister-form"
+              tal:define="html_attrs {'disabled': 'disabled'} if not landingpage and snapshot_images_registered > 1 else {}">
             ${structure:deregister_form['csrf_token']}
             <input type="hidden" name="image_id" value="{{ imageID }}" />
             <div tal:condition="not landingpage and image.root_device_type == 'ebs'">
-                &nbsp;${structure:deregister_form['delete_snapshot']}
-                ${structure:deregister_form['delete_snapshot'].label}
+                &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
+                ${structure:deregister_form.delete_snapshot.label}
+                <span tal:condition="snapshot_images_registered > 1" class="helptext-icon" data-tooltip=""
+                      title="The snapshot for this image cannot be deleted when there are other images created from the snapshot"
+                      i18n:attributes="title">?</span>
             </div>
             <div tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
-                &nbsp;${structure:deregister_form['delete_snapshot']}
-                ${structure:deregister_form['delete_snapshot'].label}
+                &nbsp;${structure:deregister_form.delete_snapshot()}
+                ${structure:deregister_form.delete_snapshot.label}
             </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="deregister-image-button" class="button expand" i18n:translate="">
