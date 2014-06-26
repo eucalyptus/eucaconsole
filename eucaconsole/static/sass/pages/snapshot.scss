@@ -4,7 +4,8 @@
 .progress {
     display: inline-block;
     width: 50%;
-    .meter {
+    .meter {  // barbershop progress indicator
+        background-color: lighten($euca-darkblue, 20%);
         padding-left: 6px;
         padding-top: 4px;
         font-size: 0.825rem;
@@ -12,15 +13,16 @@
     }
 }
 
-label.status {
+.label.status {
     text-transform: capitalize;
     &.failed {
         background-color: darken(red, 20%);
     }
     &.completed { 
-        background-color: $euca-olive; 
+        background-color: $euca-darkblue;
     }
     &.pending { 
         background-color: lighten($euca-darkblue, 20%); 
     }
-}    
+}
+
