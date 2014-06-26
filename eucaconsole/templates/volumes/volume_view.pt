@@ -66,7 +66,7 @@
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="label radius status {{ volumeStatus || 'deleted' }}">
+                            <span class="label radius status {{ volumeAttachStatus || volumeStatus || 'deleted' }}">
                                 {{ volumeAttachStatus || volumeStatus || 'deleted' }}
                             </span>
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>

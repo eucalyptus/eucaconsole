@@ -10,7 +10,7 @@
 #login-wrapper input { background-color: #e6e7e8; }
 #login-wrapper .hide-aws { max-width: 480px; margin: 0 auto; }
 #login-wrapper .tabs-content { padding: 1rem; padding-bottom: 2rem; background-color: white; box-shadow: 3px 3px 5px 0px #cccccc; }
-#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f18f30; }
+#login-wrapper .button { display: block; width: 100%; margin-top: 12px; margin-bottom: 12px; background-color: #f3901d; }
 #login-wrapper #euca-tab.active, #login-wrapper #aws-tab.active { background-color: white; }
 
 #password, #secret_key { font-family: Arial, Helvetica, sans-serif !important; font-size: 1rem; color: black; }
