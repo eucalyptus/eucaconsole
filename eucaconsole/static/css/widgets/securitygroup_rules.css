@@ -16,3 +16,5 @@ form label.protocol { margin-bottom: 1.5rem; }
 #rules-editor .add-label { margin-bottom: 6px; }
 
 .duplicated-rule-error { color: red; padding: 10px 10px; }
+
+div small.error-msg { color: darkred; font-weight: bold; font-size: 0.75rem; }
