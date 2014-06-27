@@ -126,6 +126,7 @@ class ImagesJsonView(LandingPageView):
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
+                snapshot_id=ImageView.get_image_snapshot_id(image),
             ))
         return dict(results=images)
 
@@ -349,3 +350,10 @@ class ImageView(TaggedItemView):
             return platform
         return platform.key
 
+    @staticmethod
+    def get_image_snapshot_id(image):
+        """Get the snapshot id from the image BDM (for EBS images only)"""
+        if image.root_device_type == 'ebs':
+            bdm_values = image.block_device_mapping.values()
+            if bdm_values:
+                return getattr(bdm_values[0], 'snapshot_id', None)

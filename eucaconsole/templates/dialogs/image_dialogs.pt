@@ -20,16 +20,27 @@
               tal:define="html_attrs {'disabled': 'disabled'} if not landingpage and snapshot_images_registered > 1 else {}">
             ${structure:deregister_form['csrf_token']}
             <input type="hidden" name="image_id" value="{{ imageID }}" />
-            <div tal:condition="not landingpage and image.root_device_type == 'ebs'">
-                &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
-                ${structure:deregister_form.delete_snapshot.label}
-                <span tal:condition="snapshot_images_registered > 1" class="helptext-icon" data-tooltip=""
-                      title="The snapshot for this image cannot be deleted when there are other images created from the snapshot"
-                      i18n:attributes="title">?</span>
-            </div>
-            <div tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
-                &nbsp;${structure:deregister_form.delete_snapshot()}
-                ${structure:deregister_form.delete_snapshot.label}
+            <div>
+                <span tal:condition="not landingpage and image.root_device_type == 'ebs'">
+                    &nbsp;${structure:deregister_form.delete_snapshot(**html_attrs)}
+                    ${structure:deregister_form.delete_snapshot.label}
+                </span>
+                <span tal:condition="landingpage" ng-if="imageRootDeviceType == 'ebs'">
+                    &nbsp;
+                    ${structure:deregister_form.delete_snapshot(**{'ng-disabled': 'snapshotImagesRegistered.length > 1'})}
+                    ${structure:deregister_form.delete_snapshot.label}
+                </span>
+                <a tal:condition="(snapshot_images_registered > 1) or landingpage"
+                   ng-click="disabledExplanationVisible = !disabledExplanationVisible"
+                   ng-show="${'snapshotImagesRegistered.length > 1' if landingpage else 'true'}">
+                    Why is this disabled?
+                </a>
+                <div ng-show="disabledExplanationVisible">
+                    <span i18n:translate="">
+                        The snapshot for this image cannot be deleted when there are other images registered from the snapshot
+                    </span>
+                    <br /><br />
+                </div>
             </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="deregister-image-button" class="button expand" i18n:translate="">
