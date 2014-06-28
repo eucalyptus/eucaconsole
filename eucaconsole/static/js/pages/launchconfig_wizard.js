@@ -282,6 +282,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.imageLocation = item.location;
             $scope.summarySection.find('.step1').removeClass('hide');
+            $scope.checkRequiredInput();
         });
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
