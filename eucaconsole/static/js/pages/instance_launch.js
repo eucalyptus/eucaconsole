@@ -310,6 +310,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imagePlatform = item.platform_name;
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.summarySection.find('.step1').removeClass('hide');
+            $scope.checkRequiredInput();
         });
         $scope.buildNumberList = function () {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])
