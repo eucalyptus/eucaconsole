@@ -44,6 +44,19 @@ def get_data_files(path, regex):
         data_files.append((os.path.join(DATA_DIR, root), files))
     return data_files
 
+def get_package_files(package_dir, regex):
+    package_files = []
+    if not package_dir.endswith('/'):
+        package_dir = package_dir + '/'
+    for root, _, filenames in os.walk(package_dir, followlinks=True):
+        files = []
+        for file in filenames:
+            package_path = os.path.join(root[len(package_dir):], file)
+            if re.match(regex, package_path) is not None:
+                files.append(package_path)
+        package_files.extend(files)
+    return package_files
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
@@ -142,6 +155,7 @@ setup(
     url='http://www.eucalyptus.com',
     keywords='web pyramid pylons',
     packages=find_packages(),
+    package_data={'eucaconsole': get_package_files('eucaconsole', r'^[static\|templates]\.*')},
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
