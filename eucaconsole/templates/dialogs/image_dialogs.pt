@@ -8,7 +8,7 @@
         <p i18n:translate="">
             You will no longer be able to launch instances or create launch configurations
             from this image once it is removed from the cloud (de-registered).
-            The image itself will not be deleted and can be re-registered later.
+            The image itself will not be deleted and can be re-registered later if the associated snapshot is not deleted.
         </p>
         <p>
             <span i18n:translate="">Are you sure you want to remove image</span>
