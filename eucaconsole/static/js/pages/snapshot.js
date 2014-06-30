@@ -12,8 +12,10 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.transitionalStates = ['pending', 'deleting'];
         $scope.snapshotStatus = '';
         $scope.snapshotProgress = '';
+        $scope.isNotValid = true;
         $scope.isNotChanged = true;
         $scope.isUpdating = false;
+        $scope.volumeID = '';
         $scope.imagesURL = '';
         $scope.images = undefined;
         $scope.isTransitional = function (state) {
@@ -73,6 +75,13 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.setWatch = function () {
+            $scope.$watch('volumeID', function() {
+                if( $scope.volumeID === '' || $scope.volumeID === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            });
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });

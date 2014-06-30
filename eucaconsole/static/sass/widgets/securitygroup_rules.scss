@@ -55,3 +55,10 @@ form {
     padding: 10px 10px;
 }
 
+div {
+    small.error-msg {
+        color: darkred;
+        font-weight: bold;
+        font-size: 0.75rem;
+    }
+}

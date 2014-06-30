@@ -6,8 +6,10 @@
 
 // Scaling Group wizard includes the AutoScale Tag Editor
 angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupWizardCtrl', function ($scope) {
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout) {
         $scope.form = $('#scalinggroup-wizard-form');
+        $scope.scalingGroupName = '';
+        $scope.launchConfig = '';
         $scope.healthCheckType = 'EC2';
         $scope.healthCheckPeriod = 120;
         $scope.minSize = 1;
@@ -15,8 +17,10 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.maxSize = 1;
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
+        $scope.availZones = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
+        $scope.isNotValid = true;
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#load_balancers').chosen({'width': '80%', search_contains: true});
@@ -25,17 +29,67 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
         };
+        $scope.checkLaunchConfigParam = function () {
+            if( $('#hidden_launch_config_input').length > 0 ){
+                $scope.launchConfig = $('#hidden_launch_config_input').val();
+            }
+        };
         $scope.initController = function (launchConfigCount) {
             $scope.initChosenSelectors();
             $scope.setInitialValues();
+            $scope.checkLaunchConfigParam();
             $scope.setWatcher();
             $(document).ready(function () {
                 $scope.displayLaunchConfigWarning(launchConfigCount);
             });
         };
+        $scope.checkRequiredInput = function () {
+            if( $scope.currentStepIndex == 1 ){ 
+                $scope.isNotValid = false;
+                if( $scope.scalingGroupName === '' || $scope.scalingGroupName === undefined ){
+                    $scope.isNotValid = true;
+                }else if( $scope.launchConfig === '' || $scope.launchConfig === undefined ){
+                    $scope.isNotValid = true;
+                }else if( $scope.minSize === '' || $scope.minSize === undefined ){
+                    $scope.isNotValid = true;
+                }else if( $scope.desiredCapacity === '' || $scope.desiredCapacity === undefined ){
+                    $scope.isNotValid = true;
+                }else if( $scope.maxSize === '' || $scope.maxSize === undefined ){
+                    $scope.isNotValid = true;
+                }
+            }else if( $scope.currentStepIndex == 2 ){
+                $scope.isNotValid = false;
+                if( $scope.healthCheckPeriod === '' || $scope.healthCheckPeriod === undefined ){
+                    $scope.isNotValid = true;
+                }else if( $scope.availZones === '' || $scope.availZones === undefined ){
+                    $scope.isNotValid = true;
+                }
+            }
+        };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
                  $scope.setWizardFocus($scope.currentStepIndex);
+            });
+            $scope.$watch('scalingGroupName', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('launchConfig', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('minSize', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('desiredCapacity', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('maxSize', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('healthCheckPeriod', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('availZones', function(){
+                $scope.checkRequiredInput();
             });
         }
         $scope.setWizardFocus = function (stepIdx) {
@@ -60,14 +114,45 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             var currentStep = nextStep - 1,
                 tabContent = $scope.form.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
-            if (invalidFields.length) {
+            if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
                 return false;
             }
-            // If all is well, click the relevant tab to go to next step
-            $('#tabStep' + nextStep).click();
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag ){
+                $event.preventDefault(); 
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                return false;
+            }
+            // since above lines affects DOM, need to let that take affect first
+            $timeout(function() {
+                // If all is well, hide current and show new tab without clicking
+                // since clicking invokes this method again (via ng-click) and
+                // one ng action must complete before another can start
+                var hash = "step"+nextStep;
+                $(".tabs").children("dd").each(function() {
+                    var link = $(this).find("a");
+                    if (link.length != 0) {
+                        var id = link.attr("href").substring(1);
+                        var $container = $("#" + id);
+                        $(this).removeClass("active");
+                        $container.removeClass("active");
+                        if (id == hash || $container.find("#" + hash).length) {
+                            $(this).addClass("active");
+                            $container.addClass("active");
+                        }
+                    }
+                });
+            });
             $scope.currentStepIndex = nextStep;
+            $scope.checkRequiredInput();
             // Unhide step 2 of summary
             if (nextStep === 2) {
                 $scope.summarySection.find('.step2').removeClass('hide');

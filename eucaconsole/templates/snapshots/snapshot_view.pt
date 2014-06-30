@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
-                        ${panel('form_field', field=snapshot_form['volume_id'], **html_attrs)}
+                        ${panel('form_field', field=snapshot_form['volume_id'], ng_attrs={'model': 'volumeID'}, **html_attrs)}
                     </div>
                     <div tal:condition="not snapshot" tal:omit-tag="">
                         ${panel('form_field', field=snapshot_form['description'], **html_attrs)}
@@ -110,6 +110,12 @@
                     <hr />
                     ${panel('tag_editor', tags=snapshot_tags, show_name_tag=False)}
                     <hr  />
+                    <div tal:condition="not snapshot">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div ng-show="snapshotStatus == 'deleted'">
                         <span i18n:translate="">Snapshot was successfully deleted.</span>
                         <a href="${request.route_path('snapshots')}" i18n:translate="">Return to snapshots page</a>
@@ -118,7 +124,7 @@
                         <button tal:condition="snapshot" type="submit" class="button" id="save_changes_snapshot_submit_button" ng-disabled="isNotChanged">
                             <span i18n:translate="" ng-show="snapshotStatus !== 'deleted'">Save Changes</span>
                         </button>
-                        <button tal:condition="not snapshot" type="submit" class="button" id="create_snapshot_submit_button">
+                        <button tal:condition="not snapshot" type="submit" class="button" id="create_snapshot_submit_button" ng-disabled="isNotValid">
                             <span i18n:translate="">Create snapshot</span>
                         </button>
                         <a href="${request.route_path('snapshots')}"

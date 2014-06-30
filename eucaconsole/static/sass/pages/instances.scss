@@ -5,12 +5,13 @@
 
 
 // Status colors
-$instance-status-color-running: $euca-green;
-$instance-status-color-pending: darken($euca-extralightgreen, 20%);
-$instance-status-color-stopped: $euca-orange;
-$instance-status-color-stopping: lighten($euca-orange, 15%);
-$instance-status-color-terminated: $euca-grey;
+$instance-status-color-running: $euca-darkblue;
+$instance-status-color-pending: lighten($euca-darkblue, 20%);
+$instance-status-color-stopped: darken(red, 20%);
+$instance-status-color-stopping: lighten(red, 20%);
+$instance-status-color-terminated: $euca-darkgrey;
 $instance-status-color-terminating: lightgrey;
+
 
 
 // Tile/table view

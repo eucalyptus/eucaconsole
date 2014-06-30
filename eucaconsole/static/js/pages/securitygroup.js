@@ -6,21 +6,41 @@
 
 angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
     .controller('SecurityGroupPageCtrl', function ($scope) {
+        $scope.isNotValid = true;
         $scope.isNotChanged = true;
+        $scope.securityGroupName = undefined;
+        $scope.securityGroupDescription = undefined;
         $scope.initController = function () {
             $scope.setWatch();
             $scope.setFocus();
         };
+        $scope.checkRequiredInput = function () {
+            if($scope.securityGroupName === undefined || $scope.securityGroupDescription === undefined){
+               $scope.isNotValid = true;
+            } else {
+               $scope.isNotValid = false;
+            }
+        };
         $scope.setWatch = function () {
+            $scope.$watch('securityGroupName', function () {
+                $scope.checkRequiredInput(); 
+            });
+            $scope.$watch('securityGroupDescription', function () {
+                $scope.checkRequiredInput();
+            });
             // Handle the unsaved tag issue
             $(document).on('submit', '#security-group-detail-form', function(event) {
+                var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
                     if($(this).val() !== ''){
-                        event.preventDefault(); 
-                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-                        return false;
+                        existsUnsavedTag = true;
                     }
                 });
+                if( existsUnsavedTag ){
+                    event.preventDefault(); 
+                    $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                    return false;
+                }
                 // Handle the unsaved security group rule issue
                 if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
                         event.preventDefault(); 
