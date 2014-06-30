@@ -134,6 +134,12 @@
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
                     <div>&nbsp;</div>
                     <small id="json-error" class="error" style="display:none;"></small>
+                    <div id="hand-edited-warning" ng-show="handEdited">
+                        <strong i18n:translate="">Warning:</strong>
+                        <span i18n:translate="">
+                            manually edited policy statements may not reflect your selections in the left hand panel.
+                        </span>
+                    </div>
                     <div>
                         <button type="submit" class="button" id="create-iam-policy-btn" i18n:translate="">
                             Create Policy

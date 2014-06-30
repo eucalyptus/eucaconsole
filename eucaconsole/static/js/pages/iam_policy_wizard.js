@@ -24,6 +24,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.languageCode = 'en';
         $scope.confirmed = false;
         $scope.isCreating = false;
+        $scope.handEdited = false;
         $scope.pageLoading = true;
         $scope.nameConflictKey = 'doNotShowPolicyNameConflictWarning';
         $scope.initController = function (options, save_url) {
@@ -64,6 +65,7 @@ angular.module('IAMPolicyWizard', [])
                 $scope.initToggleAdvancedListener();
                 $scope.initSelectActionListener();
                 $scope.initNameConflictWarningListener();
+                $scope.initHandEditedWarningListener();
             });
         };
         $scope.initToggleAdvancedListener = function () {
@@ -82,6 +84,13 @@ angular.module('IAMPolicyWizard', [])
                     }
                 }
                 $scope.savePolicy();
+            });
+        };
+        $scope.initHandEditedWarningListener = function () {
+            $scope.codeEditor.on('change', function () {
+                $scope.$apply(function() {
+                    $scope.handEdited = $scope.codeEditor.getValue().trim() != $scope.policyText;
+                });
             });
         };
         $scope.confirmWarning = function () {
@@ -244,6 +253,7 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.handEdited = false;
             $scope.policyStatements = [];
             // Add namespace (allow/deny all) statements
             $scope.policyGenerator.find('tr.namespace').each(function (idx, elem) {
