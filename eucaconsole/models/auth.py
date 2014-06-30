@@ -66,12 +66,14 @@ class User(object):
         return self.user_id
 
     @staticmethod
-    def get_account_id(iam_conn=None):
+    def get_account_id(iam_conn=None, request=None):
         """Get 12-digit account ID for the currently signed-in user's account"""
-        if iam_conn:
-            user = iam_conn.get_user()
-            if user and user.arn:
-                return user.arn.split(':')[4]
+        from ..views import boto_error_handler
+        if iam_conn and request:
+            with boto_error_handler(request):
+                user = iam_conn.get_user()
+                if user and user.arn:
+                    return user.arn.split(':')[4]
 
 
 class ConnectionManager(object):

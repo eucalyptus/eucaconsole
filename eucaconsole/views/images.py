@@ -57,7 +57,7 @@ class ImagesView(LandingPageView):
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.account_id = User.get_account_id(iam_conn=self.iam_conn)
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.render_dict = dict(
@@ -215,7 +215,7 @@ class ImageView(TaggedItemView):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.account_id = User.get_account_id(iam_conn=self.iam_conn)
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
