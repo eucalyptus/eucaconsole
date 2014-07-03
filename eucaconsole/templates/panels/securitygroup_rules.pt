@@ -14,7 +14,8 @@
                 ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                 <span ng-repeat="grant in rule.grants">
                     <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
-                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                    <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                    <span ng-show="grant.name">{{ grant.name }}</span>
                 </span>
                 <a class="remove" ng-click="removeRule($index, $event)"
                         title="Remove rule"><i class="fi-x"></i></a>
@@ -38,7 +39,8 @@
             </div>
             <div class="row" ng-show="selectedProtocol">
                 <div class="small-3 columns">
-                    <label class="right" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol !== 'icmp'" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
                 </div>
                 <div class="small-9 columns">
                     <div ng-show="selectedProtocol !== 'icmp'">
