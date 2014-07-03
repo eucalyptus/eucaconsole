@@ -39,7 +39,8 @@
             </div>
             <div class="row" ng-show="selectedProtocol">
                 <div class="small-3 columns">
-                    <label class="right" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol !== 'icmp'" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
                 </div>
                 <div class="small-9 columns">
                     <div ng-show="selectedProtocol !== 'icmp'">
