@@ -207,3 +207,14 @@ def role_dialogs(context, request, role=None, landingpage=False, delete_form=Non
         delete_form=delete_form,
     )
 
+@panel_config('image_dialogs', renderer='../templates/dialogs/image_dialogs.pt')
+def image_dialogs(context, request, image=None, image_name_id='', landingpage=False,
+                  deregister_form=None, snapshot_images_registered=0):
+    """ Modal dialogs for Image landing and detail page."""
+    return dict(
+        image=image,
+        image_name_id=image_name_id,
+        landingpage=landingpage,
+        deregister_form=deregister_form,
+        snapshot_images_registered=snapshot_images_registered,
+    )
