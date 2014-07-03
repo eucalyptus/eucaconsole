@@ -52,13 +52,14 @@
                         </div>
                         <hr />
                         <div class="expando" id="advanced-section" ng-cloak="" ng-init="expanded = false">
-                            <h6>
+                            <div class="title">
                                 <a ng-click="expanded = !expanded">
                                     <i class="fi-plus" ng-show="!expanded"></i>
                                     <i class="fi-minus" ng-show="expanded"></i>
                                     &nbsp;<span i18n:translate="">Advanced</span>
                                 </a>
-                            </h6>
+                            </div>
+                            <div>&nbsp;</div>
                             <div class="section" ng-show="expanded">
                                 <div class="row controls-wrapper readonly">
                                     ${panel('form_field', field=role_form.path, leftcol_width=1, rightcol_width=11)}
@@ -84,8 +85,9 @@
                         ${structure:role_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
-                            <div>
-                                ${panel('form_field', field=role_update_form.role_name, leftcol_width=3, rightcol_width=9)}
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
+                                <div class="small-9 columns value">${role.role_name}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
