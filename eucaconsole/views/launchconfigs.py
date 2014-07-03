@@ -182,7 +182,7 @@ class LaunchConfigView(BaseView):
             self.security_groups = self.get_security_groups()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
         self.role = None
-        if self.launch_config.instance_profile_name:
+        if self.launch_config and self.launch_config.instance_profile_name:
             arn = self.launch_config.instance_profile_name
             profile_name = arn[(arn.index('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)

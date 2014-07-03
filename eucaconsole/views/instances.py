@@ -410,7 +410,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
         self.role = None
-        if self.instance.instance_profile:
+        if self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.index('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
