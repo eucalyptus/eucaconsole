@@ -70,7 +70,7 @@
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="create-btn">
-                                        <span i18n:translate="">Create role</span>
+                                        <span i18n:translate="">Create Role</span>
                                     </button>
                                     <a href="${request.route_path('roles')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
