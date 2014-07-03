@@ -1,5 +1,5 @@
 <!--! Create Key Pair modal dialog (used in Launch Instance and Create Launch Configuration wizards -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="create-keypair-modal" class="reveal-modal medium" data-reveal="" ng-cloak="">
         <h3 i18n:translate="">Create key pair</h3>
         <p i18n:translate="">You can use this key pair to connect to the launched instances.</p>

@@ -83,10 +83,16 @@
                             <hr />
                             ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)">
+                                    <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                         <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                                     </a>
@@ -122,10 +128,16 @@
                                 </div>
                             </div>
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3">
+                                    <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Launch Instance<span ng-show="instanceNumber > 1">s</span></span>
                                     </button>
                                     <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
@@ -159,7 +171,7 @@
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step4">
-                                        <span i18n:translate="">Launch Instance<span ng-show="instanceNumber > 1">s</span></span>
+                                        <span i18n:translate="">Launch Instance</span><span ng-show="instanceNumber > 1">s</span>
                                     </button>
                                     <a href="${request.route_path('instances')}"
                                        class="cancel-link" i18n:translate="">Cancel</a>

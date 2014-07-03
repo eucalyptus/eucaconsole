@@ -50,9 +50,7 @@ $dashboard-panel-icon-size: 100px;
             display: inline-block;
             width: $dashboard-panel-icon-size;
             height: $dashboard-panel-icon-size;
-            border-radius: 100px;
             text-align: center;
-            background: $euca-darkblue;
             color: white;
             font-size: 3rem;
             em {  // Item counts
@@ -83,9 +81,6 @@ $dashboard-panel-icon-size: 100px;
                     text-decoration: none;
                 }
             }
-        }
-        a:hover .icon {
-            background-color: lighten($euca-darkblue, 20%);
         }
     }
 }

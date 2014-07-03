@@ -36,7 +36,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
+                <form id="image-detail-form" action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
@@ -53,7 +53,7 @@
                                 <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">platform</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
                                 <div class="small-8 columns value">${image.platform_name if image.platform_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
@@ -63,10 +63,6 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
                                 <div class="small-8 columns value">${image.root_device_type if image.root_device_type else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Root device mapping</label></div>
-                                <div class="small-8 columns value">${image.root_device_name if image.root_device_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Owner account (ID)</label></div>
@@ -97,34 +93,8 @@
                                 <div class="small-8 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
                             </div>
                         </div>
-                        <div class="section" tal:condition="image.block_device_names">
-                            <hr />
-                            <h6 i18n:translate="">Block device mappings</h6>
-                            <div id="tableview" class="gridwrapper">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th i18n:translate="">Device mapping</th>
-                                            <th i18n:translate="">Snapshot</th>
-                                            <th i18n:translate="">Size (GB)</th>
-                                            <th i18n:translate="">Delete on termination?</th>
-                                            <th i18n:translate="">Ephemeral name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr tal:repeat="row image.block_device_names">
-                                            <td ng-non-bindable="">${row.name if row.name else ''}</td>
-                                            <td>${row.value.snapshot_id if row.value.snapshot_id else ''}</td>
-                                            <td>${row.value.size if row.value.size else ''}</td>
-                                            <td>${row.value.delete_on_termination if row.value.delete_on_termination else ''}</td>
-                                            <td ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</td>
-                                        </tr>
-                                    </tbody> 
-                                </table>
-                            </div>
-                        </div>
                     </div>
-                    <hr />
+                    ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
                     <div>

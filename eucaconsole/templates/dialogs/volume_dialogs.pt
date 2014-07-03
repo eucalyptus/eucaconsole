@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Volumes landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Attach/Detach/Delete modal dialogs -->
     <div id="attach-volume-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('volumes_attach') + layout.querystring;
@@ -19,6 +19,12 @@
             </div>
             ${panel('form_field', field=attach_form.instance_id, ng_attrs=ng_attrs, **html_attrs)}
             ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="attach_volume_submit_button" class="button expand" i18n:translate="">Attach Volume</button>
             </div>

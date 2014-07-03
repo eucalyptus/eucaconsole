@@ -18,6 +18,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
+        $scope.keyPair = '';
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
@@ -37,6 +38,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
+        $scope.isNotValid = true;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
@@ -119,6 +121,27 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.updateTagsPreview();
             });
         };
+        $scope.checkRequiredInput = function () {
+            if( $scope.currentStepIndex == 1 ){ 
+                if( $scope.imageID === '' || $scope.imageID === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }else if( $scope.currentStepIndex == 2 ){
+                if( $scope.instanceNumber === '' || $scope.instanceNumber === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }else if( $scope.currentStepIndex == 3 ){
+                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }
+        };
         $scope.setWatcher = function () {
             $scope.setDialogFocus();
             $scope.$watch('currentStepIndex', function(){
@@ -128,6 +151,13 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 if (newID != oldID) {
                     $scope.loadImageInfo(newID);
                 }
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('instanceNumber', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('keyPair', function(){
+                $scope.checkRequiredInput();
             });
             $('#number').on('keyup blur', function () {
                 var val = $(this).val();
@@ -225,9 +255,21 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             var currentStep = nextStep - 1,
                 tabContent = $scope.launchForm.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
-            if (invalidFields.length > 0) {
+            if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
+                return false;
+            }
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                }
+            });
+            if( existsUnsavedTag ){
+                $event.preventDefault(); 
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                 return false;
             }
             if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
@@ -256,6 +298,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // Unhide appropriate step in summary
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
+                $scope.checkRequiredInput();
             },50);
         };
         $scope.clearErrors = function(step) {
@@ -269,6 +312,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.imagePlatform = item.platform_name;
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.summarySection.find('.step1').removeClass('hide');
+            $scope.checkRequiredInput();
         });
         $scope.buildNumberList = function () {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])

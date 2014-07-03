@@ -57,7 +57,7 @@
             </li>
             <li class="panel" id="scaling-groups">
                 <div class="tile" id="in-scaling-group">
-                    <h5 class="subheader" i18n:translate="">
+                    <h5 class="subheader">
                         <span i18n:translate=""> Instances in scaling groups</span>
                     </h5>
                     <div class="content">

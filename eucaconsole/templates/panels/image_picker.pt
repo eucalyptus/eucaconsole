@@ -1,4 +1,4 @@
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <!--! Image Picker widget (Used in Launch Instance wizard) -->
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/image_picker.css')}" />
     <div id="image-picker" ng-app="ImagePicker" tal:define="launchconfig_wizard 'launchconfig' in request.url"
@@ -63,10 +63,10 @@
                         <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
                     </div>
                     <div class="small-4 columns value">
-                        <input type="text" name="image_id" id="image-id-input" ng-model="imageID" />
+                        <input type="text" name="image_id" id="image-id-input" ng-model="$parent.imageID" />
                     </div>
                     <div class="small-4 columns value">
-                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)">
+                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)" ng-disabled="isNotValid">
                             <span i18n:translate="">Next</span>
                             <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                         </a>

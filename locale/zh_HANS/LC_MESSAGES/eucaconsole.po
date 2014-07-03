@@ -1,4 +1,4 @@
-# German translations for eucaconsole.
+# Chinese (Simplified Han) translations for eucaconsole.
 # Copyright (C) 2014 ORGANIZATION
 # This file is distributed under the same license as the eucaconsole
 # project.
@@ -6,12 +6,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: eucaconsole 4.0.0\n"
+"Project-Id-Version: eucaconsole 4.0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-06-09 19:55-0700\n"
-"PO-Revision-Date: 2014-03-25 13:16-0700\n"
+"POT-Creation-Date: 2014-06-16 20:34-0700\n"
+"PO-Revision-Date: 2014-06-16 08:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: de <LL@li.org>\n"
+"Language-Team: zh_Hans <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -29,11 +29,11 @@ msgstr ""
 
 #: eucaconsole/constants/images.py:68
 msgid "Me (or shared with me)"
-msgstr ""
+msgstr "我 (或者共享给我)"
 
 #: eucaconsole/constants/images.py:69
 msgid "Amazon AMIs"
-msgstr ""
+msgstr "亚马逊 AMIs"
 
 #: eucaconsole/constants/images.py:70
 msgid "AWS Marketplace"
@@ -41,65 +41,65 @@ msgstr ""
 
 #: eucaconsole/constants/permissions.py:397
 msgid "All EC2 actions"
-msgstr ""
+msgstr "所有EC2操作"
 
 #: eucaconsole/constants/permissions.py:402
 msgid "All Load Balancing actions"
-msgstr ""
+msgstr "所有负载均衡操作"
 
 #: eucaconsole/constants/permissions.py:407
 msgid "All Autoscaling actions"
-msgstr ""
+msgstr "所有弹性扩展组操作"
 
 #: eucaconsole/constants/permissions.py:412
 msgid "All CloudWatch actions"
-msgstr ""
+msgstr "所有CloudWatch操作"
 
 #: eucaconsole/constants/permissions.py:417
 msgid "All S3/Walrus actions"
-msgstr ""
+msgstr "所有S3/Walrus操作"
 
 #: eucaconsole/constants/permissions.py:422
 msgid "All IAM actions"
-msgstr ""
+msgstr "所有IAM操作"
 
 #: eucaconsole/constants/permissions.py:427
 msgid "All Security Token Service actions"
-msgstr ""
+msgstr "所有STS操作"
 
 #: eucaconsole/forms/__init__.py:44 eucaconsole/forms/instances.py:276
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:46
 #: eucaconsole/templates/policies/policy_generator.pt:280
 msgid "select..."
-msgstr ""
+msgstr "选择"
 
 #: eucaconsole/forms/__init__.py:101
 msgid "Select instance..."
-msgstr ""
+msgstr "选择虚拟机..."
 
 #: eucaconsole/forms/__init__.py:131
 msgid "{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)"
-msgstr ""
+msgstr "{0}: {1} CPUs, {2} 内存 (MB), {3} 磁盘 (GB,根设备)"
 
 #: eucaconsole/forms/__init__.py:144
 msgid "Select volume..."
-msgstr ""
+msgstr "选择存储卷。。。"
 
 #: eucaconsole/forms/__init__.py:182
 msgid "None (advanced option)"
-msgstr ""
+msgstr "无(高级选项)"
 
 #: eucaconsole/forms/__init__.py:191
 msgid "Unassign Address"
-msgstr ""
+msgstr "未分配地址"
 
 #: eucaconsole/forms/__init__.py:198
 msgid "no address in stopped state"
-msgstr ""
+msgstr "无停止地址"
 
 #: eucaconsole/forms/__init__.py:203 eucaconsole/forms/__init__.py:216
 msgid "Use default from image"
-msgstr ""
+msgstr "使用缺省虚拟机模板"
 
 #: eucaconsole/forms/alarms.py:45 eucaconsole/forms/keypairs.py:41
 #: eucaconsole/forms/keypairs.py:59 eucaconsole/forms/launchconfigs.py:48
@@ -107,7 +107,7 @@ msgstr ""
 #: eucaconsole/forms/scalinggroups.py:263
 #: eucaconsole/forms/securitygroups.py:42
 msgid "Name is required"
-msgstr ""
+msgstr "请输入名字"
 
 #: eucaconsole/forms/alarms.py:47 eucaconsole/forms/groups.py:44
 #: eucaconsole/forms/groups.py:72 eucaconsole/forms/instances.py:44
@@ -129,12 +129,12 @@ msgstr ""
 #: eucaconsole/templates/securitygroups/securitygroups.pt:48
 #: eucaconsole/templates/users/user_view.pt:54 eucaconsole/views/alarms.py:66
 msgid "Name"
-msgstr ""
+msgstr "名字"
 
 #: eucaconsole/forms/alarms.py:52 eucaconsole/forms/securitygroups.py:47
 #: eucaconsole/forms/snapshots.py:48
 msgid "Description is required"
-msgstr ""
+msgstr "请输入描述"
 
 #: eucaconsole/forms/alarms.py:54 eucaconsole/forms/securitygroups.py:49
 #: eucaconsole/forms/snapshots.py:50 eucaconsole/forms/snapshots.py:98
@@ -151,75 +151,75 @@ msgstr ""
 #: eucaconsole/templates/volumes/volume_snapshots.pt:67
 #: eucaconsole/views/images.py:89 eucaconsole/views/securitygroups.py:68
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: eucaconsole/forms/alarms.py:56 eucaconsole/forms/securitygroups.py:52
 #: eucaconsole/forms/snapshots.py:52 eucaconsole/forms/snapshots.py:100
 #: eucaconsole/forms/volumes.py:117 eucaconsole/forms/volumes.py:138
 msgid "Description must be less than 255 characters"
-msgstr ""
+msgstr "描述必须少于255个字符"
 
 #: eucaconsole/forms/alarms.py:59
 msgid "Metric is required"
-msgstr ""
+msgstr "请指定Metric"
 
 #: eucaconsole/forms/alarms.py:61
 msgid "Metric"
-msgstr ""
+msgstr "Metric"
 
 #: eucaconsole/forms/alarms.py:66
 msgid "Comparison is required"
-msgstr ""
+msgstr "请指定Comparison"
 
 #: eucaconsole/forms/alarms.py:68
 msgid "Comparison"
-msgstr ""
+msgstr "Comparison"
 
 #: eucaconsole/forms/alarms.py:73
 msgid "Statistic is required"
-msgstr ""
+msgstr "请指定统计"
 
 #: eucaconsole/forms/alarms.py:75
 msgid "Statistic"
-msgstr ""
+msgstr "统计"
 
 #: eucaconsole/forms/alarms.py:80
 msgid "Trigger threshold amount is required"
-msgstr ""
+msgstr "请输入临界值"
 
 #: eucaconsole/forms/alarms.py:82
 msgid "Trigger threshold"
-msgstr ""
+msgstr "临界值"
 
 #: eucaconsole/forms/alarms.py:87
 msgid "Length of measurement period in minutes."
-msgstr ""
+msgstr "测量时间段(分钟)"
 
 #: eucaconsole/forms/alarms.py:88
 msgid "Period length is required and must be a whole number greater than zero"
-msgstr ""
+msgstr "时间段必须是大于0的整数"
 
 #: eucaconsole/forms/alarms.py:90
 msgid "Period length"
-msgstr ""
+msgstr "时间段"
 
 #: eucaconsole/forms/alarms.py:95
 msgid ""
 "How many consecutive periods the trigger threshold must be breached "
 "before the alarm is triggered."
-msgstr ""
+msgstr "连续达到临界值的时间段的数量"
 
 #: eucaconsole/forms/alarms.py:97
 msgid "Measurement periods is required"
-msgstr ""
+msgstr "请输入测量时间段"
 
 #: eucaconsole/forms/alarms.py:99
 msgid "Periods"
-msgstr ""
+msgstr "时间段"
 
 #: eucaconsole/forms/alarms.py:104
 msgid "Unit"
-msgstr ""
+msgstr "单位"
 
 #: eucaconsole/forms/alarms.py:105 eucaconsole/forms/instances.py:85
 #: eucaconsole/forms/launchconfigs.py:47
@@ -228,16 +228,16 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:76
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:56
 msgid "Image"
-msgstr ""
+msgstr "虚拟机模板"
 
 #: eucaconsole/forms/groups.py:51 eucaconsole/forms/groups.py:79
 #: eucaconsole/forms/users.py:53
 msgid "Path"
-msgstr ""
+msgstr "路径"
 
 #: eucaconsole/forms/images.py:48
 msgid "Images owned by"
-msgstr ""
+msgstr "虚拟机模板拥有者"
 
 #: eucaconsole/forms/images.py:49 eucaconsole/templates/images/images.pt:57
 #: eucaconsole/templates/images/images.pt:87
@@ -246,7 +246,7 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:90
 #: eucaconsole/views/images.py:88
 msgid "Platform"
-msgstr ""
+msgstr "平台"
 
 #: eucaconsole/forms/images.py:50 eucaconsole/forms/instances.py:308
 #: eucaconsole/templates/images/image_view.pt:64
@@ -254,14 +254,14 @@ msgstr ""
 #: eucaconsole/templates/policies/policy_generator.pt:216
 #: eucaconsole/views/images.py:87
 msgid "Root device type"
-msgstr ""
+msgstr "根设备"
 
 #: eucaconsole/forms/images.py:51 eucaconsole/templates/images/image_view.pt:60
 #: eucaconsole/templates/images/images.pt:68
 #: eucaconsole/templates/instances/instance_view.pt:133
 #: eucaconsole/views/images.py:86
 msgid "Architecture"
-msgstr ""
+msgstr "CPU架构"
 
 #: eucaconsole/forms/images.py:52 eucaconsole/forms/instances.py:311
 #: eucaconsole/forms/scalinggroups.py:377
@@ -277,17 +277,17 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:73
 #: eucaconsole/templates/volumes/volumes.pt:91
 msgid "Tags"
-msgstr ""
+msgstr "标签"
 
 #: eucaconsole/forms/instances.py:43 eucaconsole/forms/snapshots.py:41
 #: eucaconsole/forms/volumes.py:42
 msgid "Not a valid name"
-msgstr ""
+msgstr "不合法的名字"
 
 #: eucaconsole/forms/instances.py:45 eucaconsole/forms/instances.py:95
 #: eucaconsole/forms/launchconfigs.py:53
 msgid "Instance type is required"
-msgstr ""
+msgstr "请指定虚拟机类型"
 
 #: eucaconsole/forms/instances.py:46 eucaconsole/forms/instances.py:97
 #: eucaconsole/forms/instances.py:307 eucaconsole/forms/launchconfigs.py:55
@@ -298,21 +298,21 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:71
 #: eucaconsole/templates/policies/policy_generator.pt:200
 msgid "Instance type"
-msgstr ""
+msgstr "虚拟机类型"
 
 #: eucaconsole/forms/instances.py:47 eucaconsole/forms/instances.py:111
 #: eucaconsole/forms/instances.py:182 eucaconsole/forms/launchconfigs.py:68
 msgid "User data"
-msgstr ""
+msgstr "用户数据"
 
 #: eucaconsole/forms/instances.py:48
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:58
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:59
 msgid "Public IP address"
-msgstr ""
+msgstr "公有IP"
 
 #: eucaconsole/forms/instances.py:49
 msgid "Monitoring enabled"
-msgstr ""
+msgstr "开启监控"
 
 #: eucaconsole/forms/instances.py:50 eucaconsole/forms/instances.py:114
 #: eucaconsole/forms/instances.py:185 eucaconsole/forms/launchconfigs.py:71
@@ -321,25 +321,25 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_view.pt:234
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:94
 msgid "Kernel ID"
-msgstr ""
+msgstr "内核"
 
 #: eucaconsole/forms/instances.py:51
 #: eucaconsole/templates/instances/instance_view.pt:228
 #: eucaconsole/templates/instances/instance_view.pt:241
 msgid "RAM disk ID (ramfs)"
-msgstr ""
+msgstr "RAM disk ID"
 
 #: eucaconsole/forms/instances.py:86
 msgid "Number of instances must be a whole number between 1-10"
-msgstr ""
+msgstr "虚拟机数量必须是1-10的整数"
 
 #: eucaconsole/forms/instances.py:87
 msgid "You cannot launch more than 10 instances in a single security group"
-msgstr ""
+msgstr "不能在同一个安全组启动超过10个虚拟机"
 
 #: eucaconsole/forms/instances.py:89
 msgid "Number of instances"
-msgstr ""
+msgstr "虚拟机数量"
 
 #: eucaconsole/forms/instances.py:100 eucaconsole/forms/instances.py:306
 #: eucaconsole/forms/scalinggroups.py:376 eucaconsole/forms/volumes.py:52
@@ -352,23 +352,23 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:61
 #: eucaconsole/views/instances.py:141 eucaconsole/views/volumes.py:174
 msgid "Availability zone"
-msgstr ""
+msgstr "可用区域"
 
 #: eucaconsole/forms/instances.py:101 eucaconsole/forms/launchconfigs.py:58
 msgid "Key pair is required"
-msgstr ""
+msgstr "请输入密钥对"
 
 #: eucaconsole/forms/instances.py:103 eucaconsole/forms/launchconfigs.py:60
 #: eucaconsole/templates/instances/instance_view.pt:162
 #: eucaconsole/templates/instances/instances.pt:104
 #: eucaconsole/templates/instances/instances.pt:132
 msgid "Key name"
-msgstr ""
+msgstr "密钥对名字"
 
 #: eucaconsole/forms/instances.py:106 eucaconsole/forms/launchconfigs.py:63
 #: eucaconsole/templates/panels/securitygroup_rules.pt:90
 msgid "Security group is required"
-msgstr ""
+msgstr "请指定安全组"
 
 #: eucaconsole/forms/instances.py:108 eucaconsole/forms/instances.py:309
 #: eucaconsole/forms/launchconfigs.py:65 eucaconsole/forms/launchconfigs.py:117
@@ -379,7 +379,7 @@ msgstr ""
 #: eucaconsole/templates/panels/securitygroup_rules.pt:84
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:50
 msgid "Security group"
-msgstr ""
+msgstr "安全组"
 
 #: eucaconsole/forms/instances.py:112 eucaconsole/forms/instances.py:183
 #: eucaconsole/forms/launchconfigs.py:69
@@ -389,35 +389,35 @@ msgstr ""
 #: eucaconsole/forms/instances.py:115 eucaconsole/forms/instances.py:186
 #: eucaconsole/forms/launchconfigs.py:72
 msgid "RAM disk ID (RAMFS)"
-msgstr ""
+msgstr "RAM disk ID (RAMFS)"
 
 #: eucaconsole/forms/instances.py:116 eucaconsole/forms/launchconfigs.py:73
 msgid "Enable monitoring"
-msgstr ""
+msgstr "开启监控"
 
 #: eucaconsole/forms/instances.py:117 eucaconsole/forms/instances.py:188
 msgid "Use private addressing only"
-msgstr ""
+msgstr "只用私有IP"
 
 #: eucaconsole/forms/instances.py:167
 msgid "No preference"
-msgstr ""
+msgstr "No preference"
 
 #: eucaconsole/forms/instances.py:174
 msgid "Number of instances must be a whole number greater than 0"
-msgstr ""
+msgstr "虚拟机数量必须大于0"
 
 #: eucaconsole/forms/instances.py:176
 msgid "How many instances would you like to launch?"
-msgstr ""
+msgstr "你要启动多少虚拟机?"
 
 #: eucaconsole/forms/instances.py:187
 msgid "Enable detailed monitoring"
-msgstr ""
+msgstr "开启详细监控"
 
 #: eucaconsole/forms/instances.py:252 eucaconsole/forms/snapshots.py:43
 msgid "Volume is required"
-msgstr ""
+msgstr "请指定存储卷"
 
 #: eucaconsole/forms/instances.py:254
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:59
@@ -425,20 +425,20 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:85
 #: eucaconsole/templates/volumes/volume_view.pt:65
 msgid "Volume"
-msgstr ""
+msgstr "存储卷"
 
 #: eucaconsole/forms/instances.py:257 eucaconsole/forms/volumes.py:155
 msgid "Device is required"
-msgstr ""
+msgstr "请指定磁盘设备"
 
 #: eucaconsole/forms/instances.py:259 eucaconsole/forms/volumes.py:157
 #: eucaconsole/templates/instances/instance_volumes.pt:53
 msgid "Device"
-msgstr ""
+msgstr "磁盘设备"
 
 #: eucaconsole/forms/instances.py:284
 msgid "No available volumes in this availability zone"
-msgstr ""
+msgstr "在可用区域没有可用存储卷"
 
 #: eucaconsole/forms/instances.py:305 eucaconsole/forms/snapshots.py:109
 #: eucaconsole/forms/volumes.py:200
@@ -452,53 +452,53 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:86
 #: eucaconsole/views/snapshots.py:184 eucaconsole/views/volumes.py:173
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: eucaconsole/forms/instances.py:310
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:57
 #: eucaconsole/templates/instances/instance_view.pt:180
 msgid "Scaling group"
-msgstr ""
+msgstr "弹性扩展组"
 
 #: eucaconsole/forms/instances.py:357
 msgid "IP is required"
-msgstr ""
+msgstr "请指定IP"
 
 #: eucaconsole/forms/instances.py:359
 msgid "IP address:"
-msgstr ""
+msgstr "IP地址:"
 
 #: eucaconsole/forms/ipaddresses.py:40
 msgid "Please enter a whole number greater than zero"
-msgstr ""
+msgstr "请输入大于0的整数"
 
 #: eucaconsole/forms/ipaddresses.py:42
 msgid "Number to allocate:"
-msgstr ""
+msgstr "分配数量:"
 
 #: eucaconsole/forms/ipaddresses.py:53 eucaconsole/forms/volumes.py:150
 msgid "Instance is required"
-msgstr ""
+msgstr "请指定虚拟机"
 
 #: eucaconsole/forms/ipaddresses.py:55
 msgid "Instance:"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/forms/ipaddresses.py:79
 msgid "Assignment"
-msgstr ""
+msgstr "分配"
 
 #: eucaconsole/forms/keypairs.py:60
 msgid "Public Key Contents are required"
-msgstr ""
+msgstr "公钥数据"
 
 #: eucaconsole/forms/keypairs.py:68
 msgid "Public SSH Key Contents"
-msgstr ""
+msgstr "SSH 公钥数据"
 
 #: eucaconsole/forms/launchconfigs.py:74
 msgid "Create scaling group using this launch configuration"
-msgstr ""
+msgstr "用本启动配置创建弹性扩展组"
 
 #: eucaconsole/forms/launchconfigs.py:116
 #: eucaconsole/templates/instances/instance_launch_more.pt:59
@@ -507,80 +507,80 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:41
 #: eucaconsole/views/instances.py:142
 msgid "Key pair"
-msgstr ""
+msgstr "密钥对"
 
 #: eucaconsole/forms/login.py:40
 msgid "Account Name"
-msgstr ""
+msgstr "帐号名"
 
 #: eucaconsole/forms/login.py:40
 msgid "Account name is required"
-msgstr ""
+msgstr "请输入帐号名"
 
 #: eucaconsole/forms/login.py:42
 #: eucaconsole/templates/policies/policy_generator.pt:274
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 
 #: eucaconsole/forms/login.py:42
 msgid "Username is required"
-msgstr ""
+msgstr "请输入用户名"
 
 #: eucaconsole/forms/login.py:44 eucaconsole/templates/users/user_view.pt:187
 #: eucaconsole/templates/users/users.pt:83 eucaconsole/views/users.py:133
 #: eucaconsole/views/users.py:444 eucaconsole/views/users.py:507
 #: eucaconsole/views/users.py:543
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 #: eucaconsole/forms/login.py:44 eucaconsole/forms/login.py:54
 msgid "Password is required"
-msgstr ""
+msgstr "请输入密码"
 
 #: eucaconsole/forms/login.py:48
 msgid "Access key ID"
-msgstr ""
+msgstr "访问Key ID"
 
 #: eucaconsole/forms/login.py:49
 msgid "Secret key"
-msgstr ""
+msgstr "私密 Key"
 
 #: eucaconsole/forms/login.py:54
 msgid "Current password"
-msgstr ""
+msgstr "当前密码"
 
 #: eucaconsole/forms/login.py:57 eucaconsole/forms/users.py:82
 msgid "New password"
-msgstr ""
+msgstr "新密码"
 
 #: eucaconsole/forms/login.py:59 eucaconsole/forms/login.py:66
 #: eucaconsole/forms/users.py:84 eucaconsole/forms/users.py:91
 msgid "New Password is required"
-msgstr ""
+msgstr "请输入新密码"
 
 #: eucaconsole/forms/login.py:60 eucaconsole/forms/login.py:67
 #: eucaconsole/forms/users.py:85 eucaconsole/forms/users.py:92
 #: eucaconsole/forms/users.py:178 eucaconsole/forms/users.py:188
 msgid "Password must be more than 6 characters"
-msgstr ""
+msgstr "密码必须超过6个字符"
 
 #: eucaconsole/forms/login.py:64 eucaconsole/forms/users.py:89
 msgid "Confirm new password"
-msgstr ""
+msgstr "确认新密码"
 
 #: eucaconsole/forms/policies.py:41
 msgid "Name is required and may not contain spaces"
-msgstr ""
+msgstr "请输入名字，不能包含空格"
 
 #: eucaconsole/forms/policies.py:46
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:129
 #: eucaconsole/templates/users/user_view.pt:134
 msgid "Policy"
-msgstr ""
+msgstr "策略"
 
 #: eucaconsole/forms/scalinggroups.py:52
 msgid "Launch configuration is required"
-msgstr ""
+msgstr "请指定启动配置"
 
 #: eucaconsole/forms/scalinggroups.py:54 eucaconsole/forms/scalinggroups.py:375
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:11
@@ -590,287 +590,289 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:58
 #: eucaconsole/views/scalinggroups.py:142
 msgid "Launch configuration"
-msgstr ""
+msgstr "启动配置"
 
 #: eucaconsole/forms/scalinggroups.py:60
 msgid "At least one availability zone is required"
-msgstr ""
+msgstr "请指定至少一个可用区域"
 
 #: eucaconsole/forms/scalinggroups.py:62 eucaconsole/forms/volumes.py:199
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:62
 #: eucaconsole/views/scalinggroups.py:143
 msgid "Availability zones"
-msgstr ""
+msgstr "可用区域"
 
 #: eucaconsole/forms/scalinggroups.py:68
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:62
 msgid "Load balancers"
-msgstr ""
+msgstr "负载均衡"
 
 #: eucaconsole/forms/scalinggroups.py:70
 msgid "Field is required"
-msgstr ""
+msgstr "请输入Field"
 
 #: eucaconsole/forms/scalinggroups.py:72
 msgid "Desired"
-msgstr ""
+msgstr "理想"
 
 #: eucaconsole/forms/scalinggroups.py:78
 msgid "Max is required"
-msgstr ""
+msgstr "请输入最大值"
 
 #: eucaconsole/forms/scalinggroups.py:80
 msgid "Max"
-msgstr ""
+msgstr "最多"
 
 #: eucaconsole/forms/scalinggroups.py:86
 msgid "Min is required"
-msgstr ""
+msgstr "请输入最小值"
 
 #: eucaconsole/forms/scalinggroups.py:88
 msgid "Min"
-msgstr ""
+msgstr "最少"
 
 #: eucaconsole/forms/scalinggroups.py:94
 msgid "Health check type is required"
-msgstr ""
+msgstr "请指定健康检查类型"
 
 #: eucaconsole/forms/scalinggroups.py:96
 #: eucaconsole/templates/instances/instance_launch_more.pt:51
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: eucaconsole/forms/scalinggroups.py:101
 msgid "Health check grace period is required"
-msgstr ""
+msgstr "请输入健康检查宽限期"
 
 #: eucaconsole/forms/scalinggroups.py:102
 msgid ""
 "Length of time in seconds after a new EC2 instance comes into service "
 "that Auto Scaling starts checking its health"
-msgstr ""
+msgstr "虚拟机启动后多久弹性扩展组开始健康检查(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:107
 msgid "Grace period (seconds)"
-msgstr ""
+msgstr "宽限期(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:151
 msgid "Select a launch configuration..."
-msgstr ""
+msgstr "选择启动配置"
 
 #: eucaconsole/forms/scalinggroups.py:177
-msgid "Load Balancer"
-msgstr ""
+#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
+msgid "Load balancer"
+msgstr "负载均衡器"
 
 #: eucaconsole/forms/scalinggroups.py:182
 msgid "Default"
-msgstr ""
+msgstr "缺省"
 
 #: eucaconsole/forms/scalinggroups.py:183
 msgid "Oldest instance"
-msgstr ""
+msgstr "最老虚拟机"
 
 #: eucaconsole/forms/scalinggroups.py:184
 msgid "Newest instance"
-msgstr ""
+msgstr "最年轻虚拟机"
 
 #: eucaconsole/forms/scalinggroups.py:185
 msgid "Oldest launch configuration"
-msgstr ""
+msgstr "最老启动配置"
 
 #: eucaconsole/forms/scalinggroups.py:186
 msgid "Closest to next instance hour"
-msgstr ""
+msgstr "Closest to next instance hour"
 
 #: eucaconsole/forms/scalinggroups.py:214
 msgid "Default cooldown period is required"
-msgstr ""
+msgstr "请输入缺省冷却时间"
 
 #: eucaconsole/forms/scalinggroups.py:215
 msgid ""
 "Number of seconds after a Scaling Activity completes before any further "
 "scaling activities can start"
-msgstr ""
+msgstr "两个扩展活动的时间间隔(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:218
 msgid "Default cooldown period (seconds)"
-msgstr ""
+msgstr "缺省冷却时间(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:223
 msgid "At least one termination policy is required"
-msgstr ""
+msgstr "至少需要一个虚拟机注销策略"
 
 #: eucaconsole/forms/scalinggroups.py:224
 msgid "Add termination policies in the order they should be executed."
-msgstr ""
+msgstr "按执行顺序添加虚拟机注销策略"
 
 #: eucaconsole/forms/scalinggroups.py:226
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:70
 msgid "Termination policies"
-msgstr ""
+msgstr "虚拟机注销策略"
 
 #: eucaconsole/forms/scalinggroups.py:270
 msgid "Action is required"
-msgstr ""
+msgstr "请选择操作"
 
 #: eucaconsole/forms/scalinggroups.py:272
 msgid "Action"
-msgstr ""
+msgstr "操作"
 
 #: eucaconsole/forms/scalinggroups.py:277
 msgid "Amount is required"
-msgstr ""
+msgstr "请输入数量"
 
 #: eucaconsole/forms/scalinggroups.py:279
 msgid "Amount"
-msgstr ""
+msgstr "数量"
 
 #: eucaconsole/forms/scalinggroups.py:284
 msgid "Measure is required"
-msgstr ""
+msgstr "请输入测量"
 
 #: eucaconsole/forms/scalinggroups.py:286
 msgid "Measure"
-msgstr ""
+msgstr "测量"
 
 #: eucaconsole/forms/scalinggroups.py:291
 msgid "Cooldown period is required"
-msgstr ""
+msgstr "请输入冷却时间段"
 
 #: eucaconsole/forms/scalinggroups.py:292
 msgid ""
 "Time (in seconds) before Alarm related Scaling Activities can start after"
 " the previous Scaling Activity ends."
-msgstr ""
+msgstr "上一个扩展活动完成后,启动可引发下一个扩展活动的告警需要的时间间隔(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:296
 msgid "Cooldown period (seconds)"
-msgstr ""
+msgstr "冷却时间段(秒)"
 
 #: eucaconsole/forms/scalinggroups.py:301
 msgid "Alarm is required"
-msgstr ""
+msgstr "请输入告警"
 
 #: eucaconsole/forms/scalinggroups.py:303
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:36
 msgid "Alarm"
-msgstr ""
+msgstr "告警"
 
 #: eucaconsole/forms/scalinggroups.py:340
 msgid "No alarms are available."
-msgstr ""
+msgstr "无可用告警"
 
 #: eucaconsole/forms/scalinggroups.py:346
 #: eucaconsole/views/scalinggroups.py:435
 #: eucaconsole/views/scalinggroups.py:482
 msgid "Scale up by"
-msgstr ""
+msgstr "扩展"
 
 #: eucaconsole/forms/scalinggroups.py:347
 #: eucaconsole/views/scalinggroups.py:434
 #: eucaconsole/views/scalinggroups.py:481
 msgid "Scale down by"
-msgstr ""
+msgstr "收缩"
 
 #: eucaconsole/forms/scalinggroups.py:353
 msgid "Instance(s)"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/forms/scalinggroups.py:354
 msgid "Percentage"
-msgstr ""
+msgstr "百分比"
 
 #: eucaconsole/forms/scalinggroups.py:365
 msgid "Respect grace period?"
-msgstr ""
+msgstr "遵守宽限期?"
 
 #: eucaconsole/forms/scalinggroups.py:370
 msgid "Also decrement desired capacity of scaling group"
-msgstr ""
+msgstr "同时也减低理想的弹性扩展组的容量"
 
 #: eucaconsole/forms/snapshots.py:45
 msgid "Create from volume"
-msgstr ""
+msgstr "从存储卷创建"
 
 #: eucaconsole/forms/snapshots.py:96 eucaconsole/forms/volumes.py:134
 msgid "Image name is required"
-msgstr ""
+msgstr "请输入虚拟机模板名字"
 
 #: eucaconsole/forms/snapshots.py:103 eucaconsole/forms/volumes.py:141
+#: eucaconsole/templates/panels/bdmapping_editor.pt:19
 msgid "Delete on terminate"
-msgstr ""
+msgstr "虚拟机注销时删除"
 
 #: eucaconsole/forms/snapshots.py:104 eucaconsole/forms/volumes.py:142
 msgid "Register as Windows OS image"
-msgstr ""
+msgstr "注册成windows虚拟机模板"
 
 #: eucaconsole/forms/users.py:49 eucaconsole/forms/users.py:170
 msgid "Create and download random password"
-msgstr ""
+msgstr "随机创建和下载密码"
 
 #: eucaconsole/forms/users.py:50
 msgid "Create and download access keys"
-msgstr ""
+msgstr "创建和下载访问key"
 
 #: eucaconsole/forms/users.py:51
 msgid "Allow read/write access to all resource except users and groups"
-msgstr ""
+msgstr "允许对所有资源读写访问，用户和用户组除外"
 
 #: eucaconsole/forms/users.py:55
 msgid "Images (maximum)"
-msgstr ""
+msgstr "虚拟机模板(最多)"
 
 #: eucaconsole/forms/users.py:56
 msgid "Instances (maximum)"
-msgstr ""
+msgstr "虚拟机(最多)"
 
 #: eucaconsole/forms/users.py:57
 msgid "Volumes (maximum)"
-msgstr ""
+msgstr "存储卷(最多)"
 
 #: eucaconsole/forms/users.py:58
 msgid "Total size of all volumes (GB)"
-msgstr ""
+msgstr "存储卷总容量(GB)"
 
 #: eucaconsole/forms/users.py:59
 msgid "Snapshots (maximum)"
-msgstr ""
+msgstr "快照(最多)"
 
 #: eucaconsole/forms/users.py:60
 msgid "Elastic IP addresses (maximum)"
-msgstr ""
+msgstr "弹性IP(最多)"
 
 #: eucaconsole/forms/users.py:62
 msgid "Buckets (maximum)"
-msgstr ""
+msgstr "Buckets(最多)"
 
 #: eucaconsole/forms/users.py:63
 msgid "Objects per bucket (maximum)"
-msgstr ""
+msgstr "每个bucket对象(最多)"
 
 #: eucaconsole/forms/users.py:64
 msgid "Size of each bucket (MB)"
-msgstr ""
+msgstr "每个bucket的容量(MB)"
 
 #: eucaconsole/forms/users.py:65
 msgid "Total size of all buckets (maximum)"
-msgstr ""
+msgstr "所有buckets的总容量(最大)"
 
 #: eucaconsole/forms/users.py:67
 msgid "Auto scaling groups (maximum)"
-msgstr ""
+msgstr "弹性扩展组(最多)"
 
 #: eucaconsole/forms/users.py:68
 msgid "Launch configurations (maximum)"
-msgstr ""
+msgstr "启动配置(最多)"
 
 #: eucaconsole/forms/users.py:69
 msgid "Scaling policies (maximum)"
-msgstr ""
+msgstr "扩展组策略(最多)"
 
 #: eucaconsole/forms/users.py:71
 msgid "Load balancers (maximum)"
-msgstr ""
+msgstr "负载均衡器(最多)"
 
 #: eucaconsole/forms/users.py:73
 msgid "Groups (maximum)"
@@ -878,55 +880,55 @@ msgstr ""
 
 #: eucaconsole/forms/users.py:74
 msgid "Users (maximum)"
-msgstr ""
+msgstr "用户(最多)"
 
 #: eucaconsole/forms/users.py:75
 msgid "Roles (maximum)"
-msgstr ""
+msgstr "角色(最多)"
 
 #: eucaconsole/forms/users.py:76
 msgid "Instance profiles (maximum)"
-msgstr ""
+msgstr "虚拟机配置文件(最多)"
 
 #: eucaconsole/forms/users.py:80
 msgid "E-mail address"
-msgstr ""
+msgstr "电子邮件地址"
 
 #: eucaconsole/forms/users.py:96
 msgid "Download keys after generation"
-msgstr ""
+msgstr "下载生成的key"
 
 #: eucaconsole/forms/users.py:175 eucaconsole/forms/users.py:185
 msgid "Your password"
-msgstr ""
+msgstr "你的密码"
 
 #: eucaconsole/forms/users.py:177 eucaconsole/forms/users.py:187
 msgid "A password is required"
-msgstr ""
+msgstr "请输入密码"
 
 #: eucaconsole/forms/users.py:197
 msgid "Group is required"
-msgstr ""
+msgstr "请输入用户组"
 
 #: eucaconsole/forms/volumes.py:44
 msgid "Create from snapshot?"
-msgstr ""
+msgstr "从快照创建"
 
 #: eucaconsole/forms/volumes.py:45
 msgid "Volume size is required and must be an integer"
-msgstr ""
+msgstr "请输入存储卷大小(整数)"
 
 #: eucaconsole/forms/volumes.py:47
 msgid "Volume size (GB)"
-msgstr ""
+msgstr "存储卷容量(GB)"
 
 #: eucaconsole/forms/volumes.py:50
 msgid "Availability zone is required"
-msgstr ""
+msgstr "请指定可用区域"
 
 #: eucaconsole/forms/volumes.py:90 eucaconsole/views/__init__.py:320
 msgid "None"
-msgstr ""
+msgstr "无"
 
 #: eucaconsole/forms/volumes.py:152
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:51
@@ -935,39 +937,40 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:88
 #: eucaconsole/views/ipaddresses.py:150
 msgid "Instance"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/forms/volumes.py:182
-msgid "No available instances in availability zone "
-msgstr ""
+#, fuzzy
+msgid "No available instances in availability zone"
+msgstr "在可用区域内没有虚拟机"
 
 #: eucaconsole/templates/changepassword.pt:11
 msgid "Password expired"
-msgstr ""
+msgstr "密码过期"
 
 #: eucaconsole/templates/changepassword.pt:14
 #: eucaconsole/templates/changepassword.pt:59
 #: eucaconsole/templates/master_layout.pt:53
 #: eucaconsole/templates/users/user_view.pt:255
 msgid "Change password"
-msgstr ""
+msgstr "修改密码"
 
 #: eucaconsole/templates/changepassword.pt:19
 msgid "Your password has expired. Please update your password."
-msgstr ""
+msgstr "你密码已经过期，请修改你的密码"
 
 #: eucaconsole/templates/changepassword.pt:48
 msgid "New password must be different than old one"
-msgstr ""
+msgstr "新密码必须和旧密码不同"
 
 #: eucaconsole/templates/changepassword.pt:53
 #: eucaconsole/templates/users/user_view.pt:223
 msgid "Passwords must match"
-msgstr ""
+msgstr "密码必须一致"
 
 #: eucaconsole/templates/changepassword.pt:60
-#: eucaconsole/templates/groups/group_view.pt:76
-#: eucaconsole/templates/groups/group_view.pt:131
+#: eucaconsole/templates/groups/group_view.pt:77
+#: eucaconsole/templates/groups/group_view.pt:132
 #: eucaconsole/templates/images/image_view.pt:134
 #: eucaconsole/templates/instances/instance_launch.pt:154
 #: eucaconsole/templates/instances/instance_launch_more.pt:117
@@ -988,64 +991,64 @@ msgstr ""
 #: eucaconsole/templates/users/user_view.pt:374
 #: eucaconsole/templates/volumes/volume_view.pt:141
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: eucaconsole/templates/dashboard.pt:12
+#: eucaconsole/templates/panels/top_nav.pt:3
 msgid "Dashboard"
-msgstr ""
+msgstr "仪表盘"
 
 #: eucaconsole/templates/dashboard.pt:16 eucaconsole/templates/dashboard.pt:21
 msgid "All availability zones"
-msgstr ""
+msgstr "所有可用区域"
 
 #: eucaconsole/templates/dashboard.pt:32
 msgid "Running instances"
-msgstr ""
+msgstr "正在运行的虚拟机"
 
 #: eucaconsole/templates/dashboard.pt:41
+#: eucaconsole/templates/instances/instance_launch.pt:119
+#: eucaconsole/templates/instances/instance_launch.pt:152
 #: eucaconsole/templates/instances/instance_launch_more.pt:115
 msgid "Launch Instance"
-msgstr ""
+msgstr "创建虚拟机"
 
 #: eucaconsole/templates/dashboard.pt:47
 msgid "Stopped instances"
-msgstr ""
+msgstr "停止虚拟机"
 
 #: eucaconsole/templates/dashboard.pt:61
 msgid "Instances in scaling groups"
-msgstr ""
-
-#: eucaconsole/templates/dashboard.pt:60 eucaconsole/templates/login.pt:31
-#: eucaconsole/templates/groups/group_view.pt:43
-#: eucaconsole/templates/panels/bdmapping_editor.pt:19
-msgid "<dynamic element>"
-msgstr ""
+msgstr "在弹性扩展组中的虚拟机"
 
 #: eucaconsole/templates/dashboard.pt:71
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:13
 msgid "Create scaling group"
-msgstr ""
+msgstr "创建弹性扩展组"
 
 #: eucaconsole/templates/dashboard.pt:77
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:33
 msgid "Elastic IPs"
-msgstr ""
+msgstr "弹性IP"
 
 #: eucaconsole/templates/dashboard.pt:92
 #: eucaconsole/templates/instances/instance_view.pt:30
 #: eucaconsole/templates/instances/instance_volumes.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:20
 #: eucaconsole/templates/volumes/volume_snapshots.pt:14
 #: eucaconsole/templates/volumes/volume_view.pt:20
 #: eucaconsole/templates/volumes/volumes.pt:12
 #: eucaconsole/templates/volumes/volumes.pt:18
 msgid "Volumes"
-msgstr ""
+msgstr "存储卷"
 
 #: eucaconsole/templates/dashboard.pt:101
 msgid "Create volume"
-msgstr ""
+msgstr "创建存储卷"
 
 #: eucaconsole/templates/dashboard.pt:107
+#: eucaconsole/templates/panels/top_nav.pt:22
 #: eucaconsole/templates/snapshots/snapshot_view.pt:15
 #: eucaconsole/templates/snapshots/snapshots.pt:13
 #: eucaconsole/templates/snapshots/snapshots.pt:19
@@ -1054,13 +1057,13 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:57
 #: eucaconsole/templates/volumes/volumes.pt:89
 msgid "Snapshots"
-msgstr ""
+msgstr "快照"
 
 #: eucaconsole/templates/dashboard.pt:116
 #: eucaconsole/templates/snapshots/snapshot_view.pt:122
 #: eucaconsole/templates/snapshots/snapshot_view.pt:147
 msgid "Create snapshot"
-msgstr ""
+msgstr "创建快照"
 
 #: eucaconsole/templates/dashboard.pt:122
 #: eucaconsole/templates/instances/instances.pt:109
@@ -1069,20 +1072,20 @@ msgstr ""
 #: eucaconsole/templates/securitygroups/securitygroups.pt:12
 #: eucaconsole/templates/securitygroups/securitygroups.pt:18
 msgid "Security groups"
-msgstr ""
+msgstr "安全组"
 
 #: eucaconsole/templates/dashboard.pt:131
 #: eucaconsole/templates/dialogs/create_securitygroup_dialog.pt:4
 #: eucaconsole/templates/instances/instance_launch.pt:109
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:113
 msgid "Create security group"
-msgstr ""
+msgstr "创建安全组"
 
 #: eucaconsole/templates/dashboard.pt:137
 #: eucaconsole/templates/keypairs/keypair_view.pt:9
 #: eucaconsole/templates/keypairs/keypairs.pt:12
 msgid "Key pairs"
-msgstr ""
+msgstr "密钥对"
 
 #: eucaconsole/templates/dashboard.pt:146
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:4
@@ -1090,28 +1093,28 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_launch.pt:102
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:97
 msgid "Create key pair"
-msgstr ""
+msgstr "创建密钥对"
 
 #: eucaconsole/templates/dashboard.pt:152
 #: eucaconsole/templates/users/user_new.pt:14
 #: eucaconsole/templates/users/user_view.pt:17
 #: eucaconsole/templates/users/users.pt:19
 msgid "IAM users"
-msgstr ""
+msgstr "IAM　用户"
 
 #: eucaconsole/templates/dashboard.pt:161
 msgid "Create users"
-msgstr ""
+msgstr "创建用户"
 
 #: eucaconsole/templates/dashboard.pt:167
 #: eucaconsole/templates/groups/group_view.pt:13
 #: eucaconsole/templates/groups/groups.pt:12
 msgid "IAM groups"
-msgstr ""
+msgstr "IAM 用户组"
 
 #: eucaconsole/templates/dashboard.pt:176
 msgid "Create group"
-msgstr ""
+msgstr "创建用户组"
 
 #: eucaconsole/templates/login.pt:13
 msgid ""
@@ -1120,104 +1123,101 @@ msgid ""
 "URL that begins with \"https\" instead of \"http\", and if the problem "
 "persists contact your cloud administrator."
 msgstr ""
+"没检测到HTTPS. 你不能通过HTTPS登陆访问用户控制台除非你正确配置了参数session.secure=true，请使用HTTPS URL "
+"重试一次 如果还有问题，请联系你的云管理员"
 
 #: eucaconsole/templates/login.pt:32
 msgid ""
 "Warning! JavaScript is not enabled on your browser. To use the Eucalyptus"
 " Management Console, please enable JavaScript in your browser's settings."
-msgstr ""
+msgstr "警告! 你的浏览器不用使用JavaScript 要使用Eucalyptus管理控制台，你设置你的浏览器允许运行JavaScript。"
 
 #: eucaconsole/templates/login.pt:37
 msgid "SSL not enabled"
-msgstr ""
+msgstr "没启用SSL"
 
 #: eucaconsole/templates/login.pt:38
 msgid ""
 "This connection is untrusted because SSL is not enabled on the server. "
 "Credentials will be sent over the wire in clear text."
-msgstr ""
-
-#: eucaconsole/templates/login.pt:36
-#: eucaconsole/templates/keypairs/keypair_view.pt:80
-#: eucaconsole/templates/panels/tag_editor.pt:44
-msgid "<dynamic element> <dynamic element>"
-msgstr ""
+msgstr "这是非信任的连接,因为服务器没有开启SSL.用户的认证信息会用可见的文本格式方式发送"
 
 #: eucaconsole/templates/login.pt:48 eucaconsole/templates/login.pt:53
 msgid "Log in to"
-msgstr ""
+msgstr "登陆到"
 
 #: eucaconsole/templates/login.pt:48
 msgid "Eucalyptus"
-msgstr ""
+msgstr "Eucalyptus"
 
 #: eucaconsole/templates/login.pt:53
 msgid "AWS"
-msgstr ""
+msgstr "AWS"
 
 #: eucaconsole/templates/login.pt:85
 msgid "Log in to Eucalyptus"
-msgstr ""
+msgstr "登陆到Eucalyptus"
 
 #: eucaconsole/templates/login.pt:90 eucaconsole/templates/login.pt:135
 msgid "Logging in"
-msgstr ""
+msgstr "正在登陆"
 
 #: eucaconsole/templates/login.pt:96
 msgid "Forgot your password?"
-msgstr ""
+msgstr "忘记密码?"
 
 #: eucaconsole/templates/login.pt:130
 msgid "Log in to AWS"
-msgstr ""
+msgstr "登陆到AWS"
 
 #: eucaconsole/templates/login.pt:141
 msgid "Need to access an IAM account?"
-msgstr ""
+msgstr "要访问IAM 帐号?"
 
 #: eucaconsole/templates/login.pt:142
 msgid "Contact your"
-msgstr ""
+msgstr "联系你的"
 
 #: eucaconsole/templates/login.pt:143
 msgid "cloud administrator"
-msgstr ""
+msgstr "云管理员"
 
 #: eucaconsole/templates/login.pt:161
 msgid "Browser doesn't support SVG"
-msgstr ""
+msgstr "浏览器不支持SVG"
 
 #: eucaconsole/templates/login.pt:162
 msgid ""
 "The browser you are using lacks support for SVG images and many graphics "
 "this application uses won't display properly."
-msgstr ""
+msgstr "你使用的浏览器不支持SVG 图片本应用使用的很多图片将不能显示"
 
 #: eucaconsole/templates/macros.pt:28
 msgid "View:"
-msgstr ""
+msgstr "视图"
 
 #: eucaconsole/templates/macros.pt:39 eucaconsole/templates/macros.pt:123
 msgid "Displaying"
-msgstr ""
+msgstr "正在显示"
 
-#: eucaconsole/templates/macros.pt:115
-msgid "No items were found <dynamic element>"
-msgstr ""
+#: eucaconsole/templates/macros.pt:116
+#, fuzzy
+msgid "No items were found"
+msgstr "没有发现"
 
 #: eucaconsole/templates/macros.pt:125
 msgid "of"
-msgstr ""
+msgstr "of"
 
 #: eucaconsole/templates/macros.pt:127
 msgid "items"
-msgstr ""
+msgstr "名目"
 
 #: eucaconsole/templates/macros.pt:233
 #: eucaconsole/templates/groups/groups.pt:56
 #: eucaconsole/templates/images/images.pt:88
 #: eucaconsole/templates/instances/instances.pt:135
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:60
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:61
 #: eucaconsole/templates/keypairs/keypairs.pt:48
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:60
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:81
@@ -1228,7 +1228,7 @@ msgstr ""
 #: eucaconsole/templates/users/users.pt:86
 #: eucaconsole/templates/volumes/volumes.pt:93
 msgid "Actions"
-msgstr ""
+msgstr "操作"
 
 #: eucaconsole/templates/macros.pt:248 eucaconsole/templates/macros.pt:261
 #: eucaconsole/templates/master_layout.pt:51
@@ -1243,168 +1243,171 @@ msgstr ""
 #: eucaconsole/templates/help/help_snapshots.pt:5
 #: eucaconsole/templates/help/help_users.pt:4
 #: eucaconsole/templates/help/help_volumes.pt:5
-#: eucaconsole/templates/users/users.pt:136
+#: eucaconsole/templates/users/users.pt:137
 msgid "Help"
-msgstr ""
+msgstr "帮组"
 
 #: eucaconsole/templates/macros.pt:299
 msgid "Volume device options for Linux"
-msgstr ""
+msgstr "linux存储设备选项"
 
 #: eucaconsole/templates/macros.pt:303 eucaconsole/templates/macros.pt:328
 msgid "Possible for Connection"
-msgstr ""
+msgstr "Possible for Connection"
 
 #: eucaconsole/templates/macros.pt:304 eucaconsole/templates/macros.pt:329
 msgid "Instance Store"
-msgstr ""
+msgstr "Instance Store"
 
 #: eucaconsole/templates/macros.pt:305 eucaconsole/templates/macros.pt:330
 msgid "Recommended for EBS"
-msgstr ""
+msgstr "Recommended for EBS"
 
 #: eucaconsole/templates/macros.pt:324
 msgid "Volume device options for Windows"
-msgstr ""
+msgstr "windows存储设备选项"
 
-#: eucaconsole/templates/macros.pt:349
-msgid "Note: <dynamic element> is reserved for root device"
-msgstr ""
+#: eucaconsole/templates/macros.pt:350
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:192
+msgid "Note:"
+msgstr "注意:"
+
+#: eucaconsole/templates/macros.pt:351
+#, fuzzy
+msgid "is reserved for root device"
+msgstr "注意: <dynamic element> 为保留为跟设备"
 
 #: eucaconsole/templates/master_layout.pt:8
 msgid "Eucalyptus Management Console"
-msgstr ""
+msgstr "Eucalyptus 管理控制台"
 
 #: eucaconsole/templates/master_layout.pt:56
 #: eucaconsole/templates/master_layout.pt:119
 msgid "About your cloud"
-msgstr ""
+msgstr "关于你的云"
 
 #: eucaconsole/templates/master_layout.pt:58
 msgid "Log out"
-msgstr ""
+msgstr "登出"
 
 #: eucaconsole/templates/master_layout.pt:121
-msgid "Eucalyptus cloud software version: <dynamic element>"
-msgstr ""
+#, fuzzy
+msgid "Eucalyptus cloud software version:"
+msgstr "Eucalyptus 云软件版本: <dynamic element>"
 
-#: eucaconsole/templates/master_layout.pt:126
+#: eucaconsole/templates/master_layout.pt:127
 msgid "Session Timeout"
-msgstr ""
+msgstr "会话超时"
 
-#: eucaconsole/templates/master_layout.pt:128 eucaconsole/views/__init__.py:195
+#: eucaconsole/templates/master_layout.pt:129 eucaconsole/views/__init__.py:195
 msgid ""
 "Your session has timed out. This may be due to inactivity, a policy that "
 "does not provide login permissions, or an unexpected error. Please log in"
 " again, and contact your cloud administrator if the problem persists."
-msgstr ""
+msgstr "你的会话已经超时过期. 请重新登陆."
 
-#: eucaconsole/templates/master_layout.pt:130
+#: eucaconsole/templates/master_layout.pt:131
 msgid "Login"
-msgstr ""
+msgstr "登陆"
 
 #: eucaconsole/templates/notfound.pt:7
 msgid "404 Not Found"
-msgstr ""
+msgstr "404 Not Found"
 
 #: eucaconsole/templates/notfound.pt:11
 msgid "The resource you have requested was not found."
-msgstr ""
+msgstr "没有发现你请求的资源"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:12
 msgid "CloudWatch Alarms"
-msgstr ""
+msgstr "CloudWatch 告警"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:37
 msgid "TR"
-msgstr ""
+msgstr "TR"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:38
 #: eucaconsole/templates/cloudwatch/alarms.pt:55
 msgid "When the"
-msgstr ""
+msgstr "When the"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:41
 #: eucaconsole/templates/cloudwatch/alarms.pt:58
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:94
 msgid "is"
-msgstr ""
+msgstr "是"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:48
 #: eucaconsole/templates/images/images.pt:48
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: eucaconsole/templates/cloudwatch/alarms.pt:49
 msgid "Triggered"
-msgstr ""
+msgstr "触发"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:5
 msgid "Create alarm"
-msgstr ""
+msgstr "创建告警"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:6
 msgid "&nbsp;"
-msgstr ""
+msgstr "&nbsp;"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:25
 msgid "When"
-msgstr ""
+msgstr "When"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:42
 msgid "for"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/create_alarm_dialog.pt:55
-msgid "Load balancer"
-msgstr ""
+msgstr "for"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:113
 msgid "Evaluation"
-msgstr ""
+msgstr "评估"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:117
 msgid "Evaluate this measurement"
-msgstr ""
+msgstr "Evaluate this measurement"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:119
 msgid "times"
-msgstr ""
+msgstr "次数"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:122
 msgid "with each measurement lasting"
-msgstr ""
+msgstr "with each measurement lasting"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:124
 msgid "minutes"
-msgstr ""
+msgstr "分钟数"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:131
 msgid "Create Alarm"
-msgstr ""
+msgstr "创建告警"
 
 #: eucaconsole/templates/dialogs/create_alarm_dialog.pt:135
 msgid "Creating alarm..."
-msgstr ""
+msgstr "正在创建告警。。。"
 
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:5
 msgid "You can use this key pair to connect to the launched instances."
-msgstr ""
+msgstr "你可以使用密钥对登陆到创建的虚拟机。"
 
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:6
 msgid ""
 "Save the key pair the file in a place you will remember. You will need to"
 " enter the path later to connect to your instances."
-msgstr ""
+msgstr "保存密钥到一个文件,你需要记住文件存放的路径，以后用它登陆到虚拟机"
 
 #: eucaconsole/templates/dialogs/create_keypair_dialog.pt:28
 msgid "Download key pair file"
-msgstr ""
+msgstr "下载密钥对文件"
 
 #: eucaconsole/templates/dialogs/create_securitygroup_dialog.pt:18
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:75
 msgid "Create Security Group"
-msgstr ""
+msgstr "创建安全组"
 
 #: eucaconsole/templates/dialogs/create_securitygroup_dialog.pt:23
 #: eucaconsole/templates/dialogs/group_dialogs.pt:23
@@ -1412,11 +1415,11 @@ msgstr ""
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:48
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:72
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:105
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:174
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:225
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:20
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:47
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:72
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:187
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:238
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:24
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:53
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:82
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:25
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:40
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:22
@@ -1426,94 +1429,94 @@ msgstr ""
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:26
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:63
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:99
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:103
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:104
 msgid "Sending request"
-msgstr ""
+msgstr "正在发出请求"
 
 #: eucaconsole/templates/dialogs/group_dialogs.pt:7
 #: eucaconsole/templates/groups/group_view.pt:37
 msgid "Delete group"
-msgstr ""
+msgstr "删除安全组"
 
 #: eucaconsole/templates/dialogs/group_dialogs.pt:9
 msgid ""
 "Deleting a group also deletes all permissions associated with that group."
 " Are you sure you want to delete group"
-msgstr ""
+msgstr "删除用户的同时也会删除有所相关的权限. 你确认要删除用户组"
 
 #: eucaconsole/templates/dialogs/group_dialogs.pt:20
 msgid "Yes, Delete Group"
-msgstr ""
+msgstr "是的，删除用户组"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:8
 msgid "Reboot instance"
-msgstr ""
+msgstr "重启虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:9
 msgid "Rebooting preserves the root file system of your instance across restarts."
-msgstr ""
+msgstr "重启虚拟机,你的虚拟机数据会被保留"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:11
 msgid "Are you sure you want to reboot"
-msgstr ""
+msgstr "你确定要重启虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:21
 msgid "Yes, Reboot"
-msgstr ""
+msgstr "是的，重启"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:33
 msgid "Start instance"
-msgstr ""
+msgstr "启动虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:35
 msgid "Are you sure you want to start"
-msgstr ""
+msgstr "你确定要启动"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:45
 msgid "Yes, Start Instance"
-msgstr ""
+msgstr "时的，启动虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:57
 msgid "Stop instance"
-msgstr ""
+msgstr "停止虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:59
 msgid "Are you sure you want to stop"
-msgstr ""
+msgstr "你确定要停止"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:69
 msgid "Yes, Stop Instance"
-msgstr ""
+msgstr "是的，停止虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:81
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:101
 msgid "Terminate instance"
-msgstr ""
+msgstr "注销虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:84
 msgid ""
 "Terminating an EBS-backed instance may also delete the root volume if the"
 " volume is set up to do so. Data on that volume will be lost. To keep the"
 " volume, you may stop the instance instead."
-msgstr ""
+msgstr "注销一个EBS-backed的虚拟机会删除根设备的数据，如要保留该数据，请停止该虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:91
 msgid "Are you sure you want to terminate"
-msgstr ""
+msgstr "你确定要注销虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:102
 #: eucaconsole/templates/dialogs/terminate_instances_dialog.pt:20
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:111
 msgid "Yes, Terminate"
-msgstr ""
+msgstr "是的，注销虚拟机"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:112
 msgid "Console output for instance:"
-msgstr ""
+msgstr "虚拟机控制台输出"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:121
 msgid "Connect to instance:"
-msgstr ""
+msgstr "连接到虚拟机:"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:126
 msgid ""
@@ -1522,136 +1525,144 @@ msgid ""
 "steps (these instructions do not apply if you did not select a key pair "
 "when you launched this instance):"
 msgstr ""
+"要登陆到虚拟机,请确认安全组 \"{{ groupName }}\"\"\n"
+"\"设置了规则允许访问TCP端口22,然后按照下面的步骤来登陆虚拟机:"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:128
 msgid "Open an SSH terminal window."
-msgstr ""
+msgstr "打开一个SSH终端"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:129
 msgid ""
 "Change your directory to the one where you stored your key file \"{{ "
 "keyName }}.pem\""
-msgstr ""
+msgstr "进入你存放密钥对文件的目录"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:130
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:131
+#, fuzzy
 msgid ""
 "Run the following command to set the correct permissions for your key "
-"file:<dynamic element> <dynamic element>"
+"file:"
 msgstr ""
+"运行下面的命令来修改密钥对文件的权限\"\n"
+"\"file:<dynamic element> <dynamic element>"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:132
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:135
+#, fuzzy
 msgid ""
 "Connect to your instance via its public IP address by running the "
-"following command: <dynamic element><dynamic element>"
-msgstr ""
+"following command:"
+msgstr "运行下面的命了，通过公有IP登陆到虚拟机:<dynamic element><dynamic element>"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:136
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:141
 msgid ""
 "To connect to your instance, be sure security group \"{{ groupName }}\" "
 "has TCP port 3389 open to inbound traffic and then perform the following "
 "steps (these instructions do not apply if you did not select a key pair "
 "when you launched this instance):"
-msgstr ""
+msgstr "要登陆到虚拟机,请确认安全组 \"{{ groupName }}\"设置了规则打开了TCP端口3389,然后按照下面的步骤来登陆虚拟机:"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:138
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:143
 msgid ""
 "Browse to your key file \"{{ keyName }}.pem\" in your local file system "
 "and use it to retrieve your instance password."
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:139
-msgid "Open a remote desktop client."
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:140
-msgid "Use the following for your username and password:"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:143
-msgid "USERNAME"
-msgstr ""
+msgstr "在你的本地文件系统中找到你的密钥对文件 \"{{ keyName }}.pem\" 使用它来提取虚拟机密码."
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:144
+msgid "Open a remote desktop client."
+msgstr "打开一个远程桌面客户端"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:145
+msgid "Use the following for your username and password:"
+msgstr "使用下面的用户名和密码:"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:148
+msgid "USERNAME"
+msgstr "用户名"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:149
 msgid "PASSWORD"
-msgstr ""
+msgstr "密码"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:147
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:152
 msgid "get password for {{ keyName }}"
-msgstr ""
+msgstr "从密钥对 {{ keyName }}得到密码 "
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:160
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:165
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:7
 msgid "Associate elastic IP address with instance"
-msgstr ""
+msgstr "分配弹性IP到虚拟机"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:161
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:162
-msgid "Associate <dynamic element> with an elastic IP address."
-msgstr ""
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:167
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:172
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:9
+#, fuzzy
+msgid "Associate"
+msgstr "禁止"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:171
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:17
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:169
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:174
+#, fuzzy
+msgid "with an elastic IP address."
+msgstr "申请弹性IP地址"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:184
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:21
 msgid "Associate Address with Instance"
-msgstr ""
+msgstr "为虚拟机分配弹性IP"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:179
-msgid "Note:"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:180
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:193
 msgid "There are no elastic IP addresses available."
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:181
-msgid "To associate an instance with an IP address, you will need to"
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:178
-msgid "<dynamic element> <dynamic element> <dynamic element> <dynamic element>."
-msgstr ""
-
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:191
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:30
-msgid "Disassociate elastic IP address from instance"
-msgstr ""
+msgstr "没有可用的弹性IP地址"
 
 #: eucaconsole/templates/dialogs/instance_dialogs.pt:194
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:31
+msgid "To associate an instance with an IP address, you will need to"
+msgstr "要为虚拟机分配一个弹性IP地址，你需要"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:204
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:34
+msgid "Disassociate elastic IP address from instance"
+msgstr "从虚拟机释放弹性IP地址"
+
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:207
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:35
 msgid ""
 "If you disassociate an elastic IP address from an instance, you will no "
 "longer be able to connect to that instance using that IP address."
-msgstr ""
+msgstr "如果你要从虚拟机释放一个弹性IP地址，你将不能通过该地址访问虚拟机。"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:201
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:214
 msgid "Are you sure you want to dissassociate"
-msgstr ""
+msgstr "你确认要释放弹性IP"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:206
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:219
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:40
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:50
+#: eucaconsole/templates/instances/instance_volumes.pt:114
 msgid "from instance"
-msgstr ""
+msgstr "从虚拟机"
 
-#: eucaconsole/templates/dialogs/instance_dialogs.pt:222
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:44
+#: eucaconsole/templates/dialogs/instance_dialogs.pt:235
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:50
 msgid "Yes, Disassociate Address from Instance"
-msgstr ""
+msgstr "是的，释放弹性IP地址"
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:8
-msgid "Associate <dynamic element> with an instance"
-msgstr ""
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:11
+#, fuzzy
+msgid "with an instance"
+msgstr "到一个虚拟机"
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:33
-msgid ""
-"Are you sure you want to disassociate <dynamic element> from instance "
-"<dynamic element> <dynamic element> ?"
-msgstr ""
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:38
+#, fuzzy
+msgid "Are you sure you want to disassociate"
+msgstr "你确认要释放弹性IP"
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:56
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:62
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:38
 msgid "Release IP address to cloud"
-msgstr ""
+msgstr "回收弹性IP地址到云"
 
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:57
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:63
 msgid ""
 "If you release an elastic IP address to the cloud, you can no longer "
 "associate that IP address with any of your instances. If the elastic IP "
@@ -1659,79 +1670,87 @@ msgid ""
 "the cloud, the instance will get a new IP address as long as you did not "
 "specify private addressing when you launched the instance."
 msgstr ""
-
-#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:62
-msgid "Are you sure you want to release <dynamic element> to the cloud?"
-msgstr ""
+"如果你回收一个弹性IP到云,你的任何虚拟机将不能再分配这个IP.\"\n"
+"\"如果该IP正在被一个虚拟机使用，如果你没有指定,该虚拟机将自动等到一个新的IP。"
 
 #: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:69
-msgid "Yes, Release Address to Cloud"
+#, fuzzy
+msgid "Are you sure you want to release"
+msgstr "你确认要删除密钥对"
+
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:71
+msgid "to the cloud?"
 msgstr ""
+
+#: eucaconsole/templates/dialogs/ipaddress_dialogs.pt:79
+msgid "Yes, Release Address to Cloud"
+msgstr "是的，回收IP地址到云"
 
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:8
 #: eucaconsole/templates/keypairs/keypairs.pt:40
 #: eucaconsole/templates/keypairs/keypairs.pt:58
 msgid "Delete key"
-msgstr ""
+msgstr "删除密码对"
 
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:9
 msgid "Are you sure you want to delete key"
-msgstr ""
+msgstr "你确认要删除密钥对"
 
 #: eucaconsole/templates/dialogs/keypair_dialogs.pt:22
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:37
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:28
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:19
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:96
+#: eucaconsole/templates/panels/policy_list.pt:56
 msgid "Yes, Delete"
-msgstr ""
+msgstr "是的，删除"
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:8
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:29
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:32
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:78
 msgid "Delete launch configuration"
-msgstr ""
+msgstr "删除启动配置"
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:14
 msgid "is in use and may not be deleted."
-msgstr ""
+msgstr "正在使用，不能删除"
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:16
 msgid ""
 "Change the launch configuration from each scaling group's detail page, "
 "and then try to delete this launch configuration again."
-msgstr ""
+msgstr "从弹性扩展组的详细信息页面修改启动配置，然后试着再删除这个启动配置"
 
 #: eucaconsole/templates/dialogs/launchconfig_dialogs.pt:22
 msgid "Are you sure you want to delete the launch configuration"
-msgstr ""
+msgstr "你确认要删除这个启动配置"
 
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:9
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:32
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:39
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:118
 msgid "Delete scaling group"
-msgstr ""
+msgstr "删除弹性扩展组"
 
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:17
 msgid "Are you sure you want to delete the scaling group"
-msgstr ""
+msgstr "确认要删除弹性扩展组\""
 
 #: eucaconsole/templates/dialogs/scalinggroup_dialogs.pt:31
 msgid "Delete in progress"
-msgstr ""
+msgstr "正在删除"
 
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:8
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:42
 #: eucaconsole/templates/securitygroups/securitygroups.pt:30
 #: eucaconsole/templates/securitygroups/securitygroups.pt:64
 msgid "Delete security group"
-msgstr ""
+msgstr "删除安全组"
 
 #: eucaconsole/templates/dialogs/securitygroup_dialogs.pt:9
 msgid "Are you sure you want to delete security group"
-msgstr ""
+msgstr "你确认要删除安全组"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:7
 #: eucaconsole/templates/snapshots/snapshot_view.pt:53
@@ -1739,29 +1758,29 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:127
 #: eucaconsole/templates/volumes/volume_snapshots.pt:49
 msgid "Delete snapshot"
-msgstr ""
+msgstr "删除快照"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:8
 msgid ""
 "This snapshot has been registered as an image. Deleting this snapshot "
 "will also de-register the image."
-msgstr ""
+msgstr "这个快照已经被注册成了虚拟机模板,删除这个快照也会注销这个虚拟机模板"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:11
 msgid "Are you sure you want to delete snapshot"
-msgstr ""
+msgstr "你确认要删除快照"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:14
 msgid "and de-register image(s)"
-msgstr ""
+msgstr "并且注销虚拟机模板"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:28
 msgid "Yes, Delete Snapshot"
-msgstr ""
+msgstr "是的，删除快照"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:43
 msgid "Register snapshot as image"
-msgstr ""
+msgstr "注册快照成虚拟机莫版"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:44
 msgid ""
@@ -1769,24 +1788,26 @@ msgid ""
 "containing a root file system. The image can then be used to launch EBS-"
 "backed instances."
 msgstr ""
+"如快照是从一个有root文件系统的存储卷创建的，你可以注册次快照成虚拟机模板\"\n"
+"\"从这个模板可以创建EBS-backed的虚拟机"
 
 #: eucaconsole/templates/dialogs/snapshot_dialogs.pt:53
 msgid "Register as Image"
-msgstr ""
+msgstr "注册成虚拟机模板"
 
 #: eucaconsole/templates/dialogs/terminate_instances_dialog.pt:4
 msgid "Terminate instances"
-msgstr ""
+msgstr "注销虚拟机"
 
 #: eucaconsole/templates/dialogs/terminate_instances_dialog.pt:5
 msgid ""
 "Are you sure you want to terminate these instances? Remove any instances "
 "below that you do not wish to terminate."
-msgstr ""
+msgstr "你确认要注销这个虚拟机? 请移走你任何不想注销的虚拟机."
 
 #: eucaconsole/templates/dialogs/user_dialogs.pt:4
 msgid "Disable user"
-msgstr ""
+msgstr "禁止用户"
 
 #: eucaconsole/templates/dialogs/user_dialogs.pt:6
 msgid ""
@@ -1798,21 +1819,27 @@ msgid ""
 msgstr ""
 
 #: eucaconsole/templates/dialogs/user_dialogs.pt:9
-msgid "Are you sure you want to disable user <dynamic element>"
-msgstr ""
+#, fuzzy
+msgid "Are you sure you want to disable user"
+msgstr "你确定要启动"
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:23
+#: eucaconsole/templates/dialogs/user_dialogs.pt:17
+#, fuzzy
+msgid "Yes, Disable User"
+msgstr "禁止用户"
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:24
 msgid "Enable user"
-msgstr ""
+msgstr "启用用户"
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:25
+#: eucaconsole/templates/dialogs/user_dialogs.pt:26
 msgid ""
 "Enabling a user removes the policy that was in place denying the user "
 "access to the cloud. When this user is active, they will be able to "
 "execute actions against the cloud."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:28
+#: eucaconsole/templates/dialogs/user_dialogs.pt:29
 msgid ""
 "The user will need a new password only if they access the cloud using the"
 " Management Console. If you want to set a specific password rather than "
@@ -1820,100 +1847,116 @@ msgid ""
 "detail page once they are active."
 msgstr ""
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:43
+#: eucaconsole/templates/dialogs/user_dialogs.pt:37
+#, fuzzy
+msgid "Enable User"
+msgstr "启用用户"
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:44
 #: eucaconsole/templates/users/user_view.pt:41
 #: eucaconsole/templates/users/user_view.pt:176
 #: eucaconsole/templates/users/user_view.pt:354
 msgid "Delete user"
-msgstr ""
+msgstr "删除用户"
 
-#: eucaconsole/templates/dialogs/user_dialogs.pt:45
+#: eucaconsole/templates/dialogs/user_dialogs.pt:46
 msgid ""
 "Deleting a user also deletes all keys, passwords and permissions "
 "associated with that user. Are you sure you want to delete user <dynamic "
 "element>"
 msgstr ""
+"删除一个用户的同时也会删除该用户的所有keys,密码和权限\"\n"
+"\"你确认要删除用户 <dynamic element>"
+
+#: eucaconsole/templates/dialogs/user_dialogs.pt:55
+#, fuzzy
+msgid "Yes, Delete User"
+msgstr "删除用户"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:9
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:11
 #: eucaconsole/templates/instances/instance_volumes.pt:83
 msgid "Attach volume"
-msgstr ""
+msgstr "挂载存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:13
 msgid "to an instance"
-msgstr ""
+msgstr "到一个虚拟机"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:23
 #: eucaconsole/templates/instances/instance_volumes.pt:92
 msgid "Attach Volume"
-msgstr ""
+msgstr "挂载存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:42
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:69
 #: eucaconsole/templates/instances/instance_volumes.pt:42
 #: eucaconsole/templates/instances/instance_volumes.pt:107
-#: eucaconsole/templates/instances/instance_volumes.pt:130
+#: eucaconsole/templates/instances/instance_volumes.pt:129
 msgid "Detach volume"
-msgstr ""
+msgstr "卸载存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:44
 #: eucaconsole/templates/instances/instance_volumes.pt:109
 msgid "If you detach a volume, the instance can no longer read or write to it."
-msgstr ""
+msgstr "如果你卸载存储卷，虚拟机将不能再读和写该存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:47
+#: eucaconsole/templates/instances/instance_volumes.pt:112
 msgid "Are you sure you want to detach volume"
-msgstr ""
+msgstr "你确定要卸载存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:60
-#: eucaconsole/templates/instances/instance_volumes.pt:123
+#: eucaconsole/templates/instances/instance_volumes.pt:122
 msgid "Yes, Detach Volume"
-msgstr ""
+msgstr "是的，卸载存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:71
+#: eucaconsole/templates/instances/instance_volumes.pt:131
 msgid ""
 "This operation is not available because you cannot detach the root volume"
 " of an EBS-backed instance. If you want to delete this volume, terminate "
 "instance"
 msgstr ""
+"无法进行该操作，因为虚拟机的根磁盘不能被卸载，\"\n"
+"\"如果你想删除该存储卷，请注销虚拟机"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:84
 #: eucaconsole/templates/volumes/volume_view.pt:57
 #: eucaconsole/templates/volumes/volumes.pt:43
 #: eucaconsole/templates/volumes/volumes.pt:131
 msgid "Delete volume"
-msgstr ""
+msgstr "删除存储卷"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:85
 msgid "All data on the volumes will be destroyed."
-msgstr ""
+msgstr "所有该存储卷上的数据会被删除"
 
 #: eucaconsole/templates/dialogs/volume_dialogs.pt:86
 msgid "Are you sure you want to delete volume"
-msgstr ""
+msgstr "你确认要删除存储卷"
 
 #: eucaconsole/templates/groups/group_view.pt:16
 #: eucaconsole/templates/groups/group_view.pt:28
 msgid "Create new group"
-msgstr ""
+msgstr "创建安全组"
 
 #: eucaconsole/templates/groups/group_view.pt:24
 msgid "Details for group:"
-msgstr ""
+msgstr "安全组详细信息:"
 
-#: eucaconsole/templates/groups/group_view.pt:59
+#: eucaconsole/templates/groups/group_view.pt:60
 #: eucaconsole/templates/instances/instance_launch_more.pt:85
 #: eucaconsole/templates/users/user_new.pt:52
 msgid "Advanced"
-msgstr ""
+msgstr "高级"
 
-#: eucaconsole/templates/groups/group_view.pt:74
+#: eucaconsole/templates/groups/group_view.pt:75
 #: eucaconsole/templates/groups/groups.pt:20
 msgid "Create Group"
-msgstr ""
+msgstr "创建安全组"
 
-#: eucaconsole/templates/groups/group_view.pt:86
+#: eucaconsole/templates/groups/group_view.pt:87
 #: eucaconsole/templates/instances/instance_view.pt:28
 #: eucaconsole/templates/instances/instance_volumes.pt:25
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:24
@@ -1923,9 +1966,9 @@ msgstr ""
 #: eucaconsole/templates/volumes/volume_snapshots.pt:26
 #: eucaconsole/templates/volumes/volume_view.pt:42
 msgid "General"
-msgstr ""
+msgstr "通用"
 
-#: eucaconsole/templates/groups/group_view.pt:91
+#: eucaconsole/templates/groups/group_view.pt:92
 #: eucaconsole/templates/groups/groups.pt:43
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:63
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:50
@@ -1934,24 +1977,24 @@ msgstr ""
 #: eucaconsole/templates/volumes/volume_view.pt:126
 #: eucaconsole/templates/volumes/volumes.pt:65
 msgid "Creation time"
-msgstr ""
+msgstr "创建时间"
 
-#: eucaconsole/templates/groups/group_view.pt:97
+#: eucaconsole/templates/groups/group_view.pt:98
 #: eucaconsole/templates/users/user_view.pt:65
 msgid "ARN"
-msgstr ""
+msgstr "ARN"
 
-#: eucaconsole/templates/groups/group_view.pt:106
+#: eucaconsole/templates/groups/group_view.pt:107
 #: eucaconsole/templates/groups/groups.pt:35
 #: eucaconsole/templates/groups/groups.pt:53
 msgid "Users"
-msgstr ""
+msgstr "用户"
 
-#: eucaconsole/templates/groups/group_view.pt:109
+#: eucaconsole/templates/groups/group_view.pt:110
 msgid "Search users and select to add"
-msgstr ""
+msgstr "搜索用户并且添加"
 
-#: eucaconsole/templates/groups/group_view.pt:129
+#: eucaconsole/templates/groups/group_view.pt:130
 #: eucaconsole/templates/images/image_view.pt:132
 #: eucaconsole/templates/instances/instance_view.pt:253
 #: eucaconsole/templates/panels/policy_list.pt:39
@@ -1961,22 +2004,23 @@ msgstr ""
 #: eucaconsole/templates/users/user_view.pt:74
 #: eucaconsole/templates/volumes/volume_view.pt:136
 msgid "Save Changes"
-msgstr ""
+msgstr "保存修改"
 
-#: eucaconsole/templates/groups/group_view.pt:144
+#: eucaconsole/templates/groups/group_view.pt:145
 #: eucaconsole/templates/groups/groups.pt:39
 #: eucaconsole/templates/groups/groups.pt:54
 #: eucaconsole/templates/users/user_view.pt:155
 msgid "Permissions"
-msgstr ""
+msgstr "权限"
 
-#: eucaconsole/templates/groups/group_view.pt:146
+#: eucaconsole/templates/groups/group_view.pt:147
 msgid "Group policies"
-msgstr ""
+msgstr "用户组策略"
 
 #: eucaconsole/templates/groups/groups.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:41
 msgid "IAM Groups"
-msgstr ""
+msgstr "IAM用户组"
 
 #: eucaconsole/templates/groups/groups.pt:26
 #: eucaconsole/templates/groups/groups.pt:67
@@ -1994,71 +2038,43 @@ msgstr ""
 #: eucaconsole/templates/snapshots/snapshots.pt:30
 #: eucaconsole/templates/snapshots/snapshots.pt:116
 #: eucaconsole/templates/users/users.pt:37
-#: eucaconsole/templates/users/users.pt:119
+#: eucaconsole/templates/users/users.pt:120
 #: eucaconsole/templates/volumes/volume_snapshots.pt:43
 #: eucaconsole/templates/volumes/volumes.pt:30
 #: eucaconsole/templates/volumes/volumes.pt:118
 msgid "View details"
-msgstr ""
+msgstr "查看详细信息"
 
 #: eucaconsole/templates/groups/groups.pt:27
 #: eucaconsole/templates/groups/groups.pt:69
 #: eucaconsole/templates/users/user_view.pt:314
 #: eucaconsole/templates/users/users.pt:46
-#: eucaconsole/templates/users/users.pt:128
+#: eucaconsole/templates/users/users.pt:129
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: eucaconsole/templates/groups/groups.pt:48
 msgid "Does not have users"
-msgstr ""
+msgstr "没有用户"
 
 #: eucaconsole/templates/groups/groups.pt:49
 msgid "Does not have permissions"
-msgstr ""
+msgstr "没有权限"
 
 #: eucaconsole/templates/groups/groups.pt:52
 msgid "Group name"
-msgstr ""
+msgstr "用户组名"
 
 #: eucaconsole/templates/groups/groups.pt:55
 #: eucaconsole/templates/users/users.pt:68
 #: eucaconsole/templates/users/users.pt:85
 #: eucaconsole/templates/volumes/volumes.pt:92
 msgid "Creation Time"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:31
-msgid "Attach a volume to this instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:34
-msgid "Click the <dynamic element> icon"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:35
-msgid ""
-"The <dynamic element> dialog box will appear. Select the volume you want "
-"to attach to this instance."
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:41
-msgid "Detach a volume from this instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:44
-msgid "Click the <dynamic element> icon for the instance you want to detach."
-msgstr ""
-
-#: eucaconsole/templates/help/help_instances.pt:47
-msgid ""
-"The <dynamic element> dialog box will appear. Click confirm to detach the"
-" volume."
-msgstr ""
+msgstr "创建时间"
 
 #: eucaconsole/templates/help/help_ipaddresses.pt:12
 msgid "Associate an Elastic IP Address with an Instance"
-msgstr ""
+msgstr "为虚拟机分配一个弹性IP地址"
 
 #: eucaconsole/templates/help/help_ipaddresses.pt:14
 msgid ""
@@ -2066,78 +2082,9 @@ msgid ""
 "instance."
 msgstr ""
 
-#: eucaconsole/templates/help/help_ipaddresses.pt:27
-msgid "Disassociate an Elastic IP Address from an Instance"
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:29
-msgid ""
-"This dialog box lets you verify that you wish to disassociate one or more"
-" elastic IP addresses from running instance(s)."
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:43
-msgid "Release IP Addresses"
-msgstr ""
-
-#: eucaconsole/templates/help/help_ipaddresses.pt:45
-msgid ""
-"This dialog box allows you to confirm or cancel an IP address release "
-"operation."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:12
-msgid "Create a Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:13
-msgid ""
-"Eucalyptus uses cryptographic key pairs to verify access to instances. "
-"Before you can run an instance, you must create a key pair. Creating a "
-"key pair generates two keys: a public key (saved within Eucalyptus) and a"
-" corresponding private key (output to the user as a character string). To"
-" enable this private key you must save it to a file and set appropriate "
-"access permissions (using the chmod command), as shown in the example "
-"below."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:20
-msgid ""
-"When you create a VM instance, the public key is then injected into the "
-"VM. Later, when attempting to login to the VM instance using SSH, the "
-"public key is checked against your private key to verify access. Note "
-"that the private key becomes obsolete when the public key is deleted."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:25
-msgid "Create Key Pairs with the Console"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:57
-msgid "Import a Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:59
-msgid "This dialog box allows you import an existing key pair."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:79
-msgid "Delete Key Pair"
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:81
-msgid ""
-"This dialog box allows you to confirm or cancel a key pair delete "
-"operation."
-msgstr ""
-
-#: eucaconsole/templates/help/help_keypairs.pt:82
-msgid "Verify Key Pair Deletion"
-msgstr ""
-
 #: eucaconsole/templates/help/help_snapshots.pt:12
 msgid "Create a Snapshot"
-msgstr ""
+msgstr "创建快照"
 
 #: eucaconsole/templates/help/help_snapshots.pt:13
 msgid ""
@@ -2148,7 +2095,7 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:36
 msgid "Register a Snapshot as an Image"
-msgstr ""
+msgstr "注册一个快照为虚拟机模板"
 
 #: eucaconsole/templates/help/help_snapshots.pt:37
 msgid ""
@@ -2161,7 +2108,7 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:56
 msgid "Delete Snapshot"
-msgstr ""
+msgstr "删除快照"
 
 #: eucaconsole/templates/help/help_snapshots.pt:58
 msgid ""
@@ -2171,24 +2118,25 @@ msgstr ""
 
 #: eucaconsole/templates/help/help_snapshots.pt:59
 msgid "Verify Snapshot Deletion"
-msgstr ""
+msgstr "确认快照删除"
 
 #: eucaconsole/templates/images/image_view.pt:8
 #: eucaconsole/templates/images/images.pt:12
 #: eucaconsole/templates/images/images.pt:26
+#: eucaconsole/templates/panels/top_nav.pt:5
 msgid "Images"
-msgstr ""
+msgstr "虚拟机模板"
 
 #: eucaconsole/templates/images/image_view.pt:15
 msgid "Details for image:"
-msgstr ""
+msgstr "模板详细信息:"
 
 #: eucaconsole/templates/images/image_view.pt:26
 #: eucaconsole/templates/images/images.pt:37
 #: eucaconsole/templates/images/images.pt:102
 #: eucaconsole/templates/instances/instance_launch.pt:15
 msgid "Launch instance"
-msgstr ""
+msgstr "创建虚拟机"
 
 #: eucaconsole/templates/images/image_view.pt:32
 #: eucaconsole/templates/images/images.pt:38
@@ -2199,113 +2147,113 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:15
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:157
 msgid "Create launch configuration"
-msgstr ""
+msgstr "创建启动配置"
 
 #: eucaconsole/templates/images/image_view.pt:43
 msgid "Machine"
-msgstr ""
+msgstr "机器"
 
 #: eucaconsole/templates/images/image_view.pt:46
 msgid "EMI name"
-msgstr ""
+msgstr "EMI名字"
 
 #: eucaconsole/templates/images/image_view.pt:47
 msgid "AMI name"
-msgstr ""
+msgstr "AMI名字"
 
 #: eucaconsole/templates/images/image_view.pt:52
 msgid "Owner alias"
-msgstr ""
+msgstr "主人别名"
 
 #: eucaconsole/templates/images/image_view.pt:56
 msgid "platform"
-msgstr ""
+msgstr "平台"
 
 #: eucaconsole/templates/images/image_view.pt:68
 msgid "Root device mapping"
-msgstr ""
+msgstr "根磁盘映射"
 
 #: eucaconsole/templates/images/image_view.pt:72
 msgid "Owner account (ID)"
-msgstr ""
+msgstr "主人"
 
 #: eucaconsole/templates/images/image_view.pt:76
 msgid "Manifest path"
-msgstr ""
+msgstr "Manifest路径"
 
 #: eucaconsole/templates/images/image_view.pt:86
 msgid "Kernel"
-msgstr ""
+msgstr "内核"
 
 #: eucaconsole/templates/images/image_view.pt:94
 msgid "RAM disk"
-msgstr ""
+msgstr "RAM磁盘"
 
 #: eucaconsole/templates/images/image_view.pt:96
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:98
 msgid "Ramdisk ID"
-msgstr ""
+msgstr "Ramdisk ID"
 
 #: eucaconsole/templates/images/image_view.pt:102
 msgid "Block device mappings"
-msgstr ""
+msgstr "磁盘映射"
 
 #: eucaconsole/templates/images/image_view.pt:107
 msgid "Device mapping"
-msgstr ""
+msgstr "磁盘映射"
 
 #: eucaconsole/templates/images/image_view.pt:108
 #: eucaconsole/templates/panels/bdmapping_editor.pt:12
 #: eucaconsole/templates/snapshots/snapshot_view.pt:61
 #: eucaconsole/templates/snapshots/snapshots.pt:82
 msgid "Snapshot"
-msgstr ""
+msgstr "快照"
 
 #: eucaconsole/templates/images/image_view.pt:109
 msgid "Size (GB)"
-msgstr ""
+msgstr "容量(GB)"
 
 #: eucaconsole/templates/images/image_view.pt:110
 msgid "Delete on termination?"
-msgstr ""
+msgstr "注销时删除?"
 
 #: eucaconsole/templates/images/image_view.pt:111
 msgid "Ephemeral name"
-msgstr ""
+msgstr "临时磁盘名"
 
 #: eucaconsole/templates/images/images.pt:21
 msgid "Select the image to launch your instance from below"
-msgstr ""
+msgstr "选择下面的模板创建虚拟机"
 
 #: eucaconsole/templates/images/images.pt:52
 msgid "EMI Name"
-msgstr ""
+msgstr "EMI名字"
 
 #: eucaconsole/templates/images/images.pt:53
 msgid "AMI Name"
-msgstr ""
+msgstr "AMI名字"
 
 #: eucaconsole/templates/images/images.pt:72
 msgid "Owner Alias"
-msgstr ""
+msgstr "主人别名"
 
 #: eucaconsole/templates/images/images.pt:76
 msgid "Root Device Type"
-msgstr ""
+msgstr "根磁盘类型"
 
 #: eucaconsole/templates/images/images.pt:82
 #: eucaconsole/templates/instances/instances.pt:127
 #: eucaconsole/templates/volumes/volumes.pt:85
 msgid "Name (ID)"
-msgstr ""
+msgstr "名字(ID)"
 
 #: eucaconsole/templates/images/images.pt:85
 msgid "Arch"
-msgstr ""
+msgstr "CPU架构"
 
 #: eucaconsole/templates/images/images.pt:86
 msgid "Root Device"
-msgstr ""
+msgstr "根磁盘类型"
 
 #: eucaconsole/templates/instances/instance_launch.pt:14
 #: eucaconsole/templates/instances/instance_launch_more.pt:12
@@ -2313,111 +2261,107 @@ msgstr ""
 #: eucaconsole/templates/instances/instance_volumes.pt:13
 #: eucaconsole/templates/instances/instances.pt:12
 #: eucaconsole/templates/instances/instances.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:6
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:26
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:77
 msgid "Instances"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/templates/instances/instance_launch.pt:21
 msgid "Launch new instance"
-msgstr ""
+msgstr "创建虚拟机"
 
 #: eucaconsole/templates/instances/instance_launch.pt:64
 msgid "Specify the number, name(s), size, availability zone, and tags."
-msgstr ""
+msgstr "指定数量,名字,大小,可用区域,和标签."
 
 #: eucaconsole/templates/instances/instance_launch.pt:90
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:83
 #: eucaconsole/templates/panels/image_picker.pt:70
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:73
 msgid "Next"
-msgstr ""
+msgstr "下一步"
 
 #: eucaconsole/templates/instances/instance_launch.pt:98
 msgid "Specify key pair and security group."
-msgstr ""
-
-#: eucaconsole/templates/instances/instance_launch.pt:119
-#: eucaconsole/templates/instances/instance_launch.pt:152
-msgid "Launch Instance<dynamic element>"
-msgstr ""
+msgstr "指定密钥对和安全组."
 
 #: eucaconsole/templates/instances/instance_launch.pt:125
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:137
 msgid "Select advanced options"
-msgstr ""
+msgstr "选择高级选项"
 
 #: eucaconsole/templates/instances/instance_launch.pt:132
 msgid "User data and other advanced options (optional)."
-msgstr ""
+msgstr "用户数据和其它高级选项(可选)。"
 
 #: eucaconsole/templates/instances/instance_launch.pt:167
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:175
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:106
 msgid "Summary"
-msgstr ""
+msgstr "总结"
 
 #: eucaconsole/templates/instances/instance_launch.pt:170
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:178
 msgid "Image:"
-msgstr ""
+msgstr "虚拟机模板:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:174
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:182
 msgid "Platform:"
-msgstr ""
+msgstr "平台:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:178
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:186
 msgid "Root device:"
-msgstr ""
+msgstr "根磁盘类型:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:184
 #: eucaconsole/templates/panels/bdmapping_editor.pt:80
 msgid "Size:"
-msgstr ""
+msgstr "大小:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:188
 msgid "Number:"
-msgstr ""
+msgstr "数量:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:192
 msgid "Zone:"
-msgstr ""
+msgstr "可用区域:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:196
 msgid "Names:"
-msgstr ""
+msgstr "名字:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:204
 msgid "Tags:"
-msgstr ""
+msgstr "标签:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:212
 msgid "Key:"
-msgstr ""
+msgstr "密钥对:"
 
 #: eucaconsole/templates/instances/instance_launch.pt:216
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:210
 msgid "Security group:"
-msgstr ""
+msgstr "安全组:"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:13
 msgid "Launch more instances like ${instance_name}"
-msgstr ""
+msgstr "创建更多类似虚拟机${instance_name}"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:19
 msgid "Launch more instances like:"
-msgstr ""
+msgstr "创建更多类似虚拟机:"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:31
 msgid "Names"
-msgstr ""
+msgstr "名字"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:39
 #: eucaconsole/templates/instances/instance_view.pt:215
 msgid "Image name"
-msgstr ""
+msgstr "虚拟机模板名字"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:43
 #: eucaconsole/templates/instances/instance_view.pt:209
@@ -2425,156 +2369,159 @@ msgstr ""
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:82
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:37
 msgid "Image ID"
-msgstr ""
+msgstr "虚拟机模板ID"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:55
 #: eucaconsole/templates/instances/instances.pt:130
 msgid "Zone"
-msgstr ""
+msgstr "可用区域"
 
 #: eucaconsole/templates/instances/instance_launch_more.pt:105
 #: eucaconsole/templates/panels/bdmapping_editor.pt:6
+#: eucaconsole/templates/panels/top_nav.pt:18
 msgid "Storage"
-msgstr ""
+msgstr "存储"
 
 #: eucaconsole/templates/instances/instance_view.pt:23
 #: eucaconsole/templates/instances/instance_volumes.pt:20
 msgid "Details for instance:"
-msgstr ""
+msgstr "虚拟机详细信息:"
 
 #: eucaconsole/templates/instances/instance_view.pt:37
 #: eucaconsole/templates/instances/instances.pt:35
 #: eucaconsole/templates/instances/instances.pt:164
 msgid "Connect to instance"
-msgstr ""
+msgstr "连接到虚拟机"
 
 #: eucaconsole/templates/instances/instance_view.pt:41
 #: eucaconsole/templates/instances/instances.pt:38
 #: eucaconsole/templates/instances/instances.pt:167
 msgid "Launch more like this"
-msgstr ""
+msgstr "创建类似虚拟机"
 
 #: eucaconsole/templates/instances/instance_view.pt:53
 #: eucaconsole/templates/instances/instances.pt:47
 #: eucaconsole/templates/instances/instances.pt:176
 msgid "View console output"
-msgstr ""
+msgstr "查看控制台输出"
 
 #: eucaconsole/templates/instances/instance_view.pt:58
 #: eucaconsole/templates/instances/instances.pt:55
 #: eucaconsole/templates/instances/instances.pt:184
 msgid "Associate IP address"
-msgstr ""
+msgstr "分配弹性IP地址"
 
 #: eucaconsole/templates/instances/instance_view.pt:64
 #: eucaconsole/templates/instances/instances.pt:60
 #: eucaconsole/templates/instances/instances.pt:189
 msgid "Disassociate IP address"
-msgstr ""
+msgstr "释放弹性IP地址"
 
 #: eucaconsole/templates/instances/instance_view.pt:70
 #: eucaconsole/templates/instances/instances.pt:65
 #: eucaconsole/templates/instances/instances.pt:194
 msgid "Start"
-msgstr ""
+msgstr "启动"
 
 #: eucaconsole/templates/instances/instance_view.pt:74
 #: eucaconsole/templates/instances/instances.pt:68
 #: eucaconsole/templates/instances/instances.pt:197
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: eucaconsole/templates/instances/instance_view.pt:78
 #: eucaconsole/templates/instances/instances.pt:71
 #: eucaconsole/templates/instances/instances.pt:200
 msgid "Reboot"
-msgstr ""
+msgstr "重启"
 
 #: eucaconsole/templates/instances/instance_view.pt:83
 #: eucaconsole/templates/instances/instances.pt:74
 #: eucaconsole/templates/instances/instances.pt:203
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:46
 msgid "Terminate"
-msgstr ""
+msgstr "注销"
 
 #: eucaconsole/templates/instances/instance_view.pt:138
 #: eucaconsole/templates/instances/instances.pt:83
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:33
 #: eucaconsole/views/instances.py:138
 msgid "Instance ID"
-msgstr ""
+msgstr "虚拟机ID"
 
 #: eucaconsole/templates/instances/instance_view.pt:146
 #: eucaconsole/templates/instances/instances.pt:91
 #: eucaconsole/templates/panels/securitygroup_rules.pt:66
 msgid "IP address"
-msgstr ""
+msgstr "弹性IP地址"
 
 #: eucaconsole/templates/instances/instance_view.pt:150
 msgid "Public hostname"
-msgstr ""
+msgstr "公有主机名"
 
 #: eucaconsole/templates/instances/instance_view.pt:154
 msgid "Private IP address"
-msgstr ""
+msgstr "私有IP地址"
 
 #: eucaconsole/templates/instances/instance_view.pt:158
 msgid "Private hostname"
-msgstr ""
+msgstr "私有主机名"
 
 #: eucaconsole/templates/instances/instance_view.pt:174
 #: eucaconsole/templates/instances/instances.pt:115
 msgid "Launch time"
-msgstr ""
+msgstr "创建时间"
 
 #: eucaconsole/templates/instances/instance_view.pt:186
 msgid "Account ID"
-msgstr ""
+msgstr "账户ID"
 
 #: eucaconsole/templates/instances/instance_view.pt:190
 msgid "Reservation ID"
-msgstr ""
+msgstr "预约ID"
 
 #: eucaconsole/templates/instances/instance_view.pt:194
 #: eucaconsole/templates/policies/policy_generator.pt:196
 msgid "Instance profile"
-msgstr ""
+msgstr "虚拟机配置"
 
 #: eucaconsole/templates/instances/instance_view.pt:198
 msgid "Client token"
-msgstr ""
+msgstr "客户端Token"
 
 #: eucaconsole/templates/instances/instance_view.pt:202
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:56
 msgid "Monitoring"
-msgstr ""
+msgstr "启动监视"
 
 #: eucaconsole/templates/instances/instance_view.pt:219
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:102
 msgid "Image manifest"
-msgstr ""
+msgstr "模板manifest"
 
 #: eucaconsole/templates/instances/instance_view.pt:273
 msgid "Update instance"
-msgstr ""
+msgstr "更改虚拟机"
 
 #: eucaconsole/templates/instances/instance_view.pt:274
 msgid ""
 "Some of the attributes you have changed will not take effect until this "
 "instance is started. Would you like to start the instance now?"
 msgstr ""
+"你修改部分参数要等到虚拟机启动后才能生效\"\n"
+"\"你要先在启动虚拟机吗?"
 
 #: eucaconsole/templates/instances/instance_view.pt:281
 msgid "Yes, start now"
-msgstr ""
+msgstr "是的，启动"
 
 #: eucaconsole/templates/instances/instance_view.pt:283
 msgid "No, I'll start it later"
-msgstr ""
+msgstr "不,稍后启动"
 
 #: eucaconsole/templates/instances/instance_volumes.pt:32
 msgid "Attach a volume"
-msgstr ""
+msgstr "挂载存储卷"
 
 #: eucaconsole/templates/instances/instance_volumes.pt:49
 #: eucaconsole/templates/panels/bdmapping_editor.pt:14
@@ -2586,243 +2533,230 @@ msgstr ""
 #: eucaconsole/templates/volumes/volumes.pt:87
 #: eucaconsole/views/snapshots.py:181
 msgid "Size"
-msgstr ""
+msgstr "容量:"
 
 #: eucaconsole/templates/instances/instance_volumes.pt:57
 #: eucaconsole/templates/snapshots/snapshots.pt:51
 #: eucaconsole/templates/volumes/volumes.pt:49
 #: eucaconsole/views/snapshots.py:185
 msgid "Volume ID"
-msgstr ""
+msgstr "存储卷ID"
 
 #: eucaconsole/templates/instances/instance_volumes.pt:61
 msgid "Attach time"
-msgstr ""
+msgstr "挂载时间"
 
 #: eucaconsole/templates/instances/instance_volumes.pt:84
 msgid "Attach a volume to instance"
-msgstr ""
-
-#: eucaconsole/templates/instances/instance_volumes.pt:113
-msgid "Are you sure you want to detach volume <dynamic element> from instance"
-msgstr ""
-
-#: eucaconsole/templates/instances/instance_volumes.pt:132
-msgid ""
-"This operation is not available because you cannot detach the root volume"
-" of an EBS-backed instance. If you want to delete this volume, terminate "
-"instance <dynamic element>."
-msgstr ""
+msgstr "挂载存储卷到虚拟机"
 
 #: eucaconsole/templates/instances/instances.pt:23
 msgid "Launch New Instance"
-msgstr ""
+msgstr "创建虚拟机"
 
 #: eucaconsole/templates/instances/instances.pt:25
 msgid "Terminate {{ unterminatedInstancesCount(items) }} Instances"
-msgstr ""
+msgstr "注销 {{ unterminatedInstancesCount(items) }} 虚拟机"
 
 #: eucaconsole/templates/instances/instances.pt:52
 #: eucaconsole/templates/instances/instances.pt:181
 msgid "Manage volumes"
-msgstr ""
+msgstr "管理存储卷"
 
 #: eucaconsole/templates/instances/instances.pt:77
 #: eucaconsole/templates/instances/instances.pt:206
 msgid "Remove from view"
-msgstr ""
+msgstr "从试图中删除"
 
 #: eucaconsole/templates/instances/instances.pt:87
 #: eucaconsole/templates/instances/instances.pt:100
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:86
 msgid "Root device"
-msgstr ""
+msgstr "根磁盘类型"
 
 #: eucaconsole/templates/instances/instances.pt:131
 #: eucaconsole/views/ipaddresses.py:149
 msgid "IP Address"
-msgstr ""
+msgstr "IP地址"
 
 #: eucaconsole/templates/instances/instances.pt:133
 msgid "Sec group"
-msgstr ""
+msgstr "安全组"
 
 #: eucaconsole/templates/instances/instances.pt:134
 msgid "Launched"
-msgstr ""
+msgstr "创建时间"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:13
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:12
 msgid "Elastic IP addresses"
-msgstr ""
+msgstr "弹性IP地址"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:20
 msgid "Details for IP address:"
-msgstr ""
+msgstr "IP地址详细信息:"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:28
 msgid "Associate with an instance"
-msgstr ""
+msgstr "分配到一个虚拟机"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:33
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:44
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:70
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:45
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:71
 msgid "Disassociate from instance"
-msgstr ""
+msgstr "从虚拟机释放"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:45
 msgid "This elastic IP address is not associated with any instances."
-msgstr ""
+msgstr "本弹性IP地址还没有分配给任何虚拟机"
 
 #: eucaconsole/templates/ipaddresses/ipaddress_view.pt:49
 msgid "This elastic IP address is associated with instance"
-msgstr ""
+msgstr "本弹性IP地址已经分配给虚拟机"
 
 #: eucaconsole/templates/ipaddresses/ipaddresses.pt:23
 msgid "Allocate Elastic IP Addresses"
-msgstr ""
+msgstr "申请弹性IP地址"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:34
-msgid "Associated with <dynamic element>"
-msgstr ""
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:35
+#, fuzzy
+msgid "Associated with"
+msgstr "分配到虚拟机"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:37
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:38
 msgid "Not associated with any instances"
-msgstr ""
+msgstr "未分配到任何虚拟机"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:48
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:74
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:49
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:75
 msgid "Associate with instance"
-msgstr ""
+msgstr "分配到虚拟机"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:52
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:77
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:53
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:78
 msgid "Release to cloud"
-msgstr ""
+msgstr "回收到云"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:59
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:60
 msgid "Assigned to instance"
-msgstr ""
+msgstr "分配到虚拟机"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:87
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:88
 msgid "Allocate elastic IP addresses"
-msgstr ""
+msgstr "申请弹性IP地址"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:92
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:93
 msgid "How many IP addresses would you like to allocate?"
-msgstr ""
+msgstr "你要申请多少弹性IP地址?"
 
-#: eucaconsole/templates/ipaddresses/ipaddresses.pt:99
+#: eucaconsole/templates/ipaddresses/ipaddresses.pt:100
 msgid "Allocate Addresses From Cloud"
-msgstr ""
+msgstr "从云申请IP地址"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:12
 #: eucaconsole/templates/keypairs/keypairs.pt:20
 msgid "Create New Key Pair"
-msgstr ""
+msgstr "创建密钥对"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:13
 #: eucaconsole/templates/keypairs/keypairs.pt:23
 msgid "Import Public Key"
-msgstr ""
+msgstr "导入密钥对"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:21
 msgid "Details for key pair:"
-msgstr ""
+msgstr "密钥对详细信息:"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:25
 msgid "Create new key pair"
-msgstr ""
+msgstr "创建密钥对"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:26
 msgid "Import public key"
-msgstr ""
+msgstr "导入密钥对"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:47
 msgid "Delete key pair"
-msgstr ""
+msgstr "删除密钥对"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:60
 #: eucaconsole/templates/keypairs/keypair_view.pt:94
 #: eucaconsole/templates/keypairs/keypairs.pt:47
 msgid "Fingerprint"
-msgstr ""
+msgstr "指纹"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:65
 msgid "You can use this key pair to launch more than one instance."
-msgstr ""
+msgstr "你可使用该密钥对创建多于一个虚拟机机"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:66
 msgid ""
 "Save the file in a place you will remember. You will need to enter the "
 "path later to connect to your instances."
-msgstr ""
+msgstr "保存该文件到一个地方，以后在连接虚拟机时，你需要指定该文件路径."
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:74
 msgid "Create and Download"
-msgstr ""
-
-#: eucaconsole/templates/keypairs/keypair_view.pt:64
-msgid "<dynamic element> <dynamic element> <dynamic element>"
-msgstr ""
+msgstr "创建并下载"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:81
 msgid ""
 "Importing a public key allows you to use an existing SSH key to access "
 "your Eucalyptus instances."
-msgstr ""
+msgstr "正在导入一个现存的SSH key的公钥, 你以后可以用该SSH Key来访问虚拟机"
 
 #: eucaconsole/templates/keypairs/keypair_view.pt:99
 msgid "Import"
-msgstr ""
+msgstr "导入"
 
 #: eucaconsole/templates/keypairs/keypairs.pt:17
+#: eucaconsole/templates/panels/top_nav.pt:31
 msgid "Key Pairs"
-msgstr ""
+msgstr "密钥对"
 
 #: eucaconsole/templates/keypairs/keypairs.pt:28
 msgid "Keypair Name"
-msgstr ""
+msgstr "密钥对名字"
 
 #: eucaconsole/templates/keypairs/keypairs.pt:32
 msgid "Keypair Fingerprint"
-msgstr ""
+msgstr "密钥对指纹"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:8
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:14
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:12
 msgid "Launch configurations"
-msgstr ""
+msgstr "启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:15
 msgid "Details for launch configuration:"
-msgstr ""
+msgstr "启动配置详细信息:"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:23
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:30
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:76
 msgid "Use to create scaling group"
-msgstr ""
+msgstr "用来创建弹性扩展组"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:37
 msgid "In use?"
-msgstr ""
+msgstr "正在使用?"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:58
 msgid "enabled"
-msgstr ""
+msgstr "激活"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:59
 msgid "disabled"
-msgstr ""
+msgstr "禁止"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:107
 msgid "Image not found"
-msgstr ""
+msgstr "没有发现虚拟机模板"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:127
 msgid "Launch configuration broken: No image found"
-msgstr ""
+msgstr "启动配置无效:没有虚拟机模板"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:128
 msgid ""
@@ -2830,60 +2764,63 @@ msgid ""
 "associated with this launch configuration can no longer be found in the "
 "cloud. It may have been deregistered."
 msgstr ""
+"这个启动配置不可用，因为找不到指定的虚拟机模板.\"\n"
+"\"该模板可能已经被注销."
 
 #: eucaconsole/templates/launchconfigs/launchconfig_view.pt:131
 msgid "Please delete this launch configuration."
-msgstr ""
+msgstr "请删除这个启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:21
 msgid "Create new launch configuration"
-msgstr ""
+msgstr "创建新的启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:64
 msgid "Please specify the launch configuration name and the instance size/type."
-msgstr ""
+msgstr "请指定启动配置名字和虚拟机类型"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:90
 msgid "Please specify the key pair and security group."
-msgstr ""
+msgstr "请指定密钥对和安全组"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:133
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:160
 msgid "Create Launch Configuration"
-msgstr ""
+msgstr "创建启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:144
 msgid "Please specify user data and other advanced options (optional)."
-msgstr ""
+msgstr "请指定用户数据和其它高级选项(可选)"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:190
 msgid "Manifest:"
-msgstr ""
+msgstr "Manifest:"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:196
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:109
 msgid "Name:"
-msgstr ""
+msgstr "名字:"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:200
 msgid "Type:"
-msgstr ""
+msgstr "类型:"
 
 #: eucaconsole/templates/launchconfigs/launchconfig_wizard.pt:206
 msgid "Key pair:"
-msgstr ""
+msgstr "密钥对:"
 
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:18
+#: eucaconsole/templates/panels/top_nav.pt:13
 msgid "Launch Configurations"
-msgstr ""
+msgstr "启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:23
 msgid "Create New Launch Configuration"
-msgstr ""
+msgstr "创建启动配置"
 
 #: eucaconsole/templates/launchconfigs/launchconfigs.pt:57
 msgid "Key"
-msgstr ""
+msgstr "Key"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:12
 msgid "propagate"
@@ -2892,12 +2829,17 @@ msgstr ""
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:18
 #: eucaconsole/templates/panels/tag_editor.pt:21
 msgid "Add another tag"
-msgstr ""
+msgstr "添加其它标签"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:18
 #: eucaconsole/templates/panels/tag_editor.pt:21
 msgid "Add a tag"
-msgstr ""
+msgstr "添加标签"
+
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
+#, fuzzy
+msgid "Propagate to instances launched by this scaling group"
+msgstr "在弹性扩展组中的虚拟机"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:25
 msgid "Propagate"
@@ -2908,437 +2850,503 @@ msgstr ""
 msgid ""
 "Tag may not begin with \"aws:\" or its length cannot be longer than 128 "
 "chars"
-msgstr ""
+msgstr "标签不能以\"aws:\"开头，并且少于128个字符"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:35
 msgid "Tag may not begin with \"aws:\" or its length be longer than 128 chars"
-msgstr ""
+msgstr "标签不能以\"aws:\"开头，并且少于128个字符"
 
 #: eucaconsole/templates/panels/autoscale_tag_editor.pt:41
 #: eucaconsole/templates/panels/tag_editor.pt:38
 msgid "Add Tag"
+msgstr "添加标签"
+
+#: eucaconsole/templates/panels/autoscale_tag_editor.pt:53
+#: eucaconsole/templates/panels/tag_editor.pt:58
+msgid ""
+"You must click the \"Add Tag\" button before you submit this for your tag"
+" to be included."
 msgstr ""
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:11
 msgid "Mapping"
-msgstr ""
+msgstr "映射"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:15
 msgid "(GB)"
-msgstr ""
+msgstr "(GB)"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:18
 msgid "Delete on Terminate"
-msgstr ""
+msgstr "注销时删除"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:38
 msgid "Size is required"
-msgstr ""
+msgstr "请输入容量"
+
+#: eucaconsole/templates/panels/bdmapping_editor.pt:51
+#, fuzzy
+msgid "Remove device"
+msgstr "根磁盘类型"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:59
 msgid "Volume:"
-msgstr ""
+msgstr "存储卷:"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:70
 msgid "Mapping:"
-msgstr ""
+msgstr "映射:"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:74
 msgid "Create from snapshot:"
-msgstr ""
+msgstr "从快照创建"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:84
 msgid "Delete on terminate:"
-msgstr ""
+msgstr "注销时删除:"
 
 #: eucaconsole/templates/panels/bdmapping_editor.pt:89
 msgid "Add device"
-msgstr ""
+msgstr "添加设备"
 
 #: eucaconsole/templates/panels/image_picker.pt:13
 msgid "Select a machine image for your"
-msgstr ""
+msgstr "选择一个虚拟机模板"
 
 #: eucaconsole/templates/panels/image_picker.pt:14
 msgid "virtual machine instance"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/templates/panels/image_picker.pt:15
 msgid "launch configuration"
-msgstr ""
+msgstr "启动配置"
 
 #: eucaconsole/templates/panels/image_picker.pt:26
 msgid "Loading..."
-msgstr ""
+msgstr "加载..."
 
 #: eucaconsole/templates/panels/image_picker.pt:32
 msgid "No images were found matching the criteria."
-msgstr ""
+msgstr "找不到满足条件的虚拟机模板"
 
 #: eucaconsole/templates/panels/image_picker.pt:55
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:52
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:61
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:70
 msgid "Select"
-msgstr ""
+msgstr "选择"
 
 #: eucaconsole/templates/panels/image_picker.pt:63
 msgid "OR: enter an image ID"
-msgstr ""
+msgstr "或者: 输入一个模板ID"
 
 #: eucaconsole/templates/panels/landingpage_filters.pt:3
 msgid "Filter by:"
-msgstr ""
+msgstr "过滤条件:"
 
 #: eucaconsole/templates/panels/landingpage_filters.pt:13
 msgid "Apply"
-msgstr ""
+msgstr "确定"
 
 #: eucaconsole/templates/panels/policy_list.pt:11
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:48
 msgid "Add Policy"
-msgstr ""
+msgstr "添加扩展策略"
 
 #: eucaconsole/templates/panels/policy_list.pt:34
 #: eucaconsole/templates/users/user_view.pt:142
 msgid "{{ policyName }} policy"
-msgstr ""
+msgstr "{{ policyName }} 扩展策略"
 
 #: eucaconsole/templates/panels/policy_list.pt:46
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:39
 msgid "Delete policy"
-msgstr ""
+msgstr "删除策略"
 
 #: eucaconsole/templates/panels/policy_list.pt:48
-msgid "Are you sure you want to delete the policy <dynamic element>"
-msgstr ""
+#: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:68
+msgid "Are you sure you want to delete the policy"
+msgstr "你确认要删除策略吗?"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:8
 msgid "Inbound rules"
-msgstr ""
+msgstr "入栈规则"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:25
 msgid "Add a rule"
-msgstr ""
+msgstr "添加一个规则"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:26
 msgid "Add another rule"
-msgstr ""
+msgstr "添加其它规则"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:30
 msgid "Protocol"
-msgstr ""
+msgstr "协议"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:41
 msgid "Port range"
-msgstr ""
+msgstr "端口范围"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:49
 msgid "Valid port range required"
-msgstr ""
+msgstr "请输入合法的端口范围"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:60
 msgid "Allow traffic from"
-msgstr ""
+msgstr "运行流量来自"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:74
 msgid "Valid CIDR entry required"
-msgstr ""
+msgstr "请输入合法的CIDR"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:91
 msgid "Rule already exists"
-msgstr ""
+msgstr "规则已经存在"
 
 #: eucaconsole/templates/panels/securitygroup_rules.pt:99
 msgid "Add Rule"
+msgstr "添加规则"
+
+#: eucaconsole/templates/panels/securitygroup_rules.pt:111
+msgid ""
+"You must click the \"Add Rule\" button before you submit this for your "
+"rule to be included."
 msgstr ""
 
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:7
 msgid "Incoming traffic rules for security group"
-msgstr ""
+msgstr "安全组入栈规则"
 
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:14
 msgid "Rule"
-msgstr ""
+msgstr "规则"
 
 #: eucaconsole/templates/panels/securitygroup_rules_preview.pt:29
-msgid "WARNING, NO RULES DEFINED!"
+#, fuzzy
+#| msgid "Mapping:"
+msgid "WARNING:"
+msgstr "映射:"
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:30
+msgid ""
+"Your instance(s) will not be accessible until you add ingress rules to "
+"security group {{ securityGroup }} (for example, open port 22 for SSH "
+"access to Linux instances)."
+msgstr ""
+
+#: eucaconsole/templates/panels/securitygroup_rules_preview.pt:33
+msgid ""
+"Please remember to edit your security group after you launch your "
+"instance(s)."
 msgstr ""
 
 #: eucaconsole/templates/panels/tag_editor.pt:32
 msgid ""
 "Tag may not begin with \"aws:\" or its length cannot be longer than 256 "
 "chars"
-msgstr ""
-
-#: eucaconsole/templates/panels/tag_editor.pt:45
-msgid "You may not add more than ten tags to a resource."
-msgstr ""
+msgstr "标签不能以\"aws:\"开头,并且少于256个字符"
 
 #: eucaconsole/templates/panels/tag_editor.pt:46
-msgid ""
-"Note that one of your tags is the \"Name\" tag, which isn't displayed "
-"here."
-msgstr ""
+msgid "You may not add more than ten tags to a resource."
+msgstr "你不能添加超过10个标签"
+
+#: eucaconsole/templates/panels/tag_editor.pt:47
+#, fuzzy
+#| msgid "" "Note that one of your tags is the \"Name\" tag, which isn't
+#| displayed " "here."
+msgid "Note that one of your tags is being used to display the resource name."
+msgstr "注意你的一个标签名字是\"Name\",它不能显示出来"
+
+#: eucaconsole/templates/panels/top_nav.pt:8
+msgid "Auto Scaling"
+msgstr "自动缩放服务"
+
+#: eucaconsole/templates/panels/top_nav.pt:10
+msgid "Scaling Groups"
+msgstr "弹性扩展组"
+
+#: eucaconsole/templates/panels/top_nav.pt:26
+msgid "Network &amp; Security"
+msgstr "网络和安全"
+
+#: eucaconsole/templates/panels/top_nav.pt:28
+msgid "Security Groups"
+msgstr "安全组"
+
+#: eucaconsole/templates/panels/top_nav.pt:37
+#: eucaconsole/templates/users/quotas.pt:72
+msgid "IAM"
+msgstr "用户和认证"
+
+#: eucaconsole/templates/panels/top_nav.pt:39
+#: eucaconsole/templates/users/users.pt:24
+msgid "IAM Users"
+msgstr "IAM 用户"
 
 #: eucaconsole/templates/panels/user_editor.pt:13
 #: eucaconsole/templates/users/user_view.pt:52
 msgid "User"
-msgstr ""
+msgstr "用户"
 
 #: eucaconsole/templates/panels/user_editor.pt:19
 msgid "Add another user"
-msgstr ""
+msgstr "添加其它用户"
 
 #: eucaconsole/templates/panels/user_editor.pt:20
 msgid "Add a user"
-msgstr ""
+msgstr "添加一个用户"
 
 #: eucaconsole/templates/panels/user_editor.pt:27
 msgid ""
 "Must have at least one user, and the names of users must be alphanumeric,"
 " including the following common characters: plus (+), equal (=), comma "
 "(,), period (.), at (@), and dash (-)."
-msgstr ""
+msgstr "你至少添加一个用户, 用户名必须由字母和下面的字符组成: 加号(+),等号(=),逗号(,),点(.),(@)和(-)"
 
 #: eucaconsole/templates/panels/user_editor.pt:33
 msgid "Add User"
-msgstr ""
+msgstr "添加用户"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:14
 msgid "Create IAM policy"
-msgstr ""
+msgstr "创建IAM策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:21
 msgid "Add access policy for:"
-msgstr ""
+msgstr "添加访问策略:"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:33
 msgid "Select a template"
-msgstr ""
+msgstr "选择一个模板"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:38
 msgid "Create a custom policy"
-msgstr ""
+msgstr "定制一个策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:48
 msgid "Account administrator access"
-msgstr ""
+msgstr "账户管理员访问策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:49
 msgid "Provides full access to all resources, including users and groups"
-msgstr ""
+msgstr "提供全面的资源访问权限,包括用户和用户组"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:57
 msgid "User access"
-msgstr ""
+msgstr "用户访问策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:58
 msgid "Provides full access to all resources, but not users and groups"
-msgstr ""
+msgstr "提供对所有资源的访问，但不包括用户和用户组"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:66
 msgid "Monitor access"
-msgstr ""
+msgstr "监视访问策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:67
 msgid ""
 "Provides read-only access to all resources, with no access to users and "
 "groups"
-msgstr ""
+msgstr "提供对所有资源的只读访问，但不能访问用户和用户组"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:83
 msgid "Use the policy generator"
-msgstr ""
+msgstr "使用策略生成器"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:87
 msgid ""
 "This tool helps you easily create a policy without needing to understand "
 "policy language"
-msgstr ""
+msgstr "使用本工具你可以轻易的创建一个策略，而不需要去理解策略语言"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:100
 msgid "Upload or write a file (advanced)"
-msgstr ""
+msgstr "上传或者写到一个文件(高级)"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:104
 msgid ""
 "You may write a policy using policy syntax by simply copy/pasting or "
 "typing directly into the Policy box in the panel on the right."
-msgstr ""
+msgstr "你可以使用策略语法直接写一个策略，通过拷贝和粘贴或者直接在右边的策略输入框编写一个策略."
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:134
 msgid "Create Policy"
-msgstr ""
+msgstr "创建策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:139
 msgid "Creating Policy"
-msgstr ""
+msgstr "创建策略"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:155
 msgid "Warning: Policy name conflict"
-msgstr ""
+msgstr "警告:策略名字冲突"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:156
 msgid ""
 "The existing policy will be replaced with this policy if you do not "
 "choose a different name."
-msgstr ""
+msgstr "如果你选择相同的名字，现存的策略会被替换掉"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:161
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:107
 msgid "Do not show me this again"
-msgstr ""
+msgstr "不要再显示这个"
 
 #: eucaconsole/templates/policies/iam_policy_wizard.pt:163
 msgid "I Understand the Risks"
-msgstr ""
+msgstr "我明白这个风险"
 
 #: eucaconsole/templates/policies/policy_generator.pt:4
 msgid "Allow"
-msgstr ""
+msgstr "允许"
 
 #: eucaconsole/templates/policies/policy_generator.pt:5
 msgid "Deny"
-msgstr ""
+msgstr "拒绝"
 
 #: eucaconsole/templates/policies/policy_generator.pt:58
 msgid "Resources"
-msgstr ""
+msgstr "资源"
 
 #: eucaconsole/templates/policies/policy_generator.pt:79
 msgid "Set a specific resource (ARN):"
-msgstr ""
+msgstr "指定一个具体资源(ARN):"
 
 #: eucaconsole/templates/policies/policy_generator.pt:82
 msgid "Set another resource (ARN):"
-msgstr ""
+msgstr "设置其它资源(ARN):"
+
+#: eucaconsole/templates/policies/policy_generator.pt:85
+#, fuzzy
+msgid "All resources"
+msgstr "资源"
 
 #: eucaconsole/templates/policies/policy_generator.pt:89
 msgid "Set a specific resource:"
-msgstr ""
+msgstr "指定具体的资源:"
 
 #: eucaconsole/templates/policies/policy_generator.pt:92
 msgid "Set another resource:"
-msgstr ""
+msgstr "设置其它资源"
 
 #: eucaconsole/templates/policies/policy_generator.pt:152
 msgid "Add Resource"
-msgstr ""
+msgstr "添加资源"
 
 #: eucaconsole/templates/policies/policy_generator.pt:159
 msgid "Conditions (optional)"
-msgstr ""
+msgstr "条件(可选)"
 
 #: eucaconsole/templates/policies/policy_generator.pt:171
 msgid "Add a condition:"
-msgstr ""
+msgstr "添加条件:"
 
 #: eucaconsole/templates/policies/policy_generator.pt:174
 msgid "Add another condition:"
-msgstr ""
+msgstr "添加其它条件:"
 
 #: eucaconsole/templates/policies/policy_generator.pt:181
 msgid "Select key..."
-msgstr ""
+msgstr "选择Key。。。"
 
 #: eucaconsole/templates/policies/policy_generator.pt:188
 msgid "EBS optimized"
-msgstr ""
+msgstr "EBS 优化"
 
 #: eucaconsole/templates/policies/policy_generator.pt:192
 msgid "Image type"
-msgstr ""
+msgstr "虚拟机模板类型"
 
 #: eucaconsole/templates/policies/policy_generator.pt:204
 msgid "Parent snapshot"
-msgstr ""
+msgstr "父快照"
 
 #: eucaconsole/templates/policies/policy_generator.pt:208
 msgid "Parent volume"
-msgstr ""
+msgstr "父存储卷"
 
 #: eucaconsole/templates/policies/policy_generator.pt:212
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:66
 msgid "Placement group"
-msgstr ""
+msgstr "Placement group"
 
 #: eucaconsole/templates/policies/policy_generator.pt:220
 msgid "Tenancy"
-msgstr ""
+msgstr "租期"
 
 #: eucaconsole/templates/policies/policy_generator.pt:225
 msgid "Target image"
-msgstr ""
+msgstr "目的虚拟机模板"
 
 #: eucaconsole/templates/policies/policy_generator.pt:229
 msgid "Volume IOPS"
-msgstr ""
+msgstr "存储卷IOPS"
 
 #: eucaconsole/templates/policies/policy_generator.pt:233
 #: eucaconsole/templates/volumes/volume_view.pt:113
 msgid "Volume size"
-msgstr ""
+msgstr "存储卷容量"
 
 #: eucaconsole/templates/policies/policy_generator.pt:237
 msgid "Volume type"
-msgstr ""
+msgstr "存储卷类型"
 
 #: eucaconsole/templates/policies/policy_generator.pt:244
 msgid "Canned ACL (s3:x-amz-acl)"
-msgstr ""
+msgstr "Canned ACL (s3:x-amz-acl)"
 
 #: eucaconsole/templates/policies/policy_generator.pt:248
 msgid "Version ID (s3:VersionId)"
-msgstr ""
+msgstr "版本ID"
 
 #: eucaconsole/templates/policies/policy_generator.pt:252
 msgid "Restrict to region (s3:LocationPrefix)"
-msgstr ""
+msgstr "Restrict to region (s3:LocationPrefix)"
 
 #: eucaconsole/templates/policies/policy_generator.pt:256
 msgid "Prefix (s3:prefix)"
-msgstr ""
+msgstr "前缀(s3:前缀)"
 
 #: eucaconsole/templates/policies/policy_generator.pt:260
 msgid "Delimiter (s3:delimiter)"
-msgstr ""
+msgstr "分隔符 (s3:分隔符)"
 
 #: eucaconsole/templates/policies/policy_generator.pt:267
 msgid "Current time"
-msgstr ""
+msgstr "当前时间"
 
 #: eucaconsole/templates/policies/policy_generator.pt:268
 msgid "Epoch time"
-msgstr ""
+msgstr "Epoch time"
 
 #: eucaconsole/templates/policies/policy_generator.pt:269
 msgid "Secure transport"
-msgstr ""
+msgstr "安全传输"
 
 #: eucaconsole/templates/policies/policy_generator.pt:270
 msgid "Source ARN"
-msgstr ""
+msgstr "源ARN"
 
 #: eucaconsole/templates/policies/policy_generator.pt:271
 msgid "Source IP"
-msgstr ""
+msgstr "源IP"
 
 #: eucaconsole/templates/policies/policy_generator.pt:272
 msgid "User agent"
-msgstr ""
+msgstr "用户端"
 
 #: eucaconsole/templates/policies/policy_generator.pt:273
 msgid "User ID"
-msgstr ""
+msgstr "用户ID"
 
 #: eucaconsole/templates/policies/policy_generator.pt:329
 msgid "True"
-msgstr ""
+msgstr "True"
 
 #: eucaconsole/templates/policies/policy_generator.pt:443
 msgid "Add Condition"
-msgstr ""
+msgstr "添加条件"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:12
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:11
@@ -3348,41 +3356,41 @@ msgstr ""
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:12
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:18
 msgid "Scaling groups"
-msgstr ""
+msgstr "弹性扩展组"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:19
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:18
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:19
 msgid "Details for scaling group:"
-msgstr ""
+msgstr "弹性扩展详细信息:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:25
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:24
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:25
 msgid "Policies"
-msgstr ""
+msgstr "扩展策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:30
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:103
 msgid "To automatically scale your group up or down, please"
-msgstr ""
+msgstr "要自动扩展或者收缩你的虚拟机，请"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:31
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:104
 msgid "add scaling policies"
-msgstr ""
+msgstr "添加扩展策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:45
 msgid "Mark unhealthy"
-msgstr ""
+msgstr "标示为不健康"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:59
 msgid "State"
-msgstr ""
+msgstr "状态"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:82
 msgid "Mark instance unhealthy"
-msgstr ""
+msgstr "标示虚拟机为不健康"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:83
 msgid ""
@@ -3392,315 +3400,307 @@ msgstr ""
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:93
 msgid "Yes, Mark Unhealthy"
-msgstr ""
+msgstr "是的，标示为不健康"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_instances.pt:103
 msgid "Are you sure you want to terminate instance"
-msgstr ""
+msgstr "你确定要注销虚拟机?"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:31
 msgid "Add a policy"
-msgstr ""
+msgstr "添加策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:45
 msgid "Policy:"
-msgstr ""
+msgstr "策略:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:48
 msgid "Alarms:"
-msgstr ""
+msgstr "告警:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:66
 msgid "Delete scaling group policy"
-msgstr ""
-
-#: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:68
-msgid "Are you sure you want to delete the policy"
-msgstr ""
+msgstr "删除弹性扩展组策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policies.pt:74
 msgid "Yes, Delete Policy"
-msgstr ""
+msgstr "是的,删除策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:20
 msgid "Create scaling policy for:"
-msgstr ""
+msgstr "创建弹性扩展组:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_policy.pt:41
 msgid "select alarm..."
-msgstr ""
+msgstr "选择告警..."
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:45
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:57
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:52
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:79
 msgid "Capacity"
-msgstr ""
+msgstr "容量"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:57
 msgid "Details"
-msgstr ""
+msgstr "详细情况"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:72
 msgid "Health Check"
-msgstr ""
+msgstr "健康检查"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_view.pt:101
 msgid "Next Step"
-msgstr ""
+msgstr "下一步"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:19
 msgid "Create new scaling group"
-msgstr ""
+msgstr "创建弹性扩展组"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:92
 msgid "Create Scaling Group"
-msgstr ""
+msgstr "创建弹性扩展组"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:113
 msgid "Launch configuration:"
-msgstr ""
+msgstr "启动配置:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:120
 msgid "Instances:"
-msgstr ""
+msgstr "虚拟机:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:128
 msgid "Health check:"
-msgstr ""
+msgstr "健康检查:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:132
 msgid "Grace period:"
-msgstr ""
+msgstr "宽限时间段:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:136
 msgid "Availability zones:"
-msgstr ""
+msgstr "可用区域:"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:153
 msgid "No launch configurations found"
-msgstr ""
+msgstr "没有启动配置"
 
 #: eucaconsole/templates/scalinggroups/scalinggroup_wizard.pt:154
 msgid ""
 "You must create a launch configuration before you can create a scaling "
 "group."
-msgstr ""
+msgstr "在创建弹性扩展组前你必须创建启动配置"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:23
 msgid "Create New Scaling Group"
-msgstr ""
+msgstr "创建弹性扩展组"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:33
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:112
 msgid "Manage instances"
-msgstr ""
+msgstr "管理虚拟机"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:36
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:115
 msgid "Manage policies"
-msgstr ""
+msgstr "管理策略"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:48
 msgid "instance"
-msgstr ""
+msgstr "虚拟机"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:53
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:93
 msgid "Min:"
-msgstr ""
+msgstr "最少"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:54
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:94
 msgid "Desired:"
-msgstr ""
+msgstr "理想"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:55
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:95
 msgid "Max:"
-msgstr ""
+msgstr "最多"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:76
 msgid "Launch config"
-msgstr ""
+msgstr "启动配置"
 
 #: eucaconsole/templates/scalinggroups/scalinggroups.pt:78
 msgid "Avail zones"
-msgstr ""
+msgstr "可用区域"
 
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:25
 msgid "Details for security group:"
-msgstr ""
+msgstr "安全组详细信息:"
 
 #: eucaconsole/templates/securitygroups/securitygroup_view.pt:29
 msgid "Create new security group"
-msgstr ""
+msgstr "创建安全组"
 
 #: eucaconsole/templates/securitygroups/securitygroups.pt:23
 msgid "Create New Security Group"
-msgstr ""
+msgstr "创建安全组"
 
 #: eucaconsole/templates/securitygroups/securitygroups.pt:35
 #: eucaconsole/templates/securitygroups/securitygroups.pt:50
 msgid "Rules"
-msgstr ""
+msgstr "规则"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:23
 msgid "Details for snapshot:"
-msgstr ""
+msgstr "快照详细信息:"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:27
 msgid "Create new snapshot"
-msgstr ""
+msgstr "创建新的快照"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:39
 msgid "Waiting for snapshot to be completed..."
-msgstr ""
+msgstr "等待快照完成..."
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:42
 #: eucaconsole/templates/snapshots/snapshots.pt:32
 #: eucaconsole/templates/snapshots/snapshots.pt:118
 msgid "Create volume from snapshot"
-msgstr ""
+msgstr "从快照创建存储卷"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:48
 #: eucaconsole/templates/snapshots/snapshots.pt:38
 #: eucaconsole/templates/snapshots/snapshots.pt:124
 #: eucaconsole/templates/volumes/volume_snapshots.pt:46
 msgid "Register as image"
-msgstr ""
+msgstr "注册虚拟机模板"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:65
 msgid "Progress"
-msgstr ""
+msgstr "进度"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:85
 #: eucaconsole/templates/snapshots/snapshots.pt:55
 #: eucaconsole/templates/volumes/volume_snapshots.pt:59
 msgid "Snapshot ID"
-msgstr ""
+msgstr "快照ID"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:93
 msgid "Created from volume"
-msgstr ""
+msgstr "从存储卷创建"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:99
 msgid "Time started"
-msgstr ""
+msgstr "开始时间"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:114
 msgid "Snapshot was successfully deleted."
-msgstr ""
+msgstr "成功删除快照"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:115
 msgid "Return to snapshots page"
-msgstr ""
+msgstr "返回到快照页"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:148
 msgid "You must have volumes before you can create snapshots."
-msgstr ""
+msgstr "在创建快照前你必须有存储卷"
 
 #: eucaconsole/templates/snapshots/snapshot_view.pt:149
 #: eucaconsole/templates/volumes/volumes.pt:23
 msgid "Create New Volume"
-msgstr ""
+msgstr "创建存储卷"
 
 #: eucaconsole/templates/snapshots/snapshots.pt:24
 msgid "Create New Snapshot"
-msgstr ""
+msgstr "创建快照"
 
 #: eucaconsole/templates/snapshots/snapshots.pt:59
 #: eucaconsole/templates/volumes/volume_snapshots.pt:63
 msgid "Start time"
-msgstr ""
+msgstr "开始时间"
 
 #: eucaconsole/templates/snapshots/snapshots.pt:88
 msgid "Time Started"
-msgstr ""
+msgstr "开始时间"
 
 #: eucaconsole/templates/users/quotas.pt:8
 msgid ""
 "Define limits on resources that this user is allowed to create. Leave "
 "blank for unlimited rights."
-msgstr ""
+msgstr "定义用户可以创建的资源限制，留空表示没有限制"
 
 #: eucaconsole/templates/users/quotas.pt:14
 msgid "EC2"
-msgstr ""
+msgstr "EC2"
 
 #: eucaconsole/templates/users/quotas.pt:31
 msgid "S3/Walrus"
-msgstr ""
+msgstr "S3/Walrus"
 
 #: eucaconsole/templates/users/quotas.pt:46
 msgid "Auto scaling"
-msgstr ""
+msgstr "自动缩放"
 
 #: eucaconsole/templates/users/quotas.pt:60
 msgid "Elastic load balancing"
-msgstr ""
-
-#: eucaconsole/templates/users/quotas.pt:72
-msgid "IAM"
-msgstr ""
+msgstr "弹性负载均衡"
 
 #: eucaconsole/templates/users/user_new.pt:15
 #: eucaconsole/templates/users/user_new.pt:21
 msgid "Create new users"
-msgstr ""
+msgstr "新建用户"
 
 #: eucaconsole/templates/users/user_new.pt:39
 #: eucaconsole/templates/users/user_view.pt:31
 #: eucaconsole/templates/users/user_view.pt:364
 msgid "Quotas"
-msgstr ""
+msgstr "配额"
 
 #: eucaconsole/templates/users/user_new.pt:60
 #: eucaconsole/templates/users/user_view.pt:369
 msgid "Quota values must be integers greater than zero."
-msgstr ""
+msgstr "配额值必须是大于0的整数"
 
 #: eucaconsole/templates/users/user_new.pt:63
 msgid "Create Users"
-msgstr ""
+msgstr "新建用户"
 
 #: eucaconsole/templates/users/user_view.pt:24
 msgid "Details for user:"
-msgstr ""
+msgstr "用户详细信息:"
 
 #: eucaconsole/templates/users/user_view.pt:30
 msgid "Security credentials"
-msgstr ""
+msgstr "安全证书"
 
 #: eucaconsole/templates/users/user_view.pt:38
 #: eucaconsole/templates/users/user_view.pt:173
 #: eucaconsole/templates/users/user_view.pt:351
 #: eucaconsole/templates/users/users.pt:40
-#: eucaconsole/templates/users/users.pt:122
+#: eucaconsole/templates/users/users.pt:123
 msgid "Disable"
-msgstr ""
+msgstr "禁止"
 
 #: eucaconsole/templates/users/user_view.pt:93
 #: eucaconsole/templates/users/users.pt:56
 #: eucaconsole/templates/users/users.pt:82
 msgid "Groups"
-msgstr ""
+msgstr "用户组"
 
 #: eucaconsole/templates/users/user_view.pt:102
 msgid "Select group..."
-msgstr ""
+msgstr "选择用户组"
 
 #: eucaconsole/templates/users/user_view.pt:113
 msgid "Add User to Group"
-msgstr ""
+msgstr "添加用户到用户组"
 
 #: eucaconsole/templates/users/user_view.pt:128
 msgid "Remove user"
-msgstr ""
+msgstr "删除用户"
 
 #: eucaconsole/templates/users/user_view.pt:157
 msgid "User policies"
-msgstr ""
+msgstr "用户策略"
 
 #: eucaconsole/templates/users/user_view.pt:159
 msgid ""
@@ -3710,1199 +3710,1070 @@ msgstr ""
 
 #: eucaconsole/templates/users/user_view.pt:188
 msgid "Users managing their cloud with the Management Console require a password."
-msgstr ""
+msgstr "用户需要使用密码登陆控制台管理云平台"
 
 #: eucaconsole/templates/users/user_view.pt:189
 msgid "Password set?:"
-msgstr ""
+msgstr "重置密码?"
 
 #: eucaconsole/templates/users/user_view.pt:190
 #: eucaconsole/templates/users/user_view.pt:239
 msgid "Delete password"
-msgstr ""
+msgstr "删除密码"
 
 #: eucaconsole/templates/users/user_view.pt:193
 msgid "Create new password:"
-msgstr ""
+msgstr "创建新密码:"
 
 #: eucaconsole/templates/users/user_view.pt:196
 msgid "Generate and download a random password."
-msgstr ""
+msgstr "随机生成和下载密码"
 
 #: eucaconsole/templates/users/user_view.pt:200
 msgid "Generate Random Password"
-msgstr ""
+msgstr "随机生成密码"
 
 #: eucaconsole/templates/users/user_view.pt:203
 msgid "OR"
-msgstr ""
+msgstr "或者"
 
 #: eucaconsole/templates/users/user_view.pt:206
 msgid "Manually enter a password."
-msgstr ""
+msgstr "手工输入密码"
 
 #: eucaconsole/templates/users/user_view.pt:222
 msgid "Password must be at least 6 characters"
-msgstr ""
+msgstr "密码必须超过6个字符"
 
 #: eucaconsole/templates/users/user_view.pt:229
 msgid "Save Password"
-msgstr ""
+msgstr "保存密码"
 
 #: eucaconsole/templates/users/user_view.pt:241
 msgid "Are you sure you want to delete this user's password"
-msgstr ""
+msgstr "你确定要删除密码?"
 
 #: eucaconsole/templates/users/user_view.pt:248
 msgid "Yes, Delete Password"
-msgstr ""
+msgstr "是的，删除密码"
 
 #: eucaconsole/templates/users/user_view.pt:257
 msgid ""
 "This operation requires the password of the person making the request. "
 "Please enter your password below"
-msgstr ""
+msgstr "请输入你的密码"
 
 #: eucaconsole/templates/users/user_view.pt:264 eucaconsole/views/users.py:518
 msgid "The password you entered is incorrect."
-msgstr ""
+msgstr "你输入的密码不对"
 
 #: eucaconsole/templates/users/user_view.pt:269
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 #: eucaconsole/templates/users/user_view.pt:283
 msgid "Access keys"
-msgstr ""
+msgstr "访问keys"
 
 #: eucaconsole/templates/users/user_view.pt:284
 msgid ""
 "Users managing their cloud with other tools than the Management Console "
 "require access keys."
-msgstr ""
+msgstr "用户使用其它工具来管理运平台是需要使用访问keys"
 
 #: eucaconsole/templates/users/user_view.pt:289
 msgid "Generate Access Key"
-msgstr ""
+msgstr "生成访问Key"
 
 #: eucaconsole/templates/users/user_view.pt:296
 msgid "ACCESS KEY ID"
-msgstr ""
+msgstr "访问KEY ID"
 
 #: eucaconsole/templates/users/user_view.pt:297
 msgid "STATUS"
-msgstr ""
+msgstr "状态"
 
 #: eucaconsole/templates/users/user_view.pt:298
 msgid "ACTIONS"
-msgstr ""
+msgstr "操作"
 
 #: eucaconsole/templates/users/user_view.pt:308
 msgid "Deactivate"
-msgstr ""
+msgstr "禁止"
 
 #: eucaconsole/templates/users/user_view.pt:311
 msgid "Activate"
-msgstr ""
+msgstr "激活"
 
 #: eucaconsole/templates/users/user_view.pt:323
 msgid "Delete access key"
-msgstr ""
+msgstr "删除访问key"
 
 #: eucaconsole/templates/users/user_view.pt:325
 msgid "Are you sure you want to delete this access key?"
-msgstr ""
+msgstr "你确认要删除这个访问key"
 
 #: eucaconsole/templates/users/user_view.pt:333
 msgid "Yes, Delete Key"
-msgstr ""
+msgstr "是的，删除key"
 
 #: eucaconsole/templates/users/user_view.pt:372
 msgid "Save Quotas"
-msgstr ""
-
-#: eucaconsole/templates/users/users.pt:24
-msgid "IAM Users"
-msgstr ""
+msgstr "保存配额"
 
 #: eucaconsole/templates/users/users.pt:30
 msgid "Create New Users"
-msgstr ""
+msgstr "新建用户"
 
 #: eucaconsole/templates/users/users.pt:43
-#: eucaconsole/templates/users/users.pt:125
+#: eucaconsole/templates/users/users.pt:126
 msgid "Enable"
-msgstr ""
+msgstr "有效"
 
 #: eucaconsole/templates/users/users.pt:60
 msgid "Password Set"
-msgstr ""
+msgstr "密码设置"
 
 #: eucaconsole/templates/users/users.pt:64
 #: eucaconsole/templates/users/users.pt:84
 msgid "Access Keys"
-msgstr ""
+msgstr "访问Keys"
 
 #: eucaconsole/templates/users/users.pt:73
 msgid "Does not have password"
-msgstr ""
+msgstr "没有密码"
 
 #: eucaconsole/templates/users/users.pt:74
 msgid "Does not have active access keys"
-msgstr ""
+msgstr "没有有效的访问keys"
 
 #: eucaconsole/templates/users/users.pt:75
 #: eucaconsole/templates/users/users.pt:94
 msgid "Active"
-msgstr ""
+msgstr "有效"
 
 #: eucaconsole/templates/users/users.pt:76
 #: eucaconsole/templates/users/users.pt:95
 msgid "Disabled"
-msgstr ""
+msgstr "禁止"
 
 #: eucaconsole/templates/users/users.pt:80
 msgid "User name"
-msgstr ""
+msgstr "用户名"
 
-#: eucaconsole/templates/users/users.pt:108
+#: eucaconsole/templates/users/users.pt:109
 msgid "active"
-msgstr ""
+msgstr "有效"
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:21
 #: eucaconsole/templates/volumes/volume_view.pt:28
 msgid "Details for volume:"
-msgstr ""
+msgstr "存储卷详细信息"
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:33
 msgid "Create a snapshot"
-msgstr ""
+msgstr "创建快照"
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:96
 msgid "Create snapshot from volume"
-msgstr ""
+msgstr "从存储卷创建快照"
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:97
 msgid "Add a snapshot for"
-msgstr ""
+msgstr "添加一个快照"
 
 #: eucaconsole/templates/volumes/volume_snapshots.pt:107
 msgid "Create Snapshot"
-msgstr ""
+msgstr "创建快照"
 
 #: eucaconsole/templates/volumes/volume_view.pt:32
 msgid "Create new volume"
-msgstr ""
+msgstr "创建存储卷"
 
 #: eucaconsole/templates/volumes/volume_view.pt:49
 #: eucaconsole/templates/volumes/volumes.pt:36
 #: eucaconsole/templates/volumes/volumes.pt:124
 msgid "Attach to instance"
-msgstr ""
+msgstr "挂载到虚拟机"
 
 #: eucaconsole/templates/volumes/volume_view.pt:53
 #: eucaconsole/templates/volumes/volumes.pt:39
 #: eucaconsole/templates/volumes/volumes.pt:127
 msgid "Detach from instance"
-msgstr ""
+msgstr "从虚拟机卸载"
 
 #: eucaconsole/templates/volumes/volume_view.pt:79
 #: eucaconsole/templates/volumes/volumes.pt:69
 msgid "Attached to instance"
-msgstr ""
+msgstr "挂载到虚拟机"
 
 #: eucaconsole/templates/volumes/volume_view.pt:85
 msgid "Attached as device"
-msgstr ""
+msgstr "挂在为设备"
 
 #: eucaconsole/templates/volumes/volume_view.pt:89
 msgid "Attachment time"
-msgstr ""
+msgstr "挂载时间"
 
 #: eucaconsole/templates/volumes/volume_view.pt:96
 msgid "Created from snapshot"
-msgstr ""
+msgstr "从快照创建"
 
 #: eucaconsole/templates/volumes/volume_view.pt:106
 msgid "Volume size must be greater than or equal to {{ snapshotSize }}"
-msgstr ""
+msgstr "存储卷容量必须大于或等于快照size"
 
 #: eucaconsole/templates/volumes/volume_view.pt:117
 msgid ""
 "You should create your volume in the same availability zone as the "
 "instance with which you want to use it."
-msgstr ""
+msgstr "你用在同一可用区域为虚拟机创建存储卷"
 
 #: eucaconsole/templates/volumes/volume_view.pt:139
 msgid "Create Volume"
-msgstr ""
+msgstr "创建存储卷"
 
 #: eucaconsole/templates/volumes/volumes.pt:33
 #: eucaconsole/templates/volumes/volumes.pt:121
 msgid "Manage snapshots"
-msgstr ""
+msgstr "管理快照"
 
 #: eucaconsole/templates/volumes/volumes.pt:90
 msgid "Avail Zone"
-msgstr ""
+msgstr "可用区域"
 
 #: eucaconsole/views/alarms.py:103
 msgid "Creating alarm {0}"
-msgstr ""
+msgstr "正在创建告警 {0}"
 
 #: eucaconsole/views/alarms.py:110
 msgid "Successfully created alarm"
-msgstr ""
+msgstr "成功创建告警"
 
 #: eucaconsole/views/alarms.py:132
 msgid "Deleting alarm {0}"
-msgstr ""
+msgstr "正在删除告警 {0}"
 
 #: eucaconsole/views/alarms.py:134
 msgid "Successfully deleted alarm"
-msgstr ""
+msgstr "成功删除告警"
 
 #: eucaconsole/views/changepassword.py:111
 msgid "Successfully changed password."
-msgstr ""
+msgstr "成功更改密码"
 
 #: eucaconsole/views/groups.py:66
 msgid "Group name: A to Z"
-msgstr ""
+msgstr "用户组名:A to Z"
 
 #: eucaconsole/views/groups.py:67
 msgid "Group name: Z to A"
-msgstr ""
+msgstr "用户组名:Z to A"
 
 #: eucaconsole/views/groups.py:87 eucaconsole/views/groups.py:236
 msgid "Deleting group {0}"
-msgstr ""
+msgstr "正在删除用户组 {0}"
 
 #: eucaconsole/views/groups.py:90 eucaconsole/views/groups.py:239
 msgid "Successfully deleted group"
-msgstr ""
+msgstr "成功删除用户组"
 
 #: eucaconsole/views/groups.py:93
 msgid "Unable to delete group."
-msgstr ""
+msgstr "不能删除用户组"
 
 #: eucaconsole/views/groups.py:200
 msgid "Creating group {0}"
-msgstr ""
+msgstr "正在创建用户组 {0}"
 
 #: eucaconsole/views/groups.py:202
 msgid "Successfully created group {group}"
-msgstr ""
+msgstr "成功创建用户组 {0}"
 
 #: eucaconsole/views/groups.py:222
 msgid "Updating group {0}"
-msgstr ""
+msgstr "正在更改用户组 {0}"
 
 #: eucaconsole/views/groups.py:246
 msgid "Successfully modified group {group}"
-msgstr ""
+msgstr "成功更改用户组 {0}"
 
 #: eucaconsole/views/groups.py:305 eucaconsole/views/users.py:623
 msgid "Adding user {0} to group {1}"
-msgstr ""
+msgstr "正在添加用户 {0} 到用户组 {1}"
 
 #: eucaconsole/views/groups.py:307
 msgid "Successfully added user {user}"
-msgstr ""
+msgstr "成功添加用户 {0}"
 
 #: eucaconsole/views/groups.py:318 eucaconsole/views/users.py:635
 msgid "Removing user {0} from group {1}"
-msgstr ""
+msgstr "正在移除用户组 {1} 用户 {0}"
 
 #: eucaconsole/views/groups.py:320
 msgid "Successfully removed user {user}"
-msgstr ""
+msgstr "成功移除用户 {0}"
 
 #: eucaconsole/views/groups.py:352
 msgid "Updating policy {0} for group {1}"
-msgstr ""
+msgstr "正在更改用户组 {1} 策略 {0}"
 
 #: eucaconsole/views/groups.py:356
 msgid "Successfully updated group policy"
-msgstr ""
+msgstr "成功更改用户组策略"
 
 #: eucaconsole/views/groups.py:365
 msgid "Deleting policy {0} for group {1}"
-msgstr ""
+msgstr "正在删除用户组 {1} 策略 {0}"
 
 #: eucaconsole/views/groups.py:367
 msgid "Successfully deleted group policy"
-msgstr ""
+msgstr "成功删除用户组策略"
 
 #: eucaconsole/views/images.py:84
 msgid "Image name: A to Z"
-msgstr ""
+msgstr "虚拟机模板名:A to Z"
 
 #: eucaconsole/views/images.py:85
 msgid "Image name: Z to A"
-msgstr ""
+msgstr "虚拟机模板名:Z to A"
 
 #: eucaconsole/views/images.py:253
 msgid "Successfully modified image"
-msgstr ""
+msgstr "成功更改虚拟机模板"
 
 #: eucaconsole/views/instances.py:75 eucaconsole/views/instances.py:305
 msgid "linux"
-msgstr ""
+msgstr "linux"
 
 #: eucaconsole/views/instances.py:136
 msgid "Launch time: Oldest to Newest"
-msgstr ""
+msgstr "创建时间:最远到最近"
 
 #: eucaconsole/views/instances.py:137
 msgid "Launch time: Newest to Oldest"
-msgstr ""
+msgstr "创建时间:最近到最远"
 
 #: eucaconsole/views/instances.py:139
 msgid "Instance name: A to Z"
-msgstr ""
+msgstr "虚拟机名:A to Z"
 
 #: eucaconsole/views/instances.py:140
 msgid "Instance name: Z to A"
-msgstr ""
+msgstr "虚拟机名:Z to A"
 
 #: eucaconsole/views/instances.py:162 eucaconsole/views/instances.py:445
 #: eucaconsole/views/instances.py:457
 msgid "Starting instance {0}"
-msgstr ""
+msgstr "正在启动虚拟机 {0}"
 
 #: eucaconsole/views/instances.py:165 eucaconsole/views/instances.py:460
 msgid ""
 "Successfully sent start instance request.  It may take a moment to start "
 "the instance."
-msgstr ""
+msgstr "成功发出启动请求，可能要一段时间才能启动"
 
 #: eucaconsole/views/instances.py:168
 msgid "Unable to start instance"
-msgstr ""
+msgstr "不能启动虚拟机"
 
 #: eucaconsole/views/instances.py:180 eucaconsole/views/instances.py:471
 msgid "Stopping instance {0}"
-msgstr ""
+msgstr "正在停止虚拟机 {0}"
 
 #: eucaconsole/views/instances.py:182 eucaconsole/views/instances.py:473
 msgid ""
 "Successfully sent stop instance request.  It may take a moment to stop "
 "the instance."
-msgstr ""
+msgstr "成功发出停止请求，可能要一段时间才能停止"
 
 #: eucaconsole/views/instances.py:185
 msgid "Only EBS-backed instances can be stopped"
-msgstr ""
+msgstr "只有EBS-backed的虚拟机才能被停止"
 
 #: eucaconsole/views/instances.py:188
 msgid "Unable to stop instance"
-msgstr ""
+msgstr "不能停止虚拟机"
 
 #: eucaconsole/views/instances.py:197 eucaconsole/views/instances.py:483
 msgid "Rebooting instance {0}"
-msgstr ""
+msgstr "正在重启虚拟机 {0}"
 
 #: eucaconsole/views/instances.py:199 eucaconsole/views/instances.py:485
 msgid ""
 "Successfully sent reboot request.  It may take a moment to reboot the "
 "instance."
-msgstr ""
+msgstr "成功发出重启请求，可能要一段时间才能重启"
 
 #: eucaconsole/views/instances.py:202 eucaconsole/views/instances.py:488
 msgid "Unable to reboot the instance."
-msgstr ""
+msgstr "不能重启虚拟机"
 
 #: eucaconsole/views/instances.py:205
 msgid "Unable to reboot instance"
-msgstr ""
+msgstr "不能重启虚拟机"
 
 #: eucaconsole/views/instances.py:214 eucaconsole/views/instances.py:497
 msgid "Terminating instance {0}"
-msgstr ""
+msgstr "正在注销虚拟机 {0}"
 
 #: eucaconsole/views/instances.py:216 eucaconsole/views/instances.py:499
 msgid ""
 "Successfully sent terminate instance request.  It may take a moment to "
 "shut down the instance."
-msgstr ""
+msgstr "成功发出请求注销虚拟机，可能要一段时间才能注销"
 
 #: eucaconsole/views/instances.py:223
 msgid "Unable to terminate instance"
-msgstr ""
+msgstr "不能注销虚拟机"
 
 #: eucaconsole/views/instances.py:232
 msgid "Terminating instances {0}"
-msgstr ""
+msgstr "正在注销虚拟机 {0}"
 
 #: eucaconsole/views/instances.py:234
 msgid "Successfully sent request to terminate the following instances:"
-msgstr ""
+msgstr "成功发出请求注销下列虚拟机:"
 
 #: eucaconsole/views/instances.py:238
 msgid "Unable to terminate instances"
-msgstr ""
+msgstr "不能注销虚拟机"
 
 #: eucaconsole/views/instances.py:248
 msgid "Associating IP {0} with instances {1}"
-msgstr ""
+msgstr "正在分配IP {0} 到虚拟机 {1}"
 
 #: eucaconsole/views/instances.py:250 eucaconsole/views/instances.py:529
 msgid "Successfully associated the IP to the instance."
-msgstr ""
+msgstr "成功分配IP到虚拟机"
 
 #: eucaconsole/views/instances.py:260
 msgid "Disassociating IP {0}"
-msgstr ""
+msgstr "正在释放IP {0}"
 
 #: eucaconsole/views/instances.py:262 eucaconsole/views/instances.py:543
 msgid "Successfully disassociated the IP from the instance."
-msgstr ""
+msgstr "成功从虚拟机释放IP地址"
 
 #: eucaconsole/views/instances.py:432
 msgid "Updating instance {0} (type={1}, kernel={2}, ramidisk={3})"
-msgstr ""
+msgstr "正在更改虚拟机 {0} (type={1}, kernel={2}, ramidisk={3})"
 
 #: eucaconsole/views/instances.py:448
 msgid "Successfully modified instance"
-msgstr ""
+msgstr "成功更改虚拟机"
 
 #: eucaconsole/views/instances.py:520
 msgid ""
 "There was a problem with the key, please try again, verifying the correct"
 " private key is used."
-msgstr ""
+msgstr "key有问题，请重试，确认正在使用正确的私有key"
 
 #: eucaconsole/views/instances.py:568
 msgid "Disassociating ip {0} from instance {1}"
-msgstr ""
+msgstr "正在从虚拟机 {1} 释放IP {0} "
 
 #: eucaconsole/views/instances.py:702 eucaconsole/views/volumes.py:129
 #: eucaconsole/views/volumes.py:351
 msgid "Attaching volume {0} to {1} as {2}"
-msgstr ""
+msgstr "正在挂载 存储卷{0} 到虚拟机 {1} 为磁盘 {2}"
 
 #: eucaconsole/views/instances.py:705
 msgid ""
 "Request successfully submitted.  It may take a moment to attach the "
 "volume."
-msgstr ""
+msgstr "成功发出请求，需要一段时间才能启动挂载存储卷"
 
 #: eucaconsole/views/instances.py:716
 msgid "Dettaching volume {0} from {1}"
-msgstr ""
+msgstr "正在从 {1} 卸载存储卷 {0}"
 
 #: eucaconsole/views/instances.py:718 eucaconsole/views/volumes.py:145
 #: eucaconsole/views/volumes.py:367
 msgid ""
 "Request successfully submitted.  It may take a moment to detach the "
 "volume."
-msgstr ""
+msgstr "成功发出请求，需要一段时间才能启动卸载存储卷"
 
 #: eucaconsole/views/instances.py:796 eucaconsole/views/instances.py:898
 msgid "Running instance(s) (num={0}, image={1}, type={2})"
-msgstr ""
+msgstr "正在运行的虚拟机 (num={0}, image={1}, type={2})"
 
 #: eucaconsole/views/instances.py:825 eucaconsole/views/instances.py:928
 msgid ""
 "Successfully sent launch instances request.  It may take a moment to "
 "launch instances "
-msgstr ""
+msgstr "成功发出启动虚拟机请求，需要一段时间才能启动"
 
 #: eucaconsole/views/ipaddresses.py:73
 msgid "Allocating {0} ElasticIPs"
-msgstr ""
+msgstr "正在申请 {0} IP地址 "
 
 #: eucaconsole/views/ipaddresses.py:77
 msgid "Successfully allocated IPs"
-msgstr ""
+msgstr "成功申请IP地址"
 
 #: eucaconsole/views/ipaddresses.py:98 eucaconsole/views/ipaddresses.py:234
 msgid "Associating ElasticIP {0} with instance {1}"
-msgstr ""
+msgstr "正在分配IP地址 {0} 给虚拟机 {1}"
 
 #: eucaconsole/views/ipaddresses.py:101 eucaconsole/views/ipaddresses.py:236
 msgid "Successfully associated IP {ip} with instance {instance}"
-msgstr ""
+msgstr "成功分配IP地址 {0} 给虚拟机 {1}"
 
 #: eucaconsole/views/ipaddresses.py:105
 msgid "Unable to associate IP with instance"
-msgstr ""
+msgstr "不能分配IP地址给虚拟机"
 
 #: eucaconsole/views/ipaddresses.py:114
 msgid "Disassociating ElasticIP {0}"
-msgstr ""
+msgstr "正在释放IP地址 {0}"
 
 #: eucaconsole/views/ipaddresses.py:116
 msgid "Successfully disassociated IP {ip} from instance"
-msgstr ""
+msgstr "成功从虚拟机释放IP地址 {0}"
 
 #: eucaconsole/views/ipaddresses.py:120
 msgid "Unable to disassociate IP from instance"
-msgstr ""
+msgstr "不能从虚拟机释放IP地址 "
 
 #: eucaconsole/views/ipaddresses.py:129 eucaconsole/views/ipaddresses.py:261
 msgid "Releasing ElasticIP {0}"
-msgstr ""
+msgstr "正在收回IP地址 {0}"
 
 #: eucaconsole/views/ipaddresses.py:131 eucaconsole/views/ipaddresses.py:263
 msgid "Successfully released {ip} to the cloud"
-msgstr ""
+msgstr "成功收回IP地址 {0}"
 
 #: eucaconsole/views/ipaddresses.py:135
 msgid "Unable to release IP address"
-msgstr ""
+msgstr "不能收回IP地址"
 
 #: eucaconsole/views/ipaddresses.py:247
 msgid "Disassociating ElasticIP {0} from instance {1}"
-msgstr ""
+msgstr "正在从虚拟机{1} 释放IP {0"
 
 #: eucaconsole/views/ipaddresses.py:250
 msgid "Successfully disassociated IP {ip} from instance {instance}"
-msgstr ""
+msgstr "成功从虚拟机{1} 释放IP {0}"
 
 #: eucaconsole/views/keypairs.py:59 eucaconsole/views/scalinggroups.py:138
 #: eucaconsole/views/securitygroups.py:66 eucaconsole/views/snapshots.py:182
 #: eucaconsole/views/volumes.py:171
 msgid "Name: A to Z"
-msgstr ""
+msgstr "名字: A to Z"
 
 #: eucaconsole/views/keypairs.py:60 eucaconsole/views/scalinggroups.py:139
 #: eucaconsole/views/securitygroups.py:67 eucaconsole/views/snapshots.py:183
 #: eucaconsole/views/volumes.py:172
 msgid "Name: Z to A"
-msgstr ""
+msgstr "名字: Z to A"
 
 #: eucaconsole/views/keypairs.py:159
 msgid "Creating keypair "
-msgstr ""
+msgstr "正在创建密钥对"
 
 #: eucaconsole/views/keypairs.py:165
 msgid "Successfully created key pair {keypair}"
-msgstr ""
+msgstr "成功创建密钥对"
 
 #: eucaconsole/views/keypairs.py:191
 msgid "Importing keypair "
-msgstr ""
+msgstr "正在导入密钥对."
 
 #: eucaconsole/views/keypairs.py:194
 msgid "Successfully imported key pair {keypair}"
-msgstr ""
+msgstr "成功导入密钥对."
 
 #: eucaconsole/views/keypairs.py:207
 msgid "Deleting keypair "
-msgstr ""
+msgstr "正在删除密钥对."
 
 #: eucaconsole/views/keypairs.py:209
 msgid "Successfully deleted keypair"
-msgstr ""
+msgstr "成功删除密钥对."
 
 #: eucaconsole/views/launchconfigs.py:87 eucaconsole/views/launchconfigs.py:195
 msgid "Unable to delete launch configuration"
-msgstr ""
+msgstr "不能删除启动配置."
 
 #: eucaconsole/views/launchconfigs.py:91 eucaconsole/views/launchconfigs.py:200
 msgid "Successfully deleted launch configuration."
-msgstr ""
+msgstr "成功删除启动配置."
 
 #: eucaconsole/views/launchconfigs.py:198
 msgid "Deleting launch configuration {0}"
-msgstr ""
+msgstr "正在删除启动配置 {0}"
 
 #: eucaconsole/views/launchconfigs.py:315
 msgid "Creating launch configuration {0}"
-msgstr ""
+msgstr "正在创建启动配置 {0}"
 
 #: eucaconsole/views/launchconfigs.py:329
 msgid ""
 "Successfully sent create launch configuration request. It may take a "
 "moment to create the launch configuration."
-msgstr ""
+msgstr "成功发出创建启动配置请求. 需要一些时间才能完成创建"
 
 #: eucaconsole/views/login.py:95
 msgid "Session Timed Out"
-msgstr ""
+msgstr "会话超时"
 
 #: eucaconsole/views/login.py:146
 msgid "Invalid user/account name and/or password."
-msgstr ""
+msgstr "不合法的用户/帐号名或者密码."
 
 #: eucaconsole/views/login.py:152
 msgid "No response from host"
-msgstr ""
+msgstr "服务器没有反应"
 
 #: eucaconsole/views/login.py:182
 msgid "Invalid access key and/or secret key."
-msgstr ""
+msgstr "不合法的访问能key/secret key"
 
 #: eucaconsole/views/policies.py:92
 msgid "Creating policy {0} for {1} {2}"
-msgstr ""
+msgstr "正在为 {1} {2} 更改策略 {0}"
 
 #: eucaconsole/views/policies.py:99 eucaconsole/views/users.py:667
 #: eucaconsole/views/users.py:768
 msgid "Successfully updated user policy"
-msgstr ""
+msgstr "成功更改用户策略"
 
 #: eucaconsole/views/policies.py:105
 msgid "Add access policy for"
-msgstr ""
+msgstr "添加访问策略"
 
 #: eucaconsole/views/policies.py:129
 msgid "All instances..."
-msgstr ""
+msgstr "所有虚拟机..."
 
 #: eucaconsole/views/policies.py:139
 msgid "All instance types..."
-msgstr ""
+msgstr "所有虚拟机类型..."
 
 #: eucaconsole/views/policies.py:151
 msgid "All images..."
-msgstr ""
+msgstr "所有虚拟机模板..."
 
 #: eucaconsole/views/policies.py:165
 msgid "All volumes..."
-msgstr ""
+msgstr "所有存储卷..."
 
 #: eucaconsole/views/policies.py:175
 msgid "All snapshots..."
-msgstr ""
+msgstr "所有快照..."
 
 #: eucaconsole/views/policies.py:185
 msgid "All security groups..."
-msgstr ""
+msgstr "所有安全组..."
 
 #: eucaconsole/views/policies.py:196
 msgid "All zones..."
-msgstr ""
+msgstr "所有可用区域..."
 
 #: eucaconsole/views/policies.py:206
 msgid "All key pairs..."
-msgstr ""
+msgstr "所有密钥对..."
 
 #: eucaconsole/views/policies.py:245
 msgid "Unable to locate policy"
-msgstr ""
+msgstr "找不到策略"
 
 #: eucaconsole/views/scalinggroups.py:116
 #: eucaconsole/views/scalinggroups.py:270
 msgid "Deleting scaling group {0}"
-msgstr ""
+msgstr "正在删除弹性扩展组 {0}"
 
 #: eucaconsole/views/scalinggroups.py:123
 #: eucaconsole/views/scalinggroups.py:272
 msgid "Successfully deleted scaling group"
-msgstr ""
+msgstr "成功删除弹性扩展组"
 
 #: eucaconsole/views/scalinggroups.py:140
 msgid "Health status"
-msgstr ""
+msgstr "健康状态"
 
 #: eucaconsole/views/scalinggroups.py:141
 msgid "Current instances"
-msgstr ""
+msgstr "当前虚拟机"
 
 #: eucaconsole/views/scalinggroups.py:236
 msgid "Select one or more availability zones..."
-msgstr ""
+msgstr "选择一个或多个可用区域..."
 
 #: eucaconsole/views/scalinggroups.py:237
 msgid "Select one or more termination policies..."
-msgstr ""
+msgstr "选择一个或多个虚拟机注销策略..."
 
 #: eucaconsole/views/scalinggroups.py:249
 msgid "Updating scaling group {0}"
-msgstr ""
+msgstr "正在更改弹性扩展组 {0}"
 
 #: eucaconsole/views/scalinggroups.py:252
 msgid "Successfully updated scaling group"
-msgstr ""
+msgstr "成功更改弹性扩展组"
 
 #: eucaconsole/views/scalinggroups.py:267
 msgid "Terminating scaling group {0} instances"
-msgstr ""
+msgstr "正在停止弹性扩展组 {0} 的虚拟机"
 
 #: eucaconsole/views/scalinggroups.py:331
 msgid "Marking instance {0} unhealthy"
-msgstr ""
+msgstr "正在标示虚拟机{0} 状态为不健康"
 
 #: eucaconsole/views/scalinggroups.py:334
 msgid "Successfully marked the following instance as unhealthy:"
-msgstr ""
+msgstr "成功标示下列虚拟机状态为不健康"
 
 #: eucaconsole/views/scalinggroups.py:349
 msgid "Terminating scaling group {0} instance {1}"
-msgstr ""
+msgstr "正在停止弹性扩展组 {0} 虚拟机 {1}"
 
 #: eucaconsole/views/scalinggroups.py:352
 msgid "Successfully sent terminate request for instance"
-msgstr ""
+msgstr "成功翻出停止虚拟机请求"
 
 #: eucaconsole/views/scalinggroups.py:448
 msgid "Deleting scaling group {0} policy {1}"
-msgstr ""
+msgstr "正在删除弹性扩展组 {0} 策略 {1}"
 
 #: eucaconsole/views/scalinggroups.py:451
 msgid "Successfully deleted scaling group policy"
-msgstr ""
+msgstr "成功删除弹性扩展组策略"
 
 #: eucaconsole/views/scalinggroups.py:506
 msgid "Creating scaling group {0} policy {1}"
-msgstr ""
+msgstr "正在创建弹性扩展组 {0} 策略 {1}"
 
 #: eucaconsole/views/scalinggroups.py:521
 msgid "Successfully created scaling group policy"
-msgstr ""
+msgstr "成功创建弹性扩展组策略"
 
 #: eucaconsole/views/scalinggroups.py:552
 msgid "Select availability zones..."
-msgstr ""
+msgstr "选择可用区域"
 
 #: eucaconsole/views/scalinggroups.py:553
 msgid "Select load balancers..."
-msgstr ""
+msgstr "选择负载均衡器"
 
 #: eucaconsole/views/scalinggroups.py:567
 msgid "Creating scaling group {0}"
-msgstr ""
+msgstr "正在创建弹性扩展组 {0}"
 
 #: eucaconsole/views/scalinggroups.py:581
 msgid "Successfully created scaling group"
-msgstr ""
+msgstr "成功创建弹性扩展组"
 
 #: eucaconsole/views/securitygroups.py:87
 #: eucaconsole/views/securitygroups.py:177
 msgid "Deleting security group {0}"
-msgstr ""
+msgstr "正在删除安全组 {0}"
 
 #: eucaconsole/views/securitygroups.py:89
 #: eucaconsole/views/securitygroups.py:179
 msgid "Successfully deleted security group"
-msgstr ""
+msgstr "成功删除安全组"
 
 #: eucaconsole/views/securitygroups.py:95
 msgid "Unable to delete security group"
-msgstr ""
+msgstr "不能删除安全组"
 
 #: eucaconsole/views/securitygroups.py:192
 msgid "Creating security group {0}"
-msgstr ""
+msgstr "正在创建安全组 {0}"
 
 #: eucaconsole/views/securitygroups.py:199
 msgid "Successfully created security group"
-msgstr ""
+msgstr "成功创建安全组"
 
 #: eucaconsole/views/securitygroups.py:219
 msgid "Replacing security group {0} tags"
-msgstr ""
+msgstr "正在替换安全组 {0} 标签"
 
 #: eucaconsole/views/securitygroups.py:221
 msgid "Replacing security group {0} rules"
-msgstr ""
+msgstr "正在替换安全组 {0} 规则"
 
 #: eucaconsole/views/securitygroups.py:223
 msgid "Successfully modified security group"
-msgstr ""
+msgstr "成功更改安全组"
 
 #: eucaconsole/views/snapshots.py:90 eucaconsole/views/snapshots.py:343
 msgid "Deregistering image {0}"
-msgstr ""
+msgstr "正在注册虚拟机模板 {0}"
 
 #: eucaconsole/views/snapshots.py:94 eucaconsole/views/snapshots.py:347
 msgid "Deleting snapshot {0}"
-msgstr ""
+msgstr "正在删除快照 {0}"
 
 #: eucaconsole/views/snapshots.py:96 eucaconsole/views/snapshots.py:349
 msgid "Successfully deleted snapshot"
-msgstr ""
+msgstr "成功删除快照"
 
 #: eucaconsole/views/snapshots.py:101
 msgid "Unable to delete snapshot"
-msgstr ""
+msgstr "不能删除快照"
 
 #: eucaconsole/views/snapshots.py:148 eucaconsole/views/snapshots.py:371
 msgid "Registering snapshot {0} as image {1}"
-msgstr ""
+msgstr "正在快照 {0} 注册成虚拟机模板 {1}"
 
 #: eucaconsole/views/snapshots.py:156 eucaconsole/views/snapshots.py:377
 msgid "Successfully registered snapshot"
-msgstr ""
+msgstr "成功注册快照"
 
 #: eucaconsole/views/snapshots.py:165
 msgid "Unable to register snapshot"
-msgstr ""
+msgstr "不能注册快照"
 
 #: eucaconsole/views/snapshots.py:179
 msgid "Start time: Oldest to Newest"
-msgstr ""
+msgstr "开始时间:最远到最近"
 
 #: eucaconsole/views/snapshots.py:180
 msgid "Start time: Newest to Oldest"
-msgstr ""
+msgstr "开始时间:最近到最远"
 
 #: eucaconsole/views/snapshots.py:305
 msgid "Successfully modified snapshot"
-msgstr ""
+msgstr "成功更改快照"
 
 #: eucaconsole/views/snapshots.py:320 eucaconsole/views/volumes.py:472
 msgid "Creating snapshot from volume {0}"
-msgstr ""
+msgstr "正在创建存储卷 {0} 的快照"
 
 #: eucaconsole/views/snapshots.py:329 eucaconsole/views/volumes.py:485
 msgid ""
 "Successfully sent create snapshot request.  It may take a moment to "
 "create the snapshot."
-msgstr ""
+msgstr "成功发出创建快照请求. 需要一些时间才能完成创建"
 
 #: eucaconsole/views/users.py:84
+#, fuzzy
 msgid "User name: A to Z"
-msgstr ""
+msgstr "用户名: Z to A"
 
 #: eucaconsole/views/users.py:85
 msgid "User name: Z to A"
-msgstr ""
+msgstr "用户名: Z to A"
 
 #: eucaconsole/views/users.py:107
 msgid "Disabling user {0}"
-msgstr ""
+msgstr "正在禁止用户 {0}"
 
 #: eucaconsole/views/users.py:113
 msgid "Successfully disabled user"
-msgstr ""
+msgstr "成功禁止用户"
 
 #: eucaconsole/views/users.py:122
 msgid "Enabling user {0}"
-msgstr ""
+msgstr "激活用户 {0}"
 
 #: eucaconsole/views/users.py:133 eucaconsole/views/users.py:442
 #: eucaconsole/views/users.py:507 eucaconsole/views/users.py:543
 #: eucaconsole/views/users.py:573
 msgid "Account"
-msgstr ""
+msgstr "帐号"
 
 #: eucaconsole/views/users.py:133 eucaconsole/views/users.py:442
 #: eucaconsole/views/users.py:507 eucaconsole/views/users.py:543
 #: eucaconsole/views/users.py:573
 msgid "User Name"
-msgstr ""
+msgstr "用户名"
 
 #: eucaconsole/views/users.py:139 eucaconsole/views/users.py:459
 msgid "Successfully added users"
-msgstr ""
+msgstr "成功添加用户"
 
 #: eucaconsole/views/users.py:141
 msgid "Successfully enabled user"
-msgstr ""
+msgstr "成功激活用户"
 
 #: eucaconsole/views/users.py:238
 msgid "User already a member of all groups"
-msgstr ""
+msgstr "用户已经属于用户组"
 
 #: eucaconsole/views/users.py:239
 msgid "There are no groups defined"
-msgstr ""
+msgstr "没有定义安全组"
 
 #: eucaconsole/views/users.py:249
 msgid "Requires non-negative integer (or may be empty)"
-msgstr ""
+msgstr "需要非负整数(或者空值)"
 
 #: eucaconsole/views/users.py:365
 msgid "Creating user {0}"
-msgstr ""
+msgstr "正在创建用户 {0}"
 
 #: eucaconsole/views/users.py:371 eucaconsole/views/users.py:530
 msgid "Generating password for user {0}"
-msgstr ""
+msgstr "正在为用户 {0} 生成密码"
 
 #: eucaconsole/views/users.py:376 eucaconsole/views/users.py:568
 msgid "Creating access keys for user {0}"
-msgstr ""
+msgstr "正在为用户 {0} 创建访问key"
 
 #: eucaconsole/views/users.py:434
 msgid "Creating policy for user {0}"
-msgstr ""
+msgstr "正在创建用户 {0} 策略"
 
 #: eucaconsole/views/users.py:446 eucaconsole/views/users.py:573
 msgid "Access Key"
-msgstr ""
+msgstr "访问Key"
 
 #: eucaconsole/views/users.py:447 eucaconsole/views/users.py:573
 msgid "Secret Key"
-msgstr ""
+msgstr "密钥Key"
 
 #: eucaconsole/views/users.py:469
 msgid "Updating user {0} (new_name={1}, path={2})"
-msgstr ""
+msgstr "正在更改用户 {0} (new_name={1}, path={2})"
 
 #: eucaconsole/views/users.py:476
 msgid "Successfully updated user information"
-msgstr ""
+msgstr "成功更改用户信息"
 
 #: eucaconsole/views/users.py:494
 msgid "Change password for user {0}"
-msgstr ""
+msgstr "更改用户 {0} 密码"
 
 #: eucaconsole/views/users.py:513
 msgid "Successfully set user password"
-msgstr ""
+msgstr "成功设置用户密码"
 
 #: eucaconsole/views/users.py:550
 msgid "Successfully generated user password"
-msgstr ""
+msgstr "成功生成用户密码"
 
 #: eucaconsole/views/users.py:558
 msgid "Deleting password for user {0}"
-msgstr ""
+msgstr "正在为用户 {0} 删除密码"
 
 #: eucaconsole/views/users.py:560
 msgid "Successfully deleted user password"
-msgstr ""
+msgstr "成功删除用户密码"
 
 #: eucaconsole/views/users.py:581
 msgid "Successfully generated access keys"
-msgstr ""
+msgstr "成功生成key"
 
 #: eucaconsole/views/users.py:590
 msgid "Deleting access key {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 删除访问key {0}"
 
 #: eucaconsole/views/users.py:592
 msgid "Successfully deleted key"
-msgstr ""
+msgstr "成功删除key"
 
 #: eucaconsole/views/users.py:601
 msgid "Deactivating access key {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 暂停访问key {0}"
 
 #: eucaconsole/views/users.py:603
 msgid "Successfully deactivated key"
-msgstr ""
+msgstr "成功暂停key"
 
 #: eucaconsole/views/users.py:612
 msgid "Activating access key {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 激活 访问key {0}"
 
 #: eucaconsole/views/users.py:614
 msgid "Successfully activated key"
-msgstr ""
+msgstr "成功激活key"
 
 #: eucaconsole/views/users.py:625
 msgid "Successfully added user to group"
-msgstr ""
+msgstr "成功把用户添加到用户组"
 
 #: eucaconsole/views/users.py:637
 msgid "Successfully removed user from group"
-msgstr ""
+msgstr "成功从用户组移走用户"
 
 #: eucaconsole/views/users.py:647
 msgid "Deleting user {0}"
-msgstr ""
+msgstr "正在删除用户  {0}"
 
 #: eucaconsole/views/users.py:652
 msgid "Successfully deleted user"
-msgstr ""
+msgstr "成功删除用户"
 
 #: eucaconsole/views/users.py:663 eucaconsole/views/users.py:749
 #: eucaconsole/views/users.py:757
 msgid "Updating policy {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 更改策略 {0}"
 
 #: eucaconsole/views/users.py:676
 msgid "Deleting policy {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 删除策略 {0}"
 
 #: eucaconsole/views/users.py:678
 msgid "Successfully deleted user policy"
-msgstr ""
+msgstr "成功删除用户策略"
 
 #: eucaconsole/views/users.py:764
 msgid "Creating policy {0} for user {1}"
-msgstr ""
+msgstr "正在为用户 {1} 创建策略 {0}"
 
 #: eucaconsole/views/volumes.py:113 eucaconsole/views/volumes.py:335
 msgid "Deleting volume {0}"
-msgstr ""
+msgstr "删除存储卷 {0}"
 
 #: eucaconsole/views/volumes.py:115 eucaconsole/views/volumes.py:337
 msgid ""
 "Successfully sent delete volume request.  It may take a moment to delete "
 "the volume."
-msgstr ""
+msgstr "成功发出删除存储卷请求. 需要一些时间才能完成删除"
 
 #: eucaconsole/views/volumes.py:118
 msgid "Unable to delete volume."
-msgstr ""
+msgstr "不能删除存储卷"
 
 #: eucaconsole/views/volumes.py:131 eucaconsole/views/volumes.py:353
 msgid ""
 "Successfully sent request to attach volume.  It may take a moment to "
 "attach to instance."
-msgstr ""
+msgstr "成功发出挂载存储卷请求. 需要一些时间才能完成挂载"
 
 #: eucaconsole/views/volumes.py:134 eucaconsole/views/volumes.py:148
 msgid "Unable to attach volume."
-msgstr ""
+msgstr "不能挂载存储卷"
 
 #: eucaconsole/views/volumes.py:143
 msgid "Detaching volume {0}"
-msgstr ""
+msgstr "正在删除存储卷 {0}"
 
 #: eucaconsole/views/volumes.py:169
 msgid "Creation time: Oldest to Newest"
-msgstr ""
+msgstr "创建时间: 最远到最近"
 
 #: eucaconsole/views/volumes.py:170
 msgid "Creation time: Newest to Oldest"
-msgstr ""
+msgstr "创建时间: 最近到最远"
 
 #: eucaconsole/views/volumes.py:294
 msgid "Successfully modified volume"
-msgstr ""
+msgstr "成功更改存储卷"
 
 #: eucaconsole/views/volumes.py:314
 msgid "Creating volume (size={0}, zone={1}, snapshot_id={2})"
-msgstr ""
+msgstr "正在创建存储卷 (size={0}, zone={1}, snapshot_id={2})"
 
 #: eucaconsole/views/volumes.py:323
 msgid ""
 "Successfully sent create volume request.  It may take a moment to create "
 "the volume."
-msgstr ""
+msgstr "成功发出创建存储卷请求. 需要一些时间才能完创建"
 
 #: eucaconsole/views/volumes.py:365
 msgid "Detaching volume {0} from {1}"
-msgstr ""
+msgstr "正在从 {1} 卸载存储卷  {0}"
 
 #: eucaconsole/views/volumes.py:502
 msgid "Successfully deleted the snapshot."
-msgstr ""
+msgstr "成功删除快照"
 
-#~ msgid "No Keypair"
-#~ msgstr ""
-
-#~ msgid "Unit is required"
-#~ msgstr ""
-
-#~ msgid "Number of instances is required"
-#~ msgstr ""
-
-#~ msgid "No available volumes in the availability zone"
-#~ msgstr ""
-
-#~ msgid "Delete alarm"
-#~ msgstr ""
-
-#~ msgid "Associate IP address to instance"
-#~ msgstr ""
-
-#~ msgid "Associate <dynamic element> with IP address"
-#~ msgstr ""
-
-#~ msgid "Associate address"
-#~ msgstr ""
-
-#~ msgid "Disassociate IP address from instance"
-#~ msgstr ""
-
-#~ msgid ""
-#~ msgstr ""
-
-#~ msgid "IP ADDRESS"
-#~ msgstr ""
-
-#~ msgid "INSTANCE"
-#~ msgstr ""
-
-#~ msgid "Yes, disassociate"
-#~ msgstr ""
-
-#~ msgid "Attach time"
-#~ msgstr ""
-
-#~ msgid "No device"
-#~ msgstr ""
-
-#~ msgid "Set Resource"
-#~ msgstr ""
-
-#~ msgid "Creating policy user {0}"
-#~ msgstr ""
-
-#~ msgid "Updating user {0}"
-#~ msgstr ""
-
-#~ msgid "%H:%M:%S %p %b %d %Y"
-#~ msgstr ""
-
-#~ msgid "Owned by me"
-#~ msgstr ""
-
-#~ msgid "Trigger threshold is required"
-#~ msgstr ""
-
-#~ msgid "Length of measurement period in seconds."
-#~ msgstr ""
-
-#~ msgid "Period length is required"
-#~ msgstr ""
-
-#~ msgid "Volume size is required"
-#~ msgstr ""
-
-#~ msgid "Logout"
-#~ msgstr ""
-
-#~ msgid "seconds"
-#~ msgstr ""
-
-#~ msgid "Attach a volume to an instance"
-#~ msgstr ""
-
-#~ msgid "Specify a machine image for your virtual machine instance"
-#~ msgstr ""
-
-#~ msgid "Enter an image ID"
-#~ msgstr ""
-
-#~ msgid "Public IP"
-#~ msgstr ""
-
-#~ msgid "Monitored"
-#~ msgstr ""
-
-#~ msgid "Yes"
-#~ msgstr ""
-
-#~ msgid "No"
-#~ msgstr ""
-
-#~ msgid "Please specify a machine image for your virtual machine."
-#~ msgstr ""
-
-#~ msgid "Enter an Image ID:"
-#~ msgstr ""
-
-#~ msgid "OR select an image below"
-#~ msgstr ""
-
-#~ msgid "Must have at least one user"
-#~ msgstr ""
-
-#~ msgid "Save changes"
-#~ msgstr ""
-
-#~ msgid "Your session has timed out"
-#~ msgstr ""
-
-#~ msgid "Successfully created IAM policy"
-#~ msgstr ""
-
-#~ msgid "Creating access key {0} for user {1}"
-#~ msgstr ""
-
-#~ msgid "Successfully removed user to group"
-#~ msgstr ""
-
-#~ msgid "foobar"
-#~ msgstr ""
+#~ msgid "WARNING, NO RULES DEFINED!"
+#~ msgstr "警告,没有定义规则"
 
