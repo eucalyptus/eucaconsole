@@ -27,15 +27,15 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig`
+    `apt-get install openssl build-essential python-dev swig memcached`
 
 Fedora:
 
-    `yum install openssl-devel python-devel swig; yum groupinstall 'Development tools'`
+    `yum install openssl-devel python-devel swig memcached; yum groupinstall 'Development tools'`
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig`
+Install homebrew, then run `brew install libevent openssl swig memcached`
 
 
 Pyramid Setup

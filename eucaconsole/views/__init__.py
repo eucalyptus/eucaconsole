@@ -39,6 +39,7 @@ from urllib import urlencode
 from urlparse import urlparse
 
 from dogpile.cache.api import NoValue
+from dogpile.cache.exception import DogpileCacheException
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -127,10 +128,17 @@ class BaseView(object):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 
     def _store_file_(self, filename, mime_type, contents):
-        default_term.set('file_cache', (filename, mime_type, contents))
+        try:
+            default_term.set('file_cache', (filename, mime_type, contents))
+        except DogpileCacheException as ex:
+            logging.warn("memcached misconfigured or not reachable, using session storage")
+            session = self.request.session
+            session['file_cache'] = (filename, mime_type, contents)
 
     def _has_file_(self):
-        return not isinstance(default_term.get('file_cache'), NoValue)
+        # check both cache and session
+        session = self.request.session
+        return not isinstance(default_term.get('file_cache'), NoValue) or 'file_cache' in session
 
     @staticmethod
     def sanitize_url(url):
@@ -470,6 +478,17 @@ def file_download(request):
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
         return response
+    # try session instead
+    session = request.session
+    if session.get('file_cache'):
+        (filename, mime_type, contents) = session['file_cache']
+        # Clean the session information regrading the new keypair
+        del session['file_cache']
+        response = Response(content_type=mime_type)
+        response.body = str(contents)
+        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+        return response
+    # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
