@@ -301,7 +301,7 @@ class SecurityGroupView(TaggedItemView):
                     params.update(dict(
                         cidr_ip=grant.cidr_ip,
                     ))
-                elif grant.group_id and grant.owner_id:
+                elif grant.group_id:
                     params.update(dict(
                         src_security_group_group_id=grant.group_id,
                         src_security_group_owner_id=grant.owner_id,
