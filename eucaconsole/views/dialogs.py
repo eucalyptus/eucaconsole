@@ -198,6 +198,15 @@ def group_dialogs(context, request, group=None, landingpage=False, delete_form=N
     )
 
 
+@panel_config('role_dialogs', renderer='../templates/dialogs/role_dialogs.pt')
+def role_dialogs(context, request, role=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Role landing and detail page."""
+    return dict(
+        role=role,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
 @panel_config('image_dialogs', renderer='../templates/dialogs/image_dialogs.pt')
 def image_dialogs(context, request, image=None, image_name_id='', landingpage=False,
                   deregister_form=None, snapshot_images_registered=0):

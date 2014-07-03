@@ -306,3 +306,16 @@ class ChoicesManager(object):
             boto.log.error('%s' % body)
             raise self.conn.ResponseError(response.status, response.reason, body)
         
+    ### IAM options
+    ##
+    def roles(self, roles=None, add_blank=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        role_list = roles or []
+        if not role_list and self.conn is not None:
+            role_list = self.conn.list_roles().roles
+        for role in role_list:
+            choices.append((role.role_name, role.role_name))
+        return sorted(set(choices))
+

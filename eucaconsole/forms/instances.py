@@ -108,6 +108,7 @@ class LaunchInstanceForm(BaseSecureForm):
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
     userdata_file = wtforms.FileField(label='')
@@ -116,9 +117,10 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
@@ -143,6 +145,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.zone.choices = self.get_availability_zone_choices(region)
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
