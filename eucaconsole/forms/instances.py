@@ -129,6 +129,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
         self.set_choices(request)
+        self.role.data = ''
 
         if image is not None:
             self.image_id.data = self.image.id

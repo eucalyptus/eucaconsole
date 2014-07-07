@@ -220,7 +220,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                     instance = instances[0]
                     profile = instance.instance_profile
                     # TODO: check tags to see if this was part of scaling group before removing profile
-                    if instance.state == 'running' and profile != None:
+                    if instance.state == 'running' and profile != None and hasattr(profile, 'arn'):
                         arn = profile['arn']
                         profile_name = arn[(arn.index('/')+1):]
                         self.iam_conn.delete_instance_profile(profile_name)
@@ -870,6 +870,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 msg += ', '.join(new_instance_ids)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.launch_form.get_errors_list()
         return self.render_dict
 
     def get_security_groups(self):
