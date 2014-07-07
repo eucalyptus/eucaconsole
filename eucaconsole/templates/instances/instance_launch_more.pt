@@ -22,7 +22,7 @@
         <div class="large-8 columns">
             <div class="panel" tal:condition="not image">
                 <span i18n:translate="">
-                    The image used to launch this instance has been deregistered. Another instance cannot be started.
+                    More instances like this one cannot be launched, because the associated image is no longer registered to this cloud.
                 </span>
             </div>
             <div class="panel" tal:condition="image">
@@ -61,7 +61,7 @@
                         <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Key pair</label></div>
+                        <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
                         <div class="small-8 columns value" ng-non-bindable="">${instance.key_name or 'None'}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
