@@ -542,7 +542,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 self.instance.terminate()
                 profile = self.instance.instance_profile
                 # TODO: check tags to see if this was part of scaling group before removing profile
-                if instance.state == 'running' and profile != None:
+                if self.instance.state == 'running' and profile != None:
                     arn = profile['arn']
                     profile_name = arn[(arn.index('/')+1):]
                     self.iam_conn.delete_instance_profile(profile_name)
