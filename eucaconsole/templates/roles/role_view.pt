@@ -81,38 +81,25 @@
                     </form>
                 </div>
                 <div tal:condition="role">
-                    <form action="${request.route_path('role_update', name=role.role_name)}" method="post" data-abide="abide">
-                        ${structure:role_update_form['csrf_token']}
-                        <div class="section">
-                            <h6 i18n:translate="">General</h6>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
-                                <div class="small-9 columns value">${role.role_name}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
-                                <div class="small-9 columns value">${role_create_date.strftime(layout.date_format)}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                                <div class="small-9 columns value inline breakword">${role.arn if role.arn else ''}</div>
-                            </div>
-                            <div class="top-bottom-padding">
-                                ${panel('form_field', field=role_update_form.path, leftcol_width=3, rightcol_width=9)}
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns">
-                                </div>
-                                <div class="small-9 columns">
-                                    <button type="submit" class="button" id="save-changes-btn">
-                                        <span tal:condition="role" i18n:translate="">Save Changes</span>
-                                    </button>
-                                    <a href="${request.route_path('roles')}"
-                                        class="cancel-link" i18n:translate="">Cancel</a>
-                                </div>
-                            </div>
+                    <div class="section">
+                        <h6 i18n:translate="">General</h6>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
+                            <div class="small-9 columns value">${role.role_name}</div>
                         </div>
-                    </form>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Creation time</label></div>
+                            <div class="small-9 columns value">${role_create_date.strftime(layout.date_format)}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
+                            <div class="small-9 columns value inline breakword">${role.arn if role.arn else ''}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Path</label></div>
+                            <div class="small-9 columns value inline breakword">${role.path if role.path else ''}</div>
+                        </div>
+                    </div>
                     <hr />
                     <div tal:define="policies_url request.route_path('role_policies_json', name=role.role_name);
                                      policy_url request.route_path('role_policy_json', name=role.role_name, policy='_policy_');

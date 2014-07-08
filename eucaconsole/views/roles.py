@@ -175,25 +175,6 @@ class RoleView(BaseView):
 
         return self.render_dict
 
-    @view_config(route_name='role_update', request_method='POST', renderer=TEMPLATE)
-    def role_update(self):
-        if self.role_update_form.validate():
-            new_users = self.request.params.getall('input-users-select')
-            role_name_param = self.request.params.get('role_name')
-            new_role_name = role_name_param if self.role.role_name != role_name_param else None
-            new_path = self.request.params.get('path') if self.role.path != self.request.params.get('path') else None
-            this_role_name = new_role_name if new_role_name is not None else self.role.role_name
-            if new_users is not None:
-                self.role_update_users( self.role.role_name, new_users)
-            location = self.request.route_path('role_view', name=this_role_name)
-            if new_role_name is not None or new_path is not None:
-                with boto_error_handler(self.request, location):
-                    self.log_request(_(u"Updating role {0}").format(role_name_param))
-                    self.role_update_name_and_path(new_role_name, new_path)
-            return HTTPFound(location=location)
-
-        return self.render_dict
-
     @view_config(route_name='role_delete', request_method='POST')
     def role_delete(self):
         if not self.delete_form.validate():
@@ -208,14 +189,6 @@ class RoleView(BaseView):
             msg = _(u'Successfully deleted role')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
         return HTTPFound(location=location)
-
-    def role_update_name_and_path(self, new_role_name, new_path):
-        this_role_name = new_role_name if new_role_name is not None else self.role.role_name
-        self.conn.update_role(self.role.role_name, new_role_name=new_role_name, new_path=new_path)
-        msg_template = _(u'Successfully modified role {role}')
-        msg = msg_template.format(role=this_role_name)
-        self.request.session.flash(msg, queue=Notification.SUCCESS)
-        return
 
     @view_config(route_name='role_policies_json', renderer='json', request_method='GET')
     def role_policies_json(self):
