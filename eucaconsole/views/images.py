@@ -277,7 +277,11 @@ class ImageView(TaggedItemView):
             # Update the Image Description
             description = self.request.params.get('description', '')
             if self.image.description != description:
-                params =  {'ImageId': self.image.id, 'Description.Value': description }
+                params = {}
+                self.conn.build_list_params(params, self.image.id, 'ImageId')
+                if description == '':
+                    description = "-"
+                self.conn.build_list_params(params, description, 'Description.Value')
                 self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
             # Clear images cache
