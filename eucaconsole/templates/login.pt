@@ -58,7 +58,7 @@
                     <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
-                            <input type="hidden" name="came_from" value="${came_from}" ng-non-bindable=""/>
+                            <input type="hidden" name="came_from" value="${came_from}" ng-non-bindable="" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>

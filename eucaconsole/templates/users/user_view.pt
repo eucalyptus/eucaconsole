@@ -15,14 +15,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${user.user_name}</a></li>
+                <li class="current"><a href="#">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 class="pagetitle">
             <strong i18n:translate="">Details for user:</strong>
-            <em ng-non-bindable="">${user.user_name}</em>
+            <em>${user.user_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" data-tab="">
@@ -207,13 +207,13 @@
                                 <form id="user-change-password-form" ng-submit="submitChange($event)">
                                     <div class="row controls-wrapper controls_new_password">
                                         <div class="small-12 columns field">
-                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password.label.text}<span class="req">*</span></label>
+                                            <label for="top-label" class="left">${user_form.new_password.label.text}<span class="req">*</span></label>
                                             ${structure:user_form.new_password}
                                         </div>
                                     </div>
                                     <div class="row controls-wrapper controls_new_password2">
                                         <div class="small-12 columns field">
-                                            <label for="top-label" class="left" ng-non-bindable="">${user_form.new_password2.label.text}<span class="req">*</span></label>
+                                            <label for="top-label" class="left">${user_form.new_password2.label.text}<span class="req">*</span></label>
                                             ${structure:user_form.new_password2}
                                         </div>
                                     </div>

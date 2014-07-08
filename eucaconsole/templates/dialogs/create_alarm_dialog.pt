@@ -7,7 +7,7 @@
         <form method="post" data-abide="" id="create-alarm-form"
               ng-submit="handleCreateAlarm('${request.route_path('cloudwatch_alarms_create')}', $event)">
             ${structure:alarm_form['csrf_token']}
-            <input type="hidden" name="redirect_location" value="${redirect_location}" ng-non-bindable=""/>
+            <input type="hidden" name="redirect_location" value="${redirect_location}" />
             <input type="hidden" name="namespace" value="{{ namespace }}" />
             ${panel('form_field', field=alarm_form['name'], leftcol_width=2, rightcol_width=10)}
             ${panel('form_field', field=alarm_form['description'], leftcol_width=2, rightcol_width=10)}

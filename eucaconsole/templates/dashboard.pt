@@ -21,7 +21,7 @@
                         <a ng-click="setZone('')" i18n:translate="" >All availability zones</a>
                     </li>
                     <li tal:repeat="zone availability_zones" ng-show="selectedZone !== '${zone.name}'">
-                        <a ng-click="setZone('${zone.name}')"><span ng-non-bindable="">${zone.name}</span></a>
+                        <a ng-click="setZone('${zone.name}')"><span>${zone.name}</span></a>
                     </li>
                 </ul>
             </div>

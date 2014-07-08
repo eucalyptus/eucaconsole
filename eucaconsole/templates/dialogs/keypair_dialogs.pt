@@ -7,7 +7,7 @@
                      keypair_name keypair.name if keypair else '';">
         <h3 i18n:translate="">Delete key</h3>
         <p><span i18n:translate="">Are you sure you want to delete key</span>
-            <span tal:condition="keypair"><b ng-non-bindable="">${keypair_name}</b></span>
+            <span tal:condition="keypair"><b>${keypair_name}</b></span>
             <span tal:condition="not keypair"><b>{{ keypairName }}</b></span>
             ?</p>
         <form action="${action}" method="post">
@@ -16,7 +16,7 @@
                 <input type="hidden" name="name" value="{{ keypairName }}"/>
             </div>
             <div tal:condition="not landingpage" tal:omit-tag="">
-                <input type="hidden" name="name" value="${keypair_name}" ng-non-bindable=""/>
+                <input type="hidden" name="name" value="${keypair_name}" />
             </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="delete_keypair_submit_button" class="button expand" i18n:translate="">Yes, Delete</button>

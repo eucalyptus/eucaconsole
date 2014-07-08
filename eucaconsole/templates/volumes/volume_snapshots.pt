@@ -12,14 +12,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${volume_name}</a></li>
+                <li class="current"><a href="#">${volume_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!--! Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 class="pagetitle">
             <strong i18n:translate="">Details for volume:</strong>
-            <em ng-non-bindable="">${volume_name}</em>
+            <em>${volume_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="volume-subnav">
@@ -94,7 +94,7 @@
             <div id="create-snapshot-modal" class="reveal-modal small" data-reveal=""
                 tal:define="snapshot_tags {};">
                 <h3 i18n:translate="">Create snapshot from volume</h3>
-                <p><span i18n:translate="">Add a snapshot for</span> <strong ng-non-bindable="">${volume_name}</strong></p>
+                <p><span i18n:translate="">Add a snapshot for</span> <strong>${volume_name}</strong></p>
                 <form method="post" action="${request.route_path('volume_snapshot_create', id=volume.id)}"
                       id="create-snapshot-form" data-abide="">
                     ${structure:create_form['csrf_token']}

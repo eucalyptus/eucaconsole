@@ -10,14 +10,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${scaling_group.name}</a></li>
+                <li class="current"><a href="#">${scaling_group.name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for scaling group:</strong>
-            <em ng-non-bindable="">${scaling_group.name}</em>
+            <em>${scaling_group.name}</em>
         </h3>
         <div class="large-7 columns">
             <dl class="tabs" id="scalinggroup-subnav">

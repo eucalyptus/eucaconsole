@@ -133,7 +133,7 @@
                             <p class="description" i18n:translate="">Specify a role to grant special access to this instance.</p>
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label class="right" ng-non-bindable="" i18n:translate="">Role</label>
+                                    <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="small-9 columns field">
                                     <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
