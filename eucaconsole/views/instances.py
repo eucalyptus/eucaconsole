@@ -247,7 +247,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 for instance in instances:
                     profile = instance.instance_profile
                     # TODO: check tags to see if this was part of scaling group before removing profile
-                    if profile != {}:
+                    if profile is not None and hasattr(profile, 'arn'):
                         arn = profile['arn']
                         profile_name = arn[(arn.index('/')+1):]
                         self.iam_conn.delete_instance_profile(profile_name)
@@ -542,7 +542,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 self.instance.terminate()
                 profile = self.instance.instance_profile
                 # TODO: check tags to see if this was part of scaling group before removing profile
-                if self.instance.state == 'running' and profile != None:
+                if self.instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
                     arn = profile['arn']
                     profile_name = arn[(arn.index('/')+1):]
                     self.iam_conn.delete_instance_profile(profile_name)
