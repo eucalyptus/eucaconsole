@@ -37,9 +37,10 @@ from pyramid.view import view_config
 import pylibmc
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
-from ..forms.images import ImageForm, ImagesFiltersForm
+from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
+from ..models.auth import User
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 from ..caches import long_term
@@ -58,6 +59,9 @@ class ImagesView(LandingPageView):
         self.json_items_endpoint = self.get_json_endpoint('images_json')
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
+        self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
+        self.iam_conn = self.get_connection(conn_type='iam')
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.render_dict = dict(
@@ -68,6 +72,8 @@ class ImagesView(LandingPageView):
             json_items_endpoint=self.json_items_endpoint,
             filter_fields=True,
             filters_form=self.filters_form,
+            deregister_form=self.deregister_form,
+            account_id=self.account_id,
         )
 
     @view_config(route_name='images', renderer=TEMPLATE)
@@ -123,10 +129,13 @@ class ImagesJsonView(LandingPageView):
                 name=image.name,
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
+                name_id=ImageView.get_image_name_id(image),
+                owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
+                snapshot_id=ImageView.get_image_snapshot_id(image),
             ))
         return dict(results=images)
 
@@ -243,18 +252,25 @@ class ImageView(TaggedItemView):
     def __init__(self, request):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type='iam')
+        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, formdata=self.request.params or None)
+        self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
         self.render_dict = dict(
             image=self.image,
             image_display_name=self.image_display_name,
+            image_name_id=ImageView.get_image_name_id(self.image),
             image_form=self.image_form,
+            deregister_form=self.deregister_form,
+            account_id=self.account_id,
+            snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
     def get_image(self):
-        image_param = self.request.matchdict.get('id')
+        image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
         images_param = [image_param]
         images = []
         if self.conn:
@@ -272,6 +288,17 @@ class ImageView(TaggedItemView):
             image.platform = self.get_platform(image)
             image.platform_name = ImageView.get_platform_name(image.platform)
         return image
+
+    def get_images_registered_from_snapshot_count(self):
+        if self.image and self.image.root_device_type == 'ebs':
+            bdm_values = self.image.block_device_mapping.values()
+            if bdm_values:
+                snapshot_id = getattr(bdm_values[0], 'snapshot_id', None)
+                if snapshot_id:
+                    with boto_error_handler(self.request):
+                        images = self.conn.get_all_images(filters={'block-device-mapping.snapshot-id': [snapshot_id]})
+                        return len(images)
+        return 0
 
     @view_config(route_name='image_view', renderer=TEMPLATE)
     def image_view(self):
@@ -291,7 +318,21 @@ class ImageView(TaggedItemView):
             msg = _(u'Successfully modified image')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        return self.render_dict
 
+    @view_config(route_name='image_deregister', request_method='POST')
+    def image_deregister(self):
+        if self.deregister_form.validate():
+            with boto_error_handler(self.request):
+                delete_snapshot = False
+                if self.image.root_device_type == 'ebs' and self.request.params.get('delete_snapshot') == 'y':
+                    delete_snapshot = True
+                self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
+                ImagesView.invalidate_images_cache()  # clear images cache
+                location = self.request.route_path('images')
+                msg = _(u'Successfully sent request to deregistered image.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=location)
         return self.render_dict
 
     @staticmethod
@@ -311,6 +352,18 @@ class ImageView(TaggedItemView):
                         if re.findall(choice.pattern, attr_value, re.IGNORECASE):
                             return choice
             return unknown
+
+    @staticmethod
+    def get_image_name_id(image):
+        """Return the name (ID) of an image, with the name lookup performed via the "Name" tag, falling back
+        to the image name if missing.
+        """
+        if image is None:
+            return ''
+        name_tag = image.tags.get('Name')
+        if name_tag is None and not image.name:
+            return image.id
+        return '{0} ({1})'.format(name_tag or image.name, image.id)
 
     def get_display_name(self):
         if self.image:
@@ -335,3 +388,10 @@ class ImageView(TaggedItemView):
             return platform
         return platform.key
 
+    @staticmethod
+    def get_image_snapshot_id(image):
+        """Get the snapshot id from the image BDM (for EBS images only)"""
+        if image.root_device_type == 'ebs':
+            bdm_values = image.block_device_mapping.values()
+            if bdm_values:
+                return getattr(bdm_values[0], 'snapshot_id', None)

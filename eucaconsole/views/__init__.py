@@ -174,6 +174,8 @@ class BaseView(object):
             logging.info(log_message)
         elif level == 'error':
             logging.error(log_message)
+        # Very useful to use this when an error is logged and you need more details
+        #import traceback; traceback.print_exc()
 
     def log_request(self, message):
         self.log_message(self.request, message)

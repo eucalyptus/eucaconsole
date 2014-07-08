@@ -32,6 +32,8 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.role = '';
+        $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
@@ -39,7 +41,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson,
+                                securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
@@ -49,6 +51,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.roleList = JSON.parse(roles);
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
