@@ -147,7 +147,7 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="users" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+            <li class="panel" id="users" tal:condition="layout.user_access">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM users</h5>
                     <div class="content">
@@ -162,7 +162,7 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="groups" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+            <li class="panel" id="groups" tal:condition="layout.group_access">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM groups</h5>
                     <div class="content">
@@ -177,7 +177,7 @@
                     </div>
                 </div>
             </li>
-            <li class="panel" id="roles" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+            <li class="panel" id="roles" tal:condition="layout.role_access">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">IAM roles</h5>
                     <div class="content">
