@@ -217,7 +217,7 @@ class ImageView(TaggedItemView):
         self.iam_conn = self.get_connection(conn_type='iam')
         self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
         self.image = self.get_image()
-        self.image_form = ImageForm(self.request, formdata=self.request.params or None)
+        self.image_form = ImageForm(self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
@@ -272,6 +272,12 @@ class ImageView(TaggedItemView):
     def image_update(self):
         if self.image_form.validate():
             self.update_tags()
+
+            # Update the Image Description
+            description = self.request.params.get('description', '')
+            if self.image.description != description:
+                params =  {'ImageId': self.image.id, 'Description.Value': description }
+                self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
             # Clear images cache
             ImagesView.invalidate_images_cache()

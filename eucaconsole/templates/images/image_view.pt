@@ -53,6 +53,11 @@
                                 </div>
                                 <div class="small-8 columns value" ng-non-bindable="">${image.name if image.name else ''}</div>
                             </div>
+                            ${panel('form_field', field=image_form['description'])}
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Status</label></div>
+                                <div class="small-8 columns value" ng-non-bindable=""></div>
+                            </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner alias</label></div>
                                 <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
@@ -77,10 +82,6 @@
                                 <div class="small-4 columns"><label i18n:translate="">Manifest path</label></div>
                                 <div class="small-8 columns value breakword" ng-non-bindable="">${image.location if image.location else ''}</div>
                             </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                                <div class="small-8 columns value breakword" ng-non-bindable="">${image.description if image.description else ''}</div>
-                            </div>
                         </div>
                         <div class="section" tal:condition="image.kernel_id">
                             <hr />
@@ -98,6 +99,14 @@
                                 <div class="small-8 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="section">
+                        <hr />
+                        <h6 i18n:translate="">Permissions</h6>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
+                                <div class="small-8 columns value"></div>
+                            </div>
                     </div>
                     ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
