@@ -176,6 +176,12 @@
                             {{ '${instance.launch_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="role">
+                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="small-8 columns value">
+                            <a href="/roles/${role}" ng-non-bindable="">${role}</a>
+                        </div>
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
                         <div class="small-8 columns value">
@@ -189,12 +195,6 @@
                     <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
                         <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
                         <div class="small-8 columns value">${instance.reservation_id}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly" tal:condition="role">
-                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
-                        <div class="small-8 columns value">
-                            <a href="/roles/${role}" ng-non-bindable="">${role}</a>
-                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>

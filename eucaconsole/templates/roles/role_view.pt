@@ -41,8 +41,8 @@
                     </metal:actions>
                 </metal:block>
                 <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
-                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'IAM role names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$',
+                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section">
@@ -97,13 +97,22 @@
                                 <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
                                 <div class="small-9 columns value inline breakword">${role.arn if role.arn else ''}</div>
                             </div>
-                            <div class="top-bottom-padding">
+                            <div class="top-padding">
                                 ${panel('form_field', field=role_update_form.path, leftcol_width=3, rightcol_width=9)}
+                            </div>
+                            <div class="row controls-wrapper readonly" tal:condition="instances">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">Instances</label></div>
+                                <div tal:repeat="instance instances">
+                                    <div class="small-9 columns value inline breakword">
+                                        <a href="$(request.route_path('instance_view', id=instance.id)}">${instance.name}</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns">
                                 </div>
                                 <div class="small-9 columns">
+                                    <br>&nbsp;</br>
                                     <button type="submit" class="button" id="save-changes-btn">
                                         <span tal:condition="role" i18n:translate="">Save Changes</span>
                                     </button>
