@@ -54,6 +54,13 @@ from ..models import Notification
 from ..models.auth import ConnectionManager
 
 
+def escape_braces(event):
+    """Escape double curly braces in template variables to prevent AngularJS expression injections"""
+    for k, v in event.rendering_val.items():
+        if type(v) in [str, unicode]:
+            event.rendering_val[k] = BaseView.escape_braces(v)
+
+
 class JSONResponse(Response):
     def __init__(self, status=200, message=None, **kwargs):
         super(JSONResponse, self).__init__(**kwargs)
@@ -276,7 +283,7 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
-        return BaseView.escape_braces(name)
+        return name
 
     @staticmethod
     def get_tags_display(tags, skip_name=True, wrap_width=0):

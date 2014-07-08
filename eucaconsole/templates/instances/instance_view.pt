@@ -160,13 +160,13 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
-                        <div class="small-8 columns value">${layout.escape_braces(instance.key_name)}</div>
+                        <div class="small-8 columns value">${instance.key_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="group instance.groups">
-                                <a href="/securitygroups/${group.id}">${layout.escape_braces(group.name)}</a>
+                                <a href="/securitygroups/${group.id}">${group.name}</a>
                             </div>
                         </div>
                     </div>
