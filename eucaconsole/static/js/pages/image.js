@@ -17,6 +17,10 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
+            $(document).on('input', '#description', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             // Handle the unsaved tag issue
             $(document).on('submit', '#image-detail-form', function(event) {
                 $('input.taginput').each(function(){
