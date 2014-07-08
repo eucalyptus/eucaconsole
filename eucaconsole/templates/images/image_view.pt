@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -105,7 +105,18 @@
                         <h6 i18n:translate="">Permissions</h6>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
-                                <div class="small-8 columns value"></div>
+                                <div class="small-8 columns value">
+                                    <div id="sharing-radio-buttons">
+                                        <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
+                                        <input type="radio" name="sharing" value="false" ng-model="isPublic">Private
+                                    </div>
+                                    <div ng-show="isPublic">
+                                        Anyone can see this image.
+                                    </div>
+                                    <div ng-hide="isPublic">
+                                        Only my account and accounts I share with can see this image.
+                                    </div>
+                                </div>
                             </div>
                     </div>
                     ${panel('bdmapping_editor', image=image, read_only=True)}
