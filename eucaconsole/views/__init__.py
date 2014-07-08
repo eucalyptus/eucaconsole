@@ -283,7 +283,7 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
-        return name
+        return BaseView.escape_braces(name)
 
     @staticmethod
     def get_tags_display(tags, skip_name=True, wrap_width=0):

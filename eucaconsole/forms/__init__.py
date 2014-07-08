@@ -43,6 +43,7 @@ from boto.exception import BotoServerError
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
+
 BLANK_CHOICE = ('', _(u'select...'))
 
 
@@ -79,6 +80,8 @@ class ChoicesManager(object):
 
     def __init__(self, conn=None):
         """"Note: conn param could be a connection object of any type, based on the choices required"""
+        from ..views import BaseView
+        self.BaseView = BaseView
         self.conn = conn
 
     #### EC2 connection type choices
@@ -93,7 +96,7 @@ class ChoicesManager(object):
         if not zones:
             zones.extend(self.get_availability_zones(region))
         for zone in zones:
-            choices.append((zone.name, zone.name))
+            choices.append((zone.name, self.BaseView.escape_braces(zone.name)))
         return sorted(choices)
 
     def get_availability_zones(self, region):
@@ -102,7 +105,7 @@ class ChoicesManager(object):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
-            return zones;
+            return zones
         return _get_zones_cache(self)
 
     def instances(self, instances=None, state=None):
@@ -138,7 +141,7 @@ class ChoicesManager(object):
             choices = []
             for vmtype in types:
                 vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
-                    vmtype.name, vmtype.cores, vmtype.memory, vmtype.disk)
+                    self.BaseView.escape_braces(vmtype.name), vmtype.cores, vmtype.memory, vmtype.disk)
                 vmtype_tuple = vmtype.name, vmtype_str if add_description else vmtype.name
                 choices.append(vmtype_tuple)
             return choices
@@ -169,7 +172,8 @@ class ChoicesManager(object):
         if not security_groups and self.conn is not None:
             security_groups = self.conn.get_all_security_groups()
         for sgroup in security_groups:
-            choices.append((sgroup.name, sgroup.name))
+            sg_name = self.BaseView.escape_braces(sgroup.name)
+            choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
@@ -180,7 +184,8 @@ class ChoicesManager(object):
         if not keypairs and self.conn is not None:
             keypairs = self.conn.get_all_key_pairs()
         for keypair in keypairs:
-            choices.append((keypair.name, keypair.name))
+            kp_name = self.BaseView.escape_braces(keypair.name)
+            choices.append((kp_name, kp_name))
         choices = sorted(set(choices))
         # sort actual key pairs prior to prepending blank and appending 'none'
         ret = []
@@ -246,7 +251,8 @@ class ChoicesManager(object):
         if not scaling_groups and self.conn is not None:
             scaling_groups = self.conn.get_all_groups()
         for scaling_group in scaling_groups:
-            choices.append((scaling_group.name, scaling_group.name))
+            sg_name = self.BaseView.escape_braces(scaling_group.name)
+            choices.append((sg_name, sg_name))
         return sorted(choices)
 
     def launch_configs(self, launch_configs=None, add_blank=True):
@@ -259,7 +265,8 @@ class ChoicesManager(object):
         if not launch_configs and self.conn is not None:
             launch_configs = self.conn.get_all_launch_configurations()
         for launch_config in launch_configs:
-            choices.append((launch_config.name, launch_config.name))
+            lc_name = self.BaseView.escape_braces(launch_config.name)
+            choices.append((lc_name, lc_name))
         return sorted(choices)
 
     #### ELB connection type choices
@@ -276,7 +283,8 @@ class ChoicesManager(object):
             if not load_balancers and self.conn is not None:
                 load_balancers = self.get_all_load_balancers()
             for load_balancer in load_balancers:
-                choices.append((load_balancer.name, load_balancer.name))
+                lb_name = self.BaseView.escape_braces(load_balancer.name)
+                choices.append((lb_name, lb_name))
         except BotoServerError as ex:
             if ex.reason == "ServiceUnavailable":
                 logging.info("ELB service not available, disabling polling")
@@ -325,6 +333,7 @@ class ChoicesManager(object):
         if not role_list and self.conn is not None:
             role_list = self.conn.list_roles().roles
         for role in role_list:
-            choices.append((role.role_name, role.role_name))
+            rname = self.BaseView.escape_braces(role.role_name)
+            choices.append((rname, rname))
         return sorted(set(choices))
 
