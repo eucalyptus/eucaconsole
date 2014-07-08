@@ -108,7 +108,7 @@ requires = [
     'pyramid_chameleon >= 0.1',
     'pyramid_layout <= 0.8',
     'python-dateutil >= 1.4.1',  # Don't use 2.x series unless on Python 3
-    'python-memcached >= 1.53',
+    'pylibmc >= 1.2.3',
     'simplejson >= 2.0.9',
     'WTForms >= 1.0.2',
 ]

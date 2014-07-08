@@ -95,7 +95,9 @@ def get_configurator(settings, enable_auth=True):
         expiration_time = int(settings.get('cache.short_term.expire')),
         arguments = {
             'url':[memory_cache_url],
+            'binary':True,
             'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True}
         },
     )
     default_term.configure(
@@ -103,7 +105,9 @@ def get_configurator(settings, enable_auth=True):
         expiration_time = int(settings.get('cache.default_term.expire')),
         arguments = {
             'url':[memory_cache_url],
+            'binary':True,
             'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True}
         },
     )
     long_term.configure(
@@ -111,7 +115,9 @@ def get_configurator(settings, enable_auth=True):
         expiration_time = int(settings.get('cache.long_term.expire')),
         arguments = {
             'url':[memory_cache_url],
+            'binary':True,
             'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True}
         },
     )
     extra_long_term.configure(
@@ -119,7 +125,9 @@ def get_configurator(settings, enable_auth=True):
         expiration_time = int(settings.get('cache.extra_long_term.expire')),
         arguments = {
             'url':[memory_cache_url],
+            'binary':True,
             'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True}
         },
     )
     return config

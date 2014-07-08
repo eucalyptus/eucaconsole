@@ -34,6 +34,7 @@ import logging
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
+import pylibmc
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm
@@ -179,6 +180,15 @@ class ImagesJsonView(LandingPageView):
 
     @long_term.cache_on_arguments(namespace='images')
     def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        """
+        This method is decorated and will cache the image set
+        """
+        return self._get_images_(_owners, _executors, _ec2_region)
+
+    def _get_images_(self, _owners, _executors, _ec2_region):
+        """
+        this method produces a cachable list of images
+        """
         with boto_error_handler(self.request):
             logging.info("loading images from server (not cache)")
             filters = {'image-type': 'machine'}
@@ -199,12 +209,20 @@ class ImagesJsonView(LandingPageView):
             return ret
 
     def get_images(self, conn, owners, executors, ec2_region):
+        """
+        This method sets the right account value so we cache private images per-acct
+        and handles caching error by fetching the data from the server.
+        """
         acct = self.request.session.get('account', '')
         if acct == '':
             acct = self.request.session.get('access_id', '')
         if 'amazon' in owners or 'aws-marketplace' in owners:
             acct = ''
-        return self._get_images_cached_(owners, executors, ec2_region, acct)
+        try:
+            return self._get_images_cached_(owners, executors, ec2_region, acct)
+        except pylibmc.Error as err:
+            logging.warn('memcached not responding')
+            return self._get_images_(owners, executors, ec2_region)
 
 
     def filter_by_platform(self, items):
