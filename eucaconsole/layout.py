@@ -41,6 +41,7 @@ from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
 from .i18n import _
 from .models import Notification
+from .views import BaseView
 
 try:
     from version import __version__
@@ -81,6 +82,7 @@ class MasterLayout(object):
         )
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
+        self.escape_braces = BaseView.escape_braces
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -108,8 +110,8 @@ class MasterLayout(object):
         return ''
 
     def help_path(self, help_html):
-        path = self.help_html_dir + help_html;
-        return self.request.static_path(path);
+        path = self.help_html_dir + help_html
+        return self.request.static_path(path)
 
     @staticmethod
     @cache_region('extra_long_term', 'selected_region_label')

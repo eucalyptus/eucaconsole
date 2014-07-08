@@ -31,8 +31,10 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
 import logging
+import sys
 
 from beaker.cache import cache_region
+from wtforms import StringField
 from wtforms.ext.csrf import SecureForm
 
 import boto
@@ -59,6 +61,13 @@ class BaseSecureForm(SecureForm):
             msg = '{0}: {1}'.format(field, ', '.join(errors))
             error_messages.append(msg)
         return error_messages
+
+
+class TextEscapedField(StringField):
+    def _value(self):
+        from ..views import BaseView
+        text_type = str if sys.version_info[0] >= 3 else unicode
+        return BaseView.escape_braces(text_type(self.data)) if self.data is not None else ''
 
 
 class GenerateFileForm(BaseSecureForm):
