@@ -135,6 +135,27 @@ class LoginView(BaseView):
                 session['secret_key'] = creds.secret_key
                 session['region'] = 'euca'
                 session['username_label'] = '{user}@{account}'.format(user=username, account=account)
+                # handle checks for IAM perms
+                self.region = self.cloud_type = 'euca'
+                self.access_key = creds.access_key
+                self.secret_key = creds.secret_key
+                self.security_token = creds.session_token
+                iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
+                try:
+                    iam_conn.get_all_users(path_prefix="/notlikely")
+                    session['user_access'] = True
+                except:
+                    pass
+                try:
+                    iam_conn.get_all_groups(path_prefix="/notlikely")
+                    session['group_access'] = True
+                except:
+                    pass
+                try:
+                    iam_conn.list_roles(path_prefix="/notlikely")
+                    session['role_access'] = True
+                except:
+                    pass
                 headers = remember(self.request, user_account)
                 return HTTPFound(location=self.came_from, headers=headers)
             except HTTPError, err:
