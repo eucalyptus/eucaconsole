@@ -239,7 +239,8 @@ class TaggedItemView(BaseView):
                 key = key.strip()
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
                     tags[key] = value.strip()
-            self.conn.create_tags([self.tagged_obj.id], tags)
+            if len(tags) > 0:
+                self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:
