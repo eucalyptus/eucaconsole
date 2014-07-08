@@ -56,7 +56,7 @@
                             ${panel('form_field', field=image_form['description'])}
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Status</label></div>
-                                <div class="small-8 columns value" ng-non-bindable=""></div>
+                                <div class="small-8 columns value" ng-non-bindable="">${image.state}</div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner alias</label></div>
