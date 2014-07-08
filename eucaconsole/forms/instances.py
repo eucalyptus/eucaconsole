@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class InstanceForm(BaseSecureForm):
@@ -41,7 +41,7 @@ class InstanceForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))

@@ -581,7 +581,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
 
     def get_scaling_group(self):
         if self.instance:
-            return self.instance.tags.get('aws:autoscaling:groupName')
+            return self.escape_braces(self.instance.tags.get('aws:autoscaling:groupName'))
         return None
 
     def get_security_group(self):
