@@ -46,8 +46,10 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
-                            <div tal:repeat="security_group security_groups">
-                                <a href="${request.route_path('securitygroup_view', id=security_group.id)}">${security_group.name}</a>
+                            <div tal:repeat="security_group security_groups" ng-non-bindable="">
+                                <a href="${request.route_path('securitygroup_view', id=security_group.id)}">
+                                    ${security_group.name}
+                                </a>
                             </div>
                         </div>
                     </div>

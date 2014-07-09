@@ -62,7 +62,7 @@
                             <label class="right" i18n:translate="">Load balancers</label>
                         </div>
                         <div class="small-8 columns">
-                            <div tal:repeat="elb scaling_group.load_balancers" class="value">
+                            <div tal:repeat="elb scaling_group.load_balancers" class="value" ng-non-bindable="">
                                 ${elb}<br/>
                             </div>
                         </div>

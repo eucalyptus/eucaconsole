@@ -13,7 +13,7 @@
                   data-tooltip="" title="${field.help_text}">?</span>
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
-                <span class="error" tal:repeat="error field.errors">${error}</span>
+                <span class="error" tal:repeat="error field.errors" ng-non-bindable="">${error}</span>
             </div>
         </div>
     </div>

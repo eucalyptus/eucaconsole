@@ -75,7 +75,7 @@
                                         ${structure:field}
                                     </div>
                                     <div tal:condition="field.errors" class="server-validation">
-                                        <span class="error" tal:repeat="error field.errors">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
                                         </span>
                                     </div>
@@ -121,7 +121,7 @@
                                         ${structure:field}
                                     </div>
                                     <div tal:condition="field.errors" class="server-validation">
-                                        <span class="error" tal:repeat="error field.errors">
+                                        <span class="error" tal:repeat="error field.errors" ng-non-bindable="">
                                             ${error}
                                         </span>
                                     </div>
