@@ -138,8 +138,11 @@
                                                 </span>
                                             </div>
                                             <div>
-                                                <span i18n:translate="">
-                                                    Add an (another after one is added) account number: 
+                                                <span ng-show="launchPermissions.length == 0" i18n:translate="">
+                                                    Add an account number: 
+                                                </span>
+                                                <span ng-show="launchPermissions.length > 0" i18n:translate="">
+                                                    Add another account number: 
                                                 </span>
                                             </div>
                                             <div>
