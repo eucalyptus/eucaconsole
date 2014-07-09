@@ -221,6 +221,7 @@ class ImageView(TaggedItemView):
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
+        self.all_users = self.get_all_users() 
         self.render_dict = dict(
             image=self.image,
             is_public= str(self.image.is_public).lower(),
@@ -231,6 +232,12 @@ class ImageView(TaggedItemView):
             account_id=self.account_id,
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
+
+    def get_all_users(self):
+        all_users = self.iam_conn.get_all_users()
+        #for user in all_users['list_users_response']['list_users_result']['users']:
+        #    print "arn: " , user['arn'].split(':')[4]
+        return all_users
 
     def get_image(self):
         image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')

@@ -111,10 +111,45 @@
                                         <input type="radio" name="sharing" value="false" ng-model="isPublic">Private
                                     </div>
                                     <div ng-show="isPublic">
-                                        Anyone can see this image.
+                                        <div>
+                                            <span i18n:translate="">
+                                                Anyone can see this image.
+                                            </span>
+                                        </div>
                                     </div>
                                     <div ng-hide="isPublic">
-                                        Only my account and accounts I share with can see this image.
+                                        <div>
+                                            <span i18n:translate="">
+                                               Only my account and accounts I share with can see this image.
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <span i18n:translate="">
+                                                    Share with specific accounts
+                                                </span>
+                                            </div>
+                                            <div id="share_with_accounts_field">
+                                                <span ng-repeat="account in sharedAccounts">
+                                                    <span class="label radius secondary iam-user-icon padded-element">
+                                                        {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span i18n:translate="">
+                                                    Add an (another after one is added) account number: 
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
+                                            </div>
+                                            <div>
+                                                <span class="button" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
+                                                    <span i18n:translate="">Add Account</span>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
