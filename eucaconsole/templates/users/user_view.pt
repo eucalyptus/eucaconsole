@@ -65,7 +65,7 @@
                                     <div class="small-3 columns"><label i18n:translate="">ARN</label></div>
                                     <div class="small-9 columns value">${user.arn if user.arn else ''}</div>
                                 </div>
-                                ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9, **{ 'ng-non-bindable': ''})}
+                                ${panel('form_field', field=user_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>

@@ -63,7 +63,7 @@
                             <div>&nbsp;</div>
                             <div class="section columns" ng-show="expanded">
                                 <div class="row controls-wrapper readonly">
-                                    ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11, **{ 'ng-non-bindable': ''})}
+                                    ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
                                 </div>
                             </div>
                             <div>&nbsp;</div>
@@ -105,7 +105,7 @@
                                 <div class="small-9 columns value inline breakword">${group.arn if group.arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9, **{ 'ng-non-bindable': ''})}
+                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9)}
                             </div>
                         </div>
                         <hr />

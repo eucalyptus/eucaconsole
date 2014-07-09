@@ -58,10 +58,11 @@
                     <div class="content active large-10 medium-10 columns large-centered medium-centered" id="eucalyptus">
                         <form class="custom" id="euca-login-form" method="post" name="euca_login_form"
                               action="${request.route_path('login')}?login_type=Eucalyptus">
-                            <input type="hidden" name="came_from" value="${came_from}" ng-non-bindable="" />
+                            <input type="hidden" name="came_from" value="${came_from}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field euca_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    <!--! Note: Don't remove non-bindable attr in this form -->
                                     <div tal:condition="field.name == 'password'">
                                         <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
                                             ${structure:field(autocomplete="off")}
@@ -102,11 +103,12 @@
                          tal:condition="layout.aws_enabled" id="aws">
                         <form class="custom" id="aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_path('login')}?login_type=AWS">
-                            <input type="hidden" name="came_from" value="${came_from}" ng-non-bindable=""/>
+                            <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="duration" name="duration" value="${duration}" />
                             <div class="row controls-wrapper controls_${field.name}" tal:repeat="field aws_login_form">
                                 <div class="small-12 columns field">
                                     <label for="top-label" class="left">${field.label.text}<span class="req">*</span></label>
+                                    <!--! Note: Don't remove non-bindable attr in this form -->
                                     <div tal:condition="field.name == 'secret_key'">
                                         <div tal:condition="layout.browser_password_save == 'false'" ng-non-bindable="">
                                             ${structure:field(autocomplete="off")}
@@ -147,7 +149,7 @@
                         <form id="false-aws-login-form" method="post" name="aws_login_form"
                               action="${request.route_path('login')}?login_type=AWS">
                             <input type="hidden" id="aws_csrf_token" name="csrf_token"/>
-                            <input type="hidden" name="came_from" value="${came_from}" ng-non-bindable=""/>
+                            <input type="hidden" name="came_from" value="${came_from}" />
                             <input type="hidden" id="package" name="package"/>
                             <input type="hidden" id="aws-region" name="aws-region"/>
                             <input type="submit" id="false-aws-login-button" style="display:none;"/>

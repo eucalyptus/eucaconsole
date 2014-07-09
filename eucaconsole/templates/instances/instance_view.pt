@@ -219,7 +219,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div tal:condition="image" class="small-8 columns value breakword" ng-non-bindable="">${image.location}</div>
+                        <div tal:condition="image" class="small-8 columns value breakword">${image.location}</div>
                     </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">

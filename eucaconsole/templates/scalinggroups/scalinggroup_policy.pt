@@ -21,7 +21,7 @@
             <em>${scaling_group.name}</em>
         </h3>
         <div class="large-7 columns">
-            <div class="panel no-title" tal:define="html_attrs {'ng-non-bindable': ''};">
+            <div class="panel no-title">
                 <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}"
                       method="post" data-abide="" id="add-policy-form">
                     ${structure:policy_form['csrf_token']}

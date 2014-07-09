@@ -366,8 +366,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice snapshot_choices">
-                                                    <option value="${choice[0]}" tal:condition="'snapshots' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}"
+                                                            tal:condition="'snapshots' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>
@@ -376,8 +376,8 @@
                                             <select class="condition-value chosen"
                                                     ng-if="${cond_operator}.indexOf('Like') === -1">
                                                 <metal:block tal:repeat="choice volume_choices">
-                                                    <option value="${choice[0]}" tal:condition="'volumes' not in choice[1]"
-                                                            ng-non-bindable="">${choice[1]}</option>
+                                                    <option value="${choice[0]}"
+                                                            tal:condition="'volumes' not in choice[1]">${choice[1]}</option>
                                                 </metal:block>
                                             </select>
                                         </div>
