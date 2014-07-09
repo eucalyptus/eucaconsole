@@ -31,6 +31,7 @@ Pyramid views for Eucalyptus and AWS images
 import re
 
 from beaker.cache import cache_region, cache_managers
+from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
@@ -41,6 +42,7 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+import boto.iam
 
 import panels
 
@@ -234,24 +236,25 @@ class ImageView(TaggedItemView):
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
+    # Not used. But shows how to obtain account ID
     def get_users_account_ids(self):
         all_users = self.iam_conn.get_all_users()
         for user in all_users['list_users_response']['list_users_result']['users']:
             print "arn: " , user['arn'].split(':')[4]
 
     def get_image_launch_permissions_array(self):
+        # Hardcoded account_id for AWS since on AWS, account_id returns None at the moment.
+        # This is due to the iam_conn being "NoneType", which needs to be fixed.
+        if self.cloud_type == 'aws':
+            self.account_id = "429942273585"
+
         if self.image.owner_id != self.account_id:
             return [] 
         launch_permissions = self.image.get_launch_permissions()
         if launch_permissions is None or not 'user_ids' in launch_permissions:
             return []
         lp_array = [lp.encode('ascii', 'ignore') for lp in launch_permissions['user_ids']]
-        #print "lp array: " , lp_array 
         return lp_array
-
-    def set_image_launch_permissions(self, account_id):
-       #account_id = str(124810728209)
-       self.image.set_launch_permissions(account_id)
 
     def get_image(self):
         image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
@@ -303,6 +306,10 @@ class ImageView(TaggedItemView):
                 params = { 'ImageId': self.image.id, 'Description.Value': description }
                 self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
+            # Update the Image Launch Permissions
+            lp_array = self.request.params.getall('launch-permissions-inputbox')
+            self.image_update_launch_permissions(lp_array)
+
             # Clear images cache
             ImagesView.invalidate_images_cache()
 
@@ -311,6 +318,79 @@ class ImageView(TaggedItemView):
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
+
+    def image_update_launch_permissions(self, new_launch_permissions):
+        new_launch_permissions = [u.encode('ascii', 'ignore') for u in new_launch_permissions]
+
+        self.image_add_new_launch_permissions(new_launch_permissions)
+        self.image_remove_deleted_launch_permissions(new_launch_permissions)
+        return 
+
+    def image_add_new_launch_permissions(self, new_launch_permissions):
+        success_msg = ''
+        error_msg = ''
+        for new_lp in new_launch_permissions:
+            is_new = True
+            for lp in self.image_launch_permissions:
+                if lp == new_lp:
+                    is_new = False
+            if is_new:
+                (msg, queue) = self.image_add_launch_permission(new_lp)
+                if queue is Notification.SUCCESS:
+                    success_msg += msg + " "
+                else:
+                    error_msg += msg + " "
+
+        if success_msg != '':
+            self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+        if error_msg != '':
+            self.request.session.flash(error_msg, queue=Notification.ERROR)
+        return
+
+    def image_remove_deleted_launch_permissions(self, new_launch_permissions):
+        success_msg = ''
+        error_msg = ''
+        for lp in self.image_launch_permissions:
+            is_deleted = True
+            for new_lp in new_launch_permissions:
+                if lp == new_lp:
+                    is_deleted = False
+            if is_deleted:
+                (msg, queue) = self.image_remove_launch_permission(lp)
+                if queue is Notification.SUCCESS:
+                    success_msg += msg + " "
+                else:
+                    error_msg += msg + " "
+
+        if success_msg != '':
+            self.request.session.flash(success_msg, queue=Notification.SUCCESS)
+        if error_msg != '':
+            self.request.session.flash(error_msg, queue=Notification.ERROR)
+        return
+
+    def image_add_launch_permission(self, lp):
+        try:
+            self.log_request(_(u"Adding accountID {0} to launch permissions").format(lp))
+            self.image.set_launch_permissions(lp)
+            msg_template = _(u'Successfully added accountID {lp}')
+            msg = msg_template.format(lp=lp)
+            queue = Notification.SUCCESS
+        except BotoServerError as err:
+            msg = err.message
+            queue = Notification.ERROR
+        return msg, queue
+
+    def image_remove_launch_permission(self, lp):
+        try:
+            self.log_request(_(u"Removing accountID {0} from launch permissions").format(lp))
+            self.image.remove_launch_permissions(lp)
+            msg_template = _(u'Successfully removed accountID {lp}')
+            msg = msg_template.format(lp=lp)
+            queue = Notification.SUCCESS
+        except BotoServerError as err:
+            msg = err.message
+            queue = Notification.ERROR
+        return msg, queue
 
     @view_config(route_name='image_deregister', request_method='POST')
     def image_deregister(self):

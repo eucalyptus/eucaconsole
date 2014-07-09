@@ -59,7 +59,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                $scope.launchPermissions.push($scope.newAccount);
                $scope.newAccount = "";
                $scope.isAccountNotTyped = true;
-               $scope.$apply();
+               $scope.isNotChanged = false;
            } 
         };
     })

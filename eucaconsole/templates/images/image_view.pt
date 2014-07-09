@@ -134,6 +134,7 @@
                                                     <span class="label radius secondary iam-user-icon padded-element">
                                                         {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
                                                     </span>
+                                                    <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
                                                 </span>
                                             </div>
                                             <div>
