@@ -145,7 +145,8 @@ class LaunchInstanceForm(BaseSecureForm):
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
         self.keypair.choices = self.get_keypair_choices()
-        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
+        self.securitygroup.choices = self.choices_manager.security_groups(
+            securitygroups=self.securitygroups, add_blank=False, escapebraces=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
@@ -164,7 +165,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.securitygroup.error_msg = self.securitygroup_error_msg
 
     def get_keypair_choices(self):
-        choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
+        choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True, escapebraces=False)
         return choices
 
     def get_availability_zone_choices(self, region):

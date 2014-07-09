@@ -275,7 +275,7 @@ class TaggedItemView(BaseView):
                     self.tagged_obj.add_tag('Name', value)
 
     @staticmethod
-    def get_display_name(resource):
+    def get_display_name(resource, escapebraces=True):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
@@ -283,7 +283,9 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
-        return BaseView.escape_braces(name)
+        if escapebraces:
+            name = BaseView.escape_braces(name)
+        return name
 
     @staticmethod
     def get_tags_display(tags, skip_name=True, wrap_width=0):
