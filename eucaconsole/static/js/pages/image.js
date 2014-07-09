@@ -22,6 +22,11 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
+            $scope.$watch('isPublic', function(newValue, oldValue) {
+                if( newValue !== oldValue ){
+                    $scope.isNotChanged = false;
+                }
+            });
             $(document).on('input', '#description', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();

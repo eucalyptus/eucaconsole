@@ -288,6 +288,19 @@ class ImageView(TaggedItemView):
         if self.image_form.validate():
             self.update_tags()
 
+            # Update the Image to be Public
+            # Note. The order of operation matters
+            # On Euca, when the group launch permissions are changed, it deletes the description
+            is_public = self.request.params.get('sharing')
+            current_is_public = str(self.image.is_public).lower()
+            if is_public != current_is_public:
+                lp_params = {}
+                if is_public == "true":
+                    lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Add.1.Group': 'all' }
+                else:
+                    lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Remove.1.Group': 'all' }
+                self.conn.get_status('ModifyImageAttribute', lp_params, verb='POST')
+
             # Update the Image Description
             description = self.request.params.get('description', '')
             if self.image.description != description:
