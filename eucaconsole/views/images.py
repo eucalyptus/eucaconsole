@@ -277,11 +277,9 @@ class ImageView(TaggedItemView):
             # Update the Image Description
             description = self.request.params.get('description', '')
             if self.image.description != description:
-                params = {}
-                self.conn.build_list_params(params, self.image.id, 'ImageId')
-                if description == '':
+                if self.cloud_type == 'aws' and description == '':
                     description = "-"
-                self.conn.build_list_params(params, description, 'Description.Value')
+                params = { 'ImageId': self.image.id, 'Description.Value': description }
                 self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
             # Clear images cache
