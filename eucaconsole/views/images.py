@@ -236,17 +236,13 @@ class ImageView(TaggedItemView):
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
-    # Not used. But shows how to obtain account ID
-    def get_users_account_ids(self):
-        all_users = self.iam_conn.get_all_users()
-        for user in all_users['list_users_response']['list_users_result']['users']:
-            print "arn: " , user['arn'].split(':')[4]
-
     def get_image_launch_permissions_array(self):
-        # Hardcoded account_id for AWS since on AWS, account_id returns None at the moment.
-        # This is due to the iam_conn being "NoneType", which needs to be fixed.
+        # temp. solution on how to retreive account_id on AWS
         if self.cloud_type == 'aws':
-            self.account_id = "429942273585"
+            security_groups = self.conn.get_all_security_groups(filters={'group-name': 'default'})
+            security_group = security_groups[0] if security_groups else None 
+            if security_group is not None:
+                self.account_id = security_group.owner_id
 
         if self.image.owner_id != self.account_id:
             return [] 
