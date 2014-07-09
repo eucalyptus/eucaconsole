@@ -2,7 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}')">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}', ${image_launch_permissions})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -130,7 +130,7 @@
                                                 </span>
                                             </div>
                                             <div id="share_with_accounts_field">
-                                                <span ng-repeat="account in sharedAccounts">
+                                                <span ng-repeat="account in launchPermissions">
                                                     <span class="label radius secondary iam-user-icon padded-element">
                                                         {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
                                                     </span>

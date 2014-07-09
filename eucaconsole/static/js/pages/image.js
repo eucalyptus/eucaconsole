@@ -8,13 +8,13 @@
 angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
     .controller('ImagePageCtrl', function ($scope) {
         $scope.isPublic = '';
-        $scope.sharedAccounts = [];
+        $scope.launchPermissions = [];
         $scope.isAccountNotTyped = true;
         $scope.isNotChanged = true;
         $scope.disabledExplanationVisible = false;
-        $scope.initController = function (isPublic){
+        $scope.initController = function (isPublic, launchPermissions){
             $scope.isPublic = isPublic;
-            $scope.sharedAccounts = ['1234', '5678'];
+            $scope.launchPermissions = launchPermissions;
             $scope.setWatch();
             $scope.setFocus();
         };
@@ -47,16 +47,16 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             });
         };
         $scope.removeAccount = function (account) {
-            var index = $scope.sharedAccounts.indexOf(account);
+            var index = $scope.launchPermissions.indexOf(account);
             if (index > -1) {
-                $scope.sharedAccounts.splice(index, 1);
+                $scope.launchPermissions.splice(index, 1);
             }        
             $scope.isNotChanged = false;
             $scope.$apply();
         };
         $scope.addAccount = function () {
            if( $scope.newAccount !== "" && $scope.newAccount !== undefined ){
-               $scope.sharedAccounts.push($scope.newAccount);
+               $scope.launchPermissions.push($scope.newAccount);
                $scope.newAccount = "";
                $scope.isAccountNotTyped = true;
                $scope.$apply();

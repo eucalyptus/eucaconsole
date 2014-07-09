@@ -221,10 +221,11 @@ class ImageView(TaggedItemView):
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
-        self.all_users = self.get_all_users() 
+        self.image_launch_permissions = self.get_image_launch_permissions_array()
         self.render_dict = dict(
             image=self.image,
-            is_public= str(self.image.is_public).lower(),
+            is_public = str(self.image.is_public).lower(),
+            image_launch_permissions = self.image_launch_permissions,
             image_display_name=self.image_display_name,
             image_name_id=ImageView.get_image_name_id(self.image),
             image_form=self.image_form,
@@ -233,11 +234,24 @@ class ImageView(TaggedItemView):
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
-    def get_all_users(self):
+    def get_users_account_ids(self):
         all_users = self.iam_conn.get_all_users()
-        #for user in all_users['list_users_response']['list_users_result']['users']:
-        #    print "arn: " , user['arn'].split(':')[4]
-        return all_users
+        for user in all_users['list_users_response']['list_users_result']['users']:
+            print "arn: " , user['arn'].split(':')[4]
+
+    def get_image_launch_permissions_array(self):
+        if self.image.owner_id != self.account_id:
+            return [] 
+        launch_permissions = self.image.get_launch_permissions()
+        if launch_permissions is None or not 'user_ids' in launch_permissions:
+            return []
+        lp_array = [lp.encode('ascii', 'ignore') for lp in launch_permissions['user_ids']]
+        #print "lp array: " , lp_array 
+        return lp_array
+
+    def set_image_launch_permissions(self, account_id):
+       #account_id = str(124810728209)
+       self.image.set_launch_permissions(account_id)
 
     def get_image(self):
         image_param = self.request.matchdict.get('id') or self.request.params.get('image_id')
