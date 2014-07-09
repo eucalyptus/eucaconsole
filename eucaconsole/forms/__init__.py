@@ -57,9 +57,11 @@ class BaseSecureForm(SecureForm):
 
     def get_errors_list(self):
         """Convenience method to get all form validation errors as a list of message strings"""
+        from ..views import BaseView
         error_messages = []
         for field, errors in self.errors.items():
-            msg = '{0}: {1}'.format(field, ', '.join(errors))
+            field_errors = BaseView.escape_braces(', '.join(errors))
+            msg = '{0}: {1}'.format(field, field_errors)
             error_messages.append(msg)
         return error_messages
 

@@ -218,7 +218,7 @@
     <div id="notifications">
         <div tal:repeat="notification layout.get_notifications()">
             <div data-alert="alert" class="alert-box ${notification.style}">
-                ${notification.message}
+                ${layout.escape_braces(notification.message)}
                 <a href="#" class="close">&times;</a>
             </div>
         </div>
