@@ -6,11 +6,12 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupPage" ng-controller="ScalingGroupPageCtrl"
-         ng-init="initController('${scaling_group.name.replace('\'', '__apos__')}', ${policies_count})">
+         ng-init="initController('${scaling_group.name.replace('\'', '__apos__')}', ${policies_count})"
+         tal:define="scaling_group_name layout.escape_braces(scaling_group.name);">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a href="#">${scaling_group.name}</a></li>
+                <li class="current"><a href="#">${scaling_group_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->

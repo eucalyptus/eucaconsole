@@ -35,6 +35,7 @@ import textwrap
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -57,7 +58,7 @@ from ..models.auth import ConnectionManager
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if type(v) in [str, unicode]:
+        if type(v) in [str, unicode] or isinstance(v, Markup):
             event.rendering_val[k] = BaseView.escape_braces(v)
 
 
@@ -142,7 +143,7 @@ class BaseView(object):
 
     @staticmethod
     def escape_braces(s):
-        if type(s) in [str, unicode]:
+        if type(s) in [str, unicode] or isinstance(s, Markup):
             return s.replace('{{', '{ {').replace('}}', '} }')
 
     @staticmethod

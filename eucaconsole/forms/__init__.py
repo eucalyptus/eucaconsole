@@ -177,7 +177,7 @@ class ChoicesManager(object):
             sg_name = sgroup.name
             if escapebraces:
                 sg_name = self.BaseView.escape_braces(sg_name)
-            choices.append((sgroup.name, sg_name))
+            choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
@@ -191,7 +191,7 @@ class ChoicesManager(object):
             kp_name = keypair.name
             if escapebraces:
                 kp_name = self.BaseView.escape_braces(kp_name)
-            choices.append((keypair.name, kp_name))
+            choices.append((kp_name, kp_name))
         choices = sorted(set(choices))
         # sort actual key pairs prior to prepending blank and appending 'none'
         ret = []
@@ -260,7 +260,7 @@ class ChoicesManager(object):
             sg_name = scaling_group.name
             if escapebraces:
                 sg_name = self.BaseView.escape_braces(sg_name)
-            choices.append((scaling_group.name, sg_name))
+            choices.append((sg_name, sg_name))
         return sorted(choices)
 
     def launch_configs(self, launch_configs=None, add_blank=True, escapebraces=True):
@@ -276,7 +276,7 @@ class ChoicesManager(object):
             lc_name = launch_config.name
             if escapebraces:
                 lc_name = self.BaseView.escape_braces(lc_name)
-            choices.append((launch_config.name, lc_name))
+            choices.append((lc_name, lc_name))
         return sorted(choices)
 
     #### ELB connection type choices
@@ -296,7 +296,7 @@ class ChoicesManager(object):
                 lb_name = load_balancer.name
                 if escapebraces:
                     lb_name = self.BaseView.escape_braces(lb_name)
-                choices.append((load_balancer.name, lb_name))
+                choices.append((lb_name, lb_name))
         except BotoServerError as ex:
             if ex.reason == "ServiceUnavailable":
                 logging.info("ELB service not available, disabling polling")
@@ -327,7 +327,7 @@ class ChoicesManager(object):
         elif response.status == 200:
             obj = boto.resultset.ResultSet([('member', boto.ec2.elb.loadbalancer.LoadBalancer)])
             h = boto.handler.XmlHandler(obj, self.conn)
-            import xml.sax;
+            import xml.sax
             xml.sax.parseString(body, h)
             return obj
         else:
@@ -348,6 +348,6 @@ class ChoicesManager(object):
             rname = role.role_name
             if escapebraces:
                 rname = self.BaseView.escape_braces(rname)
-            choices.append((role.role_name, rname))
+            choices.append((rname, rname))
         return sorted(set(choices))
 

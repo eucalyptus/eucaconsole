@@ -2,13 +2,14 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
+                        keypair_name layout.escape_braces(keypair.name) if keypair else '';"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${keypair_route_id}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('keypairs')}" i18n:translate="">Key pairs</a></li>
                 <li class="current">
-                    <a tal:condition="keypair">${keypair.name }</a>
+                    <a tal:condition="keypair">${keypair_name }</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new'" i18n:translate="">Create New Key Pair</a>
                     <a tal:condition="not keypair and keypair_route_id == 'new2'" i18n:translate="">Import Public Key</a>
                 </li>
@@ -19,7 +20,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="keypair">
                 <strong i18n:translate="">Details for key pair:</strong>
-                <em>${keypair.name}</em>
+                <em>${keypair_name}</em>
             </metal:block>
             <metal:block tal:condition="not keypair">
                 <strong i18n:translate="" tal:condition="keypair_route_id == 'new'">Create new key pair</strong>
@@ -54,7 +55,7 @@
                     <h6 i18n:translate="">Key pair</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns value">${keypair.name if keypair.name else ''}</div>
+                        <div class="small-9 columns value">${keypair_name if keypair_name else ''}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Fingerprint</label></div>

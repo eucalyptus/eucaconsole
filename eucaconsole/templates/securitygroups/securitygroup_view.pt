@@ -11,11 +11,12 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()"
+         tal:define="security_group_name layout.escape_braces(security_group.name) if security_group else ''">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('securitygroups')}" i18n:translate="">Security groups</a></li>
-                <li class="current"><a href="#">${security_group.name if security_group else 'Create security group'}</a></li>
+                <li class="current"><a href="#">${security_group_name if security_group else 'Create security group'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -23,7 +24,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="security_group">
                 <strong i18n:translate="">Details for security group:</strong>
-                <em>${security_group.name}</em>
+                <em>${security_group_name}</em>
             </metal:block>
             <metal:block tal:condition="not security_group">
                 <strong i18n:translate="">Create new security group</strong>
@@ -53,7 +54,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline breakword">${security_group.name}</div>
+                        <div class="small-9 columns field inline breakword">${security_group_name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
                         ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9)}
