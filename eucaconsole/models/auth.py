@@ -66,14 +66,17 @@ class User(object):
         return self.user_id
 
     @staticmethod
-    def get_account_id(iam_conn=None, request=None):
-        """Get 12-digit account ID for the currently signed-in user's account"""
+    def get_account_id(ec2_conn=None, request=None):
+        """Get 12-digit account ID for the currently signed-in user's account using the default security group"""
         from ..views import boto_error_handler
-        if iam_conn and request:
+        account_id = ""
+        if ec2_conn and request:
             with boto_error_handler(request):
-                user = iam_conn.get_user()
-                if user and user.arn:
-                    return user.arn.split(':')[4]
+                security_groups = ec2_conn.get_all_security_groups(filters={'group-name': 'default'})
+                security_group = security_groups[0] if security_groups else None 
+                if security_group is not None:
+                    account_id = security_group.owner_id
+        return account_id
 
 
 class ConnectionManager(object):

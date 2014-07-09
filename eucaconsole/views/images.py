@@ -58,8 +58,9 @@ class ImagesView(LandingPageView):
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
+        self.conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
+        self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
         self.render_dict = dict(
@@ -217,7 +218,7 @@ class ImageView(TaggedItemView):
         super(ImageView, self).__init__(request)
         self.conn = self.get_connection()
         self.iam_conn = self.get_connection(conn_type='iam')
-        self.account_id = User.get_account_id(iam_conn=self.iam_conn, request=self.request)
+        self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.image = self.get_image()
         self.image_form = ImageForm(self.request, image=self.image, conn=self.conn, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
@@ -237,13 +238,6 @@ class ImageView(TaggedItemView):
         )
 
     def get_image_launch_permissions_array(self):
-        # temp. solution on how to retreive account_id on AWS
-        if self.cloud_type == 'aws':
-            security_groups = self.conn.get_all_security_groups(filters={'group-name': 'default'})
-            security_group = security_groups[0] if security_groups else None 
-            if security_group is not None:
-                self.account_id = security_group.owner_id
-
         if self.image.owner_id != self.account_id:
             return [] 
         launch_permissions = self.image.get_launch_permissions()
