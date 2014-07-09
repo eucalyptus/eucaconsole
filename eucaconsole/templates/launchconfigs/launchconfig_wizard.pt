@@ -99,9 +99,9 @@
                             <div tal:condition="not preset">
                                 ${panel('form_field', field=create_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                                 <div class="row">
-                                    <div class="small-9 columns right">
-                                        <a data-reveal-id="create-keypair-modal" i18n:translate=""
-                                           id="create-keypair-link">Create key pair</a>
+                                    <div class="small-9 columns right" id="create-keypair-link">
+                                        <span class="or" i18n:translate="">Or: </span>
+                                        <a data-reveal-id="create-keypair-modal" i18n:translate="">Create key pair</a>
                                     </div>
                                 </div>
                             </div>
@@ -115,9 +115,9 @@
                             <div tal:condition="not preset">
                                 ${panel('form_field', field=create_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                                 <div class="row">
-                                    <div class="small-9 columns right">
-                                        <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
-                                           id="create-securitygroup-link">Create security group</a>
+                                    <div class="small-9 columns right" id="create-securitygroup-link">
+                                        <span class="or" i18n:translate="">Or: </span>
+                                        <a data-reveal-id="create-securitygroup-modal" i18n:translate="">Create security group</a>
                                     </div>
                                 </div>
                             </div>
