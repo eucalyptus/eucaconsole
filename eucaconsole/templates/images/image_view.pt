@@ -111,8 +111,12 @@
                             <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
                             <div class="small-8 columns value">
                                 <div id="sharing-radio-buttons">
-                                    <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
-                                    <input type="radio" name="sharing" value="false" ng-model="isPublic">Private
+                                    <span class="padded-element"> 
+                                        <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
+                                    </span>
+                                    <span class="padded-element"> 
+                                        <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic">Private
+                                    </span>
                                 </div>
                                 <div ng-show="isPublic">
                                     <span i18n:translate="">
