@@ -46,8 +46,46 @@
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section">
-                            <div class="row controls-wrapper readonly">
+                            <div class="row controls-wrapper">
                                 ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                            </div>
+                            <div class="row controls-wrapper">
+                                <div class="small-1 columns">
+                                    <label class="right" i18n:translate="">Type</label>
+                                </div>
+                                <div class="small-11 columns">
+                                    <div class="ipaddress">
+                                        <div class="ec2-block">
+                                            <input type="radio" name="roletype" value="ec2" checked="checked" ng-model="roleType"/>
+                                            <label><span i18n:translate="" class="ip-label">EC2 service</span></label>
+                                        </div>
+                                        <div class="cross-acct-block">
+                                            <input type="radio" name="roletype" value="xacct" ng-model="roleType"/>
+                                            <label><span i18n:translate="" class="ip-label">Cross-account access</span></label>
+                                            <div id="xacct-section" ng-cloak="">
+                                                <div class="section" ng-show="roleType == 'xacct'">
+                                                    <div class="row controls-wrapper">
+                                                        <div class="small-3 columns">
+                                                            <label class="right" ng-non-bindable="" i18n:translate="">Account ID<span class="req">*</span></label>
+                                                        </div>
+                                                        <div class="small-9 columns field">
+                                                            <input id="accountid" name="accountid" type="text" pattern="^[0-9]{12}$"/>
+                                                            <small class="error" ng-non-bindable="" i18n:translate="">Account ID must be a 12 digit number</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row controls-wrapper">
+                                                        <div class="small-3 columns">
+                                                            <label class="right" i18n:translate="">External ID</label>
+                                                        </div>
+                                                        <div class="small-9 columns field">
+                                                            <input id="externalid" name="externalid" type="text"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr />
@@ -66,15 +104,26 @@
                                 </div>
                             </div>
                         </div>
+                        <hr />
                         <div class="section">
                             <div class="row">
-                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-12 columns">
+                                    <p i18n:translate="">After you create this role, you can add an access policy. The access policy sets permissions for what the entity that assumes the role will be able to do.</p>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="small-8 columns field inline">
                                     <button type="submit" class="button" id="create-btn">
                                         <span i18n:translate="">Create Role</span>
                                     </button>
                                     <a href="${request.route_path('roles')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                                <div class="small-4 columns">
+                                    <label>
+                                        <span class="req">*</span>
+                                        <span i18n:translate="">Required fields</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>

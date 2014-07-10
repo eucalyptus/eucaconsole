@@ -37,7 +37,7 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
-from ..forms.roles import RoleForm, RoleUpdateForm, DeleteRoleForm
+from ..forms.roles import RoleForm, DeleteRoleForm
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse, TaggedItemView
 from . import boto_error_handler
@@ -144,7 +144,6 @@ class RoleView(BaseView):
         self.role_route_id = self.request.matchdict.get('name')
         self.all_users = self.get_all_users_array()
         self.role_form = RoleForm(self.request, role=self.role, formdata=self.request.params or None)
-        self.role_update_form = RoleUpdateForm(self.request, role=self.role, formdata=self.request.params or None)
         self.delete_form = DeleteRoleForm(self.request, formdata=self.request.params)
         create_date = parser.parse(self.role.create_date) if self.role else datetime.now()
         self.render_dict = dict(
@@ -153,7 +152,6 @@ class RoleView(BaseView):
             role_route_id=self.role_route_id,
             all_users=self.all_users,
             role_form=self.role_form,
-            role_update_form=self.role_update_form,
             delete_form=self.delete_form,
         )
 
@@ -165,6 +163,7 @@ class RoleView(BaseView):
         role = None
         try:
             role = self.conn.get_role(role_name=role_param)
+            role = role.get_role_response.get_role_result.role
         except BotoServerError as err:
             pass
         return role
@@ -182,18 +181,18 @@ class RoleView(BaseView):
     @view_config(route_name='role_view', renderer=TEMPLATE)
     def role_view(self):
         instances = []
-        with boto_error_handler(self.request):
-            profiles = self.conn.list_instance_profiles()
-            profile_arns = []
-            for profile in profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles:
-                profile_arns.append(profile.arn)
-            results = self.get_connection().get_only_instances()
-            for instance in results:
-                if len(instance.instance_profile) > 0 and instance.instance_profile['arn'] in profile_arns:
-                    instance.name=TaggedItemView.get_display_name(instance)
-                    instances.append(instance)
-            # once https://eucalyptus.atlassian.net/browse/EUCA-9692 is fixed, use line below instead
-            #instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+        if self.role is not None:
+            with boto_error_handler(self.request):
+                profiles = self.conn.list_instance_profiles()
+                profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+                profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == self.role.role_name]
+                results = self.get_connection().get_only_instances()
+                for instance in results:
+                    if len(instance.instance_profile) > 0 and instance.instance_profile['arn'] in profile_arns:
+                        instance.name=TaggedItemView.get_display_name(instance)
+                        instances.append(instance)
+                # once https://eucalyptus.atlassian.net/browse/EUCA-9692 is fixed, use line below instead
+                #instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
         self.render_dict['instances'] = instances
         return self.render_dict
  
@@ -201,14 +200,28 @@ class RoleView(BaseView):
     def role_create(self):
         if self.role_form.validate():
             new_role_name = self.request.params.get('role_name') 
+            role_type = self.request.params.get('roletype')
+            if role_type == 'xacct':
+                acct_id = self.request.params.get('accountid')
+                external_id = self.request.params.get('externalid')
             new_path = self.request.params.get('path')
-            location = self.request.route_path('role_view', name=new_role_name)
-            with boto_error_handler(self.request, location):
+            err_location = self.request.route_path('roles')
+            with boto_error_handler(self.request, err_location):
                 self.log_request(_(u"Creating role {0}").format(new_role_name))
-                self.conn.create_role(role_name=new_role_name, path=new_path)
+                if role_type == 'xacct':
+                    policy = {'Version': '2012-10-17'}
+                    statement = {'Effect': 'Allow', 'Action': 'sts:AssumeRole'}
+                    statement['Principal'] = {'AWS': "arn:aws:iam::%s:root" % (acct_id)}
+                    if len(external_id) > 0:
+                        statement['Condition'] = {'StringEquals': {'sts:ExternalId': external_id}}
+                    policy['Statement'] = [statement]
+                    self.conn.create_role(role_name=new_role_name, path=new_path, assume_role_policy_document=json.dumps(policy))
+                else:
+                    self.conn.create_role(role_name=new_role_name, path=new_path)
                 msg_template = _(u'Successfully created role {role}')
                 msg = msg_template.format(role=new_role_name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
+            location = self.request.route_path('iam_policy_new') + '?type=role&id=' + new_role_name
             return HTTPFound(location=location)
 
         return self.render_dict
