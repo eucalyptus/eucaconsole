@@ -287,7 +287,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
-        self.scaling_group.launch_config_name = self.request.params.get('launch_config')
+        self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
         self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
@@ -565,9 +565,10 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
                 self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
+                launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
                 scaling_group = AutoScalingGroup(
                     name=scaling_group_name,
-                    launch_config=self.request.params.get('launch_config'),
+                    launch_config=launch_config_name,
                     availability_zones=self.request.params.getall('availability_zones'),
                     load_balancers=self.request.params.getall('load_balancers'),
                     health_check_type=self.request.params.get('health_check_type'),
