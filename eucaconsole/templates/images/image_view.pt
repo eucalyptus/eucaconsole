@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}', ${image_launch_permissions})">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${image.state}', '${is_public}', ${image_launch_permissions})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -67,8 +67,12 @@
                                 ${panel('form_field', field=image_form['description'])}
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Status</label></div>
-                                <div class="small-8 columns value" ng-non-bindable="">${image.state}</div>
+                                <div class="small-4 columns"><label i18n:translate="">State</label></div>
+                                <div class="small-8 columns value" ng-cloak="">
+                                    <span class="label radius state {{imageState}}">
+                                        {{imageState}}
+                                    </span>
+                                </div>
                             </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner alias</label></div>

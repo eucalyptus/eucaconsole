@@ -7,12 +7,14 @@
 // Image page includes the tag editor, so pull in that module as well.
 angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
     .controller('ImagePageCtrl', function ($scope) {
+        $scope.imageState = '';
         $scope.isPublic = '';
         $scope.launchPermissions = [];
         $scope.isAccountNotTyped = true;
         $scope.isNotChanged = true;
         $scope.disabledExplanationVisible = false;
-        $scope.initController = function (isPublic, launchPermissions){
+        $scope.initController = function (imageState, isPublic, launchPermissions){
+            $scope.imageState = imageState;
             $scope.isPublic = isPublic;
             $scope.launchPermissions = launchPermissions;
             $scope.setWatch();

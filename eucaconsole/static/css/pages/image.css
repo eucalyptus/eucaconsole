@@ -1,6 +1,24 @@
 /* @fileOverview IMage detail view page CSS */
 /* Dropdown elements */
 /* Set the link colors and styles for top-level nav */
+.state { background-color: transparent; text-transform: capitalize; }
+
+.state.available { background-color: #03405f; }
+
+.state.cancelling { background-color: #cccccc; }
+
+.state.faied { background-color: darkred; }
+
+.state.pending { background-color: #0683c2; }
+
+.state.waiting-for-shutdown { background-color: #0683c2; }
+
+.state.bundling { background-color: #0683c2; }
+
+.state.storing { background-color: #0683c2; }
+
+.state.registering { background-color: #0683c2; }
+
 /* ----------------------------------------- Extra Element Padding
 ----------------------------------------- */
 .padded-element { padding: 5px 5px; }
