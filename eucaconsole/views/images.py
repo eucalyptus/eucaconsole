@@ -224,10 +224,12 @@ class ImageView(TaggedItemView):
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
+        self.is_owned_by_user = self.check_if_image_owned_by_user()
         self.image_launch_permissions = self.get_image_launch_permissions_array()
         self.render_dict = dict(
             image=self.image,
             is_public = str(self.image.is_public).lower(),
+            is_owned_by_user = self.is_owned_by_user,
             image_launch_permissions = self.image_launch_permissions,
             image_display_name=self.image_display_name,
             image_name_id=ImageView.get_image_name_id(self.image),
@@ -237,8 +239,13 @@ class ImageView(TaggedItemView):
             snapshot_images_registered=self.get_images_registered_from_snapshot_count(),
         )
 
+    def check_if_image_owned_by_user(self):
+        if self.image.owner_id == self.account_id:
+            return True
+        return False 
+
     def get_image_launch_permissions_array(self):
-        if self.image.owner_id != self.account_id:
+        if self.is_owned_by_user is False: 
             return [] 
         launch_permissions = self.image.get_launch_permissions()
         if launch_permissions is None or not 'user_ids' in launch_permissions:
