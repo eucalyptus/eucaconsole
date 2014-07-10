@@ -66,11 +66,21 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         };
         $scope.addAccount = function () {
            if( $scope.newAccount !== "" && $scope.newAccount !== undefined ){
-               $scope.launchPermissions.push($scope.newAccount);
+               if($scope.hasDup($scope.launchPermissions, $scope.newAccount) != true){
+                   $scope.launchPermissions.push($scope.newAccount);
+               }
                $scope.newAccount = "";
                $scope.isAccountNotTyped = true;
                $scope.isNotChanged = false;
            } 
+        };
+        $scope.hasDup = function(thisArray, thisValue){
+           for( var i = 0; i < thisArray.length; i++ ){
+               if( thisArray[i] == thisValue ){
+                   return true;
+               }
+           }
+           return false;
         };
     })
 ;
