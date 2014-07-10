@@ -147,6 +147,11 @@ class BaseView(object):
             return s.replace('{{', '{ {').replace('}}', '} }')
 
     @staticmethod
+    def unescape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup):
+            return s.replace('{ {', '{{').replace('} }', '}}')
+
+    @staticmethod
     def sanitize_url(url):
         default_path = '/'
         if not url:
@@ -273,7 +278,8 @@ class TaggedItemView(BaseView):
             if value != self.tagged_obj.tags.get('Name'):
                 self.tagged_obj.remove_tag('Name')
                 if value and not value.startswith('aws:'):
-                    self.tagged_obj.add_tag('Name', value)
+                    tag_value = self.unescape_braces(value)
+                    self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
     def get_display_name(resource, escapebraces=True):

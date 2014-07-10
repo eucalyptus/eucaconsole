@@ -61,7 +61,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-9 columns field inline">${security_group.description}</div>
+                        <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
