@@ -31,9 +31,14 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
-            $(document).on('input', '#add-account-inputbox', function () {
-                $scope.isAccountNotTyped = false;
-                $scope.$apply();
+            $(document).on('keyup', '#add-account-inputbox', function () {
+                if( $scope.newAccount.length == 12 && $scope.newAccount == parseInt($scope.newAccount) ){
+                    $scope.isAccountNotTyped = false;
+                    $scope.$apply();
+                }else{
+                    $scope.isAccountNotTyped = true;
+                    $scope.$apply();
+                }
             });
             // Handle the unsaved tag issue
             $(document).on('submit', '#image-detail-form', function(event) {
