@@ -34,7 +34,7 @@
                 </div>
                 <div class="tile item policy" tal:repeat="policy policies">
                     <div class="header">
-                        <strong><a class="title">${policy.name}</a></strong>
+                        <strong><a class="title">${layout.escape_braces(policy.name)}</a></strong>
                         <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>
@@ -47,7 +47,7 @@
                         <span>${scale_text} ${abs(policy.scaling_adjustment)}${scale_type}</span><br />
                         <br />
                         <strong i18n:translate="">Alarms:</strong><br/>
-                        <span>${', '.join([alarm.name for alarm in getattr(policy, 'alarms', [])])}</span>
+                        <span>${', '.join([layout.escape_braces(alarm.name) for alarm in getattr(policy, 'alarms', [])])}</span>
                     </div>
                 </div>
             </div>

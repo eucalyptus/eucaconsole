@@ -40,15 +40,17 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}">${launch_config.key_name}</a>
+                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}">
+                                ${layout.escape_braces(launch_config.key_name)}
+                            </a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
-                            <div tal:repeat="security_group security_groups" ng-non-bindable="">
+                            <div tal:repeat="security_group security_groups">
                                 <a href="${request.route_path('securitygroup_view', id=security_group.id)}">
-                                    ${security_group.name}
+                                    ${layout.escape_braces(security_group.name)}
                                 </a>
                             </div>
                         </div>

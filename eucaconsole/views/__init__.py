@@ -254,9 +254,9 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                key = key.strip()
+                key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                    tags[key] = value.strip()
+                    tags[key] = self.unescape_braces(value.strip())
             self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):

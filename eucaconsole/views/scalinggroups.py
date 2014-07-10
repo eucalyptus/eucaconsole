@@ -207,8 +207,8 @@ class BaseScalingGroupView(BaseView):
         for tag in tags_list:
             tags.append(Tag(
                 resource_id=scaling_group_name,
-                key=tag.get('name'),
-                value=tag.get('value'),
+                key=self.unescape_braces(tag.get('name', '').strip()),
+                value=self.unescape_braces(tag.get('value', '').strip()),
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
@@ -239,6 +239,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
+        import ipdb; ipdb.set_trace()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
