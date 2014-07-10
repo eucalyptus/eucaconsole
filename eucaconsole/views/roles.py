@@ -180,9 +180,24 @@ class RoleView(BaseView):
 
     @view_config(route_name='role_view', renderer=TEMPLATE)
     def role_view(self):
-        instances = []
         if self.role is not None:
+            # first, prettify the trust doc
+            parsed = json.loads(self.role.assume_role_policy_document)
+            self.role.assume_role_policy_document=json.dumps(parsed, indent=2)
+            # and pull out the trusted acct id
+            principal = parsed['Statement'][0]['Principal']
+            if 'AWS' in principal.keys():
+                arn = principal['AWS']
+                self.render_dict['trusted_acct'] = _(u'Accout ') + arn[arn.rindex('::')+2:arn.rindex(':')]
+            elif 'Service' in principal.keys():
+                svc = principal['Service']
+                if isinstance(svc, list):
+                    svc = svc[0]
+                self.render_dict['trusted_acct'] = _(u'Service ') + svc
+            else:
+                self.render_dict['trusted_acct'] = ''
             with boto_error_handler(self.request):
+                instances = []
                 profiles = self.conn.list_instance_profiles()
                 profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
                 profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == self.role.role_name]
@@ -193,7 +208,7 @@ class RoleView(BaseView):
                         instances.append(instance)
                 # once https://eucalyptus.atlassian.net/browse/EUCA-9692 is fixed, use line below instead
                 #instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
-        self.render_dict['instances'] = instances
+                self.render_dict['instances'] = instances
         return self.render_dict
  
     @view_config(route_name='role_create', request_method='POST', renderer=TEMPLATE)

@@ -15,3 +15,5 @@
 .padded-element { padding: 5px 5px; }
 
 .top-bottom-padding { padding-top: 10px; padding-bottom: 15px; }
+
+.CodeMirror { border: 1px solid #cccccc; min-height: 400px; }

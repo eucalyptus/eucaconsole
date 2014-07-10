@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users})">
+         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${role.assume_role_policy_document}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
@@ -58,10 +58,12 @@
                                         <div class="ec2-block">
                                             <input type="radio" name="roletype" value="ec2" checked="checked" ng-model="roleType"/>
                                             <label><span i18n:translate="" class="ip-label">EC2 service</span></label>
+                                            <span class="helptext-icon" data-tooltip="" title="Allows EC2 instances to call other services on your behalf" i18n:translate="title">?</span>
                                         </div>
                                         <div class="cross-acct-block">
                                             <input type="radio" name="roletype" value="xacct" ng-model="roleType"/>
                                             <label><span i18n:translate="" class="ip-label">Cross-account access</span></label>
+                                            <span class="helptext-icon" data-tooltip="" title="Allows IAM users from an account you specify (regardless of owner) to access this account. If specified, the external ID must be entered in addition to the account ID before a user from that account can access this account. This field is only used when you are granting access to an account that you do not own." i18n:translate="title">?</span>
                                             <div id="xacct-section" ng-cloak="">
                                                 <div class="section" ng-show="roleType == 'xacct'">
                                                     <div class="row controls-wrapper">
@@ -158,6 +160,31 @@
                         </div>
                     </div>
                     <hr />
+                    <div class="section">
+                        <h6 i18n:translate="">Trust relationships</h6>
+                        <div class="row controls-wrapper">
+                            <div class="columns">
+                                <strong i18n:translate="">Define who can assume this role, and when.</strong>
+                            </div>
+                        </div>
+                        <div class="row userentry controls-wrapper">
+                            <div class="columns">
+                                <a ng-href="#" class="button" id="edit-trust-policy-btn"
+                                   ng-click="editPolicy($event)"
+                                   title="Edit trust policy" i18n:translate="">Edit Trust Policy</a>
+                            
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns">
+                                <label class="right" i18n:translate="">Trusted entities: </label>
+                            </div>
+                            <div class="small-9 columns value inline breakword">
+                                ${trusted_acct}
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
                     <div tal:define="policies_url request.route_path('role_policies_json', name=role.role_name);
                                      policy_url request.route_path('role_policy_json', name=role.role_name, policy='_policy_');
                                      remove_url request.route_path('role_delete_policy', name=role.role_name, policy='_policy_');
@@ -174,6 +201,19 @@
                 </div>
             </div>
         </div>
+        <textarea id="policies" name="policies" class="hidden"></textarea>
+        <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
+            <h3 ng-non-bindable="" i18n:translate="">Trust Policy</h3>
+            <form ng-submit="savePolicy($event)">
+                <textarea id="policy-area" class="policy-area" ng-model="trustPolicy"></textarea>
+                <div>&nbsp;</div>
+                <small id="json-error" class="error" style="display:none;"></small>
+                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                    Save Changes
+                </button>
+            </form>
+            <a class="close-reveal-modal">&#215;</a>
+        </div>
         <div class="large-5 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <!--! Help goes here -->
@@ -185,6 +225,9 @@
 
 <div metal:fill-slot="tail_js">
     <div tal:condition="role">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/javascript.js')}"></script>
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/active-line.js')}"></script>
         <script src="${request.static_path('eucaconsole:static/js/pages/role.js')}"></script>
     </div>
     <div tal:condition="not:role">
