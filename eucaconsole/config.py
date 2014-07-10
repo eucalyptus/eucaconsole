@@ -90,6 +90,8 @@ def get_configurator(settings, enable_auth=True):
 
     memory_cache = settings.get('cache.memory')
     memory_cache_url = settings.get('cache.memory.url')
+    username = 'eucaconsole'
+    password = None
     short_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.short_term.expire')),
@@ -97,7 +99,9 @@ def get_configurator(settings, enable_auth=True):
             'url':[memory_cache_url],
             'binary':True,
             'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True}
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
         },
     )
     default_term.configure(
@@ -107,7 +111,9 @@ def get_configurator(settings, enable_auth=True):
             'url':[memory_cache_url],
             'binary':True,
             'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True}
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
         },
     )
     long_term.configure(
@@ -117,7 +123,9 @@ def get_configurator(settings, enable_auth=True):
             'url':[memory_cache_url],
             'binary':True,
             'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True}
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
         },
     )
     extra_long_term.configure(
@@ -127,7 +135,9 @@ def get_configurator(settings, enable_auth=True):
             'url':[memory_cache_url],
             'binary':True,
             'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True}
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
         },
     )
     return config
