@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
          ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}', ${image_launch_permissions})">
@@ -103,60 +107,59 @@
                     <div class="section">
                         <hr />
                         <h6 i18n:translate="">Permissions</h6>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
-                                <div class="small-8 columns value">
-                                    <div id="sharing-radio-buttons">
-                                        <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
-                                        <input type="radio" name="sharing" value="false" ng-model="isPublic">Private
-                                    </div>
-                                    <div ng-show="isPublic">
-                                        <div>
-                                            <span i18n:translate="">
-                                                Anyone can see this image.
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div ng-hide="isPublic">
-                                        <div>
-                                            <span i18n:translate="">
-                                               Only my account and accounts I share with can see this image.
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <span i18n:translate="">
-                                                    Share with specific accounts
-                                                </span>
-                                            </div>
-                                            <div id="share_with_accounts_field">
-                                                <span ng-repeat="account in launchPermissions">
-                                                    <span class="label radius secondary iam-user-icon padded-element">
-                                                        {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
-                                                    </span>
-                                                    <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span ng-show="launchPermissions.length == 0" i18n:translate="">
-                                                    Add an account number: 
-                                                </span>
-                                                <span ng-show="launchPermissions.length > 0" i18n:translate="">
-                                                    Add another account number: 
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
-                                            </div>
-                                            <div>
-                                                <span class="button" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
-                                                    <span i18n:translate="">Add Account</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
+                            <div class="small-8 columns value">
+                                <div id="sharing-radio-buttons">
+                                    <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
+                                    <input type="radio" name="sharing" value="false" ng-model="isPublic">Private
+                                </div>
+                                <div ng-show="isPublic">
+                                    <span i18n:translate="">
+                                        Anyone can see this image.
+                                    </span>
+                                </div>
+                                <div ng-hide="isPublic">
+                                    <span i18n:translate="">
+                                       Only my account and accounts I share with can see this image.
+                                    </span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row controls-wrapper readonly" ng-hide="isPublic">
+                            <div class="small-4 columns"></div>
+                            <div class="small-8 columns value">
+                                <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
+                                    <span i18n:translate="">
+                                        Share with specific accounts
+                                    </span>
+                                </div>
+                                <div id="share_with_accounts_field">
+                                    <span ng-repeat="account in launchPermissions">
+                                        <span class="label radius secondary iam-user-icon padded-element">
+                                            {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
+                                        </span>
+                                        <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
+                                    </span>
+                                </div>
+                                <div class="subsection-label top-bottom-padding">
+                                    <span ng-show="launchPermissions.length == 0" i18n:translate="">
+                                        Add an account number: 
+                                    </span>
+                                    <span ng-show="launchPermissions.length > 0" i18n:translate="">
+                                        Add another account number: 
+                                    </span>
+                                </div>
+                                <div>
+                                    <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
+                                </div>
+                                <div class="top-padding">
+                                    <span class="button" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
+                                        <span i18n:translate="">Add Account</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
