@@ -229,7 +229,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
-            scaling_group_name=self.escape_braces(self.scaling_group.name),
+            scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
             policies=self.policies,
             policies_count=len(self.policies),
             edit_form=self.edit_form,
