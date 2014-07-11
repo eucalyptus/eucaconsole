@@ -239,7 +239,6 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     @view_config(route_name='scalinggroup_view', renderer=TEMPLATE)
     def scalinggroup_view(self):
-        import ipdb; ipdb.set_trace()
         return self.render_dict
 
     @view_config(route_name='scalinggroup_update', request_method='POST', renderer=TEMPLATE)
