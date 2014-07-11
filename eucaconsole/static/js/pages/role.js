@@ -8,11 +8,13 @@ angular.module('RolePage', ['PolicyList'])
     .controller('RolePageCtrl', function ($scope, $http, $timeout) {
         $scope.allUsers = [];
         $scope.trustPolicy = '';
+        $scope.trustedEntity = '';
         $scope.codeEditor = null;
         $scope.editPolicyModal = $('#trust-policy-edit-modal');
-        $scope.initController = function (all_users, trust_policy) {
+        $scope.initController = function (all_users, trust_policy, trusted_entity) {
             $scope.allUsers = all_users;
             $scope.trustPolicy = trust_policy;
+            $scope.trustedEntity = trusted_entity;
             $scope.setWatch();
             $scope.setFocus();
             $scope.initCodeMirror();
@@ -49,6 +51,7 @@ angular.module('RolePage', ['PolicyList'])
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
                 ).success(function(oData) {
                     $scope.trustPolicy = policy_json;
+                    $scope.trustedEntity = oData.trusted_entity;
                     Notify.success(oData.message);
                 }).error(function (oData) {
                     var errorMsg = oData['message'] || '';

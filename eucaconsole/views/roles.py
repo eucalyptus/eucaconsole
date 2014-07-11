@@ -178,6 +178,18 @@ class RoleView(BaseView):
             users = [u.user_name.encode('ascii', 'ignore') for u in self.conn.get_all_users().users]
         return users
 
+    def _get_trusted_entity_(self, parsed_policy):
+        principal = parsed_policy['Statement'][0]['Principal']
+        if 'AWS' in principal.keys():
+            arn = principal['AWS']
+            return _(u'Accout ') + arn[arn.rindex('::')+2:arn.rindex(':')]
+        elif 'Service' in principal.keys():
+            svc = principal['Service']
+            if isinstance(svc, list):
+                svc = svc[0]
+            return _(u'Service ') + svc
+        return ''
+
     @view_config(route_name='role_view', renderer=TEMPLATE)
     def role_view(self):
         if self.role is not None:
@@ -185,17 +197,7 @@ class RoleView(BaseView):
             parsed = json.loads(self.role.assume_role_policy_document)
             self.role.assume_role_policy_document=json.dumps(parsed, indent=2)
             # and pull out the trusted acct id
-            principal = parsed['Statement'][0]['Principal']
-            if 'AWS' in principal.keys():
-                arn = principal['AWS']
-                self.render_dict['trusted_acct'] = _(u'Accout ') + arn[arn.rindex('::')+2:arn.rindex(':')]
-            elif 'Service' in principal.keys():
-                svc = principal['Service']
-                if isinstance(svc, list):
-                    svc = svc[0]
-                self.render_dict['trusted_acct'] = _(u'Service ') + svc
-            else:
-                self.render_dict['trusted_acct'] = ''
+            self.render_dict['trusted_entity'] = self._get_trusted_entity_(parsed)
             with boto_error_handler(self.request):
                 instances = []
                 profiles = self.conn.list_instance_profiles()
@@ -295,7 +297,8 @@ class RoleView(BaseView):
             policy_text = self.request.params.get('policy_text')
             result = self.conn.update_assume_role_policy(
                 role_name=self.role.role_name, policy_document=policy_text)
-            return dict(message=_(u"Successfully updated trust role policy"), results=result)
+            parsed = json.loads(policy_text)
+            return dict(message=_(u"Successfully updated trust role policy"), results=result, trusted_entity=self._get_trusted_entity_(parsed))
 
     @view_config(route_name='role_delete_policy', request_method='POST', renderer='json')
     def role_delete_policy(self):

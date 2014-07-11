@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${role.assume_role_policy_document}')">
+         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${role.assume_role_policy_document}', '${trusted_entity}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
@@ -179,8 +179,8 @@
                             <div class="small-3 columns">
                                 <label class="right" i18n:translate="">Trusted entities: </label>
                             </div>
-                            <div class="small-9 columns value inline breakword">
-                                ${trusted_acct}
+                            <div class="small-9 columns value inline breakword" ng-cloak="">
+                                {{ trustedEntity }}
                             </div>
                         </div>
                     </div>
