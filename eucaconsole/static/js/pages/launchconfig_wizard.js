@@ -34,6 +34,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -178,6 +179,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
                 }
+            });
+            $(document).on('input', 'textarea', function () {  // userdata text
+                $("#inputtype[value='text']").prop("checked", true);
+                $scope.$apply();
+            });
+            $('#userdata_file').on('change', function () {  // userdata file
+                $("#inputtype[value='file']").prop("checked", true);
+                $scope.$apply();
             });
         };
         $scope.loadImageInfo = function(id) {

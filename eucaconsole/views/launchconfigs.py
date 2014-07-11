@@ -28,8 +28,10 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
+import base64
 from urllib import quote
 import simplejson as json
+import magic
 import os
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
@@ -187,6 +189,20 @@ class LaunchConfigView(BaseView):
             profile_name = arn[(arn.index('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
+
+        if self.launch_config.user_data is not None:
+            user_data = self.launch_config.user_data
+            type = magic.from_buffer(user_data, mime=True)
+            if type.find('text') == 0:
+                self.launch_config.user_data=user_data
+            else:
+                # get more descriptive text
+                type = magic.from_buffer(user_data)
+                self.launch_config.user_data=None
+            self.launch_config.userdata_type = type
+            self.launch_config.userdata_istext = True if type.find('text') >= 0 else False
+        else:
+            self.launch_config.userdata_type = ''
 
         self.render_dict = dict(
             launch_config=self.launch_config,

@@ -14,6 +14,7 @@ angular.module('InstancePage', ['TagEditor'])
         // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
+        $scope.isFileUserData = false;
         $scope.isNotChanged = true;
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
@@ -93,6 +94,16 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            $(document).on('input', 'textarea', function () {  // userdata text
+                $("#inputtype[value='text']").prop("checked", true);
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $('#userdata_file').on('change', function () {  // userdata file
+                $("#inputtype[value='file']").prop("checked", true);
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $(document).on('change', 'select', function () {
                 $scope.isNotChanged = false;
                 $scope.$apply();
@@ -132,15 +143,18 @@ angular.module('InstancePage', ['TagEditor'])
             $http.get($scope.instanceUserDataEndpoint).success(function(oData) {
                 var userData = oData ? oData.results : '';
                 if (userData.type.indexOf('text') === 0) {
-                    $('#userdata').val(userData.data);
+                    $scope.isFileUserData = false;
+                    $("#userdata:not([display='none'])").val(userData.data);
+                    $("#inputtype[value='text']").prop("checked", true);
                 }
                 else {
-                    $('#userdata').val(userData.type);
+                    $scope.isFileUserData = true;
+                    $("#userdatatype:not([display='none'])").text(userData.type);
+                    $("#inputtype[value='file']").prop("checked", true);
                 }
             });
         };
         $scope.submitSaveChanges = function($event){
-            $event.preventDefault();
             // Handle the unsaved tag issue
             var existsUnsavedTag = false;
             $('input.taginput').each(function(){
@@ -150,11 +164,11 @@ angular.module('InstancePage', ['TagEditor'])
                 }
             });
             if( existsUnsavedTag ){
+                $event.preventDefault();
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
             }else if( $scope.instanceState == 'stopped' ){
+                $event.preventDefault();
                 $('#update-instance-modal').foundation('reveal', 'open');
-            }else{
-                $scope.instanceForm.submit();
             }
         };
         $scope.submitUpdateInstance = function ($event) {

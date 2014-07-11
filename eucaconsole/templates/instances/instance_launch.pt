@@ -154,8 +154,18 @@
                             <p class="description" i18n:translate="">
                                 User data and other advanced options (optional).
                             </p>
-                            ${panel('form_field', field=launch_form['userdata'], ng_attrs={'model': 'userData'})}
-                            ${panel('form_field', field=launch_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns">
+                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                                </div>
+                                <div class="small-8 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="text"><label i18n:translate="">Enter text</label></input>
+                                        <textarea id="userdata" name="userdata"></textarea>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file"><label i18n:translate="">Upload file</label></input>
+                                        <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled"></input><span id="userdatatype"></span>
+                                    
+                                </div>
+                            </div>
                             ${panel('form_field', field=launch_form['kernel_id'])}
                             ${panel('form_field', field=launch_form['ramdisk_id'])}
                             <div class="small-8 columns right">
