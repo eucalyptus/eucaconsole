@@ -31,8 +31,7 @@ Forms for Launch Config
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm, ChoicesManager
 
 
@@ -66,19 +65,21 @@ class CreateLaunchConfigForm(BaseSecureForm):
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
-    userdata_file = wtforms.FileField(label=_(u''))
+    userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     create_sg_from_lc = wtforms.BooleanField(label=_(u'Create scaling group using this launch configuration'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
         super(CreateLaunchConfigForm, self).__init__(request, **kwargs)
         self.image = image
         self.securitygroups = securitygroups
         self.conn = conn
+        self.iam_conn = iam_conn
         self.cloud_type = request.session.get('cloud_type', 'euca')
         self.set_error_messages()
         self.monitoring_enabled.data = True
@@ -98,6 +99,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.keypair.choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=self.securitygroups, add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 

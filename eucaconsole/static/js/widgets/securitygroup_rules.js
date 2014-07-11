@@ -10,6 +10,7 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
         $scope.selectedProtocol = '';
+        $scope.isRuleNotComplete = true;
         $scope.resetValues = function () {
             $scope.trafficType = 'ip';
             $scope.fromPort = '';
@@ -20,6 +21,7 @@ angular.module('SecurityGroupRules', [])
             $scope.groupName = '';
             $scope.ipProtocol = 'tcp';
             $scope.hasDuplicatedRule = false;
+            $scope.hasInvalidOwner = false;
             $('#ip-protocol-select').chosen({'width': '90%', search_contains: true});
             $('#ip-protocol-select').prop('selectedIndex', -1);
             $('#ip-protocol-select').trigger('chosen:updated');
@@ -45,16 +47,60 @@ angular.module('SecurityGroupRules', [])
                 }
             }, 500);
         };
+        $scope.checkRequiredInput = function () {
+            // By default, the Add Rule button is enabled when entering the check
+            $scope.isRuleNotComplete = false;
+            // If any of the required input fields are mising, disable the Add Rule button
+            if( $scope.hasDuplicatedRule == true ){
+                $scope.isRuleNotComplete = true;
+            }
+            if( $scope.selectedProtocol !== 'icmp' ){
+                if( $scope.fromPort === '' || $scope.fromPort === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }else if( $scope.toPort === '' || $scope.toPort === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }
+            if( $scope.trafficType === 'ip' ){
+                if( $scope.cidrIp === '' || $scope.cidrIp === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }else if( $scope.trafficType === 'securitygroup' ){
+                if( $scope.groupName === '' || $scope.groupName === undefined ){
+                    $scope.isRuleNotComplete = true;
+                }
+            }
+        };
         // Watch for those two attributes update to trigger the duplicated rule check in real time
         $scope.setWatchers = function () {
-            $scope.$watch('cidrIp', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('selectedProtocol', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('fromPort', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('toPort', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('icmpRange', function(){ 
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('cidrIp', function(){ 
+                $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
+            });
             $scope.$watch('groupName', function(){
                 if( $scope.groupName !== '' ){
                     $scope.trafficType = 'securitygroup';
                 }
+                $scope.hasInvalidOwner = false;
                 $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
             });
-            $scope.$watch('trafficType', function(){ $scope.checkForDuplicatedRules();});
+            $scope.$watch('trafficType', function(){ 
+                $scope.checkForDuplicatedRules();
+                $scope.checkRequiredInput();
+            });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
                     $scope.trafficType = 'ip';
@@ -65,7 +111,7 @@ angular.module('SecurityGroupRules', [])
                     $scope.trafficType = 'ip';
                 });
             });
-            $(document).on('closed', '[data-reveal]', function () {
+            $(document).on('closed', '#create-securitygroup-modal', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.syncRules();
@@ -145,6 +191,15 @@ angular.module('SecurityGroupRules', [])
         };
         // Create an array block that represents a new security group rule submiitted by user
         $scope.createRuleArrayBlock = function () {
+            var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
+            var owner_id = null;
+            if (name !== null) {
+                var idx = name.indexOf('/');
+                if (idx > 0) {
+                    owner_id = name.substring(0, idx);
+                    name = name.substring(idx+1);
+                }
+            }
             return {
                 'from_port': $scope.fromPort,
                 'to_port': $scope.toPort,
@@ -153,14 +208,15 @@ angular.module('SecurityGroupRules', [])
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
                     'group_id': null,
-                    'name': $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null
+                    'name': name,
+                    'owner_id': owner_id
                 }],
                 'fresh': 'new'
             }; 
         };
         $scope.addRule = function ($event) {
             $event.preventDefault();
-            if( $scope.hasDuplicatedRule == true ){
+            if( $scope.hasDuplicatedRule == true || $scope.hasInvalidOwner == true ){
                 return false;
             }
             // Trigger form validation to prevent borked rule entry
@@ -187,7 +243,32 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.fromPort = $scope.toPort = '';
             }
-            $('#groupname-select').chosen({'width': '50%', search_contains: true});
+            $('#groupname-select').chosen({'width': '50%', search_contains: true, create_option: function(term){
+                    $scope.hasInvalidOwner = false;
+                    var chosen = this;
+                    // validate the entry
+                    var name = term;
+                    var owner_id = null;
+                    if (name !== null) {
+                        var idx = name.indexOf('/');
+                        if (idx > 0) {
+                            owner_id = name.substring(0, idx);
+                            name = name.substring(idx+1);
+                        }
+                    }
+                    $timeout(function() {
+                        if (owner_id !== null && (owner_id.length != 12 || isNaN(parseInt(owner_id, 10)))) {
+                            $scope.hasInvalidOwner = true;
+                            return;
+                        }
+                        chosen.append_option({
+                            value: term,
+                            text: term
+                        });
+                    });
+                },
+                create_option_text: 'Add Group',
+            });
             $('#groupname-select').prop('selectedIndex', -1);
             $('#groupname-select').trigger('chosen:updated');
             $scope.cleanupSelections();

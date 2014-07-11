@@ -1,10 +1,11 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/images.css')}" />
 </head>
 
-<div metal:fill-slot="main_content">
+<div metal:fill-slot="main_content" ng-app="ImagesPage" ng-controller="ImagesCtrl"
+     ng-init="initSnapshotImages('${request.route_path('snapshot_images_json', id='_id_')}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('images', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -37,6 +38,9 @@
                     <li><a i18n:translate="" ng-href="${request.route_path('instance_create')}?image_id={{ item.id }}">Launch instance</a></li>
                     <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                            i18n:translate="">Create launch configuration</a>
+                    </li>
+                    <li ng-if="'${account_id}' == item.owner_id">
+                        <a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a>
                     </li>
                 </ul>
             </div>
@@ -103,11 +107,16 @@
                             <li><a ng-href="${request.route_path('launchconfig_new')}?image_id={{ item.id }}"
                                    i18n:translate="">Create launch configuration</a>
                             </li>
+                            <li ng-if="'${account_id}' == item.owner_id">
+                                <a i18n:translate="" ng-click="revealModal('deregister', item)">Remove from cloud</a>
+                            </li>
                         </ul>
                     </span>
                 </td>
             </metal:block>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('image_dialogs', deregister_form=deregister_form, landingpage=True)}
     </div>
 </div>
 
@@ -122,6 +131,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/images.js')}"></script>
     <script tal:condition="layout.cloud_type == 'aws'">
         // Set "owned by Amazon" as default filter if on AWS
         $(document).ready(function () {

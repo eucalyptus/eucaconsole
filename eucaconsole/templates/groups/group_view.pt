@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
@@ -40,14 +40,15 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <div tal:condition="not group and group_route_id == 'new'" i18n:translate=""
+                <!--! TODO: Move IAM group name error_msg to view and mark for i18n -->
+                <div tal:condition="not group and group_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
                          'error_msg': 'IAM group names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
                             <div class="row controls-wrapper readonly">
-                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                                ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                         </div>
                         <div>&nbsp;</div>
@@ -68,9 +69,15 @@
                             <div>&nbsp;</div>
                         </div>
                         <hr />
+                        <div tal:condition="not group">
+                            <label>
+                                <span class="req">*</span>
+                                <span i18n:translate="">Required fields</span>
+                           </label>
+                        </div>
                         <div class="section">
                             <div>
-                                <button type="submit" class="button" id="create-btn">
+                                <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
                                     <span i18n:translate="">Create Group</span>
                                 </button>
                                 <a href="${request.route_path('groups')}"
@@ -125,7 +132,7 @@
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="columns">
-                                    <button type="submit" class="button" id="save-changes-btn">
+                                    <button type="submit" class="button" id="save-changes-btn" ng-disabled="isNotChanged">
                                         <span tal:condition="group" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('groups')}"

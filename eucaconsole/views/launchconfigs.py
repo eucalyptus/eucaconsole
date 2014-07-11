@@ -30,11 +30,11 @@ Pyramid views for Eucalyptus and AWS launch configurations
 """
 from urllib import quote
 import simplejson as json
+import os
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms import GenerateFileForm
@@ -42,6 +42,7 @@ from ..forms.images import ImagesFiltersForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm, LaunchConfigsFiltersForm
 from ..forms.securitygroups import SecurityGroupForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
@@ -54,6 +55,7 @@ class LaunchConfigsView(LandingPageView):
         super(LaunchConfigsView, self).__init__(request)
         self.request = request
         self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.initial_sort_key = 'name'
         self.prefix = '/launchconfigs'
@@ -87,7 +89,12 @@ class LaunchConfigsView(LandingPageView):
             prefix = _(u'Unable to delete launch configuration')
             template = '{0} {1} - {2}'.format(prefix, name, '{0}')
             with boto_error_handler(self.request, location, template):
+                launch_config = self.autoscale_conn.get_all_launch_configurations(names=[name])
                 self.autoscale_conn.delete_launch_configuration(name)
+                arn = launch_config[0].instance_profile_name
+                if arn != None:
+                    profile_name = arn[(arn.index('/')+1):]
+                    self.iam_conn.delete_instance_profile(profile_name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 queue = Notification.SUCCESS
@@ -128,7 +135,7 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = launchconfig.security_groups[0] if launchconfig.security_groups else [],
+                security_groups = [sg for sg in launchconfig.security_groups]
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -167,12 +174,20 @@ class LaunchConfigView(BaseView):
     def __init__(self, request):
         super(LaunchConfigView, self).__init__(request)
         self.ec2_conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         with boto_error_handler(request):
             self.launch_config = self.get_launch_config()
             self.image = self.get_image()
             self.security_groups = self.get_security_groups()
         self.delete_form = LaunchConfigDeleteForm(self.request, formdata=self.request.params or None)
+        self.role = None
+        if self.launch_config and self.launch_config.instance_profile_name:
+            arn = self.launch_config.instance_profile_name
+            profile_name = arn[(arn.index('/')+1):]
+            inst_profile = self.iam_conn.get_instance_profile(profile_name)
+            self.role = inst_profile.roles.member.role_name
+
         self.render_dict = dict(
             launch_config=self.launch_config,
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
@@ -181,6 +196,7 @@ class LaunchConfigView(BaseView):
             image=self.image,
             security_groups=self.security_groups,
             delete_form=self.delete_form,
+            role = self.role,
         )
 
     @view_config(route_name='launchconfig_view', renderer=TEMPLATE)
@@ -197,6 +213,10 @@ class LaunchConfigView(BaseView):
             with boto_error_handler(self.request, location, template):
                 self.log_request(_(u"Deleting launch configuration {0}").format(name))
                 self.autoscale_conn.delete_launch_configuration(name)
+                arn = self.launch_config.instance_profile_name
+                if arn != None:
+                    profile_name = arn[(arn.index('/')+1):]
+                    self.iam_conn.delete_instance_profile(profile_name)
                 prefix = _(u'Successfully deleted launch configuration.')
                 msg = '{0} {1}'.format(prefix, name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -254,9 +274,10 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.create_form = CreateLaunchConfigForm(
-            self.request, image=self.image, conn=self.conn, securitygroups=self.securitygroups,
-            formdata=self.request.params or None)
+            self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
+            securitygroups=self.securitygroups, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
@@ -268,6 +289,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.keypair.choices)))
         self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.securitygroup.choices)))
+        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.role.choices)))
         self.render_dict = dict(
             image=self.image,
             create_form=self.create_form,
@@ -283,6 +305,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             security_group_names=[name for name, label in self.create_form.securitygroup.choices],
+            role_choices_json=self.role_choices_json,
             preset='',
         )
 
@@ -311,7 +334,13 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_mappings = [self.get_block_device_map(bdmapping_json)] if bdmapping_json != '{}' else None
+            role = self.request.params.get('role')
             with boto_error_handler(self.request, location):
+                instance_profile = None
+                if role != '':  # need to set up instance profile, add role and supply to run_instances
+                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').strip('=\/\n'))
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name)
+                    self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Creating launch configuration {0}").format(name))
                 launch_config = LaunchConfiguration(
                     name=name,
@@ -324,6 +353,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                     ramdisk_id=ramdisk_id,
                     block_device_mappings=block_device_mappings,
                     instance_monitoring=monitoring_enabled,
+                    instance_profile_name=instance_profile.arn if instance_profile else None
                 )
                 autoscale_conn.create_launch_configuration(launch_config=launch_config)
                 msg = _(u'Successfully sent create launch configuration request. '

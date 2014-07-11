@@ -24,12 +24,85 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import re
 
+from distutils.command.build_py import build_py
+from distutils.command.sdist import sdist
 from setuptools import setup, find_packages
+
+from eucaconsole import __version__
+
+DATA_DIR='/usr/share/'
+
+def get_data_files(path, regex):
+    data_files = []
+    for root, _, filenames in os.walk(path, followlinks=True):
+        files = []
+        for file in filenames:
+            if re.match(regex, file) is not None:
+                files.append(os.path.join(root, file))
+        data_files.append((os.path.join(DATA_DIR, root), files))
+    return data_files
+
+def get_package_files(package_dir, regex):
+    package_files = []
+    if not package_dir.endswith('/'):
+        package_dir = package_dir + '/'
+    for root, _, filenames in os.walk(package_dir, followlinks=True):
+        files = []
+        for file in filenames:
+            package_path = os.path.join(root[len(package_dir):], file)
+            if re.match(regex, package_path) is not None:
+                files.append(package_path)
+        package_files.extend(files)
+    return package_files
+
 
 here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
+
+class build_py_with_git_version(build_py):
+    '''Like build_py, but also hardcoding the version in version.__version__
+       so it's consistent even outside of the source tree'''
+
+    def build_module(self, module, module_file, package):
+        build_py.build_module(self, module, module_file, package)
+        print module, module_file, package
+        if module == 'version' and '.' not in package:
+            version_line = "__version__ = '{0}'\n".format(__version__)
+            old_ver_name = self.get_module_outfile(self.build_lib, (package,),
+                                                    module)
+            new_ver_name = old_ver_name + '.new'
+            with open(new_ver_name, 'w') as new_ver:
+                with open(old_ver_name) as old_ver:
+                    for line in old_ver:
+                        if line.startswith('__version__ ='):
+                            new_ver.write(version_line)
+                        else:
+                            new_ver.write(line)
+                new_ver.flush()
+            os.rename(new_ver_name, old_ver_name)
+
+
+class sdist_with_git_version(sdist):
+    '''Like sdist, but also hardcoding the version in version.__version__ so
+       it's consistent even outside of the source tree'''
+
+    def make_release_tree(self, base_dir, files):
+        sdist.make_release_tree(self, base_dir, files)
+        version_line = "__version__ = '{0}'\n".format(__version__)
+        old_ver_name = os.path.join(base_dir, 'eucaconsole/version.py')
+        new_ver_name = old_ver_name + '.new'
+        with open(new_ver_name, 'w') as new_ver:
+            with open(old_ver_name) as old_ver:
+                for line in old_ver:
+                    if line.startswith('__version__ ='):
+                        new_ver.write(version_line)
+                    else:
+                        new_ver.write(line)
+            new_ver.flush()
+        os.rename(new_ver_name, old_ver_name)
 
 requires = [
     'beaker >= 1.5.4',
@@ -62,14 +135,14 @@ dev_extras = [
     'waitress',
 ]
 
-message_extractors = {'.': [
+message_extractors = {'eucaconsole': [
     ('**.py', 'lingua_python', None),
     ('**.pt', 'lingua_xml', None),
 ]}
 
 setup(
     name='eucaconsole',
-    version='4.0.0',
+    version=__version__,
     description='Eucalyptus Management Console',
     long_description=README,
     classifiers=[
@@ -83,6 +156,7 @@ setup(
     url='http://www.eucalyptus.com',
     keywords='web pyramid pylons',
     packages=find_packages(),
+    package_data={'eucaconsole': get_package_files('eucaconsole', r'^[static\|templates]\.*')},
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
@@ -92,9 +166,12 @@ setup(
         'dev': dev_extras,
     },
     message_extractors=message_extractors,
+    data_files=get_data_files("locale", r'.*\.mo$'),
     test_suite="tests",
     entry_points="""\
     [paste.app_factory]
-    main = eucaconsole:main
+    main = eucaconsole.config:main
     """,
+    cmdclass={'build_py': build_py_with_git_version,
+              'sdist': sdist_with_git_version}
 )

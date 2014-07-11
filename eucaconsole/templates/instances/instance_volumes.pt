@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
@@ -87,6 +87,12 @@
                     ${structure:attach_form['csrf_token']}
                     ${panel('form_field', field=attach_form.volume_id)}
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
+                    <div>
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                        </label>
+                    </div>
                     <div class="row">
                         <div>
                             <input type="submit" class="button expand" value="Attach Volume" i18n:attributes="value" />
@@ -106,14 +112,13 @@
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                  <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.
-                  </span>
+                    <span i18n:translate="">If you detach a volume, the instance can no longer read or write to it.</span>
                 </p>
                 <p>
-                  <span i18n:translate="">
-                      Are you sure you want to detach volume <b>{{ detachVolumeName }}</b> from instance
-                  </span>
-                  <strong ng-non-bindable="">${instance_name}</strong>?
+                    <span i18n:translate="">Are you sure you want to detach volume</span>
+                    <b>{{ detachVolumeName }}</b>
+                    <span i18n:translate="">from instance</span>
+                    <strong ng-non-bindable="">${instance_name}</strong>?
                 </p>
                 <form method="post" id="detach-form" data-abide="" action="{{ detachFormAction }}">
                     ${structure:detach_form['csrf_token']}
@@ -129,7 +134,11 @@
             <div id="detach-volume-warn-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Detach volume</h3>
                 <p>
-                    <span i18n:translate="">This operation is not available because you cannot detach the root volume of an EBS-backed instance. If you want to delete this volume, terminate instance <strong ng-non-bindable="">${instance_name}</strong>.</span>
+                    <span i18n:translate="">
+                        This operation is not available because you cannot detach the root volume of an EBS-backed instance.
+                        If you want to delete this volume, terminate instance
+                    </span>
+                    <strong ng-non-bindable="">${instance_name}</strong>.
                 </p>
                 <a href="#" class="close-reveal-modal">&#215;</a>
             </div>

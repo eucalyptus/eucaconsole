@@ -1,0 +1,28 @@
+<!--! Modal dialogs for IAM roles on landing and detail page -->
+<div tal:omit-tag="">
+    <div id="delete-role-modal" class="reveal-modal small" data-reveal=""
+         tal:define="landingpage_action request.route_path('roles_delete');
+                     detailpage_action request.route_path('role_delete', name=role.role_name) if role else '';
+                     action landingpage_action if landingpage else detailpage_action;">
+        <h3 i18n:translate="">Delete role</h3>
+        <p>
+            <span i18n:translate="">Deleting a role also deletes all permissions associated with that role. Are you sure you want to delete role </span>
+            <span tal:condition="role" ng-non-bindable=""><strong>${role.role_name}</strong></span>
+            <span tal:condition="not role"><strong>{{ roleName }}</strong></span>
+            ?
+        </p>
+        <form method="post" id="delete-form" action="${action}">
+            ${structure:delete_form['csrf_token']}
+            <div tal:condition="landingpage" tal:omit-tag="">
+                <input type="hidden" name="name" value="{{ roleName }}"/>
+            </div>
+            <div class="dialog-submit-button">
+                <button type="submit" class="button expand" i18n:translate="">Yes, Delete Role</button>
+            </div>
+            <div class="dialog-progress-display hide">
+                <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+            </div>
+        </form>
+        <a href="" class="close-reveal-modal">&#215;</a>
+    </div>
+ </div>

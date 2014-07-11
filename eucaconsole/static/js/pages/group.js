@@ -8,6 +8,7 @@ angular.module('GroupPage', ['PolicyList'])
     .controller('GroupPageCtrl', function ($scope, $timeout) {
         $scope.groupUsers = [];
         $scope.allUsers = [];
+        $scope.isNotChanged = true;
         $scope.initController = function (group_users, all_users) {
             $scope.groupUsers = group_users;
             $scope.allUsers = all_users;
@@ -33,6 +34,7 @@ angular.module('GroupPage', ['PolicyList'])
             }
             $scope.groupUsers = newUsers;
             if( userAdded == true ){
+                $scope.isNotChanged = false;
                 $scope.$apply();
             }
         };
@@ -41,6 +43,8 @@ angular.module('GroupPage', ['PolicyList'])
                 var thisUser = $( this ).text();
                 if( thisUser == user ){
                     $( this ).children('a').click();
+                    $scope.isNotChanged = false;
+                    $scope.$apply();
                 }
             });
         };
@@ -56,6 +60,10 @@ angular.module('GroupPage', ['PolicyList'])
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
+            $(document).on('input', 'input[type="text"]', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
             });
         };
         $scope.setFocus = function () {

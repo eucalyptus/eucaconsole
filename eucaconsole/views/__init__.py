@@ -43,13 +43,13 @@ from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
-from pyramid.i18n import TranslationString as _
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager
 
@@ -172,6 +172,8 @@ class BaseView(object):
             logging.info(log_message)
         elif level == 'error':
             logging.error(log_message)
+        # Very useful to use this when an error is logged and you need more details
+        #import traceback; traceback.print_exc()
 
     def log_request(self, message):
         self.log_message(self.request, message)

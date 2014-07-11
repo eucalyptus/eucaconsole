@@ -31,8 +31,7 @@ Forms for Images
 import wtforms
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
-from pyramid.i18n import TranslationString as _
-
+from ..i18n import _
 from . import BaseSecureForm
 
 
@@ -42,6 +41,14 @@ class ImageForm(BaseSecureForm):
        Only need to initialize as a secure form to generate CSRF token
     """
     pass
+
+
+class DeregisterImageForm(BaseSecureForm):
+    """
+    Deregister image form
+    Note: delete_snapshot option only applies to EBS-backed images
+    """
+    delete_snapshot = wtforms.BooleanField(label=_(u'Delete associated snapshot'))
 
 
 class ImagesFiltersForm(BaseSecureForm):

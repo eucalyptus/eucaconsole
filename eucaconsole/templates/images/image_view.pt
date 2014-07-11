@@ -1,9 +1,9 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
          ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
-       <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
                 <li class="current"><a href="#" ng-non-bindable="">${image_display_name}</a></li>
@@ -34,9 +34,14 @@
                                 Create launch configuration
                             </a>
                         </li>
+                        <li tal:condition="account_id == image.owner_id">
+                            <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
+                                Remove from cloud
+                            </a>
+                        </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
+                <form id="image-detail-form" action="${request.route_path('image_update', id=image_id)}" method="post" data-abide="abide">
                     ${structure:image_form['csrf_token']}
                     <div tal:condition="image">
                         <div class="section">
@@ -53,7 +58,7 @@
                                 <div class="small-8 columns value" ng-non-bindable="">${image.owner_alias if image.owner_alias else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">platform</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">Platform</label></div>
                                 <div class="small-8 columns value">${image.platform_name if image.platform_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
@@ -63,10 +68,6 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Root device type</label></div>
                                 <div class="small-8 columns value">${image.root_device_type if image.root_device_type else ''}</div>
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Root device mapping</label></div>
-                                <div class="small-8 columns value">${image.root_device_name if image.root_device_name else ''}</div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Owner account (ID)</label></div>
@@ -97,34 +98,8 @@
                                 <div class="small-8 columns value">${image.ramdisk_id if image.ramdisk_id else ''}</div>
                             </div>
                         </div>
-                        <div class="section" tal:condition="image.block_device_names">
-                            <hr />
-                            <h6 i18n:translate="">Block device mappings</h6>
-                            <div id="tableview" class="gridwrapper">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th i18n:translate="">Device mapping</th>
-                                            <th i18n:translate="">Snapshot</th>
-                                            <th i18n:translate="">Size (GB)</th>
-                                            <th i18n:translate="">Delete on termination?</th>
-                                            <th i18n:translate="">Ephemeral name</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr tal:repeat="row image.block_device_names">
-                                            <td ng-non-bindable="">${row.name if row.name else ''}</td>
-                                            <td>${row.value.snapshot_id if row.value.snapshot_id else ''}</td>
-                                            <td>${row.value.size if row.value.size else ''}</td>
-                                            <td>${row.value.delete_on_termination if row.value.delete_on_termination else ''}</td>
-                                            <td ng-non-bindable="">${row.value.ephemeral_name if row.value.ephemeral_name else ''}</td>
-                                        </tr>
-                                    </tbody> 
-                                </table>
-                            </div>
-                        </div>
                     </div>
-                    <hr />
+                    ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>
                     <div>
@@ -141,10 +116,12 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Tag editor help content -->
-                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div> 
-                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div> 
+                <div id="help-html-console_image_detail" ng-include="'${layout.help_path('console_image_detail.html')}'"></div>
+                <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div>
             </div>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form, snapshot_images_registered=snapshot_images_registered)}
     </div>
 </div>
 

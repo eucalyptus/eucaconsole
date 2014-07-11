@@ -2,9 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="no-js"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="eucaconsole">
 <head>
-    <title>Eucalyptus Management Console</title>
+    <title i18n:translate="">Eucalyptus Management Console</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="shortcut icon" href="${request.static_path('eucaconsole:static/img/favicon.ico')}" />
@@ -117,7 +118,8 @@
     <div id="about-modal" class="reveal-modal small" data-reveal="">
         <h3 i18n:translate="">About your cloud</h3>
         <p>
-            <span i18n:translate="">Eucalyptus cloud software version: <strong>${layout.version}</strong></span>
+            <span i18n:translate="">Eucalyptus cloud software version:</span>
+            <strong>${layout.version}</strong>
         </p>
         <a class="close-reveal-modal">&#215;</a>
     </div>

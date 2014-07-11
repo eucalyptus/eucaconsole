@@ -15,11 +15,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageLocation = '';
         $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
+        $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
         $scope.securityGroup = '';
         $scope.securityGroupsRules = {};
         $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
+        $scope.keyPair = '';
         $scope.newKeyPairName = '';
         $scope.keyPairSelected = '';
         $scope.keyPairModal = $('#create-keypair-modal');
@@ -32,13 +34,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
         $scope.step2Invalid = true;
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
+        $scope.isNotValid = true;
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson,
+                                securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
@@ -48,6 +52,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.roleList = JSON.parse(roles);
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
@@ -108,11 +113,33 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 localStorage.setItem('lastsecgroup_lc', $('#securitygroup').find(':selected').val());
             }
         };
+        $scope.checkRequiredInput = function () {
+            if( $scope.currentStepIndex == 1 ){ 
+                if( $scope.imageID === '' || $scope.imageID === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }else if( $scope.currentStepIndex == 2 ){
+                if( $scope.launchconfigName === '' || $scope.launchconfigName === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }else if( $scope.currentStepIndex == 3 ){
+                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                    $scope.isNotValid = true;
+                }else{
+                    $scope.isNotValid = false;
+                }
+            }
+        };
         $scope.setWatcher = function (){
             $scope.$watch('currentStepIndex', function(){
                  if( $scope.currentStepIndex != 1 ){
                      $scope.setWizardFocus($scope.currentStepIndex);
                  }
+                $scope.checkRequiredInput();
             });
             $scope.$watch('securityGroup', function(){
                 $scope.updateSecurityGroup();
@@ -121,6 +148,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 if (newID != oldID) {
                     $scope.loadImageInfo(newID);
                 }
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('launchconfigName', function(){
+                $scope.checkRequiredInput();
+            });
+            $scope.$watch('keyPair', function(){
+                $scope.checkRequiredInput();
             });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
@@ -151,7 +185,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 method: 'GET',
                 url: $scope.imageJsonURL.replace('_id_', id),
-                data: '',
+                data: ''
             }).success(function (oData) {
                 var item = oData.results;
                 $scope.imageName = item.name;
@@ -204,7 +238,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             var currentStep = nextStep - 1,
                 tabContent = $scope.launchForm.find('#step' + currentStep),
                 invalidFields = tabContent.find('[data-invalid]');
-            if (invalidFields.length) {
+            if (invalidFields.length || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
                 return false;
@@ -235,6 +269,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // Unhide appropriate step in summary
                 $scope.summarySection.find('.step' + nextStep).removeClass('hide');
                 $scope.currentStepIndex = nextStep;
+                $scope.checkRequiredInput();
             },50);
         };
         $scope.clearErrors = function(step) {
@@ -249,6 +284,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.imageRootDeviceType = item.root_device_type;
             $scope.imageLocation = item.location;
             $scope.summarySection.find('.step1').removeClass('hide');
+            $scope.checkRequiredInput();
         });
         $scope.downloadKeyPair = function ($event, downloadUrl) {
             $event.preventDefault();
@@ -280,6 +316,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 // Add new key pair to choices and set it as selected
                 $scope.keyPairChoices[$scope.newKeyPairName] = $scope.newKeyPairName;
                 $scope.keyPair = $scope.newKeyPairName;
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingKeyPair = false;
                 if (oData.message) {
@@ -313,6 +350,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $('textarea#rules').val('');
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
+                Notify.success(oData.message);
             }).error(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 if (oData.message) {

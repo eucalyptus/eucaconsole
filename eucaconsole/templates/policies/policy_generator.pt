@@ -1,4 +1,4 @@
-<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html">
+<table id="policy-generator" class="table actions-wrapper" xmlns="http://www.w3.org/1999/html" i18n:domain="eucaconsole">
     <thead>
         <tr>
             <th class="allow" i18n:translate="">Allow</th>

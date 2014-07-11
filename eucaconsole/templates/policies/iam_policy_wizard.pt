@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
@@ -8,7 +8,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="IAMPolicyWizard" ng-controller="IAMPolicyWizardCtrl"
-         ng-init="initController(${controller_options})">
+         ng-init="initController(${controller_options}, '${request.route_path('iam_policy_create')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li class="current"><a href="#" i18n:translate="">Create IAM policy</a></li>
@@ -26,6 +26,10 @@
             </h3>
         </div>
         <div class="large-7 columns">
+            <div ng-show="pageLoading">
+                <span i18n:translate="">Loading...</span>
+                <span class="dots">&nbsp;</span>
+            </div>
             <div class="wizard no-title" ng-cloak="">
                 <dl class="tabs" data-tab="">
                     <dd class="active">
@@ -122,17 +126,28 @@
                 <form action="${request.route_path('iam_policy_create')}" id="iam-policy-form"
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:create_form['csrf_token']}
-                    <input type="hidden" name="type" value="${request.params.get('type', '')}" ng-non-bindable=""/>
-                    <input type="hidden" name="id" value="${request.params.get('id', '')}" ng-non-bindable=""/>
+                    <input type="hidden" id="type" name="type" value="${request.params.get('type', '')}" ng-non-bindable=""/>
+                    <input type="hidden" id="id" name="id" value="${request.params.get('id', '')}" ng-non-bindable=""/>
                     <label><strong i18n:translate="">Name</strong></label>
                     ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=0, rightcol_width=12, autofocus='', pattern='^\S+$')}
                     <label><strong i18n:translate="">Policy</strong></label>
                     ${panel('form_field', field=create_form['policy'], ng_attrs={'model': 'policyText'}, leftcol_width=0, rightcol_width=12)}
+                    <div>&nbsp;</div>
+                    <small id="json-error" class="error" style="display:none;"></small>
+                    <div id="hand-edited-warning" ng-show="handEdited">
+                        <strong i18n:translate="">Warning:</strong>
+                        <span i18n:translate="">
+                            manually edited policy statements may not reflect your selections in the left hand panel.
+                        </span>
+                    </div>
                     <div>
                         <button type="submit" class="button" id="create-iam-policy-btn" i18n:translate="">
                             Create Policy
                         </button>
-                        <a class="cancel-link" href="${cancel_link_url}">Cancel</a>
+                        <a class="cancel-link" id="return-link" href="${cancel_link_url}">Cancel</a>
+                        <div class="small-12 columns" ng-show="isCreating">
+                            <span i18n:translate="">Creating Policy</span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                        </div>
                     </div>
                 </form>
             </div>
