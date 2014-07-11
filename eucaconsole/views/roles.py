@@ -285,6 +285,18 @@ class RoleView(BaseView):
                 role_name=self.role.role_name, policy_name=policy, policy_document=policy_text)
             return dict(message=_(u"Successfully updated role policy"), results=result)
 
+    @view_config(route_name='role_update_trustpolicy', request_method='POST', renderer='json')
+    def role_update_trustpolicy(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        # calls iam:UpdateAssumeRolePolicy
+        with boto_error_handler(self.request):
+            self.log_request(_(u"Updating trust policy for role {0}").format(self.role.role_name))
+            policy_text = self.request.params.get('policy_text')
+            result = self.conn.update_assume_role_policy(
+                role_name=self.role.role_name, policy_document=policy_text)
+            return dict(message=_(u"Successfully updated trust role policy"), results=result)
+
     @view_config(route_name='role_delete_policy', request_method='POST', renderer='json')
     def role_delete_policy(self):
         if not self.is_csrf_valid():

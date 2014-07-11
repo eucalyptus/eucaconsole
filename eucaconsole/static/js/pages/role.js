@@ -5,11 +5,11 @@
  */
 
 angular.module('RolePage', ['PolicyList'])
-    .controller('RolePageCtrl', function ($scope, $timeout) {
+    .controller('RolePageCtrl', function ($scope, $http, $timeout) {
         $scope.allUsers = [];
         $scope.trustPolicy = '';
         $scope.codeEditor = null;
-        $scope.editPolicyModal = $('#policy-edit-modal');
+        $scope.editPolicyModal = $('#trust-policy-edit-modal');
         $scope.initController = function (all_users, trust_policy) {
             $scope.allUsers = all_users;
             $scope.trustPolicy = trust_policy;
@@ -18,7 +18,7 @@ angular.module('RolePage', ['PolicyList'])
             $scope.initCodeMirror();
         };
         $scope.initCodeMirror = function () {
-            var policyTextarea = document.getElementById('policy-area');
+            var policyTextarea = document.getElementById('trust-policy-area');
             $scope.codeEditor = CodeMirror.fromTextArea(policyTextarea, {
                 mode: {name:"javascript", json:true},
                 lineWrapping: true,
@@ -34,29 +34,29 @@ angular.module('RolePage', ['PolicyList'])
                 $scope.codeEditor.focus();
             }, 1000);
         };
-        $scope.savePolicy = function ($event) {
+        $scope.saveTrustPolicy = function ($event, url) {
             $event.preventDefault();
             try {
-                $('#json-error').css('display', 'none');
+                $('#trust-json-error').css('display', 'none');
                 var policy_json = $scope.codeEditor.getValue();
                 //var policy_json = $('#policy-area').val();
                 JSON.parse(policy_json);
-                $('#policy-edit-modal').foundation('reveal', 'close');
+                $('#trust-policy-edit-modal').foundation('reveal', 'close');
                 // now, save the policy
-                var url = $scope.updateUrl.replace('_policy_', $scope.policyName);
                 var data = "csrf_token="+$('#csrf_token').val()+"&policy_text="+policy_json;
                 $http({
                     method:'POST', url:url, data:data,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
                 ).success(function(oData) {
+                    $scope.trustPolicy = policy_json;
                     Notify.success(oData.message);
                 }).error(function (oData) {
                     var errorMsg = oData['message'] || '';
                     Notify.failure(errorMsg);
                 });
             } catch (e) {
-                $('#json-error').text(e);
-                $('#json-error').css('display', 'block');
+                $('#trust-json-error').text(e);
+                $('#trust-json-error').css('display', 'block');
             }
         };
         $scope.setWatch = function () {

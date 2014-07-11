@@ -202,13 +202,13 @@
             </div>
         </div>
         <textarea id="policies" name="policies" class="hidden"></textarea>
-        <div id="policy-edit-modal" class="reveal-modal medium" data-reveal="">
+        <div id="trust-policy-edit-modal" class="reveal-modal medium" data-reveal="">
             <h3 ng-non-bindable="" i18n:translate="">Trust Policy</h3>
-            <form ng-submit="savePolicy($event)">
-                <textarea id="policy-area" class="policy-area" ng-model="trustPolicy"></textarea>
+            <form ng-submit="saveTrustPolicy($event, '${request.route_path('role_update_trustpolicy', name=role.role_name)}')">
+                <textarea id="trust-policy-area" class="policy-area" ng-model="trustPolicy"></textarea>
                 <div>&nbsp;</div>
-                <small id="json-error" class="error" style="display:none;"></small>
-                <button class="button" id="save-policy-btn" type="submit" i18n:translate="">
+                <small id="trust-json-error" class="error" style="display:none;"></small>
+                <button class="button" id="trust-save-policy-btn" type="submit" i18n:translate="">
                     Save Changes
                 </button>
             </form>
