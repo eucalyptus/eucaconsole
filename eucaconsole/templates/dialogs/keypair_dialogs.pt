@@ -3,8 +3,7 @@
     <div id="delete-keypair-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('keypair_delete');
                      detailpage_action request.route_path('keypair_delete', id=keypair.name) if keypair else '';
-                     action landingpage_action if landingpage else detailpage_action;
-                     keypair_name keypair.name if keypair else '';">
+                     action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete key</h3>
         <p><span i18n:translate="">Are you sure you want to delete key</span>
             <span tal:condition="keypair"><b>${keypair_name}</b></span>

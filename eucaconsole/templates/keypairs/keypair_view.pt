@@ -2,8 +2,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
-                        keypair_name layout.escape_braces(keypair.name) if keypair else '';"
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${keypair_route_id}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">

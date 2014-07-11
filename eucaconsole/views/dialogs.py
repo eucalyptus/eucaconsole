@@ -155,6 +155,7 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,
+        keypair_name=BaseView.escape_braces(keypair.name) if keypair else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
