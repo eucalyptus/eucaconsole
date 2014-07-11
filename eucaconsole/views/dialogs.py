@@ -31,6 +31,8 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 """
 from pyramid_layout.panel import panel_config
 
+from ..views import BaseView
+
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
 def ipaddress_dialogs(context, request, eip=None, landingpage=False,
@@ -183,6 +185,7 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     """Modal dialogs for Scaling group landing and detail page."""
     return dict(
         scaling_group=scaling_group,
+        scaling_group_name=BaseView.escape_braces(scaling_group.name) if scaling_group else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )

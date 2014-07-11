@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupPolicies" ng-controller="ScalingGroupPoliciesCtrl"
-         ng-init="initPage()" tal:define="scaling_group_name layout.escape_braces(scaling_group.name);">
+         ng-init="initPage()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
@@ -33,8 +33,8 @@
                     </a>
                 </div>
                 <div class="tile item policy" tal:repeat="policy policies">
-                    <div class="header">
-                        <strong><a class="title">${layout.escape_braces(policy.name)}</a></strong>
+                    <div class="header" tal:define="policy_name layout.escape_braces(policy.name)">
+                        <strong><a class="title">${policy_name}</a></strong>
                         <a class="tiny secondary button dropdown right" data-dropdown="item-dropdown_${policy_ids[policy.name]}" ><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_${policy_ids[policy.name]}" class="f-dropdown" data-dropdown-content="" >
                             <li><a i18n:translate="" ng-click="revealDeleteModal('${policy.name}')">Delete policy</a></li>

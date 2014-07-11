@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="ScalingGroupPolicy" ng-controller="ScalingGroupPolicyCtrl"
-         ng-init="initController(${alarm_choices})" tal:define="scaling_group_name layout.escape_braces(scaling_group.name);">
+         ng-init="initController(${alarm_choices})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>

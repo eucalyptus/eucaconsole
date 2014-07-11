@@ -229,6 +229,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             policies=self.policies,
             policies_count=len(self.policies),
             edit_form=self.edit_form,
@@ -261,7 +262,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def scalinggroup_delete(self):
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
-            name = self.request.params.get('name')
+            name = self.unescape_braces(self.request.params.get('name'))
             with boto_error_handler(self.request, location):
                 # Need to shut down instances prior to scaling group deletion
                 self.log_request(_(u"Terminating scaling group {0} instances").format(name))
@@ -311,6 +312,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         self.terminate_form = ScalingGroupInstancesTerminateForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             policies=self.policies,
             markunhealthy_form=self.markunhealthy_form,
             terminate_form=self.terminate_form,
@@ -427,6 +429,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             create_form=self.create_form,
             delete_form=self.delete_form,
             policies=self.policies,
@@ -473,6 +476,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             alarm_choices=json.dumps(dict(self.policy_form.alarm.choices)),
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
