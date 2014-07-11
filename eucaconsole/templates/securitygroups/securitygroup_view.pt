@@ -11,8 +11,7 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()"
-         tal:define="security_group_name layout.escape_braces(security_group.name) if security_group else ''">
+    <div class="row" id="contentwrap" ng-app="SecurityGroupPage" ng-controller="SecurityGroupPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('securitygroups')}" i18n:translate="">Security groups</a></li>

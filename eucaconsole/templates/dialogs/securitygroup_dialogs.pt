@@ -3,8 +3,7 @@
     <div id="delete-securitygroup-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('securitygroups_delete') + layout.querystring;
                      detailpage_action request.route_path('securitygroup_delete', id=security_group.id) if security_group else '';
-                     action landingpage_action if landingpage else detailpage_action;
-                     security_group_name security_group.name if security_group else '';">
+                     action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete security group</h3>
         <p><span i18n:translate="">Are you sure you want to delete security group</span>
            <span tal:condition="security_group"><b>${security_group_name}</b></span>

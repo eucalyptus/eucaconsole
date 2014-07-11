@@ -123,6 +123,7 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
     """Modal dialogs for Security group landing and detail page."""
     return dict(
         security_group=security_group,
+        security_group_name=BaseView.escape_braces(security_group.name) if security_group else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )

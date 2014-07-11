@@ -159,6 +159,7 @@ class SecurityGroupView(TaggedItemView):
         self.tagged_obj = self.security_group
         self.render_dict = dict(
             security_group=self.security_group,
+            security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
