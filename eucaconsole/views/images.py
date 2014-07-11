@@ -42,7 +42,6 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
-import boto.iam
 
 import panels
 
@@ -307,7 +306,8 @@ class ImageView(TaggedItemView):
                         lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Add.1.Group': 'all' }
                     else:
                         lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Remove.1.Group': 'all' }
-                    self.conn.get_status('ModifyImageAttribute', lp_params, verb='POST')
+                    with boto_error_handler(self.request):
+                        self.conn.get_status('ModifyImageAttribute', lp_params, verb='POST')
 
                 # Update the Image Description
                 description = self.request.params.get('description', '')
@@ -315,11 +315,13 @@ class ImageView(TaggedItemView):
                     if self.cloud_type == 'aws' and description == '':
                         description = "-"
                     params = { 'ImageId': self.image.id, 'Description.Value': description }
-                    self.conn.get_status('ModifyImageAttribute', params, verb='POST')
+                    with boto_error_handler(self.request):
+                        self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
                 # Update the Image Launch Permissions
                 lp_array = self.request.params.getall('launch-permissions-inputbox')
-                self.image_update_launch_permissions(lp_array)
+                with boto_error_handler(self.request):
+                    self.image_update_launch_permissions(lp_array)
 
             # Clear images cache
             ImagesView.invalidate_images_cache()
