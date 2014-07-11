@@ -320,8 +320,7 @@ class ImageView(TaggedItemView):
 
                 # Update the Image Launch Permissions
                 lp_array = self.request.params.getall('launch-permissions-inputbox')
-                with boto_error_handler(self.request):
-                    self.image_update_launch_permissions(lp_array)
+                self.image_update_launch_permissions(lp_array)
 
             # Clear images cache
             ImagesView.invalidate_images_cache()
