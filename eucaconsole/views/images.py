@@ -327,9 +327,9 @@ class ImageView(TaggedItemView):
             return image.id
         return '{0} ({1})'.format(name_tag or image.name, image.id)
 
-    def get_display_name(self):
+    def get_display_name(self, escapebraces=True):
         if self.image:
-            return TaggedItemView.get_display_name(self.image)
+            return TaggedItemView.get_display_name(self.image, escapebraces=escapebraces)
         return None
 
     @staticmethod
