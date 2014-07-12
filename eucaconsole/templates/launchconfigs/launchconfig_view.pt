@@ -6,14 +6,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
-                <li class="current"><a href="#">${launch_config.name}</a></li>
+                <li class="current"><a href="#">${launch_config_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for launch configuration:</strong>
-            <em>${launch_config.name}</em>
+            <em>${launch_config_name}</em>
         </h3>
         <div class="large-7 columns">
             <div class="panel has-actions">
@@ -41,7 +41,7 @@
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
                             <a href="${request.route_path('keypair_view', id=launch_config.key_name)}">
-                                ${layout.escape_braces(launch_config.key_name)}
+                                ${launch_config_key_name}
                             </a>
                         </div>
                     </div>

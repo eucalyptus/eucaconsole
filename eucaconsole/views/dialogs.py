@@ -176,6 +176,7 @@ def launchconfig_dialogs(context, request, launch_config=None, in_use=False, lan
     """ Modal dialogs for Launch configurations landing and detail page."""
     return dict(
         launch_config=launch_config,
+        launch_config_name=BaseView.escape_braces(launch_config.name) if launch_config else '',
         in_use=in_use,
         landingpage=landingpage,
         delete_form=delete_form,
