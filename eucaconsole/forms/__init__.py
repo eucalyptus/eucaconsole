@@ -319,3 +319,16 @@ class ChoicesManager(object):
             choices.append((role.role_name, role.role_name))
         return sorted(set(choices))
 
+    ### S3 connection type choices
+    ##
+    def buckets(self, buckets=None, add_blank=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        bucket_list = buckets or []
+        if not bucket_list and self.conn is not None:
+            bucket_list = self.conn.get_all_buckets()
+        for bucket in bucket_list:
+            choices.append((bucket.name, bucket.name))  # TODO escape curly braces after GUI-568 is merged
+        return sorted(set(choices))
+

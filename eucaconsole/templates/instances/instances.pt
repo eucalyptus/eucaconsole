@@ -43,6 +43,12 @@
                             Create launch configuration
                         </a>
                     </li>
+                    <li>
+                        <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
+                           ng-href="/instances/{{ item.id }}/createimage">
+                            Create image
+                        </a>
+                    </li>
                     <li ng-show="item.status == 'running'">
                         <a i18n:translate="" id="view-consoleoutput-action-gridview-{{item.id}}" ng-click="revealConsoleOutputModal(item)">
                             View console output
@@ -154,7 +160,7 @@
                 </td>
                 <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
-                   <span class="actions">
+                    <span class="actions">
                         <span id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
                         <ul id="item-dropdown_{{ item.id }}" class="f-dropdown" data-dropdown-content="">
                             <li>
@@ -170,6 +176,12 @@
                                 <a i18n:translate="" id="create-launchconfig-action-tileview-{{item.id}}"
                                     ng-href="/launchconfigs/new?image_id={{item.image_id}}&amp;instance_type={{item.instance_type}}&amp;keypair={{item.key_name}}&amp;security_group={{item.security_groups[0].name}}&amp;preset=true">
                                     Create launch configuration
+                                </a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" id="create-image-action-tableview-{{item.id}}"
+                                   ng-href="/instances/{{ item.id }}/createimage">
+                                    Create image
                                 </a>
                             </li>
                             <li ng-show="item.status == 'running'">
@@ -209,7 +221,7 @@
                                 </a>
                             </li>
                         </ul>
-                   </span>
+                    </span>
                 </td>
             </metal:block>
         </div>

@@ -376,3 +376,31 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
     """CSRF-protected form to disassociate IP from an instance"""
     pass
 
+
+class InstanceCreateImageForm(BaseSecureForm):
+    """CSRF-protected form to create an image from an instance"""
+    name_error_msg = _(u'Name is required')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.Required(message=name_error_msg)],
+    )
+    desc_error_msg = _(u'Description must be less than 255 characters')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[validators.Length(max=255, message=desc_error_msg)],
+    )
+    no_reboot_helptext = _(u'Help text for no reboot field')  # TODO: Needs helptext from jmolo
+    no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
+    s3_bucket = wtforms.SelectField(label=_(u'Use existing bucket'))
+
+    def __init__(self, request, s3_conn=None, **kwargs):
+        super(InstanceCreateImageForm, self).__init__(request, **kwargs)
+        self.s3_conn = s3_conn
+        # Set choices
+        self.choices_manager = ChoicesManager(conn=self.s3_conn)
+        self.s3_bucket.choices = self.choices_manager.buckets()
+        # Set error msg
+        self.name.error_msg = self.name_error_msg
+        # Set help text
+        self.no_reboot.help_text = self.no_reboot_helptext
+

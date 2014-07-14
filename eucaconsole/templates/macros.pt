@@ -226,6 +226,17 @@
 </metal:notifications>
 
 
+<!-- Required fields indicator ===== -->
+<metal:requiredfieldslabel metal:define-macro="required_fields_label">
+    <div>
+        <label>
+            <span class="req">*</span>
+            <span i18n:translate="">Required fields</span>
+        </label>
+    </div>
+</metal:requiredfieldslabel>
+
+
 <!-- Detail page actions menu ===== -->
 <metal:actionsmenu metal:define-macro="actions_menu">
     <div class="actions-menu">

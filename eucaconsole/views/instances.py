@@ -42,7 +42,7 @@ from pyramid.view import view_config
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
-    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
     BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -992,3 +992,42 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.launch_more_form.get_errors_list()
         return self.render_dict
+
+
+class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
+    """Create image from an instance view"""
+    TEMPLATE = '../templates/instances/instance_create_image.pt'
+
+    def __init__(self, request):
+        super(InstanceCreateImageView, self).__init__(request)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.instance = self.get_instance()
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.location = self.request.route_path('instances')
+        self.create_image_form = InstanceCreateImageForm(
+            self.request, instance=self.instance, ec2_conn=self.ec2_conn, s3_conn=self.s3_conn,
+            formdata=self.request.params or None)
+        self.render_dict = dict(
+            instance=self.instance,
+            instance_name=self.instance_name,  # TODO: escape braces here after GUI-568 is merged
+            snapshot_choices=self.get_snapshot_choices(),
+            create_image_form=self.create_image_form,
+        )
+
+    @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
+    def instance_create_image_view(self):
+        return self.render_dict
+
+    @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')
+    def instance_create_image_post(self):
+        """Handles the POST from the create image from instance form"""
+        if self.create_image_form.validate():
+            msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+            self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.create_image_form.get_errors_list()
+        return self.render_dict
+
