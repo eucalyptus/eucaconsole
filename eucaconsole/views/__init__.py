@@ -116,6 +116,9 @@ class BaseView(object):
             elif conn_type == 'sts':
                 host = self.request.registry.settings.get('sts.host', host)
                 port = int(self.request.registry.settings.get('sts.port', port))
+            elif conn_type == 's3':
+                host = self.request.registry.settings.get('s3.host', host)
+                port = int(self.request.registry.settings.get('s3.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
