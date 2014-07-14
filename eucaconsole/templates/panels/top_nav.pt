@@ -33,14 +33,14 @@
             <li><a id="resource-menuitem-eips" href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IPs</a></li>
         </ul>
     </li>
-    <li class="has-dropdown" tal:condition="layout.cloud_type == 'euca' and layout.username == 'admin'">
+    <li class="has-dropdown" tal:condition="layout.user_access or layout.group_access or layout.role_access">
         <a id="resource-menu-iam" i18n:translate="">IAM</a>
         <ul class="dropdown">
-            <li><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">IAM Users</a></li>
+            <li tal:condition="layout.user_access"><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">IAM Users</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-groups" href="${request.route_path('groups')}" i18n:translate="">IAM Groups</a></li>
+            <li tal:condition="layout.group_access"><a id="resource-menuitem-groups" href="${request.route_path('groups')}" i18n:translate="">IAM Groups</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
-            <li><a id="resource-menuitem-roles" href="${request.route_path('roles')}" i18n:translate="">IAM Roles</a></li>
+            <li tal:condition="layout.role_access"><a id="resource-menuitem-roles" href="${request.route_path('roles')}" i18n:translate="">IAM Roles</a></li>
         </ul>
     </li>
 </ul>

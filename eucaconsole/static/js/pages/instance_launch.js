@@ -32,6 +32,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupChoices = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
