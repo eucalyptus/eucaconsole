@@ -181,11 +181,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 }
             });
             $(document).on('input', 'textarea', function () {  // userdata text
-                $("#inputtype[value='text']").prop("checked", true);
+                $scope.intputtype = 'text';
                 $scope.$apply();
             });
             $('#userdata_file').on('change', function () {  // userdata file
-                $("#inputtype[value='file']").prop("checked", true);
+                $scope.intputtype = 'file';
                 $scope.$apply();
             });
         };

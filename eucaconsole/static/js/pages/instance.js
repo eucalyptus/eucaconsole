@@ -95,12 +95,12 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.$apply();
             });
             $(document).on('input', 'textarea', function () {  // userdata text
-                $("#inputtype[value='text']").prop("checked", true);
+                $scope.intputtype = 'text';
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
             $('#userdata_file').on('change', function () {  // userdata file
-                $("#inputtype[value='file']").prop("checked", true);
+                $scope.intputtype = 'file';
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
@@ -145,12 +145,12 @@ angular.module('InstancePage', ['TagEditor'])
                 if (userData.type.indexOf('text') === 0) {
                     $scope.isFileUserData = false;
                     $("#userdata:not([display='none'])").val(userData.data);
-                    $("#inputtype[value='text']").prop("checked", true);
+                    $timeout(function() { $scope.inputtype = 'text'; });
                 }
                 else {
                     $scope.isFileUserData = true;
                     $("#userdatatype:not([display='none'])").text(userData.type);
-                    $("#inputtype[value='file']").prop("checked", true);
+                    $timeout(function() { $scope.inputtype = 'file'; });
                 }
             });
         };
