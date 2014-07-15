@@ -18,7 +18,6 @@ angular.module('PolicyList', [])
         $scope.policyName = '';
         $scope.policyJson = '';
         $scope.codeEditor = null;
-        $scope.editPolicyArea = null;
         $scope.editPolicyModal = $('#policy-edit-modal');
         $scope.syncPolicies = function () {
             var policyObj = {};

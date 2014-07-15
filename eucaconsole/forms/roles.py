@@ -39,40 +39,6 @@ class RoleForm(BaseSecureForm):
             self.path.data = role.path
 
 
-class RoleUpdateForm(BaseSecureForm):
-    """Role update form
-    """
-    role_name_error_msg = ''
-    role_name = wtforms.TextField(
-        id=u'role-name',
-        label=_(u'Name'),
-        validators=[validators.Length(min=1, max=255)],
-    )
-
-    path_error_msg = ''
-    path = wtforms.TextField(
-        id=u'role-path',
-        label=_(u'Path'),
-        validators=[validators.Length(min=1, max=255)],
-    )
-
-    users_error_msg = ''
-    users = wtforms.TextField(
-        id=u'role-users',
-        label=(u''),
-        validators=[],
-    )
-
-    def __init__(self, request, role=None, **kwargs):
-        super(RoleUpdateForm, self).__init__(request, **kwargs)
-        self.request = request
-        self.role_name.error_msg = self.role_name_error_msg  # Used for Foundation Abide error message
-        self.path_error_msg = self.path_error_msg
-        if role is not None:
-            self.role_name.data = role.role_name
-            self.path.data = role.path
-
-
 class DeleteRoleForm(BaseSecureForm):
     """CSRF-protected form to delete a role"""
     pass
