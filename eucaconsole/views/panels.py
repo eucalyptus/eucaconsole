@@ -225,7 +225,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 continue
             ebs = bdm.ebs
             bdm_dict[bdm.device_name] = dict(
-                is_root = False,  # because we can't redefine root in a launch config
+                is_root=False,  # because we can't redefine root in a launch config
                 virtual_name=bdm.virtual_name,
                 snapshot_id=getattr(ebs, 'snapshot_id', None),
                 size=getattr(ebs, 'volume_size', None),

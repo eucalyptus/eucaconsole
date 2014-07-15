@@ -389,9 +389,10 @@ class InstanceCreateImageForm(BaseSecureForm):
         label=_(u'Description'),
         validators=[validators.Length(max=255, message=desc_error_msg)],
     )
-    no_reboot_helptext = _(u'Help text for no reboot field')  # TODO: Needs helptext from jmolo
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
+    create_bucket = wtforms.BooleanField(label=_(u'Create a bucket for me'))
     s3_bucket = wtforms.SelectField(label=_(u'Use existing bucket'))
+    s3_prefix = wtforms.TextField(label=_(u'Prefix'))  # TODO: Convert to TextEscapedField (from GUI-568 work)
 
     def __init__(self, request, s3_conn=None, **kwargs):
         super(InstanceCreateImageForm, self).__init__(request, **kwargs)
@@ -402,5 +403,8 @@ class InstanceCreateImageForm(BaseSecureForm):
         # Set error msg
         self.name.error_msg = self.name_error_msg
         # Set help text
-        self.no_reboot.help_text = self.no_reboot_helptext
+        no_reboot_helptext = _(u'Help text for no reboot field')  # TODO: Needs helptext from jmolo
+        self.no_reboot.help_text = no_reboot_helptext
+        s3_prefix_helptext = _(u'Help text for S3 prefix')  # TODO: Needs helptext from jmolo
+        self.s3_prefix.help_text = s3_prefix_helptext
 

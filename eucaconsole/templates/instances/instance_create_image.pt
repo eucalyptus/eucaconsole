@@ -1,5 +1,9 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance_create_image.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstanceCreateImage"
          ng-controller="InstanceCreateImageCtrl" ng-init="initController()">
@@ -34,10 +38,24 @@
                             </a>
                         </h6>
                         <div class="content" ng-show="expanded">
-                            ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=2, rightcol_width=10, reverse=True)}
-                            ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=5, rightcol_width=7)}
-                            <h6 i18n:translate="">Storage</h6>
-                            ${panel('bdmapping_editor', snapshot_choices=snapshot_choices)}
+                            ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=1, rightcol_width=11, reverse=True)}
+                            <div class="row">
+                                <div class="small-1 columns"></div>
+                                <div class="small-11 columns">
+                                    <h6 i18n:translate="">Storage</h6>
+                                    <p>
+                                        <strong i18n:translate="">S3:</strong><br />
+                                        <span i18n:translate="">
+                                            Specify where your image should be stored in the cloud.
+                                        </span>
+                                    </p>
+                                    ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9)}
+                                    ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9)}
+                                    <div>&nbsp;</div>
+                                    <p><strong i18n:translate="">Block device mappings:</strong></p>
+                                    ${panel('bdmapping_editor', snapshot_choices=snapshot_choices)}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr />

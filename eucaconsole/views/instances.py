@@ -1024,9 +1024,14 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
     def instance_create_image_post(self):
         """Handles the POST from the create image from instance form"""
         if self.create_image_form.validate():
-            msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
-            self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=self.location)
+            s3_bucket = self.request.params.get('s3_bucket')
+            s3_prefix = self.request.params.get('s3_prefix', '')
+            s3_upload_policy = None  # TODO: Add canned policy here
+            with boto_error_handler:
+                self.ec2_conn.bundle_instance(self.instance.id, s3_bucket, s3_prefix, s3_upload_policy)
+                msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+                return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
