@@ -175,6 +175,9 @@
                                     </div>
                                     <div>
                                         <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
+                                        <small id="add-account-inputbox-error" ng-hide="isAccountValid">
+                                            Account ID must be 12 chracters long and only contains integers.
+                                        </small>
                                     </div>
                                     <div class="top-padding">
                                         <span class="button round tiny" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">

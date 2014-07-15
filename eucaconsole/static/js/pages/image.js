@@ -11,6 +11,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.isPublic = '';
         $scope.launchPermissions = [];
         $scope.isAccountNotTyped = true;
+        $scope.isAccountValid = true;
         $scope.isNotChanged = true;
         $scope.disabledExplanationVisible = false;
         $scope.initController = function (imageState, isPublic, launchPermissions){
@@ -36,8 +37,14 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $(document).on('keyup', '#add-account-inputbox', function () {
                 if( $scope.newAccount.length == 12 && $scope.newAccount == parseInt($scope.newAccount) ){
                     $scope.isAccountNotTyped = false;
+                    $scope.isAccountValid = true;
                     $scope.$apply();
                 }else{
+                    if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
+                        $scope.isAccountValid = false;
+                    }else if( $scope.newAccount.length == 0 || $scope.newAccount == parseInt($scope.newAccount) ){
+                        $scope.isAccountValid = true;
+                    }
                     $scope.isAccountNotTyped = true;
                     $scope.$apply();
                 }
@@ -73,6 +80,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                }
                $scope.newAccount = "";
                $scope.isAccountNotTyped = true;
+               $scope.isAccountValid = true;
                $scope.isNotChanged = false;
            } 
         };
