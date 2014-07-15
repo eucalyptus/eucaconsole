@@ -84,7 +84,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.$apply();
         };
         $scope.addAccount = function () {
-           if( $scope.newAccount !== "" && $scope.newAccount !== undefined ){
+           if( !$scope.isAccountNotTyped && $scope.isAccountValid ){
                if($scope.hasDup($scope.launchPermissions, $scope.newAccount) != true){
                    $scope.launchPermissions.push($scope.newAccount);
                }
