@@ -67,7 +67,7 @@
                                 ${panel('form_field', field=image_form['description'])}
                             </div>
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">State</label></div>
+                                <div class="small-4 columns"><label i18n:translate="">Status</label></div>
                                 <div class="small-8 columns value" ng-cloak="">
                                     <span class="label radius state {{imageState}}">
                                         {{imageState}}
@@ -118,11 +118,10 @@
                     </div>
                     <div class="section">
                         <hr />
-                        <h6 i18n:translate="">Permissions</h6>
+                        <h6 i18n:translate="">Sharing</h6>
                         <div tal:condition="not is_owned_by_user">
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
-                                <div class="small-8 columns value" ng-cloak="">
+                                <div class="small-12 columns value" ng-cloak="">
                                     <span ng-show="isPublic">Public</span>
                                     <span ng-hide="isPublic">Private</span>
                                 </div>
@@ -130,8 +129,7 @@
                         </div>
                         <div tal:condition="is_owned_by_user" ng-cloak="">
                             <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Sharing</label></div>
-                                <div class="small-8 columns value">
+                                <div class="small-12 columns value">
                                     <div id="sharing-radio-buttons">
                                          <span class="padded-element"> 
                                             <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
@@ -153,8 +151,7 @@
                                 </div>
                             </div>
                             <div class="row controls-wrapper readonly" ng-hide="isPublic">
-                                <div class="small-4 columns"></div>
-                                <div class="small-8 columns value">
+                                <div class="small-12 columns value">
                                     <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
                                         <span i18n:translate="">
                                             Share with specific accounts
@@ -180,7 +177,7 @@
                                         <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
                                     </div>
                                     <div class="top-padding">
-                                        <span class="button" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
+                                        <span class="button round tiny" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
                                             <span i18n:translate="">Add Account</span>
                                         </span>
                                     </div>
