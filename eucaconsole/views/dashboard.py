@@ -29,8 +29,11 @@ Pyramid views for Dashboard
 
 """
 from pyramid.view import view_config
+from boto.exception import BotoServerError
+
 from ..forms import ChoicesManager
 from . import BaseView
+from ..i18n import _
 from . import boto_error_handler
 
 
@@ -66,6 +69,7 @@ class DashboardJsonView(BaseView):
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
 
         with boto_error_handler(self.request):
+            #TODO: catch errors in this block and turn ec2 health off
             for instance in ec2_conn.get_only_instances(filters=filters):
                 instances_total_count += 1
                 if instance.tags.get('aws:autoscaling:groupName'):
@@ -84,6 +88,7 @@ class DashboardJsonView(BaseView):
             keypairs_count = len(ec2_conn.get_all_key_pairs())
             elasticips_count = len(ec2_conn.get_all_addresses())
 
+            #TODO: catch errors in this block and turn iam health off
             # IAM counts
             users_count = 0
             groups_count = 0
@@ -95,6 +100,26 @@ class DashboardJsonView(BaseView):
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
                     roles_count = len(iam_conn.list_roles().roles)
+
+            #TODO: add s3 health
+            autoscaling = True
+            conn = self.get_connection(conn_type="autoscale")
+            try:
+                conn.get_all_groups(max_records=1)
+            except BotoServerError:
+                autoscaling = False
+            elb = True
+            conn = self.get_connection(conn_type="elb")
+            try:
+                conn.get_all_load_balancers()
+            except BotoServerError:
+                elb = False
+            cloudwatch = True
+            conn = self.get_connection(conn_type="cloudwatch")
+            try:
+                conn.list_metrics(namespace="AWS/EC2")
+            except BotoServerError:
+                cloudwatch = False
 
             return dict(
                 instance_total=instances_total_count,
@@ -109,4 +134,13 @@ class DashboardJsonView(BaseView):
                 users=users_count,
                 groups=groups_count,
                 roles=roles_count,
+                health=[
+                    dict(name=_(u'Compute'), up=True),
+                    dict(name=_(u'Object Storage'), up=False),
+                    dict(name=_(u'AutoScaling'), up=autoscaling),
+                    dict(name=_(u'Elastic Load Balancing'), up=elb),
+                    dict(name=_(u'CloudWatch'), up=cloudwatch),
+                    dict(name=_(u'Identity & Access Mgmt'), up=True)
+                ],
+                
             )

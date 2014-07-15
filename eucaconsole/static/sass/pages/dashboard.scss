@@ -107,3 +107,24 @@ $dashboard-panel-icon-size: 100px;
 @media screen and (max-width: 480px) {
 
 }
+
+$health-status-size: 15px;
+
+#service-up .icon {
+    height:$health-status-size;
+    width:$health-status-size;
+    background-color:green;
+    display:inline-block;
+    font-size:10px;
+    //background-image: url(../../img/svg/fi-lightbulb.svg); height:$health-status-size; width:$health-status-size;
+}
+
+#service-down .icon {
+    height:$health-status-size;
+    width:$health-status-size;
+    background-color:red;
+    display:inline-block;
+    font-size:10px;
+    //background-image: url(../../img/svg/fi-skull.svg); height:$health-status-size; width:$health-status-size;
+}
+

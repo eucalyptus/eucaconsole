@@ -12,6 +12,7 @@ angular.module('Dashboard', [])
         $scope.storedZoneKey = '';
         $scope.zoneDropdown = $('#zone-dropdown');
         $scope.itemsLoading = true;
+        $scope.health = [];
         $scope.setInitialZone = function () {
             var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
@@ -36,6 +37,7 @@ angular.module('Dashboard', [])
                 var results = oData ? oData : {};
                 $scope.itemsLoading = false;
                 $scope.totals = results;
+                $scope.health = results.health;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {
