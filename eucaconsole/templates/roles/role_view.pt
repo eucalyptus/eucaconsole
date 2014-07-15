@@ -12,7 +12,7 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
                 <li class="current">
-                    <a tal:condition="role" href="#" ng-non-bindable="">${role.role_name}</a>
+                    <a tal:condition="role" href="#">${role.role_name}</a>
                     <a tal:condition="not role and role_route_id == 'new'" i18n:translate="">Create new role</a>
                 </li>
             </metal:crumbs>
@@ -22,7 +22,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="role">
                 <strong i18n:translate="">Details for role:</strong>
-                <em ng-non-bindable="">${role.role_name}</em>
+                <em>${role.role_name}</em>
             </metal:block>
             <metal:block tal:condition="not role and role_route_id == 'new'">
                 <strong i18n:translate="">Create new role</strong>

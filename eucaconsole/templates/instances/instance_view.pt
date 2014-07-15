@@ -14,14 +14,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${instance_name}</a></li>
+                <li class="current"><a href="#">${instance_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for instance:</strong>
-            <em ng-non-bindable="">${instance_name}</em>
+            <em>${instance_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="instance-subnav">
@@ -103,19 +103,19 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div ng-non-bindable="">
+                    <div>
                         ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
                     </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                            <div class="small-8 columns value">${instance.instance_type}</div>
                         </div>
                     </div>
                     <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                            <div class="small-8 columns value">${instance.instance_type}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.instance_type)}
@@ -140,7 +140,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
+                        <div class="small-8 columns value">${instance.placement}</div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
                         <div class="small-4 columns"><label i18n:translate="">IP address</label></div>
@@ -160,13 +160,13 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.key_name}</div>
+                        <div class="small-8 columns value">${instance.key_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
-                            <div tal:repeat="group instance.groups">
-                                <a href="/securitygroups/${group.id}" ng-non-bindable="">${group.name}</a>
+                            <div tal:repeat="group instance.groups" ng-non-bindable="">
+                                <a href="/securitygroups/${group.id}">${group.name}</a>
                             </div>
                         </div>
                     </div>
@@ -185,7 +185,7 @@
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_path('scalinggroup_view', id=scaling_group)}" ng-non-bindable="">${scaling_group}</a>
+                            <a href="${request.route_path('scalinggroup_view', id=scaling_group)}">${scaling_group}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.owner_id">
@@ -195,6 +195,12 @@
                     <div class="row controls-wrapper readonly" tal:condition="instance.reservation_id">
                         <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
                         <div class="small-8 columns value">${instance.reservation_id}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="role">
+                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="small-8 columns value">
+                            <a href="/roles/${role}">${role}</a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
@@ -215,11 +221,11 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div tal:condition="image" class="small-8 columns value" ng-non-bindable="">${image.name}</div>
+                        <div tal:condition="image" class="small-8 columns value">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div tal:condition="image" class="small-8 columns value breakword" ng-non-bindable="">${image.location}</div>
+                        <div tal:condition="image" class="small-8 columns value breakword">${image.location}</div>
                     </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">

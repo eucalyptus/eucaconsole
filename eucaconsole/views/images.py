@@ -223,6 +223,7 @@ class ImageView(TaggedItemView):
         self.image_display_name = self.get_display_name()
         self.render_dict = dict(
             image=self.image,
+            image_description=self.image.description if self.image else '',
             image_display_name=self.image_display_name,
             image_name_id=ImageView.get_image_name_id(self.image),
             image_form=self.image_form,
@@ -327,9 +328,9 @@ class ImageView(TaggedItemView):
             return image.id
         return '{0} ({1})'.format(name_tag or image.name, image.id)
 
-    def get_display_name(self):
+    def get_display_name(self, escapebraces=True):
         if self.image:
-            return TaggedItemView.get_display_name(self.image)
+            return TaggedItemView.get_display_name(self.image, escapebraces=escapebraces)
         return None
 
     @staticmethod

@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
+from . import BaseSecureForm, ChoicesManager, TextEscapedField, BLANK_CHOICE
 
 
 class VolumeForm(BaseSecureForm):
@@ -40,7 +40,7 @@ class VolumeForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))
     size_error_msg = _(u'Volume size is required and must be an integer')
     size = wtforms.TextField(
