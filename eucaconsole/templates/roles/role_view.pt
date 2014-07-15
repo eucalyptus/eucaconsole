@@ -7,7 +7,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${role.assume_role_policy_document}', '${trusted_entity}')">
+         ng-app="RolePage" ng-controller="RolePageCtrl" ng-init="initController(${all_users}, '${assume_role_policy_document}', '${trusted_entity}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('roles')}" i18n:translate="">IAM roles</a></li>
@@ -202,7 +202,7 @@
             </div>
         </div>
         <textarea id="policies" name="policies" class="hidden"></textarea>
-        <div id="trust-policy-edit-modal" class="reveal-modal medium" data-reveal="">
+        <div id="trust-policy-edit-modal" class="reveal-modal medium" data-reveal="" tal:condition="role">
             <h3 ng-non-bindable="" i18n:translate="">Trust Policy</h3>
             <form ng-submit="saveTrustPolicy($event, '${request.route_path('role_update_trustpolicy', name=role.role_name)}')">
                 <textarea id="trust-policy-area" class="policy-area" ng-model="trustPolicy"></textarea>

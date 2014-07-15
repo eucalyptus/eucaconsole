@@ -192,12 +192,15 @@ class RoleView(BaseView):
 
     @view_config(route_name='role_view', renderer=TEMPLATE)
     def role_view(self):
+        self.render_dict['trusted_entity'] = ''
+        self.render_dict['assume_role_policy_document'] = ''
         if self.role is not None:
             # first, prettify the trust doc
             parsed = json.loads(self.role.assume_role_policy_document)
             self.role.assume_role_policy_document=json.dumps(parsed, indent=2)
             # and pull out the trusted acct id
             self.render_dict['trusted_entity'] = self._get_trusted_entity_(parsed)
+            self.render_dict['assume_role_policy_document'] = self.role.assume_role_policy_document
             with boto_error_handler(self.request):
                 instances = []
                 profiles = self.conn.list_instance_profiles()
