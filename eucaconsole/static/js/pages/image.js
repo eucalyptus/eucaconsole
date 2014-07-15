@@ -48,10 +48,12 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                     $scope.isAccountValid = true;
                     $scope.$apply();
                 }else{
-                    if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
-                        $scope.isAccountValid = false;
+                    if( $scope.newAccount == "" || $scope.newAccount == undefined ){
+                        $scope.isAccountValid = true;
                     }else if( $scope.newAccount.length == 0 || $scope.newAccount == parseInt($scope.newAccount) ){
                         $scope.isAccountValid = true;
+                    }else if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
+                        $scope.isAccountValid = false;
                     }
                     $scope.isAccountNotTyped = true;
                     $scope.$apply();
