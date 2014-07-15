@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <div class="row controls-wrapper readonly" ng-hide="isPublic">
-                                <div class="small-12 columns value">
+                                <div id="private-account-input-field" class="small-12 columns value" ng-class="errorClass">
                                     <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
                                         <span i18n:translate="">
                                             Share with specific accounts
@@ -175,7 +175,7 @@
                                     </div>
                                     <div>
                                         <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
-                                        <small id="add-account-inputbox-error" ng-hide="isAccountValid">
+                                        <small class="error" id="add-account-inputbox-error" ng-hide="isAccountValid">
                                             Account ID must be 12 chracters long and only contains integers.
                                         </small>
                                     </div>

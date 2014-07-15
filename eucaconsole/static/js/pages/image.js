@@ -9,6 +9,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
     .controller('ImagePageCtrl', function ($scope) {
         $scope.imageState = '';
         $scope.isPublic = '';
+        $scope.errorClass= '';
         $scope.launchPermissions = [];
         $scope.isAccountNotTyped = true;
         $scope.isAccountValid = true;
@@ -28,6 +29,13 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.$watch('isPublic', function(newValue, oldValue) {
                 if( newValue !== oldValue ){
                     $scope.isNotChanged = false;
+                }
+            });
+            $scope.$watch('isAccountValid', function() {
+                if( $scope.isAccountValid ){
+                    $scope.errorClass = '';
+                }else{
+                    $scope.errorClass= 'error';
                 }
             });
             $(document).on('input', '#description', function () {
