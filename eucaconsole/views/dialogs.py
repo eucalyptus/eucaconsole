@@ -31,6 +31,8 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 """
 from pyramid_layout.panel import panel_config
 
+from ..views import BaseView
+
 
 @panel_config('ipaddress_dialogs', renderer='../templates/dialogs/ipaddress_dialogs.pt')
 def ipaddress_dialogs(context, request, eip=None, landingpage=False,
@@ -121,6 +123,7 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
     """Modal dialogs for Security group landing and detail page."""
     return dict(
         security_group=security_group,
+        security_group_name=BaseView.escape_braces(security_group.name) if security_group else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -153,6 +156,7 @@ def keypair_dialogs(context, request, keypair=None, landingpage=False, delete_fo
     """ Modal dialogs for Keypair landing and detail page."""
     return dict(
         keypair=keypair,
+        keypair_name=BaseView.escape_braces(keypair.name) if keypair else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
@@ -172,6 +176,7 @@ def launchconfig_dialogs(context, request, launch_config=None, in_use=False, lan
     """ Modal dialogs for Launch configurations landing and detail page."""
     return dict(
         launch_config=launch_config,
+        launch_config_name=BaseView.escape_braces(launch_config.name) if launch_config else '',
         in_use=in_use,
         landingpage=landingpage,
         delete_form=delete_form,
@@ -183,6 +188,7 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     """Modal dialogs for Scaling group landing and detail page."""
     return dict(
         scaling_group=scaling_group,
+        scaling_group_name=BaseView.escape_braces(scaling_group.name) if scaling_group else '',
         landingpage=landingpage,
         delete_form=delete_form,
     )
