@@ -104,24 +104,24 @@
                             <p class="description" i18n:translate="">Specify key pair and security group.</p>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
-                                <div class="small-9 columns right">
-                                    <a ng-click="showCreateKeypairModal()" i18n:translate=""
-                                       id="create-keypair-link">Create key pair</a>
+                                <div class="small-9 columns right" id="create-keypair-link">
+                                    <span class="or" i18n:translate="">Or: </span>
+                                    <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
                             ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                             <div class="row">
-                                <div class="small-9 columns right">
-                                    <a data-reveal-id="create-securitygroup-modal" i18n:translate=""
-                                       id="create-securitygroup-link">Create security group</a>
+                                <div class="small-9 columns right" id="create-securitygroup-link">
+                                    <span class="or" i18n:translate="">Or: </span>
+                                    <a data-reveal-id="create-securitygroup-modal" i18n:translate="">Create security group</a>
                                 </div>
                             </div>
                             ${panel('securitygroup_rules_preview')}
                             <hr />
-                            <p class="description" i18n:translate="">Specify a role to grant special access to this instance.</p>
+                            <p class="description" i18n:translate="">Specify an IAM role if you would like to give this instance special access privileges.</p>
                             <div class="row">
                                 <div class="small-3 columns">
-                                    <label class="right" ng-non-bindable="" i18n:translate="">Role</label>
+                                    <label class="right" i18n:translate="">Role</label>
                                 </div>
                                 <div class="small-9 columns field">
                                     <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>

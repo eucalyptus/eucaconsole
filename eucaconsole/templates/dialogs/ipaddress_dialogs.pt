@@ -44,7 +44,7 @@
             <span i18n:translate="">Are you sure you want to disassociate</span>
             <b>${eip.public_ip if eip else '{{ publicIP }}'}</b>
             <span i18n:translate="">from instance</span>
-            <span tal:condition="eip"><b ng-non-bindable="">${instance_name}</b></span>
+            <span tal:condition="eip"><b>${instance_name}</b></span>
             <span tal:condition="not eip"><b>{{ instanceID }}</b></span>
             ?</p>
         <form action="${action}" method="post">

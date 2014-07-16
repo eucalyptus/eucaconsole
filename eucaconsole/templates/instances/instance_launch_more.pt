@@ -10,14 +10,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
-                <li class="current"><a i18n:translate="" ng-non-bindable="">Launch more instances like ${instance_name}</a></li>
+                <li class="current"><a i18n:translate="">Launch more instances like ${instance_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Launch more instances like:</strong>
-            <em ng-non-bindable="">${instance_name}</em>
+            <em>${instance_name}</em>
         </h3>
         <div class="large-8 columns">
             <div class="panel">
@@ -37,7 +37,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${image.name}</div>
+                        <div class="small-8 columns value">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image ID</label></div>
@@ -49,15 +49,15 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Type</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                        <div class="small-8 columns value">${instance.instance_type}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Zone</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
+                        <div class="small-8 columns value">${instance.placement}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key pair</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.key_name or 'None'}</div>
+                        <div class="small-8 columns value">${instance.key_name or 'None'}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
@@ -73,8 +73,7 @@
                         <div class="small-4 columns"><label i18n:translate="">Tags</label></div>
                         <div class="small-8 columns value">
                             <div tal:repeat="(tagname, tagvalue) instance.tags.items()">
-                                <span tal:condition="all([tagname != 'Name', not tagname.startswith('aws:'), not tagname.startswith('euca:')])"
-                                      ng-non-bindable="">
+                                <span tal:condition="all([tagname != 'Name', not tagname.startswith('aws:'), not tagname.startswith('euca:')])">
                                     ${tagname} = ${tagvalue}
                                 </span>
                             </div>

@@ -31,7 +31,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, TextEscapedField
 
 
 class SnapshotForm(BaseSecureForm):
@@ -39,7 +39,7 @@ class SnapshotForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
@@ -71,13 +71,14 @@ class SnapshotForm(BaseSecureForm):
             self.set_volume_choices()
 
     def set_volume_choices(self):
+        from ..views import BaseView
         choices = []
         for volume in self.conn.get_all_volumes():
             value = volume.id
             vol_name_tag = volume.tags.get('Name', '')
             label = '{0}{1}'.format(
                 volume.id, ' ({0})'.format(vol_name_tag) if vol_name_tag else '')
-            choices.append((value, label))
+            choices.append((value, BaseView.escape_braces(label)))
         # Need to insert current choice since the source volume may have been removed after this snapshot was created
         if self.snapshot and self.snapshot.volume_id:
             vol_id = self.snapshot.volume_id

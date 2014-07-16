@@ -37,7 +37,7 @@ from wtforms import validators
 from wtforms import widgets
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, TextEscapedField
 
 
 class UserForm(BaseSecureForm):
@@ -50,7 +50,7 @@ class UserForm(BaseSecureForm):
     access_keys = wtforms.BooleanField(label=_(u"Create and download access keys"))
     allow_all = wtforms.BooleanField(label=_(u"Allow read/write access to all resource except users and groups"))
 
-    path = wtforms.TextField(label=_(u"Path"), default="/")
+    path = TextEscapedField(label=_(u"Path"), default="/")
 
     ec2_images_max = wtforms.TextField(label=_(u'Images (maximum)'))
     ec2_instances_max = wtforms.TextField(label=_(u'Instances (maximum)'))

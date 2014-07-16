@@ -207,8 +207,8 @@ class BaseScalingGroupView(BaseView):
         for tag in tags_list:
             tags.append(Tag(
                 resource_id=scaling_group_name,
-                key=tag.get('name'),
-                value=tag.get('value'),
+                key=self.unescape_braces(tag.get('name', '').strip()),
+                value=self.unescape_braces(tag.get('value', '').strip()),
                 propagate_at_launch=tag.get('propagate_at_launch', False),
             ))
         return tags
@@ -229,6 +229,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
             policies=self.policies,
             policies_count=len(self.policies),
             edit_form=self.edit_form,
@@ -261,7 +262,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def scalinggroup_delete(self):
         if self.delete_form.validate():
             location = self.request.route_path('scalinggroups')
-            name = self.request.params.get('name')
+            name = self.unescape_braces(self.request.params.get('name'))
             with boto_error_handler(self.request, location):
                 # Need to shut down instances prior to scaling group deletion
                 self.log_request(_(u"Terminating scaling group {0} instances").format(name))
@@ -287,7 +288,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
 
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
-        self.scaling_group.launch_config_name = self.request.params.get('launch_config')
+        self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
         self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
@@ -311,6 +312,7 @@ class ScalingGroupInstancesView(BaseScalingGroupView):
         self.terminate_form = ScalingGroupInstancesTerminateForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             policies=self.policies,
             markunhealthy_form=self.markunhealthy_form,
             terminate_form=self.terminate_form,
@@ -427,6 +429,7 @@ class ScalingGroupPoliciesView(BaseScalingGroupView):
         self.delete_form = ScalingGroupPolicyDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             create_form=self.create_form,
             delete_form=self.delete_form,
             policies=self.policies,
@@ -473,6 +476,7 @@ class ScalingGroupPolicyView(BaseScalingGroupView):
             scaling_group=self.scaling_group, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,
+            scaling_group_name=self.escape_braces(self.scaling_group.name),
             alarm_choices=json.dumps(dict(self.policy_form.alarm.choices)),
             policy_form=self.policy_form,
             alarm_form=self.alarm_form,
@@ -565,9 +569,10 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             with boto_error_handler(self.request, self.request.route_path('scalinggroups')):
                 scaling_group_name = self.request.params.get('name')
                 self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
+                launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
                 scaling_group = AutoScalingGroup(
                     name=scaling_group_name,
-                    launch_config=self.request.params.get('launch_config'),
+                    launch_config=launch_config_name,
                     availability_zones=self.request.params.getall('availability_zones'),
                     load_balancers=self.request.params.getall('load_balancers'),
                     health_check_type=self.request.params.get('health_check_type'),

@@ -9,7 +9,7 @@
             <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
             <p>
                 <span i18n:translate="">Are you sure you want to reboot</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="reboot-form">
@@ -33,7 +33,7 @@
             <h3 i18n:translate="">Start instance</h3>
             <p>
                 <span i18n:translate="">Are you sure you want to start</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="start-form">
@@ -57,7 +57,7 @@
             <h3 i18n:translate="">Stop instance</h3>
             <p>
                 <span i18n:translate="">Are you sure you want to stop</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="stop-form">
@@ -89,7 +89,7 @@
             <div>
                 <p>
                     <span i18n:translate="">Are you sure you want to terminate</span>
-                    <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                    <strong tal:condition="not landingpage">${instance_name}</strong>
                     <strong tal:condition="landingpage">{{ instanceName }}</strong>?
                 </p>
             </div>
@@ -110,7 +110,7 @@
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 class="pagetitle">
                 <strong i18n:translate="">Console output for instance:</strong>
-                <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+                <em tal:condition="not landingpage">${instance_name}</em>
                 <em tal:condition="landingpage">{{ instanceName }}</em>
             </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
@@ -119,7 +119,7 @@
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
         <h3 class="pagetitle">
             <strong i18n:translate="">Connect to instance:</strong>
-            <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+            <em tal:condition="not landingpage">${instance_name}</em>
             <em tal:condition="landingpage">{{ instanceName }}</em>
         </h3>
             <div ng-show="!(platform == 'windows')">
@@ -165,7 +165,7 @@
             <h3 i18n:translate="">Associate elastic IP address with instance</h3>
             <p tal:condition="instance">
                 <span i18n:translate="">Associate</span>
-                <b ng-non-bindable=''>${ instance_name }</b>
+                <b>${ instance_name }</b>
                 <span i18n:translate="">with an elastic IP address.</span>
             </p>
             <p tal:condition="not instance">
@@ -220,12 +220,12 @@
                     <span i18n:translate=""> 
                         Are you sure you want to dissassociate 
                     </span>
-                    <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
+                    <span tal:condition="instance"><b>${instance.ip_address}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
                     <span i18n:translate=""> 
                     from instance
                     </span>
-                    <span tal:condition="instance"><b ng-non-bindable="">${instance.id}</b> ?</span>
+                    <span tal:condition="instance"><b>${instance.id}</b> ?</span>
                     <span tal:condition="not instance"><b>{{ instanceName }}</b> ?</span>
                 </p>
             </div>
@@ -235,7 +235,7 @@
                     <input type="hidden" name="ip_address" value="{{ ipAddress }}" />
                 </div>
                 <div tal:condition="not landingpage" tal:omit-tag="">
-                    <input type="hidden" name="ip_address" value="${instance.ip_address}" ng-non-bindable=""/>
+                    <input type="hidden" name="ip_address" value="${instance.ip_address}" />
                 </div>
                 <div class="dialog-submit-button">
                     <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>

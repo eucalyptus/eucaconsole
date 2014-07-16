@@ -147,17 +147,24 @@ class BaseScalingGroupForm(BaseSecureForm):
             self.health_check_type.data = scaling_group.health_check_type
             self.health_check_period.data = scaling_group.health_check_period
 
-    def get_launch_config_choices(self):
+    def get_launch_config_choices(self, escapebraces=True):
+        """Launch config choices includes the current scaling group's launch config to satisfy form validation"""
+        from ..views import BaseView
         choices = [('', _(u'Select a launch configuration...'))]
         launch_configs = self.launch_configs
         if launch_configs is None and self.autoscale_conn is not None:
             launch_configs = self.autoscale_conn.get_all_launch_configurations()
         if launch_configs:
             for launch_config in launch_configs:
-                choices.append((launch_config.name, launch_config.name))
+                lc_name = launch_config.name
+                if escapebraces:
+                    lc_name = BaseView.escape_braces(lc_name)
+                choices.append((lc_name, lc_name))
         if self.scaling_group:
-            launch_config_name = self.scaling_group.launch_config_name
-            choices.append((launch_config_name, launch_config_name))
+            sg_lc_name = self.scaling_group.launch_config_name
+            if escapebraces:
+                sg_lc_name = BaseView.escape_braces(sg_lc_name)
+            choices.append((sg_lc_name, sg_lc_name))
         return sorted(set(choices))
 
     def get_availability_zone_choices(self, region):
@@ -249,6 +256,9 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         if scaling_group is not None:
             self.default_cooldown.data = scaling_group.default_cooldown
             self.termination_policies.data = scaling_group.termination_policies
+            # Need to set the proper launch config since the launch config choices may have braces escaped
+            from ..views import BaseView
+            self.launch_config.data = BaseView.escape_braces(scaling_group.launch_config_name)
 
 
 class ScalingGroupDeleteForm(BaseSecureForm):
