@@ -298,6 +298,7 @@ class ImageView(TaggedItemView):
                 # Update the Image to be Public
                 # Note. The order of operation matters
                 # On Euca, when the group launch permissions are changed, it deletes the description
+                # Filed a bug EUCA-9728
                 is_public = self.request.params.get('sharing')
                 current_is_public = str(self.image.is_public).lower()
                 if is_public != current_is_public:
