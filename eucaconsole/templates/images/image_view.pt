@@ -177,7 +177,7 @@
                                     <div>
                                         <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
                                         <small class="error" id="add-account-inputbox-error" ng-hide="isAccountValid">
-                                            Account ID must be 12 chracters long and only contains integers.
+                                            Account ID must be 12 characters long and contain only numbers.
                                         </small>
                                     </div>
                                     <div class="top-padding">
