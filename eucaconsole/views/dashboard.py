@@ -69,7 +69,6 @@ class DashboardJsonView(BaseView):
         instances_total_count = instances_running_count = instances_stopped_count = instances_scaling_count = 0
 
         with boto_error_handler(self.request):
-            #TODO: catch errors in this block and turn ec2 health off
             for instance in ec2_conn.get_only_instances(filters=filters):
                 instances_total_count += 1
                 if instance.tags.get('aws:autoscaling:groupName'):
@@ -101,6 +100,25 @@ class DashboardJsonView(BaseView):
                     groups_count = len(iam_conn.get_all_groups().groups)
                     roles_count = len(iam_conn.list_roles().roles)
 
+            return dict(
+                instance_total=instances_total_count,
+                instances_running=instances_running_count,
+                instances_stopped=instances_stopped_count,
+                instances_scaling=instances_scaling_count,
+                volumes=volumes_count,
+                snapshots=snapshots_count,
+                securitygroups=securitygroups_count,
+                keypairs=keypairs_count,
+                eips=elasticips_count,
+                users=users_count,
+                groups=groups_count,
+                roles=roles_count,
+            )
+
+    @view_config(route_name='service_status_json', request_method='GET', renderer='json')
+    def service_status_json(self):
+        ec2_conn = self.get_connection()
+        with boto_error_handler(self.request):
             #TODO: add s3 health
             autoscaling = True
             conn = self.get_connection(conn_type="autoscale")
@@ -120,27 +138,20 @@ class DashboardJsonView(BaseView):
                 conn.list_metrics(namespace="AWS/EC2")
             except BotoServerError:
                 cloudwatch = False
+            iam = True
+            conn = self.get_connection(conn_type="iam")
+            try:
+                conn.get_all_groups(path_prefix="/notlikely")
+            except BotoServerError:
+                cloudwatch = False
 
             return dict(
-                instance_total=instances_total_count,
-                instances_running=instances_running_count,
-                instances_stopped=instances_stopped_count,
-                instances_scaling=instances_scaling_count,
-                volumes=volumes_count,
-                snapshots=snapshots_count,
-                securitygroups=securitygroups_count,
-                keypairs=keypairs_count,
-                eips=elasticips_count,
-                users=users_count,
-                groups=groups_count,
-                roles=roles_count,
                 health=[
-                    dict(name=_(u'Compute'), up=True),
+                    dict(name=_(u'Compute'), up=False),  # this determined client-side
                     dict(name=_(u'Object Storage'), up=False),
                     dict(name=_(u'AutoScaling'), up=autoscaling),
                     dict(name=_(u'Elastic Load Balancing'), up=elb),
                     dict(name=_(u'CloudWatch'), up=cloudwatch),
-                    dict(name=_(u'Identity & Access Mgmt'), up=True)
+                    dict(name=_(u'Identity & Access Mgmt'), up=iam)
                 ],
-                
             )

@@ -47,6 +47,7 @@ urls = [
     # Dashboard #####
     Route(name='dashboard', pattern='/'),
     Route(name='dashboard_json', pattern='/dashboard/json'),
+    Route(name='service_status_json', pattern='/status/json'),
 
     # Login/logout #####
     Route(name='login', pattern='/login'),

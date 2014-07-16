@@ -43,3 +43,5 @@
 #service-up .icon { height: 15px; width: 15px; background-color: green; display: inline-block; font-size: 10px; }
 
 #service-down .icon { height: 15px; width: 15px; background-color: red; display: inline-block; font-size: 10px; }
+
+#status { text-align: left; font-style: normal; font-weight: bold; color: #03405f; }

@@ -8,6 +8,7 @@ angular.module('Dashboard', [])
     .controller('DashboardCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.statusEndpoint = '';
         $scope.selectedZone = '';
         $scope.storedZoneKey = '';
         $scope.zoneDropdown = $('#zone-dropdown');
@@ -17,13 +18,15 @@ angular.module('Dashboard', [])
             var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
         };
-        $scope.initController = function (jsonItemsEndpoint, cloud_type) {
+        $scope.initController = function (jsonItemsEndpoint, statusEndpoint, cloud_type) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
+            $scope.statusEndpoint = statusEndpoint;
             $scope.storedZoneKey = 'dashboard_availability_zone_'+cloud_type;
             $scope.setInitialZone();
             $scope.setFocus();
             $scope.getItemCounts();
             $scope.storeAWSRegion();
+            $scope.getServiceStatus();
         };
         $scope.setFocus = function() {
             $('#zone-selector').find('a').get(0).focus();
@@ -37,7 +40,23 @@ angular.module('Dashboard', [])
                 var results = oData ? oData : {};
                 $scope.itemsLoading = false;
                 $scope.totals = results;
+                if ($scope.health.length > 0) {
+                    $scope.health[0].up = true;
+                }
+            }).error(function (oData, status) {
+                var errorMsg = oData['message'] || null;
+                if (errorMsg && status === 403) {
+                    $('#timed-out-modal').foundation('reveal', 'open');
+                }
+            });
+        };
+        $scope.getServiceStatus = function() {
+            $http.get($scope.statusEndpoint).success(function(oData) {
+                var results = oData ? oData : {};
                 $scope.health = results.health;
+                if ($scope.totals !== undefined) {
+                    $scope.health[0].up = true;
+                }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
                 if (errorMsg && status === 403) {

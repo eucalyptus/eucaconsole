@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-         ng-init="initController('${request.route_path('dashboard_json')}', '${layout.cloud_type}')">
+         ng-init="initController('${request.route_path('dashboard_json')}', '${request.route_path('service_status_json')}', '${layout.cloud_type}')">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
@@ -196,12 +196,12 @@
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Service Status</h5>
                     <br>&nbsp;</br>
-                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span></i>
+                    <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></i>
                     <div class="content">
                          <div ng-repeat="service in health">
                             <div class="row controls-wrapper readonly">
                                 <div class="small-10 columns">
-                                    <label class="reverse">{{ service.name }}</label>
+                                    <label id="status">{{ service.name }}</label>
                                 </div>
                                 <div class="small-2 columns right" id="service-up" ng-show="service.up">
                                     <i class="icon"></i>

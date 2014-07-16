@@ -128,3 +128,9 @@ $health-status-size: 15px;
     //background-image: url(../../img/svg/fi-skull.svg); height:$health-status-size; width:$health-status-size;
 }
 
+#status {
+    text-align: left;
+    font-style: normal;
+    font-weight: bold;
+    color: $euca-darkblue;
+}
