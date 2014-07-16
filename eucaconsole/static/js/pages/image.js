@@ -49,14 +49,15 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                     $scope.isAccountValid = true;
                     $scope.$apply();
                 }else{
-                    // If new account ID value is null or contains only integers, remove the error message
-                    if( $scope.newAccount == "" || $scope.newAccount == undefined ){
-                        $scope.isAccountValid = true;
-                    }else if( $scope.newAccount.length == 0 || $scope.newAccount == parseInt($scope.newAccount) ){
+                    if( $scope.newAccount == "" || $scope.newAccount.length == 0 || $scope.newAccount == undefined ){
+                        // If new account ID value is null, consider input being cleared, remove the error message
                         $scope.isAccountValid = true;
                     }else if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
                         // If new account ID is longer than 12 chars or contains non-integer, display the error mesage
                         $scope.isAccountValid = false;
+                    }else if( $scope.newAccount == parseInt($scope.newAccount) ){
+                        // If new account ID value contains only integers, remove the error message
+                        $scope.isAccountValid = true;
                     }
                     // Indicate a value has been entered into the account ID inputbox
                     $scope.isAccountNotTyped = true;
