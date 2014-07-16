@@ -172,8 +172,11 @@ class ConnectionManager(object):
                 path = '/services/Walrus'
                 conn_class = S3Connection
 
+            if conn_type == 'sts':
+                conn = EucaAuthenticator(_clchost, _port)
+
             # IAM and S3 connections need host instead of region info
-            if conn_type in ['iam', 's3']:
+            elif conn_type in ['iam', 's3']:
                 conn = conn_class(
                     _access_id, _secret_key, host=_clchost, port=_port, path=path, is_secure=True, security_token=_token
                 )
@@ -185,9 +188,6 @@ class ConnectionManager(object):
             # AutoScaling service needs additional auth info
             if conn_type == 'autoscale':
                 conn.auth_region_name = 'Eucalyptus'
-
-            if conn_type == 'sts':
-                conn = EucaAuthenticator(_clchost, _port)
 
             if conn_type != 'sts':  # this is the only non-boto connection
                 setattr(conn, 'APIVersion', api_version)
