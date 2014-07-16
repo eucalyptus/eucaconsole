@@ -204,10 +204,10 @@
                                     <label id="status">{{ service.name }}</label>
                                 </div>
                                 <div class="small-2 columns right" id="service-up" ng-show="service.up">
-                                    <i class="icon"></i>
+                                    <i class="fi-check tick"></i>
                                 </div>
                                 <div class="small-2 columns right" id="service-down" ng-show="!service.up">
-                                    <i class="icon"></i>
+                                    <i class="fi-x tick"></i>
                                 </div>
                             </div>
                         </div>

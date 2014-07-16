@@ -113,6 +113,9 @@ class DashboardJsonView(BaseView):
                 users=users_count,
                 groups=groups_count,
                 roles=roles_count,
+                health = [
+                    dict(name=_(u'Compute'), up=True),  # this determined client-side
+                ],
             )
 
     @view_config(route_name='service_status_json', request_method='GET', renderer='json')
@@ -145,7 +148,6 @@ class DashboardJsonView(BaseView):
             except BotoServerError:
                 cloudwatch = False
             health=[
-                dict(name=_(u'Compute'), up=False),  # this determined client-side
                 dict(name=_(u'Object Storage'), up=s3),
                 dict(name=_(u'AutoScaling'), up=autoscaling),
                 dict(name=_(u'Elastic Load Balancing'), up=elb),

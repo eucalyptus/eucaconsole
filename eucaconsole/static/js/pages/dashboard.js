@@ -41,7 +41,10 @@ angular.module('Dashboard', [])
                 $scope.itemsLoading = false;
                 $scope.totals = results;
                 if ($scope.health.length > 0) {
-                    $scope.health[0].up = true;
+                    $scope.health = results.health.concat($scope.health);
+                }
+                else {
+                    $scope.health = results.health;
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
@@ -53,9 +56,11 @@ angular.module('Dashboard', [])
         $scope.getServiceStatus = function() {
             $http.get($scope.statusEndpoint).success(function(oData) {
                 var results = oData ? oData : {};
-                $scope.health = results.health;
-                if ($scope.totals !== undefined) {
-                    $scope.health[0].up = true;
+                if ($scope.health.length > 0) {
+                    $scope.health = $scope.health.concat(results.health);
+                }
+                else {
+                    $scope.health = results.health;
                 }
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
