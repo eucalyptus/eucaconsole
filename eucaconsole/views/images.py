@@ -223,11 +223,12 @@ class ImageView(TaggedItemView):
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.image
         self.image_display_name = self.get_display_name()
+        self.is_public = str(self.image.is_public).lower() if self.image else False
         self.is_owned_by_user = self.check_if_image_owned_by_user()
         self.image_launch_permissions = self.get_image_launch_permissions_array()
         self.render_dict = dict(
             image=self.image,
-            is_public = str(self.image.is_public).lower(),
+            is_public = self.is_public,
             is_owned_by_user = self.is_owned_by_user,
             image_launch_permissions = self.image_launch_permissions,
             image_display_name=self.image_display_name,
