@@ -120,6 +120,12 @@ class DashboardJsonView(BaseView):
         ec2_conn = self.get_connection()
         with boto_error_handler(self.request):
             #TODO: add s3 health
+            s3 = True
+            conn = self.get_connection(conn_type="s3")
+            try:
+                conn.get_all_buckets()
+            except BotoServerError:
+                s3 = False
             autoscaling = True
             conn = self.get_connection(conn_type="autoscale")
             try:
@@ -140,7 +146,7 @@ class DashboardJsonView(BaseView):
                 cloudwatch = False
             health=[
                 dict(name=_(u'Compute'), up=False),  # this determined client-side
-                dict(name=_(u'Object Storage'), up=False),
+                dict(name=_(u'Object Storage'), up=s3),
                 dict(name=_(u'AutoScaling'), up=autoscaling),
                 dict(name=_(u'Elastic Load Balancing'), up=elb),
                 dict(name=_(u'CloudWatch'), up=cloudwatch),
