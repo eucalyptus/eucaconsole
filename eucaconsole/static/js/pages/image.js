@@ -43,18 +43,22 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                 $scope.$apply();
             });
             $(document).on('keyup', '#add-account-inputbox', function () {
+                // New account ID needs to be 12 chars and contains only integers
                 if( $scope.newAccount.length == 12 && $scope.newAccount == parseInt($scope.newAccount) ){
                     $scope.isAccountNotTyped = false;
                     $scope.isAccountValid = true;
                     $scope.$apply();
                 }else{
+                    // If new account ID value is null or contains only integers, remove the error message
                     if( $scope.newAccount == "" || $scope.newAccount == undefined ){
                         $scope.isAccountValid = true;
                     }else if( $scope.newAccount.length == 0 || $scope.newAccount == parseInt($scope.newAccount) ){
                         $scope.isAccountValid = true;
                     }else if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
+                        // If new account ID is longer than 12 chars or contains non-integer, display the error mesage
                         $scope.isAccountValid = false;
                     }
+                    // Indicate a value has been entered into the account ID inputbox
                     $scope.isAccountNotTyped = true;
                     $scope.$apply();
                 }

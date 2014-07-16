@@ -132,18 +132,18 @@
                                 <div class="small-12 columns value">
                                     <div id="sharing-radio-buttons">
                                          <span class="padded-element"> 
-                                            <input type="radio" name="sharing" value="true" ng-model="isPublic">Public
+                                            <input type="radio" name="sharing" value="true" ng-model="isPublic"> Public
                                         </span>
                                         <span class="padded-element"> 
-                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic">Private
+                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic"> Private
                                         </span>
                                     </div>
-                                    <div ng-show="isPublic">
+                                    <div class="bottom-padding" ng-show="isPublic">
                                         <span i18n:translate="">
                                             Anyone can see this image.
                                         </span>
                                     </div>
-                                    <div ng-hide="isPublic">
+                                    <div class="bottom-padding" ng-hide="isPublic">
                                         <span i18n:translate="">
                                            Only my account and accounts I share with can see this image.
                                         </span>
@@ -157,11 +157,12 @@
                                             Share with specific accounts
                                         </span>
                                     </div>
-                                    <div id="share_with_accounts_field">
-                                        <span ng-repeat="account in launchPermissions">
-                                            <span class="label radius secondary iam-user-icon padded-element">
-                                                {{ account }}<a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
+                                    <div id="share_with_accounts_field" class="items">
+                                        <span class="label radius secondary account-id-icon padded-element" ng-repeat="account in launchPermissions">
+                                            <span>
+                                                {{ account }}
                                             </span>
+                                            <a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
                                             <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
                                         </span>
                                     </div>

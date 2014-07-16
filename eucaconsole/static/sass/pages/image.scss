@@ -25,11 +25,27 @@ $image-state-color-registering: lighten($euca-darkblue, 20%);
 .state.registering { background-color: $image-state-color-registering; }
 
 /* -----------------------------------------
+   Account ID Icon 
+----------------------------------------- */
+.items {
+    margin-bottom: 6px;
+    .account-id-icon {
+        color: #333;
+        background-color: $euca-extralightgrey;
+        margin-right: 8px;
+        a {
+            color: white;
+        }
+    }
+}
+
+/* -----------------------------------------
    Extra Element Padding
 ----------------------------------------- */
 .padded-element { padding: 5px 5px; }
-.top-padding { padding-top: 10px; }
-.top-bottom-padding { padding-top: 10px; padding-bottom: 10px; }
+.top-padding { padding-top: 20px; }
+.bottom-padding { padding-bottom: 5px; }
+.top-bottom-padding { padding-top: 10px; padding-bottom: 5px; }
 
 
 
