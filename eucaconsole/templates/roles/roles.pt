@@ -44,7 +44,7 @@
                 <div ng-show="item.policy_count == 0"><a class="link" ng-click="linkRole(item, '#policy-list')" i18n:translate="">Does not have permissions</a></div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Role name</th>
+                <th i18n:translate="">Name</th>
                 <th i18n:translate="">Permissions</th>
                 <th i18n:translate="">Creation Time</th>
                 <th class="actions" i18n:translate="">Actions</th>

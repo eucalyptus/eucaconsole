@@ -130,7 +130,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags']
+            'root_device', 'security_groups_string', 'state', 'tags', 'roles']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -144,8 +144,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='key_name', name=_(u'Key pair')),
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
+        iam_conn = self.get_connection(conn_type='iam')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
+            iam_conn=iam_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
             filter_fields=True,
@@ -220,7 +222,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                     instance = instances[0]
                     profile = instance.instance_profile
                     # TODO: check tags to see if this was part of scaling group before removing profile
-                    if instance.state == 'running' and profile != None and hasattr(profile, 'arn'):
+                    if instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
                         arn = profile['arn']
                         profile_name = arn[(arn.index('/')+1):]
                         self.iam_conn.delete_instance_profile(profile_name)
@@ -245,7 +247,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
                 for instance in instances:
                     profile = instance.instance_profile
                     # TODO: check tags to see if this was part of scaling group before removing profile
-                    if profile != {}:
+                    if profile is not None and hasattr(profile, 'arn'):
                         arn = profile['arn']
                         profile_name = arn[(arn.index('/')+1):]
                         self.iam_conn.delete_instance_profile(profile_name)
@@ -311,10 +313,12 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'security_group', 'scaling_group', 'root_device_type']
+            'availability_zone', 'instance_type', 'state', 'security_group', 'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
+        if self.request.params.get('roles'):
+            filtered_items = self.filter_by_roles(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
         for instance in filtered_items:
@@ -362,6 +366,18 @@ class InstancesJsonView(LandingPageView):
                 for scaling_group in self.request.params.getall('scaling_group'):
                     if autoscaling_tag == scaling_group:
                         filtered_items.append(item)
+        return filtered_items
+
+    def filter_by_roles(self, items):
+        iam_conn = self.get_connection(conn_type="iam")
+        filtered_items = []
+        profiles = []
+        for role in self.request.params.getall('roles'):
+            for profile in iam_conn.list_instance_profiles(path_prefix='/'+role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles:
+                profiles.append(profile.instance_profile_id)
+        for item in items:
+            if len(item.instance_profile) > 0 and item.instance_profile['id'] in profiles:
+                filtered_items.append(item)
         return filtered_items
 
 
@@ -412,7 +428,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.role = None
         if self.instance and self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
-            profile_name = arn[(arn.index('/')+1):]
+            profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
 
@@ -526,7 +542,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 self.instance.terminate()
                 profile = self.instance.instance_profile
                 # TODO: check tags to see if this was part of scaling group before removing profile
-                if instance.state == 'running' and profile != None:
+                if self.instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
                     arn = profile['arn']
                     profile_name = arn[(arn.index('/')+1):]
                     self.iam_conn.delete_instance_profile(profile_name)
@@ -838,7 +854,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 instance_profile = None
                 if role != '':  # need to set up instance profile, add role and supply to run_instances
                     profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').strip('=\/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name)
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
                     self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
@@ -956,7 +972,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                 instance_profile = None
                 if self.role != None:  # need to set up instance profile, add role and supply to run_instances
                     profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name)
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
                     self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
