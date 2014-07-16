@@ -195,18 +195,17 @@
             <li class="panel" id="health">
                 <div class="tile">
                     <h5 class="subheader" i18n:translate="">Service Status</h5>
-                    <br>&nbsp;</br>
                     <i class="icon"><em><span class="dots" ng-show="health.length == 0">&nbsp;</span></i>
                     <div class="content">
                          <div ng-repeat="service in health">
                             <div class="row controls-wrapper readonly">
-                                <div class="small-10 columns">
+                                <div class="small-9 columns">
                                     <label id="status">{{ service.name }}</label>
                                 </div>
-                                <div class="small-2 columns right" id="service-up" ng-show="service.up">
+                                <div class="small-3 columns right" id="service-up" ng-show="service.up">
                                     <i class="fi-check tick"></i>
                                 </div>
-                                <div class="small-2 columns right" id="service-down" ng-show="!service.up">
+                                <div class="small-3 columns right" id="service-down" ng-show="!service.up">
                                     <i class="fi-x tick"></i>
                                 </div>
                             </div>

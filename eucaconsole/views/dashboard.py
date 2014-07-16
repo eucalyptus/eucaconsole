@@ -149,7 +149,7 @@ class DashboardJsonView(BaseView):
                 cloudwatch = False
             health=[
                 dict(name=_(u'Object Storage'), up=s3),
-                dict(name=_(u'AutoScaling'), up=autoscaling),
+                dict(name=_(u'Auto Scaling'), up=autoscaling),
                 dict(name=_(u'Elastic Load Balancing'), up=elb),
                 dict(name=_(u'CloudWatch'), up=cloudwatch),
             ]
