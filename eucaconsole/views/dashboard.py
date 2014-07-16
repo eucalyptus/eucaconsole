@@ -138,20 +138,22 @@ class DashboardJsonView(BaseView):
                 conn.list_metrics(namespace="AWS/EC2")
             except BotoServerError:
                 cloudwatch = False
-            iam = True
-            conn = self.get_connection(conn_type="iam")
-            try:
-                conn.get_all_groups(path_prefix="/notlikely")
-            except BotoServerError:
-                cloudwatch = False
+            health=[
+                dict(name=_(u'Compute'), up=False),  # this determined client-side
+                dict(name=_(u'Object Storage'), up=False),
+                dict(name=_(u'AutoScaling'), up=autoscaling),
+                dict(name=_(u'Elastic Load Balancing'), up=elb),
+                dict(name=_(u'CloudWatch'), up=cloudwatch),
+            ]
+            session = self.request.session
+            if session['cloud_type'] == 'euca':
+                iam = True
+                conn = self.get_connection(conn_type="iam")
+                try:
+                    conn.get_all_groups(path_prefix="/notlikely")
+                except BotoServerError:
+                    cloudwatch = False
+                health.append(dict(name=_(u'Identity & Access Mgmt'), up=iam))
 
-            return dict(
-                health=[
-                    dict(name=_(u'Compute'), up=False),  # this determined client-side
-                    dict(name=_(u'Object Storage'), up=False),
-                    dict(name=_(u'AutoScaling'), up=autoscaling),
-                    dict(name=_(u'Elastic Load Balancing'), up=elb),
-                    dict(name=_(u'CloudWatch'), up=cloudwatch),
-                    dict(name=_(u'Identity & Access Mgmt'), up=iam)
-                ],
-            )
+
+            return dict(health=health)
