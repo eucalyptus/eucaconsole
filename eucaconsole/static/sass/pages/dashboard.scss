@@ -107,3 +107,25 @@ $dashboard-panel-icon-size: 100px;
 @media screen and (max-width: 480px) {
 
 }
+
+#service-up i {
+    color:$euca-darkblue;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#service-down i {
+    color:red;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#status {
+    font-size: 11pt;
+    text-align: left;
+    font-style: normal;
+    font-weight: normal;
+    color: $euca-grey;
+    margin-top: 9px;
+    margin-bottom: 0;
+}
