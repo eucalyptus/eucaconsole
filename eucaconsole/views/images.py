@@ -239,7 +239,7 @@ class ImageView(TaggedItemView):
         )
 
     def check_if_image_owned_by_user(self):
-        if self.image.owner_id == self.account_id:
+        if self.image and self.image.owner_id == self.account_id:
             return True
         return False 
 
@@ -294,7 +294,7 @@ class ImageView(TaggedItemView):
         if self.image_form.validate():
             self.update_tags()
 
-            if self.is_owned_by_user is True: 
+            if self.image and self.is_owned_by_user is True: 
                 # Update the Image to be Public
                 # Note. The order of operation matters
                 # On Euca, when the group launch permissions are changed, it deletes the description
