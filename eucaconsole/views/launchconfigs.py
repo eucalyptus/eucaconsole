@@ -206,6 +206,8 @@ class LaunchConfigView(BaseView):
 
         self.render_dict = dict(
             launch_config=self.launch_config,
+            launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
+            launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
@@ -342,7 +344,11 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             key_name = self.request.params.get('keypair')
             if key_name and key_name == 'none':
                 key_name = None  # Handle "None (advanced)" option
+            if key_name:
+                key_name = self.unescape_braces(key_name)
             securitygroup = self.request.params.get('securitygroup', 'default')
+            if securitygroup:
+                securitygroup = self.unescape_braces(securitygroup)
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             kernel_id = self.request.params.get('kernel_id') or None
