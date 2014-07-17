@@ -56,6 +56,7 @@ class ImagesView(LandingPageView):
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.deregister_form = DeregisterImageForm(self.request, formdata=self.request.params or None)
+        self.conn = self.get_connection()
         self.account_id = User.get_account_id(ec2_conn=self.conn, request=self.request)
         self.filter_keys = self.get_filter_keys()
         self.sort_keys = self.get_sort_keys()
