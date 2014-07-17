@@ -116,6 +116,7 @@
                     <div tal:condition="not image" style="text-align:center;">
                         <strong style="color:red;" i18n:translate="">Image not found</strong>
                     </div>
+                    <hr>
                     ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>

@@ -29,6 +29,7 @@ Forms for Images
 
 """
 import wtforms
+from wtforms import validators
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
 from ..i18n import _
@@ -40,7 +41,22 @@ class ImageForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
        Only need to initialize as a secure form to generate CSRF token
     """
-    pass
+    desc_error_msg = _(u'Description is required')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[
+            validators.Length(max=255, message=_(u'Description must be less than 255 characters'))
+        ],
+    )
+
+    def __init__(self, request, image=None, conn=None, **kwargs):
+        super(ImageForm, self).__init__(request, **kwargs)
+        self.image = image 
+        self.conn = conn
+        self.description.error_msg = self.desc_error_msg
+
+        if image is not None:
+            self.description.data = image.description
 
 
 class DeregisterImageForm(BaseSecureForm):
