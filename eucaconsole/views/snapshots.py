@@ -251,6 +251,7 @@ class SnapshotView(TaggedItemView):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
+            snapshot_description=self.snapshot.description if self.snapshot else '',
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
             volume_name=self.volume_name,

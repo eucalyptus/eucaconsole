@@ -32,21 +32,21 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, TextEscapedField
 
 
 class GroupForm(BaseSecureForm):
     """Group form
     """
     group_name_error_msg = 'Group name is required'
-    group_name = wtforms.TextField(
+    group_name = TextEscapedField(
         id=u'group-name',
         label=_(u'Name'),
         validators=[validators.InputRequired(message=group_name_error_msg), validators.Length(min=1, max=255)],
     )
 
     path_error_msg = ''
-    path = wtforms.TextField(
+    path = TextEscapedField(
         id=u'group-path',
         label=_(u'Path'),
         default="/",

@@ -35,6 +35,7 @@ import os
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.events import BeforeRender
 from pyramid.settings import asbool
 
 from .i18n import custom_locale_negotiator
@@ -45,6 +46,8 @@ from .tweens import setup_tweens
 from .chamext import setup_exts
 from .keymgt import ensure_session_keys
 from .mime import check_types
+from .views import escape_braces
+
 
 try:
     from version import __version__
@@ -65,6 +68,7 @@ def get_configurator(settings, enable_auth=True):
         config.set_authorization_policy(authz_policy)
         config.set_default_permission('view')
     config.add_request_method(User.get_auth_user, 'user', reify=True)
+    config.add_subscriber(escape_braces, BeforeRender)
     cache_duration = int(settings.get('static.cache.duration', 43200))
     config.add_static_view(name='static/' + __version__, path='static', cache_max_age=cache_duration)
     config.add_layout('eucaconsole.layout.MasterLayout',

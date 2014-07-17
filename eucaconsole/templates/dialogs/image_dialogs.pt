@@ -12,7 +12,7 @@
         </p>
         <p>
             <span i18n:translate="">Are you sure you want to remove image</span>
-            <strong ng-non-bindable="" tal:condition="not landingpage">${image_name_id}</strong>
+            <strong tal:condition="not landingpage">${image_name_id}</strong>
             <strong tal:condition="landingpage">{{ imageNameID }}</strong>
             <span i18n:translate="">from the cloud?</span>
         </p>

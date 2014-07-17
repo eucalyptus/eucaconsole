@@ -217,8 +217,8 @@
 <metal:notifications metal:define-macro="notifications">
     <div id="notifications">
         <div tal:repeat="notification layout.get_notifications()">
-            <div data-alert="alert" class="alert-box ${notification.style}" ng-non-bindable="">
-                ${notification.message}
+            <div data-alert="alert" class="alert-box ${notification.style}">
+                ${layout.escape_braces(notification.message)}
                 <a href="#" class="close">&times;</a>
             </div>
         </div>

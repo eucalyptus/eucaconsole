@@ -6,7 +6,16 @@
 
 angular.module('RolePage', [])
     .controller('RolePageCtrl', function ($scope, $timeout) {
-        $scope.initController = function (role_users, all_users) {
+        $scope.roleType = "ec2";
+        $scope.initController = function (all_users) {
+            $scope.$watch('roleType', function() {
+                if ($scope.roleType == "ec2") {
+                    $("#accountid").removeAttr("required");
+                }
+                else {
+                    $("#accountid").attr("required", "required");
+                }
+            });
         };
     })
 ;

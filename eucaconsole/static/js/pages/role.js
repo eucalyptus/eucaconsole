@@ -5,12 +5,62 @@
  */
 
 angular.module('RolePage', ['PolicyList'])
-    .controller('RolePageCtrl', function ($scope, $timeout) {
+    .controller('RolePageCtrl', function ($scope, $http, $timeout) {
         $scope.allUsers = [];
-        $scope.initController = function (all_users) {
+        $scope.trustPolicy = '';
+        $scope.trustedEntity = '';
+        $scope.codeEditor = null;
+        $scope.editPolicyModal = $('#trust-policy-edit-modal');
+        $scope.initController = function (all_users, trust_policy, trusted_entity) {
             $scope.allUsers = all_users;
+            $scope.trustPolicy = trust_policy;
+            $scope.trustedEntity = trusted_entity;
             $scope.setWatch();
             $scope.setFocus();
+            $scope.initCodeMirror();
+        };
+        $scope.initCodeMirror = function () {
+            var policyTextarea = document.getElementById('trust-policy-area');
+            $scope.codeEditor = CodeMirror.fromTextArea(policyTextarea, {
+                mode: {name:"javascript", json:true},
+                lineWrapping: true,
+                styleActiveLine: true,
+                lineNumbers: true
+            });
+        };
+        $scope.editPolicy = function ($event) {
+            $event.preventDefault();
+            $scope.editPolicyModal.foundation('reveal', 'open');
+            $timeout(function() {
+                $scope.codeEditor.setValue($scope.trustPolicy);
+                $scope.codeEditor.focus();
+            }, 1000);
+        };
+        $scope.saveTrustPolicy = function ($event, url) {
+            $event.preventDefault();
+            try {
+                $('#trust-json-error').css('display', 'none');
+                var policy_json = $scope.codeEditor.getValue();
+                //var policy_json = $('#policy-area').val();
+                JSON.parse(policy_json);
+                $('#trust-policy-edit-modal').foundation('reveal', 'close');
+                // now, save the policy
+                var data = "csrf_token="+$('#csrf_token').val()+"&policy_text="+policy_json;
+                $http({
+                    method:'POST', url:url, data:data,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+                ).success(function(oData) {
+                    $scope.trustPolicy = policy_json;
+                    $scope.trustedEntity = oData.trusted_entity;
+                    Notify.success(oData.message);
+                }).error(function (oData) {
+                    var errorMsg = oData['message'] || '';
+                    Notify.failure(errorMsg);
+                });
+            } catch (e) {
+                $('#trust-json-error').text(e);
+                $('#trust-json-error').css('display', 'block');
+            }
         };
         $scope.setWatch = function () {
             $(document).on('submit', '[data-reveal] form', function () {

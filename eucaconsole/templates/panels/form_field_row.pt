@@ -3,7 +3,7 @@
 <div class="row ${inline} controls-wrapper" id="controls_${field.name}">
     <div tal:condition="not:reverse" tal:omit-tag="">
         <div class="small-${leftcol_width} columns" tal:condition="leftcol_width">
-            <label class="right" ng-non-bindable="">
+            <label class="right">
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
             </label>
         </div>
@@ -11,7 +11,7 @@
             ${structure:field(**html_attrs)}
             <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
                   data-tooltip="" title="${field.help_text}">?</span>
-            <small class="error" tal:condition="error_msg" ng-non-bindable="">${error_msg}</small>
+            <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
                 <span class="error" tal:repeat="error field.errors" ng-non-bindable="">${error}</span>
             </div>
@@ -23,13 +23,13 @@
             <small class="error" tal:condition="error_msg">${error_msg}</small>
         </div>
         <div class="columns small-${rightcol_width}">
-            <label for="${field.name}" class="reverse" ng-non-bindable="">
+            <label for="${field.name}" class="reverse">
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
             </label>
             <span tal:condition="getattr(field, 'help_text', None)"
                   class="helptext-icon reverse" data-tooltip="" title="${field.help_text}">?</span>
             <div tal:condition="field.errors" class="server-validation">
-                <span class="error" tal:repeat="error field.errors" ng-non-bindable="">${error}</span>
+                <span class="error" tal:repeat="error field.errors">${error}</span>
             </div>
         </div>
     </div>
