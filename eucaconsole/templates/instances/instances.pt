@@ -43,7 +43,7 @@
                             Create launch configuration
                         </a>
                     </li>
-                    <li>
+                    <li ng-show="item.status == 'running' || item.status == 'stopped'">
                         <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
                            ng-href="/instances/{{ item.id }}/createimage">
                             Create image
@@ -178,7 +178,7 @@
                                     Create launch configuration
                                 </a>
                             </li>
-                            <li>
+                            <li ng-show="item.status == 'running' || item.status == 'stopped'">
                                 <a i18n:translate="" id="create-image-action-tableview-{{item.id}}"
                                    ng-href="/instances/{{ item.id }}/createimage">
                                     Create image

@@ -1030,7 +1030,10 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         self.create_image_form = InstanceCreateImageForm(
             self.request, instance=self.instance, ec2_conn=self.ec2_conn, s3_conn=self.s3_conn,
             formdata=self.request.params or None)
-        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(self.instance_name, self.image.id)
+        image_id = _(u"missing")
+        if self.image is not None:
+            image_id = self.image.id
+        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(self.instance_name, image_id)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,  # TODO: escape braces here after GUI-568 is merged
@@ -1047,7 +1050,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
     def instance_create_image_post(self):
         """Handles the POST from the create image from instance form"""
         success_location = self.request.route_path('images')
-        is_ebs = True if self.image.root_device_type == 'ebs' else False
+        is_ebs = True if self.instance.root_device_type == 'ebs' else False
         if is_ebs:  # remove fields not needed so validation passes
             del self.create_image_form.s3_bucket
             del self.create_image_form.s3_prefix
@@ -1060,9 +1063,11 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             if not(is_ebs):
                 s3_bucket = self.request.params.get('s3_bucket')
                 s3_prefix = self.request.params.get('s3_prefix', '')
-                s3_upload_policy = None  # TODO: Add canned policy here
+                upload_policy = self.generate_default_policy(s3_bucket, s3_prefix)
+                secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
-                    self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, s3_upload_policy)
+                    result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
+                    import pdb; pdb.set_trace()
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=success_location)
@@ -1077,4 +1082,19 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
+
+    # this method copied from euca2ools:bundleinstance.py and used with small changes
+    def generate_default_policy(self, bucket, prefix):
+        delta = timedelta(hours=24)
+        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
+
+        conditions = [{'acl': 'ec2-bundle-read'},
+                      {'bucket': bucket},
+                      ['starts-with', '$key', prefix]]
+        policy = {'conditions': conditions,
+                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                                              expire_time.timetuple())}
+        policy_json = json.dumps(policy)
+        logging.debug('generated default policy: %s', policy_json)
+        return base64.b64encode(policy_json)
 
