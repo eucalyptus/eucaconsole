@@ -1,8 +1,12 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/image.css')}" />
+</head>
+
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController()">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${image.state}', '${is_public}', ${image_launch_permissions})">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -18,7 +22,7 @@
         <div class="large-7 columns"
             tal:define="image_tags image.tags if image else {};
                         readonly True if image else False;
-                        image_id image.id if image else ''">
+                        image_id image.id if image else '';">
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
@@ -53,6 +57,23 @@
                                 </div>
                                 <div class="small-8 columns value">${image.name if image.name else ''}</div>
                             </div>
+                            <div tal:condition="not is_owned_by_user">
+                                <div class="row controls-wrapper readonly">
+                                    <div class="small-4 columns"><label i18n:translate="">Description</label></div>
+                                    <div class="small-8 columns value" ng-non-bindable="">${image_description}</div>
+                                </div>
+                            </div>
+                            <div tal:condition="is_owned_by_user">
+                                ${panel('form_field', field=image_form['description'])}
+                            </div>
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns"><label i18n:translate="">Status</label></div>
+                                <div class="small-8 columns value" ng-cloak="">
+                                    <span class="label radius state {{imageState}}">
+                                        {{imageState}}
+                                    </span>
+                                </div>
+                            </div>
                             <div class="row controls-wrapper readonly" tal:condition="image.owner_alias">
                                 <div class="small-4 columns"><label i18n:translate="">Owner alias</label></div>
                                 <div class="small-8 columns value">${image.owner_alias if image.owner_alias else ''}</div>
@@ -77,10 +98,6 @@
                                 <div class="small-4 columns"><label i18n:translate="">Manifest path</label></div>
                                 <div class="small-8 columns value breakword">${image.location if image.location else ''}</div>
                             </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-4 columns"><label i18n:translate="">Description</label></div>
-                                <div class="small-8 columns value breakword">${image_description}</div>
-                            </div>
                         </div>
                         <div class="section" tal:condition="image.kernel_id">
                             <hr />
@@ -99,6 +116,80 @@
                             </div>
                         </div>
                     </div>
+                    <div class="section">
+                        <hr />
+                        <h6 i18n:translate="">Sharing</h6>
+                        <div tal:condition="not is_owned_by_user">
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-12 columns value" ng-cloak="">
+                                    <span ng-show="isPublic">Public</span>
+                                    <span ng-hide="isPublic">Private</span>
+                                </div>
+                            </div> 
+                        </div>
+                        <div tal:condition="is_owned_by_user" ng-cloak="">
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-12 columns value">
+                                    <div id="sharing-radio-buttons">
+                                         <span class="padded-element"> 
+                                            <input type="radio" name="sharing" value="true" ng-model="isPublic"> Public
+                                        </span>
+                                        <span class="padded-element"> 
+                                            <input type="radio" class="padded-element" name="sharing" value="false" ng-model="isPublic"> Private
+                                        </span>
+                                    </div>
+                                    <div class="bottom-padding" ng-show="isPublic">
+                                        <span i18n:translate="">
+                                            Anyone can see this image.
+                                        </span>
+                                    </div>
+                                    <div class="bottom-padding" ng-hide="isPublic">
+                                        <span i18n:translate="">
+                                           Only my account and accounts I share with can see this image.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row controls-wrapper readonly" ng-hide="isPublic">
+                                <div id="private-account-input-field" class="small-12 columns value" ng-class="errorClass">
+                                    <div class="subsection-label top-bottom-padding" ng-show="launchPermissions.length > 0">
+                                        <span i18n:translate="">
+                                            Share with specific accounts
+                                        </span>
+                                    </div>
+                                    <div id="share_with_accounts_field" class="items">
+                                        <span class="label radius secondary account-id-icon padded-element" ng-repeat="account in launchPermissions">
+                                            <span>
+                                                {{ account }}
+                                            </span>
+                                            <a ng-click="removeAccount(account)"><i class="fi-x"></i></a>
+                                            <input type="hidden" name="launch-permissions-inputbox" ng-value="account">
+                                        </span>
+                                    </div>
+                                    <div class="subsection-label top-bottom-padding">
+                                        <span ng-show="launchPermissions.length == 0" i18n:translate="">
+                                            Add an account number: 
+                                        </span>
+                                        <span ng-show="launchPermissions.length > 0" i18n:translate="">
+                                            Add another account number: 
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <input type="text" id="add-account-inputbox" ng-model="newAccount" placeholder="enter account number.." />
+                                        <small class="error" id="add-account-inputbox-error" ng-hide="isAccountValid">
+                                            Account ID must be 12 characters long and contain only numbers.
+                                        </small>
+                                    </div>
+                                    <div class="top-padding">
+                                        <span class="button round tiny" id="add-account-btn" ng-click="addAccount()" ng-disabled="isAccountNotTyped">
+                                            <span i18n:translate="">Add Account</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
                     ${panel('bdmapping_editor', image=image, read_only=True)}
                     ${panel('tag_editor', tags=image_tags)}
                     <hr/>

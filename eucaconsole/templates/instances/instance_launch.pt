@@ -166,6 +166,7 @@
                                 ${structure:launch_form.private_addressing(**{'ng-model': 'privateAddressing'})}
                                 ${launch_form['private_addressing'].label}
                             </div>
+                            <hr/>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>

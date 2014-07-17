@@ -40,3 +40,8 @@
 #roles .icon { background-image: url(../../img/svg/icon_IAM_roles.png); }
 
 /* Small screen */
+#service-up i { color: #03405f; font-size: 16pt; text-align: left; }
+
+#service-down i { color: red; font-size: 16pt; text-align: left; }
+
+#status { font-size: 11pt; text-align: left; font-style: normal; font-weight: normal; color: #6a737b; margin-top: 9px; margin-bottom: 0; }
