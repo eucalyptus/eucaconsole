@@ -37,6 +37,9 @@ angular.module('CreateAlarm', [])
         $scope.setUnitChoice = function () {
             var unitChoice = $scope.metricUnitMapping[$scope.metric];
             $scope.unitLabel = unitChoice.toLowerCase();
+            if ($scope.unitLabel == 'none' || $scope.unitLabel == 'count') {
+                $scope.unitLabel = '';
+            }
             $scope.unitField.val(unitChoice);
         };
         $scope.handleCreateAlarm = function (postUrl, $event) {
