@@ -105,7 +105,7 @@
                                     ${launch_more_form['private_addressing'].label}
                                 </div>
                             </div>
-                            <hr>
+                            <hr/>
                             <h6 tal:condition="image and image.root_device_type == 'ebs'" i18n:translate="">
                                 Storage
                             </h6>
