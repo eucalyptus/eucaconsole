@@ -297,10 +297,16 @@ class ImageView(TaggedItemView):
             self.update_tags()
 
             if self.image and self.is_owned_by_user is True: 
+                # Update the Image Description
+                description = self.request.params.get('description', '')
+                if self.image.description != description:
+                    if self.cloud_type == 'aws' and description == '':
+                        description = "-"
+                    params = { 'ImageId': self.image.id, 'Description.Value': description }
+                    with boto_error_handler(self.request):
+                        self.conn.get_status('ModifyImageAttribute', params, verb='POST')
+
                 # Update the Image to be Public
-                # Note. The order of operation matters
-                # On Euca, when the group launch permissions are changed, it deletes the description
-                # Filed a bug EUCA-9728
                 is_public = self.request.params.get('sharing')
                 current_is_public = str(self.image.is_public).lower()
                 if is_public != current_is_public:
@@ -311,15 +317,6 @@ class ImageView(TaggedItemView):
                         lp_params = { 'ImageId': self.image.id, 'LaunchPermission.Remove.1.Group': 'all' }
                     with boto_error_handler(self.request):
                         self.conn.get_status('ModifyImageAttribute', lp_params, verb='POST')
-
-                # Update the Image Description
-                description = self.request.params.get('description', '')
-                if self.image.description != description:
-                    if self.cloud_type == 'aws' and description == '':
-                        description = "-"
-                    params = { 'ImageId': self.image.id, 'Description.Value': description }
-                    with boto_error_handler(self.request):
-                        self.conn.get_status('ModifyImageAttribute', params, verb='POST')
 
                 # Update the Image Launch Permissions
                 lp_array = self.request.params.getall('launch-permissions-inputbox')
