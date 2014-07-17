@@ -19,7 +19,7 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Create image</strong>
         </h3>
-        <div class="large-8 columns">
+        <div class="large-8 columns" tal:define="isEBS 'true' if image.root_device_type == 'ebs' else 'false'">
             <div class="panel">
                 <form action="${request.route_path('instance_create_image', id=instance.id)}" method="post"
                       data-abide="abide" id="create-image-form">

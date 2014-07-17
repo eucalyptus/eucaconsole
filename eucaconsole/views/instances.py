@@ -1006,12 +1006,15 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.location = self.request.route_path('instances')
+        self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
         self.create_image_form = InstanceCreateImageForm(
             self.request, instance=self.instance, ec2_conn=self.ec2_conn, s3_conn=self.s3_conn,
             formdata=self.request.params or None)
+        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(self.instance_name, self.image.id)
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,  # TODO: escape braces here after GUI-568 is merged
+            image=self.image,
             snapshot_choices=self.get_snapshot_choices(),
             create_image_form=self.create_image_form,
         )
@@ -1024,14 +1027,27 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
     def instance_create_image_post(self):
         """Handles the POST from the create image from instance form"""
         if self.create_image_form.validate():
-            s3_bucket = self.request.params.get('s3_bucket')
-            s3_prefix = self.request.params.get('s3_prefix', '')
-            s3_upload_policy = None  # TODO: Add canned policy here
-            with boto_error_handler:
-                self.ec2_conn.bundle_instance(self.instance.id, s3_bucket, s3_prefix, s3_upload_policy)
-                msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-                return HTTPFound(location=self.location)
+            is_ebs = True if self.image.root_device_type == 'ebs' else False
+            instance_id = self.instance.id
+            name = self.request.params.get('name')
+            description = self.request.params.get('description')
+            if not(is_ebs):
+                s3_bucket = self.request.params.get('s3_bucket')
+                s3_prefix = self.request.params.get('s3_prefix', '')
+                s3_upload_policy = None  # TODO: Add canned policy here
+                with boto_error_handler(self.request):
+                    self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, s3_upload_policy)
+                    msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                    return HTTPFound(location=self.location)
+            else:
+                no_reboot = self.request.params.get('no_reboot')
+                bdm = {}
+                with boto_error_handler(self.request):
+                    self.ec2_conn.create_image(instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
+                    msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                    return HTTPFound(location=self.location)
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
