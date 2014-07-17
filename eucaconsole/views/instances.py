@@ -1047,8 +1047,13 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
     def instance_create_image_post(self):
         """Handles the POST from the create image from instance form"""
         success_location = self.request.route_path('images')
+        is_ebs = True if self.image.root_device_type == 'ebs' else False
+        if is_ebs:  # remove fields not needed so validation passes
+            del self.create_image_form.s3_bucket
+            del self.create_image_form.s3_prefix
+        else:
+            del self.create_image_form.no_reboot
         if self.create_image_form.validate():
-            is_ebs = True if self.image.root_device_type == 'ebs' else False
             instance_id = self.instance.id
             name = self.request.params.get('name')
             description = self.request.params.get('description')

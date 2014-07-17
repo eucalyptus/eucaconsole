@@ -119,6 +119,8 @@ class ImagesJsonView(LandingPageView):
                 id=image.id,
                 name=image.name,
                 state=image.state,
+                transitional=image.state not in ['available', 'failed', 'deleted'],
+                progress=10,  # this is valid for transitional images till we get something better
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
                 name_id=ImageView.get_image_name_id(image),

@@ -392,7 +392,6 @@ class InstanceCreateImageForm(BaseSecureForm):
         validators=[validators.Length(max=255, message=desc_error_msg)],
     )
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
-    create_bucket = wtforms.BooleanField(label=_(u'Create a bucket for me'))
     s3_bucket = wtforms.SelectField(label=_(u'Use existing bucket'))
     s3_prefix = wtforms.TextField(label=_(u'Prefix'))  # TODO: Convert to TextEscapedField (from GUI-568 work)
 
