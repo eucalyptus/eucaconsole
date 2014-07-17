@@ -118,6 +118,7 @@ class ImagesJsonView(LandingPageView):
                 description=image.description,
                 id=image.id,
                 name=image.name,
+                state=image.state,
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
                 name_id=ImageView.get_image_name_id(image),

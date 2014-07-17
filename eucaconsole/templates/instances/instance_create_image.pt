@@ -19,13 +19,26 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Create image</strong>
         </h3>
-        <div class="large-8 columns" tal:define="isEBS 'true' if image.root_device_type == 'ebs' else 'false'">
+        <div class="large-8 columns" tal:define="isEBS image.root_device_type == 'ebs'">
             <div class="panel">
                 <form action="${request.route_path('instance_create_image', id=instance.id)}" method="post"
                       data-abide="abide" id="create-image-form">
                     ${structure:create_image_form['csrf_token']}
                     ${panel('form_field', field=create_image_form['name'], leftcol_width=2, rightcol_width=10, autofocus='')}
                     ${panel('form_field', field=create_image_form['description'], leftcol_width=2, rightcol_width=10)}
+                    <hr tal:condition="not isEBS"/>
+                    <div class="section" tal:condition="not isEBS">
+                        <div class="row controls-wrapper">
+                            <h6 i18n:translate="">Storage</h6>
+                            <p>
+                                <span i18n:translate="">
+                                    Specify where your image should be stored in the cloud.
+                                </span>
+                            </p>
+                            ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9)}
+                        </div>
+                    </div>
                     <hr />
                     ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
                     <hr />
@@ -39,30 +52,13 @@
                         </h6>
                         <div class="content" ng-show="expanded">
                             ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=1, rightcol_width=11, reverse=True)}
-                            <div class="row">
-                                <div class="small-1 columns"></div>
-                                <div class="small-11 columns">
-                                    <h6 i18n:translate="">Storage</h6>
-                                    <p>
-                                        <strong i18n:translate="">S3:</strong><br />
-                                        <span i18n:translate="">
-                                            Specify where your image should be stored in the cloud.
-                                        </span>
-                                    </p>
-                                    ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9)}
-                                    ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9)}
-                                    <div>&nbsp;</div>
-                                    <p><strong i18n:translate="">Block device mappings:</strong></p>
-                                    ${panel('bdmapping_editor', snapshot_choices=snapshot_choices)}
-                                </div>
-                            </div>
+                            ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
-                    <hr />
                     <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
                     <div>&nbsp;</div>
                     <div>
-                        <button type="submit" class="button" id="save-changes-btn" i18n:translate="">
+                        <button type="submit" class="button" id="save-changes-btn" i18n:translate="" data-reveal-id="instance-shutdown-warn-modal">
                             Create Image
                         </button>
                         <a href="${request.route_path('instance_view', id=instance.id)}" id="cancel-link"
@@ -76,6 +72,23 @@
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
             </div>
+        </div>
+        <div id="instance-shutdown-warn-modal" class="reveal-modal small" data-reveal="">
+            <strong i18n:translate="">Warning:</strong>
+            <br> &nbsp; </br>
+            <p i18n:translate="">
+                Your instance will be shut down and restarted as part of this process. You will not have access to your instance during this time.
+            </p>
+            <p i18n:translate="">
+                Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created
+            </p>
+            <p i18n:translate="">
+                Steps TBD
+            </p>
+            <div class="dialog-submit-button">
+                <a id="instance-shutdown-warn-ok" class="button expand" i18n:translate="" ng-click="submitCreate()">I Understand, Let's Do This!</a>
+            </div>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

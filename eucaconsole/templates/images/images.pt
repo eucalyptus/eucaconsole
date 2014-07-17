@@ -81,9 +81,12 @@
                     {{ item.root_device_type }}
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer"></div>
+            <div metal:fill-slot="tile_footer">
+                Available
+            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name (ID)</th>
+                <th i18n:translate="">Status</th>
                 <th>${'EMI' if layout.cloud_type == 'euca' else 'AMI'}&nbsp;<span i18n:translate="">Name</span></th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Arch</th>
@@ -93,6 +96,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
+                <td>{{ item.state }}</td>
                 <td class="emi-name"><span>{{ item.name | ellipsis: 64 }}</span></td>
                 <td class="description"><span>{{ item.description | ellipsis: 128 }}</span></td>
                 <td><span class="label radius {{ item.architecture }}">{{ item.architecture }}</span></td>
