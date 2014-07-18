@@ -117,6 +117,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
+                $scope.currentStepIndex = nextStep;
+                $scope.checkRequiredInput();
                 return false;
             }
             // Handle the unsaved tag issue
