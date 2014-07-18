@@ -108,11 +108,32 @@ class ImagesJsonView(LandingPageView):
     """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
-        images = []
+        # actual images
+        items = self.get_items()
+        # add in bundle tasks as fake images
+        tasks = self.conn.get_all_bundle_tasks()
+        for task in tasks.describe_bundle_tasks_response.describe_bundle_tasks_result.bundle_tasks:
+            if task.state in ['pending', 'bundling', 'storing']:  # add this into image list
+                items.append({
+                    id:_(u'Pending'),
+                    location:"%s/%s..." % (task.storage.s3.bucket, task.storage.s3.prefix),
+                    owner_id: '',  # TODO: fetch outside loop and use here
+                    state:task.state,
+                    progress: task.progress,
+                    is_public: False,
+                    name: task.tags.ec_name,
+                    description: task.tags.ec_description,
+                    architecture: None,
+                    platform: None,
+                    type: 'machine',
+                    root_device_type: 'instance-store',
+                    root_device_name: '/dev/sda',
+                })
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
-        filtered_items = self.filter_items(self.get_items(), ignore=['owner_alias', 'platform'])
+        filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
         if self.request.params.getall('platform'):
             filtered_items = self.filter_by_platform(filtered_items)
+        images = []
         for image in filtered_items:
             platform = ImageView.get_platform(image)
             images.append(dict(

@@ -1074,6 +1074,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 with boto_error_handler(self.request, self.location):
                     result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
                     import pdb; pdb.set_trace()
+                    tags = {ec_name: name, ec_description: description, ec_bdm: ''}
+                    self.ec2_conn.create_tags(result.bundle_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=success_location)
