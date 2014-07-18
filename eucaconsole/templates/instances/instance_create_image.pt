@@ -51,7 +51,9 @@
                             </a>
                         </h6>
                         <div class="content" ng-show="expanded">
-                            ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=1, rightcol_width=11, reverse=True)}
+                            <div tal:condition="isEBS">
+                                ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=1, rightcol_width=11, reverse=True)}
+                            </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>

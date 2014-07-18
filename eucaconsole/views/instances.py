@@ -29,9 +29,12 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
+from datetime import datetime, timedelta
 from operator import attrgetter
+import logging
 import os
 import simplejson as json
+import time
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
@@ -1056,6 +1059,9 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             del self.create_image_form.s3_prefix
         else:
             del self.create_image_form.no_reboot
+            # add selected bucket in case it's a new one
+            s3_bucket = self.request.params.get('s3_bucket')
+            self.create_image_form.s3_bucket.choices.append((s3_bucket, s3_bucket))
         if self.create_image_form.validate():
             instance_id = self.instance.id
             name = self.request.params.get('name')
