@@ -10,7 +10,7 @@
         </div>
         <div>&nbsp;</div>
         <div>
-            <button type="submit" class="small button round" i18n:translate="">Apply</button>
+            <button type="submit" class="tiny button round" i18n:translate="">Filter</button>
             &nbsp;&nbsp;&nbsp;<a href="${request.current_route_path().split('?')[0]}" class="clear-link">Clear</a>
         </div>
     </form>
