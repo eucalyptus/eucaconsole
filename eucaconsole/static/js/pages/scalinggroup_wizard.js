@@ -6,7 +6,10 @@
 
 // Scaling Group wizard includes the AutoScale Tag Editor
 angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
-    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('ScalingGroupWizardCtrl', function ($scope, $timeout, $location) {
         $scope.form = $('#scalinggroup-wizard-form');
         $scope.scalingGroupName = '';
         $scope.launchConfig = '';
@@ -15,7 +18,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.minSize = 1;
         $scope.desiredCapacity = 1;
         $scope.maxSize = 1;
-        $scope.urlParams = $.url().param();
+        $scope.urlParams = $location.search();
         $scope.launchConfig = '';
         $scope.availZones = '';
         $scope.summarySection = $('.summary');

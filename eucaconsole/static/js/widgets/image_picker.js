@@ -4,7 +4,10 @@
  *
  */
 angular.module('ImagePicker', [])
-    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
@@ -16,7 +19,7 @@ angular.module('ImagePicker', [])
         $scope.filtersForm = $('#filters');
         $scope.imagePicker = $('#image-picker');
         $rootScope.imageID = '';
-        $scope.urlParams = $.url().param();
+        $scope.urlParams = $location.search();
         $scope.selectedImageParam = $scope.urlParams['image_id'] || '';
         // Properties for search input filter
         $scope.filterProps = [
