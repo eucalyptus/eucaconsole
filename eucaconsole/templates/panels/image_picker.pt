@@ -73,7 +73,7 @@
                             </a>
                         </div>
                         <div class="small-12 columns">
-                            <small class="error" id="image-id-validation-error">
+                            <small class="error" id="image-id-validation-error" i18n:translate="">
                                 Image ID must be 12 characters long and  begin with 'emi-' or 'ami-'.
                             </small> 
                         </div>
