@@ -38,7 +38,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
+        $scope.existsImage = true;
         $scope.imageIDErrorClass = '';
+        $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
@@ -164,10 +166,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
-                if (newID != oldID && $scope.isNotValid == false) {
+                // Clear the image ID existence check variables
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+                if (newID != oldID && $scope.imageID.length == 12) {
                     $scope.loadImageInfo(newID);
                 }
                 $scope.checkRequiredInput();
+            });
+            $scope.$watch('existsImage', function(newValue, oldValue){
+                if( newValue != oldValue &&  $scope.existsImage == false ){
+                    $scope.isNotValid = true;
+                }
             });
             $scope.$watch('instanceNumber', function(){
                 $scope.checkRequiredInput();
@@ -195,6 +205,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.imageRootDeviceType = item.root_device_type;
                 $scope.summarySection.find('.step1').removeClass('hide');
                 $scope.$broadcast('setBDM', item.block_device_mapping);
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+            }).error(function (oData) {
+                $scope.existsImage = false;
+                $scope.imageIDNonexistErrorClass = "error";
             });
         };
         $scope.focusEnterImageID = function () {

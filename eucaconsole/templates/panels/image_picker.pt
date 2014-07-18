@@ -59,7 +59,7 @@
                     </tbody>
                 </table>
                 <div class="row">
-                    <div class="small-12 columns" ng-class="$parent.imageIDErrorClass">
+                    <div class="small-12 columns" >
                         <div class="small-4 columns">
                             <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
                         </div>
@@ -72,9 +72,14 @@
                                 <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
                             </a>
                         </div>
-                        <div class="small-12 columns">
+                        <div class="small-12 columns" ng-class="$parent.imageIDErrorClass">
                             <small class="error" id="image-id-validation-error" i18n:translate="">
                                 Image ID must be 12 characters long and  begin with 'emi-' or 'ami-'.
+                            </small> 
+                        </div>
+                        <div class="small-12 columns" ng-class="$parent.imageIDNonexistErrorClass">
+                            <small class="error" id="image-id-nonexist-error" i18n:translate="">
+                                Cannot find Image ID. 
                             </small> 
                         </div>
                     </div>
