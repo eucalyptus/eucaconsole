@@ -38,6 +38,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
+        $scope.imageIDErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson,
                                 imageJsonURL) {
@@ -121,10 +122,27 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.checkRequiredInput = function () {
             if( $scope.currentStepIndex == 1 ){ 
-                if( $scope.imageID === '' || $scope.imageID === undefined ){
+                if( $scope.isNotValid == false && $scope.imageID.length < 12 ){
+                    // Once invalid ID has been entered, do not enable the button unless the ID length is valid
+                    // This prevents the error to be triggered as user is typing for the first time 
                     $scope.isNotValid = true;
-                }else{
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID === '' || $scope.imageID === undefined || $scope.imageID.length == 0 ){
+                    // Do not enable the button if the input is empty. However, raise no error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "";
+                }else if( $scope.imageID.length > 12 ){
+                    // If the imageID length is longer then 12, disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length >= 4 &&  $scope.imageID.substring(0, 4) != "emi-" && $scope.imageID.substring(0, 4) != "ami-" ){ 
+                    // If the imageID length is longer than 4, and they do not consist of "emi-" or "ami-", disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length == 12 ){
+                    // If the above conditions are met and the image ID length is 12, enable the button
                     $scope.isNotValid = false;
+                    $scope.imageIDErrorClass = "";
                 }
             }else if( $scope.currentStepIndex == 2 ){
                 if( $scope.instanceNumber === '' || $scope.instanceNumber === undefined ){
@@ -146,7 +164,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
-                if (newID != oldID) {
+                if (newID != oldID && $scope.isNotValid == false) {
                     $scope.loadImageInfo(newID);
                 }
                 $scope.checkRequiredInput();

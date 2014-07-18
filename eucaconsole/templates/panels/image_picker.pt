@@ -59,17 +59,24 @@
                     </tbody>
                 </table>
                 <div class="row">
-                    <div class="small-4 columns">
-                        <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
-                    </div>
-                    <div class="small-4 columns value">
-                        <input type="text" name="image_id" id="image-id-input" ng-model="$parent.imageID" />
-                    </div>
-                    <div class="small-4 columns value">
-                        <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)" ng-disabled="isNotValid">
-                            <span i18n:translate="">Next</span>
-                            <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
-                        </a>
+                    <div class="small-12 columns" ng-class="$parent.imageIDErrorClass">
+                        <div class="small-4 columns">
+                            <label i18n:translate="" class="right inline-label">OR: enter an image ID</label>
+                        </div>
+                        <div class="small-4 columns value">
+                            <input type="text" name="image_id" id="image-id-input" ng-model="$parent.imageID" />
+                        </div>
+                        <div class="small-4 columns value">
+                            <a id="visit-step-2" class="button small" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)" ng-disabled="isNotValid">
+                                <span i18n:translate="">Next</span>
+                                <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
+                            </a>
+                        </div>
+                        <div class="small-12 columns">
+                            <small class="error" id="image-id-validation-error">
+                                Image ID must be 12 characters long and  begin with 'emi-' or 'ami-'.
+                            </small> 
+                        </div>
                     </div>
                 </div>
             </div>
