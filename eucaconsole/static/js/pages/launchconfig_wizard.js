@@ -272,6 +272,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             if (invalidFields.length || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
+                $scope.currentStepIndex = nextStep;
+                $scope.checkRequiredInput();
                 return false;
             }
             if (nextStep == 2 && $scope.step1Invalid) { $scope.clearErrors(2); $scope.step1Invalid = false; }
