@@ -103,9 +103,12 @@ class ChangePasswordView(BaseView):
                     #logging.debug("auth creds = "+str(creds.__dict__))
                     user_account = '{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
+                    session['account'] = account
+                    session['username'] = username
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
+                    session['region'] = 'euca'
                     session['username_label'] = user_account
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')

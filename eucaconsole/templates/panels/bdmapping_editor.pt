@@ -2,7 +2,6 @@
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
     <div class="columns" ng-show="bdMapping">
-        <hr />
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
             <thead>
