@@ -289,8 +289,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
-                $scope.currentStepIndex = nextStep;
-                $scope.checkRequiredInput();
+                if( $scope.currentStepIndex > nextStep){
+                    $scope.currentStepIndex = nextStep;
+                    $scope.checkRequiredInput();
+                }
                 return false;
             }
             // Handle the unsaved tag issue
