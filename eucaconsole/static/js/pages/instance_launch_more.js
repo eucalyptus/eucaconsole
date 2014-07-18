@@ -18,6 +18,14 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
         };
         $scope.initController = function () {
             $scope.setInitialValues();
+            $(document).on('input', 'textarea', function () {  // userdata text
+                $scope.intputtype = 'text';
+                $scope.$apply();
+            });
+            $('#userdata_file').on('change', function () {  // userdata file
+                $scope.intputtype = 'file';
+                $scope.$apply();
+            });
         };
         $scope.buildNumberList = function (limit) {
             // Return a 1-based list of integers of a given size ([1, 2, ... limit])

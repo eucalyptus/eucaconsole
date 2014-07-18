@@ -24,11 +24,11 @@
         <div class="row tagentry controls-wrapper" ng-show="tagsArray.length &lt; 10">
             <div>
                 <div class="small-4 columns">
-                    <input class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
+                    <input id='tag-name-input' class="taginput key" placeholder="name..." ng-model="newTagKey" pattern="${layout.tag_pattern_key}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 128 chars</small>
                 </div>
                 <div class="small-8 columns">
-                    <input class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
+                    <input id='tag-value-input' class="taginput value" placeholder="value..." ng-model="newTagValue" pattern="${layout.tag_pattern_value}" />
                     <small class="error" i18n:translate="">Tag may not begin with "aws:" or its length cannot be longer than 256 chars</small>
                 </div>
             </div>

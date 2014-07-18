@@ -65,7 +65,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
-                $(window).keydown(function(evt) {
+                $('#image-id-input').keydown(function(evt) {
                     if (evt.keyCode === 13) {
                         evt.preventDefault();
                     }

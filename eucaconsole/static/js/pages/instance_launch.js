@@ -68,7 +68,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
-                $(window).keydown(function(evt) {
+                $('#image-id-input').keydown(function(evt) {
                     if (evt.keyCode === 13) {
                         evt.preventDefault();
                     }
