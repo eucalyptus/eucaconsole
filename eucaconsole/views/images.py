@@ -105,6 +105,11 @@ class ImagesView(LandingPageView):
 
 
 class ImagesJsonView(LandingPageView):
+
+    def __init__(self, request):
+        super(ImagesJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
     """Images returned as JSON"""
     @view_config(route_name='images_json', renderer='json', request_method='GET')
     def images_json(self):
@@ -112,7 +117,7 @@ class ImagesJsonView(LandingPageView):
         items = self.get_items()
         # add in bundle tasks as fake images
         tasks = self.conn.get_all_bundle_tasks()
-        for task in tasks.describe_bundle_tasks_response.describe_bundle_tasks_result.bundle_tasks:
+        for task in tasks:
             if task.state in ['pending', 'bundling', 'storing']:  # add this into image list
                 items.append({
                     id:_(u'Pending'),
@@ -196,12 +201,11 @@ class ImagesJsonView(LandingPageView):
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
-        conn = self.get_connection()
         region = self.request.session.get('region')
-        items = self.get_images(conn, owners, [], region)
+        items = self.get_images(self.conn, owners, [], region)
         # This is to included shared images in the owned images list per GUI-374
         if owner_alias == 'self':
-            items.extend(self.get_images(conn, [], ['self'], region))
+            items.extend(self.get_images(self.conn, [], ['self'], region))
         return items
 
     def get_images(self, conn, owners, executors, region):
