@@ -166,13 +166,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $(this).val(10);
                 }
             });
-            $(document).on('input', 'textarea', function () {  // userdata text
-                $scope.intputtype = 'text';
-                $scope.$apply();
-            });
-            $('#userdata_file').on('change', function () {  // userdata file
-                $scope.intputtype = 'file';
-                $scope.$apply();
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputtype == 'text') {
+                    $timeout(function() {
+                        $('#userdata').focus();
+                    });
+                }
             });
         };
         $scope.loadImageInfo = function(id) {

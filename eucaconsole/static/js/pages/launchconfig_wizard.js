@@ -180,13 +180,12 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.trigger("chosen:updated");
                 }
             });
-            $(document).on('input', 'textarea', function () {  // userdata text
-                $scope.intputtype = 'text';
-                $scope.$apply();
-            });
-            $('#userdata_file').on('change', function () {  // userdata file
-                $scope.intputtype = 'file';
-                $scope.$apply();
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputtype == 'text') {
+                    $timeout(function() {
+                        $('#userdata').focus();
+                    });
+                }
             });
         };
         $scope.loadImageInfo = function(id) {

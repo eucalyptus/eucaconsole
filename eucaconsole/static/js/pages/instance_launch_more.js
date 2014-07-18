@@ -6,7 +6,7 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, and the Block Device Mapping editor
 angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
-    .controller('LaunchMoreInstancesCtrl', function ($scope) {
+    .controller('LaunchMoreInstancesCtrl', function ($scope, $timeout) {
         $scope.form = $('#launch-more-form');
         $scope.instanceNumber = 1;
         $scope.expanded = false;
@@ -18,13 +18,12 @@ angular.module('LaunchMoreInstances', ['BlockDeviceMappingEditor'])
         };
         $scope.initController = function () {
             $scope.setInitialValues();
-            $(document).on('input', 'textarea', function () {  // userdata text
-                $scope.intputtype = 'text';
-                $scope.$apply();
-            });
-            $('#userdata_file').on('change', function () {  // userdata file
-                $scope.intputtype = 'file';
-                $scope.$apply();
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputtype == 'text') {
+                    $timeout(function() {
+                        $('#userdata').focus();
+                    });
+                }
             });
         };
         $scope.buildNumberList = function (limit) {
