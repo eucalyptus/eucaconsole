@@ -79,7 +79,7 @@ class User(object):
                 if security_group is not None:
                     account_id = security_group.owner_id
         return account_id
-
+                    
 
 class ConnectionManager(object):
     """Returns connection objects, pulling from Beaker cache when available"""

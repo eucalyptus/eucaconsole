@@ -6,7 +6,10 @@
 
 // Volume page includes the tag editor, so pull in that module as well.
 angular.module('VolumePage', ['TagEditor'])
-    .controller('VolumePageCtrl', function ($scope, $http, $timeout) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('VolumePageCtrl', function ($scope, $http, $timeout, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting', 'attaching', 'detaching'];
@@ -54,8 +57,8 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.initChosenSelectors = function () {
-            var urlParams = $.url().param(),
-                snapshotField = $('#snapshot_id');
+            var urlParams = $location.search();
+            var snapshotField = $('#snapshot_id');
             if (urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
                 $scope.fromSnapshot = true;
                 snapshotField.val(urlParams['from_snapshot']);

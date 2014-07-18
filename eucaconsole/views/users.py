@@ -712,7 +712,7 @@ class UserView(BaseView):
             self.update_quota_limit(policy_list, new_stmts,
                                     's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                                    's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                                    's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
             self.update_quota_limit(policy_list, new_stmts,
                                     's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
             self.update_quota_limit(policy_list, new_stmts,
