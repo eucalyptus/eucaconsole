@@ -12,7 +12,6 @@ angular.module('ElasticIPsPage', ['LandingPage'])
     .controller('ElasticIPsCtrl', function ($scope, $location) {
         $scope.publicIP = '';
         $scope.instanceID = '';
-        $scope.isNotValid = true;
         $scope.urlParams = $location.search();
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
@@ -26,21 +25,6 @@ angular.module('ElasticIPsPage', ['LandingPage'])
             $scope.setWatch();
         };
         $scope.setWatch = function () {
-            $(document).on('opened', '[data-reveal]', function () {
-                $(document).on('input', '#ipcount', function () {
-                    if( $scope.isNotValid === true ){
-                        $scope.isNotValid = false;
-                        $scope.$apply();
-                    }
-                });
-                // For FireFox Selenium Test, which triggers "change" event when type input on the number inputbox.
-                $(document).on('change', '#ipcount', function () {
-                    if( $scope.isNotValid === true ){
-                        $scope.isNotValid = false;
-                        $scope.$apply();
-                    }
-                });
-            });
             $(document).on('close', '[data-reveal]', function () {
                 // Turn off the listeners on #ipcount
                 $(document).off('input', '#ipcount');
