@@ -37,7 +37,7 @@
 
 #groups .icon { background-image: url(../../img/svg/IAM_group.svg); }
 
-#roles .icon { background-image: url(../../img/svg/icon_IAM_roles.png); }
+#roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
 /* Small screen */
 #service-up i { color: #03405f; font-size: 16pt; text-align: left; }
