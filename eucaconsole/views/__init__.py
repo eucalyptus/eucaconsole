@@ -44,6 +44,7 @@ from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
+from pyramid.i18n import TranslationString
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
@@ -58,7 +59,7 @@ from ..models.auth import ConnectionManager
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if type(v) in [str, unicode] or isinstance(v, Markup):
+        if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
             event.rendering_val[k] = BaseView.escape_braces(v)
 
 
@@ -146,12 +147,12 @@ class BaseView(object):
 
     @staticmethod
     def escape_braces(s):
-        if type(s) in [str, unicode] or isinstance(s, Markup):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
             return s.replace('{{', '{ {').replace('}}', '} }')
 
     @staticmethod
     def unescape_braces(s):
-        if type(s) in [str, unicode] or isinstance(s, Markup):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
             return s.replace('{ {', '{{').replace('} }', '}}')
 
     @staticmethod
