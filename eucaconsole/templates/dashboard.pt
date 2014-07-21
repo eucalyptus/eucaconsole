@@ -203,10 +203,10 @@
                                     <label id="status">{{ service.name }}</label>
                                 </div>
                                 <div class="small-3 columns right" id="service-up" ng-show="service.up">
-                                    <i class="fi-check tick"></i>
+                                    <i class="fi-check tick" title="Service is up" i18n:translate="title" data-tooltip=""></i>
                                 </div>
                                 <div class="small-3 columns right" id="service-down" ng-show="!service.up">
-                                    <i class="fi-x tick"></i>
+                                    <i class="fi-x tick" title="Service is not responding" i18n:translate="title" data-tooltip=""></i>
                                 </div>
                             </div>
                         </div>
