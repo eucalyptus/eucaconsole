@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-import base64
 from urllib import quote
 import simplejson as json
 import magic
@@ -192,15 +191,15 @@ class LaunchConfigView(BaseView):
 
         if self.launch_config.user_data is not None:
             user_data = self.launch_config.user_data
-            type = magic.from_buffer(user_data, mime=True)
-            if type.find('text') == 0:
+            mime_type = magic.from_buffer(user_data, mime=True)
+            if mime_type.find('text') == 0:
                 self.launch_config.user_data=user_data
             else:
                 # get more descriptive text
-                type = magic.from_buffer(user_data)
+                mime_type = magic.from_buffer(user_data)
                 self.launch_config.user_data=None
-            self.launch_config.userdata_type = type
-            self.launch_config.userdata_istext = True if type.find('text') >= 0 else False
+            self.launch_config.userdata_type = mime_type
+            self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
             self.launch_config.userdata_type = ''
 

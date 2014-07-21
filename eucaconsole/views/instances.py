@@ -649,17 +649,17 @@ class InstanceStateView(BaseInstanceView):
             if 'userData' in user_data.keys():
                 user_data = user_data['userData']
                 unencoded = base64.b64decode(user_data)
-                type = magic.from_buffer(unencoded, mime=True)
-                if type.find('text') == 0:
+                mime_type = magic.from_buffer(unencoded, mime=True)
+                if mime_type.find('text') == 0:
                     user_data=unencoded
                 else:
                     # get more descriptive text
-                    type = magic.from_buffer(unencoded)
+                    mime_type = magic.from_buffer(unencoded)
                     user_data=None
             else:
                 user_data = ''
-                type = ''
-            return dict(results=dict(type=type, data=user_data))
+                mime_type = ''
+            return dict(results=dict(type=mime_type, data=user_data))
 
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):
