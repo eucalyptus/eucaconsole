@@ -210,6 +210,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     chosenSelect.trigger("chosen:updated");
                 }
             });
+            $('.cancel-link').on('click', function() {
+                document.location.href = $(this).attr('href');
+            });
         };
         $scope.loadImageInfo = function(id) {
             $http({

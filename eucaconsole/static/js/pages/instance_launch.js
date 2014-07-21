@@ -197,6 +197,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $(this).val(10);
                 }
             });
+            $('.cancel-link').on('click', function() {
+                document.location.href = $(this).attr('href');
+            });
         };
         $scope.loadImageInfo = function(id) {
             $http({

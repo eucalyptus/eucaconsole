@@ -88,6 +88,8 @@
                                     <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                     </a>
+                                    <a href="${request.route_path('launchconfigs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +155,10 @@
                                     ${structure:create_form['create_sg_from_lc'].label}
                                     <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Launch Configuration</span>
-                                    </button><br />
+                                    </button>
+                                    <a href="${request.route_path('launchconfigs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                    <br />
                                     <span class="or">Or:</span>
                                     <a id="visit-step-4" ng-click="visitNextStep(4, $event)">
                                         <span i18n:translate="">Select advanced options</span>
