@@ -7,6 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
+                                     '${request.route_path('instance_userdata_json', id=instance.id)}',
                                      '${request.route_path('instance_ip_address_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}', '${instance.id}', '${instance.ip_address}',
@@ -90,7 +91,7 @@
                     To update any of these attributes, stop the instance first.
                 </p>
                 <form action="${request.route_path('instance_update', id=instance.id)}" id="instance-form"
-                      method="post" data-abide="abide">
+                      method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:instance_form['csrf_token']}
                     ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
@@ -210,7 +211,28 @@
                         <div class="small-4 columns"><label i18n:translate="">Monitoring</label></div>
                         <div class="small-8 columns value">${instance.monitoring_state}</div>
                     </div>
-                    ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns">
+                            <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                        </div>
+                        <div class="small-8 columns value">
+                            <div ng-show="isNotStopped">
+                                <textarea id="userdata" name="userdata" disabled="disabled" ng-show="!isFileUserData"></textarea>
+                                <span id="userdatatype" ng-non-bindable="" ng-show="isFileUserData"></span>
+                            </div>
+                            <div ng-show="!isNotStopped">
+                                <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype">
+                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
+                                </input>
+                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
+                                <br/>
+                                <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
+                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                </input>
+                                <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                            </div>
+                        </div>
+                    </div>
                     <hr />
                     <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">

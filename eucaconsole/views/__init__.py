@@ -144,6 +144,19 @@ class BaseView(object):
         session = self.request.session
         return 'file_cache' in session
 
+    def get_user_data(self):
+        input_type = self.request.params.get('inputtype')
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
+        if input_type == 'file':
+            userdata = userdata_file
+        elif input_type == 'text':
+            userdata = userdata_input
+        else:
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
     @staticmethod
     def escape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup):
@@ -354,13 +367,6 @@ class BlockDeviceMappingItemView(BaseView):
             )
             choices.append((value, label))
         return sorted(choices)
-
-    def get_user_data(self):
-        userdata_input = self.request.params.get('userdata')
-        userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
-        userdata = userdata_file or userdata_input or None  # Look up file upload first
-        return userdata
 
     @staticmethod
     def get_block_device_map(bdmapping_json=None):
