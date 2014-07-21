@@ -7,7 +7,7 @@
 // Volume page includes the tag editor, so pull in that module as well.
 angular.module('VolumePage', ['TagEditor'])
     .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
+        $locationProvider.html5Mode(false);
     })
     .controller('VolumePageCtrl', function ($scope, $http, $timeout, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -23,8 +23,11 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
+        $scope.urlParams = $location.search();
+        $scope.availZone = '';
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
+            $scope.initAvailZoneChoice();
             $scope.volumeStatusEndpoint = jsonEndpoint;
             $scope.volumeStatus = status.replace('-', ' ');
             $scope.volumeAttachStatus = attachStatus;
@@ -57,12 +60,11 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.initChosenSelectors = function () {
-            var urlParams = $location.search();
             var snapshotField = $('#snapshot_id');
-            if (urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
+            if ($scope.urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
                 $scope.fromSnapshot = true;
-                snapshotField.val(urlParams['from_snapshot']);
-                $scope.snapshotId = urlParams['from_snapshot'];
+                snapshotField.val($scope.urlParams['from_snapshot']);
+                $scope.snapshotId = $scope.urlParams['from_snapshot'];
                 $scope.populateVolumeSize();
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
@@ -70,6 +72,12 @@ angular.module('VolumePage', ['TagEditor'])
             $('#attach-volume-modal').on('open', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
+        };
+        $scope.initAvailZoneChoice = function () {
+            var availZoneParam = $scope.urlParams['avail_zone'];
+            if (availZoneParam) {
+                $('#zone').val(availZoneParam);
+            }
         };
         $scope.getVolumeState = function () {
             $http.get($scope.volumeStatusEndpoint).success(function(oData) {

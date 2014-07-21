@@ -82,8 +82,16 @@
             <div id="attach-volume-modal" class="reveal-modal small" data-reveal="">
                 <h3 i18n:translate="">Attach volume</h3>
                 <p><span i18n:translate="">Attach a volume to instance</span> <strong>${instance_name}</strong></p>
+                <p tal:condition="no_volumes_in_zone">
+                    <span i18n:translate="">There are no volumes in availability zone</span>
+                    <span>${instance_zone}.</span><br />
+                    <a href="${request.route_path('volume_view', id='new')}?avail_zone=${instance_zone}">
+                        <span i18n:translate="">Create a volume in availability zone</span>
+                        <span>${instance_zone}</span>
+                    </a>
+                </p>
                 <form method="post" action="${request.route_path('instance_volume_attach', id=instance.id)}"
-                      id="attach-form" data-abide="">
+                      id="attach-form" data-abide="" tal:condition="not: no_volumes_in_zone">
                     ${structure:attach_form['csrf_token']}
                     ${panel('form_field', field=attach_form.volume_id)}
                     ${panel('form_field', field=attach_form.device, placeholder='/dev/sdf')}
@@ -101,12 +109,14 @@
                 </form>
                 <a class="close-reveal-modal">&#215;</a>
                 <!--! Volume device help -->
-                <hr />
-                <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
-                <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
-                    <!--! Volume device help -->
-                    <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
-                    <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div> 
+                <div tal:condition="not: no_volumes_in_zone" tal:omit-tag="">
+                    <hr />
+                    <metal:block metal:use-macro="layout.global_macros['dialog_help_expando']" />
+                    <div class="help-content" ng-show="isDialogHelpExpanded" ng-cloak="">
+                        <!--! Volume device help -->
+                        <metal:block metal:use-macro="layout.global_macros['volumedevice_help']" />
+                        <div id="help-html-console_attach_volume" ng-include="'${layout.help_path('console_attach_volume.html')}'"></div>
+                    </div>
                 </div>
             </div>
             <div id="detach-volume-modal" class="reveal-modal small" data-reveal="">
