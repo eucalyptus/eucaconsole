@@ -24,7 +24,6 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
         $scope.urlParams = $location.search();
-        $scope.availZone = '';
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.initAvailZoneChoice();
