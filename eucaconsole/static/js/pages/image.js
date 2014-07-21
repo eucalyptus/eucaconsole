@@ -6,7 +6,10 @@
 
 // Image page includes the tag editor, so pull in that module as well.
 angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
-    .controller('ImagePageCtrl', function ($scope) {
+    .controller('ImagePageCtrl', function ($scope, $http, $timeout) {
+        $scope.imageState = '';
+        $scope.imageStatusEndpoint = '';
+        $scope.transitionalStates = ['pending'];
         $scope.imageState = '';
         $scope.isPublic = '';
         $scope.errorClass= '';
@@ -15,12 +18,18 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.isAccountValid = true;
         $scope.isNotChanged = true;
         $scope.disabledExplanationVisible = false;
-        $scope.initController = function (imageState, isPublic, launchPermissions){
-            $scope.imageState = imageState;
+        $scope.initController = function (isPublic, launchPermissions, stateUrl){
             $scope.isPublic = isPublic;
             $scope.launchPermissions = launchPermissions;
+            $scope.imageStatusEndpoint = stateUrl;
+            if (stateUrl) {
+                $scope.getImageState();
+            }
             $scope.setWatch();
             $scope.setFocus();
+        };
+        $scope.isTransitional = function (state) {
+            return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.setWatch = function () {
             $scope.$on('tagUpdate', function($event) {
@@ -73,6 +82,21 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                         return false;
                     }
                 });
+            });
+        };
+        $scope.getImageState = function () {
+            $http.get($scope.imageStatusEndpoint).success(function(oData) {
+                var results = oData ? oData.results : '';
+                if (results) {
+                    $scope.imageState = results['image_status'];
+                    // Poll to obtain desired end state if current state is transitional
+                    if ($scope.isTransitional($scope.imageState)) {
+                        $scope.isUpdating = true;
+                        $timeout(function() {$scope.getImageState()}, 4000);  // Poll every 4 seconds
+                    } else {
+                        $scope.isUpdating = false;
+                    }
+                }
             });
         };
         $scope.setFocus = function () {

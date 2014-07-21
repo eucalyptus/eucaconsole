@@ -147,7 +147,7 @@ class ImagesJsonView(LandingPageView):
                 name=image.name,
                 state=image.state,
                 transitional=image.state not in ['available', 'failed', 'deleted'],
-                progress=10,  # this is valid for transitional images till we get something better
+                progress=0,  # this is valid for transitional images till we get something better
                 location=image.location,
                 tagged_name=TaggedItemView.get_display_name(image),
                 name_id=ImageView.get_image_name_id(image),
@@ -164,8 +164,7 @@ class ImagesJsonView(LandingPageView):
     def image_json(self):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
-            conn = self.get_connection()
-            image = conn.get_image(image_id)
+            image = self.conn.get_image(image_id)
             if image is None:
                 return JSONResponse(status=400, message="image id not valid")
             platform = ImageView.get_platform(image)
@@ -193,6 +192,17 @@ class ImagesJsonView(LandingPageView):
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
             )))
+
+    @view_config(route_name='image_state_json', renderer='json', request_method='GET')
+    def images_state_json(self):
+        image_id = self.request.matchdict.get('id')
+        with boto_error_handler(self.request):
+            image = self.conn.get_image(image_id)
+            """Return current image status"""
+            image_status = image.state if image else 'deleted'
+            return dict(
+                results=dict(image_status=image_status)
+            )
 
     def get_items(self):
         owner_alias = self.request.params.get('owner_alias')
