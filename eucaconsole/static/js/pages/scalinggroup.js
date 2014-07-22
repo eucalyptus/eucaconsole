@@ -22,7 +22,8 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $scope.maxSize = parseInt($('#max_size').val(), 10);
         };
         $scope.initController = function (scalingGroupName, policiesCount) {
-            $scope.scalingGroupName = scalingGroupName.replace(/__apos__/g, "\'");
+            $scope.scalingGroupName = scalingGroupName.replace(/__apos__/g, "\'")
+                .replace(/__curlyfront__/g, "{").replace(/__curlyback__/g, "}");
             $scope.policiesCount = policiesCount;
             $scope.setInitialValues();
             $scope.initChosenSelectors();
