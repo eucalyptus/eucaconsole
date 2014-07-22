@@ -1072,7 +1072,16 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 upload_policy = self.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
-                    result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
+                    # we need to make the call ourselves to override boto's auto-signing
+                    params = {'InstanceId': instance_id,
+                              'Storage.S3.Bucket': s3_bucket,
+                              'Storage.S3.Prefix': s3_prefix,
+                              'Storage.S3.UploadPolicy': upload_policy}
+                    params['Storage.S3.AWSAccessKeyId'] = self.aws_access_key_id
+                    params['Storage.S3.UploadPolicySignature'] = self.gen_policy_signature(upload_policy, secret)
+                    result = self.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
+                
+                    #result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
                     import pdb; pdb.set_trace()
                     tags = {ec_name: name, ec_description: description, ec_bdm: ''}
                     self.ec2_conn.create_tags(result.bundle_id, tags)
@@ -1105,4 +1114,9 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         policy_json = json.dumps(policy)
         logging.debug('generated default policy: %s', policy_json)
         return base64.b64encode(policy_json)
+
+    def gen_policy_signature(self, policy, secret_key):
+        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
+        my_hmac.update(policy)
+        return base64.b64encode(my_hmac.digest())
 
