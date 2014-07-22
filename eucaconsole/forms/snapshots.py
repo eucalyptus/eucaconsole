@@ -31,8 +31,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
-
+from . import BaseSecureForm, NgNonBindableOptionSelect
 
 class SnapshotForm(BaseSecureForm):
     """Snapshot form
@@ -43,7 +42,8 @@ class SnapshotForm(BaseSecureForm):
     volume_error_msg = _(u'Volume is required')
     volume_id = wtforms.SelectField(
         label=_(u'Create from volume'),
-        validators=[validators.DataRequired(message=volume_error_msg),]
+        validators=[validators.DataRequired(message=volume_error_msg),],
+        widget=NgNonBindableOptionSelect(),
     )
     desc_error_msg = _(u'Description is required')
     description = wtforms.TextAreaField(

@@ -34,6 +34,8 @@ import logging
 
 from beaker.cache import cache_region
 from wtforms.ext.csrf import SecureForm
+from wtforms.widgets import html_params, HTMLString, Select
+from markupsafe import escape
 
 import boto
 from boto.exception import BotoServerError
@@ -42,6 +44,15 @@ from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
 BLANK_CHOICE = ('', _(u'select...'))
+
+
+class NgNonBindableOptionSelect(Select):
+    @classmethod
+    def render_option(cls, value, label, selected):
+        options = {'value': value}
+        if selected:
+            options['selected'] = u'selected'
+        return HTMLString(u'<option %s ng-non-bindable="">%s</option>' % (html_params(**options), escape(unicode(label))))
 
 
 class BaseSecureForm(SecureForm):
