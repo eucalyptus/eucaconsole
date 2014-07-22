@@ -519,8 +519,16 @@ def file_download(request):
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
+_magic_type = magic.Magic(mime=True)
+_magic_type._thread_check = lambda: None
+_magic_desc = magic.Magic(mime=False)
+_magic_desc._thread_check = lambda: None
 _magic_lock = threading.Lock()
 
 def guess_mimetype_from_buffer(buffer, mime=False):
     with _magic_lock:
-        return magic.from_buffer(buffer, mime=mime)
+        if mime:
+            return _magic_type.from_buffer(buffer)
+        else:
+            return _magic_desc.from_buffer(buffer)
+        
