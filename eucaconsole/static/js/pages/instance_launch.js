@@ -6,10 +6,7 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, $location) {
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
@@ -17,7 +14,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageName = '';
         $scope.imagePlatform = '';
         $scope.imageRootDeviceType = '';
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];

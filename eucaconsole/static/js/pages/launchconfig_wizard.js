@@ -6,17 +6,14 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules'])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, $location) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
         $scope.imagePlatform = '';
         $scope.imageRootDeviceType = '';
         $scope.imageLocation = '';
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
