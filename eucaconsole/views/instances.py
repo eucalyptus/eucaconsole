@@ -33,7 +33,6 @@ from operator import attrgetter
 import os
 import simplejson as json
 from M2Crypto import RSA
-import magic
 
 from boto.exception import BotoServerError
 
@@ -54,6 +53,7 @@ from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappin
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
+from . import guess_mimetype_from_buffer
 
 
 class BaseInstanceView(BaseView):
@@ -649,12 +649,12 @@ class InstanceStateView(BaseInstanceView):
             if 'userData' in user_data.keys():
                 user_data = user_data['userData']
                 unencoded = base64.b64decode(user_data)
-                mime_type = magic.from_buffer(unencoded, mime=True)
+                mime_type = guess_mimetype_from_buffer(unencoded, mime=True)
                 if mime_type.find('text') == 0:
                     user_data=unencoded
                 else:
                     # get more descriptive text
-                    mime_type = magic.from_buffer(unencoded)
+                    mime_type = guess_mimetype_from_buffer(unencoded)
                     user_data=None
             else:
                 user_data = ''

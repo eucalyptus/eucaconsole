@@ -31,6 +31,7 @@ Core views
 import logging
 import simplejson as json
 import textwrap
+import threading
 
 from cgi import FieldStorage
 from contextlib import contextmanager
@@ -38,6 +39,7 @@ from dateutil import tz
 from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
+import magic
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
@@ -517,3 +519,8 @@ def file_download(request):
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
+_magic_lock = threading.Lock()
+
+def guess_mimetype_from_buffer(buffer, mime=False):
+    with _magic_lock:
+        return magic.from_buffer(buffer, mime=mime)
