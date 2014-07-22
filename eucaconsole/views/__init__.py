@@ -35,6 +35,7 @@ import textwrap
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -132,6 +133,16 @@ class BaseView(object):
     def _has_file_(self):
         session = self.request.session
         return 'file_cache' in session
+
+    @staticmethod
+    def escape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup):
+            return s.replace('{{', '{ {').replace('}}', '} }')
+
+    @staticmethod
+    def unescape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup):
+            return s.replace('{ {', '{{').replace('} }', '}}')
 
     @staticmethod
     def sanitize_url(url):
@@ -263,7 +274,7 @@ class TaggedItemView(BaseView):
                     self.tagged_obj.add_tag('Name', value)
 
     @staticmethod
-    def get_display_name(resource):
+    def get_display_name(resource, escapebraces=True):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
@@ -271,6 +282,8 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
+        if escapebraces:
+            name = BaseView.escape_braces(name)
         return name
 
     @staticmethod

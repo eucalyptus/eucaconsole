@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE, NgNonBindableOptionSelect
+from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
 
 
 class VolumeForm(BaseSecureForm):
@@ -43,7 +43,6 @@ class VolumeForm(BaseSecureForm):
     name = wtforms.TextField(label=_(u'Name'))
     snapshot_id = wtforms.SelectField(
         label=_(u'Create from snapshot?'),
-        widget=NgNonBindableOptionSelect(),
     )
     size_error_msg = _(u'Volume size is required and must be an integer')
     size = wtforms.TextField(
@@ -90,15 +89,7 @@ class VolumeForm(BaseSecureForm):
             self.zone.data = self.zones[0].name
 
     def set_volume_snapshot_choices(self):
-        choices = [('', _(u'None'))]
-        for snapshot in self.snapshots:
-            value = snapshot.id
-            name = snapshot.tags.get('Name', None)
-            if name is not None:
-                label = '{name} ({id})'.format(name=name, id=value)
-            else:
-                label = str(value)
-            choices.append((value, label))
+        choices = self.choices_manager.snapshots()
         # Need to insert current choice since the source snapshot may have been removed after this volume was created
         if self.volume and self.volume.snapshot_id:
             snap_id = self.volume.snapshot_id
