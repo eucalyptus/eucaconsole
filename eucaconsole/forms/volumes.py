@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
+from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE, NgNonBindableOptionSelect
 
 
 class VolumeForm(BaseSecureForm):
@@ -41,7 +41,10 @@ class VolumeForm(BaseSecureForm):
     """
     name_error_msg = _(u'Not a valid name')
     name = wtforms.TextField(label=_(u'Name'))
-    snapshot_id = wtforms.SelectField(label=_(u'Create from snapshot?'))
+    snapshot_id = wtforms.SelectField(
+        label=_(u'Create from snapshot?'),
+        widget=NgNonBindableOptionSelect(),
+    )
     size_error_msg = _(u'Volume size is required and must be an integer')
     size = wtforms.TextField(
         label=_(u'Volume size (GB)'),
