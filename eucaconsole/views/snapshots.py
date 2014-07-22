@@ -252,6 +252,7 @@ class SnapshotView(TaggedItemView):
             self.images_registered = self.get_images_registered(self.snapshot.id) if self.snapshot else None
         self.render_dict = dict(
             snapshot=self.snapshot,
+            snapshot_description=self.snapshot.description if self.snapshot else '',
             registered=True if self.images_registered is not None else False,
             snapshot_name=self.snapshot_name,
             volume_name=self.volume_name,
@@ -317,7 +318,7 @@ class SnapshotView(TaggedItemView):
             description = self.request.params.get('description', '')
             tags_json = self.request.params.get('tags')
             volume_id = self.request.params.get('volume_id')
-            with boto_error_handler(self.request, self.request.route_path('snapshot_create')):
+            with boto_error_handler(self.request, self.request.route_path('snapshots')):
                 self.log_request(_(u"Creating snapshot from volume {0}").format(volume_id))
                 snapshot = self.conn.create_snapshot(volume_id, description=description)
                 # Add name tag

@@ -6,7 +6,10 @@
 
 // Launch Instance page includes the Tag Editor, the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'ImagePicker', 'SecurityGroupRules'])
-    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('LaunchInstanceCtrl', function ($scope, $http, $timeout, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.launchForm = $('#launch-instance-form');
         $scope.tagsObject = {};
@@ -14,7 +17,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageName = '';
         $scope.imagePlatform = '';
         $scope.imageRootDeviceType = '';
-        $scope.urlParams = $.url().param();
+        $scope.urlParams = $location.search();
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
@@ -40,6 +43,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.step3Invalid = true;
         $scope.imageJsonURL = '';
         $scope.isNotValid = true;
+        $scope.existsImage = true;
+        $scope.imageIDErrorClass = '';
+        $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
                                 securityGroupChoices, securityGroupsIDMapJson, roles,
                                 imageJsonURL) {
@@ -124,10 +130,27 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.checkRequiredInput = function () {
             if( $scope.currentStepIndex == 1 ){ 
-                if( $scope.imageID === '' || $scope.imageID === undefined ){
+                if( $scope.isNotValid == false && $scope.imageID.length < 12 ){
+                    // Once invalid ID has been entered, do not enable the button unless the ID length is valid
+                    // This prevents the error to be triggered as user is typing for the first time 
                     $scope.isNotValid = true;
-                }else{
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID === '' || $scope.imageID === undefined || $scope.imageID.length == 0 ){
+                    // Do not enable the button if the input is empty. However, raise no error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "";
+                }else if( $scope.imageID.length > 12 ){
+                    // If the imageID length is longer then 12, disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length >= 4 &&  $scope.imageID.substring(0, 4) != "emi-" && $scope.imageID.substring(0, 4) != "ami-" ){ 
+                    // If the imageID length is longer than 4, and they do not consist of "emi-" or "ami-", disable the button and raise error message
+                    $scope.isNotValid = true;
+                    $scope.imageIDErrorClass = "error";
+                }else if( $scope.imageID.length == 12 ){
+                    // If the above conditions are met and the image ID length is 12, enable the button
                     $scope.isNotValid = false;
+                    $scope.imageIDErrorClass = "";
                 }
             }else if( $scope.currentStepIndex == 2 ){
                 if( $scope.instanceNumber === '' || $scope.instanceNumber === undefined ){
@@ -149,10 +172,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                  $scope.setWizardFocus($scope.currentStepIndex);
             });
             $scope.$watch('imageID', function(newID, oldID){
-                if (newID != oldID) {
+                // Clear the image ID existence check variables
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+                if (newID != oldID && $scope.imageID.length == 12) {
                     $scope.loadImageInfo(newID);
                 }
                 $scope.checkRequiredInput();
+            });
+            $scope.$watch('existsImage', function(newValue, oldValue){
+                if( newValue != oldValue &&  $scope.existsImage == false ){
+                    $scope.isNotValid = true;
+                }
             });
             $scope.$watch('instanceNumber', function(){
                 $scope.checkRequiredInput();
@@ -180,6 +211,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.imageRootDeviceType = item.root_device_type;
                 $scope.summarySection.find('.step1').removeClass('hide');
                 $scope.$broadcast('setBDM', item.block_device_mapping);
+                $scope.existsImage = true;
+                $scope.imageIDNonexistErrorClass = "";
+            }).error(function (oData) {
+                $scope.existsImage = false;
+                $scope.imageIDNonexistErrorClass = "error";
             });
         };
         $scope.focusEnterImageID = function () {
@@ -259,6 +295,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (invalidFields.length > 0 || $scope.isNotValid === true) {
                 invalidFields.focus();
                 $event.preventDefault();
+                if( $scope.currentStepIndex > nextStep){
+                    $scope.currentStepIndex = nextStep;
+                    $scope.checkRequiredInput();
+                }
                 return false;
             }
             // Handle the unsaved tag issue

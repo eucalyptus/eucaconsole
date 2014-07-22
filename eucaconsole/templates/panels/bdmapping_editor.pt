@@ -2,7 +2,6 @@
 <div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
     <div class="columns" ng-show="bdMapping">
-        <hr />
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
             <thead>
@@ -73,7 +72,7 @@
             <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label i18n:translate="">Create from snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
-                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                 </select>
             </div>
             <div class="medium-1 columns" ng-show="newVolumeType !== 'ephemeral'">

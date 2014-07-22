@@ -47,6 +47,7 @@ urls = [
     # Dashboard #####
     Route(name='dashboard', pattern='/'),
     Route(name='dashboard_json', pattern='/dashboard/json'),
+    Route(name='service_status_json', pattern='/status/json'),
 
     # Login/logout #####
     Route(name='login', pattern='/login'),
@@ -256,11 +257,11 @@ urls = [
     Route(name='roles_delete', pattern='/roles/delete'),
     Route(name='role_create', pattern='/roles/create'),
     Route(name='role_view', pattern='/roles/{name}'),
-    Route(name='role_update', pattern='/roles/{name}/update'),
     Route(name='role_delete', pattern='/roles/{name}/delete'),
     Route(name='role_policies_json', pattern='/roles/{name}/policies_json'),
     Route(name='role_policy_json', pattern='/roles/{name}/policies/{policy}'),
     Route(name='role_update_policy', pattern='/roles/{name}/policy/{policy}/save'),
+    Route(name='role_update_trustpolicy', pattern='/roles/{name}/trustpolicy/save'),
     Route(name='role_delete_policy', pattern='/roles/{name}/policy/{policy}/delete'),
 
     # IAM Policies/Permissions #####

@@ -40,6 +40,7 @@ from .constants import AWS_REGIONS
 from .forms.login import EucaLogoutForm
 from .i18n import _
 from .models import Notification
+from .views import BaseView
 
 try:
     from version import __version__
@@ -67,6 +68,9 @@ class MasterLayout(object):
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.username_label = self.request.session.get('username_label')
+        self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
+        self.group_access = request.session.get('group_access') if self.cloud_type == 'euca' else False
+        self.role_access = request.session.get('role_access') if self.cloud_type == 'euca' else False
         self.euca_logout_form = EucaLogoutForm(request=self.request)
         self.date_format = _(u'%I:%M:%S %p %b %d %Y')
         self.angular_date_format = _(u'hh:mm:ss a MMM d yyyy')
@@ -80,6 +84,7 @@ class MasterLayout(object):
         )
         self.querystring = self.get_query_string()
         self.help_html_dir = 'eucaconsole:static/html/help/'
+        self.escape_braces = BaseView.escape_braces
 
     def get_notifications(self):
         """Get notifications, categorized by message type ('info', 'success', 'warning', or 'error')
@@ -107,8 +112,8 @@ class MasterLayout(object):
         return ''
 
     def help_path(self, help_html):
-        path = self.help_html_dir + help_html;
-        return self.request.static_path(path);
+        path = self.help_html_dir + help_html
+        return self.request.static_path(path)
 
     @staticmethod
     def get_selected_region_label(region_name):

@@ -7,7 +7,7 @@
         <h3 i18n:translate="">Delete role</h3>
         <p>
             <span i18n:translate="">Deleting a role also deletes all permissions associated with that role. Are you sure you want to delete role </span>
-            <span tal:condition="role" ng-non-bindable=""><strong>${role.role_name}</strong></span>
+            <span tal:condition="role"><strong>${role.role_name}</strong></span>
             <span tal:condition="not role"><strong>{{ roleName }}</strong></span>
             ?
         </p>

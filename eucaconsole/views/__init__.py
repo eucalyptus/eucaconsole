@@ -36,6 +36,7 @@ import textwrap
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
 
@@ -54,6 +55,13 @@ from ..forms.login import EucaLogoutForm
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager
+
+
+def escape_braces(event):
+    """Escape double curly braces in template variables to prevent AngularJS expression injections"""
+    for k, v in event.rendering_val.items():
+        if type(v) in [str, unicode] or isinstance(v, Markup):
+            event.rendering_val[k] = BaseView.escape_braces(v)
 
 
 class JSONResponse(Response):
@@ -118,6 +126,9 @@ class BaseView(object):
             elif conn_type == 'sts':
                 host = self.request.registry.settings.get('sts.host', host)
                 port = int(self.request.registry.settings.get('sts.port', port))
+            elif conn_type == 's3':
+                host = self.request.registry.settings.get('s3.host', host)
+                port = int(self.request.registry.settings.get('s3.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -142,6 +153,16 @@ class BaseView(object):
         except pylibmc.Error as ex:
             session = self.request.session
             return 'file_cache' in session
+
+    @staticmethod
+    def escape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup):
+            return s.replace('{{', '{ {').replace('}}', '} }')
+
+    @staticmethod
+    def unescape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup):
+            return s.replace('{ {', '{{').replace('} }', '}}')
 
     @staticmethod
     def sanitize_url(url):
@@ -236,9 +257,9 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                key = key.strip()
+                key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                    tags[key] = value.strip()
+                    tags[key] = self.unescape_braces(value.strip())
             self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
@@ -260,10 +281,11 @@ class TaggedItemView(BaseView):
             if value != self.tagged_obj.tags.get('Name'):
                 self.tagged_obj.remove_tag('Name')
                 if value and not value.startswith('aws:'):
-                    self.tagged_obj.add_tag('Name', value)
+                    tag_value = self.unescape_braces(value)
+                    self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
-    def get_display_name(resource):
+    def get_display_name(resource, escapebraces=True):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
@@ -271,6 +293,8 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
+        if escapebraces:
+            name = BaseView.escape_braces(name)
         return name
 
     @staticmethod

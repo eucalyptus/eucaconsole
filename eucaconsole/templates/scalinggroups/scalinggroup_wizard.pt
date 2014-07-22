@@ -39,7 +39,7 @@
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
-                            <div tal:condition="launch_config_param" ng-non-bindable="">
+                            <div tal:condition="launch_config_param">
                                 <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
                                 <div class="row controls-wrapper">
                                     <div class="small-4 columns">
@@ -174,7 +174,6 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/scalinggroup_wizard.js')}"></script>
 </div>
 

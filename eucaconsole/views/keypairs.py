@@ -109,6 +109,7 @@ class KeyPairView(BaseView):
         self.delete_form = KeyPairDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             keypair=self.keypair,
+            keypair_name=self.escape_braces(self.keypair.name) if self.keypair else '',
             keypair_route_id=self.keypair_route_id,
             keypair_form=self.keypair_form,
             keypair_import_form=self.keypair_import_form,

@@ -5,12 +5,12 @@
         <div tal:repeat="field filters_form" id="filterfieldwrapper_${field.short_name}">
             <div tal:condition="field.short_name != 'csrf_token'" tal:omit-tag="">
                 <label>${field.label}</label>
-                <div ng-non-bindable="">${structure:field()}</div>
+                <div>${structure:field()}</div>
             </div>
         </div>
         <div>&nbsp;</div>
         <div>
-            <button type="submit" class="small button round" i18n:translate="">Apply</button>
+            <button type="submit" class="tiny button round" i18n:translate="">Filter</button>
             &nbsp;&nbsp;&nbsp;<a href="${request.current_route_path().split('?')[0]}" class="clear-link">Clear</a>
         </div>
     </form>

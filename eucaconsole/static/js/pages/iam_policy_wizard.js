@@ -5,7 +5,10 @@
  */
 
 angular.module('IAMPolicyWizard', [])
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
@@ -18,7 +21,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
         $scope.actionsList = [];
-        $scope.urlParams = $.url().param();
+        $scope.urlParams = $location.search();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';

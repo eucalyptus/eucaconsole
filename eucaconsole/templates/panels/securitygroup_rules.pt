@@ -14,7 +14,8 @@
                 ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
                 <span ng-repeat="grant in rule.grants">
                     <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
-                    <span ng-show="grant.name">{{ grant.owner_id }}/{{ grant.name }}</span>
+                    <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+                    <span ng-show="grant.name">{{ grant.name }}</span>
                 </span>
                 <a class="remove" ng-click="removeRule($index, $event)"
                         title="Remove rule"><i class="fi-x"></i></a>
@@ -32,13 +33,14 @@
                 <div class="small-9 columns">
                     <select id="ip-protocol-select" name="ip_protocol" class="ip-protocol"
                         ng-model="selectedProtocol" ng-change="setPorts(selectedProtocol)" data-placeholder="select..." >
-                        <option tal:repeat="choice protocol_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                        <option tal:repeat="choice protocol_choices" value="${choice[0]}">${choice[1]}</option>
                     </select>
                 </div>
             </div>
             <div class="row" ng-show="selectedProtocol">
                 <div class="small-3 columns">
-                    <label class="right" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol !== 'icmp'" i18n:translate="">Port range</label>
+                    <label class="right" ng-show="selectedProtocol == 'icmp'" i18n:translate="">Type</label>
                 </div>
                 <div class="small-9 columns">
                     <div ng-show="selectedProtocol !== 'icmp'">
@@ -50,7 +52,7 @@
                     </div>
                     <div ng-show="selectedProtocol == 'icmp'">
                         <select name="icmp_range" ng-model="icmpRange" data-placeholder="select...">
-                            <option tal:repeat="choice icmp_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                            <option tal:repeat="choice icmp_choices" value="${choice[0]}">${choice[1]}</option>
                         </select>
                     </div>
                 </div>
@@ -84,8 +86,8 @@
                         <label><span i18n:translate="" class="sg-label">Security group</span></label>
                         <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                 ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
-                            <option tal:repeat="groupname groupnames"
-                                    value="${groupname}" ng-non-bindable="">${groupname}</option>
+                            <option tal:repeat="groupname groupnames" ng-non-bindable=""
+                                    value="${groupname}">${groupname}</option>
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
                         <div><small class="error-msg" ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</small></div>

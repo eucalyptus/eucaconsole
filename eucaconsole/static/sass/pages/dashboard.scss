@@ -96,7 +96,7 @@ $dashboard-panel-icon-size: 100px;
 #key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }
 #users .icon { background-image: url(../../img/svg/icon_IAM_users.svg); }
 #groups .icon { background-image: url(../../img/svg/IAM_group.svg); }
-#roles .icon { background-image: url(../../img/svg/icon_IAM_roles.png); }
+#roles .icon { background-image: url(../../img/svg/icon_IAM_roles.svg); }
 
 // --- Media queries
 // --------------------
@@ -106,4 +106,26 @@ $dashboard-panel-icon-size: 100px;
 /* Small screen */
 @media screen and (max-width: 480px) {
 
+}
+
+#service-up i {
+    color:$euca-darkblue;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#service-down i {
+    color:red;
+    font-size: 16pt;
+    text-align: left;
+}
+
+#status {
+    font-size: 11pt;
+    text-align: left;
+    font-style: normal;
+    font-weight: normal;
+    color: $euca-grey;
+    margin-top: 9px;
+    margin-bottom: 0;
 }

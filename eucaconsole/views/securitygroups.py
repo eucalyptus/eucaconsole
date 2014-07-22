@@ -159,6 +159,7 @@ class SecurityGroupView(TaggedItemView):
         self.tagged_obj = self.security_group
         self.render_dict = dict(
             security_group=self.security_group,
+            security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
@@ -301,7 +302,7 @@ class SecurityGroupView(TaggedItemView):
                     params.update(dict(
                         cidr_ip=grant.cidr_ip,
                     ))
-                elif grant.group_id and grant.owner_id:
+                elif grant.group_id:
                     params.update(dict(
                         src_security_group_group_id=grant.group_id,
                         src_security_group_owner_id=grant.owner_id,

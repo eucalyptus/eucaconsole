@@ -10,18 +10,18 @@
     <div tal:condition="display == 'connect_instance'">
         <h5 class="title">Connecting to an instance</h5>
         <p>To connect to your instance, be sure the security group
-            <b ng-non-bindable="">${instance_name}</b> has
+            <b>${instance_name}</b> has
             TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not
             apply if you did not select a key pair when you launched this instance):
         </p>
         <ol>
             <li>Open an SSH terminal window.</li>
-            <li ng-non-bindable="">Change your directory to the one where you stored your key file "${instance_key_name}.pem"</li>
+            <li>Change your directory to the one where you stored your key file "${instance_key_name}.pem"</li>
             <li>Run the following command to set the correct permissions for your key file:<br />
-                <code ng-non-bindable="">chmod 400 ${instance_key_name or 'key_file'}.pem</code>
+                <code>chmod 400 ${instance_key_name or 'key_file'}.pem</code>
             </li>
             <li>Connect to your instance via its public IP address by running the following command:<br />
-                <code ng-non-bindable="">ssh -i ${instance_key_name or 'key_file'}.pem root@${instance_ip_address}</code>
+                <code>ssh -i ${instance_key_name or 'key_file'}.pem root@${instance_ip_address}</code>
             </li>
         </ol>
     </div>
