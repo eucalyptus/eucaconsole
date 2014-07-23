@@ -28,10 +28,8 @@
 Pyramid views for Eucalyptus and AWS launch configurations
 
 """
-import base64
 from urllib import quote
 import simplejson as json
-import magic
 import os
 
 from boto.ec2.autoscale.launchconfig import LaunchConfiguration
@@ -50,6 +48,7 @@ from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
+from . import guess_mimetype_from_buffer
 
 
 class LaunchConfigsView(LandingPageView):
@@ -192,15 +191,15 @@ class LaunchConfigView(BaseView):
 
         if self.launch_config.user_data is not None:
             user_data = self.launch_config.user_data
-            type = magic.from_buffer(user_data, mime=True)
-            if type.find('text') == 0:
+            mime_type = guess_mimetype_from_buffer(user_data, mime=True)
+            if mime_type.find('text') == 0:
                 self.launch_config.user_data=user_data
             else:
                 # get more descriptive text
-                type = magic.from_buffer(user_data)
+                mime_type = guess_mimetype_from_buffer(user_data)
                 self.launch_config.user_data=None
-            self.launch_config.userdata_type = type
-            self.launch_config.userdata_istext = True if type.find('text') >= 0 else False
+            self.launch_config.userdata_type = mime_type
+            self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
             self.launch_config.userdata_type = ''
 
