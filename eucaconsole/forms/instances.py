@@ -273,13 +273,14 @@ class AttachVolumeForm(BaseSecureForm):
 
     def set_volume_choices(self):
         """Populate volume field with volumes available to attach"""
+        from ..views import BaseView
         choices = [('', _(u'select...'))]
         for volume in self.volumes:
             if self.instance and volume.zone == self.instance.placement and volume.attach_data.status is None:
                 name_tag = volume.tags.get('Name')
                 extra = ' ({name})'.format(name=name_tag) if name_tag else ''
                 vol_name = '{id}{extra}'.format(id=volume.id, extra=extra)
-                choices.append((volume.id, vol_name))
+                choices.append((volume.id, BaseView.escape_braces(vol_name)))
         if len(choices) == 1:
             choices = [('', _(u'No available volumes in this availability zone'))]
         self.volume_id.choices = choices
