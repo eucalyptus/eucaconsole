@@ -35,7 +35,7 @@ Fedora:
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig`
+Install homebrew, then run `brew install libevent openssl swig libmagic`
 
 
 Pyramid Setup

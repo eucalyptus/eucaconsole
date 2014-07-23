@@ -141,3 +141,6 @@ form .row.controls-wrapper { margin-bottom: 0; }
 ----------------------------------------- */
 /* Small screen */
 @media screen and (max-width: 480px) { select { width: 80%; } }
+#userdatalabel { right: 0px; }
+
+#userdata { margin: 0 0 0; }

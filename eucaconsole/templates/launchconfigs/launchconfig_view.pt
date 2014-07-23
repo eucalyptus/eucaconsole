@@ -112,6 +112,15 @@
                                 <a href="/roles/${role}">${role}</a>
                             </div>
                         </div>
+                        <div class="row controls-wrapper readonly" tal:condition="launch_config.userdata_type">
+                            <div class="small-3 columns">
+                                <label i18n:translate="">User data</label>
+                            </div>
+                            <div class="small-9 columns value">
+                                <textarea diabled="disabled" tal:condition="launch_config.userdata_istext">${launch_config.user_data}</textarea>
+                                <span tal:condition="not launch_config.userdata_istext">${launch_config.userdata_type}</span>
+                            </div>
+                        </div>
                     </div>
                     <div tal:condition="not image" style="text-align:center;">
                         <strong style="color:red;" i18n:translate="">Image not found</strong>
