@@ -6,14 +6,11 @@
 
 // Pull in common landing page module
 angular.module('ElasticIPsPage', ['LandingPage'])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('ElasticIPsCtrl', function ($scope, $location) {
+    .controller('ElasticIPsCtrl', function ($scope) {
         $scope.publicIP = '';
         $scope.instanceID = '';
         $scope.isNotValid = true;
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.initChosenSelectors = function () {
             $('#instance_id').chosen({'width': '80%', 'search_contains': true});
         };
