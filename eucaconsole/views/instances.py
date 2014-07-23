@@ -973,9 +973,9 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if self.role != None:  # need to set up instance profile, add role and supply to run_instances
+                if self.role is not None:  # need to set up instance profile, add role and supply to run_instances
                     profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/' + self.role)
                     self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
@@ -1036,10 +1036,11 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         image_id = _(u"missing")
         if self.image is not None:
             image_id = self.image.id
-        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(self.instance_name, image_id)
+        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(
+            self.instance_name, image_id)
         self.render_dict = dict(
             instance=self.instance,
-            instance_name=self.instance_name,  # TODO: escape braces here after GUI-568 is merged
+            instance_name=self.instance_name,
             image=self.image,
             snapshot_choices=self.get_snapshot_choices(),
             create_image_form=self.create_image_form,
@@ -1061,20 +1062,23 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             del self.create_image_form.no_reboot
             # add selected bucket in case it's a new one
             s3_bucket = self.request.params.get('s3_bucket')
+            if s3_bucket:
+                s3_bucket = self.unescape_braces(s3_bucket)
             self.create_image_form.s3_bucket.choices.append((s3_bucket, s3_bucket))
         if self.create_image_form.validate():
             instance_id = self.instance.id
             name = self.request.params.get('name')
             description = self.request.params.get('description')
-            if not(is_ebs):
+            if not is_ebs:
                 s3_bucket = self.request.params.get('s3_bucket')
+                if s3_bucket:
+                    s3_bucket = self.unescape_braces(s3_bucket)
                 s3_prefix = self.request.params.get('s3_prefix', '')
                 upload_policy = self.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
-                    import pdb; pdb.set_trace()
-                    tags = {ec_name: name, ec_description: description, ec_bdm: ''}
+                    tags = {'ec_name': name, 'ec_description': description, 'ec_bdm': ''}
                     self.ec2_conn.create_tags(result.bundle_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -1083,7 +1087,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 no_reboot = self.request.params.get('no_reboot')
                 bdm = {}
                 with boto_error_handler(self.request, self.location):
-                    self.ec2_conn.create_image(instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
+                    self.ec2_conn.create_image(
+                        instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=success_location)
@@ -1092,7 +1097,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         return self.render_dict
 
     # this method copied from euca2ools:bundleinstance.py and used with small changes
-    def generate_default_policy(self, bucket, prefix):
+    @staticmethod
+    def generate_default_policy(bucket, prefix):
         delta = timedelta(hours=24)
         expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
 

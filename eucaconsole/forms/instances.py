@@ -392,10 +392,10 @@ class InstanceCreateImageForm(BaseSecureForm):
         validators=[validators.Length(max=255, message=desc_error_msg)],
     )
     no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
-    s3_bucket = wtforms.SelectField(label=_(u'Bucket name'),
-                validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
-    s3_prefix = wtforms.TextField(label=_(u'Prefix'),  # TODO: Convert to TextEscapedField (from GUI-568 work)
-                validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
+    s3_bucket = wtforms.SelectField(
+        label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_prefix = wtforms.TextField(
+        label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
 
     def __init__(self, request, s3_conn=None, **kwargs):
         super(InstanceCreateImageForm, self).__init__(request, **kwargs)
