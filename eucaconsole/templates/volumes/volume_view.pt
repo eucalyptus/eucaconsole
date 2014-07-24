@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/volume.css')}" />
@@ -18,7 +18,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${volume_name or 'Create volume'}</a></li>
+                <li class="current"><a href="#">${volume_name or 'Create volume'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -26,7 +26,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="volume">
                 <strong i18n:translate="">Details for volume:</strong>
-                <em ng-non-bindable="">${volume_name}</em>
+                <em>${volume_name}</em>
             </metal:block>
             <metal:block tal:condition="not volume">
                 <strong i18n:translate="">Create new volume</strong>
@@ -66,19 +66,19 @@
                     <div class="row controls-wrapper readonly" ng-cloak="" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="" id="volume-status-label">Status</label></div>
                         <div class="small-8 columns value" ng-cloak="">
-                            <span class="label radius status {{ volumeStatus || 'deleted' }}">
+                            <span class="label radius status {{ volumeAttachStatus || volumeStatus || 'deleted' }}">
                                 {{ volumeAttachStatus || volumeStatus || 'deleted' }}
                             </span>
                             &nbsp;<span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};" ng-non-bindable="">
+                    <div tal:define="autofocus_attr {'autofocus': 'autofocus'} if not volume else {};">
                         ${panel('form_field', field=volume_form.name, pattern=layout.tag_pattern_value, **autofocus_attr)}
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="attach_instance">
                         <div class="small-4 columns"><label i18n:translate="">Attached to instance</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_path('instance_view', id=instance_id)}" ng-non-bindable="">${instance_name}</a>
+                            <a href="${request.route_path('instance_view', id=instance_id)}">${instance_name}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="device_name">
@@ -94,7 +94,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume and volume.snapshot_id">
                         <div class="small-4 columns"><label i18n:translate="">Created from snapshot</label></div>
-                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.snapshot_id}</div>
+                        <div class="small-8 columns field inline">${volume.snapshot_id}</div>
                     </div>
                     <div tal:condition="not volume" tal:omit-tag="">
                         ${panel('form_field', field=volume_form['size'], min=1, ng_attrs={'model': 'volumeSize'}, pattern='^\d+$', **html_attrs)}
@@ -120,7 +120,7 @@
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="small-8 columns field inline" ng-non-bindable="">${volume.zone}</div>
+                        <div class="small-8 columns field inline">${volume.zone}</div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="volume">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
@@ -131,11 +131,17 @@
                     <hr />
                     ${panel('tag_editor', tags=volume_tags, show_name_tag=False)}
                     <hr />
+                    <div tal:condition="not volume">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div>
                         <button tal:condition="volume" type="submit" id="save_changes_volume_submit_button" class="button" ng-disabled="isNotChanged || isUpdating || volumeStatus === 'deleted'">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button">
+                        <button tal:condition="not volume" type="submit" id="create_volume_submit_button" class="button" ng-disabled="isNotValid">
                             <span tal:condition="not volume" i18n:translate="">Create Volume</span>
                         </button>
                         <a href="${request.route_path('volumes')}"

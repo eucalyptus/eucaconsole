@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
@@ -11,14 +11,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('ipaddresses')}" i18n:translate="">Elastic IP addresses</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${eip.public_ip if eip else ''}</a></li>
+                <li class="current"><a href="#">${eip.public_ip if eip else ''}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for IP address:</strong>
-            <em ng-non-bindable="">${eip.public_ip if eip else request.matchdict.get('public_ip')}</em>
+            <em>${eip.public_ip if eip else request.matchdict.get('public_ip')}</em>
         </h3>
         <div class="large-7 columns">
             <div class="panel has-actions" tal:condition="eip">
@@ -47,7 +47,7 @@
                 <div tal:condition="eip.instance_id">
                     <p>
                         <span i18n:translate="">This elastic IP address is associated with instance</span>
-                        <a href="/instances/${eip.instance_id}" ng-non-bindable="">${eip.instance_name}</a>.
+                        <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>.
                     </p>
                 </div>
             </div>

@@ -9,10 +9,12 @@ angular.module('InstancePage', ['TagEditor'])
     .controller('InstancePageCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.instanceStateEndpoint = '';
+        $scope.instanceUserDataEndpoint = '';
         // Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped"
         // 'shutting-down' = terminating state
         $scope.transitionalStates = ['pending', 'stopping', 'shutting-down'];
         $scope.instanceState = '';
+        $scope.isFileUserData = false;
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.isUpdating = false;
@@ -21,8 +23,9 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
-        $scope.initController = function (jsonEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
+        $scope.initController = function (jsonEndpoint, userDataEndpoint, ipaddressEndpoint, consoleEndpoint, state, id, public_ip, public_dns_name, platform, has_elastic_ip) {
             $scope.instanceStateEndpoint = jsonEndpoint;
+            $scope.instanceUserDataEndpoint = userDataEndpoint;
             $scope.instanceIPAddressEndpoint = ipaddressEndpoint;
             $scope.consoleOutputEndpoint = consoleEndpoint;
             $scope.instanceState = state;
@@ -32,6 +35,7 @@ angular.module('InstancePage', ['TagEditor'])
             $scope.platform = platform;
             $scope.hasElasticIP = Boolean(has_elastic_ip.toLowerCase());
             $scope.getInstanceState();
+            $scope.getUserData();
             $scope.activateWidget();
             $scope.setWatch();
             $scope.setFocus();
@@ -91,6 +95,20 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotChanged = false;
                 $scope.$apply();
             });
+            $(document).on('input', 'textarea', function () {  // userdata text
+                $scope.intputtype = 'text';
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $('#userdata_file').on('change', function () {  // userdata file
+                $scope.intputtype = 'file';
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
+            $(document).on('change', 'select', function () {
+                $scope.isNotChanged = false;
+                $scope.$apply();
+            });
             $scope.$watch('instanceState', function(){
                 $scope.getIPAddressData();
             });
@@ -141,12 +159,36 @@ angular.module('InstancePage', ['TagEditor'])
                 $scope.isNotStopped = $scope.instanceState != 'stopped';
             });
         };
+        $scope.getUserData = function () {
+            $http.get($scope.instanceUserDataEndpoint).success(function(oData) {
+                var userData = oData ? oData.results : '';
+                if (userData.type.indexOf('text') === 0) {
+                    $scope.isFileUserData = false;
+                    $("#userdata:not([display='none'])").val(userData.data);
+                    $timeout(function() { $scope.inputtype = 'text'; });
+                }
+                else {
+                    $scope.isFileUserData = true;
+                    $("#userdatatype:not([display='none'])").text(userData.type);
+                    $timeout(function() { $scope.inputtype = 'file'; });
+                }
+            });
+        };
         $scope.submitSaveChanges = function($event){
-            $event.preventDefault();
-            if( $scope.instanceState == 'stopped' ){
+            // Handle the unsaved tag issue
+            var existsUnsavedTag = false;
+            $('input.taginput').each(function(){
+                if($(this).val() !== ''){
+                    existsUnsavedTag = true;
+                    return false;
+                }
+            });
+            if( existsUnsavedTag ){
+                $event.preventDefault();
+                $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+            }else if( $scope.instanceState == 'stopped' ){
+                $event.preventDefault();
                 $('#update-instance-modal').foundation('reveal', 'open');
-            }else{
-                $scope.instanceForm.submit();
             }
         };
         $scope.submitUpdateInstance = function ($event) {

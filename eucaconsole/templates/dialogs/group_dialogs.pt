@@ -1,5 +1,5 @@
 <!--! Modal dialogs for IAM groups on landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="delete-group-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('groups_delete');
                      detailpage_action request.route_path('group_delete', name=group.group_name) if group else '';
@@ -7,7 +7,7 @@
         <h3 i18n:translate="">Delete group</h3>
         <p>
             <span i18n:translate="">Deleting a group also deletes all permissions associated with that group. Are you sure you want to delete group </span>
-            <span tal:condition="group" ng-non-bindable=""><strong>${group.group_name}</strong></span>
+            <span tal:condition="group"><strong>${group.group_name}</strong></span>
             <span tal:condition="not group"><strong>{{ groupName }}</strong></span>
             ?
         </p>

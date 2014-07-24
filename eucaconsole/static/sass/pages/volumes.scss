@@ -7,15 +7,15 @@
 // Attach status choices (volume.attach_data.status) are: attaching, attached, detaching, detached
 
 // Status colors
-$volume-status-color-attached: $euca-orange;
-$volume-status-color-attaching: lighten($euca-orange, 20%);
-$volume-status-color-detached: darken(skyblue, 10%);
-$volume-status-color-detaching: lighten(skyblue, 10%);
+$volume-status-color-attached: $euca-darkblue;
+$volume-status-color-attaching: lighten($euca-darkblue, 20%);
+$volume-status-color-detached: $euca-olive;
+$volume-status-color-detaching: lighten($euca-olive, 20%);
 $volume-status-color-deleting: lighten($euca-grey, 10%);
 $volume-status-color-deleted: darken($euca-grey, 10%);
 $volume-status-color-error: darkred;
-$volume-status-color-creating: lighten($euca-lightgreen, 20%);
-$volume-status-color-available: $euca-green;
+$volume-status-color-creating: lighten($euca-olive, 20%);
+$volume-status-color-available: $euca-olive;
 
 
 // Volume status
@@ -28,8 +28,8 @@ $volume-status-color-available: $euca-green;
 // Volume attach_data status styles
 .status.attaching { background-color: $volume-status-color-attaching; }
 .status.attached { background-color: $volume-status-color-attached; }
-.status.detached { background-color: $volume-status-color-detached; }
-.status.detaching { background-color: $volume-status-color-detaching; }
+.status.detached { background-color: $volume-status-color-detached;  }
+.status.detaching { background-color: $volume-status-color-detaching;  }
 
 
 .table td.instance {

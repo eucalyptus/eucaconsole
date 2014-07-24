@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
@@ -10,14 +10,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${scaling_group.name}</a></li>
+                <li class="current"><a href="#">${scaling_group_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for scaling group:</strong>
-            <em ng-non-bindable="">${scaling_group.name}</em>
+            <em>${scaling_group_name}</em>
         </h3>
         <div class="large-7 columns">
             <dl class="tabs" id="scalinggroup-subnav">
@@ -35,7 +35,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form action="${request.route_path('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
+                <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
                                   term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text};">
@@ -62,7 +62,7 @@
                             <label class="right" i18n:translate="">Load balancers</label>
                         </div>
                         <div class="small-8 columns">
-                            <div tal:repeat="elb scaling_group.load_balancers" class="value">
+                            <div tal:repeat="elb scaling_group.load_balancers" class="value" ng-non-bindable="">
                                 ${elb}<br/>
                             </div>
                         </div>

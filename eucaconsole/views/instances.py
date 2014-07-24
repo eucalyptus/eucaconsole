@@ -30,13 +30,13 @@ Pyramid views for Eucalyptus and AWS instances
 """
 import base64
 from operator import attrgetter
+import os
 import simplejson as json
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.images import ImagesFiltersForm
@@ -47,11 +47,13 @@ from ..forms.instances import (
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
 from ..forms.securitygroups import SecurityGroupForm
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
+from . import guess_mimetype_from_buffer
 
 
 class BaseInstanceView(BaseView):
@@ -104,6 +106,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
         self.prefix = '/instances'
         self.json_items_endpoint = self.get_json_endpoint('instances_json')
         self.location = self.get_redirect_location('instances')
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.start_form = StartInstanceForm(self.request, formdata=self.request.params or None)
         self.stop_form = StopInstanceForm(self.request, formdata=self.request.params or None)
         self.reboot_form = RebootInstanceForm(self.request, formdata=self.request.params or None)
@@ -128,7 +131,7 @@ class InstancesView(LandingPageView, BaseInstanceView):
     def instances_landing(self):
         filter_keys = [
             'id', 'name', 'image_id', 'instance_type', 'ip_address', 'key_name', 'placement',
-            'root_device', 'security_groups_string', 'state', 'tags']
+            'root_device', 'security_groups_string', 'state', 'tags', 'roles']
         # filter_keys are passed to client-side filtering in search box
         self.filter_keys = filter_keys
         # sort_keys are passed to sorting drop-down
@@ -142,8 +145,10 @@ class InstancesView(LandingPageView, BaseInstanceView):
             dict(key='key_name', name=_(u'Key pair')),
         ]
         autoscale_conn = self.get_connection(conn_type='autoscale')
+        iam_conn = self.get_connection(conn_type='iam')
         filters_form = InstancesFiltersForm(
             self.request, ec2_conn=self.conn, autoscale_conn=autoscale_conn,
+            iam_conn=iam_conn,
             cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.render_dict.update(dict(
             filter_fields=True,
@@ -212,7 +217,16 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if self.terminate_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instance {0}").format(instance_id))
+                instances = self.conn.get_only_instances([instance_id])
                 self.conn.terminate_instances([instance_id])
+                if len(instances) > 0:
+                    instance = instances[0]
+                    profile = instance.instance_profile
+                    # TODO: check tags to see if this was part of scaling group before removing profile
+                    if instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
+                        arn = profile['arn']
+                        profile_name = arn[(arn.index('/')+1):]
+                        self.iam_conn.delete_instance_profile(profile_name)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 if self.request.is_xhr:
@@ -230,6 +244,14 @@ class InstancesView(LandingPageView, BaseInstanceView):
         if self.batch_terminate_form.validate():
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instances {0}").format(str(instance_ids)))
+                instances = self.conn.get_only_instances(instance_ids)
+                for instance in instances:
+                    profile = instance.instance_profile
+                    # TODO: check tags to see if this was part of scaling group before removing profile
+                    if profile is not None and hasattr(profile, 'arn'):
+                        arn = profile['arn']
+                        profile_name = arn[(arn.index('/')+1):]
+                        self.iam_conn.delete_instance_profile(profile_name)
                 self.conn.terminate_instances(instance_ids=instance_ids)
                 prefix = _(u'Successfully sent request to terminate the following instances:')
                 msg = '{0} {1}'.format(prefix, ', '.join(instance_ids))
@@ -292,10 +314,12 @@ class InstancesJsonView(LandingPageView):
         # Don't filter by these request params in Python, as they're included in the "filters" params sent to the CLC
         # Note: the choices are from attributes in InstancesFiltersForm
         ignore_params = [
-            'availability_zone', 'instance_type', 'state', 'security_group', 'scaling_group', 'root_device_type']
+            'availability_zone', 'instance_type', 'state', 'security_group', 'scaling_group', 'root_device_type', 'roles']
         filtered_items = self.filter_items(self.get_items(filters=filters), ignore=ignore_params)
         if self.request.params.get('scaling_group'):
             filtered_items = self.filter_by_scaling_group(filtered_items)
+        if self.request.params.get('roles'):
+            filtered_items = self.filter_by_roles(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
         for instance in filtered_items:
@@ -345,6 +369,18 @@ class InstancesJsonView(LandingPageView):
                         filtered_items.append(item)
         return filtered_items
 
+    def filter_by_roles(self, items):
+        iam_conn = self.get_connection(conn_type="iam")
+        filtered_items = []
+        profiles = []
+        for role in self.request.params.getall('roles'):
+            for profile in iam_conn.list_instance_profiles(path_prefix='/'+role).list_instance_profiles_response.list_instance_profiles_result.instance_profiles:
+                profiles.append(profile.instance_profile_id)
+        for item in items:
+            if len(item.instance_profile) > 0 and item.instance_profile['id'] in profiles:
+                filtered_items.append(item)
+        return filtered_items
+
 
 class InstanceJsonView(BaseInstanceView):
     def __init__(self, request):
@@ -373,6 +409,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         super(InstanceView, self).__init__(request)
         self.request = request
         self.conn = self.get_connection()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.image = self.get_image(self.instance)
         self.scaling_group = self.get_scaling_group()
@@ -389,6 +426,13 @@ class InstanceView(TaggedItemView, BaseInstanceView):
         self.location = self.get_redirect_location()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.has_elastic_ip = self.check_has_elastic_ip(self.instance.ip_address) if self.instance else False
+        self.role = None
+        if self.instance and self.instance.instance_profile:
+            arn = self.instance.instance_profile['arn']
+            profile_name = arn[(arn.rindex('/')+1):]
+            inst_profile = self.iam_conn.get_instance_profile(profile_name)
+            self.role = inst_profile.roles.member.role_name
+
         self.render_dict = dict(
             instance=self.instance,
             instance_name=self.instance_name,
@@ -403,6 +447,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             associate_ip_form=self.associate_ip_form,
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
+            role = self.role,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
@@ -426,14 +471,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 # Update stopped instance
                 if self.instance.state == 'stopped':
                     instance_type = self.request.params.get('instance_type')
-                    user_data = self.request.params.get('userdata')
                     kernel = self.request.params.get('kernel')
                     ramdisk = self.request.params.get('ramdisk')
                     self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(
                         self.instance.id, instance_type, kernel, ramdisk))
                     if self.instance.instance_type != instance_type:
                         self.conn.modify_instance_attribute(self.instance.id, 'instanceType', instance_type)
-                    if len(user_data) > 0:
+                    user_data = self.get_user_data()
+                    if user_data is not None:
                         self.conn.modify_instance_attribute(self.instance.id, 'userData', base64.b64encode(user_data))
                     if kernel != '' and self.instance.kernel != kernel:
                         self.conn.modify_instance_attribute(self.instance.id, 'kernel', kernel)
@@ -496,6 +541,12 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Terminating instance {0}").format(self.instance.id))
                 self.instance.terminate()
+                profile = self.instance.instance_profile
+                # TODO: check tags to see if this was part of scaling group before removing profile
+                if self.instance.state == 'running' and profile is not None and hasattr(profile, 'arn'):
+                    arn = profile['arn']
+                    profile_name = arn[(arn.index('/')+1):]
+                    self.iam_conn.delete_instance_profile(profile_name)
                 msg = _(
                     u'Successfully sent terminate instance request.  It may take a moment to shut down the instance.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
@@ -589,6 +640,26 @@ class InstanceStateView(BaseInstanceView):
     def instance_state_json(self):
         """Return current instance state"""
         return dict(results=self.instance.state)
+
+    @view_config(route_name='instance_userdata_json', renderer='json', request_method='GET')
+    def instance_userdata_json(self):
+        """Return current instance state"""
+        with boto_error_handler(self.request):
+            user_data = self.conn.get_instance_attribute(self.instance.id, 'userData')
+            if 'userData' in user_data.keys():
+                user_data = user_data['userData']
+                unencoded = base64.b64decode(user_data)
+                mime_type = guess_mimetype_from_buffer(unencoded, mime=True)
+                if mime_type.find('text') == 0:
+                    user_data=unencoded
+                else:
+                    # get more descriptive text
+                    mime_type = guess_mimetype_from_buffer(unencoded)
+                    user_data=None
+            else:
+                user_data = ''
+                mime_type = ''
+            return dict(results=dict(type=mime_type, data=user_data))
 
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):
@@ -734,9 +805,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.image = self.get_image()
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
-            conn=self.conn, formdata=self.request.params or None)
+            conn=self.conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
@@ -748,6 +820,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
         self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
+        self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
         self.render_dict = dict(
             image=self.image,
             launch_form=self.launch_form,
@@ -763,6 +836,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             security_group_names=[name for name, label in self.launch_form.securitygroup.choices],
+            role_choices_json=self.role_choices_json,
         )
 
     @view_config(route_name='instance_create', renderer=TEMPLATE, request_method='GET')
@@ -776,11 +850,15 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         if self.launch_form.validate():
             tags_json = self.request.params.get('tags')
             image_id = self.image.id
+            num_instances = int(self.request.params.get('number', 1))
             key_name = self.request.params.get('keypair')
             if key_name and key_name == 'none':
                 key_name = None  # Handle "None (advanced)" option
-            num_instances = int(self.request.params.get('number', 1))
+            if key_name:
+                key_name = self.unescape_braces(key_name)
             securitygroup = self.request.params.get('securitygroup', 'default')
+            if securitygroup:
+                securitygroup = self.unescape_braces(securitygroup)
             security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
@@ -791,8 +869,14 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             addressing_type = 'private' if private_addressing else 'public'
             bdmapping_json = self.request.params.get('block_device_mapping')
             block_device_map = self.get_block_device_map(bdmapping_json)
+            role = self.request.params.get('role')
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
+                instance_profile = None
+                if role != '':  # need to set up instance profile, add role and supply to run_instances
+                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').strip('=\/\n'))
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
+                    self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
@@ -809,6 +893,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
                     security_group_ids=security_groups,
+                    instance_profile_arn=instance_profile.arn if instance_profile else None
                 )
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
@@ -826,6 +911,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                 msg += ', '.join(new_instance_ids)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=self.location)
+        else:
+            self.request.error_messages = self.launch_form.get_errors_list()
         return self.render_dict
 
     def get_security_groups(self):
@@ -856,6 +943,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
     def __init__(self, request):
         super(InstanceLaunchMoreView, self).__init__(request)
         self.request = request
+        self.iam_conn = self.get_connection(conn_type="iam")
         self.instance = self.get_instance()
         self.instance_name = TaggedItemView.get_display_name(self.instance)
         self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
@@ -863,12 +951,19 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         self.launch_more_form = LaunchMoreInstancesForm(
             self.request, image=self.image, instance=self.instance,
             conn=self.conn, formdata=self.request.params or None)
+        self.role = None
+        if self.instance.instance_profile:
+            arn = self.instance.instance_profile['arn']
+            profile_name = arn[(arn.index('/')+1):]
+            inst_profile = self.iam_conn.get_instance_profile(profile_name)
+            self.role = inst_profile.roles.member.role_name
         self.render_dict = dict(
             image=self.image,
             instance=self.instance,
             instance_name=self.instance_name,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
+            role=self.role,
         )
 
     @view_config(route_name='instance_more', renderer=TEMPLATE, request_method='GET')
@@ -895,6 +990,11 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             block_device_map = self.get_block_device_map(bdmapping_json)
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
+                instance_profile = None
+                if self.role != None:  # need to set up instance profile, add role and supply to run_instances
+                    profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=/\n'))
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
+                    self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
                 reservation = self.conn.run_instances(
@@ -911,6 +1011,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
                     security_group_ids=security_groups,
+                    instance_profile_arn=instance_profile.arn if instance_profile else None
                 )
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)

@@ -1,6 +1,6 @@
 
 <!--! Tag editor for Scaling Groups -->
-<div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor"
+<div id="tag-editor" class="row controls-wrapper autoscale" ng-app="AutoScaleTagEditor" i18n:domain="eucaconsole"
      ng-controller="AutoScaleTagEditorCtrl" ng-init="initTags('${tags_json}')">
     <div class="columns"><h6 i18n:translate="">Tags</h6></div>
     <div class="columns field">
@@ -46,6 +46,15 @@
         </div>
         <!--! Add class="debug" to textarea to view tags data posted by form -->
         <textarea id="tags" name="tags" class="hidden"></textarea>
+    </div>
+    <div id="unsaved-tag-warn-modal" class="reveal-modal small" data-reveal="">
+        <h3></h3>
+        <p>
+            <span i18n:translate="">
+                You must click the "Add Tag" button before you submit this for your tag to be included.
+            </span>
+        </p>
+        <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/autoscale_tag_editor.js')}"></script>
 </div>

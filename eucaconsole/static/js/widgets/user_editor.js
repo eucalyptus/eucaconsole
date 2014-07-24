@@ -31,68 +31,66 @@ angular.module('UserEditor', [])
             $event.preventDefault();
             $scope.usersArray.splice(index, 1);
             $scope.syncUsers();
+            if( $scope.usersArray.length == 0 ){
+                $scope.$emit('emptyUsersArray');
+            }
         };
         $scope.keyListener = function ($event) {
             if ($event.keyCode == 13) {
                 $scope.addUser($event)
-            }else{
-                $scope.isDisabled = true;
             }
         };
         $scope.validateUsername = function ($event) {
-           // Timeout is needed to react to the added 'error' class by Foundation's live validation
-           $timeout(function(){ 
-                if( $('#user-name-field-div').hasClass("error") || $scope.newUserName === '' || $scope.newUserName === undefined ){
-                    $scope.isDisabled = true;
-                }else{
-                    $scope.isDisabled = false;
-                }
-            }, 1000);
+           if( $scope.newUserName.match(/^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$/) ){
+               $scope.isDisabled = false;
+           }else {
+               $scope.isDisabled = true;
+           }
         }
         $scope.addUser = function ($event) {
             $event.preventDefault();
-            if( $('#user-name-field-div').hasClass("error") ){
-                $scope.isDisabled = true;
+            $scope.validateUsername();
+            if( $scope.isDisabled ){
                 return false;
             }
             var userEntry = $($event.currentTarget).closest('.userentry'),
                 userNameField = userEntry.find('.name'),
-                //userEmailField = userEntry.find('.email'),
                 usersArrayLength = $scope.usersArray.length,
                 existingUserFound = false,
                 form = $($event.currentTarget).closest('form'),
                 invalidFields = form.find('[data-invalid]');
-            if (userNameField.val()) {// && userEmailField.val()) {
+            if (userNameField.val()) {
                 // Trigger validation to avoid users that start with 'aws:'
                 form.trigger('validate');
                 if (invalidFields.length) {
                     invalidFields.focus();
+                    $scope.isDisabled = true;
                     return false;
                 }
                 // Avoid adding a new user if the name duplicates an existing one.
                 for (var i=0; i < usersArrayLength; i++) {
-                    if ($scope.usersArray[i].name === userNameField.val()) {
+                    if ($scope.usersArray[i].name === $scope.newUserName) {
                         existingUserFound = true;
                         break;
                     }
                 }
                 if (existingUserFound) {
                     userNameField.focus();
+                    $scope.isDisabled = true;
                 } else {
                     $scope.usersArray.push({
-                        'name': userNameField.val(),
-                        //'email': userEmailField.val(),
+                        'name': $scope.newUserName,
                         'fresh': 'new'
                     });
                     $scope.syncUsers();
-                    $scope.isDisabled = true;
                     $scope.newUserName = '';
                     userNameField.val('').focus();
-                    //userEmailField.val('');
+                    $scope.isDisabled = true;
+                    $scope.$emit('userAdded');
                 }
             } else {
-                //userNameField.val() ? userEmailField.focus() : userNameField.focus();
                 userNameField.focus();
+                $scope.isDisabled = true;
             }
         };
     })

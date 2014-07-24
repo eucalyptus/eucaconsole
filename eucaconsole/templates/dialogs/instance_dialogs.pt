@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Instances landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="change-state-dialogs">
         <div id="reboot-instance-modal" class="reveal-modal small" data-reveal=""
              tal:define="landingpage_action request.route_path('instances_reboot') + layout.querystring;
@@ -9,7 +9,7 @@
             <p i18n:translate="">Rebooting preserves the root file system of your instance across restarts.</p>
             <p>
                 <span i18n:translate="">Are you sure you want to reboot</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="reboot-form">
@@ -33,7 +33,7 @@
             <h3 i18n:translate="">Start instance</h3>
             <p>
                 <span i18n:translate="">Are you sure you want to start</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="start-form">
@@ -57,7 +57,7 @@
             <h3 i18n:translate="">Stop instance</h3>
             <p>
                 <span i18n:translate="">Are you sure you want to stop</span>
-                <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                <strong tal:condition="not landingpage">${instance_name}</strong>
                 <strong tal:condition="landingpage">{{ instanceName }}</strong>?
             </p>
             <form method="post" action="${action}" id="stop-form">
@@ -89,7 +89,7 @@
             <div>
                 <p>
                     <span i18n:translate="">Are you sure you want to terminate</span>
-                    <strong ng-non-bindable="" tal:condition="not landingpage">${instance_name}</strong>
+                    <strong tal:condition="not landingpage">${instance_name}</strong>
                     <strong tal:condition="landingpage">{{ instanceName }}</strong>?
                 </p>
             </div>
@@ -110,7 +110,7 @@
         <div id="console-output-modal" class="reveal-modal medium" data-reveal="">
             <h3 class="pagetitle">
                 <strong i18n:translate="">Console output for instance:</strong>
-                <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+                <em tal:condition="not landingpage">${instance_name}</em>
                 <em tal:condition="landingpage">{{ instanceName }}</em>
             </h3>
             <textarea id="instance-console-output" class="console-output" ng-model="consoleOutput"></textarea>
@@ -119,7 +119,7 @@
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
         <h3 class="pagetitle">
             <strong i18n:translate="">Connect to instance:</strong>
-            <em ng-non-bindable="" tal:condition="not landingpage">${instance_name}</em>
+            <em tal:condition="not landingpage">${instance_name}</em>
             <em tal:condition="landingpage">{{ instanceName }}</em>
         </h3>
             <div ng-show="!(platform == 'windows')">
@@ -127,9 +127,14 @@
                 <ol>
                     <li i18n:translate="">Open an SSH terminal window.</li>
                     <li i18n:translate="">Change your directory to the one where you stored your key file "{{ keyName }}.pem"</li>
-                    <li i18n:translate="">Run the following command to set the correct permissions for your key file:<br/>
-                        <strong>chmod 400 {{ keyName }}.pem</strong></li>
-                    <li i18n:translate="">Connect to your instance via its public IP address by running the following command: <br/><strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong></li>
+                    <li>
+                        <span i18n:translate="">Run the following command to set the correct permissions for your key file:</span><br/>
+                        <strong>chmod 400 {{ keyName }}.pem</strong>
+                    </li>
+                    <li>
+                        <span i18n:translate="">Connect to your instance via its public IP address by running the following command:</span><br/>
+                        <strong>ssh -i {{ keyName }}.pem root@{{ publicDNS }}</strong>
+                    </li>
                 </ol>
             </div>
             <div ng-show="platform == 'windows'">
@@ -158,8 +163,16 @@
                          html_attrs {'data-placeholder': 'select IP...'};
                          ip_addresses_available len(associate_ip_form.ip_address.choices);">
             <h3 i18n:translate="">Associate elastic IP address with instance</h3>
-            <p i18n:translate="" tal:condition="instance">Associate <b ng-non-bindable=''>${ instance_name }</b> with an elastic IP address.</p>
-            <p i18n:translate="" tal:condition="not instance">Associate <b>{{ instanceName }}</b> with an elastic IP address.</p>
+            <p tal:condition="instance">
+                <span i18n:translate="">Associate</span>
+                <b>${ instance_name }</b>
+                <span i18n:translate="">with an elastic IP address.</span>
+            </p>
+            <p tal:condition="not instance">
+                <span i18n:translate="">Associate</span>
+                <b>{{ instanceName }}</b>
+                <span i18n:translate="">with an elastic IP address.</span>
+            </p>
             <form method="post" action="${action}" id="associate-ip-to-instance-form" data-abide="abide"
                   tal:condition="ip_addresses_available">
                 ${structure:associate_ip_form['csrf_token']}
@@ -167,15 +180,21 @@
                     <input type="hidden" name="instance_id" value="{{ instanceID }}" />
                 </div>
                 ${panel('form_field', field=associate_ip_form.ip_address, **html_attrs)}
+                <div>
+                    <label>
+                        <span class="req">*</span>
+                        <span i18n:translate="">Required fields</span>
+                    </label>
+                </div>
                 <div class="dialog-submit-button">
                     <button type="submit" id="associate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Associate Address with Instance</button>
                 </div>
                 <div class="dialog-progress-display hide">
-                    <span i18n:translate="">Sending request </span>&nbsp;<em><span class="dots">&nbsp;</span></em>
+                    <span i18n:translate="">Sending request</span>&nbsp;&nbsp;<em><span class="dots">&nbsp;</span></em>
                 </div>
             </form>
             <div tal:condition="not ip_addresses_available">
-                <div i18n:translate="">
+                <div>
                     <strong i18n:translate="">Note:</strong>
                     <span i18n:translate="">There are no elastic IP addresses available.</span>
                     <span i18n:translate="">To associate an instance with an IP address, you will need to</span>
@@ -201,12 +220,12 @@
                     <span i18n:translate=""> 
                         Are you sure you want to dissassociate 
                     </span>
-                    <span tal:condition="instance"><b ng-non-bindable="">${instance.ip_address}</b></span>
+                    <span tal:condition="instance"><b>${instance.ip_address}</b></span>
                     <span tal:condition="not instance"><b>{{ ipAddress }}</b></span> 
                     <span i18n:translate=""> 
                     from instance
                     </span>
-                    <span tal:condition="instance"><b ng-non-bindable="">${instance.id}</b> ?</span>
+                    <span tal:condition="instance"><b>${instance.id}</b> ?</span>
                     <span tal:condition="not instance"><b>{{ instanceName }}</b> ?</span>
                 </p>
             </div>
@@ -216,7 +235,7 @@
                     <input type="hidden" name="ip_address" value="{{ ipAddress }}" />
                 </div>
                 <div tal:condition="not landingpage" tal:omit-tag="">
-                    <input type="hidden" name="ip_address" value="${instance.ip_address}" ng-non-bindable=""/>
+                    <input type="hidden" name="ip_address" value="${instance.ip_address}" />
                 </div>
                 <div class="dialog-submit-button">
                     <button type="submit" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Yes, Disassociate Address from Instance</button>

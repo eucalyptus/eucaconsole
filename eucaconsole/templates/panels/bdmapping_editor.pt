@@ -1,8 +1,7 @@
 <!--! Block Device Mapping editor -->
-<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor"
+<div id="bdmapping-editor" class="row controls-wrapper" ng-app="BlockDeviceMappingEditor" i18n:domain="eucaconsole"
      ng-controller="BlockDeviceMappingEditorCtrl" ng-init="initBlockDeviceMappingEditor('${bdm_json}')">
     <div class="columns" ng-show="bdMapping">
-        <hr />
         <h6 i18n:translate="" class="storage-label">Storage</h6>
         <table class="table">
             <thead>
@@ -16,7 +15,7 @@
                     </th>
                     <th class="delete-on-terminate">
                         <span i18n:translate="" class="hide-for-small">Delete on Terminate</span>
-                        <span i18n:translate="" class="show-for-small"
+                        <span class="show-for-small"
                               title="Delete on terminate" i18n:attributes="title"><i class="fi-trash"></i></span>
                     </th>
                     <th tal:condition="not read_only">&nbsp;</th>
@@ -73,7 +72,7 @@
             <div class="medium-4 columns" ng-show="newVolumeType !== 'ephemeral'">
                 <label i18n:translate="">Create from snapshot:</label>
                 <select name="snapshot_id" ng-model="newSnapshotID">
-                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}" ng-non-bindable="">${choice[1]}</option>
+                    <option tal:repeat="choice snapshot_choices" value="${choice[0]}">${choice[1]}</option>
                 </select>
             </div>
             <div class="medium-1 columns" ng-show="newVolumeType !== 'ephemeral'">

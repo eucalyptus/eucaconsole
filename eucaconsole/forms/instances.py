@@ -31,9 +31,8 @@ Forms for Instances
 import wtforms
 from wtforms import validators
 
-from pyramid.i18n import TranslationString as _
-
-from . import BaseSecureForm, ChoicesManager
+from ..i18n import _
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class InstanceForm(BaseSecureForm):
@@ -42,10 +41,12 @@ class InstanceForm(BaseSecureForm):
        Note: no need to add a 'tags' field.  Use the tag_editor panel (in a template) instead
     """
     name_error_msg = _(u'Not a valid name')
-    name = wtforms.TextField(label=_(u'Name'))
+    name = TextEscapedField(label=_(u'Name'))
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label='')
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
     kernel = wtforms.SelectField(label=_(u'Kernel ID'))
@@ -61,6 +62,7 @@ class InstanceForm(BaseSecureForm):
         self.instance_type.error_msg = self.instance_type_error_msg
         self.choices_manager = ChoicesManager(conn=self.conn)
         self.set_choices()
+        self.userdata_file.help_text = self.userdata_file_helptext
 
         if instance is not None:
             self.name.data = instance.tags.get('Name', '')
@@ -109,17 +111,19 @@ class LaunchInstanceForm(BaseSecureForm):
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
-    userdata_file = wtforms.FileField(label=_(u''))
+    userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
         self.cloud_type = request.session.get('cloud_type', 'euca')
@@ -128,6 +132,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.choices_manager = ChoicesManager(conn=conn)
         self.set_help_text()
         self.set_choices(request)
+        self.role.data = ''
 
         if image is not None:
             self.image_id.data = self.image.id
@@ -143,7 +148,9 @@ class LaunchInstanceForm(BaseSecureForm):
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
         self.keypair.choices = self.get_keypair_choices()
-        self.securitygroup.choices = self.choices_manager.security_groups(securitygroups=self.securitygroups, add_blank=False)
+        self.securitygroup.choices = self.choices_manager.security_groups(
+            securitygroups=self.securitygroups, add_blank=False)
+        self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
 
@@ -182,7 +189,7 @@ class LaunchMoreInstancesForm(BaseSecureForm):
     )
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
-    userdata_file = wtforms.FileField(label=_(u''))
+    userdata_file = wtforms.FileField(label='')
     kernel_id = wtforms.SelectField(label=_(u'Kernel ID'))
     ramdisk_id = wtforms.SelectField(label=_(u'RAM disk ID (RAMFS)'))
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable detailed monitoring'))
@@ -310,15 +317,15 @@ class InstancesFiltersForm(BaseSecureForm):
     security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
     tags = wtforms.TextField(label=_(u'Tags'))
+    roles = wtforms.SelectMultipleField(label=_(u'Roles'))
 
-    def __init__(self, request, ec2_conn=None, autoscale_conn=None, cloud_type='euca', **kwargs):
+    def __init__(self, request, ec2_conn=None, autoscale_conn=None, iam_conn=None, cloud_type='euca', **kwargs):
         super(InstancesFiltersForm, self).__init__(request, **kwargs)
         self.request = request
-        self.ec2_conn = ec2_conn
-        self.autoscale_conn = autoscale_conn
         self.cloud_type = cloud_type
         self.ec2_choices_manager = ChoicesManager(conn=ec2_conn)
         self.autoscale_choices_manager = ChoicesManager(conn=autoscale_conn)
+        self.iam_choices_manager = ChoicesManager(conn=iam_conn)
         region = request.session.get('region')
         self.availability_zone.choices = self.get_availability_zone_choices(region)
         self.state.choices = self.get_status_choices()
@@ -326,6 +333,7 @@ class InstancesFiltersForm(BaseSecureForm):
         self.root_device_type.choices = self.get_root_device_type_choices()
         self.security_group.choices = self.ec2_choices_manager.security_groups(add_blank=False)
         self.scaling_group.choices = self.autoscale_choices_manager.scaling_groups(add_blank=False)
+        self.roles.choices = self.iam_choices_manager.roles(add_blank=False)
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)

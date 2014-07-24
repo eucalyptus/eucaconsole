@@ -31,27 +31,38 @@ Core views
 import logging
 import simplejson as json
 import textwrap
+import threading
 
 from cgi import FieldStorage
 from contextlib import contextmanager
 from dateutil import tz
+from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
+import magic
 
 from beaker.cache import cache_managers
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
-from pyramid.i18n import TranslationString as _
+from pyramid.i18n import TranslationString
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
+from ..i18n import _
 from ..models import Notification
 from ..models.auth import ConnectionManager
+
+
+def escape_braces(event):
+    """Escape double curly braces in template variables to prevent AngularJS expression injections"""
+    for k, v in event.rendering_val.items():
+        if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
+            event.rendering_val[k] = BaseView.escape_braces(v)
 
 
 class JSONResponse(Response):
@@ -116,6 +127,9 @@ class BaseView(object):
             elif conn_type == 'sts':
                 host = self.request.registry.settings.get('sts.host', host)
                 port = int(self.request.registry.settings.get('sts.port', port))
+            elif conn_type == 's3':
+                host = self.request.registry.settings.get('s3.host', host)
+                port = int(self.request.registry.settings.get('s3.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -132,6 +146,29 @@ class BaseView(object):
     def _has_file_(self):
         session = self.request.session
         return 'file_cache' in session
+
+    def get_user_data(self):
+        input_type = self.request.params.get('inputtype')
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
+        if input_type == 'file':
+            userdata = userdata_file
+        elif input_type == 'text':
+            userdata = userdata_input
+        else:
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
+    @staticmethod
+    def escape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
+            return s.replace('{{', '{ {').replace('}}', '} }')
+
+    @staticmethod
+    def unescape_braces(s):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
+            return s.replace('{ {', '{{').replace('} }', '}}')
 
     @staticmethod
     def sanitize_url(url):
@@ -172,6 +209,8 @@ class BaseView(object):
             logging.info(log_message)
         elif level == 'error':
             logging.error(log_message)
+        # Very useful to use this when an error is logged and you need more details
+        #import traceback; traceback.print_exc()
 
     def log_request(self, message):
         self.log_message(self.request, message)
@@ -234,9 +273,9 @@ class TaggedItemView(BaseView):
             tags_dict = json.loads(tags_json) if tags_json else {}
             tags = {}
             for key, value in tags_dict.items():
-                key = key.strip()
+                key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
-                    tags[key] = value.strip()
+                    tags[key] = self.unescape_braces(value.strip())
             self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
@@ -258,10 +297,11 @@ class TaggedItemView(BaseView):
             if value != self.tagged_obj.tags.get('Name'):
                 self.tagged_obj.remove_tag('Name')
                 if value and not value.startswith('aws:'):
-                    self.tagged_obj.add_tag('Name', value)
+                    tag_value = self.unescape_braces(value)
+                    self.tagged_obj.add_tag('Name', tag_value)
 
     @staticmethod
-    def get_display_name(resource):
+    def get_display_name(resource, escapebraces=True):
         name = ''
         if resource:
             name_tag = resource.tags.get('Name', '')
@@ -269,6 +309,8 @@ class TaggedItemView(BaseView):
                 name_tag if name_tag else resource.id,
                 ' ({0})'.format(resource.id) if name_tag else ''
             )
+        if escapebraces:
+            name = BaseView.escape_braces(name)
         return name
 
     @staticmethod
@@ -328,13 +370,6 @@ class BlockDeviceMappingItemView(BaseView):
             )
             choices.append((value, label))
         return sorted(choices)
-
-    def get_user_data(self):
-        userdata_input = self.request.params.get('userdata')
-        userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
-        userdata = userdata_file or userdata_input or None  # Look up file upload first
-        return userdata
 
     @staticmethod
     def get_block_device_map(bdmapping_json=None):
@@ -485,3 +520,16 @@ def file_download(request):
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
+_magic_type = magic.Magic(mime=True)
+_magic_type._thread_check = lambda: None
+_magic_desc = magic.Magic(mime=False)
+_magic_desc._thread_check = lambda: None
+_magic_lock = threading.Lock()
+
+def guess_mimetype_from_buffer(buffer, mime=False):
+    with _magic_lock:
+        if mime:
+            return _magic_type.from_buffer(buffer)
+        else:
+            return _magic_desc.from_buffer(buffer)
+        

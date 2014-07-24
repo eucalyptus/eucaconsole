@@ -35,13 +35,13 @@ from boto.exception import BotoServerError
 from boto.ec2.snapshot import Snapshot
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms import ChoicesManager
 from ..forms.volumes import (
     VolumeForm, DeleteVolumeForm, CreateSnapshotForm, DeleteSnapshotForm,
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView
 from . import boto_error_handler

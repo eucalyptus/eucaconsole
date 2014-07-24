@@ -1,5 +1,5 @@
 <!--! Modal dialogs for Snapshots on landing and detail page -->
-<div tal:omit-tag="">
+<div tal:omit-tag="" i18n:domain="eucaconsole">
     <div id="delete-snapshot-modal" class="reveal-modal small" data-reveal=""
          tal:define="landingpage_action request.route_path('snapshots_delete') + layout.querystring;
                      detailpage_action request.route_path('snapshot_delete', id=snapshot.id) if snapshot else '';
@@ -9,7 +9,7 @@
             This snapshot has been registered as an image. Deleting this snapshot will also de-register the image.
         </p>
         <p><span i18n:translate="">Are you sure you want to delete snapshot</span>
-           <span tal:condition="snapshot"><b ng-non-bindable="">${snapshot_name}</b></span>
+           <span tal:condition="snapshot"><b>${snapshot_name}</b></span>
            <span tal:condition="not snapshot"><b>{{ snapshotName }}</b></span>
            <span ng-show="images" i18n:translate="">and de-register image(s)</span>
            <span ng-repeat="image in images"><b>{{ image.name }} ({{ image.id }})</b><span ng-hide="$last">, </span>
@@ -49,6 +49,12 @@
             ${panel('form_field', field=register_form['description'])}
             ${panel('form_field', reverse='true', field=register_form['dot'], **dot_html_attrs)}
             ${panel('form_field', reverse='true', field=register_form['reg_as_windows'])}
+            <div>
+                <label>
+                    <span class="req">*</span>
+                    <span i18n:translate="">Required fields</span>
+                </label>
+            </div>
             <div class="dialog-submit-button">
                 <button type="submit" id="register_snapshot_submit_button" class="button expand" i18n:translate="">Register as Image</button>
             </div>

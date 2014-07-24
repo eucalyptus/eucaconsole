@@ -6,13 +6,29 @@
 
 angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
     .controller('SecurityGroupPageCtrl', function ($scope) {
+        $scope.isNotValid = true;
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
+        $scope.securityGroupName = undefined;
+        $scope.securityGroupDescription = undefined;
         $scope.initController = function () {
             $scope.setWatch();
             $scope.setFocus();
         };
+        $scope.checkRequiredInput = function () {
+            if($scope.securityGroupName === undefined || $scope.securityGroupDescription === undefined){
+               $scope.isNotValid = true;
+            } else {
+               $scope.isNotValid = false;
+            }
+        };
         $scope.setWatch = function () {
+            $scope.$watch('securityGroupName', function () {
+                $scope.checkRequiredInput(); 
+            });
+            $scope.$watch('securityGroupDescription', function () {
+                $scope.checkRequiredInput();
+            });
             // Handle the unsaved tag issue
             $(document).on('submit', '#security-group-detail-form', function(event) {
                 $('input.taginput').each(function(){
@@ -33,13 +49,23 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                         existsUnsavedTag = true;
                     }
                 });
+
                 if(existsUnsavedTag){
-                    return "You must click the \"Add\" button before you submit this for your tag to be included.";
+                    event.preventDefault(); 
+                    $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                    return false;
                 }else if($scope.isNotChanged === false){
                     if( $scope.isSubmitted === true ){
                         return;
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
+                }
+
+                // Handle the unsaved security group rule issue
+                if( $('#add-rule-button-div').hasClass('ng-hide') === false ){
+                        event.preventDefault(); 
+                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
+                        return false;
                 }
             });
             $(document).on('submit', '[data-reveal] form', function () {
@@ -55,8 +81,9 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 $scope.isNotChanged = false;
             });
             $(document).on('ready', function(){
-                if( $('.actions-menu').length > 0 ){
-                    $('.actions-menu').find('a').get(0).focus();
+                var firstLink = $('.actions-menu').find('a');
+                if( firstLink.length > 0 ){
+                    firstLink.get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {

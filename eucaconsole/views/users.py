@@ -41,11 +41,11 @@ from urllib import urlencode
 
 from boto.exception import BotoServerError
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.users import (
     UserForm, ChangePasswordForm, GeneratePasswordForm, DeleteUserForm, AddToGroupForm, DisableUserForm, EnableUserForm)
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
@@ -400,7 +400,7 @@ class UserView(BaseView):
                     self.add_quota_limit(
                         statements, 's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
                     self.add_quota_limit(
-                        statements, 's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                        statements, 's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
                     self.add_quota_limit(
                         statements, 's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
                     self.add_quota_limit(
@@ -712,7 +712,7 @@ class UserView(BaseView):
             self.update_quota_limit(policy_list, new_stmts,
                                     's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
             self.update_quota_limit(policy_list, new_stmts,
-                                    's3_objects_per__max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
+                                    's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
             self.update_quota_limit(policy_list, new_stmts,
                                     's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
             self.update_quota_limit(policy_list, new_stmts,

@@ -77,6 +77,15 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
                 }
+            // Handle the unsaved tag issue
+            $(document).on('submit', '#scalinggroup-detail-form', function(event) {
+                $('input.taginput[type!="checkbox"]').each(function(){
+                    if($(this).val() !== ''){
+                        event.preventDefault(); 
+                        $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
+                        return false;
+                    }
+                });
             });
         };
         $scope.setFocus = function () {

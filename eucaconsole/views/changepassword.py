@@ -34,11 +34,11 @@ from urllib2 import HTTPError, URLError
 from urlparse import urlparse
 
 from pyramid.httpexceptions import HTTPFound
-from pyramid.i18n import TranslationString as _
 from pyramid.security import NO_PERMISSION_REQUIRED, remember
 from pyramid.view import view_config
 
 from ..forms.login import EucaChangePasswordForm
+from ..i18n import _
 from ..models import Notification
 from ..views import BaseView
 
@@ -103,9 +103,12 @@ class ChangePasswordView(BaseView):
                     #logging.debug("auth creds = "+str(creds.__dict__))
                     user_account = '{user}@{account}'.format(user=username, account=account)
                     session['cloud_type'] = 'euca'
+                    session['account'] = account
+                    session['username'] = username
                     session['session_token'] = creds.session_token
                     session['access_id'] = creds.access_key
                     session['secret_key'] = creds.secret_key
+                    session['region'] = 'euca'
                     session['username_label'] = user_account
                     headers = remember(self.request, user_account)
                     msg = _(u'Successfully changed password.')

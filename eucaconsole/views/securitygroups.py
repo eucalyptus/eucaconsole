@@ -31,10 +31,10 @@ Pyramid views for Eucalyptus and AWS security groups
 import simplejson as json
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.i18n import TranslationString as _
 from pyramid.view import view_config
 
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
+from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
@@ -159,6 +159,7 @@ class SecurityGroupView(TaggedItemView):
         self.tagged_obj = self.security_group
         self.render_dict = dict(
             security_group=self.security_group,
+            security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
@@ -270,16 +271,15 @@ class SecurityGroupView(TaggedItemView):
             for grant in grants:
                 cidr_ip = grant.get('cidr_ip')
                 group_name = grant.get('name')
-                if group_name:
-                    src_groups = self.conn.get_all_security_groups(filters={'group-name': [group_name]})
-                    if src_groups:
-                        src_group = src_groups[0]
+                owner_id = grant.get('owner_id')
 
-            auth_args = dict(ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-            if src_group:
-                auth_args['src_group'] = src_group
+            auth_args = dict(group_name=security_group.name, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            if group_name:
+                auth_args['src_security_group_name'] = group_name
+            if owner_id:
+                auth_args['src_security_group_owner_id'] = owner_id
 
-            security_group.authorize(**auth_args)
+            self.conn.authorize_security_group(**auth_args)
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update
@@ -302,7 +302,7 @@ class SecurityGroupView(TaggedItemView):
                     params.update(dict(
                         cidr_ip=grant.cidr_ip,
                     ))
-                elif grant.group_id and grant.owner_id:
+                elif grant.group_id:
                     params.update(dict(
                         src_security_group_group_id=grant.group_id,
                         src_security_group_owner_id=grant.owner_id,

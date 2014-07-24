@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchConfigPage" ng-controller="LaunchConfigPageCtrl"
@@ -6,14 +6,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('launchconfigs')}" i18n:translate="">Launch configurations</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${launch_config.name}</a></li>
+                <li class="current"><a href="#">${launch_config_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for launch configuration:</strong>
-            <em ng-non-bindable="">${launch_config.name}</em>
+            <em>${launch_config_name}</em>
         </h3>
         <div class="large-7 columns">
             <div class="panel has-actions">
@@ -21,7 +21,7 @@
                     <metal:actions metal:fill-slot="actions">
                         <li>
                             <a href="${request.route_path('scalinggroup_new')}?launch_config=${escaped_launch_config_name}"
-                               id="create-scalinggroup-action" i18n:translate="" ng-non-bindable="">
+                               id="create-scalinggroup-action" i18n:translate="">
                                 Use to create scaling group
                             </a>
                         </li>
@@ -40,14 +40,18 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Key pair</label></div>
                         <div class="small-9 columns value">
-                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}" ng-non-bindable="">${launch_config.key_name}</a>
+                            <a href="${request.route_path('keypair_view', id=launch_config.key_name)}">
+                                ${launch_config_key_name}
+                            </a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-9 columns value">
                             <div tal:repeat="security_group security_groups">
-                                <a href="${request.route_path('securitygroup_view', id=security_group.id)}" ng-non-bindable="">${security_group.name}</a>
+                                <a href="${request.route_path('securitygroup_view', id=security_group.id)}">
+                                    ${layout.escape_braces(security_group.name)}
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -69,13 +73,13 @@
                     <h6 i18n:translate="">Instance</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-3 columns"><label i18n:translate="">Instance type</label></div>
-                        <div class="small-9 columns value" ng-non-bindable="">${launch_config.instance_type}</div>
+                        <div class="small-9 columns value">${launch_config.instance_type}</div>
                     </div>
                     <div tal:condition="image">
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Image</label></div>
                             <div class="small-9 columns value">
-                                <a href="${request.route_path('image_view', id=image.id)}" ng-non-bindable="">${image.name or image.id}</a>
+                                <a href="${request.route_path('image_view', id=image.id)}">${image.name or image.id}</a>
                             </div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="image.id != image.name">
@@ -88,7 +92,7 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Platform</label></div>
-                            <div class="small-9 columns value" ng-non-bindable="">${image.platform.name}</div>
+                            <div class="small-9 columns value">${image.platform.name}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="launch_config.kernel_id">
                             <div class="small-3 columns"><label i18n:translate="">Kernel ID</label></div>
@@ -100,12 +104,28 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label i18n:translate="">Image manifest</label></div>
-                            <div class="small-9 columns value breakword" ng-non-bindable="">${image.location}</div>
+                            <div class="small-9 columns value breakword">${image.location}</div>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="role">
+                            <div class="small-3 columns"><label i18n:translate="">Role</label></div>
+                            <div class="small-9 columns value">
+                                <a href="/roles/${role}">${role}</a>
+                            </div>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="launch_config.userdata_type">
+                            <div class="small-3 columns">
+                                <label i18n:translate="">User data</label>
+                            </div>
+                            <div class="small-9 columns value">
+                                <textarea diabled="disabled" tal:condition="launch_config.userdata_istext">${launch_config.user_data}</textarea>
+                                <span tal:condition="not launch_config.userdata_istext">${launch_config.userdata_type}</span>
+                            </div>
                         </div>
                     </div>
                     <div tal:condition="not image" style="text-align:center;">
                         <strong style="color:red;" i18n:translate="">Image not found</strong>
                     </div>
+                    <hr/>
                     ${panel('bdmapping_editor', image=image, launch_config=launch_config, read_only=True)}
                 </form>
                 <div>&nbsp;</div>

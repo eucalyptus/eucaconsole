@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/instance.css')}" />
@@ -7,6 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="InstancePage" ng-controller="InstancePageCtrl"
              ng-init="initController('${request.route_path('instance_state_json', id=instance.id)}',
+                                     '${request.route_path('instance_userdata_json', id=instance.id)}',
                                      '${request.route_path('instance_ip_address_json', id=instance.id)}',
                                      '${request.route_path('instance_console_output_json', id=instance.id)}',
                                      '${instance.state}', '${instance.id}', '${instance.ip_address}',
@@ -14,14 +15,14 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('instances')}" i18n:translate="">Instances</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${instance_name}</a></li>
+                <li class="current"><a href="#">${instance_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Details for instance:</strong>
-            <em ng-non-bindable="">${instance_name}</em>
+            <em>${instance_name}</em>
         </h3>
         <div class="large-8 columns">
             <dl class="tabs" id="instance-subnav">
@@ -90,7 +91,7 @@
                     To update any of these attributes, stop the instance first.
                 </p>
                 <form action="${request.route_path('instance_update', id=instance.id)}" id="instance-form"
-                      method="post" data-abide="abide">
+                      method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:instance_form['csrf_token']}
                     ${structure:instance_form['start_later']}
                     <!--! Valid instance states are: "pending", "running", "shutting-down", "terminated", "stopping", "stopped" -->
@@ -103,19 +104,19 @@
                             <span class="dots" ng-show="isUpdating">&nbsp;</span>
                         </div>
                     </div>
-                    <div ng-non-bindable="">
+                    <div>
                         ${panel('form_field', field=instance_form.name, pattern=layout.tag_pattern_value)}
                     </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                            <div class="small-8 columns value">${instance.instance_type}</div>
                         </div>
                     </div>
                     <div tal:condition="image and image.root_device_type == 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly" ng-if="instanceState != 'stopped'">
                             <div class="small-4 columns"><label i18n:translate="">Instance type</label></div>
-                            <div class="small-8 columns value" ng-non-bindable="">${instance.instance_type}</div>
+                            <div class="small-8 columns value">${instance.instance_type}</div>
                         </div>
                         <div ng-if="instanceState == 'stopped'">
                             ${panel('form_field', field=instance_form.instance_type)}
@@ -140,7 +141,7 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Availability zone</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.placement}</div>
+                        <div class="small-8 columns value">${instance.placement}</div>
                     </div>
                     <div class="row controls-wrapper readonly" ng-show="instancePublicIP != null">
                         <div class="small-4 columns"><label i18n:translate="">IP address</label></div>
@@ -160,13 +161,13 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Key name</label></div>
-                        <div class="small-8 columns value" ng-non-bindable="">${instance.key_name}</div>
+                        <div class="small-8 columns value">${instance.key_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Security group</label></div>
                         <div class="small-8 columns value">
-                            <div tal:repeat="group instance.groups">
-                                <a href="/securitygroups/${group.id}" ng-non-bindable="">${group.name}</a>
+                            <div tal:repeat="group instance.groups" ng-non-bindable="">
+                                <a href="/securitygroups/${group.id}">${group.name}</a>
                             </div>
                         </div>
                     </div>
@@ -176,10 +177,16 @@
                             {{ '${instance.launch_time}' | date: '${layout.angular_date_format}' }}
                         </div>
                     </div>
+                    <div class="row controls-wrapper readonly" tal:condition="role">
+                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="small-8 columns value">
+                            <a href="/roles/${role}" ng-non-bindable="">${role}</a>
+                        </div>
+                    </div>
                     <div class="row controls-wrapper readonly" tal:condition="scaling_group">
                         <div class="small-4 columns"><label i18n:translate="">Scaling group</label></div>
                         <div class="small-8 columns value">
-                            <a href="${request.route_path('scalinggroup_view', id=scaling_group)}" ng-non-bindable="">${scaling_group}</a>
+                            <a href="${request.route_path('scalinggroup_view', id=scaling_group)}">${scaling_group}</a>
                         </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.owner_id">
@@ -190,9 +197,11 @@
                         <div class="small-4 columns"><label i18n:translate="">Reservation ID</label></div>
                         <div class="small-8 columns value">${instance.reservation_id}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="instance.instance_profile_id">
-                        <div class="small-4 columns"><label i18n:translate="">Instance profile</label></div>
-                        <div class="small-8 columns value">${instance.instance_profile_id}</div>
+                    <div class="row controls-wrapper readonly" tal:condition="role">
+                        <div class="small-4 columns"><label i18n:translate="">Role</label></div>
+                        <div class="small-8 columns value">
+                            <a href="/roles/${role}">${role}</a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="instance.client_token">
                         <div class="small-4 columns"><label i18n:translate="">Client token</label></div>
@@ -202,7 +211,28 @@
                         <div class="small-4 columns"><label i18n:translate="">Monitoring</label></div>
                         <div class="small-8 columns value">${instance.monitoring_state}</div>
                     </div>
-                    ${panel('form_field', field=instance_form.userdata, ng_attrs={'disabled':'isNotStopped'})}
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns">
+                            <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                        </div>
+                        <div class="small-8 columns value">
+                            <div ng-show="isNotStopped">
+                                <textarea id="userdata" name="userdata" disabled="disabled" ng-show="!isFileUserData"></textarea>
+                                <span id="userdatatype" ng-non-bindable="" ng-show="isFileUserData"></span>
+                            </div>
+                            <div ng-show="!isNotStopped">
+                                <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype">
+                                    <label id='userdatalabel' i18n:translate="">Enter text</label>
+                                </input>
+                                <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
+                                <br/>
+                                <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
+                                    <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                </input>
+                                <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                            </div>
+                        </div>
+                    </div>
                     <hr />
                     <h6 i18n:translate="">Image</h6>
                     <div class="row controls-wrapper readonly">
@@ -213,11 +243,11 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image name</label></div>
-                        <div tal:condition="image" class="small-8 columns value" ng-non-bindable="">${image.name}</div>
+                        <div tal:condition="image" class="small-8 columns value">${image.name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Image manifest</label></div>
-                        <div tal:condition="image" class="small-8 columns value breakword" ng-non-bindable="">${image.location}</div>
+                        <div tal:condition="image" class="small-8 columns value breakword">${image.location}</div>
                     </div>
                     <div tal:condition="image and image.root_device_type != 'ebs'" tal:omit-tag="">
                         <div class="row controls-wrapper readonly">

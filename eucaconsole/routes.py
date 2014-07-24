@@ -47,6 +47,7 @@ urls = [
     # Dashboard #####
     Route(name='dashboard', pattern='/'),
     Route(name='dashboard_json', pattern='/dashboard/json'),
+    Route(name='service_status_json', pattern='/status/json'),
 
     # Login/logout #####
     Route(name='login', pattern='/login'),
@@ -63,6 +64,7 @@ urls = [
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
+    Route(name='image_deregister', pattern='/images/{id}/deregister'),
 
     # Instances #####
     # Landing page
@@ -80,6 +82,7 @@ urls = [
     Route(name='instance_launch', pattern='/instances/launch'),
     Route(name='instance_view', pattern='/instances/{id}'),
     Route(name='instance_json', pattern='/instances/{id}/json'),
+    Route(name='instance_userdata_json', pattern='/instances/{id}/userdata'),
     Route(name='instance_more', pattern='/instances/{id}/more'),
     Route(name='instance_more_launch', pattern='/instances/{id}/more/launch'),
     Route(name='instance_update', pattern='/instances/{id}/update'),
@@ -248,6 +251,19 @@ urls = [
     Route(name='group_policy_json', pattern='/groups/{name}/policies/{policy}'),
     Route(name='group_update_policy', pattern='/groups/{name}/policy/{policy}/save'),
     Route(name='group_delete_policy', pattern='/groups/{name}/policy/{policy}/delete'),
+
+    # Roles #####
+    Route(name='roles', pattern='/roles'),
+    Route(name='roles_json', pattern='/roles/json'),
+    Route(name='roles_delete', pattern='/roles/delete'),
+    Route(name='role_create', pattern='/roles/create'),
+    Route(name='role_view', pattern='/roles/{name}'),
+    Route(name='role_delete', pattern='/roles/{name}/delete'),
+    Route(name='role_policies_json', pattern='/roles/{name}/policies_json'),
+    Route(name='role_policy_json', pattern='/roles/{name}/policies/{policy}'),
+    Route(name='role_update_policy', pattern='/roles/{name}/policy/{policy}/save'),
+    Route(name='role_update_trustpolicy', pattern='/roles/{name}/trustpolicy/save'),
+    Route(name='role_delete_policy', pattern='/roles/{name}/policy/{policy}/delete'),
 
     # IAM Policies/Permissions #####
     Route(name='iam_policy_new', pattern='/policies/new'),

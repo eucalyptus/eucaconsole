@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <style type="text/css">
@@ -15,7 +15,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('securitygroups')}" i18n:translate="">Security groups</a></li>
-                <li class="current"><a href="#" ng-non-bindable="">${security_group.name if security_group else 'Create security group'}</a></li>
+                <li class="current"><a href="#">${security_group_name if security_group else 'Create security group'}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -23,7 +23,7 @@
         <h3 id="pagetitle">
             <metal:block tal:condition="security_group">
                 <strong i18n:translate="">Details for security group:</strong>
-                <em ng-non-bindable="">${security_group.name}</em>
+                <em>${security_group_name}</em>
             </metal:block>
             <metal:block tal:condition="not security_group">
                 <strong i18n:translate="">Create new security group</strong>
@@ -49,29 +49,35 @@
                     ${structure:securitygroup_form['csrf_token']}
                     <h6 i18n:translate="">Security group</h6>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['name'], leftcol_width=3, rightcol_width=9, autofocus='')}
+                        ${panel('form_field', field=securitygroup_form['name'], ng_attrs={'model': 'securityGroupName'}, leftcol_width=3, rightcol_width=9, autofocus='')}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-9 columns field inline breakword" ng-non-bindable="">${security_group.name}</div>
+                        <div class="small-9 columns field inline breakword">${security_group_name}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['description'], leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'securityGroupDescription'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group and security_group.description">
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
-                        <div class="small-9 columns field inline" ng-non-bindable="">${security_group.description}</div>
+                        <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
                     <hr />
                     ${panel('tag_editor', tags=sgroup_tags, leftcol_width=3, rightcol_width=9)}
                     <hr />
+                    <div tal:condition="not security_group">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                       </label>
+                    </div>
                     <div>
                         <button tal:condition="security_group" type="submit" class="button" id="save-securitygroup-btn" ng-disabled="isNotChanged">
                             <span i18n:translate="">Save Changes</span>
                         </button>
-                        <button tal:condition="not security_group" type="submit" class="button" id="create-securitygroup-btn">
+                        <button tal:condition="not security_group" type="submit" class="button" id="create-securitygroup-btn" ng-disabled="isNotValid">
                             <span i18n:translate="">Create Security Group</span>
                         </button>
                         <a href="${request.route_path('securitygroups')}"

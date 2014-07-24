@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup.css')}" />
@@ -10,7 +10,7 @@
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('scalinggroups')}" i18n:translate="">Scaling groups</a></li>
-                <li><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}" ng-non-bindable="">${scaling_group.name}</a></li>
+                <li><a href="${request.route_path('scalinggroup_view', id=scaling_group.name)}">${scaling_group_name}</a></li>
                 <li class="current"><a href="#">Create policy</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
@@ -18,19 +18,19 @@
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
             <strong i18n:translate="">Create scaling policy for:</strong>
-            <em ng-non-bindable="">${scaling_group.name}</em>
+            <em>${scaling_group_name}</em>
         </h3>
         <div class="large-7 columns">
-            <div class="panel no-title" tal:define="html_attrs {'ng-non-bindable': ''};">
+            <div class="panel no-title">
                 <form action="${request.route_path('scalinggroup_policy_create', id=scaling_group.name)}"
                       method="post" data-abide="" id="add-policy-form">
                     ${structure:policy_form['csrf_token']}
                     <div>&nbsp;</div>
-                    ${panel('form_field', field=policy_form['name'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['name'], ng_attrs={'model': 'policyName'}, leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_direction'], leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=policy_form['adjustment_amount'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['adjustment_amount'], ng_attrs={'model': 'adjustmentAmount'},leftcol_width=3, rightcol_width=9)}
                     ${panel('form_field', field=policy_form['adjustment_type'], leftcol_width=3, rightcol_width=9)}
-                    ${panel('form_field', field=policy_form['cooldown'], leftcol_width=3, rightcol_width=9)}
+                    ${panel('form_field', field=policy_form['cooldown'], ng_attrs={'model': 'coolDown'}, leftcol_width=3, rightcol_width=9)}
                     <div class="row controls-wrapper">
                         <div class="small-3 columns">
                             <label class="right"><span i18n:translate="">Alarm</span>&nbsp;<span class="req">*</span></label>
@@ -45,7 +45,13 @@
                     </div>
                     <hr />
                     <div>
-                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn">
+                        <label>
+                            <span class="req">*</span>
+                            <span i18n:translate="">Required fields</span>
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="button" i18n:translate="" id="create-policy-btn" ng-disabled="isNotValid">
                             Add Policy
                         </button>
                         <a class="cancel-link" i18n:translate=""

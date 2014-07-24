@@ -35,10 +35,9 @@ from wtforms import validators
 
 from boto.ec2.cloudwatch.metric import Metric
 
-from pyramid.i18n import TranslationString as _
-
-from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
 from ..constants.cloudwatch import METRIC_TYPES
+from ..i18n import _
+from . import BaseSecureForm, ChoicesManager, BLANK_CHOICE
 
 
 class CloudWatchAlarmCreateForm(BaseSecureForm):

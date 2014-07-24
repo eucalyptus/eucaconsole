@@ -1,0 +1,36 @@
+/* @fileOverview IMage detail view page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+.state { background-color: transparent; text-transform: capitalize; }
+
+.state.available { background-color: #03405f; }
+
+.state.cancelling { background-color: #cccccc; }
+
+.state.faied { background-color: darkred; }
+
+.state.pending { background-color: #0683c2; }
+
+.state.waiting-for-shutdown { background-color: #0683c2; }
+
+.state.bundling { background-color: #0683c2; }
+
+.state.storing { background-color: #0683c2; }
+
+.state.registering { background-color: #0683c2; }
+
+/* ----------------------------------------- Account ID Icon 
+----------------------------------------- */
+.items { margin-bottom: 6px; }
+.items .account-id-icon { color: #333; background-color: #e6e7e8; margin-right: 8px; }
+.items .account-id-icon a { color: white; }
+
+/* ----------------------------------------- Extra Element Padding
+----------------------------------------- */
+.padded-element { padding: 5px 5px; }
+
+.top-padding { padding-top: 20px; }
+
+.bottom-padding { padding-bottom: 5px; }
+
+.top-bottom-padding { padding-top: 10px; padding-bottom: 5px; }

@@ -6,7 +6,10 @@
 
 // Volume page includes the tag editor, so pull in that module as well.
 angular.module('VolumePage', ['TagEditor'])
-    .controller('VolumePageCtrl', function ($scope, $http, $timeout) {
+    .config(function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    })
+    .controller('VolumePageCtrl', function ($scope, $http, $timeout, $location) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.volumeStatusEndpoint = '';
         $scope.transitionalStates = ['creating', 'deleting', 'attaching', 'detaching'];
@@ -14,12 +17,14 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeAttachStatus = '';
         $scope.snapshotId = '';
         $scope.instanceId = '';
+        $scope.isNotValid = true;
         $scope.isNotChanged = true;
         $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
+        $scope.urlParams = $.url().param();
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.volumeStatusEndpoint = jsonEndpoint;
@@ -54,12 +59,11 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.initChosenSelectors = function () {
-            var urlParams = $.url().param(),
-                snapshotField = $('#snapshot_id');
-            if (urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
+            var snapshotField = $('#snapshot_id');
+            if ($scope.urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
                 $scope.fromSnapshot = true;
-                snapshotField.val(urlParams['from_snapshot']);
-                $scope.snapshotId = urlParams['from_snapshot'];
+                snapshotField.val($scope.urlParams['from_snapshot']);
+                $scope.snapshotId = $scope.urlParams['from_snapshot'];
                 $scope.populateVolumeSize();
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
@@ -101,12 +105,12 @@ angular.module('VolumePage', ['TagEditor'])
                 $scope.isNotChanged = false;
             });
             $scope.$watch('volumeSize', function () {
-                if( $scope.volumeSize < $scope.snapshotSize ){
+                if( $scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined ){
                     $('#volume_size_error').removeClass('hide');
-                    $('#create_volume_submit_button').attr('disabled','disabled');
+                    $scope.isNotValid = true;
                 }else{
                     $('#volume_size_error').addClass('hide');
-                    $('#create_volume_submit_button').removeAttr('disabled');
+                    $scope.isNotValid = false;
                 }
             });
             // Handle the unsaved tag issue
@@ -152,6 +156,8 @@ angular.module('VolumePage', ['TagEditor'])
                 var tabs = $('.tabs').find('a');
                 if( tabs.length > 0 ){
                     tabs.get(0).focus();
+                }else if( $('input[type="text"]').length > 0 ){
+                    $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {

@@ -1,4 +1,4 @@
-<metal:block use-macro="main_template">
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/scalinggroup_wizard.css')}" />
@@ -18,14 +18,14 @@
         <h3 id="pagetitle">
             <strong i18n:translate="">Create new scaling group</strong>
         </h3>
-        <div class="large-8 columns" tal:define="_ import: pyramid.i18n.TranslationString">
+        <div class="large-8 columns">
             <div class="wizard no-title">
                 <form action="${request.route_path('scalinggroup_create')}" id="scalinggroup-wizard-form"
                       method="post" data-abide="abide">
                     ${structure:create_form['csrf_token']}
                     <dl class="tabs" data-tab="">
                         <dd class="active">
-                            <a id="tabStep1" href="#step1">
+                            <a id="tabStep1" href="#step1" ng-click="visitNextStep(1, $event)">
                                 <span class="cir">1</span> <b>General</b>
                             </a>
                         </dd>
@@ -39,8 +39,8 @@
                         <!--! Step 1: General tab content -->
                         <div class="content active" id="step1">
                             ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
-                            <div tal:condition="launch_config_param" ng-non-bindable="">
-                                <input type="hidden" name="launch_config" value="${launch_config_param}" />
+                            <div tal:condition="launch_config_param">
+                                <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
                                 <div class="row controls-wrapper">
                                     <div class="small-4 columns">
                                         <label class="right" i18n:translate="">Launch configuration</label>
@@ -65,11 +65,17 @@
                             <hr />
                             ${panel('autoscale_tag_editor', tags=[])}
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div>&nbsp;</div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)">
+                                    <a id="visit-step-2" class="button small round" ng-click="visitNextStep(2, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                         <a class="cancel-link" href="${request.route_path('scalinggroups')}" i18n:translate="">Cancel</a>
                                     </a>
@@ -85,10 +91,16 @@
                             ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
+                            <div>
+                                <label>
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                                </label>
+                            </div>
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
-                                    <button type="submit" class="button" id="create-scalinggroup-btn">
+                                    <button type="submit" class="button" id="create-scalinggroup-btn" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Scaling Group</span>
                                     </button>
                                     <a class="cancel-link" href="${request.route_path('scalinggroups')}" i18n:translate="">Cancel</a>
