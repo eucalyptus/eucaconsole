@@ -42,7 +42,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
-            window.addEventListener("beforeunload", function(event) {
+            window.onbeforeunload = function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
                     if($(this).val() !== ''){
@@ -67,7 +67,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                         $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
                         return false;
                 }
-            });
+            };
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                

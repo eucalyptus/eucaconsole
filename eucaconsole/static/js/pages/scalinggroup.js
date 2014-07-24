@@ -61,7 +61,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
-            window.addEventListener("beforeunload", function(event) {
+            window.onbeforeunload = function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput[type!="checkbox"]').each(function(){
                     if($(this).val() !== ''){
@@ -77,6 +77,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
                 }
+            };
             // Handle the unsaved tag issue
             $(document).on('submit', '#scalinggroup-detail-form', function(event) {
                 $('input.taginput[type!="checkbox"]').each(function(){

@@ -30,7 +30,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
-            window.addEventListener("beforeunload", function(event) {
+            window.onbeforeunload = function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
                     if($(this).val() !== ''){
@@ -46,6 +46,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
                 }
+            };
             $scope.$watch('isPublic', function(newValue, oldValue) {
                 if( newValue !== oldValue ){
                     $scope.isNotChanged = false;

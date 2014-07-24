@@ -107,7 +107,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
-            window.addEventListener("beforeunload", function(event) {
+            window.onbeforeunload = function(event) {
                 var existsUnsavedTag = false;
                 $('input.taginput').each(function(){
                     if($(this).val() !== ''){
@@ -122,7 +122,7 @@ angular.module('SnapshotPage', ['TagEditor'])
                     }
                     return "You must click the \"Save Changes\" button before you leave this page.";
                 }
-            });
+            };
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
