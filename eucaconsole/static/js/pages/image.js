@@ -23,28 +23,39 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.setWatch();
             $scope.setFocus();
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if($(this).val() !== ''){
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
         $scope.setWatch = function () {
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
             window.onbeforeunload = function(event) {
-                var existsUnsavedTag = false;
-                $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
-                        existsUnsavedTag = true;
-                    }
-                });
-                if(existsUnsavedTag){
-                    return "You must click the \"Add\" button before you submit this for your tag to be included.";
+                // Conditions to check before navigate away from the page
+                // Either by "Submit" or clicking links on the page
+                if($scope.existsUnsavedTag()){
+                    // In case of any unsaved tags, warn the user before unloading the page
+                    return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
                 }else if($scope.isNotChanged === false){
-                    console.log(event);
+                    // No unsaved tags, but some input fields have been modified on the page
                     if( $scope.isSubmitted === true ){
+                        // The action is "submit". OK to proceed
                         return;
+                    }else{
+                        // The action is navigate away.  Warn the user about the unsaved changes
+                        return "You must click the \"Save Changes\" button before you leave this page.";
                     }
-                    return "You must click the \"Save Changes\" button before you leave this page.";
                 }
             };
             $scope.$watch('isPublic', function(newValue, oldValue) {

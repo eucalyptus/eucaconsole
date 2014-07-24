@@ -22,6 +22,16 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                $scope.isNotValid = false;
             }
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if($(this).val() !== ''){
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
         $scope.setWatch = function () {
             $scope.$watch('securityGroupName', function () {
                 $scope.checkRequiredInput(); 
@@ -39,26 +49,25 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                     }
                 });
             });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
             $(document).on('submit', function () {
                 $scope.isSubmitted = true;
             });
             window.onbeforeunload = function(event) {
-                var existsUnsavedTag = false;
-                $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
-                        existsUnsavedTag = true;
-                    }
-                });
-
-                if(existsUnsavedTag){
-                    event.preventDefault(); 
-                    $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-                    return false;
+                // Conditions to check before navigate away from the page
+                // Either by "Submit" or clicking links on the page
+                if($scope.existsUnsavedTag()){
+                    // In case of any unsaved tags, warn the user before unloading the page
+                    return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
                 }else if($scope.isNotChanged === false){
+                    // No unsaved tags, but some input fields have been modified on the page
                     if( $scope.isSubmitted === true ){
+                        // The action is "submit". OK to proceed
                         return;
+                    }else{
+                        // The action is navigate away.  Warn the user about the unsaved changes
+                        return "You must click the \"Save Changes\" button before you leave this page.";
                     }
-                    return "You must click the \"Save Changes\" button before you leave this page.";
                 }
 
                 // Handle the unsaved security group rule issue
@@ -69,7 +78,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 }
             };
             $(document).on('submit', '[data-reveal] form', function () {
-                $(this).find('.dialog-submit-button').css('display', 'none');                
+                $(this).find('.gialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
         };
