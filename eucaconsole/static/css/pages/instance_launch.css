@@ -47,3 +47,7 @@
 #launch-instance-form .rules-title { margin-bottom: 3px; }
 
 #create-keypair-modal #keypair-material { height: 16rem; color: white; background-color: black; font-weight: bold; font-family: Courier, "courier New", monospace, sans-serif; }
+
+#userdatalabel { right: 0px; }
+
+#userdata { margin: 0 0 0; }

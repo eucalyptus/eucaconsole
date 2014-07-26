@@ -48,6 +48,7 @@ from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
+from . import guess_mimetype_from_buffer
 
 
 class LaunchConfigsView(LandingPageView):
@@ -187,6 +188,20 @@ class LaunchConfigView(BaseView):
             profile_name = arn[(arn.index('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
+
+        if self.launch_config.user_data is not None:
+            user_data = self.launch_config.user_data
+            mime_type = guess_mimetype_from_buffer(user_data, mime=True)
+            if mime_type.find('text') == 0:
+                self.launch_config.user_data=user_data
+            else:
+                # get more descriptive text
+                mime_type = guess_mimetype_from_buffer(user_data)
+                self.launch_config.user_data=None
+            self.launch_config.userdata_type = mime_type
+            self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
+        else:
+            self.launch_config.userdata_type = ''
 
         self.render_dict = dict(
             launch_config=self.launch_config,

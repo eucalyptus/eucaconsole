@@ -45,6 +45,8 @@ class InstanceForm(BaseSecureForm):
     instance_type_error_msg = _(u'Instance type is required')
     instance_type = wtforms.SelectField(label=_(u'Instance type'))
     userdata = wtforms.TextAreaField(label=_(u'User data'))
+    userdata_file_helptext = _(u'User data file may not exceed 16 KB')
+    userdata_file = wtforms.FileField(label='')
     ip_address = wtforms.SelectField(label=_(u'Public IP address'))
     monitored = wtforms.BooleanField(label=_(u'Monitoring enabled'))
     kernel = wtforms.SelectField(label=_(u'Kernel ID'))
@@ -60,6 +62,7 @@ class InstanceForm(BaseSecureForm):
         self.instance_type.error_msg = self.instance_type_error_msg
         self.choices_manager = ChoicesManager(conn=self.conn)
         self.set_choices()
+        self.userdata_file.help_text = self.userdata_file_helptext
 
         if instance is not None:
             self.name.data = instance.tags.get('Name', '')
