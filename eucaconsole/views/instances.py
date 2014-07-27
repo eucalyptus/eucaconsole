@@ -31,6 +31,8 @@ Pyramid views for Eucalyptus and AWS instances
 import base64
 from datetime import datetime, timedelta
 from operator import attrgetter
+import hashlib
+import hmac
 import logging
 import os
 import simplejson as json
@@ -1098,18 +1100,23 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 upload_policy = self.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
+                    self.iam_conn = self.get_connection(conn_type='iam')
+                    username = self.request.session['username']
+                    creds = self.iam_conn.create_access_key(username)
+                    access_key = creds.access_key.access_key_id
+                    secret_key = creds.access_key.secret_access_key
                     # we need to make the call ourselves to override boto's auto-signing
                     params = {'InstanceId': instance_id,
                               'Storage.S3.Bucket': s3_bucket,
                               'Storage.S3.Prefix': s3_prefix,
                               'Storage.S3.UploadPolicy': upload_policy}
-                    params['Storage.S3.AWSAccessKeyId'] = self.aws_access_key_id
-                    params['Storage.S3.UploadPolicySignature'] = self.gen_policy_signature(upload_policy, secret)
+                    params['Storage.S3.AWSAccessKeyId'] = access_key
+                    import pdb; pdb.set_trace()
+                    params['Storage.S3.UploadPolicySignature'] = self.gen_policy_signature(upload_policy, secret_key)
                     result = self.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                 
                     #result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
-                    import pdb; pdb.set_trace()
-                    tags = {'ec_name': name, 'ec_description': description, 'ec_bdm': ''}
+                    tags = {'ec_name': name, 'ec_description': description, 'ec_bdm': '', 'ec_access': access_key}
                     self.ec2_conn.create_tags(result.bundle_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
