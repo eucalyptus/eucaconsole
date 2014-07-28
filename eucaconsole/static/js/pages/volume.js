@@ -23,6 +23,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
+        $scope.urlParams = $.url().param();
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.volumeStatusEndpoint = jsonEndpoint;
@@ -57,12 +58,11 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.initChosenSelectors = function () {
-            var urlParams = $location.search();
             var snapshotField = $('#snapshot_id');
-            if (urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
+            if ($scope.urlParams['from_snapshot']) {  // Pre-populate snapshot if passed in query string arg
                 $scope.fromSnapshot = true;
-                snapshotField.val(urlParams['from_snapshot']);
-                $scope.snapshotId = urlParams['from_snapshot'];
+                snapshotField.val($scope.urlParams['from_snapshot']);
+                $scope.snapshotId = $scope.urlParams['from_snapshot'];
                 $scope.populateVolumeSize();
             }
             snapshotField.chosen({'width': '75%', 'search_contains': true});
