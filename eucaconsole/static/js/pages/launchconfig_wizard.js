@@ -6,17 +6,14 @@
 
 // Launch Config Wizard includes the Image Picker, BDM editor, and security group rules editor
 angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor', 'SecurityGroupRules'])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout, $location) {
+    .controller('LaunchConfigWizardCtrl', function ($scope, $http, $timeout) {
         $scope.launchForm = $('#launch-config-form');
         $scope.imageID = '';
         $scope.imageName = '';
         $scope.imagePlatform = '';
         $scope.imageRootDeviceType = '';
         $scope.imageLocation = '';
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.summarySection = $('.summary');
         $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
@@ -37,6 +34,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
         $scope.step1Invalid = true;
@@ -70,7 +68,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
-                $(window).keydown(function(evt) {
+                $('#image-id-input').keydown(function(evt) {
                     if (evt.keyCode === 13) {
                         evt.preventDefault();
                     }
@@ -208,6 +206,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 if (chosenSelect.length > 0 && chosenSelect.attr('multiple') == undefined) {
                     chosenSelect.prop('selectedIndex', 0);
                     chosenSelect.trigger("chosen:updated");
+                }
+            });
+            $scope.$watch('inputtype', function() {
+                if ($scope.inputtype == 'text') {
+                    $timeout(function() {
+                        $('#userdata').focus();
+                    });
                 }
             });
         };

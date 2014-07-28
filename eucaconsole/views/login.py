@@ -142,18 +142,18 @@ class LoginView(BaseView):
                 self.security_token = creds.session_token
                 iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
                 try:
-                    iam_conn.get_all_users(path_prefix="/notlikely")
-                    session['user_access'] = True
+                    #iam_conn.get_all_users(path_prefix="/notlikely")
+                    session['user_access'] = True if username == 'admin' else False
                 except:
                     pass
                 try:
-                    iam_conn.get_all_groups(path_prefix="/notlikely")
-                    session['group_access'] = True
+                    #iam_conn.get_all_groups(path_prefix="/notlikely")
+                    session['group_access'] = True if username == 'admin' else False
                 except:
                     pass
                 try:
-                    iam_conn.list_roles(path_prefix="/notlikely")
-                    session['role_access'] = True
+                    #iam_conn.list_roles(path_prefix="/notlikely")
+                    session['role_access'] = True if username == 'admin' else False
                 except:
                     pass
                 headers = remember(self.request, user_account)
