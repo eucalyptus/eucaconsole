@@ -46,7 +46,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;
             $('input.taginput[type!="checkbox"]').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     hasUnsavedTag = true;
                 }
             });
@@ -71,7 +71,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#scalinggroup-detail-form', function(event) {
                 $('input.taginput[type!="checkbox"]').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
@@ -85,12 +85,12 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             window.onbeforeunload = function(event) {
                 // Conditions to check before navigate away from the page
                 // Either by "Submit" or clicking links on the page
-                if($scope.existsUnsavedTag()){
+                if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
                     return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
-                }else if($scope.isNotChanged === false){
+                } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
-                    if( $scope.isSubmitted === true ){
+                    if ($scope.isSubmitted === true) {
                         // The action is "submit". OK to proceed
                         return;
                     }else{
@@ -107,9 +107,9 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
                 }else{
@@ -132,7 +132,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 var modal = $('#nextstep-scalinggroup-modal');
                 modal.foundation('reveal', 'open');
                 modal.on('click', '.close-reveal-modal', function(){
-                    if( modal.find('input#check-do-not-show-me-again').is(':checked') ){
+                    if (modal.find('input#check-do-not-show-me-again').is(':checked')) {
                         Modernizr.localstorage && localStorage.setItem(thisKey, "true");
                     }
                 });

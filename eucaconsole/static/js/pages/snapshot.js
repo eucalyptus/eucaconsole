@@ -79,7 +79,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;
             $('input.taginput[type!="checkbox"]').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     hasUnsavedTag = true;
                 }
             });
@@ -87,7 +87,7 @@ angular.module('SnapshotPage', ['TagEditor'])
         };
         $scope.setWatch = function () {
             $scope.$watch('volumeID', function() {
-                if( $scope.volumeID === '' || $scope.volumeID === undefined ){
+                if ($scope.volumeID === '' || $scope.volumeID === undefined) {
                     $scope.isNotValid = true;
                 }else{
                     $scope.isNotValid = false;
@@ -103,7 +103,7 @@ angular.module('SnapshotPage', ['TagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#snapshot-detail-form', function(event) {
                 $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
@@ -121,12 +121,12 @@ angular.module('SnapshotPage', ['TagEditor'])
             window.onbeforeunload = function(event) {
                 // Conditions to check before navigate away from the page
                 // Either by "Submit" or clicking links on the page
-                if($scope.existsUnsavedTag()){
+                if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
                     return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
-                }else if($scope.isNotChanged === false){
+                } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
-                    if( $scope.isSubmitted === true ){
+                    if ($scope.isSubmitted === true) {
                         // The action is "submit". OK to proceed
                         return;
                     }else{
@@ -141,16 +141,16 @@ angular.module('SnapshotPage', ['TagEditor'])
                 var actionsMenu = $('.actions-menu');
                 if (actionsMenu.length) {
                     actionsMenu.find('a').get(0).focus();
-                }else if( $('input[type="text"]').length > 0 ){
+                } else if ($('input[type="text"]').length > 0) {
                     $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
                 }else{

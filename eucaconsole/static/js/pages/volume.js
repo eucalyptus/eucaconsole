@@ -37,7 +37,7 @@ angular.module('VolumePage', ['TagEditor'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
-           if( $scope.snapshotId == '' ){
+           if ($scope.snapshotId == '') {
                 $scope.snapshotSize = 1;
                 $scope.volumeSize = 1;
                 return;
@@ -101,7 +101,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;
             $('input.taginput[type!="checkbox"]').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     hasUnsavedTag = true;
                 }
             });
@@ -112,7 +112,7 @@ angular.module('VolumePage', ['TagEditor'])
                 $scope.isNotChanged = false;
             });
             $scope.$watch('volumeSize', function () {
-                if( $scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined ){
+                if ($scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined) {
                     $('#volume_size_error').removeClass('hide');
                     $scope.isNotValid = true;
                 }else{
@@ -123,7 +123,7 @@ angular.module('VolumePage', ['TagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#volume-detail-form', function(event) {
                 $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
@@ -137,15 +137,15 @@ angular.module('VolumePage', ['TagEditor'])
             window.onbeforeunload = function(event) {
                 // Conditions to check before navigate away from the page
                 // Either by "Submit" or clicking links on the page
-                if($scope.existsUnsavedTag()){
+                if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
                     return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
-                }else if($scope.isNotChanged === false){
+                } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
-                    if( $scope.isSubmitted === true ){
+                    if ($scope.isSubmitted === true) {
                         // The action is "submit". OK to proceed
                         return;
-                    }else{
+                    } else {
                         // The action is navigate away.  Warn the user about the unsaved changes
                         return "You must click the \"Save Changes\" button before you leave this page.";
                     }
@@ -163,18 +163,18 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var tabs = $('.tabs').find('a');
-                if( tabs.length > 0 ){
+                if (tabs.length > 0) {
                     tabs.get(0).focus();
-                }else if( $('input[type="text"]').length > 0 ){
+                } else if ($('input[type="text"]').length > 0) {
                     $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
                 }else{

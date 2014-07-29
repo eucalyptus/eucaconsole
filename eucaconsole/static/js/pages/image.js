@@ -27,7 +27,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;
             $('input.taginput[type!="checkbox"]').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     hasUnsavedTag = true;
                 }
             });
@@ -44,12 +44,12 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             window.onbeforeunload = function(event) {
                 // Conditions to check before navigate away from the page
                 // Either by "Submit" or clicking links on the page
-                if($scope.existsUnsavedTag()){
+                if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
                     return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
-                }else if($scope.isNotChanged === false){
+                } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
-                    if( $scope.isSubmitted === true ){
+                    if ($scope.isSubmitted === true) {
                         // The action is "submit". OK to proceed
                         return;
                     }else{
@@ -59,12 +59,12 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                 }
             };
             $scope.$watch('isPublic', function(newValue, oldValue) {
-                if( newValue !== oldValue ){
+                if (newValue !== oldValue) {
                     $scope.isNotChanged = false;
                 }
             });
             $scope.$watch('isAccountValid', function() {
-                if( $scope.isAccountValid ){
+                if ($scope.isAccountValid) {
                     $scope.errorClass = '';
                 }else{
                     $scope.errorClass= 'error';
@@ -76,18 +76,18 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             });
             $(document).on('keyup', '#add-account-inputbox', function () {
                 // New account ID needs to be 12 chars and contains only integers
-                if( $scope.newAccount.length == 12 && $scope.newAccount == parseInt($scope.newAccount) ){
+                if ($scope.newAccount.length == 12 && $scope.newAccount == parseInt($scope.newAccount)) {
                     $scope.isAccountNotTyped = false;
                     $scope.isAccountValid = true;
                     $scope.$apply();
                 }else{
-                    if( $scope.newAccount == "" || $scope.newAccount.length == 0 || $scope.newAccount == undefined ){
+                    if ($scope.newAccount == "" || $scope.newAccount.length == 0 || $scope.newAccount == undefined) {
                         // If new account ID value is null, consider input being cleared, remove the error message
                         $scope.isAccountValid = true;
-                    }else if( $scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount) ){
+                    } else if ($scope.newAccount.length > 12 || $scope.newAccount != parseInt($scope.newAccount)) {
                         // If new account ID is longer than 12 chars or contains non-integer, display the error mesage
                         $scope.isAccountValid = false;
-                    }else if( $scope.newAccount == parseInt($scope.newAccount) ){
+                    } else if ($scope.newAccount == parseInt($scope.newAccount)) {
                         // If new account ID value contains only integers, remove the error message
                         $scope.isAccountValid = true;
                     }
@@ -99,7 +99,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#image-detail-form', function(event) {
                 $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
@@ -121,8 +121,8 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $scope.$apply();
         };
         $scope.addAccount = function () {
-           if( !$scope.isAccountNotTyped && $scope.isAccountValid ){
-               if($scope.hasDup($scope.launchPermissions, $scope.newAccount) != true){
+           if (!$scope.isAccountNotTyped && $scope.isAccountValid) {
+               if ($scope.hasDup($scope.launchPermissions, $scope.newAccount) != true) {
                    $scope.launchPermissions.push($scope.newAccount);
                }
                $scope.newAccount = "";
@@ -133,7 +133,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
         };
         $scope.hasDup = function(thisArray, thisValue){
            for( var i = 0; i < thisArray.length; i++ ){
-               if( thisArray[i] == thisValue ){
+               if (thisArray[i] == thisValue) {
                    return true;
                }
            }

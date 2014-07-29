@@ -70,13 +70,13 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || 
-                    modalID.match(/release/) || modalID.match(/reboot/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || 
+                    modalID.match(/release/) || modalID.match(/reboot/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
-                }else{
+                } else {
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
                     if (!!inputElement) {
@@ -91,7 +91,7 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.existsUnsavedTag = function () {
             var hasUnsavedTag = false;
             $('input.taginput[type!="checkbox"]').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     hasUnsavedTag = true;
                 }
             });
@@ -133,15 +133,15 @@ angular.module('InstancePage', ['TagEditor'])
             window.onbeforeunload = function(event) {
                 // Conditions to check before navigate away from the page
                 // Either by "Submit" or clicking links on the page
-                if($scope.existsUnsavedTag()){
+                if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
                     return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
-                }else if($scope.isNotChanged === false){
+                } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
-                    if( $scope.isSubmitted === true ){
+                    if ($scope.isSubmitted === true) {
                         // The action is "submit". OK to proceed
                         return;
-                    }else{
+                    } else {
                         // The action is navigate away.  Warn the user about the unsaved changes
                         return "You must click the \"Save Changes\" button before you leave this page.";
                     }
@@ -190,15 +190,15 @@ angular.module('InstancePage', ['TagEditor'])
             // Handle the unsaved tag issue
             var existsUnsavedTag = false;
             $('input.taginput').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     existsUnsavedTag = true;
                     return false;
                 }
             });
-            if( existsUnsavedTag ){
+            if (existsUnsavedTag) {
                 $event.preventDefault();
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-            }else if( $scope.instanceState == 'stopped' ){
+            } else if ($scope.instanceState == 'stopped') {
                 $event.preventDefault();
                 $('#update-instance-modal').foundation('reveal', 'open');
             }
