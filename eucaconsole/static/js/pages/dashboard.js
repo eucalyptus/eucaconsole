@@ -5,7 +5,7 @@
  */
 
 angular.module('Dashboard', [])
-    .controller('DashboardCtrl', function ($scope, $http, $timeout) {
+    .controller('DashboardCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.statusEndpoint = '';
