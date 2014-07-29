@@ -150,7 +150,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 }
             }else if( $scope.currentStepIndex == 3 ){
                 if( $scope.keyPair === '' || $scope.keyPair === undefined ){
-                    $scope.isNotValid = true;
+                    if ($scope.urlParams.hasOwnProperty('keypair')) {
+                        $scope.isNotValid = false;  // Prevent disabling primary button when keypair is preset to "none"
+                    } else {
+                        $scope.isNotValid = true;
+                    }
                 }else{
                     $scope.isNotValid = false;
                 }
