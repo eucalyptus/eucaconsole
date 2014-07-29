@@ -5,7 +5,7 @@
  */
 
 angular.module('Dashboard', [])
-    .controller('DashboardCtrl', function ($scope, $http) {
+    .controller('DashboardCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
         $scope.statusEndpoint = '';
@@ -27,6 +27,12 @@ angular.module('Dashboard', [])
             $scope.getItemCounts();
             $scope.storeAWSRegion();
             $scope.getServiceStatus();
+            $('#sortable').sortable({
+                stop: function(event, ui) {
+                    $.cookie('dash_order', $('#sortable').sortable('toArray'), {expires: 180});
+                }
+            });
+            $('#sortable').disableSelection();
         };
         $scope.setFocus = function() {
             $('#zone-selector').find('a').get(0).focus();

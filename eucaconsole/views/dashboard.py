@@ -49,8 +49,14 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
+        tiles=self.request.cookies.get('dash_order')
+        if tiles is not None:
+            tiles = tiles.replace('%2C', ',')
+        else:
+            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,security-groups,key-pairs,users,groups,roles,health'
         return dict(
-            availability_zones=availability_zones
+            availability_zones=availability_zones,
+            tiles=tiles.split(','),
         )
 
 
