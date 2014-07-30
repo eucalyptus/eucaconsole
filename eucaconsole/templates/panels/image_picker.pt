@@ -69,7 +69,8 @@
                         <div class="small-4 columns value">
                             <a id="visit-step-2" class="button tiny round" ng-click="loadImageInfo(imageID); visitNextStep(2, $event)" ng-disabled="isNotValid">
                                 <span i18n:translate="">Next</span>
-                                <a class="cancel-link" href="${request.route_path('instances')}">Cancel</a>
+                                <a class="cancel-link"
+                                   href="${request.route_path('launchconfigs' if launchconfig_wizard else 'instances')}">Cancel</a>
                             </a>
                         </div>
                         <div class="small-12 columns" ng-class="$parent.imageIDErrorClass">
