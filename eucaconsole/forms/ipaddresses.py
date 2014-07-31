@@ -45,6 +45,7 @@ class AllocateIPsForm(BaseSecureForm):
 
     def __init__(self, request, **kwargs):
         super(AllocateIPsForm, self).__init__(request, **kwargs)
+        self.ipcount.data = 1
         self.ipcount.error_msg = self.ipcount_error_msg
 
 
