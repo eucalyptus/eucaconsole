@@ -87,7 +87,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 // Either by "Submit" or clicking links on the page
                 if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
-                    return "You must click the \"Add Tag\" button and \"Save Changes\" button for your tag to be included.";
+                    return $('#warning-message-unsaved-tag').text();
                 } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
                     if ($scope.isSubmitted === true) {
@@ -95,7 +95,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                         return;
                     }else{
                         // The action is navigate away.  Warn the user about the unsaved changes
-                        return "You must click the \"Save Changes\" button before you leave this page.";
+                        return $('#warning-message-unsaved-change').text();
                     }
                 }
             };
