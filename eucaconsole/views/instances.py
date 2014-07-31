@@ -1097,7 +1097,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 if s3_bucket:
                     s3_bucket = self.unescape_braces(s3_bucket)
                 s3_prefix = self.request.params.get('s3_prefix', '')
-                upload_policy = self.generate_default_policy(s3_bucket, s3_prefix)
+                upload_policy = InstanceCreateImageView.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     self.iam_conn = self.get_connection(conn_type='iam')
@@ -1111,8 +1111,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                               'Storage.S3.Prefix': s3_prefix,
                               'Storage.S3.UploadPolicy': upload_policy}
                     params['Storage.S3.AWSAccessKeyId'] = access_key
-                    import pdb; pdb.set_trace()
-                    params['Storage.S3.UploadPolicySignature'] = self.gen_policy_signature(upload_policy, secret_key)
+                    params['Storage.S3.UploadPolicySignature'] = InstanceCreateImageView.gen_policy_signature(upload_policy, secret_key)
                     result = self.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                 
                     #result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
@@ -1134,7 +1133,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
 
-    # this method copied from euca2ools:bundleinstance.py and used with small changes
+    # these methods copied from euca2ools:bundleinstance.py and used with small changes
     @staticmethod
     def generate_default_policy(bucket, prefix):
         delta = timedelta(hours=24)
@@ -1150,7 +1149,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
         logging.debug('generated default policy: %s', policy_json)
         return base64.b64encode(policy_json)
 
-    def gen_policy_signature(self, policy, secret_key):
+    @staticmethod
+    def gen_policy_signature(policy, secret_key):
         my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())
