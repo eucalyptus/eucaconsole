@@ -35,7 +35,7 @@ from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class NgNonBindableOptionSelect(Select):
@@ -384,7 +384,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
     availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, **kwargs):
         super(ScalingGroupsFiltersForm, self).__init__(request, **kwargs)

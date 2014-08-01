@@ -316,7 +316,7 @@ class InstancesFiltersForm(BaseSecureForm):
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     security_group = wtforms.SelectMultipleField(label=_(u'Security group'))
     scaling_group = wtforms.SelectMultipleField(label=_(u'Scaling group'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
     roles = wtforms.SelectMultipleField(label=_(u'Roles'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, iam_conn=None, cloud_type='euca', **kwargs):
