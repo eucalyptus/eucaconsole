@@ -104,7 +104,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 window.onbeforeunload = null;
             });
             // Handle the case when user tries to open a dialog while there exist unsaved changes
-            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"]', function () {
+            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"][id!="unsaved-tag-warn-modal"]', function () {
                 // If there exist unsaved changes
                 if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
                     var self = this;
