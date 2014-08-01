@@ -151,6 +151,10 @@ angular.module('VolumePage', ['TagEditor'])
                     }
                 }
             };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                

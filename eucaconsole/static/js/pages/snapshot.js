@@ -135,6 +135,10 @@ angular.module('SnapshotPage', ['TagEditor'])
                     }
                 }
             };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){

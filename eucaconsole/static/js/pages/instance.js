@@ -147,6 +147,10 @@ angular.module('InstancePage', ['TagEditor'])
                     }
                 }
             };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
         };
         $scope.getIPAddressData = function () {
             $http.get($scope.instanceIPAddressEndpoint).success(function(oData) {

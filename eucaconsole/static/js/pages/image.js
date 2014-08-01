@@ -58,6 +58,10 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                     }
                 }
             };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
             $scope.$watch('isPublic', function(newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $scope.isNotChanged = false;
