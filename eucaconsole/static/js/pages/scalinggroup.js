@@ -79,7 +79,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 });
             });
             // Turn "isSubmiited" flag to true when a submit button is clicked on the page
-            $(document).on('submit', '.button', function () {
+            $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
             });
             window.onbeforeunload = function(event) {
@@ -102,6 +102,24 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
             // Do not perfom the unsaved changes check if the cancel link is clicked
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
+            });
+            // Handle the case when user tries to open a dialog while there exist unsaved changes
+            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"]', function () {
+                // If there exist unsaved changes
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    var self = this;
+                    // Close the current dialog as soon as it opens
+                    $(self).on('opened', function() {
+                        $(self).off('opened');
+                        $(self).foundation('reveal', 'close');
+                    });
+                    // Open the warning message dialog instead
+                    $(self).on('closed', function() {
+                        $(self).off('closed');
+                        var modal = $('#unsaved-changes-warning-modal');
+                        modal.foundation('reveal', 'open');
+                    });
+                } 
             });
         };
         $scope.setFocus = function () {

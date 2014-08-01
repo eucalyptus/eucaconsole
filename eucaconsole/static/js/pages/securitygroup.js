@@ -50,7 +50,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 });
             });
             // Turn "isSubmiited" flag to true when a submit button is clicked on the page
-            $(document).on('submit', '.button', function () {
+            $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
             });
             window.onbeforeunload = function(event) {
