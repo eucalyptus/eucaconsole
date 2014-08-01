@@ -62,6 +62,24 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
             });
+            // Handle the case when user tries to open a dialog while there exist unsaved changes
+            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"]', function () {
+                // If there exist unsaved changes
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    var self = this;
+                    // Close the current dialog as soon as it opens
+                    $(self).on('opened', function() {
+                        $(self).off('opened');
+                        $(self).foundation('reveal', 'close');
+                    });
+                    // Open the warning message dialog instead
+                    $(self).on('closed', function() {
+                        $(self).off('closed');
+                        var modal = $('#unsaved-changes-warning-modal');
+                        modal.foundation('reveal', 'open');
+                    });
+                } 
+            });
             $scope.$watch('isPublic', function(newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $scope.isNotChanged = false;

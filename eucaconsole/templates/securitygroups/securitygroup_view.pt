@@ -97,9 +97,12 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Warning</h3>
             <span class="hide" id="warning-message-unsaved-tag" i18n:translate="">You must click the "Add Tag" button and "Save Changes" button for your tag to be included.</span>
             <span class="hide" id="warning-message-unsaved-change" i18n:translate="">You must click the "Save Changes" button before you leave this page.</span>
+            <span id="warning-message-unsaved-change-open-modal" i18n:translate="">You must click the "Save Changes" button before you open this modal.</span>
+            <a href="#" class="close-reveal-modal">&#215;</a>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('securitygroup_dialogs', security_group=security_group, delete_form=delete_form)}
