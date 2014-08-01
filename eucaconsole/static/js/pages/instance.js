@@ -127,7 +127,7 @@ angular.module('InstancePage', ['TagEditor'])
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
             // Turn "isSubmiited" flag to true when a submit button is clicked on the page
-            $(document).on('submit', function () {
+            $(document).on('submit', '.button', function () {
                 $scope.isSubmitted = true;
             });
             window.onbeforeunload = function(event) {
