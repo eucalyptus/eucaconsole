@@ -40,6 +40,8 @@ import time
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
+from boto.s3.key import Key
+from boto.ec2.bundleinstance import BundleInstanceTask
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -1100,6 +1102,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 upload_policy = InstanceCreateImageView.generate_default_policy(s3_bucket, s3_prefix)
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Bundling instance {0}").format(instance_id))
                     self.iam_conn = self.get_connection(conn_type='iam')
                     username = self.request.session['username']
                     creds = self.iam_conn.create_access_key(username)
@@ -1112,11 +1115,26 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                               'Storage.S3.UploadPolicy': upload_policy}
                     params['Storage.S3.AWSAccessKeyId'] = access_key
                     params['Storage.S3.UploadPolicySignature'] = InstanceCreateImageView.gen_policy_signature(upload_policy, secret_key)
-                    result = self.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
+                    result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                 
-                    #result = self.ec2_conn.bundle_instance(instance_id, s3_bucket, s3_prefix, upload_policy)
-                    tags = {'ec_name': name, 'ec_description': description, 'ec_bdm': '', 'ec_access': access_key}
-                    self.ec2_conn.create_tags(result.bundle_id, tags)
+                    bundle_metadata = {
+                        'name':name,
+                        'description':description,
+                        'prefix':s3_prefix,
+                        'virt_type':self.instance.virtualization_type,
+                        'arch':self.instance.architecture,
+                        'platform':self.instance.platform,
+                        'kernel_id':self.instance.kernel,
+                        'ramdisk_id':self.instance.ramdisk,
+                        'bdm':'',
+                        'tags':'',
+                        'access':access_key,
+                        'bundle_id':result.id}
+                    self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})
+                    s3_conn = self.get_connection(conn_type='s3')
+                    k = Key(s3_conn.get_bucket(s3_bucket))
+                    k.key = result.id
+                    k.set_contents_from_string(json.dumps(bundle_metadata))
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=success_location)
@@ -1124,6 +1142,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 no_reboot = self.request.params.get('no_reboot')
                 bdm = {}
                 with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Creating image from instance {0}").format(instance_id))
                     self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
@@ -1146,11 +1165,12 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                   'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
                                               expire_time.timetuple())}
         policy_json = json.dumps(policy)
-        logging.debug('generated default policy: %s', policy_json)
         return base64.b64encode(policy_json)
 
     @staticmethod
     def gen_policy_signature(policy, secret_key):
+        # hmac cannot handle unicode
+        secret_key = secret_key.encode('ascii', 'ignore')
         my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
         my_hmac.update(policy)
         return base64.b64encode(my_hmac.digest())

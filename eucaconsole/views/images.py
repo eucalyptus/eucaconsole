@@ -29,9 +29,12 @@ Pyramid views for Eucalyptus and AWS images
 
 """
 import re
+import simplejson as json
 
 from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError
+from boto.ec2.image import Image
+from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 
@@ -114,25 +117,54 @@ class ImagesJsonView(LandingPageView):
     def images_json(self):
         # actual images
         items = self.get_items()
-        # add in bundle tasks as fake images
-        tasks = self.conn.get_all_bundle_tasks()
-        for task in tasks:
-            if task.state in ['pending', 'bundling', 'storing']:  # add this into image list
-                items.append({
-                    id:_(u'Pending'),
-                    location:"%s/%s..." % (task.storage.s3.bucket, task.storage.s3.prefix),
-                    owner_id: '',  # TODO: fetch outside loop and use here
-                    state:task.state,
-                    progress: task.progress,
-                    is_public: False,
-                    name: task.tags.ec_name,
-                    description: task.tags.ec_description,
-                    architecture: None,
-                    platform: None,
-                    type: 'machine',
-                    root_device_type: 'instance-store',
-                    root_device_name: '/dev/sda',
-                })
+        # might want to fetch all bundle tasks up front since that # will be small
+        #tasks = self.conn.get_all_bundle_tasks()
+        # fetch instances that have been marked for bundling
+        instances = self.conn.get_only_instances(filters={'tag-key':'ec_bundling'})
+        for instance in instances:
+            bucket, bundle_id = instance.tags['ec_bundling'].split('/')
+            s3_conn = self.get_connection(conn_type='s3')
+            k = Key(s3_conn.get_bucket(bucket))
+            k.key = bundle_id
+            metadata = json.loads(k.get_contents_as_string())
+            tasks = self.conn.get_all_bundle_tasks([bundle_id])
+            if len(tasks) == 0 or tasks[0].state == 'complete':
+                # handle registration
+                self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
+                image_id = self.conn.register_image(
+                                name=metadata['name'],
+                                description=metadata['description'],
+                                image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
+                                virtualization_type=metadata['virt_type'],
+                                kernel_id=metadata['kernel_id'],
+                                ramdisk_id=metadata['ramdisk_id']
+                           )
+                # cleanup metadata
+                k.delete()
+                self.conn.delete_tags(instance.id, ['ec_bundling'])
+                items.append(self.conn.get_all_images(image_ids=[image_id]))
+            elif tasks[0].state == 'failed':
+                # generate error message, need to let user know somehow
+                logging.warn("bundle task failed! " + tasks[0].message)
+                # cleanup metadata
+                k.delete()
+                self.conn.delete_tags(instance.id, ['ec_bundling'])
+            elif tasks[0].state in ['pending', 'bundling', 'storing']:  # add this into image list
+                fakeimage = Image()
+                fakeimage.id=_(u'Pending')
+                fakeimage.location="%s/%s..." % (bucket, metadata['prefix'])
+                fakeimage.owner_id=''  # TODO: fetch outside loop and use here
+                fakeimage.state=tasks[0].state
+                fakeimage.progress=tasks[0].progress
+                fakeimage.is_public=False
+                fakeimage.name=metadata['name']
+                fakeimage.description=metadata['description']
+                fakeimage.architecture=metadata['arch']
+                fakeimage.platform='windows' if metadata['platform'] == 'windows' else None
+                fakeimage.type='machine'
+                fakeimage.root_device_type='instance-store'
+                fakeimage.root_device_name='/dev/sda'
+                items.append(fakeimage)
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
         filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
         if self.request.params.getall('platform'):
