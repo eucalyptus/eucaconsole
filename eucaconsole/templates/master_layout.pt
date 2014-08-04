@@ -130,6 +130,11 @@
         </p>
         <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
     </div>
+    <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
+        <h3 i18n:translate="">Confirm navigation</h3>
+        <span id="warning-message-unsaved-changes" i18n:translate="">You must click the "Save Changes" button before you leave this page or your changes will be lost. Are you sure you want to leave this page?</span>
+        <a href="#" class="close-reveal-modal">&#215;</a>
+    </div>
 
     <a class="exit-off-canvas"></a>
 

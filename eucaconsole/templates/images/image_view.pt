@@ -211,13 +211,6 @@
                 <div id="help-html-console_add_edit_tags" ng-include="'${layout.help_path('console_add_edit_tags.html')}'"></div>
             </div>
         </div>
-        <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Warning</h3>
-            <span class="hide" id="warning-message-unsaved-tag" i18n:translate="">You must click the "Add Tag" button and "Save Changes" button for your tag to be included.</span>
-            <span class="hide" id="warning-message-unsaved-change" i18n:translate="">You must click the "Save Changes" button before you leave this page.</span>
-            <span id="warning-message-unsaved-change-open-modal" i18n:translate="">You must click the "Save Changes" button before you open this modal.</span>
-            <a href="#" class="close-reveal-modal">&#215;</a>
-        </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('image_dialogs', image=image, image_name_id=image_name_id, deregister_form=deregister_form, snapshot_images_registered=snapshot_images_registered)}
     </div>

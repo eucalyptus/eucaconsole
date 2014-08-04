@@ -139,7 +139,7 @@ angular.module('VolumePage', ['TagEditor'])
                 // Either by "Submit" or clicking links on the page
                 if ($scope.existsUnsavedTag()) {
                     // In case of any unsaved tags, warn the user before unloading the page
-                    return $('#warning-message-unsaved-tag').text();
+                    return $('#warning-message-unsaved-changes').text();
                 } else if ($scope.isNotChanged === false) {
                     // No unsaved tags, but some input fields have been modified on the page
                     if ($scope.isSubmitted === true) {
@@ -147,7 +147,7 @@ angular.module('VolumePage', ['TagEditor'])
                         return;
                     } else {
                         // The action is navigate away.  Warn the user about the unsaved changes
-                        return $('#warning-message-unsaved-change').text();
+                        return $('#warning-message-unsaved-changes').text();
                     }
                 }
             };
