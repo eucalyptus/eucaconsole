@@ -1147,10 +1147,9 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     self.log_request(_(u"Creating image from instance {0}").format(instance_id))
                     result = self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
-                    import pdb; pdb.set_trace()
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=self.request.route_path('image_view', id=result.image_id))
+                    return HTTPFound(location=self.request.route_path('image_view', id=result))
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict
