@@ -45,9 +45,75 @@ from ..models import Notification
 from ..models.auth import User
 from ..views import LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
+from ..layout import __version__ as curr_version
 
 import panels
 
+class ImageBundlingMixin(object):
+    """
+    This has the code necessary to handle image bundling tasks attached to an instance.
+    It checks state and completes the registration if possible. Otherwise, it creates
+    a fake image that acts as a placeholder so that users can see status.
+    """
+    def handle_instance_being_bundled(self, instance):
+        bundling_tag = instance.tags.get('ec_bundling') or None
+        if bundling_tag is None:
+            return None
+        bucket, bundle_id = bundling_tag.split('/')
+        s3_conn = self.get_connection(conn_type='s3')
+        k = Key(s3_conn.get_bucket(bucket))
+        k.key = bundle_id
+        metadata = json.loads(k.get_contents_as_string())
+        tasks = self.conn.get_all_bundle_tasks([bundle_id])
+        if len(tasks) == 0 or tasks[0].state == 'complete':
+            # handle registration
+            if metadata['version'] != curr_version:
+                self.log_request(_(u"Bundle operation {0} from previous software version will be ignored.").format(bundle_id))
+            else:
+                self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
+                image_id = self.conn.register_image(
+                                name=metadata['name'],
+                                description=metadata['description'],
+                                image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
+                                virtualization_type=metadata['virt_type'],
+                                kernel_id=metadata['kernel_id'],
+                                ramdisk_id=metadata['ramdisk_id']
+                           )
+            # cleanup creds
+            iam_conn = self.get_connection(conn_type='iam')
+            iam_conn.delete_access_key(metadata['access'])
+            # cleanup metadata
+            k.delete()
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            return self.conn.get_all_images(image_ids=[image_id])[0]
+        elif tasks[0].state == 'failed':
+            # generate error message, need to let user know somehow
+            logging.warn("bundle task failed! " + tasks[0].message)
+            # cleanup creds
+            iam_conn = self.get_connection(conn_type='iam')
+            iam_conn.delete_access_key(metadata['access'])
+            # cleanup metadata
+            k.delete()
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            return None
+        elif tasks[0].state in ['pending', 'bundling', 'storing']:
+            # add this into image list
+            fakeimage = Image()
+            fakeimage.id=_(u'Pending')
+            fakeimage.location="%s/%s.manifest.xml" % (bucket, metadata['prefix'])
+            fakeimage.owner_id=''  # do we need this?
+            fakeimage.state=tasks[0].state
+            fakeimage.progress=tasks[0].progress
+            fakeimage.is_public=False
+            fakeimage.name=metadata['name']
+            fakeimage.description=metadata['description']
+            fakeimage.architecture=metadata['arch']
+            fakeimage.platform='windows' if metadata['platform'] == 'windows' else None
+            fakeimage.type='machine'
+            fakeimage.root_device_type='instance-store'
+            fakeimage.root_device_name='/dev/sda'
+            fakeimage.block_device_mapping = {}
+            return fakeimage
 
 class ImagesView(LandingPageView):
     TEMPLATE = '../templates/images/images.pt'
@@ -106,7 +172,7 @@ class ImagesView(LandingPageView):
                 manager.clear()
 
 
-class ImagesJsonView(LandingPageView):
+class ImagesJsonView(LandingPageView, ImageBundlingMixin):
 
     def __init__(self, request):
         super(ImagesJsonView, self).__init__(request)
@@ -117,54 +183,12 @@ class ImagesJsonView(LandingPageView):
     def images_json(self):
         # actual images
         items = self.get_items()
-        # might want to fetch all bundle tasks up front since that # will be small
-        #tasks = self.conn.get_all_bundle_tasks()
         # fetch instances that have been marked for bundling
         instances = self.conn.get_only_instances(filters={'tag-key':'ec_bundling'})
         for instance in instances:
-            bucket, bundle_id = instance.tags['ec_bundling'].split('/')
-            s3_conn = self.get_connection(conn_type='s3')
-            k = Key(s3_conn.get_bucket(bucket))
-            k.key = bundle_id
-            metadata = json.loads(k.get_contents_as_string())
-            tasks = self.conn.get_all_bundle_tasks([bundle_id])
-            if len(tasks) == 0 or tasks[0].state == 'complete':
-                # handle registration
-                self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
-                image_id = self.conn.register_image(
-                                name=metadata['name'],
-                                description=metadata['description'],
-                                image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
-                                virtualization_type=metadata['virt_type'],
-                                kernel_id=metadata['kernel_id'],
-                                ramdisk_id=metadata['ramdisk_id']
-                           )
-                # cleanup metadata
-                k.delete()
-                self.conn.delete_tags(instance.id, ['ec_bundling'])
-                items.append(self.conn.get_all_images(image_ids=[image_id]))
-            elif tasks[0].state == 'failed':
-                # generate error message, need to let user know somehow
-                logging.warn("bundle task failed! " + tasks[0].message)
-                # cleanup metadata
-                k.delete()
-                self.conn.delete_tags(instance.id, ['ec_bundling'])
-            elif tasks[0].state in ['pending', 'bundling', 'storing']:  # add this into image list
-                fakeimage = Image()
-                fakeimage.id=_(u'Pending')
-                fakeimage.location="%s/%s..." % (bucket, metadata['prefix'])
-                fakeimage.owner_id=''  # TODO: fetch outside loop and use here
-                fakeimage.state=tasks[0].state
-                fakeimage.progress=tasks[0].progress
-                fakeimage.is_public=False
-                fakeimage.name=metadata['name']
-                fakeimage.description=metadata['description']
-                fakeimage.architecture=metadata['arch']
-                fakeimage.platform='windows' if metadata['platform'] == 'windows' else None
-                fakeimage.type='machine'
-                fakeimage.root_device_type='instance-store'
-                fakeimage.root_device_name='/dev/sda'
-                items.append(fakeimage)
+            image = self.handle_instance_being_bundled(instance)
+            if image is not None:
+                items.append(image)
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
         filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
         if self.request.params.getall('platform'):
@@ -226,14 +250,21 @@ class ImagesJsonView(LandingPageView):
             )))
 
     @view_config(route_name='image_state_json', renderer='json', request_method='GET')
-    def images_state_json(self):
+    def image_state_json(self):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
-            image = self.conn.get_image(image_id)
+            url = None
+            if image_id.find('pi-') == 0:
+                instances = self.conn.get_only_instances([image_id[1:]])
+                image = self.handle_instance_being_bundled(instances[0])
+                if image.state == 'available':
+                    url = self.request.route_path('image_view', id=image.id)
+            else:
+                image = self.conn.get_image(image_id)
             """Return current image status"""
             image_status = image.state if image else 'deleted'
             return dict(
-                results=dict(image_status=image_status)
+                results=dict(image_status=image_status, url=url)
             )
 
     def get_items(self):
@@ -278,7 +309,7 @@ class ImagesJsonView(LandingPageView):
         return filtered_items
 
 
-class ImageView(TaggedItemView):
+class ImageView(TaggedItemView, ImageBundlingMixin):
     """Views for single Image"""
     TEMPLATE = '../templates/images/image_view.pt'
 
@@ -294,8 +325,12 @@ class ImageView(TaggedItemView):
         self.is_public = str(self.image.is_public).lower() if self.image else False
         self.is_owned_by_user = self.check_if_image_owned_by_user()
         self.image_launch_permissions = self.get_image_launch_permissions_array()
+        image_id = self.image.id if self.image is not None else ''
+        if self.image is not None and self.image.state != 'available':
+            image_id = self.request.matchdict.get('id').encode('ascii', 'ignore')
         self.render_dict = dict(
             image=self.image,
+            image_id=image_id,
             is_public = self.is_public,
             is_owned_by_user = self.is_owned_by_user,
             image_launch_permissions = self.image_launch_permissions,
@@ -328,7 +363,11 @@ class ImageView(TaggedItemView):
         images = []
         if self.conn:
             with boto_error_handler(self.request):
-                images = self.conn.get_all_images(image_ids=images_param)
+                if image_param.find('pi-') == 0:
+                    instances = self.conn.get_only_instances([image_param[1:]])
+                    images = [self.handle_instance_being_bundled(instances[0])]
+                else:
+                    images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
         if image:
             attrs = image.__dict__

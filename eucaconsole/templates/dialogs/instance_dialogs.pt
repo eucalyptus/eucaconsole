@@ -117,11 +117,11 @@
             <a href="#" id="console_output_close_link" class="close-reveal-modal">&#215;</a>
         </div>
         <div id="connect-instance-modal" class="reveal-modal medium" data-reveal="">
-        <h3 class="pagetitle">
-            <strong i18n:translate="">Connect to instance:</strong>
-            <em tal:condition="not landingpage">${instance_name}</em>
-            <em tal:condition="landingpage">{{ instanceName }}</em>
-        </h3>
+            <h3 class="pagetitle">
+                <strong i18n:translate="">Connect to instance:</strong>
+                <em tal:condition="not landingpage">${instance_name}</em>
+                <em tal:condition="landingpage">{{ instanceName }}</em>
+            </h3>
             <div ng-show="!(platform == 'windows')">
                 <p i18n:translate=""> To connect to your instance, be sure security group "{{ groupName }}" has TCP port 22 open to inbound traffic and then perform the following steps (these instructions do not apply if you did not select a key pair when you launched this instance):</p>
                 <ol>
@@ -245,6 +245,20 @@
                 </div>
             </form>
             <a href="#" id="disassociate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>
+        </div>
+        <div id="create-image-denied-modal" class="reveal-modal medium" data-reveal="">
+            <h3 class="pagetitle">
+                <strong i18n:translate="">Cannot create image</strong>
+                <p>
+                    <span i18n:translate=""> 
+                        You cannot create another image from this instance while there is one in progress. Please wait for that operation to complete and try again.
+                    </span>
+                </p>
+                <div class="dialog-submit-button">
+                    <a href="/instances/p{{ instanceID }}" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Check image creation progress</a>
+                </div>
+            </h3>
+            <a href="#" id="create_denied_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>

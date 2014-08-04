@@ -61,6 +61,7 @@ from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
 from . import guess_mimetype_from_buffer
+from ..layout import __version__ as curr_version
 
 
 class BaseInstanceView(BaseView):
@@ -352,6 +353,7 @@ class InstancesJsonView(LandingPageView):
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
+                running_create=True if instance.tags.get('ec_bundling') else False,
             ))
         return dict(results=instances)
 
@@ -1078,7 +1080,6 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
     @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')
     def instance_create_image_post(self):
         """Handles the POST from the create image from instance form"""
-        success_location = self.request.route_path('images')
         is_ebs = True if self.instance.root_device_type == 'ebs' else False
         if is_ebs:  # remove fields not needed so validation passes
             del self.create_image_form.s3_bucket
@@ -1118,6 +1119,7 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
                 
                     bundle_metadata = {
+                        'version':curr_version,
                         'name':name,
                         'description':description,
                         'prefix':s3_prefix,
@@ -1137,17 +1139,18 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     k.set_contents_from_string(json.dumps(bundle_metadata))
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=success_location)
+                    return HTTPFound(location=self.request.route_path('image_view', id='p'+instance_id))
             else:
                 no_reboot = self.request.params.get('no_reboot')
                 bdm = {}
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Creating image from instance {0}").format(instance_id))
-                    self.ec2_conn.create_image(
+                    result = self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
+                    import pdb; pdb.set_trace()
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=success_location)
+                    return HTTPFound(location=self.request.route_path('image_view', id=result.image_id))
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict

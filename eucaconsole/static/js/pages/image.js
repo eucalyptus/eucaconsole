@@ -9,7 +9,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
     .controller('ImagePageCtrl', function ($scope, $http, $timeout) {
         $scope.imageState = '';
         $scope.imageStatusEndpoint = '';
-        $scope.transitionalStates = ['pending'];
+        $scope.transitionalStates = ['pending', 'storing'];
         $scope.imageState = '';
         $scope.isPublic = '';
         $scope.errorClass= '';
@@ -94,6 +94,10 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                         $scope.isUpdating = true;
                         $timeout(function() {$scope.getImageState()}, 4000);  // Poll every 4 seconds
                     } else {
+                        if ($scope.isUpdating == true) {
+                            // force reload in case image ID got assigned
+                            window.location = results.url;
+                        }
                         $scope.isUpdating = false;
                     }
                 }

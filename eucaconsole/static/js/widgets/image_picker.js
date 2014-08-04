@@ -24,7 +24,7 @@ angular.module('ImagePicker', [])
         ];
         $scope.initImagePicker = function (jsonEndpointPrefix, cloudType) {
             $scope.jsonEndpointPrefix = jsonEndpointPrefix;
-            $scope.jsonEndpoint = jsonEndpointPrefix;
+            $scope.jsonEndpoint = jsonEndpointPrefix + "?state=available";
             $scope.cloudType = cloudType;
             $scope.initChosenSelectors();
             $scope.initFilters();
@@ -60,7 +60,7 @@ angular.module('ImagePicker', [])
                 if (rootDeviceType) { params['root_device_type'] = rootDeviceType; }
                 if (architecture) { params['architecture'] = architecture; }
                 if (tags) { params['tags'] = tags; }
-                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "?" + $.param(params, true));
+                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "&" + $.param(params, true));
                 $scope.getItems();
             });
             clearLink.on('click', function (evt) {
