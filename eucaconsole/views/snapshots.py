@@ -191,8 +191,10 @@ class SnapshotsJsonView(LandingPageView):
         super(SnapshotsJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='snapshots_json', renderer='json', request_method='GET')
+    @view_config(route_name='snapshots_json', renderer='json', request_method='POST')
     def snapshots_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         snapshots = []
         filtered_snapshots = self.filter_items(self.get_items())
         volume_ids = list(set([snapshot.volume_id for snapshot in filtered_snapshots]))

@@ -55,7 +55,7 @@ class ImageBundlingMixin(object):
     It checks state and completes the registration if possible. Otherwise, it creates
     a fake image that acts as a placeholder so that users can see status.
     """
-    def handle_instance_being_bundled(self, instance):
+    def handle_instance_being_bundled(self, instance, do_not_finish=False):
         bundling_tag = instance.tags.get('ec_bundling') or None
         if bundling_tag is None:
             return None
@@ -65,6 +65,8 @@ class ImageBundlingMixin(object):
         k.key = bundle_id
         metadata = json.loads(k.get_contents_as_string())
         tasks = self.conn.get_all_bundle_tasks([bundle_id])
+        if do_not_finish and len(tasks) > 0:
+            tasks[0].state = 'pending'
         if len(tasks) == 0 or tasks[0].state == 'complete':
             # handle registration
             if metadata['version'] != curr_version:
@@ -179,8 +181,10 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         self.conn = self.get_connection()
 
     """Images returned as JSON"""
-    @view_config(route_name='images_json', renderer='json', request_method='GET')
+    @view_config(route_name='images_json', renderer='json', request_method='POST')
     def images_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         # actual images
         items = self.get_items()
         # fetch instances that have been marked for bundling
@@ -249,7 +253,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 root_device_type=image.root_device_type,
             )))
 
-    @view_config(route_name='image_state_json', renderer='json', request_method='GET')
+    @view_config(route_name='image_state_json', renderer='json', request_method='POST')
     def image_state_json(self):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
@@ -365,7 +369,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
             with boto_error_handler(self.request):
                 if image_param.find('pi-') == 0:
                     instances = self.conn.get_only_instances([image_param[1:]])
-                    images = [self.handle_instance_being_bundled(instances[0])]
+                    images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
                 else:
                     images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None

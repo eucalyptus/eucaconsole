@@ -149,8 +149,10 @@ class UsersJsonView(BaseView):
         super(UsersJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='users_json', renderer='json', request_method='GET')
+    @view_config(route_name='users_json', renderer='json', request_method='POST')
     def users_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         users = []
         groups = []
         with boto_error_handler(self.request):

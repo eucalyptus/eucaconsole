@@ -85,7 +85,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
             });
         };
         $scope.getImageState = function () {
-            $http.get($scope.imageStatusEndpoint).success(function(oData) {
+            $http.post($scope.imageStatusEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     $scope.imageState = results['image_status'];

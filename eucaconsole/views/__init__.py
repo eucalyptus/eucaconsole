@@ -424,6 +424,7 @@ class LandingPageView(BaseView):
 
     def filter_items(self, items, ignore=None, autoscale=False):
         ignore = ignore or []  # Pass list of filters to ignore
+        ignore.append('csrf_token')
         filtered_items = []
         if hasattr(self.request.params, 'dict_of_lists'):
             filter_params = self.request.params.dict_of_lists()

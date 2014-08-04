@@ -300,8 +300,10 @@ class InstancesJsonView(LandingPageView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='instances_json', renderer='json', request_method='GET')
+    @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')

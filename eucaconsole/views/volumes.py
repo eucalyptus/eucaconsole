@@ -180,8 +180,10 @@ class VolumesJsonView(LandingPageView):
         super(VolumesJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='volumes_json', renderer='json', request_method='GET')
+    @view_config(route_name='volumes_json', renderer='json', request_method='POST')
     def volumes_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         volumes = []
         transitional_states = ['attaching', 'detaching', 'creating', 'deleting']
         filters = {}
