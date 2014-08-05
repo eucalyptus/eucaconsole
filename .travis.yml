@@ -8,8 +8,8 @@ install:
     - sudo apt-get -y install openssl build-essential python-dev swig
     - sudo chmod -R 777 /usr/share/locale
     - python setup.py install
-    - pip install Babel lingua
+    - pip install Babel lingua nosetest
 # command to run tests, e.g. python setup.py test
-script: python setup.py test
+script: python setup.py nosetests
 after_script: python setup.py extract_messages
 
