@@ -106,7 +106,7 @@ class ChoicesManager(object):
     def get_availability_zones(self, region):
         @extra_long_term.cache_on_arguments(namespace='availability_zones')
         def _get_zones_cache_(self, region):
-            return _get_zones(self, region)
+            return _get_zones_(self, region)
         def _get_zones_(self, region):
             zones = []
             if self.conn is not None:

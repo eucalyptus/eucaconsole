@@ -142,20 +142,24 @@ class BaseView(object):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 
     def _store_file_(self, filename, mime_type, contents):
-        try:
-            default_term.set('file_cache', (filename, mime_type, contents))
-        except pylibmc.Error as ex:
-            logging.warn("memcached misconfigured or not reachable, using session storage")
-            session = self.request.session
-            session['file_cache'] = (filename, mime_type, contents)
+        # disable using memcache for file storage
+        #try:
+        #    default_term.set('file_cache', (filename, mime_type, contents))
+        #except pylibmc.Error as ex:
+        #    logging.warn("memcached misconfigured or not reachable, using session storage")
+        # to re-enable, uncomment lines above and indent 2 lines below
+        session = self.request.session
+        session['file_cache'] = (filename, mime_type, contents)
 
     def _has_file_(self):
         # check both cache and session
-        try:
-            return not isinstance(default_term.get('file_cache'), NoValue)
-        except pylibmc.Error as ex:
-            session = self.request.session
-            return 'file_cache' in session
+        # disable using memcache for file storage
+        #try:
+        #    return not isinstance(default_term.get('file_cache'), NoValue)
+        #except pylibmc.Error as ex:
+        # to re-enable, uncomment lines above and indent 2 lines below
+        session = self.request.session
+        return 'file_cache' in session
 
     def get_user_data(self):
         input_type = self.request.params.get('inputtype')
@@ -508,17 +512,18 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
-    try:
-        file_value = default_term.get('file_cache')
-        if not isinstance(file_value, NoValue):
-            (filename, mime_type, contents) = file_value
-            default_term.delete('file_cache')
-            response = Response(content_type=mime_type)
-            response.body = str(contents)
-            response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
-            return response
-    except pylibmc.Error as ex:
-        logging.warn('memcached not responding')
+    # disable using memcache for file storage
+    #try:
+    #    file_value = default_term.get('file_cache')
+    #    if not isinstance(file_value, NoValue):
+    #        (filename, mime_type, contents) = file_value
+    #        default_term.delete('file_cache')
+    #        response = Response(content_type=mime_type)
+    #        response.body = str(contents)
+    #        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+    #        return response
+    #except pylibmc.Error as ex:
+    #    logging.warn('memcached not responding')
     # try session instead
     session = request.session
     if session.get('file_cache'):
