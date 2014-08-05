@@ -101,61 +101,60 @@ class BaseFormTestCase(unittest.TestCase):
     request = None
     csrf_enabled = True
 
-    memory_cache = 'dogpile.cache.memory'
-    memory_cache_url = '127.0.0.1:11211'
-    username = None
-    password = None
-    short_term.configure(
-        memory_cache,
-        expiration_time = 60,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
-        },
-    )
-    default_term.configure(
-        memory_cache,
-        expiration_time = 300,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
-        },
-    )
-    long_term.configure(
-        memory_cache,
-        expiration_time = 3600,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
-        },
-    )
-    extra_long_term.configure(
-        memory_cache,
-        expiration_time = 43200,
-        arguments = {
-            'url':[memory_cache_url],
-            'binary':True,
-            'min_compress_len':1024,
-            'behaviors':{"tcp_nodelay": True,"ketama":True},
-            'username':username,
-            'password':password
-        },
-    )
-
     def setUp(self):
         self.config = testing.setUp()
+        memory_cache = 'dogpile.cache.memory'
+        memory_cache_url = '127.0.0.1:11211'
+        username = None
+        password = None
+        short_term.configure(
+            memory_cache,
+            expiration_time = 60,
+            arguments = {
+                'url':[memory_cache_url],
+                'binary':True,
+                'min_compress_len':1024,
+                'behaviors':{"tcp_nodelay": True,"ketama":True},
+                'username':username,
+                'password':password
+            },
+        )
+        default_term.configure(
+            memory_cache,
+            expiration_time = 300,
+            arguments = {
+                'url':[memory_cache_url],
+                'binary':True,
+                'min_compress_len':1024,
+                'behaviors':{"tcp_nodelay": True,"ketama":True},
+                'username':username,
+                'password':password
+            },
+        )
+        long_term.configure(
+            memory_cache,
+            expiration_time = 3600,
+            arguments = {
+                'url':[memory_cache_url],
+                'binary':True,
+                'min_compress_len':1024,
+                'behaviors':{"tcp_nodelay": True,"ketama":True},
+                'username':username,
+                'password':password
+            },
+        )
+        extra_long_term.configure(
+            memory_cache,
+            expiration_time = 43200,
+            arguments = {
+                'url':[memory_cache_url],
+                'binary':True,
+                'min_compress_len':1024,
+                'behaviors':{"tcp_nodelay": True,"ketama":True},
+                'username':username,
+                'password':password
+            },
+        )
 
     def _make_form(self, csrf_enabled=False, *args, **kwargs):
         return self.form_class(request=self.request, csrf_enabled=self.csrf_enabled, *args, **kwargs)
