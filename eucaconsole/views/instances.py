@@ -34,6 +34,7 @@ import os
 import simplejson as json
 from M2Crypto import RSA
 
+from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
@@ -322,17 +323,26 @@ class InstancesJsonView(LandingPageView):
             filtered_items = self.filter_by_roles(filtered_items)
         transitional_states = ['pending', 'stopping', 'shutting-down']
         elastic_ips = [ip.public_ip for ip in self.conn.get_all_addresses()]
+        images = self.get_images(self.conn)
         for instance in filtered_items:
             is_transitional = instance.state in transitional_states
             security_groups_array = sorted({'name': group.name, 'id': group.id} for group in instance.groups)
             if instance.platform is None:
                 instance.platform = _(u"linux")
             has_elastic_ip = instance.ip_address in elastic_ips
+            image = self.get_image_by_id(images, instance.image_id)
+            image_name = None
+            if image:
+                image_name = '{0}{1}'.format(
+                    image.name if image.name else image.id,
+                    ' ({0})'.format(image.id) if image.name else ''
+                )
             instances.append(dict(
                 id=instance.id,
                 name=TaggedItemView.get_display_name(instance),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
+                image_name=image_name,
                 ip_address=instance.ip_address,
                 has_elastic_ip=has_elastic_ip,
                 public_dns_name=instance.public_dns_name,
@@ -358,6 +368,32 @@ class InstancesJsonView(LandingPageView):
                         instances.append(instance)
             return instances
         return []
+
+    def get_images(self, conn):
+        if self.cloud_type == 'aws':
+            owners = 'amazon' 
+            executors = []
+            region = self.request.session.get('region')
+            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
+                owners=owners, executors=executors, region=region)
+
+            @cache_region('long_term', cache_key)
+            def _get_images_cache(_owners, _executors, _region):
+                with boto_error_handler(self.request):
+                    filters = {'image-type': 'machine'}
+                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
+            return _get_images_cache(owners, executors, region)
+        else: 
+            with boto_error_handler(self.request):
+                filters = {'image-type': 'machine'}
+                return conn.get_all_images(filters=filters) if conn else []
+
+    def get_image_by_id(self, images, id):
+        if images:
+            for image in images:
+                if image.id == id:
+                    return image
+        return None 
 
     def filter_by_scaling_group(self, items):
         filtered_items = []
