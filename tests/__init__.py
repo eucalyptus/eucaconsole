@@ -101,7 +101,7 @@ class BaseFormTestCase(unittest.TestCase):
     request = None
     csrf_enabled = True
 
-    memory_cache = 'dogpile.cache.pylibmc'
+    memory_cache = 'dogpile.cache.memory'
     memory_cache_url = '127.0.0.1:11211'
     username = None
     password = None
