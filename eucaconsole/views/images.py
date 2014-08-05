@@ -108,19 +108,19 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
         elif tasks[0].state in ['pending', 'bundling', 'storing']:
             # add this into image list
             fakeimage = Image()
-            fakeimage.id=_(u'Pending')
-            fakeimage.location="%s/%s.manifest.xml" % (bucket, metadata['prefix'])
-            fakeimage.owner_id=''  # do we need this?
-            fakeimage.state=tasks[0].state
-            fakeimage.progress=tasks[0].progress
-            fakeimage.is_public=False
-            fakeimage.name=metadata['name']
-            fakeimage.description=metadata['description']
-            fakeimage.architecture=metadata['arch']
-            fakeimage.platform='windows' if metadata['platform'] == 'windows' else None
-            fakeimage.type='machine'
-            fakeimage.root_device_type='instance-store'
-            fakeimage.root_device_name='/dev/sda'
+            fakeimage.id = _(u'Pending')
+            fakeimage.location = "%s/%s.manifest.xml" % (bucket, metadata['prefix'])
+            fakeimage.owner_id = ''  # do we need this?
+            fakeimage.state = tasks[0].state
+            fakeimage.progress = tasks[0].progress
+            fakeimage.is_public = False
+            fakeimage.name = metadata['name']
+            fakeimage.description = metadata['description']
+            fakeimage.architecture = metadata['arch']
+            fakeimage.platform = 'windows' if metadata['platform'] == 'windows' else None
+            fakeimage.type = 'machine'
+            fakeimage.root_device_type = 'instance-store'
+            fakeimage.root_device_name = '/dev/sda'
             fakeimage.block_device_mapping = {}
             fakeimage.tags = json.loads(metadata['tags'])
             return fakeimage

@@ -695,7 +695,7 @@ class InstanceStateView(BaseInstanceView):
         """Return console output for instance"""
         with boto_error_handler(self.request):
             output = self.conn.get_console_output(instance_id=self.instance.id)
-        return dict(results=output.output)
+        return dict(results=base64.b64encode(output.output))
 
     # TODO: also in forms/instances.py, let's consolidate
     def suggest_next_device_name(self, instance):
@@ -1110,9 +1110,9 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                 secret = self.request.session['secret_key']
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Bundling instance {0}").format(instance_id))
-                    self.iam_conn = self.get_connection(conn_type='iam')
+                    iam_conn = self.get_connection(conn_type='iam')
                     username = self.request.session['username']
-                    creds = self.iam_conn.create_access_key(username)
+                    creds = iam_conn.create_access_key(username)
                     access_key = creds.access_key.access_key_id
                     secret_key = creds.access_key.secret_access_key
                     # we need to make the call ourselves to override boto's auto-signing
