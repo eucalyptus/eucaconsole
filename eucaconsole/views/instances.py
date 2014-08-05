@@ -53,6 +53,7 @@ from ..views import BaseView, LandingPageView, TaggedItemView, BlockDeviceMappin
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
+from . import guess_mimetype_from_buffer
 
 
 class BaseInstanceView(BaseView):
@@ -470,14 +471,14 @@ class InstanceView(TaggedItemView, BaseInstanceView):
                 # Update stopped instance
                 if self.instance.state == 'stopped':
                     instance_type = self.request.params.get('instance_type')
-                    user_data = self.request.params.get('userdata')
                     kernel = self.request.params.get('kernel')
                     ramdisk = self.request.params.get('ramdisk')
                     self.log_request(_(u"Updating instance {0} (type={1}, kernel={2}, ramidisk={3})").format(
                         self.instance.id, instance_type, kernel, ramdisk))
                     if self.instance.instance_type != instance_type:
                         self.conn.modify_instance_attribute(self.instance.id, 'instanceType', instance_type)
-                    if len(user_data) > 0:
+                    user_data = self.get_user_data()
+                    if user_data is not None:
                         self.conn.modify_instance_attribute(self.instance.id, 'userData', base64.b64encode(user_data))
                     if kernel != '' and self.instance.kernel != kernel:
                         self.conn.modify_instance_attribute(self.instance.id, 'kernel', kernel)
@@ -640,6 +641,26 @@ class InstanceStateView(BaseInstanceView):
         """Return current instance state"""
         return dict(results=self.instance.state)
 
+    @view_config(route_name='instance_userdata_json', renderer='json', request_method='GET')
+    def instance_userdata_json(self):
+        """Return current instance state"""
+        with boto_error_handler(self.request):
+            user_data = self.conn.get_instance_attribute(self.instance.id, 'userData')
+            if 'userData' in user_data.keys():
+                user_data = user_data['userData']
+                unencoded = base64.b64decode(user_data)
+                mime_type = guess_mimetype_from_buffer(unencoded, mime=True)
+                if mime_type.find('text') == 0:
+                    user_data=unencoded
+                else:
+                    # get more descriptive text
+                    mime_type = guess_mimetype_from_buffer(unencoded)
+                    user_data=None
+            else:
+                user_data = ''
+                mime_type = ''
+            return dict(results=dict(type=mime_type, data=user_data))
+
     @view_config(route_name='instance_ip_address_json', renderer='json', request_method='GET')
     def instance_ip_address_json(self):
         """Return current instance state"""
@@ -708,6 +729,8 @@ class InstanceVolumesView(BaseInstanceView):
             instance_name=self.instance_name,
             attach_form=self.attach_form,
             detach_form=self.detach_form,
+            no_volumes_in_zone=len(self.attach_form.volume_id.choices) <= 1,
+            instance_zone=self.instance.placement,
         )
 
     @view_config(route_name='instance_volumes', renderer=VIEW_TEMPLATE, request_method='GET')

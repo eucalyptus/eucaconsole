@@ -35,7 +35,7 @@ Fedora:
 
 OS X:
 
-Install homebrew, then run `brew install libevent openssl swig memcached libmemcached`
+Install homebrew, then run `brew install libevent openssl swig libmagic memcached libmemcached`
 
 
 Pyramid Setup

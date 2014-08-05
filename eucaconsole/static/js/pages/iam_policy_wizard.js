@@ -5,10 +5,7 @@
  */
 
 angular.module('IAMPolicyWizard', [])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout, $location) {
+    .controller('IAMPolicyWizardCtrl', function ($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.wizardForm = $('#iam-policy-form');
         $scope.policyGenerator = $('#policy-generator');
@@ -21,7 +18,7 @@ angular.module('IAMPolicyWizard', [])
         $scope.cloudType = 'euca';
         $scope.lastSelectedTabKey = 'policyWizard-selectedTab';
         $scope.actionsList = [];
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.timestamp = (new Date()).toISOString().replace(/[-:TZ\.]/g, '');
         $scope.selectedOperatorType = '';
         $scope.languageCode = 'en';
@@ -160,8 +157,11 @@ angular.module('IAMPolicyWizard', [])
             $('.tabs').find('a').on('click', function (evt) {
                 var tabLinkId = $(evt.target).closest('a').attr('id');
                 Modernizr.localstorage && localStorage.setItem($scope.lastSelectedTabKey, tabLinkId);
-                if (tabLinkId === 'custom-policy-tab') {
-                    $scope.setPolicyName('custom');
+                if (tabLinkId === 'custom-policy-tab' && $scope.policyStatements.length) {
+                    // Load selected policy statements if switching back to custom policy tab
+                    $timeout(function() {
+                        $scope.updatePolicy();
+                    }, 100);
                 }
             });
             $('#' + lastSelectedTab).click();
@@ -224,6 +224,13 @@ angular.module('IAMPolicyWizard', [])
                 'custom': 'CustomAccessPolicy'
             };
             $scope.policyName = typeNameMapping[policyType] + '-' + $scope.urlParams['id'] + '-' + $scope.timestamp;
+            if (policyType === 'custom') {
+                // Prevent lingering validation error on policy name field
+                $timeout(function() {
+                    $('#name').trigger('focus');
+                    $('.CodeMirror').find('textarea').focus();
+                }, 200);
+            }
         };
         $scope.handlePolicyFileUpload = function () {
             $('#policy_file').on('change', function(evt) {
@@ -256,6 +263,7 @@ angular.module('IAMPolicyWizard', [])
             $scope.setPolicyName(policyType);
         };
         $scope.updatePolicy = function() {
+            $scope.setPolicyName('custom');
             $scope.handEdited = false;
             $scope.policyStatements = [];
             // Add namespace (allow/deny all) statements

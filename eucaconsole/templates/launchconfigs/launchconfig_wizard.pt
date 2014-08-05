@@ -88,6 +88,8 @@
                                     <a id="visit-step-3" class="button small round" ng-click="visitNextStep(3, $event)" ng-disabled="isNotValid">
                                         <span i18n:translate="">Next</span>
                                     </a>
+                                    <a href="${request.route_path('launchconfigs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +155,10 @@
                                     ${structure:create_form['create_sg_from_lc'].label}
                                     <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Launch Configuration</span>
-                                    </button><br />
+                                    </button>
+                                    <a href="${request.route_path('launchconfigs')}"
+                                       class="cancel-link" i18n:translate="">Cancel</a>
+                                    <br />
                                     <span class="or">Or:</span>
                                     <a id="visit-step-4" ng-click="visitNextStep(4, $event)">
                                         <span i18n:translate="">Select advanced options</span>
@@ -166,8 +171,23 @@
                             <p class="description" i18n:translate="">
                                 Please specify user data and other advanced options (optional).
                             </p>
-                            ${panel('form_field', field=create_form['userdata'], ng_attrs={'model': 'userData'})}
-                            ${panel('form_field', field=create_form['userdata_file'], ng_attrs={'model': 'userDataFile'})}
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-4 columns">
+                                    <label i18n:translate="">User data<span class="helptext-icon" title="User data file may not exceed 16 KB" data-tooltip="">?</span></label>
+                                </div>
+                                <div class="small-8 columns value">
+                                    <input type="radio" id="inputtype" name="inputtype" value="text" ng-model="inputtype">
+                                        <label id='userdatalabel' i18n:translate="">Enter text</label>
+                                    </input>
+                                    <textarea id="userdata" name="userdata" ng-show="inputtype=='text'"></textarea>
+                                    <br/>
+                                    <input type="radio" id="inputtype" name="inputtype" value="file" ng-model="inputtype">
+                                        <label id='userdatalabel' i18n:translate="">Upload file</label>
+                                    </input>
+                                    <input id="userdata_file" type="file" ng-model="userDataFile" ng-disabled="isNotStopped" name="userdata_file" disabled="disabled" ng-show="inputtype=='file'"></input><span id="userdatatype"></span>
+                                    
+                                </div>
+                            </div>
                             ${panel('form_field', field=create_form['kernel_id'])}
                             ${panel('form_field', field=create_form['ramdisk_id'])}
                             <div class="small-8 columns right">
@@ -267,6 +287,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/utils/purl.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/pages/launchconfig_wizard.js')}"></script>
 </div>

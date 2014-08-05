@@ -53,6 +53,16 @@ angular.module('TagEditor', ['ngSanitize'])
                     });
                 }
             });
+            $('#tag-name-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
+            $('#tag-value-input').keydown(function(evt) {
+                if (evt.keyCode === 13) {
+                    evt.preventDefault();
+                }
+            });
             $scope.showNameTag = showNameTag;
             $scope.syncTags();
             $scope.setWatch();

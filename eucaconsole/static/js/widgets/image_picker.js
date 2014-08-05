@@ -4,10 +4,7 @@
  *
  */
 angular.module('ImagePicker', [])
-    .config(function($locationProvider) {
-        $locationProvider.html5Mode(true);
-    })
-    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http, $location) {
+    .controller('ImagePickerCtrl', function ($rootScope, $scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.items = [];
         $scope.batchSize = 100;  // Show 100 items max w/o "show more" enabler
@@ -19,7 +16,7 @@ angular.module('ImagePicker', [])
         $scope.filtersForm = $('#filters');
         $scope.imagePicker = $('#image-picker');
         $rootScope.imageID = '';
-        $scope.urlParams = $location.search();
+        $scope.urlParams = $.url().param();
         $scope.selectedImageParam = $scope.urlParams['image_id'] || '';
         // Properties for search input filter
         $scope.filterProps = [
@@ -50,7 +47,7 @@ angular.module('ImagePicker', [])
                 var architecture, ownerAlias, platform, rootDeviceType, tags;
                 var params = {};
                 platform = form.find('#platform').val();
-                if ($scope.cloudType === 'euca') {
+                if ($scope.cloudType === 'euca' && platform) {
                     params['platform'] = platform;
                 } else if ($scope.cloudType === 'aws' && platform) {
                     params['platform'] = platform;

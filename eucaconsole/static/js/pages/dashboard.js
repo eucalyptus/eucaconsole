@@ -27,6 +27,12 @@ angular.module('Dashboard', [])
             $scope.getItemCounts();
             $scope.storeAWSRegion();
             $scope.getServiceStatus();
+            $('#sortable').sortable({
+                stop: function(event, ui) {
+                    $.cookie('dash_order', $('#sortable').sortable('toArray'), {expires: 180});
+                }
+            });
+            $('#sortable').disableSelection();
         };
         $scope.setFocus = function() {
             $('#zone-selector').find('a').get(0).focus();

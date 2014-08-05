@@ -32,6 +32,7 @@ import logging
 import pylibmc
 import simplejson as json
 import textwrap
+import threading
 
 from cgi import FieldStorage
 from contextlib import contextmanager
@@ -39,12 +40,14 @@ from dateutil import tz
 from markupsafe import Markup
 from urllib import urlencode
 from urlparse import urlparse
+import magic
 
 from dogpile.cache.api import NoValue
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
 from pyramid.httpexceptions import HTTPFound, HTTPException, HTTPUnprocessableEntity
+from pyramid.i18n import TranslationString
 from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
@@ -60,7 +63,7 @@ from ..models.auth import ConnectionManager
 def escape_braces(event):
     """Escape double curly braces in template variables to prevent AngularJS expression injections"""
     for k, v in event.rendering_val.items():
-        if type(v) in [str, unicode] or isinstance(v, Markup):
+        if type(v) in [str, unicode] or isinstance(v, Markup) or isinstance(v, TranslationString):
             event.rendering_val[k] = BaseView.escape_braces(v)
 
 
@@ -154,14 +157,27 @@ class BaseView(object):
             session = self.request.session
             return 'file_cache' in session
 
+    def get_user_data(self):
+        input_type = self.request.params.get('inputtype')
+        userdata_input = self.request.params.get('userdata')
+        userdata_file_param = self.request.POST.get('userdata_file')
+        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
+        if input_type == 'file':
+            userdata = userdata_file
+        elif input_type == 'text':
+            userdata = userdata_input
+        else:
+            userdata = userdata_file or userdata_input or None  # Look up file upload first
+        return userdata
+
     @staticmethod
     def escape_braces(s):
-        if type(s) in [str, unicode] or isinstance(s, Markup):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
             return s.replace('{{', '{ {').replace('}}', '} }')
 
     @staticmethod
     def unescape_braces(s):
-        if type(s) in [str, unicode] or isinstance(s, Markup):
+        if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
             return s.replace('{ {', '{{').replace('} }', '}}')
 
     @staticmethod
@@ -355,13 +371,6 @@ class BlockDeviceMappingItemView(BaseView):
             choices.append((value, label))
         return sorted(choices)
 
-    def get_user_data(self):
-        userdata_input = self.request.params.get('userdata')
-        userdata_file_param = self.request.POST.get('userdata_file')
-        userdata_file = userdata_file_param.file.read() if isinstance(userdata_file_param, FieldStorage) else None
-        userdata = userdata_file or userdata_input or None  # Look up file upload first
-        return userdata
-
     @staticmethod
     def get_block_device_map(bdmapping_json=None):
         """Parse block_device_mapping JSON and return a configured BlockDeviceMapping object
@@ -524,3 +533,16 @@ def file_download(request):
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 
+_magic_type = magic.Magic(mime=True)
+_magic_type._thread_check = lambda: None
+_magic_desc = magic.Magic(mime=False)
+_magic_desc._thread_check = lambda: None
+_magic_lock = threading.Lock()
+
+def guess_mimetype_from_buffer(buffer, mime=False):
+    with _magic_lock:
+        if mime:
+            return _magic_type.from_buffer(buffer)
+        else:
+            return _magic_desc.from_buffer(buffer)
+        
