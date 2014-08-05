@@ -23,6 +23,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.urlParams = $.url().param();
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
+            $scope.initAvailZoneChoice();
             $scope.volumeStatusEndpoint = jsonEndpoint;
             $scope.volumeStatus = status.replace('-', ' ');
             $scope.volumeAttachStatus = attachStatus;
@@ -67,6 +68,12 @@ angular.module('VolumePage', ['TagEditor'])
             $('#attach-volume-modal').on('open', function() {
                 $('#instance_id').chosen({'width': '75%', search_contains: true});
             });
+        };
+        $scope.initAvailZoneChoice = function () {
+            var availZoneParam = $scope.urlParams['avail_zone'];
+            if (availZoneParam) {
+                $('#zone').val(availZoneParam);
+            }
         };
         $scope.getVolumeState = function () {
             $http.get($scope.volumeStatusEndpoint).success(function(oData) {

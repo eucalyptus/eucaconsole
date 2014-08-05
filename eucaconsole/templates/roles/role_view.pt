@@ -154,7 +154,7 @@
                             <div class="small-3 columns"><label class="right" i18n:translate="">Instances</label></div>
                             <div tal:repeat="instance instances">
                                 <div class="small-9 columns value inline breakword">
-                                    <a href="$(request.route_path('instance_view', id=instance.id)}">${instance.name}</a>
+                                    <a href="${request.route_path('instance_view', id=instance.id)}">${instance.name}</a>
                                 </div>
                             </div>
                         </div>

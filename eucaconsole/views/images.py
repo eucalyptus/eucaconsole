@@ -91,7 +91,10 @@ class ImageBundlingMixin(BlockDeviceMappingItemView):
             # cleanup metadata
             k.delete()
             self.conn.delete_tags(instance.id, ['ec_bundling'])
-            return self.conn.get_all_images(image_ids=[image_id])[0]
+            if metadata['version'] != curr_version:
+                return None
+            else:
+                return self.conn.get_all_images(image_ids=[image_id])[0]
         elif tasks[0].state == 'failed':
             # generate error message, need to let user know somehow
             logging.warn("bundle task failed! " + tasks[0].message)
