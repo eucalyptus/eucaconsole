@@ -26,19 +26,19 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
-                        <li ng-show="imageState == 'availble'">
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('instance_create')}?image_id=${image_id}"
                                id="launch-instance-action" i18n:translate="">
                                 Launch instance
                             </a>
                         </li>
-                        <li ng-show="imageState == 'availble'">
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('launchconfig_new')}?image_id=${image_id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
                             </a>
                         </li>
-                        <li tal:condition="account_id == image.owner_id" ng-show="imageState == 'availble'">
+                        <li tal:condition="account_id == image.owner_id" ng-show="imageState == 'available'">
                             <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
                                 Remove from cloud
                             </a>
