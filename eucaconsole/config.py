@@ -95,7 +95,7 @@ def get_configurator(settings, enable_auth=True):
     memory_cache = settings.get('cache.memory')
     memory_cache_url = settings.get('cache.memory.url')
     username = 'eucaconsole'
-    password = None
+    password = 'euca123'
     short_term.configure(
         memory_cache,
         expiration_time = int(settings.get('cache.short_term.expire')),
