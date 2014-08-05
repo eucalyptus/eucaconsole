@@ -348,6 +348,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         };
         $scope.handleKeyPairCreate = function ($event, url) {
             $event.preventDefault();
+            if ($scope.newKeyPairName.indexOf('/') !== -1 || $scope.newKeyPairName.indexOf('\\') !== -1) {
+                return; 
+            }
             var formData = $($event.target).serialize();
             $scope.isLoadingKeyPair = true;
             $http({
