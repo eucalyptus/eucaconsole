@@ -47,7 +47,7 @@ angular.module('ImagePicker', [])
                 var architecture, ownerAlias, platform, rootDeviceType, tags;
                 var params = {};
                 platform = form.find('#platform').val();
-                if ($scope.cloudType === 'euca') {
+                if ($scope.cloudType === 'euca' && platform) {
                     params['platform'] = platform;
                 } else if ($scope.cloudType === 'aws' && platform) {
                     params['platform'] = platform;
