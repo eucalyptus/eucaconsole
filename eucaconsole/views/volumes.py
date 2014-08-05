@@ -43,7 +43,7 @@ from ..forms.volumes import (
     RegisterSnapshotForm, AttachForm, DetachForm, VolumesFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 

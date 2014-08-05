@@ -49,7 +49,7 @@ from ..forms.scalinggroups import (
     ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, TaggedItemView
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 

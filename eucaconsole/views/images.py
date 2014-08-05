@@ -43,13 +43,13 @@ from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import User
-from ..views import LandingPageView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, TaggedItemView, JSONResponse, BlockDeviceMappingItemView
 from . import boto_error_handler
 from ..layout import __version__ as curr_version
 
 import panels
 
-class ImageBundlingMixin(object):
+class ImageBundlingMixin(BlockDeviceMappingItemView):
     """
     This has the code necessary to handle image bundling tasks attached to an instance.
     It checks state and completes the registration if possible. Otherwise, it creates
@@ -73,14 +73,18 @@ class ImageBundlingMixin(object):
                 self.log_request(_(u"Bundle operation {0} from previous software version will be ignored.").format(bundle_id))
             else:
                 self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
+                bdm = self.get_block_device_map(metadata['bdm'])
                 image_id = self.conn.register_image(
                                 name=metadata['name'],
                                 description=metadata['description'],
                                 image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
                                 virtualization_type=metadata['virt_type'],
+                                block_device_map=bdm,
                                 kernel_id=metadata['kernel_id'],
                                 ramdisk_id=metadata['ramdisk_id']
                            )
+                tags = json.loads(metadata['tags'])
+                self.conn.create_tags(image_id, tags)
             # cleanup creds
             iam_conn = self.get_connection(conn_type='iam')
             iam_conn.delete_access_key(metadata['access'])
@@ -115,6 +119,7 @@ class ImageBundlingMixin(object):
             fakeimage.root_device_type='instance-store'
             fakeimage.root_device_name='/dev/sda'
             fakeimage.block_device_mapping = {}
+            fakeimage.tags = json.loads(metadata['tags'])
             return fakeimage
 
 class ImagesView(LandingPageView):

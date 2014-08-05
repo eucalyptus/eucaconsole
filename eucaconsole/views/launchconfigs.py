@@ -44,7 +44,7 @@ from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
+from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler

@@ -35,7 +35,7 @@ from ..forms.ipaddresses import (
     AllocateIPsForm, AssociateIPForm, DisassociateIPForm, ReleaseIPForm, IPAddressesFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 

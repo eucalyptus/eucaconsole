@@ -1097,6 +1097,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
             instance_id = self.instance.id
             name = self.request.params.get('name')
             description = self.request.params.get('description')
+            tags_json = self.request.params.get('tags')
+            bdm_json = self.request.params.get('block_device_mapping')
             if not is_ebs:
                 s3_bucket = self.request.params.get('s3_bucket')
                 if s3_bucket:
@@ -1130,8 +1132,8 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                         'platform':self.instance.platform,
                         'kernel_id':self.instance.kernel,
                         'ramdisk_id':self.instance.ramdisk,
-                        'bdm':'',
-                        'tags':'',
+                        'bdm':bdm_json,
+                        'tags':tags_json,
                         'access':access_key,
                         'bundle_id':result.id}
                     self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})
@@ -1144,14 +1146,18 @@ class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
                     return HTTPFound(location=self.request.route_path('image_view', id='p'+instance_id))
             else:
                 no_reboot = self.request.params.get('no_reboot')
-                bdm = {}
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Creating image from instance {0}").format(instance_id))
-                    result = self.ec2_conn.create_image(
+                    bdm = self.get_block_device_map(bdm_json)
+                    if bdm.get(self.instance.root_device_name) is not None:
+                        del bdm[self.instance.root_device_name]
+                    image_id = self.ec2_conn.create_image(
                         instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
+                    tags = json.loads(tags_json)
+                    self.ec2_conn.create_tags(image_id, tags)
                     msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
-                    return HTTPFound(location=self.request.route_path('image_view', id=result))
+                    return HTTPFound(location=self.request.route_path('image_view', id=image_id))
         else:
             self.request.error_messages = self.create_image_form.get_errors_list()
         return self.render_dict

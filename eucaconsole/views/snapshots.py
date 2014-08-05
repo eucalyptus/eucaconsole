@@ -38,7 +38,7 @@ from pyramid.view import view_config
 from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshotForm, SnapshotsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView
+from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
