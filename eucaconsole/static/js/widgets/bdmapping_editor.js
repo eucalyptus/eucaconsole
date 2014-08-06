@@ -65,7 +65,7 @@ angular.module('BlockDeviceMappingEditor', [])
                 return false;
             }
             // Size must be entered
-            if (!newSizeEntry.val()) {
+            if (!newSizeEntry.val() || newSizeEntry.val() <= 0) {
                 newSizeEntry.focus();
                 return false;
             }
