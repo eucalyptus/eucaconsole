@@ -111,6 +111,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
             }
+            $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
         };
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
