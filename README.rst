@@ -27,7 +27,7 @@ Prior to installing Pyramid and it's dependencies, you may need to install the f
 
 Ubuntu:
 
-    `apt-get install openssl build-essential python-dev swig memcached libmemcached`
+    `apt-get install openssl build-essential python-dev swig memcached libmemcached6`
 
 Fedora:
 
