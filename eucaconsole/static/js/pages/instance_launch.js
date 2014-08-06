@@ -275,19 +275,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
         };
         $scope.setWizardFocus = function (stepIdx) {
-            var modal = $('div').filter("#step" + stepIdx);
-            var inputElement = modal.find('input[type!=hidden]').get(0);
-            var textareaElement = modal.find('textarea[class!=hidden]').get(0);
-            var selectElement = modal.find('select').get(0);
-            var modalButton = modal.find('button').get(0);
-            if (!!textareaElement){
-                textareaElement.focus();
-            } else if (!!inputElement) {
-                inputElement.focus();
-            } else if (!!selectElement) {
-                selectElement.focus();
-            } else if (!!modalButton) {
-                modalButton.focus();
+            var tabElement = $(document).find('#tabStep'+stepIdx).get(0);
+            if (!!tabElement) {
+                tabElement.focus();
             }
         };
         $scope.visitNextStep = function (nextStep, $event) {
