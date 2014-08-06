@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus and AWS images
 """
 import re
 import simplejson as json
+import logging
 
 from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError

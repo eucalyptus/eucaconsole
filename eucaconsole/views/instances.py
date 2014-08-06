@@ -33,7 +33,6 @@ from datetime import datetime, timedelta
 from operator import attrgetter
 import hashlib
 import hmac
-import logging
 import os
 import simplejson as json
 import time
