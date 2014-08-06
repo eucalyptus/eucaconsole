@@ -60,11 +60,12 @@
                             ${panel('image_picker', image=image, filters_form=filters_form, images_json_endpoint=images_json_endpoint, prefix_route='launchconfig_new')}
                         </div>
                         <!--! Step 2: Type tab content -->
-                        <div class="content ${'active' if image else ''}" id="step2">
+                        <div class="content ${'active' if image else ''}" id="step2"
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
                             <p class="description" i18n:translate="">
                                 Please specify the launch configuration name and the instance size/type.
                             </p>
-                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'launchconfigName'})}
+                            ${panel('form_field', field=create_form['name'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'launchconfigName'}, **html_attrs_val)}
                             <div tal:condition="not preset">
                                 ${panel('form_field', field=create_form['instance_type'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'instanceType'})}
                             </div>

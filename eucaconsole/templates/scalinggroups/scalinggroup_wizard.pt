@@ -37,8 +37,9 @@
                     </dl>
                     <div class="tabs-content">
                         <!--! Step 1: General tab content -->
-                        <div class="content active" id="step1">
-                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'})}
+                        <div class="content active" id="step1"
+                            tal:define="html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};">
+                            ${panel('form_field', field=create_form['name'], ng_attrs={'model': 'scalingGroupName'}, **html_attrs_val)}
                             <div tal:condition="launch_config_param">
                                 <input type="hidden" id="hidden_launch_config_input" name="launch_config" value="${launch_config_param}" />
                                 <div class="row controls-wrapper">

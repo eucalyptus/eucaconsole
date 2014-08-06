@@ -196,7 +196,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
 class ScalingGroupCreateForm(BaseScalingGroupForm):
     """Create Scaling Group form"""
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[
