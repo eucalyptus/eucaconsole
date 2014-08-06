@@ -3,6 +3,10 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/role.css')}" />
+    <style type="text/css">
+        input#role-name { width: 50%; }
+        input#role-path { width: 75%; }
+    </style>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -42,11 +46,11 @@
                 </metal:block>
                 <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$',
-                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
+                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and connot contain spaces'};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section">
-                            <div class="row controls-wrapper">
+                            <div class="row controls-wrapper readonly">
                                 ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             </div>
                             <div class="row controls-wrapper">
@@ -114,18 +118,16 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="small-8 columns field inline">
+                                <div class="small-12 columns field inline">
+                                    <label>
+                                        <span class="req">*</span>
+                                        <span i18n:translate="">Required fields</span>
+                                    </label>
                                     <button type="submit" class="button" id="create-btn">
                                         <span i18n:translate="">Create Role</span>
                                     </button>
                                     <a href="${request.route_path('roles')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
-                                </div>
-                                <div class="small-4 columns">
-                                    <label>
-                                        <span class="req">*</span>
-                                        <span i18n:translate="">Required fields</span>
-                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +166,7 @@
                         <h6 i18n:translate="">Trust relationships</h6>
                         <div class="row controls-wrapper">
                             <div class="columns">
-                                <strong i18n:translate="">Define who can assume this role, and when.</strong>
+                                <p i18n:translate="">Define who can assume this role, and when.</p>
                             </div>
                         </div>
                         <div class="row userentry controls-wrapper">
