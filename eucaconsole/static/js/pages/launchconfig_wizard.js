@@ -34,6 +34,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.isCreateSGChecked = true;
         $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
@@ -184,6 +185,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
+            });
+            $(document).on('click', '#create_sg_from_lc', function () {
+                $scope.isCreateSGChecked = $(this).is(':checked');
+            });
+            $(document).on('click', '#create_sg_from_lc_slave', function () {
+                $scope.isCreateSGChecked = $(this).is(':checked');
+                $('#create_sg_from_lc').prop('checked', $scope.isCreateSGChecked);
             });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status

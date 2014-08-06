@@ -199,6 +199,8 @@
                             <div class="row">
                                 <div class="small-4 columns">&nbsp;</div>
                                 <div class="small-8 columns field inline">
+                                    <input id="create_sg_from_lc_slave" type="checkbox" ng-checked="isCreateSGChecked">
+                                    <label i18n:translate="">Create scaling group using this launch configuration</label>
                                     <button type="submit" class="button" ng-click="saveOptions()" id="create-launchconfig-btn-step4">
                                         <span i18n:translate="">Create Launch Configuration</span>
                                     </button>
