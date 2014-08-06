@@ -3,8 +3,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
             tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
-                        html_attrs_val {'pattern': '^[^\/\\\]{1,255}$',
-                            'error_msg': 'Keypair name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\''};"
+                        html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${keypair_route_id}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
