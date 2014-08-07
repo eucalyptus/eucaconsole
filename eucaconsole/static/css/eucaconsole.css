@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
@@ -1491,9 +1492,9 @@ textarea.policy-area { width: 100%; min-height: 30rem; font-family: Courier, "co
 .help-content .p, .help-content .section { line-height: 1.4rem; }
 .help-content .topictitle1 { margin-top: 1rem; }
 .help-content p { margin-bottom: 0.5rem; }
-.help-content ol { list-style-position: inside; }
-.help-content ol li { text-indent: -1rem; margin-left: 1rem; }
-.help-content ol li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
+.help-content ol ul { list-style-position: inside; }
+.help-content ol ul li { text-indent: -1rem; margin-left: 1rem; }
+.help-content ol ul li p { text-indent: 0; margin-bottom: 0.5rem; margin-top: 0.5rem; }
 .help-content i { text-indent: 0; }
 .help-content i.fi-minus-circle { font-size: 1.2rem; }
 .help-content i.fi-minus-circle:hover { color: black; }
