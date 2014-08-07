@@ -216,7 +216,14 @@
         </div>
         <div class="large-5 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
             <!--! Help goes here -->
+                <div tal:condition="not role">
+                    <div id="help-html-console_create_iam_roles"
+                        ng-include="'${layout.help_path('console_create_iam_roles.html')}'">
+                    </div> 
+                </div>
+            </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
         ${panel('role_dialogs', role=role, delete_form=delete_form)}
