@@ -9,7 +9,7 @@
             <div>
                 <div class="columns">
                     <a ng-href="${add_url}" class="button" id="add-policy-btn"
-                       title="Add policy" i18n:translate="">Add Policy</a>
+                       title="Add access policy" i18n:translate="">Add Access Policy</a>
                 
                 </div>
             </div>
