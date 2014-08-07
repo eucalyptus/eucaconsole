@@ -44,7 +44,7 @@
                         </a>
                     </li>
                     <li ng-show="item.status == 'running' || item.status == 'stopped'">
-                        <a i18n:translate="" id="create-image-action-gridview-{{item.id}}" href="#"
+                        <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
                            data-reveal-id="create-image-denied-modal" ng-show="item.running_create">
                             Create image
                         </a>
@@ -183,7 +183,7 @@
                                 </a>
                             </li>
                             <li ng-show="item.status == 'running' || item.status == 'stopped'">
-                                <a i18n:translate="" id="create-image-action-gridview-{{item.id}}" href="#"
+                                <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
                                    data-reveal-id="create-image-denied-modal" ng-show="item.running_create">
                                     Create image
                                 </a>
