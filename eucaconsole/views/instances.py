@@ -29,12 +29,18 @@ Pyramid views for Eucalyptus and AWS instances
 
 """
 import base64
+from datetime import datetime, timedelta
 from operator import attrgetter
+import hashlib
+import hmac
 import os
 import simplejson as json
+import time
 from M2Crypto import RSA
 
 from boto.exception import BotoServerError
+from boto.s3.key import Key
+from boto.ec2.bundleinstance import BundleInstanceTask
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -42,7 +48,7 @@ from pyramid.view import view_config
 from ..forms.images import ImagesFiltersForm
 from ..forms.instances import (
     InstanceForm, AttachVolumeForm, DetachVolumeForm, LaunchInstanceForm, LaunchMoreInstancesForm,
-    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm,
+    RebootInstanceForm, StartInstanceForm, StopInstanceForm, TerminateInstanceForm, InstanceCreateImageForm,
     BatchTerminateInstancesForm, InstancesFiltersForm, AssociateIpToInstanceForm, DisassociateIpFromInstanceForm)
 from ..forms import GenerateFileForm
 from ..forms.keypairs import KeyPairForm
@@ -54,6 +60,7 @@ from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
 from . import guess_mimetype_from_buffer
+from ..layout import __version__ as curr_version
 
 
 class BaseInstanceView(BaseView):
@@ -292,8 +299,10 @@ class InstancesJsonView(LandingPageView):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
 
-    @view_config(route_name='instances_json', renderer='json', request_method='GET')
+    @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         instances = []
         filters = {}
         availability_zone_param = self.request.params.getall('availability_zone')
@@ -345,6 +354,7 @@ class InstancesJsonView(LandingPageView):
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
+                running_create=True if instance.tags.get('ec_bundling') else False,
             ))
         return dict(results=instances)
 
@@ -684,7 +694,7 @@ class InstanceStateView(BaseInstanceView):
         """Return console output for instance"""
         with boto_error_handler(self.request):
             output = self.conn.get_console_output(instance_id=self.instance.id)
-        return dict(results=output.output)
+        return dict(results=base64.b64encode(output.output))
 
     # TODO: also in forms/instances.py, let's consolidate
     def suggest_next_device_name(self, instance):
@@ -993,9 +1003,9 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             new_instance_ids = []
             with boto_error_handler(self.request, self.location):
                 instance_profile = None
-                if self.role != None:  # need to set up instance profile, add role and supply to run_instances
+                if self.role is not None:  # need to set up instance profile, add role and supply to run_instances
                     profile_name = 'instance_profile_{0}'.format(os.urandom(16).encode('base64').rstrip('=/\n'))
-                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/'+role)
+                    instance_profile = self.iam_conn.create_instance_profile(profile_name, path='/' + self.role)
                     self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
@@ -1035,3 +1045,144 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
         else:
             self.request.error_messages = self.launch_more_form.get_errors_list()
         return self.render_dict
+
+
+class InstanceCreateImageView(BaseInstanceView, BlockDeviceMappingItemView):
+    """Create image from an instance view"""
+    TEMPLATE = '../templates/instances/instance_create_image.pt'
+
+    def __init__(self, request):
+        super(InstanceCreateImageView, self).__init__(request)
+        self.request = request
+        self.ec2_conn = self.get_connection()
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.instance = self.get_instance()
+        self.instance_name = TaggedItemView.get_display_name(self.instance)
+        self.location = self.request.route_path('instances')
+        self.image = self.get_image(instance=self.instance)  # From BaseInstanceView
+        self.create_image_form = InstanceCreateImageForm(
+            self.request, instance=self.instance, ec2_conn=self.ec2_conn, s3_conn=self.s3_conn,
+            formdata=self.request.params or None)
+        image_id = _(u"missing")
+        if self.image is not None:
+            image_id = self.image.id
+        self.create_image_form.description.data = _(u"created from instance {0} running image {1}").format(
+            self.instance_name, image_id)
+        self.render_dict = dict(
+            instance=self.instance,
+            instance_name=self.instance_name,
+            image=self.image,
+            snapshot_choices=self.get_snapshot_choices(),
+            create_image_form=self.create_image_form,
+        )
+
+    @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='GET')
+    def instance_create_image_view(self):
+        return self.render_dict
+
+    @view_config(route_name='instance_create_image', renderer=TEMPLATE, request_method='POST')
+    def instance_create_image_post(self):
+        """Handles the POST from the create image from instance form"""
+        is_ebs = True if self.instance.root_device_type == 'ebs' else False
+        if is_ebs:  # remove fields not needed so validation passes
+            del self.create_image_form.s3_bucket
+            del self.create_image_form.s3_prefix
+        else:
+            del self.create_image_form.no_reboot
+            # add selected bucket in case it's a new one
+            s3_bucket = self.request.params.get('s3_bucket')
+            if s3_bucket:
+                s3_bucket = self.unescape_braces(s3_bucket)
+            self.create_image_form.s3_bucket.choices.append((s3_bucket, s3_bucket))
+        if self.create_image_form.validate():
+            instance_id = self.instance.id
+            name = self.request.params.get('name')
+            description = self.request.params.get('description')
+            tags_json = self.request.params.get('tags')
+            bdm_json = self.request.params.get('block_device_mapping')
+            if not is_ebs:
+                s3_bucket = self.request.params.get('s3_bucket')
+                if s3_bucket:
+                    s3_bucket = self.unescape_braces(s3_bucket)
+                s3_prefix = self.request.params.get('s3_prefix', '')
+                upload_policy = InstanceCreateImageView.generate_default_policy(s3_bucket, s3_prefix)
+                secret = self.request.session['secret_key']
+                with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Bundling instance {0}").format(instance_id))
+                    iam_conn = self.get_connection(conn_type='iam')
+                    username = self.request.session['username']
+                    creds = iam_conn.create_access_key(username)
+                    access_key = creds.access_key.access_key_id
+                    secret_key = creds.access_key.secret_access_key
+                    # we need to make the call ourselves to override boto's auto-signing
+                    params = {'InstanceId': instance_id,
+                              'Storage.S3.Bucket': s3_bucket,
+                              'Storage.S3.Prefix': s3_prefix,
+                              'Storage.S3.UploadPolicy': upload_policy}
+                    params['Storage.S3.AWSAccessKeyId'] = access_key
+                    params['Storage.S3.UploadPolicySignature'] = InstanceCreateImageView.gen_policy_signature(upload_policy, secret_key)
+                    result = self.conn.get_object('BundleInstance', params, BundleInstanceTask, verb='POST')
+                
+                    bundle_metadata = {
+                        'version':curr_version,
+                        'name':name,
+                        'description':description,
+                        'prefix':s3_prefix,
+                        'virt_type':self.instance.virtualization_type,
+                        'arch':self.instance.architecture,
+                        'platform':self.instance.platform,
+                        'kernel_id':self.instance.kernel,
+                        'ramdisk_id':self.instance.ramdisk,
+                        'bdm':bdm_json,
+                        'tags':tags_json,
+                        'access':access_key,
+                        'bundle_id':result.id}
+                    self.ec2_conn.create_tags(instance_id, {'ec_bundling': '%s/%s' % (s3_bucket, result.id)})
+                    s3_conn = self.get_connection(conn_type='s3')
+                    k = Key(s3_conn.get_bucket(s3_bucket))
+                    k.key = result.id
+                    k.set_contents_from_string(json.dumps(bundle_metadata))
+                    msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                    return HTTPFound(location=self.request.route_path('image_view', id='p'+instance_id))
+            else:
+                no_reboot = self.request.params.get('no_reboot')
+                with boto_error_handler(self.request, self.location):
+                    self.log_request(_(u"Creating image from instance {0}").format(instance_id))
+                    bdm = self.get_block_device_map(bdm_json)
+                    if bdm.get(self.instance.root_device_name) is not None:
+                        del bdm[self.instance.root_device_name]
+                    image_id = self.ec2_conn.create_image(
+                        instance_id, name, description=description, no_reboot=no_reboot, block_device_mapping=bdm)
+                    tags = json.loads(tags_json)
+                    self.ec2_conn.create_tags(image_id, tags)
+                    msg = _(u'Successfully sent create image request.  It may take a few minutes to create the image.')
+                    self.request.session.flash(msg, queue=Notification.SUCCESS)
+                    return HTTPFound(location=self.request.route_path('image_view', id=image_id))
+        else:
+            self.request.error_messages = self.create_image_form.get_errors_list()
+        return self.render_dict
+
+    # these methods copied from euca2ools:bundleinstance.py and used with small changes
+    @staticmethod
+    def generate_default_policy(bucket, prefix):
+        delta = timedelta(hours=24)
+        expire_time = (datetime.utcnow() + delta).replace(microsecond=0)
+
+        conditions = [{'acl': 'ec2-bundle-read'},
+                      {'bucket': bucket},
+                      ['starts-with', '$key', prefix]]
+        policy = {'conditions': conditions,
+                  'expiration': time.strftime('%Y-%m-%dT%H:%M:%SZ',
+                                              expire_time.timetuple())}
+        policy_json = json.dumps(policy)
+        return base64.b64encode(policy_json)
+
+    @staticmethod
+    def gen_policy_signature(policy, secret_key):
+        # hmac cannot handle unicode
+        secret_key = secret_key.encode('ascii', 'ignore')
+        my_hmac = hmac.new(secret_key, digestmod=hashlib.sha1)
+        my_hmac.update(policy)
+        return base64.b64encode(my_hmac.digest())
+

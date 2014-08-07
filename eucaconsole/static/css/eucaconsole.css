@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /* @fileOverview Koala application-wide Sass CSS styles */
 /* Sass Imports */
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
@@ -1523,8 +1524,10 @@ form .error .chosen-container .chosen-single { border-color: darkred; background
 .row.controls-wrapper { margin-bottom: 0.5rem; }
 .row.controls-wrapper label { padding-top: 4px; font-weight: bold; text-align: right; line-height: 1rem; }
 .row.controls-wrapper label select, .row.controls-wrapper label input, .row.controls-wrapper label .chosen-container { text-align: left; }
-.row.controls-wrapper label.reverse { text-align: left; }
-.row.controls-wrapper div.reverse input { float: right; }
+.row.controls-wrapper label.reverse { display: inline-block; text-align: left; position: relative; left: 1.5rem; }
+.row.controls-wrapper .helptext-icon.reverse { position: relative; left: 1.5rem; }
+.row.controls-wrapper div.reverse { position: relative; }
+.row.controls-wrapper div.reverse input { position: absolute; right: -2rem; top: 5px; }
 .row.controls-wrapper .field input { display: inline-block; margin-bottom: 0.3rem; }
 .row.controls-wrapper .field select { margin-bottom: 0.3rem; margin-top: 0.3rem; padding-top: 6px; padding-bottom: 6px; }
 .row.controls-wrapper .field textarea { margin-top: 0.3rem; }

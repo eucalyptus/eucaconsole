@@ -8,9 +8,10 @@
             You will need to enter the path later to connect to your instances.
         </p>
         <form method="post" data-abide="abide" ng-show="!showKeyPairMaterial" id="create-keypair-form"
-              ng-submit="handleKeyPairCreate($event, '${request.route_path('keypair_create')}')">
+              ng-submit="handleKeyPairCreate($event, '${request.route_path('keypair_create')}')"
+              tal:define="html_attrs {'pattern': '^[^\/\\\]{1,255}$'};">
             ${structure:keypair_form['csrf_token']}
-            ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'}, leftcol_width=3, rightcol_width=9)}
+            ${panel('form_field', field=keypair_form['name'], ng_attrs={'model': 'newKeyPairName'}, leftcol_width=3, rightcol_width=9, **html_attrs)}
             <hr />
             <div class="row">
                 <div class="small-3 columns">&nbsp;</div>

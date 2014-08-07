@@ -101,8 +101,10 @@ class GroupsJsonView(BaseView):
         super(GroupsJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='groups_json', renderer='json', request_method='GET')
+    @view_config(route_name='groups_json', renderer='json', request_method='POST')
     def groups_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         # TODO: take filters into account??
         groups = []
         for group in self.get_items():
