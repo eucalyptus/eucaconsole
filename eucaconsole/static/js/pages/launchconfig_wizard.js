@@ -187,13 +187,6 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
-            $(document).on('click', '#create_sg_from_lc', function () {
-                $scope.isCreateSGChecked = $(this).is(':checked');
-            });
-            $(document).on('click', '#create_sg_from_lc_slave', function () {
-                $scope.isCreateSGChecked = $(this).is(':checked');
-                $('#create_sg_from_lc').prop('checked', $scope.isCreateSGChecked);
-            });
             $(document).on('open', '[data-reveal]', function () {
                 // When a dialog opens, reset the progress button status
                 $(this).find('.dialog-submit-button').css('display', 'block');                
