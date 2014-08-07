@@ -381,3 +381,39 @@ class DisassociateIpFromInstanceForm(BaseSecureForm):
     """CSRF-protected form to disassociate IP from an instance"""
     pass
 
+
+class InstanceCreateImageForm(BaseSecureForm):
+    """CSRF-protected form to create an image from an instance"""
+    name_error_msg = _(u'Name is required')
+    name = wtforms.TextField(
+        label=_(u'Name'),
+        validators=[validators.Required(message=name_error_msg)],
+    )
+    desc_error_msg = _(u'Description must be less than 255 characters')
+    description = wtforms.TextAreaField(
+        label=_(u'Description'),
+        validators=[validators.Length(max=255, message=desc_error_msg)],
+    )
+    no_reboot = wtforms.BooleanField(label=_(u'No reboot'))
+    s3_bucket = wtforms.SelectField(
+        label=_(u'Bucket name'), validators=[validators.InputRequired(message=_(u'You must select a bucket to use.'))])
+    s3_prefix = wtforms.TextField(
+        label=_(u'Prefix'), validators=[validators.InputRequired(message=_(u'You must supply a prefix'))])
+
+    def __init__(self, request, s3_conn=None, **kwargs):
+        super(InstanceCreateImageForm, self).__init__(request, **kwargs)
+        self.s3_conn = s3_conn
+        # Set choices
+        self.choices_manager = ChoicesManager(conn=self.s3_conn)
+        self.s3_bucket.choices = self.choices_manager.buckets()
+        self.s3_prefix.data = _(u'image')
+        # Set error msg
+        self.name.error_msg = self.name_error_msg
+        # Set help text
+        no_reboot_helptext = _(u'When checked, the instance will not be shut down before the images is created. May impact file integrity of the image.')
+        self.no_reboot.help_text = no_reboot_helptext
+        s3_bucket_helptext = _(u'Choose from your existing buckets, or enter a name to create a new bucket')
+        self.s3_bucket.help_text = s3_bucket_helptext
+        s3_prefix_helptext = _(u'The beginning of your image file name')
+        self.s3_prefix.help_text = s3_prefix_helptext
+

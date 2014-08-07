@@ -23,8 +23,8 @@ angular.module('ImagePicker', [])
             'architecture', 'description', 'id', 'name', 'tagged_name', 'platform_name', 'root_devite_type'
         ];
         $scope.initImagePicker = function (jsonEndpointPrefix, cloudType) {
-            $scope.jsonEndpointPrefix = jsonEndpointPrefix;
-            $scope.jsonEndpoint = jsonEndpointPrefix;
+            $scope.jsonEndpointPrefix = jsonEndpointPrefix + "?state=available";
+            $scope.jsonEndpoint = $scope.jsonEndpointPrefix;
             $scope.cloudType = cloudType;
             $scope.initChosenSelectors();
             $scope.initFilters();
@@ -60,7 +60,7 @@ angular.module('ImagePicker', [])
                 if (rootDeviceType) { params['root_device_type'] = rootDeviceType; }
                 if (architecture) { params['architecture'] = architecture; }
                 if (tags) { params['tags'] = tags; }
-                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "?" + $.param(params, true));
+                $scope.jsonEndpoint = decodeURIComponent($scope.jsonEndpointPrefix + "&" + $.param(params, true));
                 $scope.getItems();
             });
             clearLink.on('click', function (evt) {
@@ -73,7 +73,11 @@ angular.module('ImagePicker', [])
         $scope.getItems = function () {
             $scope.searchFilter = '';
             $scope.itemsLoading = true;
-            $http.get($scope.jsonEndpoint).success(function(oData) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token="+csrf_token;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.itemsLoading = false;
                 $scope.items = results;

@@ -63,6 +63,7 @@ urls = [
     Route(name='images_json', pattern='/images/json'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
+    Route(name='image_state_json', pattern='/images/{id}/state/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
     Route(name='image_deregister', pattern='/images/{id}/deregister'),
 
@@ -92,7 +93,8 @@ urls = [
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
-    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'), # for windows instances
+    Route(name='instance_create_image', pattern='/instances/{id}/createimage'),
+    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'),  # for windows instances
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_ip_address_json', pattern='/instances/{id}/ipaddress/json'),
     Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
@@ -101,6 +103,7 @@ urls = [
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
+
 
     # Scaling Groups #####
     # Landing page

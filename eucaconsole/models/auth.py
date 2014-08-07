@@ -38,6 +38,7 @@ from boto import ec2
 from boto import s3
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
+from boto.s3.connection import OrdinaryCallingFormat
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
 #from boto.requestlog import RequestLogger
 import boto.ec2.autoscale
@@ -187,6 +188,8 @@ class ConnectionManager(object):
                 conn = conn_class(
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
+            if conn_type == 's3':
+                conn.calling_format=OrdinaryCallingFormat()
 
             # AutoScaling service needs additional auth info
             if conn_type == 'autoscale':

@@ -102,7 +102,7 @@ angular.module('InstancesPage', ['LandingPage'])
             $http.get(consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = results;
+                    $scope.consoleOutput = $.base64.decode(results);
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
                 }

@@ -351,3 +351,19 @@ class ChoicesManager(object):
             choices.append((rname, rname))
         return sorted(set(choices))
 
+    ### S3 connection type choices
+    ##
+    def buckets(self, buckets=None, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        bucket_list = buckets or []
+        if not bucket_list and self.conn is not None:
+            bucket_list = self.conn.get_all_buckets()
+        for bucket in bucket_list:
+            bname = bucket.name
+            if escapebraces:
+                bname = self.BaseView.escape_braces(bname)
+            choices.append((bname, bname))
+        return sorted(set(choices))
+
