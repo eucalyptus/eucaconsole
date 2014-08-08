@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="column small-6">
                                             <button type="submit" class="button" id="add-user-to-group-btn"
-                                                    ng-disabled="noAvailableGroups">
+                                                    ng-disabled="noAvailableGroups || isGroupNotSelected">
                                                 <span tal:condition="user" i18n:translate="">Add User to Group</span>
                                             </button>
                                         </div>
