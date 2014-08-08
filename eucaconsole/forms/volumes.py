@@ -199,7 +199,7 @@ class VolumesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
     status = wtforms.SelectMultipleField(label=_(u'Status'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, conn=None, **kwargs):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)

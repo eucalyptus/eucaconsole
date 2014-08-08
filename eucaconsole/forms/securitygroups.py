@@ -32,7 +32,7 @@ import wtforms
 from wtforms import validators
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, TextEscapedField
 
 
 class SecurityGroupForm(BaseSecureForm):
@@ -73,4 +73,4 @@ class SecurityGroupDeleteForm(BaseSecureForm):
 
 class SecurityGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
