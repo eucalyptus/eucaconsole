@@ -194,6 +194,16 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     )
 
 
+@panel_config('account_dialogs', renderer='../templates/dialogs/account_dialogs.pt')
+def account_dialogs(context, request, account=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Account landing and detail page."""
+    return dict(
+        account=account,
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
+
 @panel_config('group_dialogs', renderer='../templates/dialogs/group_dialogs.pt')
 def group_dialogs(context, request, group=None, landingpage=False, delete_form=None):
     """ Modal dialogs for Group landing and detail page."""

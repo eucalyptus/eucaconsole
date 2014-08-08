@@ -69,6 +69,7 @@ class MasterLayout(object):
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
         self.username_label = self.request.session.get('username_label')
+        self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
         self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
         self.group_access = request.session.get('group_access') if self.cloud_type == 'euca' else False
         self.role_access = request.session.get('role_access') if self.cloud_type == 'euca' else False
