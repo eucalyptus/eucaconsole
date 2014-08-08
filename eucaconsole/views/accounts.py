@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus and AWS Accounts
 
 """
-from datetime import datetime
 import simplejson as json
 from urllib import urlencode
 

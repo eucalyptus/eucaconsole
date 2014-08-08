@@ -92,7 +92,12 @@ class IAMPolicyWizardView(BaseView):
                 self.log_request(_(u"Creating policy {0} for {1} {2}").format(
                     policy_name, self.target_type, self.target_name))
                 if self.target_type == 'account':
-                    result = self.iam_conn.get_response('PutAccountPolicy', params={'AccountName':self.target_name, 'PolicyName':policy_name, 'PolicyDocument':policy_json}, verb='POST')
+                    result = self.iam_conn.get_response(
+                                'PutAccountPolicy',
+                                 params={'AccountName':self.target_name, 'PolicyName':policy_name,
+                                         'PolicyDocument':policy_json},
+                                 verb='POST'
+                             )
                 elif self.target_type == 'user':
                     caller = self.iam_conn.put_user_policy
                 elif self.target_type == 'group':
@@ -122,7 +127,10 @@ class IAMPolicyWizardView(BaseView):
 
     def get_existing_policies(self):
         if self.target_type == 'account':
-            iam_policies = self.iam_conn.get_response('ListAccountPolicies', params={'AccountName':self.target_name}, list_marker='PolicyNames')
+            iam_policies = self.iam_conn.get_response(
+                                'ListAccountPolicies',
+                                params={'AccountName':self.target_name},
+                                list_marker='PolicyNames')
             return iam_policies.policy_names if iam_policies else []
         elif self.target_type == 'user':
             fetch_policies = self.iam_conn.get_all_user_policies
