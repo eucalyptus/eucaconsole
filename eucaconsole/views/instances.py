@@ -459,6 +459,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
             role = self.role,
+            running_create=True if self.instance.tags.get('ec_bundling') else False,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')

@@ -246,7 +246,7 @@
             </form>
             <a href="#" id="disassociate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="create-image-denied-modal" class="reveal-modal medium" data-reveal="">
+        <div id="create-image-denied-modal" class="reveal-modal small" data-reveal="">
             <h3 class="pagetitle">
                 <strong i18n:translate="">Cannot create image</strong>
                 <p>
@@ -255,7 +255,7 @@
                     </span>
                 </p>
                 <div class="dialog-submit-button">
-                    <a href="/instances/p{{ instanceID }}" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Check image creation progress</a>
+                    <a ng-href="/images/p{{ instanceID }}" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Check image creation progress</a>
                 </div>
             </h3>
             <a href="#" id="create_denied_close_link" class="close-reveal-modal">&#215;</a>
