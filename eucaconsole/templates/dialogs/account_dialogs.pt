@@ -6,7 +6,13 @@
                      action landingpage_action if landingpage else detailpage_action;">
         <h3 i18n:translate="">Delete account</h3>
         <p>
-            <span i18n:translate="">Deleting a account also deletes all permissions associated with that account. Are you sure you want to delete account </span>
+            <span i18n:translate="">Deleting an account DOES NOT delete that account's cloud resources, for example instance or volumes. We recomment you delete all resources in an account before deleting the account.</span>
+        </p>
+        <p>
+            <span i18n:translate="">Deleting an account does delete all users in the account and their assiciated credentials.</span>
+        </p>
+        <p>
+            <span>Are you sure you want to delete account </span>
             <span tal:condition="account"><strong>${account.account_name}</strong></span>
             <span tal:condition="not account"><strong>{{ accountName }}</strong></span>
             ?

@@ -63,8 +63,6 @@ class AccountsView(LandingPageView):
         self.sort_keys = [
             dict(key='account_name', name=_(u'Account name: A to Z')),
             dict(key='-account_name', name=_(u'Account name: Z to A')),
-            dict(key='account_id', name=_(u'Account ID: ascending')),
-            dict(key='-account_id', name=_(u'Account ID: decending')),
         ]
 
         return dict(
@@ -100,7 +98,7 @@ class AccountsJsonView(BaseView):
         super(AccountsJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='accounts_json', renderer='json', request_method='GET')
+    @view_config(route_name='accounts_json', renderer='json', request_method='POST')
     def accounts_json(self):
         # TODO: take filters into account??
         accounts = []

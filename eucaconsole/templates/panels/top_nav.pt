@@ -36,6 +36,8 @@
     <li class="has-dropdown" tal:condition="layout.user_access or layout.group_access or layout.role_access">
         <a id="resource-menu-iam" i18n:translate="">IAM</a>
         <ul class="dropdown">
+            <li tal:condition="layout.account_access"><a id="resource-menuitem-users" href="${request.route_path('accounts')}" i18n:translate="">IAM Accounts</a></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
             <li tal:condition="layout.user_access"><a id="resource-menuitem-users" href="${request.route_path('users')}" i18n:translate="">IAM Users</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
             <li tal:condition="layout.group_access"><a id="resource-menuitem-groups" href="${request.route_path('groups')}" i18n:translate="">IAM Groups</a></li>
