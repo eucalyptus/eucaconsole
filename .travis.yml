@@ -12,5 +12,5 @@ install:
     - pip install Babel lingua
 # command to run tests, e.g. python setup.py test
 script: python setup.py test
-after_script: python setup.py extract_messages
+#after_script: python setup.py extract_messages
 
