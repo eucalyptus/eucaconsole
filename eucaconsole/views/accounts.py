@@ -28,7 +28,9 @@
 Pyramid views for Eucalyptus and AWS Accounts
 
 """
+import csv
 import simplejson as json
+import StringIO
 from urllib import urlencode
 
 from boto.exception import BotoServerError
@@ -40,6 +42,7 @@ from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
+from .users import PasswordGeneration
 
 
 class AccountsView(LandingPageView):
@@ -158,7 +161,7 @@ class AccountView(BaseView):
     def account_view(self):
         return self.render_dict
  
-    @view_config(route_name='account_create', request_method='POST', renderer=TEMPLATE)
+    @view_config(route_name='account_create', request_method='POST', renderer='json')
     def account_create(self):
         if self.account_form.validate():
             new_account_name = self.request.params.get('account_name') 
@@ -166,10 +169,29 @@ class AccountView(BaseView):
             with boto_error_handler(self.request, location):
                 self.log_request(_(u"Creating account {0}").format(new_account_name))
                 self.conn.get_response('CreateAccount', params={'AccountName':new_account_name})
-                msg_template = _(u'Successfully created account {account}')
-                msg = msg_template.format(account=new_account_name)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
+                password = PasswordGeneration.generate_password()
+                params = {'UserName':'admin', 'Password':password, 'DelegateAccount':new_account_name}
+                result = self.conn.get_response('CreateLoginProfile', params=params, verb='POST')
+                params = {'UserName':'admin', 'DelegateAccount':new_account_name}
+                creds = self.conn.get_response('CreateAccessKey', params=params, verb='POST')
+                access_id = creds.access_key.access_key_id
+                secret_key = creds.access_key.secret_access_key
+
+                # assemble file response
+                account = self.request.session['account']
+                string_output = StringIO.StringIO()
+                csv_w = csv.writer(string_output)
+                header = [_(u'Account'), _(u'User Name'), _(u'Password'), _(u'Access Key'), _(u'Secret Key')]
+                csv_w.writerow(header)
+                row = [new_account_name, 'admin', password, access_id, secret_key]
+                csv_w.writerow(row)
+                self._store_file_("{acct}-{user}.csv".format(acct=new_account_name, user='admin'),
+                                  'text/csv', string_output.getvalue())
+
+                return dict(
+                    message=_(u"Successfully created account {account}").format(account=new_account_name),
+                    results=dict(hasFile='y')
+                )
 
         return self.render_dict
 

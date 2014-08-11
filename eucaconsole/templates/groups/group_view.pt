@@ -1,12 +1,12 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
-<head metal:fill-slot="head_css">
+<div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/group.css')}" />
     <style type="text/css">
         input#group-name { width: 50%; }
     </style>
-</head>
+</div>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"

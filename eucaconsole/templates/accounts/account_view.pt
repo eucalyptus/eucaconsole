@@ -1,16 +1,19 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
-<head metal:fill-slot="head_css">
+<div metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
-    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
+    <link rel="stylesheet" href="${request.static_path('eucaconsole:static/css/pages/account.css')}" />
     <style type="text/css">
         input#account-name { width: 50%; }
     </style>
-</head>
+</div>
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         ng-app="AccountPage" ng-controller="AccountPageCtrl" ng-init="initController()">
+         ng-app="AccountPage" ng-controller="AccountPageCtrl" ng-init="initController(
+                                    '${request.route_path('account_create')}',
+                                    '${request.route_path('account_view', name='_name_')}',
+                                    '${request.route_path('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('accounts')}" i18n:translate="">IAM accounts</a></li>
@@ -47,7 +50,7 @@
                 <div tal:condition="not account and account_route_id == 'new'"
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
                          'error_msg': 'IAM account names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
-                    <form action="${request.route_path('account_create')}" method="post" data-abide="abide">
+                    <form id="account-new-form" ng-submit="submit($event)" data-abide="abide">
                         ${structure:account_form['csrf_token']}
                         <div class="section columns">
                             <div class="">
@@ -127,6 +130,7 @@
 </div>
 
 <div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <div tal:condition="account">
         <script src="${request.static_path('eucaconsole:static/js/pages/account.js')}"></script>
     </div>
