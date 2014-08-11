@@ -52,8 +52,8 @@
                         </li>
                         <li ng-show="instanceState == 'running' || instanceState == 'stopped'">
                             <a i18n:translate="" id="create-image-action"
-                               href="${request.route_path('instance_create_image', id=instance.id)}">
-                                Create image
+                               ng-click="createImageClicked('${running_create}', '${instance.id}')">
+                               Create image
                             </a>
                         </li>
                         <li ng-show="instanceState == 'running'">
