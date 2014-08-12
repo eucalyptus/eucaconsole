@@ -45,12 +45,8 @@
                     </li>
                     <li ng-show="item.status == 'running' || item.status == 'stopped'">
                         <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                           data-reveal-id="create-image-denied-modal" ng-show="item.running_create">
-                            Create image
-                        </a>
-                        <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                           ng-href="/instances/{{ item.id }}/createimage" ng-show="!item.running_create">
-                            Create image
+                           ng-click="createImageClicked(item.running_create, item.id)">
+                           Create image
                         </a>
                     </li>
                     <li ng-show="item.status == 'running'">
@@ -184,12 +180,8 @@
                             </li>
                             <li ng-show="item.status == 'running' || item.status == 'stopped'">
                                 <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                                   data-reveal-id="create-image-denied-modal" ng-show="item.running_create">
-                                    Create image
-                                </a>
-                                <a i18n:translate="" id="create-image-action-gridview-{{item.id}}"
-                                   ng-href="/instances/{{ item.id }}/createimage" ng-show="!item.running_create">
-                                    Create image
+                                   ng-click="createImageClicked(item.running_create, item.id)">
+                                   Create image
                                 </a>
                             </li>
                             <li ng-show="item.status == 'running'">

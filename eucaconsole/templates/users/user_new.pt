@@ -24,11 +24,14 @@
             <div class="panel no-title">
                 <form id="user-new-form" ng-submit="submit($event)" data-abide="abide">
                     ${structure:user_form['csrf_token']}
+                    <input type='hidden' name='as-account' value="${as_account}" tal:condition="as_account">
                     <div class="section">
+                        <div class="row columns">
+                            <p><span i18n:translate="">Add user(s) to account:</span>&nbsp;${layout.account}</p>
+                        </div>
                         ${panel('user_editor')}
                         <div>${structure:user_form['random_password']}&nbsp;${user_form.random_password.label}</div>
                         <div>${structure:user_form['access_keys']}&nbsp;${user_form.access_keys.label}</div>
-                        <div>${structure:user_form['allow_all']}&nbsp;${user_form.allow_all.label}</div>
                     </div>
                     <hr/>
                     <div class="expando" id="quotas-section">
@@ -58,18 +61,22 @@
                     </div>
                     <hr />
                     <small id="quota-error" ng-cloak="" class="error" i18n:translate="">Quota values must be integers greater than zero.</small>
-                    <div>
-                        <label>
-                            <span class="req">*</span>
-                            <span i18n:translate="">Required fields</span>
-                        </label>
-                    </div>
-                    <div>
-                        <button type="submit" class="button" id="create-user-btn" ng-disabled="isNotValid">
-                            <span i18n:translate="">Create Users</span>
-                        </button>
-                        <a href="${request.route_path('users')}"
-                           class="cancel-link" i18n:translate="">Cancel</a>
+                    <div class="section row">
+                        <div class="columns small-6">
+                            <button type="submit" class="button" id="create-user-btn" ng-disabled="isNotValid">
+                                <span i18n:translate="">Create Users</span>
+                            </button>
+                            <a href="${request.route_path('users')}"
+                                class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="columns small-6">
+                            <div tal:condition="not user">
+                                <label class="right">
+                                    <span class="req">*</span>
+                                    <span i18n:translate="">Required fields</span>
+                               </label>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

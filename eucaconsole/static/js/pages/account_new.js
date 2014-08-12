@@ -4,7 +4,8 @@
  *
  */
 
-angular.module('AccountPage', [])
+// New user page includes the User Editor editor
+angular.module('AccountPage', ['UserEditor'])
     .controller('AccountPageCtrl', function ($scope, $http, $timeout) {
         $scope.submitEndpoint = '';
         $scope.accountRedirect = '';
@@ -27,14 +28,12 @@ angular.module('AccountPage', [])
                 var results = oData ? oData.results : [];
                 Notify.success(oData.message);
                 if (results.hasFile == 'y') {
-                    /*
                     $.generateFile({
                         csrf_token: csrf_token,
                         filename: 'not-used', // let the server set this
                         content: 'none',
                         script: $scope.getFileEndpoint
                     });
-                    */
                     // this is clearly a hack. We'd need to bake callbacks into the generateFile
                     // stuff to do this properly.
                     setTimeout(function() {

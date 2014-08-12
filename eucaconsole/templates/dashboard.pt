@@ -151,7 +151,7 @@
                     </li>
                     <li class="panel" id="accounts" tal:condition="layout.account_access" tal:case="'accounts'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM accounts</h5>
+                            <h5 class="subheader" i18n:translate="">Accounts</h5>
                             <div class="content">
                                 <a href="${request.route_path('accounts')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -166,7 +166,7 @@
                     </li>
                     <li class="panel" id="users" tal:condition="layout.user_access" tal:case="'users'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM users</h5>
+                            <h5 class="subheader" i18n:translate="">Users</h5>
                             <div class="content">
                                 <a href="${request.route_path('users')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -181,7 +181,7 @@
                     </li>
                     <li class="panel" id="groups" tal:condition="layout.group_access" tal:case="'groups'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM groups</h5>
+                            <h5 class="subheader" i18n:translate="">Groups</h5>
                             <div class="content">
                                 <a href="${request.route_path('groups')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -196,7 +196,7 @@
                     </li>
                     <li class="panel" id="roles" tal:condition="layout.role_access" tal:case="'roles'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM roles</h5>
+                            <h5 class="subheader" i18n:translate="">Roles</h5>
                             <div class="content">
                                 <a href="${request.route_path('roles')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>

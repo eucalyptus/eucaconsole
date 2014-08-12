@@ -443,6 +443,9 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             profile_name = arn[(arn.rindex('/')+1):]
             inst_profile = self.iam_conn.get_instance_profile(profile_name)
             self.role = inst_profile.roles.member.role_name
+        self.running_create = False
+        if self.instance:
+            self.running_create = True if self.instance.tags.get('ec_bundling') else False
 
         self.render_dict = dict(
             instance=self.instance,
@@ -459,6 +462,7 @@ class InstanceView(TaggedItemView, BaseInstanceView):
             disassociate_ip_form=self.disassociate_ip_form,
             has_elastic_ip=self.has_elastic_ip,
             role = self.role,
+            running_create=self.running_create,
         )
 
     @view_config(route_name='instance_view', renderer=VIEW_TEMPLATE, request_method='GET')
