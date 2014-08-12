@@ -168,22 +168,16 @@ angular.module('InstancePage', ['TagEditor'])
             $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
             });
+            // Conditions to check before navigate away
             window.onbeforeunload = function(event) {
-                // Conditions to check before navigate away from the page
-                // Either by "Submit" or clicking links on the page
-                if ($scope.existsUnsavedTag()) {
-                    // In case of any unsaved tags, warn the user before unloading the page
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
                     return $('#warning-message-unsaved-changes').text();
-                } else if ($scope.isNotChanged === false) {
-                    // No unsaved tags, but some input fields have been modified on the page
-                    if ($scope.isSubmitted === true) {
-                        // The action is "submit". OK to proceed
-                        return;
-                    } else {
-                        // The action is navigate away.  Warn the user about the unsaved changes
-                        return $('#warning-message-unsaved-changes').text();
-                    }
                 }
+                return;
             };
             // Do not perfom the unsaved changes check if the cancel link is clicked
             $(document).on('click', '.cancel-link', function(event) {
