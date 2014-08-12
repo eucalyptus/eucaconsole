@@ -22,6 +22,7 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
         $scope.urlParams = $.url().param();
+        $scope.pendingModalID = '';
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.volumeStatusEndpoint = jsonEndpoint;
@@ -107,7 +108,40 @@ angular.module('VolumePage', ['TagEditor'])
             });
             return hasUnsavedTag;
         };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
+        };
         $scope.setWatch = function () {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has a ng-click attribute
+                if (this.getAttribute('ng-click')) {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-button', function () {
+                $scope.openModalById($scope.pendingModalID);
+            });
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
@@ -156,7 +190,7 @@ angular.module('VolumePage', ['TagEditor'])
                 window.onbeforeunload = null;
             });
             // Handle the case when user tries to open a dialog while there exist unsaved changes
-            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"][id!="unsaved-tag-warn-modal"]', function () {
+    /*       $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"][id!="unsaved-tag-warn-modal"]', function () {
                 // If there exist unsaved changes
                 if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
                     var self = this;
@@ -173,6 +207,7 @@ angular.module('VolumePage', ['TagEditor'])
                     });
                 } 
             });
+*/
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
@@ -211,19 +246,22 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.detachModal = function (device_name, url) {
-            var warnModal = $('#detach-volume-warn-modal'),
-                detachModal = $('#detach-volume-modal');
+            var warnModalID = 'detach-volume-warn-modal',
+                detachModalID = 'detach-volume-modal';
 
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     if (results.root_device_name == device_name) {
-                        warnModal.foundation('reveal', 'open');
-                        warnModal.find('h3').click();  // Workaround for dropdown menu not closing
+                        $scope.pendingModalID = warnModalID;
                     } else {
-                        detachModal.foundation('reveal', 'open');
-                        detachModal.find('h3').click();
+                        $scope.pendingModalID = detachModalID;
                     }
+                    if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                        $scope.openModalById('unsaved-changes-warning-modal');
+                        return;
+                    } 
+                    $scope.openModalById($scope.pendingModalID);
                 }
             });
         };
