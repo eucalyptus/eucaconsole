@@ -108,7 +108,7 @@ class RegisterSnapshotForm(BaseSecureForm):
 class SnapshotsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     status = wtforms.SelectMultipleField(label=_(u'Status'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, **kwargs):
         super(SnapshotsFiltersForm, self).__init__(request, **kwargs)

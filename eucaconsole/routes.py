@@ -63,6 +63,7 @@ urls = [
     Route(name='images_json', pattern='/images/json'),
     Route(name='image_view', pattern='/images/{id}'),
     Route(name='image_json', pattern='/images/{id}/json'),
+    Route(name='image_state_json', pattern='/images/{id}/state/json'),
     Route(name='image_update', pattern='/images/{id}/update'),
     Route(name='image_deregister', pattern='/images/{id}/deregister'),
 
@@ -92,7 +93,8 @@ urls = [
     Route(name='instance_stop', pattern='/instances/{id}/stop'),
     Route(name='instance_reboot', pattern='/instances/{id}/reboot'),
     Route(name='instance_terminate', pattern='/instances/{id}/terminate'),
-    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'), # for windows instances
+    Route(name='instance_create_image', pattern='/instances/{id}/createimage'),
+    Route(name='instance_get_password', pattern='/instances/{id}/getpassword'),  # for windows instances
     Route(name='instance_state_json', pattern='/instances/{id}/state/json'),
     Route(name='instance_ip_address_json', pattern='/instances/{id}/ipaddress/json'),
     Route(name='instance_nextdevice_json', pattern='/instances/{id}/nextdevice/json'),
@@ -101,6 +103,7 @@ urls = [
     Route(name='instance_volumes_json', pattern='/instances/{id}/volumes/json'),
     Route(name='instance_volume_attach', pattern='/instances/{id}/volumes/attach'),
     Route(name='instance_volume_detach', pattern='/instances/{id}/volumes/{volume_id}/detach'),
+
 
     # Scaling Groups #####
     # Landing page
@@ -209,6 +212,19 @@ urls = [
     Route(name='cloudwatch_alarms_json', pattern='/cloudwatch/alarms/json'),
     Route(name='cloudwatch_alarms_create', pattern='/cloudwatch/alarms/create'),
     Route(name='cloudwatch_alarms_delete', pattern='/cloudwatch/alarms/delete'),
+
+    # Accounts #####
+    Route(name='accounts', pattern='/accounts'),
+    Route(name='accounts_json', pattern='/accounts/json'),
+    Route(name='accounts_delete', pattern='/accounts/delete'),
+    Route(name='account_create', pattern='/accounts/create'),
+    Route(name='account_view', pattern='/accounts/{name}'),
+    Route(name='account_update', pattern='/accounts/{name}/update'),
+    Route(name='account_delete', pattern='/accounts/{name}/delete'),
+    Route(name='account_policies_json', pattern='/accounts/{name}/policies_json'),
+    Route(name='account_policy_json', pattern='/accounts/{name}/policies/{policy}'),
+    Route(name='account_update_policy', pattern='/accounts/{name}/policy/{policy}/save'),
+    Route(name='account_delete_policy', pattern='/accounts/{name}/policy/{policy}/delete'),
 
     # Users #####
     Route(name='users', pattern='/users'),

@@ -412,6 +412,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.jsonGroupsEndpoint = '';
         $scope.jsonGroupPoliciesEndpoint = '';
         $scope.jsonGroupPolicyEndpoint = '';
+        $scope.groupName = '';
+        $scope.isGroupNotSelected = true;
         $scope.groupNames = [];
         $scope.items = [];
         $scope.itemsLoading = true;
@@ -432,6 +434,16 @@ angular.module('UserView', ['PolicyList'])
             $scope.noGroupsDefinedText = noGroupsDefinedText;
             $scope.getItems(jsonItemsEndpoint);
             $scope.getAvailableGroups();
+            $scope.setWatcher();
+        };
+        $scope.setWatcher = function () {
+            $scope.$watch('groupName', function () {
+                if ($scope.groupName === '') {
+                    $scope.isGroupNotSelected = true;
+                } else {
+                    $scope.isGroupNotSelected = false;
+                }
+            });
         };
         $scope.getItems = function (jsonItemsEndpoint) {
             $http.get(jsonItemsEndpoint).success(function(oData) {

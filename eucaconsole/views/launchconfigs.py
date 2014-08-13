@@ -44,7 +44,7 @@ from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
+from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
@@ -129,8 +129,10 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(request):
             self.items = self.get_items()
 
-    @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
+    @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()

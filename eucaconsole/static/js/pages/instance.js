@@ -48,13 +48,24 @@ angular.module('InstancePage', ['TagEditor'])
                 thisSelect.chosen({'width': '80%', 'search_contains': true});
             });
         };
+        $scope.createImageClicked = function (running_create, instance_id) {
+            $('.actions-menu').trigger('click');
+            if (running_create) {
+                $scope.instanceID = instance_id;
+                var modal = $('#create-image-denied-modal');
+                modal.foundation('reveal', 'open');
+            }
+            else {
+                window.location = '/instances/' + instance_id + '/createimage';
+            }
+        }
         $scope.revealConsoleOutputModal = function() {
             $scope.openModalById($scope.pendingModalID);
             $('.actions-menu').trigger('click');
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
-                    $scope.consoleOutput = results;
+                    $scope.consoleOutput = $.base64.decode(results);
                     var modal = $('#console-output-modal');
                     modal.foundation('reveal', 'open');
                 }

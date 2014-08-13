@@ -3,6 +3,9 @@
 <head metal:fill-slot="head_css">
     <link rel="stylesheet" href="${request.static_path('eucaconsole:static/js/thirdparty/codemirror/codemirror.css')}" />
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/group.css')}" />
+    <style type="text/css">
+        input#group-name { width: 50%; }
+    </style>
 </head>
 
 <div metal:fill-slot="main_content">
@@ -47,7 +50,7 @@
                     <form action="${request.route_path('group_create')}" method="post" data-abide="abide">
                         ${structure:group_form['csrf_token']}
                         <div class="section columns">
-                            <div class="row controls-wrapper readonly">
+                            <div class="">
                                 ${panel('form_field', field=group_form.group_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'groupName'}, **html_attrs)}
                             </div>
                         </div>
@@ -62,7 +65,7 @@
                             </div>
                             <div>&nbsp;</div>
                             <div class="section columns" ng-show="expanded">
-                                <div class="row controls-wrapper readonly">
+                                <div class="">
                                     ${panel('form_field', field=group_form.path, leftcol_width=1, rightcol_width=11)}
                                 </div>
                             </div>

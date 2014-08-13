@@ -49,8 +49,14 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
+        tiles=self.request.cookies.get("%s_dash_order" % (self.request.session['account']))
+        if tiles is not None:
+            tiles = tiles.replace('%2C', ',')
+        else:
+            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,security-groups,key-pairs,accounts,users,groups,roles,health'
         return dict(
-            availability_zones=availability_zones
+            availability_zones=availability_zones,
+            tiles=tiles.split(','),
         )
 
 
@@ -89,6 +95,7 @@ class DashboardJsonView(BaseView):
 
             #TODO: catch errors in this block and turn iam health off
             # IAM counts
+            accounts_count = 0
             users_count = 0
             groups_count = 0
             roles_count = 0
@@ -96,6 +103,8 @@ class DashboardJsonView(BaseView):
             if session['cloud_type'] == 'euca':
                 if session['username'] == 'admin':
                     iam_conn = self.get_connection(conn_type="iam")
+                    if session['account_access']:
+                        accounts_count = len(iam_conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts)
                     users_count = len(iam_conn.get_all_users().users)
                     groups_count = len(iam_conn.get_all_groups().groups)
                     roles_count = len(iam_conn.list_roles().roles)
@@ -110,6 +119,7 @@ class DashboardJsonView(BaseView):
                 securitygroups=securitygroups_count,
                 keypairs=keypairs_count,
                 eips=elasticips_count,
+                accounts=accounts_count,
                 users=users_count,
                 groups=groups_count,
                 roles=roles_count,

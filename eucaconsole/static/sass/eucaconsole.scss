@@ -543,7 +543,7 @@ textarea.policy-area {
     p {
         margin-bottom: 0.5rem;
     }
-    ol {
+    ol ul {
         list-style-position: inside;
         li {
             text-indent: -1rem;
@@ -658,11 +658,21 @@ form {
         }
     }
     label.reverse {
+        display: inline-block;
         text-align: left;
+        position: relative;
+        left: 1.5rem;
+    }
+    .helptext-icon.reverse {
+        position: relative;
+        left: 1.5rem;
     }
     div.reverse {
+        position: relative;
         input {
-            float: right;
+            position: absolute;
+            right: -2rem;
+            top: 5px;
         }
     }
     .field {

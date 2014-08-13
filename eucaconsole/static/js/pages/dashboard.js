@@ -18,7 +18,7 @@ angular.module('Dashboard', [])
             var storedZone = Modernizr.localstorage && localStorage.getItem($scope.storedZoneKey);
             $scope.selectedZone = storedZone || '';
         };
-        $scope.initController = function (jsonItemsEndpoint, statusEndpoint, cloud_type) {
+        $scope.initController = function (jsonItemsEndpoint, statusEndpoint, cloud_type, account) {
             $scope.jsonEndpoint = jsonItemsEndpoint;
             $scope.statusEndpoint = statusEndpoint;
             $scope.storedZoneKey = 'dashboard_availability_zone_'+cloud_type;
@@ -27,6 +27,12 @@ angular.module('Dashboard', [])
             $scope.getItemCounts();
             $scope.storeAWSRegion();
             $scope.getServiceStatus();
+            $('#sortable').sortable({
+                stop: function(event, ui) {
+                    $.cookie(account+"_dash_order", $('#sortable').sortable('toArray'), {expires: 180});
+                }
+            });
+            $('#sortable').disableSelection();
         };
         $scope.setFocus = function() {
             $('#zone-selector').find('a').get(0).focus();

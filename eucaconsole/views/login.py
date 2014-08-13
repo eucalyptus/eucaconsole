@@ -141,6 +141,7 @@ class LoginView(BaseView):
                 self.secret_key = creds.secret_key
                 self.security_token = creds.session_token
                 iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
+                session['account_access'] = True if account == 'eucalyptus' else False
                 try:
                     #iam_conn.get_all_users(path_prefix="/notlikely")
                     session['user_access'] = True if username == 'admin' else False
