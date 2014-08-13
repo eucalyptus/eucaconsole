@@ -49,7 +49,8 @@ class DashboardView(BaseView):
         with boto_error_handler(self.request):
             region = self.request.session.get('region')
             availability_zones = ChoicesManager(self.conn).get_availability_zones(region)
-        tiles=self.request.cookies.get("%s_dash_order" % (self.request.session['account']))
+        tiles=self.request.cookies.get("%s_dash_order" % (self.request.session[
+                        'account' if self.request.session['cloud_type'] == 'euca' else 'access_id']))
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
