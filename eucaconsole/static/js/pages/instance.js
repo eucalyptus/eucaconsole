@@ -60,7 +60,6 @@ angular.module('InstancePage', ['TagEditor'])
             }
         }
         $scope.revealConsoleOutputModal = function() {
-            $scope.openModalById($scope.pendingModalID);
             $('.actions-menu').trigger('click');
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
                 var results = oData ? oData.results : '';
