@@ -107,8 +107,7 @@ angular.module('SnapshotPage', ['TagEditor'])
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
-                // Exception of 'connect-instance-modal', which doesn't leave the page
-                if (modalID !== 'connect-instance-modal' && ($scope.existsUnsavedTag() || $scope.isNotChanged === false)) {
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
                     $scope.pendingModalID = modalID;
                     $scope.openModalById('unsaved-changes-warning-modal');
                     return;

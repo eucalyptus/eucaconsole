@@ -11,6 +11,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
         $scope.isSubmitted = false;
         $scope.securityGroupName = undefined;
         $scope.securityGroupDescription = undefined;
+        $scope.pendingModalID = '';
         $scope.initController = function () {
             $scope.setWatch();
             $scope.setFocus();
@@ -32,7 +33,42 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             });
             return hasUnsavedTag;
         };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
+        };
         $scope.setWatch = function () {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has ng-click or href attribute defined
+                if (this.getAttribute('ng-click')) {
+                    return;
+                } else if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.openModalById($scope.pendingModalID);
+            });
             $scope.$watch('securityGroupName', function () {
                 $scope.checkRequiredInput(); 
             });
@@ -41,9 +77,17 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             });
             // Handle the unsaved tag issue
             $(document).on('submit', '#security-group-detail-form', function(event) {
+                // Handle the unsaved security group rule issue
+                if ($('#add-rule-button-div').hasClass('ng-hide') === false) {
+                        event.preventDefault(); 
+                        $scope.isSubmitted = false;
+                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
+                        return false;
+                }
                 $('input.taginput').each(function(){
                     if ($(this).val() !== '') {
                         event.preventDefault(); 
+                        $scope.isSubmitted = false;
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
                     }
@@ -53,51 +97,19 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             $('form[id!="euca-logout-form"]').on('submit', function () {
                 $scope.isSubmitted = true;
             });
+            // Conditions to check before navigate away
             window.onbeforeunload = function(event) {
-                // Conditions to check before navigate away from the page
-                // Either by "Submit" or clicking links on the page
-                if ($scope.existsUnsavedTag()) {
-                    // In case of any unsaved tags, warn the user before unloading the page
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
                     return $('#warning-message-unsaved-changes').text();
-                } else if ($scope.isNotChanged === false) {
-                    // No unsaved tags, but some input fields have been modified on the page
-                    if ($scope.isSubmitted === true) {
-                        // The action is "submit". OK to proceed
-                        return;
-                    }else{
-                        // The action is navigate away.  Warn the user about the unsaved changes
-                        return $('#warning-message-unsaved-changes').text();
-                    }
-                }
-
-                // Handle the unsaved security group rule issue
-                if ($('#add-rule-button-div').hasClass('ng-hide') === false) {
-                        event.preventDefault(); 
-                        $('#unsaved-rule-warn-modal').foundation('reveal', 'open');
-                        return false;
                 }
             };
             // Do not perfom the unsaved changes check if the cancel link is clicked
             $(document).on('click', '.cancel-link', function(event) {
                 window.onbeforeunload = null;
-            });
-            // Handle the case when user tries to open a dialog while there exist unsaved changes
-            $(document).on('open', '[data-reveal][id!="unsaved-changes-warning-modal"][id!="unsaved-tag-warn-modal"]', function () {
-                // If there exist unsaved changes
-                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
-                    var self = this;
-                    // Close the current dialog as soon as it opens
-                    $(self).on('opened', function() {
-                        $(self).off('opened');
-                        $(self).foundation('reveal', 'close');
-                    });
-                    // Open the warning message dialog instead
-                    $(self).on('closed', function() {
-                        $(self).off('closed');
-                        var modal = $('#unsaved-changes-warning-modal');
-                        modal.foundation('reveal', 'open');
-                    });
-                } 
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.gialog-submit-button').css('display', 'none');                
