@@ -39,7 +39,7 @@
                             </a>
                         </li>
                         <li tal:condition="account_id == image.owner_id" ng-show="imageState == 'available'">
-                            <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
+                            <a id="deregister-image-action" i18n:translate="">
                                 Remove from cloud
                             </a>
                         </li>
