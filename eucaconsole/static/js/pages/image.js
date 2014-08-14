@@ -144,6 +144,7 @@ angular.module('ImagePage', ['BlockDeviceMappingEditor', 'TagEditor'])
                 $('input.taginput').each(function(){
                     if ($(this).val() !== '') {
                         event.preventDefault(); 
+                        $scope.isSubmitted = false;
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
                     }

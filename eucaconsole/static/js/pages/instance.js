@@ -243,6 +243,7 @@ angular.module('InstancePage', ['TagEditor'])
             });
             if (existsUnsavedTag) {
                 $event.preventDefault();
+                $scope.isSubmitted = false;
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
             } else if ($scope.instanceState == 'stopped') {
                 $event.preventDefault();

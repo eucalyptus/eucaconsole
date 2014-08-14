@@ -107,6 +107,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 $('input.taginput[type!="checkbox"]').each(function(){
                     if ($(this).val() !== '') {
                         event.preventDefault(); 
+                        $scope.isSubmitted = false;
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
                     }
