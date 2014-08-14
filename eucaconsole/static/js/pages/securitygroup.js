@@ -54,7 +54,8 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 // the ID of the action link needs to match the modal name
                 var modalID = this.getAttribute('id').replace("-action", "-modal");
                 // If there exists unsaved changes, open the wanring modal instead
-                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false ||
+                    $('#add-rule-button-div').hasClass('ng-hide') === false) {
                     $scope.pendingModalID = modalID;
                     $scope.openModalById('unsaved-changes-warning-modal');
                     return;
@@ -102,7 +103,8 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
                 if ($scope.isSubmitted === true) {
                    // The action is "submit". OK to proceed
                    return;
-                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false || 
+                    $('#add-rule-button-div').hasClass('ng-hide') === false) {
                     // Warn the user about the unsaved changes
                     return $('#warning-message-unsaved-changes').text();
                 }
