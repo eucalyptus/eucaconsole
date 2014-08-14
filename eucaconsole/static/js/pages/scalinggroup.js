@@ -84,7 +84,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
                 $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
             });
             // Stay button is clicked on the warning unsaved changes modal
-            $(document).on('click', '#unsaved-changes-warning-modal-leave-button', function () {
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
                 $scope.openModalById($scope.pendingModalID);
             });
             $scope.$on('tagUpdate', function($event) {

@@ -131,14 +131,18 @@
         <a class="button medium expand" id="euca-login-button" href="javascript: $('#euca-logout-form').submit();" i18n:translate="">Login</a>
     </div>
     <div id="unsaved-changes-warning-modal" class="reveal-modal small" data-reveal="">
-        <h3 i18n:translate="">Confirm navigation</h3>
+        <h3 i18n:translate="">Confirm Navigation</h3>
         <p>
             <span id="warning-message-unsaved-changes" i18n:translate="">You must click the "Save Changes" button before you leave this page or your changes will be lost.</span>
+        <p>
+        </p>
             <span id="warning-message-unsaved-changes-question" i18n:translate="">Are you sure you want to leave this page?</span>
         </p>
         <div class="dialog-submit-button">
-            <button id="unsaved-changes-warning-modal-stay-button" class="button" i18n:translate="">Stay</button>
-            <button id="unsaved-changes-warning-modal-leave-button" class="button" i18n:translate="">Leave</button>
+            <button id="unsaved-changes-warning-modal-stay-button" class="button expand" i18n:translate="">Stay on this Page</button>
+        </div>
+        <div class="dialog-submit-link top-margin center">
+            <a id="unsaved-changes-warning-modal-leave-link" i18n:translate="">Leave this Page</a>
         </div>
         <a href="#" class="close-reveal-modal">&#215;</a>
     </div>
