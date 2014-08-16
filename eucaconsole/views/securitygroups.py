@@ -154,6 +154,10 @@ class SecurityGroupView(TaggedItemView):
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.vpc_conn.get_all_vpcs()
+        for vpc in self.vpcs: 
+            print TaggedItemView.get_display_name(vpc) 
         self.security_group = self.get_security_group()
         self.securitygroup_form = SecurityGroupForm(
             self.request, security_group=self.security_group, formdata=self.request.params or None)

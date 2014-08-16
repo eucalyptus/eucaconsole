@@ -36,6 +36,7 @@ import xml
 from beaker.cache import cache_region
 from boto import ec2
 from boto import s3
+from boto import vpc
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
 from boto.s3.connection import OrdinaryCallingFormat
@@ -122,6 +123,9 @@ class ConnectionManager(object):
             if conn_type == 'elb':
                 conn = ec2.elb.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            if conn_type == 'vpc':
+               conn = vpc.connect_to_region(
+                   _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
             return conn
 
         return _aws_connection(region, access_key, secret_key, token, conn_type)
