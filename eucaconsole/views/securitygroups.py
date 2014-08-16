@@ -132,15 +132,14 @@ class SecurityGroupsJsonView(LandingPageView):
             return JSONResponse(status=400, message="missing CSRF token")
         securitygroups = []
         for securitygroup in self.filter_items(self.get_items()):
-            if securitygroup.vpc_id is None:
-                securitygroups.append(dict(
-                    id=securitygroup.id,
-                    description=securitygroup.description,
-                    name=securitygroup.name,
-                    owner_id=securitygroup.owner_id,
-                    rules=SecurityGroupsView.get_rules(securitygroup.rules),
-                    tags=TaggedItemView.get_tags_display(securitygroup.tags),
-                ))
+            securitygroups.append(dict(
+                id=securitygroup.id,
+                description=securitygroup.description,
+                name=securitygroup.name,
+                owner_id=securitygroup.owner_id,
+                rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                tags=TaggedItemView.get_tags_display(securitygroup.tags),
+            ))
         return dict(results=securitygroups)
 
     def get_items(self):
@@ -155,17 +154,19 @@ class SecurityGroupView(TaggedItemView):
         super(SecurityGroupView, self).__init__(request)
         self.conn = self.get_connection()
         self.vpc_conn = self.get_connection(conn_type='vpc')
-        self.vpcs = self.vpc_conn.get_all_vpcs()
-        for vpc in self.vpcs: 
-            print TaggedItemView.get_display_name(vpc) 
         self.security_group = self.get_security_group()
+        self.security_group_vpc = ''
+        if self.security_group and  self.security_group.vpc_id:
+            self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]
+            self.security_group_vpc = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
         self.securitygroup_form = SecurityGroupForm(
-            self.request, security_group=self.security_group, formdata=self.request.params or None)
+            self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
         self.render_dict = dict(
             security_group=self.security_group,
             security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
+            security_group_vpc=self.security_group_vpc,
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
@@ -194,10 +195,11 @@ class SecurityGroupView(TaggedItemView):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
             description = self.request.params.get('description')
+            vpc_network = self.request.params.get('vpc_network')
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 self.log_request(_(u"Creating security group {0}").format(name))
-                new_security_group = self.conn.create_security_group(name, description)
+                new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
                 self.add_rules(security_group=new_security_group)
                 if tags_json:
                     tags = json.loads(tags_json)
@@ -230,6 +232,8 @@ class SecurityGroupView(TaggedItemView):
             msg = _(u'Successfully modified security group')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.securitygroup_form.get_errors_list()
         return self.render_dict
 
     def get_security_group(self, group_id=None):
@@ -279,7 +283,7 @@ class SecurityGroupView(TaggedItemView):
                 group_name = grant.get('name')
                 owner_id = grant.get('owner_id')
 
-            auth_args = dict(group_name=security_group.name, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
             if group_name:
                 auth_args['src_security_group_name'] = group_name
             if owner_id:
@@ -314,3 +318,4 @@ class SecurityGroupView(TaggedItemView):
                         src_security_group_owner_id=grant.owner_id,
                     ))
                 self.conn.revoke_security_group(**params)
+
