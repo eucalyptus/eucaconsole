@@ -111,8 +111,8 @@
                             <div tal:condition="preset" ng-cloak="true">
                                 <div class="row">
                                     <div class="small-3 columns"><label class="right">Key pair&nbsp;</label></div>
-                                    <div class="small-9 columns field inline">{{ keyPairSelected }}</div>
-                                    <input type="hidden" name="keypair" value="{{ keyPairSelected }}" />
+                                    <div class="small-9 columns field inline">{{ keyPairSelected || 'none' }}</div>
+                                    <input type="hidden" name="keypair" value="{{ keyPairSelected || 'none' }}" />
                                 </div>
                             </div>
                             <div tal:condition="not preset">
