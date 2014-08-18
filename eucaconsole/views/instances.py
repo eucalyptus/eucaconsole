@@ -823,13 +823,14 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.location = self.request.route_path('instances')
         self.securitygroups = self.get_security_groups()
         self.iam_conn = self.get_connection(conn_type="iam")
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
             conn=self.conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
-        self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
         self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
