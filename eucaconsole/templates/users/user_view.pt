@@ -225,7 +225,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="columns field inline">
-                                            <button type="submit" class="button" id="save-password-btn">
+                                            <button type="submit" class="button" id="save-password-btn" ng-disabled="isPasswordNotChanged">
                                                 <span tal:condition="user" i18n:translate="">Save Password</span>
                                             </button>
                                             <a href="${request.route_path('users')}"

@@ -17,8 +17,8 @@ angular.module('UserView', ['PolicyList'])
         $scope.elb_expanded = false;
         $scope.iam_expanded = false;
         $scope.currentTab = 'general-tab';
-        $scope.pendingModalID = '';
         $scope.isNotChanged = true;
+        $scope.pendingModalID = '';
         $scope.toggleEC2Content = function () {
             $scope.ec2_expanded = !$scope.ec2_expanded;
         };
@@ -212,6 +212,7 @@ angular.module('UserView', ['PolicyList'])
         $scope.getFileEndpoint = '';
         $scope.data = '';
         $scope.has_password = false;
+        $scope.isPasswordNotChanged = true;
         $scope.initController = function (jsonRandomEndpoint, jsonDeleteEndpoint, jsonChangeEndpoint, getFileEndpoint, has_password) {
             $scope.jsonRandomEndpoint = jsonRandomEndpoint;
             $scope.jsonDeleteEndpoint = jsonDeleteEndpoint;
@@ -237,6 +238,16 @@ angular.module('UserView', ['PolicyList'])
                 $('#password').focus(); // doesn't seem to work.
             });
             $('#wrong-password').css('display', 'none');
+            $scope.setWatch();
+        };
+        $scope.setWatch = function() { 
+            $scope.$watch('isPasswordNotChanged', function() {
+                $scope.$parent.isNotChanged = $scope.isPasswordNotChanged;
+            });
+            $(document).on('input', '#user-change-password-form input[type="password"]', function () {
+                $scope.isPasswordNotChanged = false;
+                $scope.$apply();
+            });
         };
         // Handles first step in submit.. validation and dialog
         $scope.submitChange = function($event) {
@@ -282,6 +293,7 @@ angular.module('UserView', ['PolicyList'])
                     content: 'none',
                     script: $scope.getFileEndpoint
                 });
+                $scope.isPasswordNotChanged = true;
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || '';
                 if (errorMsg && status === 403) {
