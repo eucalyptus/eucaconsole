@@ -13,6 +13,7 @@ angular.module('SecurityGroupRules', [])
         $scope.groupIdMapArray = [];
         $scope.jsonEndpoint='';
         $scope.securityGroupList = [];
+        $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.isRuleNotComplete = true;
         $scope.resetValues = function () {
@@ -40,12 +41,11 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesArray = JSON.parse(rulesJson);
             $scope.jsonEndpoint=jsonEndpoint;
             $scope.syncRules();
-            $scope.getAllSecurityGroups();
             $scope.setWatchers();
         };
-        $scope.getAllSecurityGroups = function () {
+        $scope.getAllSecurityGroups = function (vpc) {
             var csrf_token = $('#csrf_token').val();
-            var data = "csrf_token="+csrf_token;
+            var data = "csrf_token=" + csrf_token + "&vpc_id=" + vpc;
             $http({method:'POST', url:$scope.jsonEndpoint, data:data,
                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
               success(function(oData) {
@@ -116,6 +116,17 @@ angular.module('SecurityGroupRules', [])
             $scope.$watch('trafficType', function(){ 
                 $scope.checkForDuplicatedRules();
                 $scope.checkRequiredInput();
+            });
+            $scope.$watch('securityGroupVPC', function() {
+                $scope.getAllSecurityGroups($scope.securityGroupVPC);
+            });
+            $scope.$on('updateVPC', function($event, vpc) {
+                console.log("updateVPC: " + vpc);
+                if (vpc === undefined || $scope.securityGroupVPC == vpc) {
+                    return;
+                }
+                console.log("updating VPC: " + vpc);
+                $scope.securityGroupVPC = vpc;
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {

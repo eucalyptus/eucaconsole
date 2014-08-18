@@ -167,6 +167,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.$watch('securityGroup', function(){
                 $scope.updateSecurityGroup();
             });
+            $scope.$watch('securityGroupVPC', function () {
+                $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
             $scope.$watch('imageID', function(newID, oldID){
                 // Clear the image ID existence check variables
                 $scope.existsImage = true;

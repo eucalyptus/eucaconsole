@@ -63,11 +63,11 @@
                         <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
                     </div>
                     <div tal:condition="not security_group" tal:omit-tag="">
-                        ${panel('form_field', field=securitygroup_form['vpc_network'], leftcol_width=3, rightcol_width=9)}
+                        ${panel('form_field', field=securitygroup_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="security_group">
                         <div class="small-3 columns"><label i18n:translate="">VPC</label></div>
-                        <div class="small-9 columns field inline">${security_group_vpc}</div>
+                        <div class="small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
                     </div>
                     <hr />
                     ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}

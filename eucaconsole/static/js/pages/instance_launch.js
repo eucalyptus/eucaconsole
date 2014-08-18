@@ -188,6 +188,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
+            $scope.$watch('securityGroupVPC', function () {
+                $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
             $('#number').on('keyup blur', function () {
                 var val = $(this).val();
                 if (val > 10) {
