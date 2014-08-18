@@ -36,7 +36,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, JSONResponse
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -137,6 +137,7 @@ class SecurityGroupsJsonView(LandingPageView):
                 description=securitygroup.description,
                 name=securitygroup.name,
                 owner_id=securitygroup.owner_id,
+                vpc_id=securitygroup.vpc_id,
                 rules=SecurityGroupsView.get_rules(securitygroup.rules),
                 tags=TaggedItemView.get_tags_display(securitygroup.tags),
             ))
@@ -253,7 +254,10 @@ class SecurityGroupView(TaggedItemView):
     def get_security_group_names(self):
         groups = []
         if self.conn:
-            groups = [g.name for g in self.conn.get_all_security_groups()]
+            if self.security_group:
+                groups = [g.name for g in self.conn.get_all_security_groups() if self.security_group.vpc_id == g.vpc_id]
+            else:
+                groups = [g.name for g in self.conn.get_all_security_groups()]
         return sorted(set(groups))
 
     def add_rules(self, security_group=None):
@@ -282,9 +286,12 @@ class SecurityGroupView(TaggedItemView):
                 cidr_ip = grant.get('cidr_ip')
                 group_name = grant.get('name')
                 owner_id = grant.get('owner_id')
+                group_id = grant.get('group_id')
 
             auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-            if group_name:
+            if group_id:
+                auth_args['src_security_group_group_id'] = group_id
+            elif group_name:
                 auth_args['src_security_group_name'] = group_name
             if owner_id:
                 auth_args['src_security_group_owner_id'] = owner_id

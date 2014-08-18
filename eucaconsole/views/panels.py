@@ -177,7 +177,6 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
     remote_addr=request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
-    
 
     return dict(
         rules=rules_sorted,

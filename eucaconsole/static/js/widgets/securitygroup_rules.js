@@ -5,10 +5,14 @@
  */
 
 angular.module('SecurityGroupRules', [])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $timeout) {
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
+        $scope.groupIdMapArray = [];
+        $scope.jsonEndpoint='';
+        $scope.securityGroupList = [];
         $scope.selectedProtocol = '';
         $scope.isRuleNotComplete = true;
         $scope.resetValues = function () {
@@ -31,11 +35,23 @@ angular.module('SecurityGroupRules', [])
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson) {
+        $scope.initRules = function (rulesJson, jsonEndpoint) {
             rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
+            $scope.jsonEndpoint=jsonEndpoint;
             $scope.syncRules();
+            $scope.getAllSecurityGroups();
             $scope.setWatchers();
+        };
+        $scope.getAllSecurityGroups = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token="+csrf_token;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupList = results;
+            });
         };
         $scope.cleanupSelections = function () {
             $timeout( function(){
@@ -193,12 +209,14 @@ angular.module('SecurityGroupRules', [])
         $scope.createRuleArrayBlock = function () {
             var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
             var owner_id = null;
+            var group_id = null;
             if (name !== null) {
                 var idx = name.indexOf('/');
                 if (idx > 0) {
                     owner_id = name.substring(0, idx);
                     name = name.substring(idx+1);
                 }
+                group_id=$scope.getGroupIdByName(name);
             }
             return {
                 'from_port': $scope.fromPort,
@@ -207,7 +225,7 @@ angular.module('SecurityGroupRules', [])
                 'ip_protocol': $scope.ipProtocol,
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
-                    'group_id': null,
+                    'group_id': group_id,
                     'name': name,
                     'owner_id': owner_id
                 }],
@@ -272,6 +290,14 @@ angular.module('SecurityGroupRules', [])
             $('#groupname-select').prop('selectedIndex', -1);
             $('#groupname-select').trigger('chosen:updated');
             $scope.cleanupSelections();
+        };
+        $scope.getGroupIdByName = function (name) {
+            for( var i=0; i < $scope.securityGroupList.length; i++){
+                if ($scope.securityGroupList[i]['name'] === name) {
+                    return $scope.securityGroupList[i]['id'];
+                }
+            } 
+            return null;
         };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
