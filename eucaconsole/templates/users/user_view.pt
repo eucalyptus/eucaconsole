@@ -48,6 +48,7 @@
                          ng-init="initController('${request.route_path('user_update', name=user.user_name)}')">
                         <form data-abide="abide" id="user-update-form" ng-submit="submit($event)">
                             ${structure:user_form['csrf_token']}
+                            <input type='hidden' name='as-account' value="${as_account}"/>
                             <div class="columns section">
                                 <h6 i18n:translate="">User</h6>
                                 <div class="row controls-wrapper readonly">
