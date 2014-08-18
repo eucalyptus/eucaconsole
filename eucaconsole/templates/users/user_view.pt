@@ -35,10 +35,10 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                         <metal:actions metal:fill-slot="actions">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -170,10 +170,10 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -349,10 +349,10 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
