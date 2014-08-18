@@ -70,7 +70,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isNotChanged">
+                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isUserInfoNotChanged">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('users')}"

@@ -174,13 +174,17 @@ angular.module('UserView', ['PolicyList'])
     .controller('UserUpdateCtrl', function($scope, $http, $timeout) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.jsonEndpoint = '';
+        $scope.isUserInfoNotChanged = true;
         $scope.initController = function (jsonEndpoint) {
             $scope.jsonEndpoint = jsonEndpoint;
             $scope.setWatch();
         };
         $scope.setWatch = function () {
+            $scope.$watch('isUserInfoNotChanged', function() {
+                $scope.$parent.isNotChanged = $scope.isUserInfoNotChanged;
+            });
             $(document).on('input', '#user-update-form input[type="text"]', function () {
-                $scope.$parent.isNotChanged = false;
+                $scope.isUserInfoNotChanged = false;
                 $scope.$apply();
             });
         };
@@ -193,7 +197,7 @@ angular.module('UserView', ['PolicyList'])
                 // could put data back into form, but form already contains changes
                 if (oData.error == undefined) {
                     Notify.success(oData.message);
-                    $scope.$parent.isNotChanged = true;
+                    $scope.isUserInfoNotChanged = true;
                 } else {
                     Notify.failure(oData.message);
                 }
