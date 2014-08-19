@@ -131,16 +131,18 @@ class SecurityGroupsJsonView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         securitygroups = []
+        vpc_id = self.request.params.get('vpc_id')
         for securitygroup in self.filter_items(self.get_items()):
-            securitygroups.append(dict(
-                id=securitygroup.id,
-                description=securitygroup.description,
-                name=securitygroup.name,
-                owner_id=securitygroup.owner_id,
-                vpc_id=securitygroup.vpc_id,
-                rules=SecurityGroupsView.get_rules(securitygroup.rules),
-                tags=TaggedItemView.get_tags_display(securitygroup.tags),
-            ))
+            if vpc_id != "" or (vpc_id == "" and securitygroup.vpc_id == None):
+                securitygroups.append(dict(
+                    id=securitygroup.id,
+                    description=securitygroup.description,
+                    name=securitygroup.name,
+                    owner_id=securitygroup.owner_id,
+                    vpc_id=securitygroup.vpc_id,
+                    rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                    tags=TaggedItemView.get_tags_display(securitygroup.tags),
+                ))
         return dict(results=securitygroups)
 
     def get_items(self):

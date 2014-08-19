@@ -10,7 +10,6 @@ angular.module('SecurityGroupRules', [])
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
         $scope.rulesArray = [];
-        $scope.groupIdMapArray = [];
         $scope.jsonEndpoint='';
         $scope.securityGroupList = [];
         $scope.securityGroupVPC = '';
@@ -121,12 +120,11 @@ angular.module('SecurityGroupRules', [])
                 $scope.getAllSecurityGroups($scope.securityGroupVPC);
             });
             $scope.$on('updateVPC', function($event, vpc) {
-                console.log("updateVPC: " + vpc);
                 if (vpc === undefined || $scope.securityGroupVPC == vpc) {
                     return;
                 }
-                console.log("updating VPC: " + vpc);
                 $scope.securityGroupVPC = vpc;
+                $scope.resetValues();
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
