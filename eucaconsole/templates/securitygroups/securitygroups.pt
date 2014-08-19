@@ -31,13 +31,17 @@
                 </ul>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div ng-show="item.rules">
-                    <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
-                    ${panel('securitygroup_rules_landingpage', tile_view=True)}
+                <div ng-show="item.vpc_id">
+                    <span class="label" title="VPC Network" i18n:attributes="title" data-tooltip="">VN</span>
+                    {{ item.vpc_name }}
                 </div>
                 <div ng-show="item.description">
                     <span class="label" title="Description" i18n:attributes="title" data-tooltip="">DE</span>
                     {{ item.description }}
+                </div>
+                <div ng-show="item.rules">
+                    <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">RU</span>
+                    ${panel('securitygroup_rules_landingpage', tile_view=True)}
                 </div>
                 <div ng-show="item.tags">
                     <span class="label" title="Tags" i18n:attributes="title" data-tooltip="">TA</span>
@@ -46,6 +50,7 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
+                <th i18n:translate="">VPC Name(ID)</th>
                 <th i18n:translate="">Description</th>
                 <th i18n:translate="">Rules</th>
                 <th i18n:translate="">Tags</th>
@@ -53,6 +58,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="breakword"><a ng-href="${prefix}/{{ item.id || item.name | escapeURL }}">{{ item.name | ellipsis: 30 }}</a></td>
+                <td class="breakword"><span ng-show="item.vpc_id">{{ item.vpc_name }}</span></td>
                 <td class="breakword">{{ item.description | ellipsis: 64 }}</td>
                 <td>${panel('securitygroup_rules_landingpage', tile_view=False)}</td>
                 <td class="breakword">{{ item.tags }}</td>

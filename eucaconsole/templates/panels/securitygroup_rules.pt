@@ -85,7 +85,7 @@
                         <select id="groupname-select" name="groupname" class="groupname" ng-model="groupName"
                                 ng-required="selectedProtocol &amp;&amp; trafficType=='securitygroup'" data-placeholder="select...">
                             <option ng-repeat="securityGroup in securityGroupList" 
-                                    value="{{securityGroup.name}}">{{securityGroup.name}} ({{securityGroup.id}})</option>
+                                    value="{{ securityGroup.name }}">{{ securityGroup.name }} ({{ securityGroup.id }})</option>
                         </select>
                         <div><small class="error" i18n:translate="">Security group is required</small></div>
                         <div><small class="error-msg" ng-show="hasDuplicatedRule" i18n:translate="">Rule already exists</small></div>

@@ -125,6 +125,8 @@ class SecurityGroupsJsonView(LandingPageView):
     def __init__(self, request):
         super(SecurityGroupsJsonView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.get_all_vpcs()
 
     @view_config(route_name='securitygroups_json', renderer='json', request_method='POST')
     def securitygroups_json(self):
@@ -133,13 +135,18 @@ class SecurityGroupsJsonView(LandingPageView):
         securitygroups = []
         vpc_id = self.request.params.get('vpc_id')
         for securitygroup in self.filter_items(self.get_items()):
-            if vpc_id != "" or (vpc_id == "" and securitygroup.vpc_id == None):
+            if vpc_id != '' or (vpc_id == '' and securitygroup.vpc_id == None):
+                vpc_name = ''
+                if securitygroup.vpc_id != '':
+                    vpc = self.get_vpc_by_id(securitygroup.vpc_id)
+                    vpc_name = TaggedItemView.get_display_name(vpc) if vpc else '' 
                 securitygroups.append(dict(
                     id=securitygroup.id,
                     description=securitygroup.description,
                     name=securitygroup.name,
                     owner_id=securitygroup.owner_id,
                     vpc_id=securitygroup.vpc_id,
+                    vpc_name=vpc_name, 
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
@@ -148,6 +155,14 @@ class SecurityGroupsJsonView(LandingPageView):
     def get_items(self):
         return self.conn.get_all_security_groups() if self.conn else []
 
+    def get_all_vpcs(self):
+        return self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
+
+    def get_vpc_by_id(self, vpc_id):
+        for vpc in self.vpcs:
+            if vpc_id == vpc.id:
+                return vpc
+        return None 
 
 class SecurityGroupView(TaggedItemView):
     """Views for single Security Group"""
@@ -159,7 +174,7 @@ class SecurityGroupView(TaggedItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.security_group = self.get_security_group()
         self.security_group_vpc = ''
-        if self.security_group and  self.security_group.vpc_id:
+        if self.security_group and self.security_group.vpc_id:
             self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]
             self.security_group_vpc = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
         self.securitygroup_form = SecurityGroupForm(
