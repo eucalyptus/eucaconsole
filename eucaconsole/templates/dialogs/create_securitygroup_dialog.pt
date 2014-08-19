@@ -10,7 +10,7 @@
             ${panel('form_field', field=securitygroup_form['description'], ng_attrs={'model': 'newSecurityGroupDesc'}, leftcol_width=3, rightcol_width=9)}
             ${panel('form_field', field=securitygroup_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
             <hr />
-            ${panel('securitygroup_rules', groupnames=security_group_names)}
+            ${panel('securitygroup_rules')}
             <hr />
             <div class="row">
                 <div class="small-3 columns">&nbsp;</div>

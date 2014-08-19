@@ -853,7 +853,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
-            security_group_names=[name for name, label in self.launch_form.securitygroup.choices],
             role_choices_json=self.role_choices_json,
         )
 

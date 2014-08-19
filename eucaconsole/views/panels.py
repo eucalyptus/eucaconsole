@@ -155,11 +155,10 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
-def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_width=3, rightcol_width=9):
+def securitygroup_rules(context, request, rules=None, leftcol_width=3, rightcol_width=9):
     """ Security group rules panel.
         Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
     """
-    groupnames = groupnames or []
     rules = rules or []
     rules_list = []
     for rule in rules:
@@ -180,7 +179,6 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
 
     return dict(
         rules=rules_sorted,
-        groupnames=groupnames,
         rules_json=BaseView.escape_json(json.dumps(rules_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
