@@ -14,10 +14,12 @@ angular.module('SnapshotPage', ['TagEditor'])
         $scope.snapshotProgress = '';
         $scope.isNotValid = true;
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.volumeID = '';
         $scope.imagesURL = '';
         $scope.images = undefined;
+        $scope.pendingModalID = '';
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -74,9 +76,54 @@ angular.module('SnapshotPage', ['TagEditor'])
                 }
             });
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if ($(this).val() !== '') {
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
+        };
         $scope.setWatch = function () {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has ng-click or href attribute defined
+                if (this.getAttribute('ng-click')) {
+                    return;
+                } else if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.openModalById($scope.pendingModalID);
+            });
             $scope.$watch('volumeID', function() {
-                if( $scope.volumeID === '' || $scope.volumeID === undefined ){
+                if ($scope.volumeID === '' || $scope.volumeID === undefined) {
                     $scope.isNotValid = true;
                 }else{
                     $scope.isNotValid = false;
@@ -92,8 +139,9 @@ angular.module('SnapshotPage', ['TagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#snapshot-detail-form', function(event) {
                 $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
+                        $scope.isSubmitted = false;
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
                     }
@@ -103,22 +151,41 @@ angular.module('SnapshotPage', ['TagEditor'])
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
             });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Conditions to check before navigate away
+            window.onbeforeunload = function(event) {
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
+                    return $('#warning-message-unsaved-changes').text();
+                }
+                return;
+            };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
+            });
         };
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var actionsMenu = $('.actions-menu');
                 if (actionsMenu.length) {
                     actionsMenu.find('a').get(0).focus();
-                }else if( $('input[type="text"]').length > 0 ){
+                } else if ($('input[type="text"]').length > 0) {
                     $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
                 }else{
@@ -133,11 +200,15 @@ angular.module('SnapshotPage', ['TagEditor'])
             });
         };
         $scope.deleteModal = function () {
-            var modal = $('#delete-snapshot-modal');
+            var modalID = 'delete-snapshot-modal';
+            if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                $scope.pendingModalID = modalID;
+                $scope.openModalById('unsaved-changes-warning-modal');
+                return;
+            } 
             $scope.images = undefined;
             $scope.getSnapshotImages($scope.imagesURL);
-            modal.foundation('reveal', 'open');
-            modal.find('h3').click();
+            $scope.openModalById(modalID);
         };
         $scope.getSnapshotImages = function (url) {
             $http.get(url).success(function(oData) {

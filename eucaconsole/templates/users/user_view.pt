@@ -25,7 +25,7 @@
             <em>${user.user_name}</em>
         </h3>
         <div class="large-8 columns">
-            <dl class="tabs" data-tab="">
+            <dl class="tabs">
                 <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
                 <dd><a href="#security-tab" ng-click="clickTab($event, 'security-tab')" i18n:translate="">Security credentials</a></dd>
                 <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas-tab')" i18n:translate="">Quotas</a></dd>
@@ -35,10 +35,10 @@
                     <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="user">
                         <metal:actions metal:fill-slot="actions">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -71,7 +71,7 @@
                             <div class="row">
                                 <div class="small-3 columns">&nbsp;</div>
                                 <div class="small-9 columns field inline">
-                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isNotChanged">
+                                    <button type="submit" class="button" id="save-user-btn" ng-disabled="isUserInfoNotChanged">
                                         <span tal:condition="user" i18n:translate="">Save Changes</span>
                                     </button>
                                     <a href="${request.route_path('users')}"
@@ -171,10 +171,10 @@
                         </span>
                         <ul id="actions-dropdown2" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>
@@ -226,7 +226,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="columns field inline">
-                                            <button type="submit" class="button" id="save-password-btn">
+                                            <button type="submit" class="button" id="save-password-btn" ng-disabled="isPasswordNotChanged">
                                                 <span tal:condition="user" i18n:translate="">Save Password</span>
                                             </button>
                                             <a href="${request.route_path('users')}"
@@ -350,10 +350,10 @@
                         </span>
                         <ul id="actions-dropdown3" class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a id="disable-user-action" data-reveal-id="disable-user-modal" i18n:translate="">Disable</a>
+                                <a id="disable-user-action" i18n:translate="">Disable</a>
                             </li>
                             <li>
-                                <a id="delete-user-action" data-reveal-id="delete-user-modal" i18n:translate="">
+                                <a id="delete-user-action" i18n:translate="">
                                     Delete user
                                 </a>
                             </li>

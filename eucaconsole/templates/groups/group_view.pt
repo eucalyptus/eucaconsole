@@ -37,7 +37,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a id="delete-group-action" data-reveal-id="delete-group-modal" i18n:translate="">
+                            <a id="delete-group-action" i18n:translate="">
                                 Delete group
                             </a>
                         </li>
