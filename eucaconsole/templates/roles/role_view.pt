@@ -230,6 +230,11 @@
                         ng-include="'${layout.help_path('console_create_iam_roles.html')}'">
                     </div> 
                 </div>
+                <div tal:condition="role">
+                    <div id="help-html-console_role_detail_general"
+                        ng-include="'${layout.help_path('console_role_detail_general.html')}'">
+                    </div> 
+                </div>
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
