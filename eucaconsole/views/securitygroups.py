@@ -218,8 +218,11 @@ class SecurityGroupView(TaggedItemView):
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 self.log_request(_(u"Creating security group {0}").format(name))
-                new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
+                temp_new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
+                # Need to retreive security group to obtain complete VPC data
+                new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
+                self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
                 self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
@@ -331,18 +334,20 @@ class SecurityGroupView(TaggedItemView):
         self.add_rules()
         self.add_rules(traffic_type='egress')
 
-    def revoke_all_rules(self, traffic_type='ingress'):
+    def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
+        if security_group is None:
+            security_group = self.security_group
         rules = [] 
         if traffic_type == 'ingress':
-            rules = self.security_group.rules 
+            rules = security_group.rules 
         else:
-            rules = self.security_group.rules_egress 
+            rules = security_group.rules_egress 
         for rule in rules:
             grants = rule.grants
             from_port = int(rule.from_port) if rule.from_port else None
             to_port = int(rule.to_port) if rule.to_port else None
             params = dict(
-                group_id=self.security_group.id,
+                group_id=security_group.id,
                 ip_protocol=rule.ip_protocol,
                 from_port=from_port,
                 to_port=to_port,

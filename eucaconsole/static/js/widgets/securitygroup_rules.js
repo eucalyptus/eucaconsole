@@ -133,6 +133,10 @@ angular.module('SecurityGroupRules', [])
                 }
                 $scope.securityGroupVPC = vpc;
                 $scope.resetValues();
+                // If VPC is selected while in 'create new security group' mode, add the default outbound rule
+                if ($scope.securityGroupVPC != '' && $('select#vpc_network').length > 0) {
+                    $scope.addDefaultOutboundRule();
+                }
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
@@ -170,7 +174,7 @@ angular.module('SecurityGroupRules', [])
             }
             for( var i=0; i < compareArray.length; i++){
                 // Compare the new array block with the existing ones
-                if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
+                if( $scope.compareRules(thisRuleArrayBlock, compareArray[i]) ){
                     // Detected that the new rule is a dup
                     // this value will disable the "Add Rule" button to prevent the user from submitting
                     $scope.hasDuplicatedRule = true;
@@ -337,6 +341,24 @@ angular.module('SecurityGroupRules', [])
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
             $('#input-cidr-ip').focus();
+        };
+        // Set the default outbound rule to open to all addresses -- Default action by AWS
+        $scope.addDefaultOutboundRule = function () {
+            var storeRuleType = $scope.ruleType; // Save the current ruleType value
+            $scope.ruleType = 'outbound';   // Needs to set 'outbound' for the rule comparison
+            $scope.ipProtocol = "-1";
+            $scope.trafficType == "ip" 
+            $scope.cidrIp = "0.0.0.0/0";
+            $scope.fromPort = null;
+            $scope.toPort = null;
+            $scope.checkForDuplicatedRules();
+            if ($scope.hasDuplicatedRule) {
+                $scope.resetValues();
+            } else {
+                $scope.rulesEgressArray.push($scope.createRuleArrayBlock());
+                $scope.syncRules();
+            }
+            $scope.ruleType = storeRuleType;   // Restore the ruleType value
         };
         $scope.selectRuleType = function (type) {
             $scope.ruleType = type;
