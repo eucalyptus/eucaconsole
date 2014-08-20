@@ -86,8 +86,11 @@
                         ${structure:account_update_form['csrf_token']}
                         <div class="section">
                             <h6 i18n:translate="">General</h6>
-                            <div>
-                                ${panel('form_field', field=account_update_form.account_name, leftcol_width=3, rightcol_width=9)}
+                            <div class="row controls-wrapper readonly">
+                                <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
+                                <div class="small-9 columns value" ng-cloak="">
+                                    ${account.account_name}
+                                </div>
                             </div>
                             <div class="row controls-wrapper readonly">
                                 <div class="small-3 columns"><label class="right" i18n:translate="">ID</label></div>
@@ -114,7 +117,7 @@
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
-                                <strong i18n:translate="">Account policies</strong>
+                                <strong i18n:translate="">Denial policies</strong>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>

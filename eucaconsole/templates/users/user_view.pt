@@ -14,7 +14,7 @@
                                     '${request.route_path('user_delete', name=user.user_name)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
                 <li class="current"><a href="#">${user.user_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>

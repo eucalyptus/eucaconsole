@@ -40,9 +40,6 @@
                     <a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a>
                 </div>
             </div>
-            <div metal:fill-slot="tile_footer">
-                <div ng-show="item.policy_count == 0"><a class="link" ng-click="linkAccount(item, '#policy-list')" i18n:translate="">Does not have permissions</a></div>
-            </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Account name</th>
                 <th i18n:translate="">ID</th>

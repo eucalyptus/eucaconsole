@@ -11,7 +11,7 @@
                                     '${request.route_path('file_download')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('users')}" i18n:translate="">IAM users</a></li>
+                <li><a href="${request.route_path('users')}" i18n:translate="">Users</a></li>
                 <li class="current" i18n:translate="">Create new users</li>
             </metal:crumbs>
         </metal:breadcrumbs>
