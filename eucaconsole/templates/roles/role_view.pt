@@ -231,7 +231,7 @@
                     </div> 
                 </div>
                 <div tal:condition="role">
-                    <div id="help-html-console_view_iam_roles"
+                    <div id="help-html-console_role_detail_general"
                         ng-include="'${layout.help_path('console_role_detail_general.html')}'">
                     </div> 
                 </div>
