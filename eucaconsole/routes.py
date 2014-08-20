@@ -172,6 +172,14 @@ urls = [
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
     Route(name='snapshot_images_json', pattern='/snapshots/{id}/images/json'),
 
+    # Buckets #####
+    # Landing page
+    Route(name='buckets', pattern='/buckets'),
+    Route(name='buckets_json', pattern='/buckets/json'),
+    Route(name='objects_json', pattern='/buckets/{name}/objects/json'),
+    # Detail page
+    Route(name='bucket_view', pattern='/bucket/{name}'),  # Pass id='new' to render Add Bucket page
+
     # Security Groups #####
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),

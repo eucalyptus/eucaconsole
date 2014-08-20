@@ -54,7 +54,7 @@ class DashboardView(BaseView):
         if tiles is not None:
             tiles = tiles.replace('%2C', ',')
         else:
-            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,security-groups,key-pairs,accounts,users,groups,roles,health'
+            tiles = u'instances-running,instances-stopped,scaling-groups,elastic-ips,volumes,snapshots,buckets,security-groups,key-pairs,accounts,users,groups,roles,health'
         return dict(
             availability_zones=availability_zones,
             tiles=tiles.split(','),
@@ -88,6 +88,8 @@ class DashboardJsonView(BaseView):
             # Volume/snapshot counts
             volumes_count = len(ec2_conn.get_all_volumes(filters=filters))
             snapshots_count = len(ec2_conn.get_all_snapshots(owner='self'))
+            s3_conn = self.get_connection(conn_type="s3")
+            buckets_count = len(s3_conn.get_all_buckets())
 
             # Security groups, key pairs, IP addresses
             securitygroups_count = len(ec2_conn.get_all_security_groups())
@@ -117,6 +119,7 @@ class DashboardJsonView(BaseView):
                 instances_scaling=instances_scaling_count,
                 volumes=volumes_count,
                 snapshots=snapshots_count,
+                buckets=buckets_count,
                 securitygroups=securitygroups_count,
                 keypairs=keypairs_count,
                 eips=elasticips_count,
