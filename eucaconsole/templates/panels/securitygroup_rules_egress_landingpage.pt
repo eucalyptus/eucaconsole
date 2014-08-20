@@ -1,0 +1,18 @@
+<!--! Security group egress rules for landing page display  -->
+<span id="securitygrouprules_landingpage">
+    <span ng-repeat="rule in item.rules_egress ${'\| limitTo: 3' if tile_view else ''}">
+        {{ rule.ip_protocol.toUpperCase() }}
+        ({{ rule.from_port }}<span ng-show="rule.to_port != rule.from_port"> - {{ rule.to_port }}</span>)
+        <span ng-repeat="grant in rule.grants ${'\| limitTo: 1' if tile_view else ''}">
+            <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
+            <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
+            <span ng-show="grant.name">{{ grant.name }}</span>
+        </span>
+        <br ng-show="!$last" />
+        <span style="display: block;" tal:condition="tile_view" ng-show="$last &amp;&amp; item.rules_egress.length > 3">
+            <!--! XSS Heads up!  Don't enable Foundation tooltips below -->
+            <span class="label round has-tip ellipsis" title="{{ item.rules_egress.length - 3 }} more rules">...</span>
+        </span>
+    </span>
+</span>
+
