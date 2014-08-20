@@ -137,6 +137,10 @@ angular.module('SecurityGroupRules', [])
                 if ($scope.securityGroupVPC != '' && $('select#vpc_network').length > 0) {
                     $scope.addDefaultOutboundRule();
                 }
+                // When NoVPC is selected, which the tab to 'inbound'
+                if ($scope.securityGroupVPC == '') {
+                    $scope.selectRuleType('inbound'); 
+                }
             });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
