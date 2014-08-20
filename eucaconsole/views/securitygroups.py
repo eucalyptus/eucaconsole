@@ -220,6 +220,7 @@ class SecurityGroupView(TaggedItemView):
                 self.log_request(_(u"Creating security group {0}").format(name))
                 new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
                 self.add_rules(security_group=new_security_group)
+                self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
                     for tagname, tagvalue in tags.items():
