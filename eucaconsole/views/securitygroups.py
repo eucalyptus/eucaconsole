@@ -222,7 +222,7 @@ class SecurityGroupView(TaggedItemView):
                 # Need to retreive security group to obtain complete VPC data
                 new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
-                #self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
+                self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
                 self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
@@ -362,10 +362,15 @@ class SecurityGroupView(TaggedItemView):
                         cidr_ip=grant.cidr_ip,
                     ))
                 elif grant.group_id:
-                    params.update(dict(
-                        src_security_group_group_id=grant.group_id,
-                        src_security_group_owner_id=grant.owner_id,
-                    ))
+                    if traffic_type == 'ingress':
+                        params.update(dict(
+                            src_security_group_group_id=grant.group_id,
+                            src_security_group_owner_id=grant.owner_id,
+                        ))
+                    else:
+                        params.update(dict(
+                            src_group_id=grant.group_id,
+                        ))
                 if traffic_type == 'ingress':
                     self.conn.revoke_security_group(**params)
                 else:
