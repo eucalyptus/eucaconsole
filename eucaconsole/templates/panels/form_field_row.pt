@@ -5,12 +5,12 @@
         <div class="small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="right">
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
+                <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
+                  data-tooltip="" title="${field.help_text}">?</span>
             </label>
         </div>
         <div class="small-${rightcol_width} columns field">
             ${structure:field(**html_attrs)}
-            <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
-                  data-tooltip="" title="${field.help_text}">?</span>
             <small class="error" tal:condition="error_msg">${error_msg}</small>
             <div tal:condition="field.errors" class="server-validation">
                 <span class="error" tal:repeat="error field.errors" ng-non-bindable="">${error}</span>
