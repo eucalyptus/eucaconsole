@@ -179,6 +179,8 @@ class ConnectionManager(object):
             elif conn_type == 's3':
                 path = '/services/Walrus'
                 conn_class = S3Connection
+            elif conn_type == 'vpc':
+                conn_class = boto.vpc.VPCConnection
 
             if conn_type == 'sts':
                 conn = EucaAuthenticator(_clchost, _port)
