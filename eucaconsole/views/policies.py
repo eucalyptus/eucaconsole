@@ -91,6 +91,7 @@ class IAMPolicyWizardView(BaseView):
             with boto_error_handler(self.request, self.location):
                 self.log_request(_(u"Creating policy {0} for {1} {2}").format(
                     policy_name, self.target_type, self.target_name))
+                result = None
                 if self.target_type == 'account':
                     result = self.iam_conn.get_response(
                                 'PutAccountPolicy',
