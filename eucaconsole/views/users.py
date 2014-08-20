@@ -272,7 +272,7 @@ class UserView(BaseView):
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
-        as_account = self.request.params.get('as-account', '')
+        as_account = self.request.params.get('as-account', None)
         has_password = False
         try:
             profile = self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
@@ -283,6 +283,7 @@ class UserView(BaseView):
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
+        self.render_dict['as_account'] = as_account
         self.render_dict['user_form'] = self.user_form
         self.render_dict['has_password'] = 'true' if has_password else 'false'
         self.render_dict['already_member_text'] = self.already_member_text
@@ -339,7 +340,7 @@ class UserView(BaseView):
         if self.user.user_name == 'admin':
             return dict(results=[])
         with boto_error_handler(self.request):
-            policies = self.conn.get_response('ListUserPolicies', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
+            policies = self.conn.get_response('ListUserPolicies', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='PolicyNames')
             return dict(results=policies.policy_names)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
