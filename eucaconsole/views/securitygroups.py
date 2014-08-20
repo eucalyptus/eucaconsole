@@ -148,6 +148,7 @@ class SecurityGroupsJsonView(LandingPageView):
                     vpc_id=securitygroup.vpc_id,
                     vpc_name=vpc_name, 
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                    rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
         return dict(results=securitygroups)
@@ -277,11 +278,15 @@ class SecurityGroupView(TaggedItemView):
                 groups = [g.name for g in self.conn.get_all_security_groups()]
         return sorted(set(groups))
 
-    def add_rules(self, security_group=None):
+    def add_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
             security_group = self.security_group
         # Now add the fresh set of rules
-        rules_json = self.request.params.get('rules')
+        rules_json = []
+        if traffic_type == 'ingress':
+            rules_json = self.request.params.get('rules')
+        else:
+            rules_json = self.request.params.get('rules_egress')
         rules = json.loads(rules_json) if rules_json else []
 
         for rule in rules:
@@ -313,15 +318,25 @@ class SecurityGroupView(TaggedItemView):
             if owner_id:
                 auth_args['src_security_group_owner_id'] = owner_id
 
-            self.conn.authorize_security_group(**auth_args)
+            if traffic_type == 'ingress':
+                self.conn.authorize_security_group(**auth_args)
+            else:
+                self.conn.authorize_security_group_egress(**auth_args)
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update
         self.revoke_all_rules()
+        self.revoke_all_rules(traffic_type='egress')
         self.add_rules()
+        self.add_rules(traffic_type='egress')
 
-    def revoke_all_rules(self):
-        for rule in self.security_group.rules:
+    def revoke_all_rules(self, traffic_type='ingress'):
+        rules = [] 
+        if traffic_type == 'ingress':
+            rules = self.security_group.rules 
+        else:
+            rules = self.security_group.rules_egress 
+        for rule in rules:
             grants = rule.grants
             from_port = int(rule.from_port) if rule.from_port else None
             to_port = int(rule.to_port) if rule.to_port else None
@@ -341,5 +356,8 @@ class SecurityGroupView(TaggedItemView):
                         src_security_group_group_id=grant.group_id,
                         src_security_group_owner_id=grant.owner_id,
                     ))
-                self.conn.revoke_security_group(**params)
+                if traffic_type == 'ingress':
+                    self.conn.revoke_security_group(**params)
+                else:
+                    self.conn.revoke_security_group_egress(**params)
 

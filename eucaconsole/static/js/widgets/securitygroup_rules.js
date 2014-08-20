@@ -9,12 +9,18 @@ angular.module('SecurityGroupRules', [])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
+        $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
         $scope.rulesArray = [];
+        $scope.rulesEgressArray = [];
         $scope.jsonEndpoint='';
         $scope.securityGroupList = [];
         $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.isRuleNotComplete = true;
+        $scope.inboundButtonClass = 'active';
+        $scope.outboundButtonClass = 'inactive';
+        $scope.trafficType = '';
+        $scope.ruleType = 'inbound';
         $scope.resetValues = function () {
             $scope.trafficType = 'ip';
             $scope.fromPort = '';
@@ -33,11 +39,13 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
+            $scope.rulesEgressTextarea.val(JSON.stringify($scope.rulesEgressArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson, jsonEndpoint) {
+        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint) {
             rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
+            $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
             $scope.jsonEndpoint=jsonEndpoint;
             $scope.syncRules();
             $scope.setWatchers();
@@ -154,7 +162,13 @@ angular.module('SecurityGroupRules', [])
             $scope.hasDuplicatedRule = false;
             // Create a new array block based on the current user input on the panel
             var thisRuleArrayBlock = $scope.createRuleArrayBlock();
-            for( var i=0; i < $scope.rulesArray.length; i++){
+            var compareArray = [];
+            if ($scope.ruleType == 'inbound') {
+                compareArray = $scope.rulesArray;
+            } else {
+                compareArray = $scope.rulesEgressArray;
+            }
+            for( var i=0; i < compareArray.length; i++){
                 // Compare the new array block with the existing ones
                 if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
                     // Detected that the new rule is a dup
@@ -200,7 +214,11 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.removeRule = function (index, $event) {
             $event.preventDefault();
-            $scope.rulesArray.splice(index, 1);
+            if ($scope.ruleType == 'inbound') {
+                $scope.rulesArray.splice(index, 1);
+            } else {
+                $scope.rulesEgressArray.splice(index, 1);
+            }
             $scope.syncRules();
             $scope.$emit('securityGroupUpdate');
         };
@@ -255,7 +273,11 @@ angular.module('SecurityGroupRules', [])
 
             $scope.adjustIpProtocol();
             // Add the rule
-            $scope.rulesArray.push($scope.createRuleArrayBlock());
+            if ($scope.ruleType == 'inbound') {
+                $scope.rulesArray.push($scope.createRuleArrayBlock());
+            } else {
+                $scope.rulesEgressArray.push($scope.createRuleArrayBlock());
+            }
             $scope.syncRules();
             $scope.$emit('securityGroupUpdate');
         };
@@ -315,6 +337,17 @@ angular.module('SecurityGroupRules', [])
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
             $('#input-cidr-ip').focus();
+        };
+        $scope.selectRuleType = function (type) {
+            $scope.ruleType = type;
+            if ($scope.ruleType === 'inbound') {
+                $scope.inboundButtonClass = 'active';
+                $scope.outboundButtonClass = 'inactive';
+            } else {
+                $scope.inboundButtonClass = 'inactive';
+                $scope.outboundButtonClass = 'active';
+
+            }
         };
     })
 ;
