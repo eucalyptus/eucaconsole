@@ -222,7 +222,7 @@ class SecurityGroupView(TaggedItemView):
                 # Need to retreive security group to obtain complete VPC data
                 new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
-                self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
+                #self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
                 self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
@@ -315,12 +315,16 @@ class SecurityGroupView(TaggedItemView):
                 group_id = grant.get('group_id')
 
             auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-            if group_id:
-                auth_args['src_security_group_group_id'] = group_id
-            elif group_name:
-                auth_args['src_security_group_name'] = group_name
-            if owner_id:
-                auth_args['src_security_group_owner_id'] = owner_id
+            if traffic_type == 'ingress':
+                if group_id:
+                    auth_args['src_security_group_group_id'] = group_id
+                elif group_name:
+                    auth_args['src_security_group_name'] = group_name
+                if owner_id:
+                    auth_args['src_security_group_owner_id'] = owner_id
+            else:
+                if group_id:
+                    auth_args['src_group_id'] = group_id
 
             if traffic_type == 'ingress':
                 self.conn.authorize_security_group(**auth_args)
