@@ -142,19 +142,22 @@ class LoginView(BaseView):
                 self.security_token = creds.session_token
                 iam_conn = self.get_connection(conn_type='iam', cloud_type='euca')
                 session['account_access'] = True if account == 'eucalyptus' else False
+                session['user_access'] = False
                 try:
-                    #iam_conn.get_all_users(path_prefix="/notlikely")
-                    session['user_access'] = True if username == 'admin' else False
+                    iam_conn.get_all_users(path_prefix="/notlikely")
+                    session['user_access'] = True
                 except:
                     pass
+                session['group_access'] = False
                 try:
-                    #iam_conn.get_all_groups(path_prefix="/notlikely")
-                    session['group_access'] = True if username == 'admin' else False
+                    iam_conn.get_all_groups(path_prefix="/notlikely")
+                    session['group_access'] = True
                 except:
                     pass
+                session['role_access'] = False
                 try:
-                    #iam_conn.list_roles(path_prefix="/notlikely")
-                    session['role_access'] = True if username == 'admin' else False
+                    iam_conn.list_roles(path_prefix="/notlikely")
+                    session['role_access'] = True
                 except:
                     pass
                 headers = remember(self.request, user_account)
