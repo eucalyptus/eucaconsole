@@ -74,7 +74,10 @@
                                     <small class="error" i18n:translate="">Valid CIDR entry required</small>
                                 </div>
                             </div>
-                            <div>
+                            <div class="link">
+                                 <a id="sgroup-open-to-all-link" ng-click="openToAllAddresses()">Open to all addresses</a>
+                            </div>
+                            <div class="link">
                                  <a id="sgroup-use-my-ip" ng-click="useMyIP('${remote_addr}')">Use my IP address</a>
                             </div>
                         </div>

@@ -6,6 +6,7 @@ form .row.trafficfrom { margin-top: 1rem; }
 form .ip-label, form .sg-label { margin-right: 1rem; }
 form .ipaddress, form .securitygroupname { text-align: left !important; }
 form .cidr-block { display: inline-block; vertical-align: top; margin-bottom: 1rem; }
+form .cidr-block .link { margin-bottom: 0.5rem; }
 form .cidr-ip { display: inline; width: 100%; }
 form .groupname { display: inline; width: 50%; }
 form label.protocol { margin-bottom: 1.5rem; }

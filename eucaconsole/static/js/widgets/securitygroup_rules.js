@@ -308,6 +308,10 @@ angular.module('SecurityGroupRules', [])
             } 
             return null;
         };
+        $scope.openToAllAddresses = function () {
+            $scope.cidrIp = "0.0.0.0/0";
+            $('#input-cidr-ip').focus();
+        };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
             $('#input-cidr-ip').focus();

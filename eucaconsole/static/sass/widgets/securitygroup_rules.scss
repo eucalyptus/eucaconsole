@@ -20,7 +20,10 @@ form {
     .cidr-block {
        display: inline-block;
        vertical-align: top;
-       margin-bottom: 1rem;
+       margin-bottom: 0.5rem;
+       .link {
+         margin-bottom: 0.5rem;
+       }
     }
     .cidr-ip {
         display: inline; width: 100%;
