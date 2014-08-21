@@ -7,7 +7,7 @@
             <span ng-show="grant.cidr_ip">{{ grant.cidr_ip }}</span>
             <span ng-show="grant.owner_id">{{ grant.owner_id }}/</span>
             <span ng-show="grant.name">{{ grant.name }}</span>
-            <span ng-show="grant.name == undefined && grant.group_id">{{ grant.group_id }}</span>
+            <span ng-show="grant.name == undefined &amp;&amp; grant.group_id">{{ grant.group_id }}</span>
         </span>
         <br ng-show="!$last" />
         <span style="display: block;" tal:condition="tile_view" ng-show="$last &amp;&amp; item.rules.length > 3">
