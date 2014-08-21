@@ -49,10 +49,11 @@
                          'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and connot contain spaces'};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
-                        <div class="section">
-                            <div class="">
-                                ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
+                        <div class="section columns">
+                            <div class="row">
+                                <p><span i18n:translate="">Add role to account:</span>&nbsp;${layout.account}</p>
                             </div>
+                            ${panel('form_field', field=role_form.role_name, leftcol_width=1, rightcol_width=11, autofocus='', **html_attrs)}
                             <div class="row controls-wrapper">
                                 <div class="small-1 columns">
                                     <label class="right" i18n:translate="">Type</label>
@@ -118,16 +119,20 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="small-12 columns field inline">
-                                    <label>
-                                        <span class="req">*</span>
-                                        <span i18n:translate="">Required fields</span>
-                                    </label>
-                                    <button type="submit" class="button" id="create-btn">
+                                <div class="columns small-6">
+                                    <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
                                         <span i18n:translate="">Create Role</span>
                                     </button>
                                     <a href="${request.route_path('roles')}"
                                         class="cancel-link" i18n:translate="">Cancel</a>
+                                </div>
+                                <div class="columns small-6">
+                                    <div tal:condition="not role">
+                                        <label class="right">
+                                            <span class="req">*</span>
+                                            <span i18n:translate="">Required fields</span>
+                                       </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -223,6 +228,11 @@
                 <div tal:condition="not role">
                     <div id="help-html-console_create_iam_roles"
                         ng-include="'${layout.help_path('console_create_iam_roles.html')}'">
+                    </div> 
+                </div>
+                <div tal:condition="role">
+                    <div id="help-html-console_role_detail_general"
+                        ng-include="'${layout.help_path('console_role_detail_general.html')}'">
                     </div> 
                 </div>
             </div>

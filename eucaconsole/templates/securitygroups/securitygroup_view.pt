@@ -40,7 +40,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="security_group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a data-reveal-id="delete-securitygroup-modal" i18n:translate="" id="delete-securitygroup-action">
+                            <a i18n:translate="" id="delete-securitygroup-action">
                                 Delete security group
                             </a>
                         </li>
