@@ -111,7 +111,7 @@
                                 <div class="small-9 columns value inline breakword">${group_arn if group_arn else ''}</div>
                             </div>
                             <div class="top-bottom-padding">
-                                ${panel('form_field', field=group_update_form.path, leftcol_width=3, rightcol_width=9)}
+                                ${panel('form_field', field=group_update_form['path'], leftcol_width=3, rightcol_width=9)}
                             </div>
                         </div>
                         <hr />
