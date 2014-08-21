@@ -135,7 +135,7 @@ class SecurityGroupsJsonView(LandingPageView):
         securitygroups = []
         vpc_id = self.request.params.get('vpc_id')
         for securitygroup in self.filter_items(self.get_items()):
-            if vpc_id != '' or (vpc_id == '' and securitygroup.vpc_id == None):
+            if vpc_id != '' or (vpc_id == '' and securitygroup.vpc_id is None):
                 vpc_name = ''
                 if securitygroup.vpc_id != '':
                     vpc = self.get_vpc_by_id(securitygroup.vpc_id)
@@ -164,6 +164,7 @@ class SecurityGroupsJsonView(LandingPageView):
             if vpc_id == vpc.id:
                 return vpc
         return None 
+
 
 class SecurityGroupView(TaggedItemView):
     """Views for single Security Group"""
@@ -286,7 +287,6 @@ class SecurityGroupView(TaggedItemView):
         if security_group is None:
             security_group = self.security_group
         # Now add the fresh set of rules
-        rules_json = []
         if traffic_type == 'ingress':
             rules_json = self.request.params.get('rules')
         else:
@@ -314,7 +314,9 @@ class SecurityGroupView(TaggedItemView):
                 owner_id = grant.get('owner_id')
                 group_id = grant.get('group_id')
 
-            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, 
+                from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
+
             if traffic_type == 'ingress':
                 if group_id:
                     auth_args['src_security_group_group_id'] = group_id

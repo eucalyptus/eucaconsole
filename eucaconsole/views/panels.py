@@ -303,6 +303,7 @@ def securitygroup_rules_landingpage(context, request, tile_view=False):
         tile_view=tile_view,
     )
 
+
 @panel_config('securitygroup_rules_egress_landingpage', renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
 def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
