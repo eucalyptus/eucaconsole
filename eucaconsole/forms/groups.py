@@ -33,7 +33,7 @@ from wtforms import validators
 
 from ..i18n import _
 from . import BaseSecureForm, TextEscapedField
-
+from ..views import BaseView
 
 class GroupForm(BaseSecureForm):
     """Group form
@@ -94,7 +94,7 @@ class GroupUpdateForm(BaseSecureForm):
         self.path_error_msg = self.path_error_msg
         if group is not None:
             self.group_name.data = group.group_name
-            self.path.data = group.path
+            self.path.data = BaseView.escape_braces(group.path)
 
 
 class DeleteGroupForm(BaseSecureForm):
