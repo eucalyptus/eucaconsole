@@ -61,7 +61,7 @@ class SecurityGroupForm(BaseSecureForm):
         self.description.error_msg = self.desc_error_msg  # Used for Foundation Abide error message
         self.choices_manager = ChoicesManager(conn=vpc_conn)
         region = request.session.get('region')
-        self.set_vpc_choices(region)
+        self.set_vpc_choices()
 
         # Although we don't need to show the name/desc fields on update, we need these here to ensure the form is valid
         if security_group is not None:
@@ -69,8 +69,8 @@ class SecurityGroupForm(BaseSecureForm):
             self.description.data = security_group.description
             self.vpc_network.data = security_group.vpc_id or ''
 
-    def set_vpc_choices(self, region):
-        self.vpc_network.choices = self.choices_manager.vpc_networks(region)
+    def set_vpc_choices(self):
+        self.vpc_network.choices = self.choices_manager.vpc_networks()
 
 
 class SecurityGroupDeleteForm(BaseSecureForm):

@@ -369,7 +369,7 @@ class ChoicesManager(object):
 
     ### VPC connection type choices
     ##
-    def vpc_networks(self, conn, vpc_networks=None, escapebraces=True):
+    def vpc_networks(self, vpc_networks=None, escapebraces=True):
         from ..views import TaggedItemView
         choices = [('', _(u'No VPC'))]
         vpc_network_list = vpc_networks or []
