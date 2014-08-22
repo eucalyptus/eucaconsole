@@ -46,8 +46,14 @@
                 </div>
                 <div class="row rulesentry inline controls-wrapper">
                     <div class=" columns add-label">
-                        <span ng-show="!rulesArray.length"><span i18n:translate="">Add a rule</span>:</span>
-                        <span ng-show="rulesArray.length"><span i18n:translate="">Add another rule</span>:</span>
+                        <div ng-show="ruleType == 'inbound'">
+                            <span ng-show="!rulesArray.length"><span i18n:translate="">Add an inbound rule</span>:</span>
+                            <span ng-show="rulesArray.length"><span i18n:translate="">Add another inbound rule</span>:</span>
+                        </div>
+                        <div ng-show="ruleType == 'outbound'">
+                            <span ng-show="!rulesEgressArray.length"><span i18n:translate="">Add an outbound rule</span>:</span>
+                            <span ng-show="rulesEgressArray.length"><span i18n:translate="">Add another outbound rule</span>:</span>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="small-3 columns">
