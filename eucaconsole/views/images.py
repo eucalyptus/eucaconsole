@@ -218,7 +218,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 transitional=image.state not in ['available', 'failed', 'deleted'],
                 progress=0,  # this is valid for transitional images till we get something better
                 location=image.location,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
@@ -255,7 +255,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name=image.name,
                 location=image.location,
                 block_device_mapping=bdm_dict,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget

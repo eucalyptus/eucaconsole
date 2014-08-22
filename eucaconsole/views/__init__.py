@@ -163,12 +163,12 @@ class BaseView(object):
     @staticmethod
     def escape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
-            return s.replace('{{', '{ {').replace('}}', '} }')
+            return s.replace('{{', '&#123;&#123;').replace('}}', '&#125;&#125;')
 
     @staticmethod
     def unescape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
-            return s.replace('{ {', '{{').replace('} }', '}}')
+            return s.replace('&#123;&#123;', '{{').replace('&#125;&#125;', '}}')
 
     @staticmethod
     def sanitize_url(url):

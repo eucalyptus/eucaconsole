@@ -203,11 +203,11 @@ class SnapshotsJsonView(LandingPageView):
             volume = [volume for volume in volumes if volume.id == snapshot.volume_id]
             volume_name = ''
             if volume:
-                volume_name = TaggedItemView.get_display_name(volume[0])
+                volume_name = TaggedItemView.get_display_name(volume[0], escapebraces=False)
             snapshots.append(dict(
                 id=snapshot.id,
                 description=snapshot.description,
-                name=TaggedItemView.get_display_name(snapshot),
+                name=TaggedItemView.get_display_name(snapshot, escapebraces=False),
                 progress=snapshot.progress,
                 transitional=self.is_transitional(snapshot),
                 start_time=snapshot.start_time,

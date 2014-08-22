@@ -340,7 +340,7 @@ class InstancesJsonView(LandingPageView):
             has_elastic_ip = instance.ip_address in elastic_ips
             instances.append(dict(
                 id=instance.id,
-                name=TaggedItemView.get_display_name(instance),
+                name=TaggedItemView.get_display_name(instance, escapebraces=False),
                 instance_type=instance.instance_type,
                 image_id=instance.image_id,
                 ip_address=instance.ip_address,
