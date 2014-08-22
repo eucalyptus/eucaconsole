@@ -1,0 +1,35 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
+                <li class="current"><a href="#">${bucket.name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <strong i18n:translate="">Details for bucket:</strong>
+            <em>${bucket.name}</em>
+        </h3>
+        <div class="large-7 columns">
+            <div class="panel has-actions" tal:condition="bucket">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="bucket">
+                    <metal:actions metal:fill-slot="actions">
+
+                    </metal:actions>
+                </metal:block>
+                ${bucket.__dict__}
+            </div>
+        </div>
+        <div class="large-5 columns">
+
+        </div>
+    </div>
+</div>
+
+</metal:block>
+

@@ -25,15 +25,15 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Pyramid views for Eucalyptus and AWS Elastic IP Addresses
+Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
-from pyramid.httpexceptions import HTTPFound
+from boto.exception import S3ResponseError
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
+from ..views import LandingPageView, BaseView, JSONResponse
 from . import boto_error_handler
 
 
@@ -67,28 +67,11 @@ class BucketsView(LandingPageView):
         )
         return self.render_dict
 
-    #@view_config(route_name='ipaddresses_associate', request_method="POST")
-    def ipaddresses_associate(self):
-        if self.associate_form.validate():
-            instance_id = self.request.params.get('instance_id')
-            public_ip = self.request.params.get('public_ip')
-            with boto_error_handler(self.request, self.location):
-                self.log_request(_(u"Associating ElasticIP {0} with instance {1}").format(public_ip, instance_id))
-                elastic_ip = self.get_elastic_ip(public_ip)
-                elastic_ip.associate(instance_id)
-                template = _(u'Successfully associated IP {ip} with instance {instance}')
-                msg = template.format(ip=elastic_ip.public_ip, instance=instance_id)
-                self.request.session.flash(msg, queue=Notification.SUCCESS)
-        else:
-            msg = _(u'Unable to associate IP with instance')
-            self.request.session.flash(msg, queue=Notification.ERROR)
-        return HTTPFound(location=self.location)
-
 
 class BucketsJsonView(LandingPageView):
     def __init__(self, request):
         super(BucketsJsonView, self).__init__(request)
-        self.conn = self.get_connection(conn_type="s3")
+        self.conn = self.get_connection(conn_type='s3')
 
     @view_config(route_name='buckets_json', renderer='json', request_method='POST')
     def buckets_json(self):
@@ -98,7 +81,6 @@ class BucketsJsonView(LandingPageView):
         with boto_error_handler(self.request):
             items = self.get_items()
             for item in items:
-                #import pdb; pdb.set_trace()
                 buckets.append(dict(
                     bucket_name=item.name,
                     object_count=0,
@@ -112,43 +94,25 @@ class BucketsJsonView(LandingPageView):
 
 
 class BucketView(BaseView):
-    """Views for actions on single IP Address"""
-    VIEW_TEMPLATE = '../templates/ipaddresses/ipaddress_view.pt'
+    """Views for actions on single bucket"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_view.pt'
 
     def __init__(self, request):
-        super(IPAddressView, self).__init__(request)
-        self.conn = self.get_connection()
-        self.elastic_ip = self.get_elastic_ip()
-        self.instance = self.get_instance()
-        self.associate_form = AssociateIPForm(self.request, conn=self.conn, formdata=self.request.params or None)
-        self.disassociate_form = DisassociateIPForm(self.request, formdata=self.request.params or None)
-        self.release_form = ReleaseIPForm(self.request, formdata=self.request.params or None)
-        if self.elastic_ip:
-            self.elastic_ip.instance_name = ''
-            if self.instance:
-                self.elastic_ip.instance_name = TaggedItemView.get_display_name(self.instance)
+        super(BucketView, self).__init__(request)
+        self.conn = self.get_connection(conn_type='s3')
+        self.bucket = self.get_bucket()
         self.render_dict = dict(
-            eip=self.elastic_ip,
-            associate_form=self.associate_form,
-            disassociate_form=self.disassociate_form,
-            release_form=self.release_form,
+            bucket=self.bucket
         )
 
-    #@view_config(route_name='ipaddress_view', renderer=VIEW_TEMPLATE)
-    def ipaddress_view(self):
+    @view_config(route_name='bucket_view', renderer=VIEW_TEMPLATE)
+    def bucket_view(self):
         return self.render_dict
 
-    #@view_config(route_name='ipaddress_associate', request_method="POST")
-    def ipaddress_associate(self):
-        if self.associate_form.validate():
-            instance_id = self.request.params.get('instance_id')
-            location = self.request.route_path('ipaddresses')
-            with boto_error_handler(self.request, location):
-                self.log_request(_(u"Associating ElasticIP {0} with instance {1}").format(self.elastic_ip, instance_id))
-                self.elastic_ip.associate(instance_id)
-                msg = _(u'Successfully associated IP {ip} with instance {instance}')
-                notification_msg = msg.format(ip=self.elastic_ip.public_ip, instance=instance_id)
-                self.request.session.flash(notification_msg, queue=Notification.SUCCESS)
-            return HTTPFound(location=location)
-        return self.render_dict
+    def get_bucket(self):
+        try:
+            bucket_name = self.request.matchdict.get('name')
+            return self.conn.get_bucket(bucket_name)
+        except S3ResponseError:
+            return HTTPNotFound()
 
