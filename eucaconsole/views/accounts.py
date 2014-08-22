@@ -165,8 +165,13 @@ class AccountView(BaseView):
     @view_config(route_name='account_view', renderer=TEMPLATE)
     def account_view(self):
         if self.account is not None:
-            users = self.conn.get_response('ListUsers', params={'DelegateAccount':self.account.account_name}, list_marker='Users')
-            self.render_dict['users'] = users.list_users_response.list_users_result.users
+            with boto_error_handler(self.request):
+                users = self.conn.get_response('ListUsers', params={'DelegateAccount':self.account.account_name}, list_marker='Users')
+                self.render_dict['users'] = users.list_users_response.list_users_result.users
+                groups = self.conn.get_response('ListGroups', params={'DelegateAccount':self.account.account_name}, list_marker='Groups')
+                self.render_dict['groups'] = groups.list_groups_response.list_groups_result.groups
+                roles = self.conn.get_response('ListRoles', params={'DelegateAccount':self.account.account_name}, list_marker='Roles')
+                self.render_dict['roles'] = roles.list_roles_response.list_roles_result.roles
         return self.render_dict
  
     @view_config(route_name='account_create', request_method='POST', renderer='json')
