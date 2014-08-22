@@ -150,6 +150,7 @@ class GroupView(BaseView):
         self.delete_form = DeleteGroupForm(self.request, formdata=self.request.params)
         self.render_dict = dict(
             group=self.group,
+            group_arn=self.group.arn if self.group else '',
             group_create_date=self.group.create_date if self.group else datetime.now().isoformat(),
             group_route_id=self.group_route_id,
             group_users=self.group_users,
@@ -214,7 +215,8 @@ class GroupView(BaseView):
             new_users = self.request.params.getall('input-users-select')
             group_name_param = self.request.params.get('group_name')
             new_group_name = group_name_param if self.group.group_name != group_name_param else None
-            new_path = self.request.params.get('path') if self.group.path != self.request.params.get('path') else None
+            path_param = self.unescape_braces(self.request.params.get('path'))
+            new_path = path_param if self.group.path != path_param else None
             this_group_name = new_group_name if new_group_name is not None else self.group.group_name
             if new_users is not None:
                 self.group_update_users( self.group.group_name, new_users)
