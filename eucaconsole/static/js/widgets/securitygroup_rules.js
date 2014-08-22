@@ -5,12 +5,22 @@
  */
 
 angular.module('SecurityGroupRules', [])
-    .controller('SecurityGroupRulesCtrl', function ($scope, $timeout) {
+    .controller('SecurityGroupRulesCtrl', function ($scope, $http, $timeout) {
+        $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.rulesEditor = $('#rules-editor');
         $scope.rulesTextarea = $scope.rulesEditor.find('textarea#rules');
+        $scope.rulesEgressTextarea = $scope.rulesEditor.find('textarea#rules_egress');
         $scope.rulesArray = [];
+        $scope.rulesEgressArray = [];
+        $scope.jsonEndpoint='';
+        $scope.securityGroupList = [];
+        $scope.securityGroupVPC = '';
         $scope.selectedProtocol = '';
         $scope.isRuleNotComplete = true;
+        $scope.inboundButtonClass = 'active';
+        $scope.outboundButtonClass = 'inactive';
+        $scope.trafficType = '';
+        $scope.ruleType = 'inbound';
         $scope.resetValues = function () {
             $scope.trafficType = 'ip';
             $scope.fromPort = '';
@@ -29,13 +39,26 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.syncRules = function () {
             $scope.rulesTextarea.val(JSON.stringify($scope.rulesArray));
+            $scope.rulesEgressTextarea.val(JSON.stringify($scope.rulesEgressArray));
             $scope.resetValues();
         };
-        $scope.initRules = function (rulesJson) {
+        $scope.initRules = function (rulesJson, rulesEgressJson, jsonEndpoint) {
             rulesJson = rulesJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.rulesArray = JSON.parse(rulesJson);
+            $scope.rulesEgressArray = JSON.parse(rulesEgressJson);
+            $scope.jsonEndpoint=jsonEndpoint;
             $scope.syncRules();
             $scope.setWatchers();
+        };
+        $scope.getAllSecurityGroups = function (vpc) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token + "&vpc_id=" + vpc;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupList = results;
+            });
         };
         $scope.cleanupSelections = function () {
             $timeout( function(){
@@ -101,6 +124,24 @@ angular.module('SecurityGroupRules', [])
                 $scope.checkForDuplicatedRules();
                 $scope.checkRequiredInput();
             });
+            $scope.$watch('securityGroupVPC', function() {
+                $scope.getAllSecurityGroups($scope.securityGroupVPC);
+            });
+            $scope.$on('updateVPC', function($event, vpc) {
+                if (vpc === undefined || $scope.securityGroupVPC == vpc) {
+                    return;
+                }
+                $scope.securityGroupVPC = vpc;
+                $scope.resetValues();
+                // If VPC is selected while in 'create new security group' mode, add the default outbound rule
+                if ($scope.securityGroupVPC != '' && $('select#vpc_network').length > 0) {
+                    $scope.addDefaultOutboundRule();
+                }
+                // When NoVPC is selected, which the tab to 'inbound'
+                if ($scope.securityGroupVPC == '') {
+                    $scope.selectRuleType('inbound'); 
+                }
+            });
             $(document).on('keyup', '#input-cidr-ip', function () {
                 $scope.$apply(function() {
                     $scope.trafficType = 'ip';
@@ -129,9 +170,15 @@ angular.module('SecurityGroupRules', [])
             $scope.hasDuplicatedRule = false;
             // Create a new array block based on the current user input on the panel
             var thisRuleArrayBlock = $scope.createRuleArrayBlock();
-            for( var i=0; i < $scope.rulesArray.length; i++){
+            var compareArray = [];
+            if ($scope.ruleType == 'inbound') {
+                compareArray = $scope.rulesArray;
+            } else {
+                compareArray = $scope.rulesEgressArray;
+            }
+            for( var i=0; i < compareArray.length; i++){
                 // Compare the new array block with the existing ones
-                if( $scope.compareRules(thisRuleArrayBlock, $scope.rulesArray[i]) ){
+                if( $scope.compareRules(thisRuleArrayBlock, compareArray[i]) ){
                     // Detected that the new rule is a dup
                     // this value will disable the "Add Rule" button to prevent the user from submitting
                     $scope.hasDuplicatedRule = true;
@@ -175,7 +222,11 @@ angular.module('SecurityGroupRules', [])
         };
         $scope.removeRule = function (index, $event) {
             $event.preventDefault();
-            $scope.rulesArray.splice(index, 1);
+            if ($scope.ruleType == 'inbound') {
+                $scope.rulesArray.splice(index, 1);
+            } else {
+                $scope.rulesEgressArray.splice(index, 1);
+            }
             $scope.syncRules();
             $scope.$emit('securityGroupUpdate');
         };
@@ -193,12 +244,14 @@ angular.module('SecurityGroupRules', [])
         $scope.createRuleArrayBlock = function () {
             var name = $scope.groupName ? $scope.trafficType == 'securitygroup' && $scope.groupName : null;
             var owner_id = null;
+            var group_id = null;
             if (name !== null) {
                 var idx = name.indexOf('/');
                 if (idx > 0) {
                     owner_id = name.substring(0, idx);
                     name = name.substring(idx+1);
                 }
+                group_id=$scope.getGroupIdByName(name);
             }
             return {
                 'from_port': $scope.fromPort,
@@ -207,7 +260,7 @@ angular.module('SecurityGroupRules', [])
                 'ip_protocol': $scope.ipProtocol,
                 'grants': [{
                     'cidr_ip': $scope.cidrIp ? $scope.trafficType == 'ip' && $scope.cidrIp : null,
-                    'group_id': null,
+                    'group_id': group_id,
                     'name': name,
                     'owner_id': owner_id
                 }],
@@ -228,7 +281,11 @@ angular.module('SecurityGroupRules', [])
 
             $scope.adjustIpProtocol();
             // Add the rule
-            $scope.rulesArray.push($scope.createRuleArrayBlock());
+            if ($scope.ruleType == 'inbound') {
+                $scope.rulesArray.push($scope.createRuleArrayBlock());
+            } else {
+                $scope.rulesEgressArray.push($scope.createRuleArrayBlock());
+            }
             $scope.syncRules();
             $scope.$emit('securityGroupUpdate');
         };
@@ -273,9 +330,50 @@ angular.module('SecurityGroupRules', [])
             $('#groupname-select').trigger('chosen:updated');
             $scope.cleanupSelections();
         };
+        $scope.getGroupIdByName = function (name) {
+            for( var i=0; i < $scope.securityGroupList.length; i++){
+                if ($scope.securityGroupList[i]['name'] === name) {
+                    return $scope.securityGroupList[i]['id'];
+                }
+            } 
+            return null;
+        };
+        $scope.openToAllAddresses = function () {
+            $scope.cidrIp = "0.0.0.0/0";
+            $('#input-cidr-ip').focus();
+        };
         $scope.useMyIP = function (myip) {
             $scope.cidrIp = myip + "/32";
             $('#input-cidr-ip').focus();
+        };
+        // Set the default outbound rule to open to all addresses -- Default action by AWS
+        $scope.addDefaultOutboundRule = function () {
+            var storeRuleType = $scope.ruleType; // Save the current ruleType value
+            $scope.ruleType = 'outbound';   // Needs to set 'outbound' for the rule comparison
+            $scope.ipProtocol = "-1";
+            $scope.trafficType == "ip" 
+            $scope.cidrIp = "0.0.0.0/0";
+            $scope.fromPort = null;
+            $scope.toPort = null;
+            $scope.checkForDuplicatedRules();
+            if ($scope.hasDuplicatedRule) {
+                $scope.resetValues();
+            } else {
+                $scope.rulesEgressArray.push($scope.createRuleArrayBlock());
+                $scope.syncRules();
+            }
+            $scope.ruleType = storeRuleType;   // Restore the ruleType value
+        };
+        $scope.selectRuleType = function (type) {
+            $scope.ruleType = type;
+            if ($scope.ruleType === 'inbound') {
+                $scope.inboundButtonClass = 'active';
+                $scope.outboundButtonClass = 'inactive';
+            } else {
+                $scope.inboundButtonClass = 'inactive';
+                $scope.outboundButtonClass = 'active';
+
+            }
         };
     })
 ;

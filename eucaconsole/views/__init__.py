@@ -130,6 +130,9 @@ class BaseView(object):
             elif conn_type == 's3':
                 host = self.request.registry.settings.get('s3.host', host)
                 port = int(self.request.registry.settings.get('s3.port', port))
+            elif conn_type == 'vpc':
+                host = self.request.registry.settings.get('vpc.host', host)
+                port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -276,7 +279,8 @@ class TaggedItemView(BaseView):
                 key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
                     tags[key] = self.unescape_braces(value.strip())
-            self.conn.create_tags([self.tagged_obj.id], tags)
+            if tags:
+                self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:

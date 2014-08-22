@@ -367,3 +367,16 @@ class ChoicesManager(object):
             choices.append((bname, bname))
         return sorted(set(choices))
 
+    ### VPC connection type choices
+    ##
+    def vpc_networks(self, vpc_networks=None, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = [('', _(u'No VPC'))]
+        vpc_network_list = vpc_networks or []
+        if not vpc_network_list and self.conn is not None:
+            vpc_network_list = self.conn.get_all_vpcs()
+        for vpc in vpc_network_list:
+            vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=escapebraces) 
+            choices.append((vpc.id, vpc_name))
+        return sorted(set(choices))
+
