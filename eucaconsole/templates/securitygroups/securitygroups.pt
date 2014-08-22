@@ -40,17 +40,17 @@
                     {{ item.description }}
                 </div>
                 <div ng-show="item.rules">
-                    <span class="label" title="Rules" i18n:attributes="title" data-tooltip="">IR</span>
+                    <span class="label" title="Inbound Rules" i18n:attributes="title" data-tooltip="">IR</span>
                     ${panel('securitygroup_rules_landingpage', tile_view=True)}
                 </div>
                 <div ng-show="item.rules_egress">
-                    <span class="label" title="Rules Egress" i18n:attributes="title" data-tooltip="">OR</span>
+                    <span class="label" title="Outbound Rules" i18n:attributes="title" data-tooltip="">OR</span>
                     ${panel('securitygroup_rules_egress_landingpage', tile_view=True)}
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">NAME</th>
-                <th i18n:translate="">VPC NAME(ID)</th>
+                <th i18n:translate="">VPC NAME (ID)</th>
                 <th i18n:translate="">DESCRIPTION</th>
                 <th i18n:translate="">INBOUND RULES</th>
                 <th i18n:translate="">OUTBOUND RULES</th>
