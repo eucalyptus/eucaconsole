@@ -52,29 +52,6 @@ class UserForm(BaseSecureForm):
 
     path = TextEscapedField(label=_(u"Path"), default="/")
 
-    ec2_images_max = wtforms.TextField(label=_(u'Images (maximum)'))
-    ec2_instances_max = wtforms.TextField(label=_(u'Instances (maximum)'))
-    ec2_volumes_max = wtforms.TextField(label=_(u'Volumes (maximum)'))
-    ec2_total_size_all_vols = wtforms.TextField(label=_(u'Total size of all volumes (GB)'))
-    ec2_snapshots_max = wtforms.TextField(label=_(u'Snapshots (maximum)'))
-    ec2_elastic_ip_max = wtforms.TextField(label=_(u'Elastic IP addresses (maximum)'))
-
-    s3_buckets_max = wtforms.TextField(label=_(u'Buckets (maximum)'))
-    s3_objects_per_max = wtforms.TextField(label=_(u'Objects per bucket (maximum)'))
-    s3_bucket_size = wtforms.TextField(label=_(u'Size of each bucket (MB)'))
-    s3_total_size_all_buckets = wtforms.TextField(label=_(u'Total size of all buckets (maximum)'))
-
-    autoscale_groups_max = wtforms.TextField(label=_(u'Auto scaling groups (maximum)'))
-    launch_configs_max = wtforms.TextField(label=_(u'Launch configurations (maximum)'))
-    scaling_policies_max = wtforms.TextField(label=_(u'Scaling policies (maximum)'))
-
-    elb_load_balancers_max = wtforms.TextField(label=_(u'Load balancers (maximum)'))
-
-    iam_groups_max = wtforms.TextField(label=_(u'Groups (maximum)'))
-    iam_users_max = wtforms.TextField(label=_(u'Users (maximum)'))
-    iam_roles_max = wtforms.TextField(label=_(u'Roles (maximum)'))
-    iam_inst_profiles_max = wtforms.TextField(label=_(u'Instance profiles (maximum)'))
-
     # additional items used for update user form
     user_name = wtforms.TextField(label=_(u"Name"))
     email = wtforms.TextField(label=_(u"E-mail address"))
@@ -95,66 +72,12 @@ class UserForm(BaseSecureForm):
 
     download_keys = wtforms.BooleanField(label=_(u"Download keys after generation"))
 
-    def __init__(self, request, user=None, conn=None, **kwargs):
+    def __init__(self, request, user=None, **kwargs):
         super(UserForm, self).__init__(request, **kwargs)
         self.user = user
-        self.conn = conn
         if user is not None:
             self.user_name.data = user.user_name
             self.path.data = user.path
-            try:
-                policies = self.conn.get_all_user_policies(user_name=user.user_name)
-                for policy_name in policies.policy_names:
-                    policy_json = self.conn.get_user_policy(user_name=user.user_name,
-                                        policy_name=policy_name).policy_document
-                    policy = json.loads(policy_json)
-                    for s in policy['Statement']:
-                        try:    # skip statements without conditions
-                            s['Condition']
-                        except KeyError:
-                            continue
-                        for cond in s['Condition'].keys():
-                            if cond == "NumericLessThanEquals": 
-                                for val in s['Condition'][cond].keys():
-                                    limit = s['Condition'][cond][val]
-                                    if val == 'ec2:quota-imagenumber':
-                                        self.setLowest(self.ec2_images_max, limit)
-                                    elif val == 'ec2:quota-vminstancenumber':
-                                        self.setLowest(self.ec2_instances_max, limit)
-                                    elif val == 'ec2:quota-volumenumber':
-                                        self.setLowest(self.ec2_volumes_max, limit)
-                                    elif val == 'ec2:quota-snapshotnumber':
-                                        self.setLowest(self.ec2_snapshots_max, limit)
-                                    elif val == 'ec2:quota-volumetotalsize':
-                                        self.setLowest(self.ec2_total_size_all_vols, limit)
-                                    elif val == 'ec2:quota-addressnumber':
-                                        self.setLowest(self.ec2_elastic_ip_max, limit)
-                                    elif val == 's3:quota-bucketnumber':
-                                        self.setLowest(self.s3_buckets_max, limit)
-                                    elif val == 's3:quota-bucketobjectnumber':
-                                        self.setLowest(self.s3_objects_per_max, limit)
-                                    elif val == 's3:quota-bucketsize':
-                                        self.setLowest(self.s3_bucket_size, limit)
-                                    elif val == 's3:quota-buckettotalsize':
-                                        self.setLowest(self.s3_total_size_all_buckets, limit)
-                                    elif val == 'autoscaling:quota-autoscalinggroupnumber':
-                                        self.setLowest(self.autoscale_groups_max, limit)
-                                    elif val == 'autoscaling:quota-launchconfigurationnumber':
-                                        self.setLowest(self.launch_configs_max, limit)
-                                    elif val == 'autoscaling:quota-scalingpolicynumber':
-                                        self.setLowest(self.scaling_policies_max, limit)
-                                    elif val == 'elasticloadbalancing:quota-loadbalancernumber':
-                                        self.setLowest(self.elb_load_balancers_max, limit)
-                                    elif val == 'iam:quota-groupnumber':
-                                        self.setLowest(self.iam_groups_max, limit)
-                                    elif val == 'iam:quota-usernumber':
-                                        self.setLowest(self.iam_users_max, limit)
-                                    elif val == 'iam:quota-rolenumber':
-                                        self.setLowest(self.iam_roles_max, limit)
-                                    elif val == 'iam:quota-instanceprofilenumber':
-                                        self.setLowest(self.iam_inst_profiles_max, limit)
-            except BotoServerError as err:
-                pass
 
     def setLowest(self, item, val):
         """ This function sets the field data value if the new value is lower than the current one """

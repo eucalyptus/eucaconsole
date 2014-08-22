@@ -4,7 +4,7 @@
  *
  */
 
-angular.module('AccountPage', ['PolicyList'])
+angular.module('AccountPage', ['PolicyList', 'Quotas'])
     .controller('AccountPageCtrl', function ($scope, $timeout) {
         $scope.isNotChanged = true;
         $scope.initController = function () {
