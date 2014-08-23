@@ -826,7 +826,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
-            conn=self.conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
+            conn=self.conn, vpc_conn=self.vpc_conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)

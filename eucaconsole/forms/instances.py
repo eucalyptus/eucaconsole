@@ -101,6 +101,7 @@ class LaunchInstanceForm(BaseSecureForm):
         validators=[validators.InputRequired(message=instance_type_error_msg)],
     )
     zone = wtforms.SelectField(label=_(u'Availability zone'))
+    vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
@@ -120,9 +121,10 @@ class LaunchInstanceForm(BaseSecureForm):
     monitoring_enabled = wtforms.BooleanField(label=_(u'Enable monitoring'))
     private_addressing = wtforms.BooleanField(label=_(u'Use private addressing only'))
 
-    def __init__(self, request, image=None, securitygroups=None, conn=None, iam_conn=None, **kwargs):
+    def __init__(self, request, image=None, securitygroups=None, conn=None, vpc_conn=None, iam_conn=None, **kwargs):
         super(LaunchInstanceForm, self).__init__(request, **kwargs)
         self.conn = conn
+        self.vpc_conn=vpc_conn
         self.iam_conn = iam_conn
         self.image = image
         self.securitygroups = securitygroups
@@ -130,6 +132,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.set_error_messages()
         self.monitoring_enabled.data = True
         self.choices_manager = ChoicesManager(conn=conn)
+        self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.set_help_text()
         self.set_choices(request)
         self.role.data = ''
@@ -147,6 +150,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
+        self.vpc_network.choices = self.get_vpc_network_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(
             securitygroups=self.securitygroups, add_blank=False)
@@ -174,6 +178,10 @@ class LaunchInstanceForm(BaseSecureForm):
     def get_availability_zone_choices(self, region):
         choices = [('', _(u'No preference'))]
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
+        return choices
+
+    def get_vpc_network_choices(self):
+        choices = self.vpc_choices_manager.vpc_networks()
         return choices
 
 
