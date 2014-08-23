@@ -103,6 +103,9 @@
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
                             ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+                            <div ng-show="securityGroupVPC != ''">
+                                ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=3, rightcol_width=9)}
+                            </div>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right" id="create-keypair-link">

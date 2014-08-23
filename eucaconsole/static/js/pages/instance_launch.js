@@ -18,6 +18,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
+        $scope.securityGroupVPC = '';
         $scope.keyPair = '';
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
