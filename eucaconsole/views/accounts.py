@@ -110,7 +110,7 @@ class AccountsJsonView(BaseView):
         for account in self.get_items():
             policies = []
             try:
-                policies = self.conn.get_response('ListAccountPolicies', params={'AccoutnName':account.account_name}, list_marker='PolicyNames')
+                policies = self.conn.get_response('ListAccountPolicies', params={'AccountName':account.account_name}, list_marker='PolicyNames')
                 policies = policies.policy_names
             except BotoServerError as exc:
                 pass
@@ -120,6 +120,22 @@ class AccountsJsonView(BaseView):
                 policy_count=len(policies),
             ))
         return dict(results=accounts)
+
+    @view_config(route_name='account_summary_json', renderer='json', request_method='GET')
+    def account_summary_json(self):
+        name = self.request.matchdict.get('name')
+        with boto_error_handler(self.request):
+            users = self.conn.get_response('ListUsers', params={'DelegateAccount':name}, list_marker='Users')
+            groups = self.conn.get_response('ListGroups', params={'DelegateAccount':name}, list_marker='Groups')
+            roles = self.conn.get_response('ListRoles', params={'DelegateAccount':name}, list_marker='Roles')
+            return dict(
+                results=dict(
+                    account_name=name,
+                    user_count=len(users.list_users_response.list_users_result.users),
+                    group_count=len(groups.list_groups_response.list_groups_result.groups),
+                    role_count=len(roles.list_roles_response.list_roles_result.roles),
+                )
+            )
 
     def get_items(self):
         with boto_error_handler(self.request):

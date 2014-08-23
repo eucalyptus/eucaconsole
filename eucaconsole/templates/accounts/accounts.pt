@@ -4,7 +4,9 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/accounts.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="AccountsPage" ng-controller="AccountsCtrl" ng-init="initPage('${request.route_path('account_view', name='_name_')}')">
+<div metal:fill-slot="main_content" ng-app="AccountsPage" ng-controller="AccountsCtrl"
+        ng-init="initPage('${request.route_path('account_view', name='_name_')}',
+                          '${request.route_path('account_summary_json', name='_name_')}')">
     <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
          ng-init="initController('accounts', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -35,20 +37,38 @@
                     <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
                     {{ item.account_id }}
                 </div>
+                <div ng-show='item.user_count > 0'>
+                    <span class="label" title="Users" i18n:attributes="title" data-tooltip="">US</span>
+                    <a ng-click="linkAccount(item, '#')">{{ item.user_count }}</a>
+                </div>
+                <div ng-show='item.group_count > 0'>
+                    <span class="label" title="Groups" i18n:attributes="title" data-tooltip="">GR</span>
+                    <a ng-click="linkAccount(item, '#')">{{ item.group_count }}</a>
+                </div>
+                <div ng-show='item.role_count > 0'>
+                    <span class="label" title="Roles" i18n:attributes="title" data-tooltip="">RO</span>
+                    <a ng-click="linkAccount(item, '#')">{{ item.role_count }}</a>
+                </div>
                 <div ng-show='item.policy_count > 0'>
-                    <span class="label" title="Permissions" i18n:attributes="title" data-tooltip="">PE</span>
+                    <span class="label" title="Denial policies" i18n:attributes="title" data-tooltip="">DP</span>
                     <a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a>
                 </div>
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Account name</th>
                 <th i18n:translate="">ID</th>
-                <th i18n:translate="">Permissions</th>
+                <th i18n:translate="">Users</th>
+                <th i18n:translate="">Groups</th>
+                <th i18n:translate="">Roles</th>
+                <th i18n:translate="">Denial policies</th>
                 <th class="actions" i18n:translate="">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.account_name }}">{{ item.account_name | ellipsis: 30 }}</a></td>
                 <td>{{ item.account_id }}</td>
+                <td><a ng-click="linkAccount(item, '#')">{{ item.user_count }}</a></td>
+                <td><a ng-click="linkAccount(item, '#')">{{ item.group_count }}</a></td>
+                <td><a ng-click="linkAccount(item, '#')">{{ item.role_count }}</a></td>
                 <td><a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a></td>
                 <td>
                   <span class="actions">
