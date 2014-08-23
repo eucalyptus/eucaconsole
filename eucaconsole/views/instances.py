@@ -836,6 +836,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
+        self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
         self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
         self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
         self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
@@ -853,6 +854,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
+            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             role_choices_json=self.role_choices_json,
         )
 
@@ -951,6 +953,21 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             if security_group.vpc_id is None:
                 map_dict[security_group.name] = security_group.id
         return map_dict
+
+    def get_vpc_subnets_json(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request, self.location):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):

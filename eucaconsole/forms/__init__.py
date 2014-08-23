@@ -380,14 +380,4 @@ class ChoicesManager(object):
             choices.append((vpc.id, vpc_name))
         return sorted(set(choices))
 
-    def vpc_subnets(self, vpc_subnets=None, escapebraces=True):
-        from ..views import TaggedItemView
-        choices = []
-        vpc_subnet_list = vpc_subnets or []
-        if not vpc_subnet_list and self.conn is not None:
-            vpc_subnet_list = self.conn.get_all_subnets()
-        for subnet in vpc_subnet_list:
-            subnet_name = TaggedItemView.get_display_name(subnet, escapebraces=escapebraces) 
-            choices.append((subnet.id, subnet_name))
-        return sorted(set(choices))
 

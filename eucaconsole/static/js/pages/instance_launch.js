@@ -19,6 +19,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
         $scope.securityGroupVPC = '';
+        $scope.instanceVPC = '';
+        $scope.vpcSubnetList = {};
+        $scope.vpcSubnetChoices = {};
         $scope.keyPair = '';
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
@@ -45,16 +48,18 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson, roles,
+                                securityGroupChoices, securityGroupsIDMapJson, vpcSubnetJson, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
             securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
             keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
+            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
             $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
             $scope.roleList = JSON.parse(roles);
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
@@ -191,6 +196,12 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
+            $scope.$watch('instanceVPC', function () {
+                $scope.updateVPCSubnetChoices();
+            });
+            $scope.$watch('instanceZone', function () {
+                $scope.updateVPCSubnetChoices();
             });
             $('#number').on('keyup blur', function () {
                 var val = $(this).val();
@@ -446,6 +457,23 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }
             });
         };
+        $scope.updateVPCSubnetChoices = function () {
+            $scope.vpcSubnetChoices = [];
+            for( var i=0; i < $scope.vpcSubnetList.length; i++){
+                if ($scope.vpcSubnetList[i]['vpc_id'] === $scope.instanceVPC) {
+                    if ($scope.instanceZone == '') {
+                        $scope.vpcSubnetChoices.push($scope.vpcSubnetList[i]);
+                    } else if ($scope.instanceZone != '' && 
+                               $scope.vpcSubnetList[i]['availability_zone'] === $scope.instanceZone) {
+                        $scope.vpcSubnetChoices.push($scope.vpcSubnetList[i]);
+                    } 
+                }
+            } 
+            if ($scope.vpcSubnetChoices.length == 0) {
+                $scope.vpcSubnetChoices.push({cidr_block: "no subnets available", id: ""});
+            }
+        };
     })
 ;
+
 

@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" ng-app="LaunchInstance" ng-controller="LaunchInstanceCtrl"
          ng-init="initController('${securitygroups_rules_json}', '${keypair_choices_json}',
-                                '${securitygroup_choices_json}', '${securitygroups_id_map_json}',
+                                '${securitygroup_choices_json}', '${securitygroups_id_map_json}', '${vpc_subnet_choices_json}',
                                 '${role_choices_json}', '${request.route_path('image_json', id='_id_')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -102,9 +102,19 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
-                            ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
-                            <div ng-show="securityGroupVPC != ''">
-                                ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=3, rightcol_width=9)}
+                            <div ng-show="instanceVPC != ''">
+                                <div class="row controls-wrapper" id="controls_vpc_subnet">
+                                    <div class="small-3 columns">
+                                        <label class="right" i18n:translate="">VPC subnet</label>&nbsp;
+                                    </div>
+                                    <div class="small-9 columns field">
+                                        <select id="vpc_subnet" name="vpc_subnet" placeholder="select..">
+                                            <option ng-repeat="subnet in vpcSubnetChoices"
+                                                value="{{ subnet.id }}">{{ subnet.cidr_block }}</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=3, rightcol_width=9)}
                             </div>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
