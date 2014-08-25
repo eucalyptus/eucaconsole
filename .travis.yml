@@ -5,7 +5,7 @@ python:
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
     - sudo apt-get -y update
-    - sudo apt-get -y install openssl python-dev swig libmemcached6 libmemcached-dev
+    - sudo apt-get -y install openssl python-dev swig python-pylibmc
     - python setup.py develop
     - pip install Babel lingua
 # command to run tests, e.g. python setup.py test
