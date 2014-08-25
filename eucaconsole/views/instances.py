@@ -878,9 +878,16 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup = self.request.params.get('securitygroup', 'default')
             if securitygroup:
                 securitygroup = self.unescape_braces(securitygroup)
-            security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
+            vpc_network = self.request.params.get('vpc_network') or None
+            securitygroup_id = self.get_securitygroup_id_by_name_and_vpc(securitygroup, vpc_network)
+            securitygroup_ids = [securitygroup_id]
+            vpc_subnet = None
+            associate_publc_ip_address = 'true';
+            if vpc_network is not None:
+                vpc_subnet = self.request.params.get('vpc_subnet') or None
+                associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -911,8 +918,9 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     ramdisk_id=ramdisk_id,
                     monitoring_enabled=monitoring_enabled,
                     block_device_map=block_device_map,
-                    security_group_ids=security_groups,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None
+                    security_group_ids=securitygroup_ids,
+                    instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    subnet_id=vpc_subnet,
                 )
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
@@ -953,6 +961,12 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             if security_group.vpc_id is None:
                 map_dict[security_group.name] = security_group.id
         return map_dict
+            
+    def get_securitygroup_id_by_name_and_vpc(self, name, vpc_network):
+        for security_group in self.securitygroups:
+            if security_group.vpc_id == vpc_network and security_group.name == name:
+                return security_group.id
+        return None
 
     def get_vpc_subnets_json(self):
         subnets = []
