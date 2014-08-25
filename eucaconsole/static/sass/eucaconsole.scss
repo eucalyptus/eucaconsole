@@ -543,7 +543,7 @@ textarea.policy-area {
     p {
         margin-bottom: 0.5rem;
     }
-    ol {
+    ol ul {
         list-style-position: inside;
         li {
             text-indent: -1rem;
@@ -865,6 +865,12 @@ textarea.hidden {
         &:focus {
             box-shadow: 0 0 3px 3px #7bb0e0;
         }
+    }
+    .top-margin {
+        margin-top: 0.7rem;
+    }
+    .center {
+        text-align: center;
     }
 }
 

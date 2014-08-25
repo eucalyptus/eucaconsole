@@ -16,9 +16,11 @@ angular.module('InstancePage', ['TagEditor'])
         $scope.instanceState = '';
         $scope.isFileUserData = false;
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.isNotStopped = $scope.instanceState != 'stopped';
         $scope.instanceForm = $('#instance-form');
+        $scope.pendingModalID = '';
         $scope.isTransitional = function (state) {
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
@@ -46,6 +48,17 @@ angular.module('InstancePage', ['TagEditor'])
                 thisSelect.chosen({'width': '80%', 'search_contains': true});
             });
         };
+        $scope.createImageClicked = function (running_create, instance_id) {
+            $('.actions-menu').trigger('click');
+            if (running_create) {
+                $scope.instanceID = instance_id;
+                var modal = $('#create-image-denied-modal');
+                modal.foundation('reveal', 'open');
+            }
+            else {
+                window.location = '/instances/' + instance_id + '/createimage';
+            }
+        }
         $scope.revealConsoleOutputModal = function() {
             $('.actions-menu').trigger('click');
             $http.get($scope.consoleOutputEndpoint).success(function(oData) {
@@ -69,13 +82,13 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || 
-                    modalID.match(/release/) || modalID.match(/reboot/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || 
+                    modalID.match(/release/) || modalID.match(/reboot/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
-                }else{
+                } else {
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
                     if (!!inputElement) {
@@ -86,7 +99,53 @@ angular.module('InstancePage', ['TagEditor'])
                }
             });
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if ($(this).val() !== '') {
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
+        };
         $scope.setWatch = function () {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has ng-click or href attribute defined
+                if (this.getAttribute('ng-click')) {
+                    return;
+                } else if (this.getAttribute('href') !== '#') {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                // Exception of 'connect-instance-modal', which doesn't leave the page
+                if (modalID !== 'connect-instance-modal' && ($scope.existsUnsavedTag() || $scope.isNotChanged === false)) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.openModalById($scope.pendingModalID);
+            });
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
@@ -114,6 +173,25 @@ angular.module('InstancePage', ['TagEditor'])
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
                 $(this).find('.dialog-progress-display').css('display', 'block');                
+            });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Conditions to check before navigate away
+            window.onbeforeunload = function(event) {
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
+                    return $('#warning-message-unsaved-changes').text();
+                }
+                return;
+            };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
             });
         };
         $scope.getIPAddressData = function () {
@@ -158,15 +236,16 @@ angular.module('InstancePage', ['TagEditor'])
             // Handle the unsaved tag issue
             var existsUnsavedTag = false;
             $('input.taginput').each(function(){
-                if($(this).val() !== ''){
+                if ($(this).val() !== '') {
                     existsUnsavedTag = true;
                     return false;
                 }
             });
-            if( existsUnsavedTag ){
+            if (existsUnsavedTag) {
                 $event.preventDefault();
+                $scope.isSubmitted = false;
                 $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
-            }else if( $scope.instanceState == 'stopped' ){
+            } else if ($scope.instanceState == 'stopped') {
                 $event.preventDefault();
                 $('#update-instance-modal').foundation('reveal', 'open');
             }

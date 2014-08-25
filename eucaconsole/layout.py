@@ -67,7 +67,9 @@ class MasterLayout(object):
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
+        self.access_id = self.request.session.get('access_id')
         self.username_label = self.request.session.get('username_label')
+        self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
         self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
         self.group_access = request.session.get('group_access') if self.cloud_type == 'euca' else False
         self.role_access = request.session.get('role_access') if self.cloud_type == 'euca' else False

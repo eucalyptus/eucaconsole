@@ -171,13 +171,14 @@ class AttachForm(BaseSecureForm):
     def set_instance_choices(self):
         """Populate instance field with instances available to attach volume to"""
         if self.volume:
+            from ..views import BaseView
             choices = [BLANK_CHOICE]
             for instance in self.instances:
                 if instance.state in ["running", "stopped"] and self.volume.zone == instance.placement:
                     name_tag = instance.tags.get('Name')
                     extra = ' ({name})'.format(name=name_tag) if name_tag else ''
-                    vol_name = '{id}{extra}'.format(id=instance.id, extra=extra)
-                    choices.append((instance.id, vol_name))
+                    inst_name = '{id}{extra}'.format(id=instance.id, extra=extra)
+                    choices.append((instance.id, BaseView.escape_braces(inst_name)))
             if len(choices) == 1:
                 prefix = _(u'No available instances in availability zone')
                 msg = '{0} {1}'.format(prefix, self.volume.zone)
@@ -198,7 +199,7 @@ class VolumesFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     zone = wtforms.SelectMultipleField(label=_(u'Availability zones'))
     status = wtforms.SelectMultipleField(label=_(u'Status'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, conn=None, **kwargs):
         super(VolumesFiltersForm, self).__init__(request, **kwargs)

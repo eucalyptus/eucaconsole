@@ -33,7 +33,7 @@ from wtforms import validators
 from ..constants.images import EUCA_IMAGE_OWNER_ALIAS_CHOICES, AWS_IMAGE_OWNER_ALIAS_CHOICES
 
 from ..i18n import _
-from . import BaseSecureForm
+from . import BaseSecureForm, TextEscapedField
 
 
 class ImageForm(BaseSecureForm):
@@ -73,7 +73,7 @@ class ImagesFiltersForm(BaseSecureForm):
     platform = wtforms.SelectMultipleField(label=_(u'Platform'))
     root_device_type = wtforms.SelectMultipleField(label=_(u'Root device type'))
     architecture = wtforms.SelectMultipleField(label=_(u'Architecture'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, cloud_type='euca', **kwargs):
         super(ImagesFiltersForm, self).__init__(request, **kwargs)

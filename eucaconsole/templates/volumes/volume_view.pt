@@ -46,15 +46,14 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="volume">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="volumeStatus == 'available'">
-                            <a href="#" data-reveal-id="attach-volume-modal"
-                               id="attach-volume-action" i18n:translate="">Attach to instance</a>
+                            <a href="#" id="attach-volume-action" i18n:translate="">Attach to instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'in-use'">
                             <a ng-click="detachModal('${device_name}', '${request.route_path('instance_json', id=instance_id)}')"
                                id="detach-volume-action" i18n:translate="">Detach from instance</a>
                         </li>
                         <li ng-show="volumeStatus == 'available'">
-                            <a id="delete-volume-action" data-reveal-id="delete-volume-modal" i18n:translate="">
+                            <a id="delete-volume-action" i18n:translate="">
                                 Delete volume
                             </a>
                         </li>

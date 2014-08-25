@@ -34,6 +34,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.newSecurityGroupName = '';
         $scope.securityGroupSelected = '';
         $scope.isLoadingSecurityGroup = false;
+        $scope.isCreateSGChecked = true;
         $scope.role = '';
         $scope.roleList = [];
         $scope.currentStepIndex = 1;
@@ -110,6 +111,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 $scope.step1Invalid = false;
                 $scope.loadImageInfo($scope.imageID);
             }
+            $scope.isCreateSGChecked = $('#create_sg_from_lc').is(':checked');
         };
         $scope.saveOptions = function() {
             if (Modernizr.localstorage) {
@@ -149,7 +151,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 }
             }else if( $scope.currentStepIndex == 3 ){
                 if( $scope.keyPair === '' || $scope.keyPair === undefined ){
-                    $scope.isNotValid = true;
+                    if ($scope.urlParams.hasOwnProperty('keypair')) {
+                        $scope.isNotValid = false;  // Prevent disabling primary button when keypair is preset to "none"
+                    } else {
+                        $scope.isNotValid = true;
+                    }
                 }else{
                     $scope.isNotValid = false;
                 }

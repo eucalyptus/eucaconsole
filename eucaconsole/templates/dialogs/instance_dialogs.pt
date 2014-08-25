@@ -246,18 +246,16 @@
             </form>
             <a href="#" id="disassociate_ip_to_instance_close_link" class="close-reveal-modal">&#215;</a>
         </div>
-        <div id="create-image-denied-modal" class="reveal-modal medium" data-reveal="">
-            <h3 class="pagetitle">
-                <strong i18n:translate="">Cannot create image</strong>
-                <p>
-                    <span i18n:translate=""> 
-                        You cannot create another image from this instance while there is one in progress. Please wait for that operation to complete and try again.
-                    </span>
-                </p>
-                <div class="dialog-submit-button">
-                    <a href="/instances/p{{ instanceID }}" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Check image creation progress</a>
-                </div>
-            </h3>
+        <div id="create-image-denied-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Image creation already in progress</h3>
+            <p>
+                <span i18n:translate=""> 
+                    You cannot create another image from this instance while there is one in progress. Please wait for that operation to complete and try again.
+                </span>
+            </p>
+            <div class="dialog-submit-button">
+                <a ng-href="/images/p{{ instanceID }}" id="disassociate_ip_to_instance_submit_button" class="button expand" i18n:translate="">Check Image Creation Progress</a>
+            </div>
             <a href="#" id="create_denied_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>

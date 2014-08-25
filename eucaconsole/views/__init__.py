@@ -460,10 +460,9 @@ class LandingPageView(BaseView):
                     filtered_items.append(item)
         return filtered_items
 
-    @staticmethod
-    def match_tags(item=None, tags=None, autoscale=False):
+    def match_tags(self, item=None, tags=None, autoscale=False):
         for tag in tags:
-            tag = tag.strip()
+            tag = self.unescape_braces(tag.strip())
             if autoscale:  # autoscaling tags are a list of Tag boto.ec2.autoscale.tag.Tag objects
                 if item.tags:
                     for as_tag in item.tags:

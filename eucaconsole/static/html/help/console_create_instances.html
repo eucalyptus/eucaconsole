@@ -21,10 +21,10 @@
         <div class="body taskbody"><p class="shortdesc">This panel allows you to select a base image to use for creating your
             instance.</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
 
                     <span class="ph cmd">There are two ways to specify a base image: </span>
-                     
+                    <div class="itemgroup info">
                         <ul class="ul">
                             <li class="li">Type an image name directly into the <span class="ph uicontrol">Enter an image
                                     ID</span> text box</li>
@@ -41,9 +41,9 @@
 
                         </ul>
 
-                    
+                    </div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed to the
                             <span class="ph uicontrol">Details</span> panel. </span>
                 </li>
@@ -60,29 +60,29 @@
         <div class="body taskbody"><p class="shortdesc">This panel allows you to specify the names, tags, instance size, number of
             instances, and the availability zone of your new instance(s).</p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd"> Enter the number of new instances to create in the <span class="ph uicontrol">Number of
                             instances</span> text box. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally enter one or more names for your new instance(s) in the
                             <span class="ph uicontrol">Name(s)</span> text box(es). </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select an instance type from the <span class="ph uicontrol">Instance type</span>
                         drop-down list box.. </span>
-                     
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  Information about the instance size is displayed when you click the
                             instance size link. </div>
 
-                    
+                    </div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> If you want to specify an availability zone other than the default, select
                         an availability zone using the <span class="ph uicontrol">Availability zone</span>
                         drop-down list box. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd">To help you manage your cloud's instances, images, and other Eucalyptus
                         resources, you can optionally assign your own metadata to each resource in
                         the form of tags. You can use tags to create user-friendly names, make
@@ -113,7 +113,7 @@
                     </ol>
 
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Next</span> button to proceed
                         to the <span class="ph uicontrol">Security</span> panel. </span>
                 </li>
@@ -133,33 +133,44 @@
             used by your new instance(s). NOTE: if you create a key pair or security group in this
             section, they will automatically be selected for use in your new instance. </p>
 
-            <ol class="ol steps"><li class="li step">
+            <ol class="ol steps"><li class="li step stepexpand">
                     <span class="ph cmd"> Select a key pair using the <span class="ph uicontrol">Key name</span> drop-down list
                         box. </span>
-                     
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new key pair by clicking the <span class="ph uicontrol">Create
-                                new key pair</span> link.</div>
-
+                                key pair</span> link.</div>
+</div>
 
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Select a security group using the <span class="ph uicontrol">Security group</span>
                         drop-down list box. </span>
-                     
+                    <div class="itemgroup info">
                         <div class="note note"><span class="notetitle">Note:</span>  You can also create a new security group by clicking the
-                                <span class="ph uicontrol">Create new security group</span> link. </div>
+                                <span class="ph uicontrol">Create security group</span> link. </div>
 
                         <div class="note note"><span class="notetitle">Note:</span>  If you select the default security group, make sure that you've added
                             rules to the default security group so that you can access your
                             instances. </div>
 
-                    
+                    </div>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
+                    <span class="ph cmd"> You can optionally specify an IAM role using the <span class="ph uicontrol">Role</span>
+                        drop-down list box.</span>
+                    <div class="itemgroup info">
+                        <div class="note note"><span class="notetitle">Note:</span>  If you select a role, make sure that the correct permissions are
+                            defined for that role so that the appropriate level of access is applied
+                            to your instance. </div>
+
+                    </div>
+                </li>
+<li class="li step stepexpand">
                     <span class="ph cmd"> You can optionally specify advanced options by clicking the
-                            <span class="ph uicontrol">Select advanced options</span> link. </span>
+                            <span class="ph uicontrol">Select advanced options</span> link and refer to the
+                        next section for further details. </span>
                 </li>
-<li class="li step">
+<li class="li step stepexpand">
                     <span class="ph cmd"> Click the <span class="ph uicontrol">Launch instance(s)</span> button. </span>
                 </li>
 </ol>
@@ -178,8 +189,9 @@
 
             <ol class="ol steps"><li class="li step">
                     <span class="ph cmd"> Specify custom user data by typing it into the <span class="ph uicontrol">User
-                            data</span> text box or by attaching a file by clicking the
-                            <span class="ph uicontrol">Browse...</span> button.</span>
+                            data</span> text box or by attaching a file by selecting Upload
+                        file then clicking the <span class="ph uicontrol">Choose File...</span> button to
+                        browse for the file.</span>
                 </li>
 <li class="li step">
                     <span class="ph cmd"> You can override the kernel ID in the selected image with the
@@ -201,8 +213,9 @@
                         Translation) device or an elastic IP address mapped to the instance. </span>
                 </li>
 <li class="li step">
-                    <span class="ph cmd">You can configure additional storage for your instance in the Storage
-                        section:</span>
+                    <span class="ph cmd">The Storage section will only display if you have an EBS-backed image. If
+                        this is the case, you can configure additional storage for your
+                        instance:</span>
                     <ol type="a" class="ol substeps" id="launch_instances_ui_advanced_steps__launch_instances_ui_advanced_storage_steps">
                         <li class="li substep">
                             <span class="ph cmd"> Select a volume type using the <span class="ph uicontrol">Volume</span>
