@@ -69,6 +69,7 @@ class BaseInstanceView(BaseView):
     def __init__(self, request):
         super(BaseInstanceView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
 
     def get_instance(self, instance_id=None):
         instance_id = instance_id or self.request.matchdict.get('id')
@@ -78,12 +79,15 @@ class BaseInstanceView(BaseView):
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
-                    ### Unclear why the step below was needed
-                    #instance.groups = reservation.groups
                     instance.reservation_id = reservation.id
                     instance.owner_id = reservation.owner_id
                     if instance.platform is None:
                         instance.platform = _(u"linux")
+                    if instance.vpc_id:
+                        vpc = self.vpc_conn.get_all_vpcs(vpc_ids=[instance.vpc_id])[0]
+                        instance.vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=True) 
+                    else:
+                        instance.vpc_name = ''
                     instance.instance_profile_id = None
                     if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
                         instance.instance_profile_id = instance.instance_profile.keys()[0]
