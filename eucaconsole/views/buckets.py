@@ -82,7 +82,7 @@ class BucketsJsonView(LandingPageView):
                 bucket_name = item.name
                 buckets.append(dict(
                     bucket_name=bucket_name,
-                    bucket_contents_url=self.request.route_path('bucket_view', name=bucket_name),
+                    bucket_contents_url=self.request.route_path('bucket_contents', name=bucket_name),
                     object_count=0,  # TODO: Implement object count via XHR fetch
                     owner='me',
                     creation_date=item.creation_date
@@ -93,12 +93,12 @@ class BucketsJsonView(LandingPageView):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
-class BucketView(LandingPageView):
+class BucketContentsView(LandingPageView):
     """Views for actions on single bucket"""
-    VIEW_TEMPLATE = '../templates/buckets/bucket_view.pt'
+    VIEW_TEMPLATE = '../templates/buckets/bucket_contents.pt'
 
     def __init__(self, request):
-        super(BucketView, self).__init__(request)
+        super(BucketContentsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.prefix = '/buckets'
         self.bucket_name = request.matchdict.get('name')
@@ -106,7 +106,7 @@ class BucketView(LandingPageView):
             bucket_name=self.bucket_name,
         )
 
-    @view_config(route_name='bucket_view', renderer=VIEW_TEMPLATE)
+    @view_config(route_name='bucket_contents', renderer=VIEW_TEMPLATE)
     def bucket_view(self):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
@@ -140,7 +140,7 @@ class BucketContentsJsonView(LandingPageView):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketView.get_bucket(request, self.s3_conn)
+        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
 
     @view_config(route_name='bucket_contents_json', renderer='json', request_method='POST')
     def bucket_contents_json(self):

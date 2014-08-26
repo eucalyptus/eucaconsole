@@ -4,8 +4,8 @@
  *
  */
 
-angular.module('BucketViewPage', ['LandingPage'])
-    .controller('BucketViewCtrl', function ($scope, $http) {
+angular.module('BucketContentsPage', ['LandingPage'])
+    .controller('BucketContentsCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.initController = function () {

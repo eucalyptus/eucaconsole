@@ -131,7 +131,7 @@
                                 </a>
                             </div>
                             <div class="footer">
-                                <a href="${request.route_path('bucket_view', name='new')}" i18n:translate="">Create bucket</a>
+                                <a href="${request.route_path('bucket_contents', name='new')}" i18n:translate="">Create bucket</a>
                             </div>
                         </div>
                     </li>
