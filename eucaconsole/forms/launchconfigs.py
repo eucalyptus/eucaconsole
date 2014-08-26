@@ -66,6 +66,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
     associate_public_ip_address = wtforms.SelectField(label=_(u'VPC IP assignment'))
+    associate_public_ip_address_helptext = _(u'This setting only applies when this launch configuration is used with a scaling group using a VPC network.')
     role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
@@ -93,6 +94,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
             self.image_id.data = self.image.id
 
     def set_help_text(self):
+        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self):

@@ -102,8 +102,10 @@ class LaunchInstanceForm(BaseSecureForm):
     )
     zone = wtforms.SelectField(label=_(u'Availability zone'))
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Instance Clouds')
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
     associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
+    associate_public_ip_address_helptext = _(u'Give your instance a non-persistent IP address from the subnet\'s pool so it is accessible from the Internet. If you want a persistent address, select Disabled and assign an elastic IP after launch.')
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
@@ -146,6 +148,8 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def set_help_text(self):
         self.number.help_text = self.number_helptext
+        self.vpc_network.label_help_text = self.vpc_network_helptext
+        self.associate_public_ip_address.label_help_text = self.associate_public_ip_address_helptext
         self.userdata_file.help_text = self.userdata_file_helptext
 
     def set_choices(self, request):
