@@ -78,7 +78,8 @@ class BaseInstanceView(BaseView):
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
-                    instance.groups = reservation.groups
+                    ### Unclear why the step below was needed
+                    #instance.groups = reservation.groups
                     instance.reservation_id = reservation.id
                     instance.owner_id = reservation.owner_id
                     if instance.platform is None:
@@ -366,7 +367,8 @@ class InstancesJsonView(LandingPageView):
             with boto_error_handler(self.request):
                 for reservation in self.conn.get_all_reservations(filters=filters):
                     for instance in reservation.instances:
-                        instance.groups = reservation.groups
+                        ### Unclear why the step below was needed
+                        #instance.groups = reservation.groups
                         instances.append(instance)
             return instances
         return []
