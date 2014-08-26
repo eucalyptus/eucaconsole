@@ -62,7 +62,11 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/${bucket_name}">{{ item.name }}</a></td>
+                <td>
+                    <i class="fi-folder icon" ng-if="item.is_folder"></i>
+                    <i class="{{ item.icon }} icon" ng-if="!item.is_folder"></i>
+                    <a ng-href="${prefix}/${bucket_name}">{{ item.name }}</a>
+                </td>
                 <td>{{ item.size | bytes }}</td>
                 <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>
                 <td>

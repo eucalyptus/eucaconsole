@@ -100,3 +100,4 @@
 @media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
 /* Small screen */
 @media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+.icon { display: inline-block; width: 20px; color: #468400; }

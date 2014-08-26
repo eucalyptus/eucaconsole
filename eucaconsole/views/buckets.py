@@ -28,11 +28,13 @@
 Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
+import mimetypes
+
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..views import LandingPageView, BaseView, JSONResponse
+from ..views import LandingPageView, JSONResponse
 from . import boto_error_handler
 
 
@@ -107,7 +109,7 @@ class BucketContentsView(LandingPageView):
         )
 
     @view_config(route_name='bucket_contents', renderer=VIEW_TEMPLATE)
-    def bucket_view(self):
+    def bucket_contents(self):
         # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='name', name=_(u'Name: A to Z')),
@@ -135,6 +137,28 @@ class BucketContentsView(LandingPageView):
                 return HTTPNotFound()
             return bucket
 
+    @staticmethod
+    def get_icon_class(key_name):
+        """Get the icon class from the mime type of an object based on its key name
+        :returns a string that maps to a Foundation Icon Fonts 3 class name
+        :rtype str
+        See http://zurb.com/playground/foundation-icon-fonts-3
+
+        """
+        mime_type = mimetypes.guess_type(key_name)[0]
+        if mime_type is None:
+            return ''
+        if '/' in key_name:
+            key_name = key_name.split('/')[-1]
+            mime_type = mimetypes.guess_type(key_name)[0]
+        if '/' in mime_type:
+            mime_type = mime_type.split('/')[0]
+        icon_mapping = {
+            'image': 'fi-photo',
+            'text': 'fi-page',
+        }
+        return icon_mapping.get(mime_type, 'page')
+
 
 class BucketContentsJsonView(LandingPageView):
     def __init__(self, request):
@@ -151,8 +175,9 @@ class BucketContentsJsonView(LandingPageView):
             items.append(dict(
                 name=key.name,
                 size=key.size,
-                is_folder=False,
+                is_folder=True if key.size == 0 else False,
                 last_modified=key.last_modified,
+                icon=BucketContentsView.get_icon_class(key.name),
             ))
         return dict(results=items)
 
