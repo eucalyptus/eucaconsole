@@ -134,6 +134,7 @@ i18n_extras = [
 dev_extras = [
     'pyramid_debugtoolbar',
     'waitress',
+    'pylibmc',
 ]
 
 message_extractors = {'eucaconsole': [
