@@ -193,7 +193,7 @@ class LaunchInstanceForm(BaseSecureForm):
         return choices
 
     def get_associate_public_ip_address_choices(self):
-        choices = [('true', _(u'Enabled (use subnet setting)')), ('false', _(u'Disabled'))]
+        choices = [('None', _(u'Enabled (use subnet setting)')), ('true', _(u'Enabled')), ('false', _(u'Disabled'))]
         return choices
 
 

@@ -904,7 +904,11 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
             securitygroup_ids = [securitygroup_id]
             vpc_subnet = self.request.params.get('vpc_subnet') or None
-            associate_public_ip_address = self.request.params.get('associate_public_ip_address') == 'true'
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address')
+            if associate_public_ip_address == 'true':
+                associate_public_ip_address = True
+            elif associate_public_ip_address == 'false':
+                associate_public_ip_address = False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
