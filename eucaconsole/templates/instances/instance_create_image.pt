@@ -81,13 +81,12 @@
             </div>
         </div>
         <div id="instance-shutdown-warn-modal" class="reveal-modal small" data-reveal="">
-            <strong i18n:translate="">Warning:</strong>
-            <br> &nbsp; </br>
+            <h3 i18n:translate="">Warning:</h3>
             <p i18n:translate="">
                 Your instance will be shut down and restarted as part of this process. You will not have access to your instance during this time.
             </p>
             <p i18n:translate="">
-                Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created
+                Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created:
             </p>
             <p i18n:translate="">
                 Steps TBD
