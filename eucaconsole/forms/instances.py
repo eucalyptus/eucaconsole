@@ -161,7 +161,7 @@ class LaunchInstanceForm(BaseSecureForm):
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(
-            securitygroups=self.securitygroups, add_blank=False)
+            securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
@@ -171,7 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
             self.zone.data = self.zone.choices[1][0]
         # Set the defailt option to be "Default" security group
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = "default"
+            self.securitygroup.data = self.securitygroup.choices[0][0]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg

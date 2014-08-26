@@ -901,8 +901,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
             vpc_network = self.request.params.get('vpc_network') or None
-            securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
-            securitygroup_ids = [securitygroup_id]
+            #securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
+            securitygroup_ids = [securitygroup]
             vpc_subnet = self.request.params.get('vpc_subnet') or None
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             if associate_public_ip_address == 'true':
@@ -992,8 +992,7 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            if security_group.vpc_id is None:
-                rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+            rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
             
     def get_securitygroup_id(self, name, vpc_network=None):

@@ -114,7 +114,7 @@
                                     <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'change': 'updateSelectedSecurityGroupRules()', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                             <div class="row">
                                 <div class="small-9 columns right" id="create-securitygroup-link">
                                     <span class="or" i18n:translate="">Or: </span>
