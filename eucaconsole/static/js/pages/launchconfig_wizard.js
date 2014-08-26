@@ -388,10 +388,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
-                $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
-                $scope.securityGroup = $scope.newSecurityGroupName;
+                var newSecurityGroupID = '';
+                if (oData.id) {
+                    newSecurityGroupID = oData.id;
+                }
+                $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
+                $scope.securityGroup = newSecurityGroupID;
                 $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
