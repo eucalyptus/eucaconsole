@@ -151,11 +151,16 @@ class BucketContentsView(LandingPageView):
         if '/' in key_name:
             key_name = key_name.split('/')[-1]
             mime_type = mimetypes.guess_type(key_name)[0]
+        if 'zip' in mime_type:
+            return 'fi-archive'
+        if 'pdf' in mime_type:
+            return 'fi-page-pdf'
         if '/' in mime_type:
             mime_type = mime_type.split('/')[0]
         icon_mapping = {
             'image': 'fi-photo',
             'text': 'fi-page',
+            'video': 'fi-video',
         }
         return icon_mapping.get(mime_type, 'page')
 
