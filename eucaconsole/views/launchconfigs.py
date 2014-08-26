@@ -204,11 +204,11 @@ class LaunchConfigView(BaseView):
             self.launch_config.userdata_istext = True if mime_type.find('text') >= 0 else False
         else:
             self.launch_config.userdata_type = ''
-
         self.render_dict = dict(
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
             launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
+            launch_config_vpc_ip_assignment=str(self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
@@ -350,8 +350,13 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             securitygroup = self.request.params.get('securitygroup', 'default')
             if securitygroup:
                 securitygroup = self.unescape_braces(securitygroup)
-            security_groups = [securitygroup]  # Security group names
+            security_groups = [securitygroup]  # Security group ids
             instance_type = self.request.params.get('instance_type', 'm1.small')
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address')
+            if associate_public_ip_address == 'true':
+                associate_public_ip_address = True
+            elif associate_public_ip_address == 'false':
+                associate_public_ip_address = False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -372,6 +377,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                     security_groups=security_groups,
                     user_data=self.get_user_data(),
                     instance_type=instance_type,
+                    associate_public_ip_address=associate_public_ip_address,
                     kernel_id=kernel_id,
                     ramdisk_id=ramdisk_id,
                     block_device_mappings=block_device_mappings,

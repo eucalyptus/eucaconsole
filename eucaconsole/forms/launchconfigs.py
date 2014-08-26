@@ -65,6 +65,7 @@ class CreateLaunchConfigForm(BaseSecureForm):
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
+    associate_public_ip_address = wtforms.SelectField(label=_(u'VPC IP assignment'))
     role = wtforms.SelectField()
     userdata = wtforms.TextAreaField(label=_(u'User data'))
     userdata_file_helptext = _(u'User data file may not exceed 16 KB')
@@ -98,14 +99,19 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type)
         self.keypair.choices = self.choices_manager.keypairs(add_blank=True, no_keypair_option=True)
         self.securitygroup.choices = self.choices_manager.security_groups(
-            securitygroups=self.securitygroups, add_blank=False)
+            securitygroups=self.securitygroups, use_id=True, add_blank=False)
         self.role.choices = ChoicesManager(self.iam_conn).roles(add_blank=True)
         self.kernel_id.choices = self.choices_manager.kernels(image=self.image)
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
+        self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
 
         # Set default choices where applicable, defaulting to first non-blank choice
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = 'default'
+            self.securitygroup.data = self.securitygroup.choices[0][0]
+
+    def get_associate_public_ip_address_choices(self):
+        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('true', _(u'For all instances')), ('false', _(u'Never'))]
+        return choices
 
     def set_error_messages(self):
         self.name.error_msg = self.name_error_msg
