@@ -37,8 +37,9 @@ import os
 import simplejson as json
 import time
 from M2Crypto import RSA
+import pylibmc
+import logging
 
-from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError
 from boto.s3.key import Key
 from boto.ec2.bundleinstance import BundleInstanceTask
@@ -61,6 +62,8 @@ from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
 from . import guess_mimetype_from_buffer
+from ..caches import long_term
+from ..caches import invalidate_cache
 from ..layout import __version__ as curr_version
 
 
@@ -380,20 +383,56 @@ class InstancesJsonView(LandingPageView):
             return instances
         return []
 
+    @long_term.cache_on_arguments(namespace='images')
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        """
+        This method is decorated and will cache the image set
+        """
+        return self._get_images_(_owners, _executors, _ec2_region)
+
+    def _get_images_(self, _owners, _executors, _ec2_region):
+        """
+        this method produces a cachable list of images
+        """
+        with boto_error_handler(self.request):
+            logging.info("loading images from server (not cache)")
+            filters = {'image-type': 'machine'}
+            images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            ret = []
+            for idx, img in enumerate(images):
+                # trim some un-necessary items we don't need to cache
+                del img.connection
+                del img.region
+                del img.product_codes
+                del img.billing_products
+                # alter things we want to cache, but are un-picklable
+                if img.block_device_mapping:
+                    for bdm in img.block_device_mapping.keys():
+                        mapping_type = img.block_device_mapping[bdm]
+                        del mapping_type.connection
+                ret.append(img)
+            return ret
+
     def get_images(self, conn):
         if self.cloud_type == 'aws':
-            owners = 'amazon' 
+            """
+            This method sets the right account value so we cache private images per-acct
+            and handles caching error by fetching the data from the server.
+            """
+            owners = []
             executors = []
-            region = self.request.session.get('region')
-            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
-                owners=owners, executors=executors, region=region)
-
-            @cache_region('long_term', cache_key)
-            def _get_images_cache(_owners, _executors, _region):
-                with boto_error_handler(self.request):
-                    filters = {'image-type': 'machine'}
-                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-            return _get_images_cache(owners, executors, region)
+            ec2_region = self.request.session.get('region')
+            acct = self.request.session.get('account', '')
+            if acct == '':
+                acct = self.request.session.get('access_id', '')
+            if 'amazon' in owners or 'aws-marketplace' in owners:
+                acct = ''
+            print acct
+            try:
+                return self._get_images_cached_(owners, executors, ec2_region, acct)
+            except pylibmc.Error as err:
+                logging.warn('memcached not responding')
+                return self._get_images_(owners, executors, ec2_region)
         else: 
             with boto_error_handler(self.request):
                 filters = {'image-type': 'machine'}
