@@ -25,13 +25,13 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/{{ item.bucket_name }}">{{ item.bucket_name }}</a>
+                <a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
                     <span ng-show="item.object_count">
-                        <b><a ng-href="/buckets/{{ item.bucket_name }}">{{ item.object_count }}</a></b>
+                        <b>{{ item.object_count }}</b>
                     </span>
                 </div>
                 <div>
@@ -54,19 +54,18 @@
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
-                <a id="tile-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <a id="tile-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
+                   class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                 <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                     <li ng-show="item.bucket_name">
-                        <a i18n:translate=""
-                           ng-click="revealModal('contents', item)">View contents</a>
+                        <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View contents</a>
                     </li>
                     <li ng-show="item.bucket_name">
-                        <a i18n:translate=""
-                           ng-click="revealModal('details', item)">View details</a>
+                        <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
                     </li>
                     <li ng-show="item.bucket_name">
-                        <a i18n:translate=""
-                           ng-click="revealModal('enable-vers', item)">Enable versioning</a>
+                        <a i18n:translate="" ng-click="revealModal('enable-vers', item)">Enable versioning</a>
                     </li>
                     <li ng-show="item.bucket_name">
                         <a i18n:translate=""
@@ -82,29 +81,27 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="${prefix}/{{ item.bucket_name }}">{{ item.bucket_name }}</a></td>
+                <td><a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a></td>
                 <td>{{ item.object_count }}</td>
                 <td>{{ item.owner }}</td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
-                        <a id="table-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="tiny secondary button dropdown right round" data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <a id="table-item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"
+                           class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.bucket_name">
-                                <a i18n:translate=""
-                                   ng-click="revealModal('contents', item)">View Contents</a>
+                                <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View Contents</a>
                             </li>
                             <li ng-show="item.bucket_name">
-                                <a i18n:translate=""
-                                   ng-click="revealModal('details', item)">View details</a>
+                                <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
                             </li>
                             <li ng-show="item.bucket_name">
-                                <a i18n:translate=""
-                                   ng-click="revealModal('enable-vers', item)">Enable versioning</a>
+                                <a i18n:translate="" ng-click="revealModal('enable-vers', item)">Enable versioning</a>
                             </li>
                             <li ng-show="item.bucket_name">
-                                <a i18n:translate=""
-                                   ng-click="revealModal('delete', item)">Delete</a>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
                             </li>
                         </ul>
                     </span>
@@ -114,10 +111,6 @@
     </div>
 </div>
 
-<metal:block metal:fill-slot="offcanvas_right">
-    <div id="help-content-div" class="help-content">
-    </div>
-</metal:block>
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>

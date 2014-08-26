@@ -1,34 +1,97 @@
 <metal:block use-macro="main_template" i18n:domain="eucaconsole">
 
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket.css')}" />
+</head>
 
-<div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap">
+<div metal:fill-slot="main_content" ng-app="BucketViewPage" ng-controller="BucketViewCtrl" ng-init="initController()">
+    <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
+         ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
-                <li class="current"><a href="#">${bucket.name}</a></li>
+                <li class="current"><a href="#" i18n:translate="">Bucket ${bucket_name}</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle">
-            <strong i18n:translate="">Details for bucket:</strong>
-            <em>${bucket.name}</em>
-        </h3>
-        <div class="large-7 columns">
-            <div class="panel has-actions" tal:condition="bucket">
-                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="bucket">
-                    <metal:actions metal:fill-slot="actions">
-
-                    </metal:actions>
-                </metal:block>
-                ${bucket.__dict__}
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" id="create-bucket-btn" i18n:translate="">
+                    Upload file(s)
+                </a>
+                &nbsp;&nbsp;
+                <a class="button" id="import-bucket-btn" i18n:translate="">
+                    Create New Folder
+                </a>
             </div>
-        </div>
-        <div class="large-5 columns">
-
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/${bucket_name}/{{ item.name }}">{{ item.name }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="size" i18n:attributes="title" data-tooltip="">SZ</span>
+                    <span ng-show="item.size">{{ item.size }}</span>
+                </div>
+                <div>
+                    <span class="label" title="Last Modified" i18n:attributes="title" data-tooltip="">LM</span>
+                    <span ng-show="item.last_modified">
+                        <b>{{ item.last_modified | date: '${layout.angular_date_format}' }}</b>
+                    </span>
+                </div>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_${bucket_name}_{{ item.bucket_name | escapeHTMLTagID }}"
+                   class="tiny secondary button dropdown right"
+                   data-dropdown="item-dropdown_${bucket_name}_{{ item.bucket_name |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li ng-show="item.is_folder">
+                        <a i18n:translate="" ng-click="revealModal('contents', item)">View contents</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
+                    </li>
+                    <li>
+                        <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                    </li>
+                </ul>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Name</th>
+                <th i18n:translate="">Size</th>
+                <th i18n:translate="">Last Modified</th>
+                <th i18n:translate="" class="actions">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td><a ng-href="${prefix}/${bucket_name}">{{ item.name }}</a></td>
+                <td>{{ item.size | bytes }}</td>
+                <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>
+                <td>
+                    <span class="actions">
+                        <a id="table-item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"
+                           class="tiny secondary button dropdown right round"
+                           data-dropdown="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                        <ul id="item-dropdown_${bucket_name}_{{ item.name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                            <li ng-show="item.is_folder">
+                                <a i18n:translate="" ng-click="revealModal('contents', item)">View Contents</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
+                            </li>
+                            <li>
+                                <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                            </li>
+                        </ul>
+                    </span>
+                </td>
+            </metal:block>
         </div>
     </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_view.js')}"></script>
 </div>
 
 </metal:block>

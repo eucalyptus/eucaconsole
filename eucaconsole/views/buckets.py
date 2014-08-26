@@ -28,7 +28,6 @@
 Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
-from boto.exception import S3ResponseError
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
@@ -45,7 +44,6 @@ class BucketsView(LandingPageView):
         super(BucketsView, self).__init__(request)
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/buckets'
-        self.conn = self.get_connection(conn_type="s3")
         self.location = self.get_redirect_location('buckets')
         self.render_dict = dict(
             prefix=self.prefix,
@@ -71,7 +69,7 @@ class BucketsView(LandingPageView):
 class BucketsJsonView(LandingPageView):
     def __init__(self, request):
         super(BucketsJsonView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='s3')
+        self.s3_conn = self.get_connection(conn_type='s3')
 
     @view_config(route_name='buckets_json', renderer='json', request_method='POST')
     def buckets_json(self):
@@ -81,38 +79,80 @@ class BucketsJsonView(LandingPageView):
         with boto_error_handler(self.request):
             items = self.get_items()
             for item in items:
+                bucket_name = item.name
                 buckets.append(dict(
-                    bucket_name=item.name,
-                    object_count=0,
+                    bucket_name=bucket_name,
+                    bucket_contents_url=self.request.route_path('bucket_view', name=bucket_name),
+                    object_count=0,  # TODO: Implement object count via XHR fetch
                     owner='me',
                     creation_date=item.creation_date
                 ))
             return dict(results=buckets)
 
     def get_items(self):
-        return self.conn.get_all_buckets() if self.conn else []
+        return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
-class BucketView(BaseView):
+class BucketView(LandingPageView):
     """Views for actions on single bucket"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_view.pt'
 
     def __init__(self, request):
         super(BucketView, self).__init__(request)
-        self.conn = self.get_connection(conn_type='s3')
-        self.bucket = self.get_bucket()
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.prefix = '/buckets'
+        self.bucket_name = request.matchdict.get('name')
         self.render_dict = dict(
-            bucket=self.bucket
+            bucket_name=self.bucket_name,
         )
 
     @view_config(route_name='bucket_view', renderer=VIEW_TEMPLATE)
     def bucket_view(self):
+        # sort_keys are passed to sorting drop-down
+        self.sort_keys = [
+            dict(key='name', name=_(u'Name: A to Z')),
+            dict(key='-name', name=_(u'Name: Z to A')),
+            dict(key='-size', name=_(u'Size: Largest to smallest')),
+            dict(key='size', name=_(u'Size: Smallest to largest')),
+        ]
+        json_route_path = self.request.route_path('bucket_contents_json', name=self.bucket_name)
+        self.render_dict.update(
+            prefix=self.prefix,
+            initial_sort_key='name',
+            json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
+            sort_keys=self.sort_keys,
+            filter_fields=False,
+            filter_keys=['name', 'size'],
+        )
         return self.render_dict
 
-    def get_bucket(self):
-        try:
-            bucket_name = self.request.matchdict.get('name')
-            return self.conn.get_bucket(bucket_name)
-        except S3ResponseError:
-            return HTTPNotFound()
+    @staticmethod
+    def get_bucket(request, s3_conn, bucket_name=None):
+        with boto_error_handler(request):
+            bucket_name = bucket_name or request.matchdict.get('name')
+            bucket = s3_conn.lookup(bucket_name) if bucket_name else None
+            if bucket is None:
+                return HTTPNotFound()
+            return bucket
+
+
+class BucketContentsJsonView(LandingPageView):
+    def __init__(self, request):
+        super(BucketContentsJsonView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket = BucketView.get_bucket(request, self.s3_conn)
+
+    @view_config(route_name='bucket_contents_json', renderer='json', request_method='POST')
+    def bucket_contents_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        items = []
+        for key in self.bucket.list():
+            items.append(dict(
+                name=key.name,
+                size=key.size,
+                is_folder=False,
+                last_modified=key.last_modified,
+            ))
+        return dict(results=items)
 
