@@ -427,7 +427,6 @@ class InstancesJsonView(LandingPageView):
                 acct = self.request.session.get('access_id', '')
             if 'amazon' in owners or 'aws-marketplace' in owners:
                 acct = ''
-            print acct
             try:
                 return self._get_images_cached_(owners, executors, ec2_region, acct)
             except pylibmc.Error as err:
