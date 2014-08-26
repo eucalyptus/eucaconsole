@@ -304,6 +304,8 @@ class InstancesJsonView(LandingPageView):
     def __init__(self, request):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.get_all_vpcs()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
@@ -358,6 +360,7 @@ class InstancesJsonView(LandingPageView):
                 root_device=instance.root_device_type,
                 security_groups=security_groups_array,
                 key_name=instance.key_name,
+                vpc_name=instance.vpc_name,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
@@ -371,11 +374,23 @@ class InstancesJsonView(LandingPageView):
             with boto_error_handler(self.request):
                 for reservation in self.conn.get_all_reservations(filters=filters):
                     for instance in reservation.instances:
-                        ### Unclear why the step below was needed
-                        #instance.groups = reservation.groups
+                        if instance.vpc_id:
+                            vpc = self.get_vpc_by_id(instance.vpc_id)
+                            instance.vpc_name = TaggedItemView.get_display_name(vpc)
+                        else:
+                            instance.vpc_name = ''
                         instances.append(instance)
             return instances
         return []
+
+    def get_all_vpcs(self):
+        return self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
+
+    def get_vpc_by_id(self, vpc_id):
+        for vpc in self.vpcs:
+            if vpc_id == vpc.id:
+                return vpc
+        return None 
 
     def filter_by_scaling_group(self, items):
         filtered_items = []

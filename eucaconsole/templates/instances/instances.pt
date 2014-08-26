@@ -118,6 +118,10 @@
                     </span>
                 </div>
                 <div>
+                    <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
+                    {{ item.vpc_name }}
+                </div>
+                <div>
                     <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
                     {{ item.launch_time | date:'${layout.angular_date_format}' }}
                 </div>
@@ -130,15 +134,15 @@
                 </div>
             </metal:block>
             <metal:block metal:fill-slot="tableview_headers">
-                <th i18n:translate="">Name (ID)</th>
-                <th i18n:translate="">Status</th>
-                <th i18n:translate="">Image ID</th>
-                <th i18n:translate="">Zone</th>
-                <th i18n:translate="">IP Address</th>
-                <th i18n:translate="">Key name</th>
-                <th i18n:translate="">Sec group</th>
-                <th i18n:translate="">Launched</th>
-                <th i18n:translate="" class="actions">Actions</th>
+                <th i18n:translate="">NAME (ID)</th>
+                <th i18n:translate="">STATUS</th>
+                <th i18n:translate="">IMAGE ID</th>
+                <th i18n:translate="">AVAILABILITY ZONE</th>
+                <th i18n:translate="">VPC NETWORK</th>
+                <th i18n:translate="">PUBLIC ADDRESS</th>
+                <th i18n:translate="">KEY NAME</th>
+                <th i18n:translate="">SECURITY GROUP</th>
+                <th i18n:translate="" class="actions">ACTIONS</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.name || item.id | ellipsis: 30 }}</a></td>
@@ -148,6 +152,7 @@
                 </td>
                 <td><a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a></td>
                 <td>{{ item.placement }}</td>
+                <td>{{ item.vpc_name }}</td>
                 <td>
                     <a ng-href="/ipaddresses/{{ item.ip_address }}" ng-show="item.has_elastic_ip">{{ item.ip_address }}</a>
                     <span ng-show="!item.has_elastic_ip">{{ item.ip_address }}</span>
@@ -158,7 +163,6 @@
                         <a ng-href="/securitygroups/{{ security_group.id }}">{{ security_group.name | ellipsis: 30 }}</a>
                     </div>
                 </td>
-                <td>{{ item.launch_time | date:'${layout.angular_date_format}' }}</td>
                 <td>
                     <span class="actions">
                         <span id="table-item-dropdown_{{ item.id }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.id }}"><i class="fi-widget"></i></span>
