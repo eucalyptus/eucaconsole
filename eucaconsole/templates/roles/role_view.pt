@@ -151,11 +151,11 @@
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label class="right" i18n:translate="">ARN</label></div>
-                            <div class="small-9 columns value inline breakword">${role.arn if role.arn else ''}</div>
+                            <div class="small-9 columns value inline breakword">${role_arn if role_arn else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label class="right" i18n:translate="">Path</label></div>
-                            <div class="small-9 columns value inline breakword">${role.path if role.path else ''}</div>
+                            <div class="small-9 columns value inline breakword">${role_path if role_path else ''}</div>
                         </div>
                         <div class="row controls-wrapper readonly" tal:condition="instances">
                             <div class="small-3 columns"><label class="right" i18n:translate="">Instances</label></div>

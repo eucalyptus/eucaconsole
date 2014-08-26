@@ -242,6 +242,7 @@ class UserView(BaseView):
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
+            user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
             change_password_form=self.change_password_form,

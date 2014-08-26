@@ -34,7 +34,6 @@ from wtforms import validators
 from ..i18n import _
 from . import BaseSecureForm, TextEscapedField
 
-
 class GroupForm(BaseSecureForm):
     """Group form
     """
@@ -74,9 +73,10 @@ class GroupUpdateForm(BaseSecureForm):
     )
 
     path_error_msg = ''
-    path = wtforms.TextField(
+    path = TextEscapedField(
         id=u'group-path',
         label=_(u'Path'),
+        default="/",
         validators=[validators.Length(min=1, max=255)],
     )
 

@@ -177,18 +177,16 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <!--
                 <div tal:condition="not account">
                     <div id="help-html-console_create_iam_account"
-                        ng-include="'${layout.help_path('console_create_iam_account.html')}'">
+                        ng-include="'${layout.help_path('console_create_iam_accounts.html')}'">
                     </div> 
                 </div>
                 <div tal:condition="account">
                     <div id="help-html-console_edit_iam_account"
-                        ng-include="'${layout.help_path('console_edit_iam_account.html')}'">
+                        ng-include="'${layout.help_path('console_account_detail_general.html')}'">
                     </div>
                 </div> 
-                -->
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->

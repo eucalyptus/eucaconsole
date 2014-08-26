@@ -11,6 +11,7 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
         $scope.isSubmitted = false;
         $scope.securityGroupName = undefined;
         $scope.securityGroupDescription = undefined;
+        $scope.securityGroupVPC = undefined;
         $scope.pendingModalID = '';
         $scope.initController = function () {
             $scope.setWatch();
@@ -75,6 +76,10 @@ angular.module('SecurityGroupPage', ['TagEditor', 'SecurityGroupRules'])
             });
             $scope.$watch('securityGroupDescription', function () {
                 $scope.checkRequiredInput();
+            });
+            $scope.$watch('securityGroupVPC', function () {
+                $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+                $scope.checkRequiredInput(); 
             });
             // Handle the unsaved tag issue
             $(document).on('submit', '#security-group-detail-form', function(event) {
