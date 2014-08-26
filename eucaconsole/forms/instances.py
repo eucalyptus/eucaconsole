@@ -102,6 +102,7 @@ class LaunchInstanceForm(BaseSecureForm):
     )
     zone = wtforms.SelectField(label=_(u'Availability zone'))
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
+    vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
     associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
@@ -152,6 +153,7 @@ class LaunchInstanceForm(BaseSecureForm):
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
         self.vpc_network.choices = self.get_vpc_network_choices()
+        self.vpc_subnet.choices = self.get_vpc_subnet_choices()
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(
@@ -184,6 +186,10 @@ class LaunchInstanceForm(BaseSecureForm):
 
     def get_vpc_network_choices(self):
         choices = self.vpc_choices_manager.vpc_networks()
+        return choices
+
+    def get_vpc_subnet_choices(self):
+        choices = self.vpc_choices_manager.vpc_subnets()
         return choices
 
     def get_associate_public_ip_address_choices(self):
