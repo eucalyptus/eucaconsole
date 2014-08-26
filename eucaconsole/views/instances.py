@@ -41,6 +41,7 @@ from M2Crypto import RSA
 from boto.exception import BotoServerError
 from boto.s3.key import Key
 from boto.ec2.bundleinstance import BundleInstanceTask
+from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfaceSpecification
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -833,7 +834,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
         self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
@@ -851,7 +851,6 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
-            securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             vpc_subnet_choices_json=self.vpc_subnet_choices_json,
@@ -881,13 +880,10 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
             vpc_network = self.request.params.get('vpc_network') or None
-            securitygroup_id = self.get_securitygroup_id_by_name_and_vpc(securitygroup, vpc_network)
+            securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
             securitygroup_ids = [securitygroup_id]
-            vpc_subnet = None
-            associate_publc_ip_address = 'true';
-            if vpc_network is not None:
-                vpc_subnet = self.request.params.get('vpc_subnet') or None
-                associate_public_ip_address = self.request.params.get('associate_public_ip_address')
+            vpc_subnet = self.request.params.get('vpc_subnet') or None
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address') == 'true'
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -905,23 +901,43 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
-                reservation = self.conn.run_instances(
-                    image_id,
-                    min_count=num_instances,
-                    max_count=num_instances,
-                    key_name=key_name,
-                    user_data=self.get_user_data(),
-                    addressing_type=addressing_type,
-                    instance_type=instance_type,
-                    placement=availability_zone,
-                    kernel_id=kernel_id,
-                    ramdisk_id=ramdisk_id,
-                    monitoring_enabled=monitoring_enabled,
-                    block_device_map=block_device_map,
-                    security_group_ids=securitygroup_ids,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None,
-                    subnet_id=vpc_subnet,
-                )
+                if vpc_network is not None:
+                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
+                        groups=securitygroup_ids,associate_public_ip_address=associate_public_ip_address)
+                    network_interfaces = NetworkInterfaceCollection(network_interface)
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                        network_interfaces=network_interfaces,
+                    )
+                else:
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        security_group_ids=securitygroup_ids,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    )
+
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
@@ -954,15 +970,8 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             if security_group.vpc_id is None:
                 rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
-
-    def get_securitygroups_id_map(self):
-        map_dict = {}
-        for security_group in self.securitygroups:
-            if security_group.vpc_id is None:
-                map_dict[security_group.name] = security_group.id
-        return map_dict
             
-    def get_securitygroup_id_by_name_and_vpc(self, name, vpc_network):
+    def get_securitygroup_id(self, name, vpc_network=None):
         for security_group in self.securitygroups:
             if security_group.vpc_id == vpc_network and security_group.name == name:
                 return security_group.id
