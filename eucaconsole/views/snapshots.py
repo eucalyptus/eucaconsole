@@ -39,6 +39,7 @@ from ..forms.snapshots import SnapshotForm, DeleteSnapshotForm, RegisterSnapshot
 from ..i18n import _
 from ..models import Notification
 from ..views import LandingPageView, TaggedItemView, BaseView, JSONResponse
+from ..views.images import ImagesView
 from . import boto_error_handler
 
 
@@ -90,7 +91,7 @@ class SnapshotsView(LandingPageView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    #ImagesView.invalidate_images_cache()
+                    ImagesView.invalidate_images_cache(self.request)
                 self.log_request(_(u"Deleting snapshot {0}").format(snapshot_id))
                 snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -156,7 +157,7 @@ class SnapshotsView(LandingPageView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                #ImagesView.invalidate_images_cache()
+                ImagesView.invalidate_images_cache(self.request)
                 location = self.request.route_path('image_view', id=image_id)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -346,7 +347,7 @@ class SnapshotView(TaggedItemView):
                         self.log_request(_(u"Deregistering image {0}").format(img.id))
                         img.deregister()
                     # Clear images cache
-                    #ImagesView.invalidate_images_cache()
+                    ImagesView.invalidate_images_cache(self.request)
                 self.log_request(_(u"Deleting snapshot {0}").format(self.snapshot.id))
                 self.snapshot.delete()
                 prefix = _(u'Successfully deleted snapshot')
@@ -380,7 +381,7 @@ class SnapshotView(TaggedItemView):
                 prefix = _(u'Successfully registered snapshot')
                 msg = '{prefix} {id}'.format(prefix=prefix, id=snapshot_id)
                 # Clear images cache
-                #ImagesView.invalidate_images_cache()
+                ImagesView.invalidate_images_cache(self.request)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         return self.render_dict
