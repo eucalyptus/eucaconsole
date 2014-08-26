@@ -160,6 +160,8 @@ class RoleView(BaseView):
         create_date = parser.parse(self.role.create_date) if self.role else datetime.now()
         self.render_dict = dict(
             role=self.role,
+            role_arn=self.role.arn if self.role else '',
+            role_path=self.role.path if self.role else '',
             role_create_date=create_date,
             role_route_id=self.role_route_id,
             all_users=self.all_users,

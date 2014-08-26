@@ -31,6 +31,7 @@ IMPORTANT: All forms needing CSRF protection should inherit from BaseSecureForm
 
 """
 import logging
+import pylibmc
 import sys
 
 from beaker.cache import cache_region
@@ -40,6 +41,7 @@ from wtforms.ext.csrf import SecureForm
 import boto
 from boto.exception import BotoServerError
 
+from ..caches import extra_long_term
 from ..constants.instances import AWS_INSTANCE_TYPE_CHOICES
 from ..i18n import _
 
@@ -102,13 +104,18 @@ class ChoicesManager(object):
         return sorted(choices)
 
     def get_availability_zones(self, region):
-        @cache_region('extra_long_term', 'availability_zones_{region}'.format(region=region))
-        def _get_zones_cache(self):
+        @extra_long_term.cache_on_arguments(namespace='availability_zones')
+        def _get_zones_cache_(self, region):
+            return _get_zones_(self, region)
+        def _get_zones_(self, region):
             zones = []
             if self.conn is not None:
                 zones = self.conn.get_all_zones()
-            return zones
-        return _get_zones_cache(self)
+            return zones;
+        try:
+            return _get_zones_cache_(self, region)
+        except pylibmc.Error as err:
+            return _get_zones_(self, region)
 
     def instances(self, instances=None, state=None, escapebraces=True):
         from ..views import TaggedItemView
@@ -133,13 +140,18 @@ class ChoicesManager(object):
             choices.append(BLANK_CHOICE)
         if cloud_type == 'euca':
             types = []
-            @cache_region('extra_long_term', 'instance_types')
-            def _get_instance_types_cache(self):
+            @extra_long_term.cache_on_arguments(namespace='instance_types')
+            def _get_instance_types_cache_(self):
+                return _get_instance_types_(self)
+            def _get_instance_types_(self):
                 types = []
                 if self.conn is not None:
                     types = self.conn.get_all_instance_types()
                 return types
-            types.extend(_get_instance_types_cache(self))
+            try:
+                types.extend(_get_instance_types_cache_(self))
+            except pylibmc.Error as err:
+                types.extend(_get_instance_types_(self))
             choices = []
             for vmtype in types:
                 vmtype_str = _(u'{0}: {1} CPUs, {2} memory (MB), {3} disk (GB,root device)').format(
@@ -365,5 +377,18 @@ class ChoicesManager(object):
             if escapebraces:
                 bname = self.BaseView.escape_braces(bname)
             choices.append((bname, bname))
+        return sorted(set(choices))
+
+    ### VPC connection type choices
+    ##
+    def vpc_networks(self, vpc_networks=None, escapebraces=True):
+        from ..views import TaggedItemView
+        choices = [('', _(u'No VPC'))]
+        vpc_network_list = vpc_networks or []
+        if not vpc_network_list and self.conn is not None:
+            vpc_network_list = self.conn.get_all_vpcs()
+        for vpc in vpc_network_list:
+            vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=escapebraces) 
+            choices.append((vpc.id, vpc_name))
         return sorted(set(choices))
 
