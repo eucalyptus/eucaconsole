@@ -32,7 +32,6 @@ See http://docs.pylonsproject.org/projects/pyramid_layout/en/latest/layouts.html
 from collections import namedtuple
 from urllib import urlencode
 
-from beaker.cache import cache_region
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
@@ -68,7 +67,9 @@ class MasterLayout(object):
         self.selected_region_label = self.get_selected_region_label(self.selected_region)
         self.username = self.request.session.get('username')
         self.account = self.request.session.get('account')
+        self.access_id = self.request.session.get('access_id')
         self.username_label = self.request.session.get('username_label')
+        self.account_access = request.session.get('account_access') if self.cloud_type == 'euca' else False
         self.user_access = request.session.get('user_access') if self.cloud_type == 'euca' else False
         self.group_access = request.session.get('group_access') if self.cloud_type == 'euca' else False
         self.role_access = request.session.get('role_access') if self.cloud_type == 'euca' else False
@@ -117,9 +118,8 @@ class MasterLayout(object):
         return self.request.static_path(path)
 
     @staticmethod
-    @cache_region('extra_long_term', 'selected_region_label')
     def get_selected_region_label(region_name):
-        """Get the label from the selected region, pulling from Beaker cache"""
+        """Get the label from the selected region"""
         regions = [reg for reg in AWS_REGIONS if reg.get('name') == region_name]
         if regions:
             return regions[0].get('label')

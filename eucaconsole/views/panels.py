@@ -155,11 +155,10 @@ def autoscale_tag_editor(context, request, tags=None, leftcol_width=2, rightcol_
 
 
 @panel_config('securitygroup_rules', renderer='../templates/panels/securitygroup_rules.pt')
-def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_width=3, rightcol_width=9):
+def securitygroup_rules(context, request, rules=None, rules_egress=None, leftcol_width=3, rightcol_width=9):
     """ Security group rules panel.
         Usage example (in Chameleon template): ${panel('securitygroup_rules', rules=security_group.rules)}
     """
-    groupnames = groupnames or []
     rules = rules or []
     rules_list = []
     for rule in rules:
@@ -172,17 +171,30 @@ def securitygroup_rules(context, request, rules=None, groupnames=None, leftcol_w
             to_port=rule.to_port,
             grants=grants,
         ))
+    rules_egress = rules_egress or []
+    rules_egress_list = []
+    for rule in rules_egress:
+        grants = [
+            dict(name=g.name, owner_id=g.owner_id, group_id=g.group_id, cidr_ip=g.cidr_ip) for g in rule.grants
+        ]
+        rules_egress_list.append(dict(
+            ip_protocol=rule.ip_protocol,
+            from_port=rule.from_port,
+            to_port=rule.to_port,
+            grants=grants,
+        ))
 
     # Sort rules and choices
     rules_sorted = sorted(rules_list, key=itemgetter('from_port'))
+    rules_egress_sorted = sorted(rules_egress_list, key=itemgetter('from_port'))
     icmp_choices_sorted = sorted(RULE_ICMP_CHOICES, key=lambda tup: tup[1])
     remote_addr=request.environ.get('HTTP_X_FORWARDED_FOR', getattr(request, 'remote_addr', ''))
-    
 
     return dict(
         rules=rules_sorted,
-        groupnames=groupnames,
         rules_json=BaseView.escape_json(json.dumps(rules_list)),
+        rules_egress=rules_egress_sorted,
+        rules_egress_json=BaseView.escape_json(json.dumps(rules_egress_list)),
         protocol_choices=RULE_PROTOCOL_CHOICES,
         icmp_choices=icmp_choices_sorted,
         #remote_addr=remote_addr,
@@ -226,7 +238,7 @@ def bdmapping_editor(context, request, image=None, launch_config=None, snapshot_
                 continue
             ebs = bdm.ebs
             bdm_dict[bdm.device_name] = dict(
-                is_root = False,  # because we can't redefine root in a launch config
+                is_root=False,  # because we can't redefine root in a launch config
                 virtual_name=bdm.virtual_name,
                 snapshot_id=getattr(ebs, 'snapshot_id', None),
                 size=getattr(ebs, 'volume_size', None),
@@ -287,6 +299,13 @@ def quotas_panel(context, request, quota_form=None, quota_err=None):
 
 @panel_config('securitygroup_rules_landingpage', renderer='../templates/panels/securitygroup_rules_landingpage.pt')
 def securitygroup_rules_landingpage(context, request, tile_view=False):
+    return dict(
+        tile_view=tile_view,
+    )
+
+
+@panel_config('securitygroup_rules_egress_landingpage', renderer='../templates/panels/securitygroup_rules_egress_landingpage.pt')
+def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
     )

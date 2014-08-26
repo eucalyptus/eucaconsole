@@ -29,22 +29,103 @@ Pyramid views for Eucalyptus and AWS images
 
 """
 import re
+import simplejson as json
+import logging
 
-from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError
+from boto.ec2.image import Image
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
+import pylibmc
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
 from ..i18n import _
 from ..models import Notification
 from ..models.auth import User
-from ..views import LandingPageView, TaggedItemView, JSONResponse
+from ..views import LandingPageView, TaggedItemView, JSONResponse, BlockDeviceMappingItemView
 from . import boto_error_handler
+from ..caches import long_term
+from ..caches import invalidate_cache
+from ..layout import __version__ as curr_version
 
 import panels
 
+class ImageBundlingMixin(BlockDeviceMappingItemView):
+    """
+    This has the code necessary to handle image bundling tasks attached to an instance.
+    It checks state and completes the registration if possible. Otherwise, it creates
+    a fake image that acts as a placeholder so that users can see status.
+    """
+    def handle_instance_being_bundled(self, instance, do_not_finish=False):
+        bundling_tag = instance.tags.get('ec_bundling') or None
+        if bundling_tag is None:
+            return None
+        bucket, bundle_id = bundling_tag.split('/')
+        s3_conn = self.get_connection(conn_type='s3')
+        k = Key(s3_conn.get_bucket(bucket))
+        k.key = bundle_id
+        metadata = json.loads(k.get_contents_as_string())
+        tasks = self.conn.get_all_bundle_tasks([bundle_id])
+        if do_not_finish and len(tasks) > 0:
+            tasks[0].state = 'pending'
+        if len(tasks) == 0 or tasks[0].state == 'complete':
+            # handle registration
+            if metadata['version'] != curr_version:
+                self.log_request(_(u"Bundle operation {0} from previous software version will be ignored.").format(bundle_id))
+            else:
+                self.log_request(_(u"Registering image from bundle operation {0}").format(bundle_id))
+                bdm = self.get_block_device_map(metadata['bdm'])
+                image_id = self.conn.register_image(
+                                name=metadata['name'],
+                                description=metadata['description'],
+                                image_location="%s/%s.manifest.xml" % (bucket, metadata['prefix']),
+                                virtualization_type=metadata['virt_type'],
+                                block_device_map=bdm,
+                                kernel_id=metadata['kernel_id'],
+                                ramdisk_id=metadata['ramdisk_id']
+                           )
+                tags = json.loads(metadata['tags'])
+                self.conn.create_tags(image_id, tags)
+            # cleanup creds
+            iam_conn = self.get_connection(conn_type='iam')
+            iam_conn.delete_access_key(metadata['access'])
+            # cleanup metadata
+            k.delete()
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            if metadata['version'] != curr_version:
+                return None
+            else:
+                return self.conn.get_all_images(image_ids=[image_id])[0]
+        elif tasks[0].state == 'failed':
+            # generate error message, need to let user know somehow
+            logging.warn("bundle task failed! " + tasks[0].message)
+            # cleanup creds
+            iam_conn = self.get_connection(conn_type='iam')
+            iam_conn.delete_access_key(metadata['access'])
+            # cleanup metadata
+            k.delete()
+            self.conn.delete_tags(instance.id, ['ec_bundling'])
+            return None
+        elif tasks[0].state in ['pending', 'bundling', 'storing']:
+            # add this into image list
+            fakeimage = Image()
+            fakeimage.id = _(u'Pending')
+            fakeimage.location = "%s/%s.manifest.xml" % (bucket, metadata['prefix'])
+            fakeimage.owner_id = ''  # do we need this?
+            fakeimage.state = tasks[0].state
+            fakeimage.progress = tasks[0].progress
+            fakeimage.is_public = False
+            fakeimage.name = metadata['name']
+            fakeimage.description = metadata['description']
+            fakeimage.architecture = metadata['arch']
+            fakeimage.platform = 'windows' if metadata['platform'] == 'windows' else None
+            fakeimage.type = 'machine'
+            fakeimage.root_device_type = 'instance-store'
+            fakeimage.root_device_name = '/dev/sda'
+            fakeimage.block_device_mapping = {}
+            fakeimage.tags = json.loads(metadata['tags'])
+            return fakeimage
 
 class ImagesView(LandingPageView):
     TEMPLATE = '../templates/images/images.pt'
@@ -97,21 +178,40 @@ class ImagesView(LandingPageView):
         ]
 
     @staticmethod
-    def invalidate_images_cache():
-        for manager in cache_managers.values():
-            if '_get_images_cache' in manager.namespace.namespace:
-                manager.clear()
+    def invalidate_images_cache(request):
+        region = request.session.get('region')
+        acct = request.session.get('account', '')
+        if acct == '':
+            acct = request.session.get('access_id', '')
+        invalidate_cache(long_term, 'images', None, [], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [u'self'], [], region, acct)
+        invalidate_cache(long_term, 'images', None, [], [u'self'], region, acct)
 
 
-class ImagesJsonView(LandingPageView):
+class ImagesJsonView(LandingPageView, ImageBundlingMixin):
+
+    def __init__(self, request):
+        super(ImagesJsonView, self).__init__(request)
+        self.conn = self.get_connection()
+
     """Images returned as JSON"""
-    @view_config(route_name='images_json', renderer='json', request_method='GET')
+    @view_config(route_name='images_json', renderer='json', request_method='POST')
     def images_json(self):
-        images = []
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
+        # actual images
+        items = self.get_items()
+        # fetch instances that have been marked for bundling
+        instances = self.conn.get_only_instances(filters={'tag-key':'ec_bundling'})
+        for instance in instances:
+            image = self.handle_instance_being_bundled(instance)
+            if image is not None:
+                items.append(image)
         # Apply filters, skipping owner_alias since it's leveraged in self.get_items() below
-        filtered_items = self.filter_items(self.get_items(), ignore=['owner_alias', 'platform'])
+        filtered_items = self.filter_items(items, ignore=['owner_alias', 'platform'])
         if self.request.params.getall('platform'):
             filtered_items = self.filter_by_platform(filtered_items)
+        images = []
         for image in filtered_items:
             platform = ImageView.get_platform(image)
             images.append(dict(
@@ -119,8 +219,11 @@ class ImagesJsonView(LandingPageView):
                 description=image.description,
                 id=image.id,
                 name=image.name,
+                state=image.state,
+                transitional=image.state not in ['available', 'failed', 'deleted'],
+                progress=0,  # this is valid for transitional images till we get something better
                 location=image.location,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
@@ -135,8 +238,7 @@ class ImagesJsonView(LandingPageView):
     def image_json(self):
         image_id = self.request.matchdict.get('id')
         with boto_error_handler(self.request):
-            conn = self.get_connection()
-            image = conn.get_image(image_id)
+            image = self.conn.get_image(image_id)
             if image is None:
                 return JSONResponse(status=400, message="image id not valid")
             platform = ImageView.get_platform(image)
@@ -158,12 +260,30 @@ class ImagesJsonView(LandingPageView):
                 name=image.name,
                 location=image.location,
                 block_device_mapping=bdm_dict,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
                 root_device_type=image.root_device_type,
             )))
+
+    @view_config(route_name='image_state_json', renderer='json', request_method='POST')
+    def image_state_json(self):
+        image_id = self.request.matchdict.get('id')
+        with boto_error_handler(self.request):
+            url = None
+            if image_id.find('pi-') == 0:
+                instances = self.conn.get_only_instances([image_id[1:]])
+                image = self.handle_instance_being_bundled(instances[0])
+                if image.state == 'available':
+                    url = self.request.route_path('image_view', id=image.id)
+            else:
+                image = self.conn.get_image(image_id)
+            """Return current image status"""
+            image_status = image.state if image else 'deleted'
+            return dict(
+                results=dict(image_status=image_status, url=url)
+            )
 
     def get_items(self):
         owner_alias = self.request.params.get('owner_alias')
@@ -171,31 +291,59 @@ class ImagesJsonView(LandingPageView):
             # Set default alias to 'amazon' for AWS
             owner_alias = 'amazon'
         owners = [owner_alias] if owner_alias else []
-        conn = self.get_connection()
         region = self.request.session.get('region')
-        items = self.get_images(conn, owners, [], region)
+        items = self.get_images(self.conn, owners, [], region)
         # This is to included shared images in the owned images list per GUI-374
         if owner_alias == 'self':
-            items.extend(self.get_images(conn, [], ['self'], region))
+            items.extend(self.get_images(self.conn, [], ['self'], region))
         return items
 
-    def get_images(self, conn, owners, executors, region):
-        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        if 'amazon' in owners or 'aws-marketplace' in owners:
-            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
-                owners=owners, executors=executors, region=region)
+    @long_term.cache_on_arguments(namespace='images')
+    def _get_images_cached_(self, _owners, _executors, _ec2_region, acct):
+        """
+        This method is decorated and will cache the image set
+        """
+        return self._get_images_(_owners, _executors, _ec2_region)
 
-            # Heads up!  Update cache key if we allow filters to be passed here
-            @cache_region('long_term', cache_key)
-            def _get_images_cache(_owners, _executors, _region):
-                with boto_error_handler(self.request):
-                    filters = {'image-type': 'machine'}
-                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-            return _get_images_cache(owners, executors, region)
-        else:
-            with boto_error_handler(self.request):
-                filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=owners, executable_by=executors, filters=filters) if conn else []
+    def _get_images_(self, _owners, _executors, _ec2_region):
+        """
+        this method produces a cachable list of images
+        """
+        with boto_error_handler(self.request):
+            logging.info("loading images from server (not cache)")
+            filters = {'image-type': 'machine'}
+            images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
+            ret = []
+            for idx, img in enumerate(images):
+                # trim some un-necessary items we don't need to cache
+                del img.connection
+                del img.region
+                del img.product_codes
+                del img.billing_products
+                # alter things we want to cache, but are un-picklable
+                if img.block_device_mapping:
+                    for bdm in img.block_device_mapping.keys():
+                        mapping_type = img.block_device_mapping[bdm]
+                        del mapping_type.connection
+                ret.append(img)
+            return ret
+
+    def get_images(self, conn, owners, executors, ec2_region):
+        """
+        This method sets the right account value so we cache private images per-acct
+        and handles caching error by fetching the data from the server.
+        """
+        acct = self.request.session.get('account', '')
+        if acct == '':
+            acct = self.request.session.get('access_id', '')
+        if 'amazon' in owners or 'aws-marketplace' in owners:
+            acct = ''
+        try:
+            return self._get_images_cached_(owners, executors, ec2_region, acct)
+        except pylibmc.Error as err:
+            logging.warn('memcached not responding')
+            return self._get_images_(owners, executors, ec2_region)
+
 
     def filter_by_platform(self, items):
         filtered_items = []
@@ -208,7 +356,7 @@ class ImagesJsonView(LandingPageView):
         return filtered_items
 
 
-class ImageView(TaggedItemView):
+class ImageView(TaggedItemView, ImageBundlingMixin):
     """Views for single Image"""
     TEMPLATE = '../templates/images/image_view.pt'
 
@@ -224,8 +372,12 @@ class ImageView(TaggedItemView):
         self.is_public = str(self.image.is_public).lower() if self.image else False
         self.is_owned_by_user = self.check_if_image_owned_by_user()
         self.image_launch_permissions = self.get_image_launch_permissions_array()
+        image_id = self.image.id if self.image is not None else ''
+        if self.image is not None and self.image.state != 'available':
+            image_id = self.request.matchdict.get('id').encode('ascii', 'ignore')
         self.render_dict = dict(
             image=self.image,
+            image_id=image_id,
             is_public = self.is_public,
             is_owned_by_user = self.is_owned_by_user,
             image_launch_permissions = self.image_launch_permissions,
@@ -258,7 +410,11 @@ class ImageView(TaggedItemView):
         images = []
         if self.conn:
             with boto_error_handler(self.request):
-                images = self.conn.get_all_images(image_ids=images_param)
+                if image_param.find('pi-') == 0:
+                    instances = self.conn.get_only_instances([image_param[1:]])
+                    images = [self.handle_instance_being_bundled(instances[0], do_not_finish=True)]
+                else:
+                    images = self.conn.get_all_images(image_ids=images_param)
         image = images[0] if images else None
         if image:
             attrs = image.__dict__
@@ -321,7 +477,7 @@ class ImageView(TaggedItemView):
                 self.image_update_launch_permissions(lp_array)
 
             # Clear images cache
-            ImagesView.invalidate_images_cache()
+            ImagesView.invalidate_images_cache(self.request)
 
             location = self.request.route_path('image_view', id=self.image.id)
             msg = _(u'Successfully modified image')

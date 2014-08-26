@@ -36,7 +36,7 @@ from pyramid.view import view_config
 from ..forms.securitygroups import SecurityGroupForm, SecurityGroupDeleteForm, SecurityGroupsFiltersForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, TaggedItemView, JSONResponse
+from ..views import BaseView, LandingPageView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -125,24 +125,45 @@ class SecurityGroupsJsonView(LandingPageView):
     def __init__(self, request):
         super(SecurityGroupsJsonView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.get_all_vpcs()
 
-    @view_config(route_name='securitygroups_json', renderer='json', request_method='GET')
+    @view_config(route_name='securitygroups_json', renderer='json', request_method='POST')
     def securitygroups_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         securitygroups = []
+        vpc_id = self.request.params.get('vpc_id')
         for securitygroup in self.filter_items(self.get_items()):
-            if securitygroup.vpc_id is None:
+            if vpc_id != '' or (vpc_id == '' and securitygroup.vpc_id is None):
+                vpc_name = ''
+                if securitygroup.vpc_id != '':
+                    vpc = self.get_vpc_by_id(securitygroup.vpc_id)
+                    vpc_name = TaggedItemView.get_display_name(vpc) if vpc else '' 
                 securitygroups.append(dict(
                     id=securitygroup.id,
                     description=securitygroup.description,
                     name=securitygroup.name,
                     owner_id=securitygroup.owner_id,
+                    vpc_id=securitygroup.vpc_id,
+                    vpc_name=vpc_name, 
                     rules=SecurityGroupsView.get_rules(securitygroup.rules),
+                    rules_egress=SecurityGroupsView.get_rules(securitygroup.rules_egress),
                     tags=TaggedItemView.get_tags_display(securitygroup.tags),
                 ))
         return dict(results=securitygroups)
 
     def get_items(self):
         return self.conn.get_all_security_groups() if self.conn else []
+
+    def get_all_vpcs(self):
+        return self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
+
+    def get_vpc_by_id(self, vpc_id):
+        for vpc in self.vpcs:
+            if vpc_id == vpc.id:
+                return vpc
+        return None 
 
 
 class SecurityGroupView(TaggedItemView):
@@ -152,14 +173,20 @@ class SecurityGroupView(TaggedItemView):
     def __init__(self, request):
         super(SecurityGroupView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.security_group = self.get_security_group()
+        self.security_group_vpc = ''
+        if self.security_group and self.security_group.vpc_id:
+            self.vpc = self.vpc_conn.get_all_vpcs(vpc_ids=self.security_group.vpc_id)[0]
+            self.security_group_vpc = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
         self.securitygroup_form = SecurityGroupForm(
-            self.request, security_group=self.security_group, formdata=self.request.params or None)
+            self.request, self.vpc_conn, security_group=self.security_group, formdata=self.request.params or None)
         self.delete_form = SecurityGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.tagged_obj = self.security_group
         self.render_dict = dict(
             security_group=self.security_group,
             security_group_name=self.escape_braces(self.security_group.name) if self.security_group else '',
+            security_group_vpc=self.security_group_vpc,
             securitygroup_form=self.securitygroup_form,
             delete_form=self.delete_form,
             security_group_names=self.get_security_group_names(),
@@ -188,11 +215,16 @@ class SecurityGroupView(TaggedItemView):
         if self.securitygroup_form.validate():
             name = self.request.params.get('name')
             description = self.request.params.get('description')
+            vpc_network = self.request.params.get('vpc_network')
             tags_json = self.request.params.get('tags')
             with boto_error_handler(self.request, self.request.route_path('securitygroups')):
                 self.log_request(_(u"Creating security group {0}").format(name))
-                new_security_group = self.conn.create_security_group(name, description)
+                temp_new_security_group = self.conn.create_security_group(name, description, vpc_id=vpc_network)
+                # Need to retreive security group to obtain complete VPC data
+                new_security_group = self.get_security_group(temp_new_security_group.id)
                 self.add_rules(security_group=new_security_group)
+                self.revoke_all_rules(security_group=new_security_group, traffic_type='egress')
+                self.add_rules(security_group=new_security_group, traffic_type='egress')
                 if tags_json:
                     tags = json.loads(tags_json)
                     for tagname, tagvalue in tags.items():
@@ -224,6 +256,8 @@ class SecurityGroupView(TaggedItemView):
             msg = _(u'Successfully modified security group')
             self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.securitygroup_form.get_errors_list()
         return self.render_dict
 
     def get_security_group(self, group_id=None):
@@ -243,14 +277,20 @@ class SecurityGroupView(TaggedItemView):
     def get_security_group_names(self):
         groups = []
         if self.conn:
-            groups = [g.name for g in self.conn.get_all_security_groups()]
+            if self.security_group:
+                groups = [g.name for g in self.conn.get_all_security_groups() if self.security_group.vpc_id == g.vpc_id]
+            else:
+                groups = [g.name for g in self.conn.get_all_security_groups()]
         return sorted(set(groups))
 
-    def add_rules(self, security_group=None):
+    def add_rules(self, security_group=None, traffic_type='ingress'):
         if security_group is None:
             security_group = self.security_group
         # Now add the fresh set of rules
-        rules_json = self.request.params.get('rules')
+        if traffic_type == 'ingress':
+            rules_json = self.request.params.get('rules')
+        else:
+            rules_json = self.request.params.get('rules_egress')
         rules = json.loads(rules_json) if rules_json else []
 
         for rule in rules:
@@ -272,27 +312,48 @@ class SecurityGroupView(TaggedItemView):
                 cidr_ip = grant.get('cidr_ip')
                 group_name = grant.get('name')
                 owner_id = grant.get('owner_id')
+                group_id = grant.get('group_id')
 
-            auth_args = dict(group_name=security_group.name, ip_protocol=ip_protocol, from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
-            if group_name:
-                auth_args['src_security_group_name'] = group_name
-            if owner_id:
-                auth_args['src_security_group_owner_id'] = owner_id
+            auth_args = dict(group_id=security_group.id, ip_protocol=ip_protocol, 
+                from_port=from_port, to_port=to_port, cidr_ip=cidr_ip)
 
-            self.conn.authorize_security_group(**auth_args)
+            if traffic_type == 'ingress':
+                if group_id:
+                    auth_args['src_security_group_group_id'] = group_id
+                elif group_name:
+                    auth_args['src_security_group_name'] = group_name
+                if owner_id:
+                    auth_args['src_security_group_owner_id'] = owner_id
+            else:
+                if group_id:
+                    auth_args['src_group_id'] = group_id
+
+            if traffic_type == 'ingress':
+                self.conn.authorize_security_group(**auth_args)
+            else:
+                self.conn.authorize_security_group_egress(**auth_args)
 
     def update_rules(self):
         # Remove existing rules prior to updating, since we're doing a fresh update
         self.revoke_all_rules()
+        self.revoke_all_rules(traffic_type='egress')
         self.add_rules()
+        self.add_rules(traffic_type='egress')
 
-    def revoke_all_rules(self):
-        for rule in self.security_group.rules:
+    def revoke_all_rules(self, security_group=None, traffic_type='ingress'):
+        if security_group is None:
+            security_group = self.security_group
+        rules = [] 
+        if traffic_type == 'ingress':
+            rules = security_group.rules 
+        else:
+            rules = security_group.rules_egress 
+        for rule in rules:
             grants = rule.grants
             from_port = int(rule.from_port) if rule.from_port else None
             to_port = int(rule.to_port) if rule.to_port else None
             params = dict(
-                group_id=self.security_group.id,
+                group_id=security_group.id,
                 ip_protocol=rule.ip_protocol,
                 from_port=from_port,
                 to_port=to_port,
@@ -303,8 +364,17 @@ class SecurityGroupView(TaggedItemView):
                         cidr_ip=grant.cidr_ip,
                     ))
                 elif grant.group_id:
-                    params.update(dict(
-                        src_security_group_group_id=grant.group_id,
-                        src_security_group_owner_id=grant.owner_id,
-                    ))
-                self.conn.revoke_security_group(**params)
+                    if traffic_type == 'ingress':
+                        params.update(dict(
+                            src_security_group_group_id=grant.group_id,
+                            src_security_group_owner_id=grant.owner_id,
+                        ))
+                    else:
+                        params.update(dict(
+                            src_group_id=grant.group_id,
+                        ))
+                if traffic_type == 'ingress':
+                    self.conn.revoke_security_group(**params)
+                else:
+                    self.conn.revoke_security_group_egress(**params)
+

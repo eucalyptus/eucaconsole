@@ -34,12 +34,13 @@
                         if security_group else request.route_path('securitygroup_create')">
             <div class="panel ${'has-actions' if security_group else ''}"
                     tal:define="sgroup_rules security_group.rules if security_group else [];
+                                sgroup_rules_egress security_group.rules_egress if security_group else [];
                                 sgroup_tags security_group.tags if security_group else {};
                                 readonly True if security_group else False;">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="security_group">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a data-reveal-id="delete-securitygroup-modal" i18n:translate="" id="delete-securitygroup-action">
+                            <a i18n:translate="" id="delete-securitygroup-action">
                                 Delete security group
                             </a>
                         </li>
@@ -62,8 +63,15 @@
                         <div class="small-3 columns"><label i18n:translate="">Description</label></div>
                         <div class="small-9 columns field inline">${layout.escape_braces(security_group.description)}</div>
                     </div>
+                    <div tal:condition="not security_group" tal:omit-tag="">
+                        ${panel('form_field', field=securitygroup_form['vpc_network'], ng_attrs={'model': 'securityGroupVPC'}, leftcol_width=3, rightcol_width=9)}
+                    </div>
+                    <div class="row controls-wrapper readonly" tal:condition="security_group">
+                        <div class="small-3 columns"><label i18n:translate="">VPC</label></div>
+                        <div class="small-9 columns field inline" ng-init="securityGroupVPC='${security_group.vpc_id}'">${security_group_vpc}</div>
+                    </div>
                     <hr />
-                    ${panel('securitygroup_rules', rules=sgroup_rules, groupnames=security_group_names)}
+                    ${panel('securitygroup_rules', rules=sgroup_rules, rules_egress=sgroup_rules_egress)}
                     <hr />
                     ${panel('tag_editor', tags=sgroup_tags, leftcol_width=3, rightcol_width=9)}
                     <hr />

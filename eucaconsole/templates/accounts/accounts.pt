@@ -1,0 +1,87 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/accounts.css')}" />
+</head>
+
+<div metal:fill-slot="main_content" ng-app="AccountsPage" ng-controller="AccountsCtrl" ng-init="initPage('${request.route_path('account_view', name='_name_')}')">
+    <div class="row" id="contentwrap" ng-controller="ItemsCtrl"
+         ng-init="initController('accounts', '${initial_sort_key}', '${json_items_endpoint}')">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li class="current"><a href="#" i18n:translate="">Accounts</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle"><strong i18n:translate="">Accounts</strong></h3>
+        <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
+            <div metal:fill-slot="new_button">
+                <a class="button" i18n:translate="" id="add-account-btn"
+                   href="${request.route_path('account_view', name='new')}">Create Account</a>
+            </div>
+            <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
+                <a id="tile-item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.account_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                <ul id="item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                    <li><a i18n:translate="" ng-href="${prefix}/{{ item.account_name }}">View details</a></li>
+                    <li><a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a></li>
+                </ul>
+            </div>
+            <div metal:fill-slot="tile_header">
+                <a ng-href="${prefix}/{{item.account_name }}">{{ item.account_name }}</a>
+            </div>
+            <div metal:fill-slot="tile_content" tal:omit-tag="">
+                <div>
+                    <span class="label" title="ID" i18n:attributes="title" data-tooltip="">ID</span>
+                    {{ item.account_id }}
+                </div>
+                <div ng-show='item.policy_count > 0'>
+                    <span class="label" title="Permissions" i18n:attributes="title" data-tooltip="">PE</span>
+                    <a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a>
+                </div>
+            </div>
+            <div metal:fill-slot="tile_footer">
+                <div ng-show="item.policy_count == 0"><a class="link" ng-click="linkAccount(item, '#policy-list')" i18n:translate="">Does not have permissions</a></div>
+            </div>
+            <metal:block metal:fill-slot="tableview_headers">
+                <th i18n:translate="">Account name</th>
+                <th i18n:translate="">ID</th>
+                <th i18n:translate="">Permissions</th>
+                <th class="actions" i18n:translate="">Actions</th>
+            </metal:block>
+            <metal:block metal:fill-slot="tableview_columns">
+                <td class="id breakword"><a ng-href="${prefix}/{{ item.account_name }}">{{ item.account_name | ellipsis: 30 }}</a></td>
+                <td>{{ item.account_id }}</td>
+                <td><a ng-click="linkAccount(item, '#policy-list')">{{ item.policy_count }}</a></td>
+                <td>
+                  <span class="actions">
+                    <a id="table-item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="tiny secondary button dropdown round" data-dropdown="item-dropdown_{{ item.account_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
+                    <ul id="item-dropdown_{{ item.account_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
+                        <li><a i18n:translate="" ng-href="${prefix}/{{ item.account_name }}">View details</a></li>
+                        <li>
+                            <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
+                        </li>
+                    </ul>
+                  </span>
+                </td>
+            </metal:block>
+        </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('account_dialogs', delete_form=delete_form, landingpage=True)}
+    </div>
+</div>
+
+<metal:block metal:fill-slot="offcanvas_right">
+    <div id="help-content-div" class="help-content">
+        ${panel('help_accounts', 'account_landing_page' )}
+    </div>
+</metal:block>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/pages/custom_filters.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/landingpage.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/accounts.js')}"></script>
+</div>
+
+</metal:block>
+

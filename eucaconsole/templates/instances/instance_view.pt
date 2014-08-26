@@ -35,8 +35,7 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li ng-show="instanceState == 'running'">
-                            <a href="#" id="connect-action" data-reveal-id="connect-instance-modal"
-                               i18n:translate="">Connect to instance</a>
+                            <a href="#" id="connect-instance-action" i18n:translate="">Connect to instance</a>
                         </li>
                         <li>
                             <a href="${request.route_path('instance_more', id=instance.id)}"
@@ -50,39 +49,43 @@
                                 Create launch configuration
                             </a>
                         </li>
+                        <li ng-show="instanceState == 'running' || instanceState == 'stopped'">
+                            <a i18n:translate="" id="create-image-action"
+                               ng-click="createImageClicked('${running_create}', '${instance.id}')">
+                               Create image
+                            </a>
+                        </li>
                         <li ng-show="instanceState == 'running'">
                             <a i18n:translate="" id="view-consoleoutput-action" ng-click="revealConsoleOutputModal()">
                                 View console output
                             </a>
                         </li>
                         <li ng-show="instanceState == 'running'">
-                            <a href="#" id="associate-ip-action"
-                               data-reveal-id="associate-ip-to-instance-modal" i18n:translate="">
+                            <a href="#" id="associate-ip-to-instance-action" i18n:translate="">
                                 Associate IP address
                             </a>
                         </li>
                         <li ng-show="instanceState == 'running' &amp;&amp; hasElasticIP == true">
-                            <a href="#" id="disassociate-ip-action"
-                               data-reveal-id="disassociate-ip-from-instance-modal" i18n:translate="">
+                            <a href="#" id="disassociate-ip-from-instance-action" i18n:translate="">
                                 Disassociate IP address
                             </a>
                         </li>
                         <li ng-show="instanceState == 'stopped'">
                             <a href="#" id="start-instance-action"
-                               data-reveal-id="start-instance-modal" i18n:translate="">Start</a>
+                               i18n:translate="">Start</a>
                         </li>
                         <li tal:condition="image and image.root_device_type == 'ebs'" ng-show="instanceState == 'running'">
                             <a href="#" id="stop-instance-action"
-                               data-reveal-id="stop-instance-modal" i18n:translate="">Stop</a>
+                               i18n:translate="">Stop</a>
                         </li>
                         <li ng-show="instanceState == 'running'">
                             <a href="#" id="reboot-instance-action"
-                               data-reveal-id="reboot-instance-modal" i18n:translate="">Reboot</a>
+                               i18n:translate="">Reboot</a>
                         </li>
                         <li ng-show="instanceState != 'terminated' &amp;&amp; instanceState != 'shutting-down'">
                         
                             <a href="#" id="terminate-instance-action"
-                               data-reveal-id="terminate-instance-modal" i18n:translate="">Terminate</a>
+                               i18n:translate="">Terminate</a>
                         </li>
                     </metal:actions>
                 </metal:block>

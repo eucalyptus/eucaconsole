@@ -130,11 +130,10 @@ def securitygroup_dialogs(context, request, security_group=None, landingpage=Fal
 
 
 @panel_config('create_securitygroup_dialog', renderer='../templates/dialogs/create_securitygroup_dialog.pt')
-def create_securitygroup_dialog(context, request, securitygroup_form=None, security_group_names=None):
+def create_securitygroup_dialog(context, request, securitygroup_form=None):
     """ Modal dialog for creating a security group."""
     return dict(
         securitygroup_form=securitygroup_form,
-        security_group_names=security_group_names,
     )
 
 
@@ -189,6 +188,16 @@ def scalinggroup_dialogs(context, request, scaling_group=None, landingpage=False
     return dict(
         scaling_group=scaling_group,
         scaling_group_name=BaseView.escape_braces(scaling_group.name) if scaling_group else '',
+        landingpage=landingpage,
+        delete_form=delete_form,
+    )
+
+
+@panel_config('account_dialogs', renderer='../templates/dialogs/account_dialogs.pt')
+def account_dialogs(context, request, account=None, landingpage=False, delete_form=None):
+    """ Modal dialogs for Account landing and detail page."""
+    return dict(
+        account=account,
         landingpage=landingpage,
         delete_form=delete_form,
     )

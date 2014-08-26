@@ -49,7 +49,7 @@ from ..forms.scalinggroups import (
     ScalingGroupsFiltersForm)
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, TaggedItemView
+from ..views import LandingPageView, BaseView, TaggedItemView, JSONResponse
 from . import boto_error_handler
 
 
@@ -145,8 +145,10 @@ class ScalingGroupsView(LandingPageView, DeleteScalingGroupMixin):
 
 
 class ScalingGroupsJsonView(LandingPageView):
-    @view_config(route_name='scalinggroups_json', renderer='json', request_method='GET')
+    @view_config(route_name='scalinggroups_json', renderer='json', request_method='POST')
     def scalinggroups_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         scalinggroups = []
         with boto_error_handler(self.request):
             items = self.filter_items(self.get_items(), autoscale=True)

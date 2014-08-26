@@ -2,7 +2,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};"
+            tal:define="html_attrs {'disabled': 'disabled'} if keypair else {};
+                        html_attrs_val {'pattern': '^[^\/\\\]{1,255}$'};"
             ng-app="KeypairPage" ng-controller="KeypairPageCtrl" ng-init="initController('${keypair_route_id}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -68,7 +69,7 @@
                     </p>
                     <form action="${request.route_path('keypair_create')}" method="post" data-abide="abide">
                         ${structure:keypair_form['csrf_token']}
-                        ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs)}
+                        ${panel('form_field', field=keypair_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
                         <hr />
                         <div tal:condition="not keypair">
                             <label>
@@ -87,7 +88,7 @@
                     <p i18n:translate="">Importing a public key allows you to use an existing SSH key to access your Eucalyptus instances.</p>
                     <form action="${request.route_path('keypair_import')}" method="post" data-abide="abide">
                         ${structure:keypair_import_form['csrf_token']}
-                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs)}
+                        ${panel('form_field', field=keypair_import_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'keypairName'}, **html_attrs_val)}
                         ${panel('form_field', field=keypair_import_form['key_material'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keypairMaterial'}, **html_attrs)}
                         <div class="row">
                             <div class="small-3 columns">&nbsp;</div>

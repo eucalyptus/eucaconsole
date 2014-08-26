@@ -1,4 +1,4 @@
-# Copyright 2013-2014 Eucalyptus Systems, Inc.
+# Copyright 2014 Eucalyptus Systems, Inc.
 #
 # Redistribution and use of this software in source and binary forms,
 # with or without modification, are permitted provided that the following
@@ -23,18 +23,39 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import ast
-from chameleon import PageTemplate
+
+import inspect
+from hashlib import sha1
+from dogpile.cache import make_region
+
+def euca_key_generator(namespace, fn):
+    if fn is None:
+        has_self = True
+    else:
+        args = inspect.getargspec(fn)
+        has_self = args[0] and args[0][0] in ('self', 'cls')
+    def generate_key(*arg):
+        # generate a key:
+        # "namespace_arg1_arg2_arg3..."
+        if has_self:
+            arg = arg[1:]
+        key = namespace + "|" + "_".join(map(str, arg))
+
+        # return cache key
+        # apply sha1 to obfuscate key contents
+        #return sha1(key).hexdigest()
+        return key
+
+    return generate_key
+
+def invalidate_cache(cache, namespace, *arg):
+    key = euca_key_generator(namespace, None)(*arg)
+    cache.delete(key)
+
+# caches available within the app
+short_term = make_region(function_key_generator=euca_key_generator)
+default_term = make_region(function_key_generator=euca_key_generator)
+long_term = make_region(function_key_generator=euca_key_generator)
+extra_long_term = make_region(function_key_generator=euca_key_generator)
 
 
-def setup_exts(config):
-    PageTemplate.expression_types['braceescape'] = escape_double_braces
-
-
-def escape_double_braces(s):
-    def compiler(target, engine):
-        escaped = s.replace('{{', '&#123;')
-        escaped = escaped.replace('}}', '&#125;')
-        value = ast.Str(escaped)
-        return [ast.Assign(targets=[target], value=value)]
-    return compiler

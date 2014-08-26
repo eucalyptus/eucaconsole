@@ -16,11 +16,13 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.instanceId = '';
         $scope.isNotValid = true;
         $scope.isNotChanged = true;
+        $scope.isSubmitted = false;
         $scope.isUpdating = false;
         $scope.fromSnapshot = false;
         $scope.volumeSize = 1;
         $scope.snapshotSize = 1;
         $scope.urlParams = $.url().param();
+        $scope.pendingModalID = '';
         $scope.initController = function (jsonEndpoint, status, attachStatus) {
             $scope.initChosenSelectors();
             $scope.initAvailZoneChoice();
@@ -37,7 +39,7 @@ angular.module('VolumePage', ['TagEditor'])
             return $scope.transitionalStates.indexOf(state) !== -1;
         };
         $scope.populateVolumeSize = function () {
-           if( $scope.snapshotId == '' ){
+           if ($scope.snapshotId == '') {
                 $scope.snapshotSize = 1;
                 $scope.volumeSize = 1;
                 return;
@@ -103,12 +105,55 @@ angular.module('VolumePage', ['TagEditor'])
                 }
             });
         };
+        // True if there exists an unsaved key or value in the tag editor field
+        $scope.existsUnsavedTag = function () {
+            var hasUnsavedTag = false;
+            $('input.taginput[type!="checkbox"]').each(function(){
+                if ($(this).val() !== '') {
+                    hasUnsavedTag = true;
+                }
+            });
+            return hasUnsavedTag;
+        };
+        $scope.openModalById = function (modalID) {
+            var modal = $('#' + modalID);
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+            // Clear the pending modal ID if opened
+            if ($scope.pendingModalID === modalID) {
+                $scope.pendingModalID = '';
+            }
+        };
         $scope.setWatch = function () {
+            // Monitor the action menu click
+            $(document).on('click', 'a[id$="action"]', function (event) {
+                // Ingore the action if the link has a ng-click attribute
+                if (this.getAttribute('ng-click')) {
+                    return;
+                }
+                // the ID of the action link needs to match the modal name
+                var modalID = this.getAttribute('id').replace("-action", "-modal");
+                // If there exists unsaved changes, open the wanring modal instead
+                if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    $scope.pendingModalID = modalID;
+                    $scope.openModalById('unsaved-changes-warning-modal');
+                    return;
+                } 
+                $scope.openModalById(modalID);
+            });
+            // Leave button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-stay-button', function () {
+                $('#unsaved-changes-warning-modal').foundation('reveal', 'close');
+            });
+            // Stay button is clicked on the warning unsaved changes modal
+            $(document).on('click', '#unsaved-changes-warning-modal-leave-link', function () {
+                $scope.openModalById($scope.pendingModalID);
+            });
             $scope.$on('tagUpdate', function($event) {
                 $scope.isNotChanged = false;
             });
             $scope.$watch('volumeSize', function () {
-                if( $scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined ){
+                if ($scope.volumeSize < $scope.snapshotSize || $scope.volumeSize === undefined) {
                     $('#volume_size_error').removeClass('hide');
                     $scope.isNotValid = true;
                 }else{
@@ -119,12 +164,32 @@ angular.module('VolumePage', ['TagEditor'])
             // Handle the unsaved tag issue
             $(document).on('submit', '#volume-detail-form', function(event) {
                 $('input.taginput').each(function(){
-                    if($(this).val() !== ''){
+                    if ($(this).val() !== '') {
                         event.preventDefault(); 
+                        $scope.isSubmitted = false;
                         $('#unsaved-tag-warn-modal').foundation('reveal', 'open');
                         return false;
                     }
                 });
+            });
+            // Turn "isSubmiited" flag to true when a submit button is clicked on the page
+            $('form[id!="euca-logout-form"]').on('submit', function () {
+                $scope.isSubmitted = true;
+            });
+            // Conditions to check before navigate away
+            window.onbeforeunload = function(event) {
+                if ($scope.isSubmitted === true) {
+                   // The action is "submit". OK to proceed
+                   return;
+                }else if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                    // Warn the user about the unsaved changes
+                    return $('#warning-message-unsaved-changes').text();
+                }
+                return;
+            };
+            // Do not perfom the unsaved changes check if the cancel link is clicked
+            $(document).on('click', '.cancel-link', function(event) {
+                window.onbeforeunload = null;
             });
             $(document).on('submit', '[data-reveal] form', function () {
                 $(this).find('.dialog-submit-button').css('display', 'none');                
@@ -138,18 +203,18 @@ angular.module('VolumePage', ['TagEditor'])
         $scope.setFocus = function () {
             $(document).on('ready', function(){
                 var tabs = $('.tabs').find('a');
-                if( tabs.length > 0 ){
+                if (tabs.length > 0) {
                     tabs.get(0).focus();
-                }else if( $('input[type="text"]').length > 0 ){
+                } else if ($('input[type="text"]').length > 0) {
                     $('input[type="text"]').get(0).focus();
                 }
             });
             $(document).on('opened', '[data-reveal]', function () {
                 var modal = $(this);
                 var modalID = $(this).attr('id');
-                if( modalID.match(/terminate/)  || modalID.match(/delete/) || modalID.match(/release/) ){
+                if (modalID.match(/terminate/) || modalID.match(/delete/) || modalID.match(/release/)) {
                     var closeMark = modal.find('.close-reveal-modal');
-                    if(!!closeMark){
+                    if (!!closeMark) {
                         closeMark.focus();
                     }
                 }else{
@@ -164,19 +229,22 @@ angular.module('VolumePage', ['TagEditor'])
             });
         };
         $scope.detachModal = function (device_name, url) {
-            var warnModal = $('#detach-volume-warn-modal'),
-                detachModal = $('#detach-volume-modal');
+            var warnModalID = 'detach-volume-warn-modal',
+                detachModalID = 'detach-volume-modal';
 
             $http.get(url).success(function(oData) {
                 var results = oData ? oData.results : '';
                 if (results) {
                     if (results.root_device_name == device_name) {
-                        warnModal.foundation('reveal', 'open');
-                        warnModal.find('h3').click();  // Workaround for dropdown menu not closing
+                        $scope.pendingModalID = warnModalID;
                     } else {
-                        detachModal.foundation('reveal', 'open');
-                        detachModal.find('h3').click();
+                        $scope.pendingModalID = detachModalID;
                     }
+                    if ($scope.existsUnsavedTag() || $scope.isNotChanged === false) {
+                        $scope.openModalById('unsaved-changes-warning-modal');
+                        return;
+                    } 
+                    $scope.openModalById($scope.pendingModalID);
                 }
             });
         };

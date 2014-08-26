@@ -45,7 +45,7 @@ class LaunchConfigDeleteForm(BaseSecureForm):
 class CreateLaunchConfigForm(BaseSecureForm):
     """Create Launch Configuration form"""
     image_id = wtforms.HiddenField(label=_(u'Image'))
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[validators.InputRequired(message=name_error_msg)],

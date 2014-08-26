@@ -27,7 +27,7 @@
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
             </label>
             <span tal:condition="getattr(field, 'help_text', None)"
-                  class="helptext-icon" data-tooltip="" title="${field.help_text}">?</span>
+                  class="helptext-icon reverse" data-tooltip="" title="${field.help_text}">?</span>
             <div tal:condition="field.errors" class="server-validation">
                 <span class="error" tal:repeat="error field.errors">${error}</span>
             </div>

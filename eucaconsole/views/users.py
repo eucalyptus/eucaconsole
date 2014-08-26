@@ -149,8 +149,10 @@ class UsersJsonView(BaseView):
         super(UsersJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='users_json', renderer='json', request_method='GET')
+    @view_config(route_name='users_json', renderer='json', request_method='POST')
     def users_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         users = []
         groups = []
         with boto_error_handler(self.request):
@@ -239,6 +241,7 @@ class UserView(BaseView):
         self.no_groups_defined_text = _(u"There are no groups defined")
         self.render_dict = dict(
             user=self.user,
+            user_arn=self.user.arn if self.user else '',
             prefix=self.prefix,
             user_create_date=getattr(self.user, 'create_date', None),
             change_password_form=self.change_password_form,
@@ -250,9 +253,10 @@ class UserView(BaseView):
         )
 
     def get_user(self):
+        as_account = self.request.params.get('as-account', '')
         user_param = self.request.matchdict.get('name')
         if user_param:
-            user = self.conn.get_user(user_name=user_param)
+            user = self.conn.get_response('GetUser', params={'UserName':user_param, 'DelegateAccount':as_account})
             return user
         else:
             return None
@@ -269,9 +273,10 @@ class UserView(BaseView):
     def user_view(self):
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as-account', None)
         has_password = False
         try:
-            profile = self.conn.get_login_profiles(user_name=self.user.user_name)
+            profile = self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
             # this call returns 404 if no password found
             has_password = True
         except BotoServerError as err:
@@ -279,6 +284,7 @@ class UserView(BaseView):
         group_form = AddToGroupForm(self.request)
         self.render_dict['group_form'] = group_form
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
+        self.render_dict['as_account'] = as_account
         self.render_dict['user_form'] = self.user_form
         self.render_dict['has_password'] = 'true' if has_password else 'false'
         self.render_dict['already_member_text'] = self.already_member_text
@@ -287,6 +293,8 @@ class UserView(BaseView):
  
     @view_config(route_name='user_new', renderer=NEW_TEMPLATE)
     def user_new(self):
+        as_account = self.request.params.get('as-account', None)
+        self.render_dict['as_account'] = as_account
         self.user_form = UserForm(self.request, user=self.user, conn=self.conn)
         self.render_dict['user_form'] = self.user_form
         return self.render_dict
@@ -294,15 +302,17 @@ class UserView(BaseView):
     @view_config(route_name='user_access_keys_json', renderer='json', request_method='GET')
     def user_keys_json(self):
         """Return user access keys list"""
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
-            keys = self.conn.get_all_access_keys(user_name=self.user.user_name)
+            keys = self.conn.get_response('ListAccessKeys', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
             return dict(results=sorted(keys.list_access_keys_result.access_key_metadata))
 
     @view_config(route_name='user_groups_json', renderer='json', request_method='GET')
     def user_groups_json(self):
         """Return user groups list"""
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
-            groups = self.conn.get_groups_for_user(user_name=self.user.user_name)
+            groups = self.conn.get_response('ListGroupsForUser', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='Groups')
             for g in groups.groups:
                 g['title'] = g.group_name
             return dict(results=groups.groups)
@@ -310,9 +320,10 @@ class UserView(BaseView):
     @view_config(route_name='user_avail_groups_json', renderer='json', request_method='GET')
     def user_avail_groups_json(self):
         """Return groups this user isn't part of"""
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             taken_groups = [
-                group.group_name for group in self.conn.get_groups_for_user(user_name=self.user.user_name).groups
+                group.group_name for group in self.conn.get_response('ListGroupsForUser', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='Groups').groups
             ]
             all_groups = [group.group_name for group in self.conn.get_all_groups().groups]
             avail_groups = list(set(all_groups) - set(taken_groups))
@@ -326,18 +337,20 @@ class UserView(BaseView):
     @view_config(route_name='user_policies_json', renderer='json', request_method='GET')
     def user_policies_json(self):
         """Return user policies list"""
+        as_account = self.request.params.get('as-account', '')
         if self.user.user_name == 'admin':
             return dict(results=[])
         with boto_error_handler(self.request):
-            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            policies = self.conn.get_response('ListUserPolicies', params={'UserName':self.user.user_name, 'DelegateAccount':as_account}, list_marker='PolicyNames')
             return dict(results=policies.policy_names)
 
     @view_config(route_name='user_policy_json', renderer='json', request_method='GET')
     def user_policy_json(self):
         """Return user policies list"""
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             policy_name = self.request.matchdict.get('policy')
-            policy = self.conn.get_user_policy(user_name=self.user.user_name, policy_name=policy_name)
+            policy = self.conn.get_response('GetUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy_name, 'DelegateAccount':as_account})
             parsed = json.loads(policy.policy_document)
             return dict(results=json.dumps(parsed, indent=2))
 
@@ -345,6 +358,7 @@ class UserView(BaseView):
     def user_create(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         # can't use regular form validation here. We allow empty values and the validation
         # code does not, so we need to roll our own below.
         # get user list
@@ -352,7 +366,6 @@ class UserView(BaseView):
         # now get the rest
         random_password = self.request.params.get('random_password', 'n')
         access_keys = self.request.params.get('access_keys', 'n')
-        allow_all = self.request.params.get('allow_all', 'n')
         path = self.request.params.get('path', '/')
        
         session = self.request.session
@@ -363,25 +376,22 @@ class UserView(BaseView):
                 users = json.loads(users_json)
                 for (name, email) in users.items():
                     self.log_request(_(u"Creating user {0}").format(name))
-                    user = self.conn.create_user(name, path)
+                    user = self.conn.get_response('CreateUser', params={'UserName':name, 'Path':path, 'DelegateAccount':as_account})
                     user_data = {'account': account, 'username': name}
                     policy = {'Version': '2011-04-01'}
                     statements = []
                     if random_password == 'y':
                         self.log_request(_(u"Generating password for user {0}").format(name))
                         password = PasswordGeneration.generate_password()
-                        self.conn.create_login_profile(name, password)
+                        self.conn.get_response('CreateLoginProfile', params={'UserName':name, 'Password':password, 'DelegateAccount':as_account})
                         user_data['password'] = password
                     if access_keys == 'y':
                         self.log_request(_(u"Creating access keys for user {0}").format(name))
-                        creds = self.conn.create_access_key(name)
+                        creds = self.conn.get_response('CreateAccessKey', params={'UserName':name, 'DelegateAccount':as_account})
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
                     # store this away for file creation later
                     user_list.append(user_data)
-                    if allow_all == 'y':
-                        statements.append({'Effect': 'Allow', 'Action': '*', 'Resource': '*'})
-                        statements.append({'Effect': 'Deny', 'Action': 'iam:*', 'Resource': '*'})
                     # now, look at quotas
                     ## ec2
                     self.add_quota_limit(
@@ -433,7 +443,7 @@ class UserView(BaseView):
                     if len(statements) > 0:
                         self.log_request(_(u"Creating policy for user {0}").format(name))
                         policy['Statement'] = statements
-                        self.conn.put_user_policy(name, self.EUCA_DEFAULT_POLICY, json.dumps(policy))
+                        self.conn.get_response('PutUserPolicy', params={'UserName':name, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(policy), 'DelegateAccount':as_account})
             # create file to send instead. Since # users is probably small, do it all in memory
             has_file = 'n'
             if not (access_keys == 'n' and random_password == 'n'):
@@ -463,13 +473,14 @@ class UserView(BaseView):
         """ calls iam:UpdateUser """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             new_name = self.request.params.get('user_name', None)
             path = self.request.params.get('path', None)
             self.log_request(_(u"Updating user {0} (new_name={1}, path={2})").format(self.user.user_name, new_name, path))
             if new_name == self.user.user_name:
                 new_name = None
-            result = self.conn.update_user(user_name=self.user.user_name, new_user_name=new_name, new_path=path)
+            result = self.conn.get_response('UpdateUser', params={'UserName':self.user.user_name, 'NewUserName':new_name, 'Path':path, 'DelegateAccount':as_account})
             self.user.path = path
             if self.user.user_name != new_name:
                 pass  # TODO: need to force view refresh if name changes
@@ -481,6 +492,7 @@ class UserView(BaseView):
         """ calls iam:UpdateLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         try:
             password = self.request.params.get('password')
             new_pass = self.request.params.get('new_password')
@@ -494,12 +506,12 @@ class UserView(BaseView):
             self.log_request(_(u"Change password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_login_profiles(user_name=self.user.user_name)
+                self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
                 # if that worked, update the profile
-                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+                result = self.conn.get_response('UpdateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+                result = self.conn.get_response('CreateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -525,17 +537,18 @@ class UserView(BaseView):
         """ calls iam:UpdateLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             new_pass = PasswordGeneration.generate_password()
             self.log_request(_(u"Generating password for user {0}").format(self.user.user_name))
             try:
                 # try to fetch login profile.
-                self.conn.get_login_profiles(user_name=self.user.user_name)
+                self.conn.get_response('GetLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
                 # if that worked, update the profile
-                result = self.conn.update_login_profile(user_name=self.user.user_name, password=new_pass)
+                result = self.conn.get_response('UpdateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
             except BotoServerError:
                 # if that failed, create the profile
-                result = self.conn.create_login_profile(user_name=self.user.user_name, password=new_pass)
+                result = self.conn.get_response('CreateLoginProfile', params={'UserName':self.user.user_name, 'Password':new_pass, 'DelegateAccount':as_account})
             # assemble file response
             account = self.request.session['account']
             string_output = StringIO.StringIO()
@@ -554,9 +567,10 @@ class UserView(BaseView):
         """ calls iam:DeleteLoginProfile """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting password for user {0}").format(self.user.user_name))
-            self.conn.delete_login_profile(user_name=self.user.user_name)
+            self.conn.get_response('DeleteLoginProfile', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully deleted user password"), results="true")
 
     @view_config(route_name='user_generate_keys', request_method='POST', renderer='json')
@@ -564,9 +578,10 @@ class UserView(BaseView):
         """ calls iam:CreateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Creating access keys for user {0}").format(self.user.user_name))
-            result = self.conn.create_access_key(user_name=self.user.user_name)
+            result = self.conn.get_response('CreateAccessKey', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
             account = self.request.session['account']
             string_output = StringIO.StringIO()
             csv_w = csv.writer(string_output)
@@ -585,10 +600,11 @@ class UserView(BaseView):
         """ calls iam:DeleteAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.delete_access_key(user_name=self.user.user_name, access_key_id=key_id)
+            result = self.conn.get_response('DeleteAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully deleted key"))
 
     @view_config(route_name='user_deactivate_key', request_method='POST', renderer='json')
@@ -596,10 +612,11 @@ class UserView(BaseView):
         """ calls iam:UpdateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deactivating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Inactive")
+            result = self.conn.get_response('UpdateAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'Statue':'Inactive', 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully deactivated key"))
 
     @view_config(route_name='user_activate_key', request_method='POST', renderer='json')
@@ -607,10 +624,11 @@ class UserView(BaseView):
         """ calls iam:UpdateAccessKey """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         key_id = self.request.matchdict.get('key')
         with boto_error_handler(self.request):
             self.log_request(_(u"Activating access key {0} for user {1}").format(key_id, self.user.user_name))
-            result = self.conn.update_access_key(user_name=self.user.user_name, access_key_id=key_id, status="Active")
+            result = self.conn.get_response('UpdateAccessKey', params={'UserName':self.user.user_name, 'AccessKeyId':key_id, 'Statue':'Active', 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully activated key"))
 
     @view_config(route_name='user_add_to_group', request_method='POST', renderer='json')
@@ -618,10 +636,11 @@ class UserView(BaseView):
         """ calls iam:AddUserToGroup """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Adding user {0} to group {1}").format(self.user.user_name, group))
-            result = self.conn.add_user_to_group(user_name=self.user.user_name, group_name=group)
+            result = self.conn.get_response('AddUserToGroup', params={'UserName':self.user.user_name, 'GroupName':group, 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully added user to group"),
                         results=result)
 
@@ -630,10 +649,11 @@ class UserView(BaseView):
         """ calls iam:RemoveUserToGroup """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         group = self.request.matchdict.get('group')
         with boto_error_handler(self.request):
             self.log_request(_(u"Removing user {0} from group {1}").format(self.user.user_name, group))
-            result = self.conn.remove_user_from_group(user_name=self.user.user_name, group_name=group)
+            result = self.conn.get_response('RemoveUserFromGroup', params={'UserName':self.user.user_name, 'GroupName':group, 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully removed user from group"),
                         results=result)
 
@@ -643,9 +663,10 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting user {0}").format(self.user.user_name))
-            params = {'UserName': self.user.user_name, 'IsRecursive': 'true'}
+            params = {'UserName': self.user.user_name, 'IsRecursive': 'true', 'DelegateAccount':as_account}
             self.conn.get_response('DeleteUser', params)
             
             location = self.request.route_path('users')
@@ -658,12 +679,12 @@ class UserView(BaseView):
         """ calls iam:PutUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         policy = str(self.request.matchdict.get('policy'))
         with boto_error_handler(self.request):
             self.log_request(_(u"Updating policy {0} for user {1}").format(policy, self.user.user_name))
             policy_text = self.request.params.get('policy_text')
-            result = self.conn.put_user_policy(
-                user_name=self.user.user_name, policy_name=policy, policy_json=policy_text)
+            result = self.conn.get_response('PutUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy, 'PolicyDocument':json.dumps(policy_text), 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully updated user policy"), results=result)
 
     @view_config(route_name='user_delete_policy', request_method='POST', renderer='json')
@@ -671,10 +692,11 @@ class UserView(BaseView):
         """ calls iam:DeleteUserPolicy """
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
+        as_account = self.request.params.get('as-account', '')
         policy = self.request.matchdict.get('policy')
         with boto_error_handler(self.request):
             self.log_request(_(u"Deleting policy {0} for user {1}").format(policy, self.user.user_name))
-            result = self.conn.delete_user_policy(user_name=self.user.user_name, policy_name=policy)
+            result = self.conn.get_response('DeleteUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy, 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully deleted user policy"), results=result)
 
     @view_config(route_name='user_update_quotas', request_method='POST', renderer='json')
@@ -684,13 +706,13 @@ class UserView(BaseView):
             return JSONResponse(status=400, message="missing CSRF token")
         if self.user is None:
             raise HTTPNotFound
+        as_account = self.request.params.get('as-account', '')
         with boto_error_handler(self.request):
             # load all policies for this user
             policy_list = []
-            policies = self.conn.get_all_user_policies(user_name=self.user.user_name)
+            policies = self.conn.get_response('ListUserPolicies', params={'UserName':self.user.user_name, 'DelegateAccount':as_account})
             for policy_name in policies.policy_names:
-                policy_json = self.conn.get_user_policy(
-                    user_name=self.user.user_name, policy_name=policy_name).policy_document
+                policy_json = self.conn.get_response('GetUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policy_name, 'DelegateAccount':as_account}).policy_document
                 policy = json.loads(policy_json)
                 policy_list.append(policy)
             # for each form item, update proper policy if needed
@@ -748,8 +770,7 @@ class UserView(BaseView):
                     del policy_list[i]['dirty']
                     self.log_request(_(u"Updating policy {0} for user {1}").format(
                         policies.policy_names[i], self.user.user_name))
-                    self.conn.put_user_policy(
-                        self.user.user_name, policies.policy_names[i], json.dumps(policy_list[i]))
+                    self.conn.get_response('PutUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':policies.policy_name[i], 'PolicyDocument':json.dumps(policy_list[i]), 'DelegateAccount':as_account})
             if len(new_stmts) > 0:
                 # do we already have the euca default policy?
                 if self.EUCA_DEFAULT_POLICY in policies.policy_names:
@@ -758,13 +779,13 @@ class UserView(BaseView):
                         self.EUCA_DEFAULT_POLICY, self.user.user_name))
                     default_policy = policy_list[policies.policy_names.index(self.EUCA_DEFAULT_POLICY)]
                     default_policy['Statement'].extend(new_stmts)
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(default_policy))
+                    self.conn.get_response('PutUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(default_policy), 'DelegateAccount':as_account})
                 else:
                     # create the default policy
                     self.log_request(_(u"Creating policy {0} for user {1}").format(
                         self.EUCA_DEFAULT_POLICY, self.user.user_name))
                     new_policy = {'Version': '2011-04-01', 'Statement': new_stmts}
-                    self.conn.put_user_policy(self.user.user_name, self.EUCA_DEFAULT_POLICY, json.dumps(new_policy))
+                    self.conn.get_response('PutUserPolicy', params={'UserName':self.user.user_name, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(new_policy), 'DelegateAccount':as_account})
             return dict(message=_(u"Successfully updated user policy"))
 
     def update_quota_limit(self, policy_list, new_stmts, param, action, condition):

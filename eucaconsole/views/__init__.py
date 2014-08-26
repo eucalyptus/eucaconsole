@@ -29,6 +29,7 @@ Core views
 
 """
 import logging
+import pylibmc
 import simplejson as json
 import textwrap
 import threading
@@ -41,7 +42,7 @@ from urllib import urlencode
 from urlparse import urlparse
 import magic
 
-from beaker.cache import cache_managers
+from dogpile.cache.api import NoValue
 from boto.ec2.blockdevicemapping import BlockDeviceType, BlockDeviceMapping
 from boto.exception import BotoServerError
 
@@ -51,6 +52,7 @@ from pyramid.response import Response
 from pyramid.security import NO_PERMISSION_REQUIRED
 from pyramid.view import notfound_view_config, view_config
 
+from ..caches import default_term
 from ..constants.images import AWS_IMAGE_OWNER_ALIAS_CHOICES, EUCA_IMAGE_OWNER_ALIAS_CHOICES
 from ..forms.login import EucaLogoutForm
 from ..i18n import _
@@ -130,6 +132,9 @@ class BaseView(object):
             elif conn_type == 's3':
                 host = self.request.registry.settings.get('s3.host', host)
                 port = int(self.request.registry.settings.get('s3.port', port))
+            elif conn_type == 'vpc':
+                host = self.request.registry.settings.get('vpc.host', host)
+                port = int(self.request.registry.settings.get('vpc.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)
@@ -140,10 +145,22 @@ class BaseView(object):
         return self.request.session.get_csrf_token() == self.request.params.get('csrf_token')
 
     def _store_file_(self, filename, mime_type, contents):
+        # disable using memcache for file storage
+        #try:
+        #    default_term.set('file_cache', (filename, mime_type, contents))
+        #except pylibmc.Error as ex:
+        #    logging.warn("memcached misconfigured or not reachable, using session storage")
+        # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
         session['file_cache'] = (filename, mime_type, contents)
 
     def _has_file_(self):
+        # check both cache and session
+        # disable using memcache for file storage
+        #try:
+        #    return not isinstance(default_term.get('file_cache'), NoValue)
+        #except pylibmc.Error as ex:
+        # to re-enable, uncomment lines above and indent 2 lines below
         session = self.request.session
         return 'file_cache' in session
 
@@ -163,12 +180,12 @@ class BaseView(object):
     @staticmethod
     def escape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
-            return s.replace('{{', '{ {').replace('}}', '} }')
+            return s.replace('{{', '&#123;&#123;').replace('}}', '&#125;&#125;')
 
     @staticmethod
     def unescape_braces(s):
         if type(s) in [str, unicode] or isinstance(s, Markup) or isinstance(s, TranslationString):
-            return s.replace('{ {', '{{').replace('} }', '}}')
+            return s.replace('&#123;&#123;', '{{').replace('&#125;&#125;', '}}')
 
     @staticmethod
     def sanitize_url(url):
@@ -183,14 +200,6 @@ class BaseView(object):
                 return default_path
             url = parsed_url.path
         return url or default_path
-
-    @staticmethod
-    def invalidate_connection_cache():
-        """Empty connection objects cache"""
-        for manager in cache_managers.values():
-            namespace = manager.namespace.namespace
-            if '_aws_connection' in namespace or '_euca_connection' in namespace:
-                manager.clear()
 
     @staticmethod
     def log_message(request, message, level='info'):
@@ -233,8 +242,6 @@ class BaseView(object):
         if status == 403:
             notice = _(u'Your session has timed out. This may be due to inactivity, a policy that does not provide login permissions, or an unexpected error. Please log in again, and contact your cloud administrator if the problem persists.')
             request.session.flash(notice, queue=Notification.WARNING)
-            # Empty Beaker cache to clear connection objects
-            # BaseView.invalidate_connection_cache()
             raise HTTPFound(location=request.route_path('login'))
         request.session.flash(message, queue=Notification.ERROR)
         if location is None:
@@ -276,7 +283,8 @@ class TaggedItemView(BaseView):
                 key = self.unescape_braces(key.strip())
                 if not any([key.startswith('aws:'), key.startswith('euca:')]):
                     tags[key] = self.unescape_braces(value.strip())
-            self.conn.create_tags([self.tagged_obj.id], tags)
+            if tags:
+                self.conn.create_tags([self.tagged_obj.id], tags)
 
     def remove_tags(self):
         if self.conn:
@@ -424,6 +432,7 @@ class LandingPageView(BaseView):
 
     def filter_items(self, items, ignore=None, autoscale=False):
         ignore = ignore or []  # Pass list of filters to ignore
+        ignore.append('csrf_token')
         filtered_items = []
         if hasattr(self.request.params, 'dict_of_lists'):
             filter_params = self.request.params.dict_of_lists()
@@ -455,10 +464,9 @@ class LandingPageView(BaseView):
                     filtered_items.append(item)
         return filtered_items
 
-    @staticmethod
-    def match_tags(item=None, tags=None, autoscale=False):
+    def match_tags(self, item=None, tags=None, autoscale=False):
         for tag in tags:
-            tag = tag.strip()
+            tag = self.unescape_braces(tag.strip())
             if autoscale:  # autoscaling tags are a list of Tag boto.ec2.autoscale.tag.Tag objects
                 if item.tags:
                     for as_tag in item.tags:
@@ -508,6 +516,19 @@ def boto_error_handler(request, location=None, template="{0}"):
 
 @view_config(route_name='file_download', request_method='POST')
 def file_download(request):
+    # disable using memcache for file storage
+    #try:
+    #    file_value = default_term.get('file_cache')
+    #    if not isinstance(file_value, NoValue):
+    #        (filename, mime_type, contents) = file_value
+    #        default_term.delete('file_cache')
+    #        response = Response(content_type=mime_type)
+    #        response.body = str(contents)
+    #        response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
+    #        return response
+    #except pylibmc.Error as ex:
+    #    logging.warn('memcached not responding')
+    # try session instead
     session = request.session
     if session.get('file_cache'):
         (filename, mime_type, contents) = session['file_cache']
@@ -517,6 +538,7 @@ def file_download(request):
         response.body = str(contents)
         response.content_disposition = 'attachment; filename="{name}"'.format(name=filename)
         return response
+    # no file found ...
     # this isn't handled on on client anyway, so we can return pretty much anything
     return Response(body='BaseView:file not found', status=500)
 

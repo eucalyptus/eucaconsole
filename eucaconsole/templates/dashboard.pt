@@ -6,7 +6,8 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="dashboard" ng-app="Dashboard" ng-controller="DashboardCtrl"
-         ng-init="initController('${request.route_path('dashboard_json')}', '${request.route_path('service_status_json')}', '${layout.cloud_type}')">
+        tal:define="username layout.account if layout.cloud_type == 'euca' else layout.access_id;"
+        ng-init="initController('${request.route_path('dashboard_json')}', '${request.route_path('service_status_json')}', '${layout.cloud_type}', '${username}')">
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <div id="pagetitle">
             <h3 i18n:translate="">Dashboard</h3>
@@ -149,9 +150,24 @@
                             </div>
                         </div>
                     </li>
+                    <li class="panel" id="accounts" tal:condition="layout.account_access" tal:case="'accounts'">
+                        <div class="tile">
+                            <h5 class="subheader" i18n:translate="">Accounts</h5>
+                            <div class="content">
+                                <a href="${request.route_path('accounts')}">
+                                    <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
+                                        <span ng-show="!itemsLoading" id="accounts-count" ng-cloak="">{{ totals.accounts }}</span></em>
+                                    </i>
+                                </a>
+                            </div>
+                            <div class="footer">
+                                <a href="${request.route_path('account_view', name='new')}" i18n:translate="">Create accounts</a>
+                            </div>
+                        </div>
+                    </li>
                     <li class="panel" id="users" tal:condition="layout.user_access" tal:case="'users'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM users</h5>
+                            <h5 class="subheader" i18n:translate="">Users</h5>
                             <div class="content">
                                 <a href="${request.route_path('users')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -166,7 +182,7 @@
                     </li>
                     <li class="panel" id="groups" tal:condition="layout.group_access" tal:case="'groups'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM groups</h5>
+                            <h5 class="subheader" i18n:translate="">Groups</h5>
                             <div class="content">
                                 <a href="${request.route_path('groups')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>
@@ -181,7 +197,7 @@
                     </li>
                     <li class="panel" id="roles" tal:condition="layout.role_access" tal:case="'roles'">
                         <div class="tile">
-                            <h5 class="subheader" i18n:translate="">IAM roles</h5>
+                            <h5 class="subheader" i18n:translate="">Roles</h5>
                             <div class="content">
                                 <a href="${request.route_path('roles')}">
                                     <i class="icon"><em><span class="dots" ng-show="itemsLoading">&nbsp;</span>

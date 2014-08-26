@@ -6,7 +6,7 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${image.state}', '${is_public}', ${image_launch_permissions})">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}', ${image_launch_permissions}, '${request.route_path('image_state_json', id=image_id)}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -26,20 +26,20 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
-                        <li>
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('instance_create')}?image_id=${image_id}"
                                id="launch-instance-action" i18n:translate="">
                                 Launch instance
                             </a>
                         </li>
-                        <li>
+                        <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('launchconfig_new')}?image_id=${image_id}"
                                id="create-launchconfig-action" i18n:translate="">
                                 Create launch configuration
                             </a>
                         </li>
-                        <li tal:condition="account_id == image.owner_id">
-                            <a data-reveal-id="deregister-image-modal" id="deregister-image-action" i18n:translate="">
+                        <li tal:condition="account_id == image.owner_id" ng-show="imageState == 'available'">
+                            <a id="deregister-image-action" i18n:translate="">
                                 Remove from cloud
                             </a>
                         </li>
@@ -70,7 +70,7 @@
                                 <div class="small-4 columns"><label i18n:translate="">Status</label></div>
                                 <div class="small-8 columns value" ng-cloak="">
                                     <span class="label radius state {{imageState}}">
-                                        {{imageState}}
+                                        {{ imageState }}
                                     </span>
                                 </div>
                             </div>

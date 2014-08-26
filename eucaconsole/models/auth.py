@@ -33,11 +33,12 @@ import logging
 import urllib2
 import xml
 
-from beaker.cache import cache_region
 from boto import ec2
 from boto import s3
+from boto import vpc
 from boto.ec2.connection import EC2Connection
 from boto.s3.connection import S3Connection
+from boto.s3.connection import OrdinaryCallingFormat
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
 #from boto.requestlog import RequestLogger
 import boto.ec2.autoscale
@@ -103,7 +104,6 @@ class ConnectionManager(object):
         """
         cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
 
-        # @cache_region('short_term', cache_key)
         def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
             conn = None
             if conn_type == 'ec2':
@@ -121,6 +121,9 @@ class ConnectionManager(object):
             if conn_type == 'elb':
                 conn = ec2.elb.connect_to_region(
                     _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
+            if conn_type == 'vpc':
+               conn = vpc.connect_to_region(
+                   _region, aws_access_key_id=_access_key, aws_secret_access_key=_secret_key, security_token=_token)
             return conn
 
         return _aws_connection(region, access_key, secret_key, token, conn_type)
@@ -150,7 +153,6 @@ class ConnectionManager(object):
             conn_type=conn_type, clchost=clchost, port=port
         )
 
-        # @cache_region('short_term', cache_key)
         def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
             region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             path = '/services/Eucalyptus'
@@ -174,6 +176,8 @@ class ConnectionManager(object):
             elif conn_type == 's3':
                 path = '/services/Walrus'
                 conn_class = S3Connection
+            elif conn_type == 'vpc':
+                conn_class = boto.vpc.VPCConnection
 
             if conn_type == 'sts':
                 conn = EucaAuthenticator(_clchost, _port)
@@ -187,6 +191,8 @@ class ConnectionManager(object):
                 conn = conn_class(
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
+            if conn_type == 's3':
+                conn.calling_format=OrdinaryCallingFormat()
 
             # AutoScaling service needs additional auth info
             if conn_type == 'autoscale':

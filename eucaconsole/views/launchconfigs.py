@@ -44,7 +44,7 @@ from ..forms.launchconfigs import LaunchConfigDeleteForm, CreateLaunchConfigForm
 from ..forms.securitygroups import SecurityGroupForm
 from ..i18n import _
 from ..models import Notification
-from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView
+from ..views import LandingPageView, BaseView, BlockDeviceMappingItemView, JSONResponse
 from ..views.images import ImageView
 from ..views.securitygroups import SecurityGroupsView
 from . import boto_error_handler
@@ -129,8 +129,10 @@ class LaunchConfigsJsonView(LandingPageView):
         with boto_error_handler(request):
             self.items = self.get_items()
 
-    @view_config(route_name='launchconfigs_json', renderer='json', request_method='GET')
+    @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         with boto_error_handler(self.request):
             launchconfigs_array = []
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
@@ -292,13 +294,14 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         with boto_error_handler(request):
             self.securitygroups = self.get_security_groups()
         self.iam_conn = self.get_connection(conn_type="iam")
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.create_form = CreateLaunchConfigForm(
             self.request, image=self.image, conn=self.conn, iam_conn=self.iam_conn,
             securitygroups=self.securitygroups, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
-        self.securitygroup_form = SecurityGroupForm(self.request, formdata=self.request.params or None)
+        self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
         self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
@@ -321,7 +324,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
-            security_group_names=[name for name, label in self.create_form.securitygroup.choices],
             role_choices_json=self.role_choices_json,
             preset='',
         )

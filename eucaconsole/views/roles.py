@@ -101,32 +101,44 @@ class RolesJsonView(BaseView):
         super(RolesJsonView, self).__init__(request)
         self.conn = self.get_connection(conn_type="iam")
 
-    @view_config(route_name='roles_json', renderer='json', request_method='GET')
+    @view_config(route_name='roles_json', renderer='json', request_method='POST')
     def roles_json(self):
+        if not(self.is_csrf_valid()):
+            return JSONResponse(status=400, message="missing CSRF token")
         # TODO: take filters into account??
-        roles = []
-        for role in self.get_items():
-            policies = []
-            try:
-                policies = self.conn.list_role_policies(role_name=role.role_name)
-                policies = policies.policy_names
-            except BotoServerError as exc:
-                pass
-            """
-            user_count = 0
-            try:
-                role = self.conn.get_role(role_name=role.role_name)
-                user_count = len(role.users) if hasattr(role, 'users') else 0
-            except BotoServerError as exc:
-                pass
-            """
-            roles.append(dict(
-                path=role.path,
-                role_name=role.role_name,
-                create_date=role.create_date,
-                policy_count=len(policies),
-            ))
-        return dict(results=roles)
+        with boto_error_handler(self.request):
+            profiles = self.conn.list_instance_profiles()
+            profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
+            roles = []
+            for role in self.get_items():
+                policies = []
+                try:
+                    policies = self.conn.list_role_policies(role_name=role.role_name)
+                    policies = policies.policy_names
+                except BotoServerError as exc:
+                    pass
+                instances = []
+                try:
+                    profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == role.role_name]
+                    instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+                except BotoServerError as exc:
+                    pass
+                """
+                user_count = 0
+                try:
+                    role = self.conn.get_role(role_name=role.role_name)
+                    user_count = len(role.users) if hasattr(role, 'users') else 0
+                except BotoServerError as exc:
+                    pass
+                """
+                roles.append(dict(
+                    path=role.path,
+                    role_name=role.role_name,
+                    create_date=role.create_date,
+                    policy_count=len(policies),
+                    instance_count=len(instances),
+                ))
+            return dict(results=roles)
 
     def get_items(self):
         with boto_error_handler(self.request):
@@ -148,6 +160,8 @@ class RoleView(BaseView):
         create_date = parser.parse(self.role.create_date) if self.role else datetime.now()
         self.render_dict = dict(
             role=self.role,
+            role_arn=self.role.arn if self.role else '',
+            role_path=self.role.path if self.role else '',
             role_create_date=create_date,
             role_route_id=self.role_route_id,
             all_users=self.all_users,
@@ -182,7 +196,9 @@ class RoleView(BaseView):
         principal = parsed_policy['Statement'][0]['Principal']
         if 'AWS' in principal.keys():
             arn = principal['AWS']
-            return _(u'Accout ') + arn[arn.rindex('::')+2:arn.rindex(':')]
+            if isinstance(arn, list):
+                arn = arn[0]
+            return _(u'Account ') + arn[arn.rindex('::')+2:arn.rindex(':')]
         elif 'Service' in principal.keys():
             svc = principal['Service']
             if isinstance(svc, list):
@@ -206,13 +222,9 @@ class RoleView(BaseView):
                 profiles = self.conn.list_instance_profiles()
                 profiles = profiles.list_instance_profiles_response.list_instance_profiles_result.instance_profiles
                 profile_arns = [profile.arn for profile in profiles if profile.roles.member.role_name == self.role.role_name]
-                results = self.get_connection().get_only_instances()
-                for instance in results:
-                    if len(instance.instance_profile) > 0 and instance.instance_profile['arn'] in profile_arns:
-                        instance.name=TaggedItemView.get_display_name(instance)
-                        instances.append(instance)
-                # once https://eucalyptus.atlassian.net/browse/EUCA-9692 is fixed, use line below instead
-                #instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+                instances = self.get_connection().get_only_instances(filters={'iam-instance-profile.arn':profile_arns})
+                for instance in instances:
+                    instance.name=TaggedItemView.get_display_name(instance)
                 self.render_dict['instances'] = instances
         return self.render_dict
  

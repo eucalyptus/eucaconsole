@@ -35,7 +35,7 @@ from wtforms.widgets import html_params, HTMLString, Select
 from markupsafe import escape
 
 from ..i18n import _
-from . import BaseSecureForm, ChoicesManager
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class NgNonBindableOptionSelect(Select):
@@ -196,7 +196,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
 class ScalingGroupCreateForm(BaseScalingGroupForm):
     """Create Scaling Group form"""
-    name_error_msg = _(u'Name is required')
+    name_error_msg = _(u'Name must be between 1 and 255 characters long, and must not contain \'/\' and \'\\\'')
     name = wtforms.TextField(
         label=_(u'Name'),
         validators=[
@@ -384,7 +384,7 @@ class ScalingGroupsFiltersForm(BaseSecureForm):
     """Form class for filters on landing page"""
     launch_config_name = wtforms.SelectMultipleField(label=_(u'Launch configuration'))
     availability_zones = wtforms.SelectMultipleField(label=_(u'Availability zone'))
-    tags = wtforms.TextField(label=_(u'Tags'))
+    tags = TextEscapedField(label=_(u'Tags'))
 
     def __init__(self, request, ec2_conn=None, autoscale_conn=None, **kwargs):
         super(ScalingGroupsFiltersForm, self).__init__(request, **kwargs)

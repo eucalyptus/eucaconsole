@@ -134,7 +134,11 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
             }
         };
         $scope.getItems = function () {
-            $http.get($scope.jsonEndpoint).success(function(oData) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token="+csrf_token;
+            $http({method:'POST', url:$scope.jsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
                 var results = oData ? oData.results : [];
                 var transitionalCount = 0;
                 $scope.itemsLoading = false;
@@ -152,8 +156,12 @@ angular.module('LandingPage', ['CustomFilters', 'ngSanitize'])
                 $scope.$emit('itemsLoaded', $scope.items);
             }).error(function (oData, status) {
                 var errorMsg = oData['message'] || null;
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
+                if (errorMsg) {
+                    if (status === 403) {
+                        $('#timed-out-modal').foundation('reveal', 'open');
+                    } else {
+                        Notify.failure(errorMsg);
+                    }
                 }
             });
         };

@@ -114,3 +114,20 @@
 .table .emi-name { display: inline-block; width: 12rem; word-break: break-all; }
 
 .row.sort-search { margin-top: 20px; }
+
+.status.pending { background-color: #0683c2; }
+
+.status.available { background-color: #03405f; }
+
+.status.failed { background-color: #990000; }
+
+.table td.status { position: relative; }
+.table td.status .progress { position: relative; font-size: 0.825rem; margin-bottom: 0; }
+.table td.status .progress .meter { background-color: #0683c2; padding-left: 4px; color: black; font-weight: bold; }
+.table td.status .progress .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; width: 20px; top: 6px; right: 4px; }
+.table td.description { word-break: break-all; }
+
+.tile .footer .completed { padding: 0 0 0 0; }
+.tile .footer .progress { text-align: left; position: relative; border: none; }
+.tile .footer .progress .meter { background-color: #0683c2; color: black; position: relative; top: -2px; left: -2px; padding: 1px 0 1px 8px; display: inline-block; white-space: nowrap; font-weight: bold; }
+.tile .footer .progress .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; }
