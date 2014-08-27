@@ -9,7 +9,16 @@
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Bucket ${bucket_name}</a></li>
+                <li><a href="${request.route_path('buckets')}">Buckets</a></li>
+                <li>
+                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                       i18n:translate="">${bucket_name}</a>
+                </li>
+                <li tal:repeat="folder request.subpath[1:]" class="${'current' if repeat.folder.end else ''}">
+                    <a tal:condition="repeat.folder.end" ng-non-bindable="">${folder}</a>
+                    <a href="${request.route_path('bucket_contents', subpath='/'.join(request.subpath[:repeat.folder.index+2]))}"
+                       ng-non-bindable="" tal:condition="not repeat.folder.end">${folder}</a>
+                </li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
@@ -25,7 +34,7 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
-                <a ng-href="${prefix}/${bucket_name}/{{ item.name }}">{{ item.name }}</a>
+                <a href="#">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
@@ -65,7 +74,8 @@
                 <td>
                     <i class="fi-folder icon" ng-if="item.is_folder"></i>
                     <i class="{{ item.icon }} icon" ng-if="!item.is_folder"></i>
-                    <a ng-href="${prefix}/${bucket_name}">{{ item.name }}</a>
+                    <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">{{ item.name }}</a>
+                    <span ng-if="!item.is_folder">{{ item.name }}</span>
                 </td>
                 <td>{{ item.size | bytes }}</td>
                 <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>

@@ -38,6 +38,9 @@ from ..views import LandingPageView, JSONResponse
 from . import boto_error_handler
 
 
+DELIMITER = '/'
+
+
 class BucketsView(LandingPageView):
     """Views for Buckets landing page"""
     VIEW_TEMPLATE = '../templates/buckets/buckets.pt'
@@ -84,7 +87,7 @@ class BucketsJsonView(LandingPageView):
                 bucket_name = item.name
                 buckets.append(dict(
                     bucket_name=bucket_name,
-                    bucket_contents_url=self.request.route_path('bucket_contents', name=bucket_name),
+                    bucket_contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     object_count=0,  # TODO: Implement object count via XHR fetch
                     owner='me',
                     creation_date=item.creation_date
@@ -103,7 +106,8 @@ class BucketContentsView(LandingPageView):
         super(BucketContentsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.prefix = '/buckets'
-        self.bucket_name = request.matchdict.get('name')
+        self.bucket_name = self.get_bucket_name(request)
+        self.subpath = request.subpath
         self.render_dict = dict(
             bucket_name=self.bucket_name,
         )
@@ -117,7 +121,7 @@ class BucketContentsView(LandingPageView):
             dict(key='-size', name=_(u'Size: Largest to smallest')),
             dict(key='size', name=_(u'Size: Smallest to largest')),
         ]
-        json_route_path = self.request.route_path('bucket_contents_json', name=self.bucket_name)
+        json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
             prefix=self.prefix,
             initial_sort_key='name',
@@ -129,9 +133,27 @@ class BucketContentsView(LandingPageView):
         return self.render_dict
 
     @staticmethod
+    def get_bucket_name(request):
+        subpath = request.matchdict.get('subpath')
+        if len(subpath):
+            return subpath[0]
+
+    @staticmethod
+    def get_unprefixed_key_name(key_name):
+        if DELIMITER not in key_name:
+            return key_name
+        if DELIMITER in key_name:
+            key_arr = key_name.split(DELIMITER)
+            if key_name.endswith(DELIMITER):
+                return key_arr[-2]
+            return key_arr[-1]
+        return key_name
+
+    @staticmethod
     def get_bucket(request, s3_conn, bucket_name=None):
         with boto_error_handler(request):
-            bucket_name = bucket_name or request.matchdict.get('name')
+            subpath = request.matchdict.get('subpath')
+            bucket_name = bucket_name or subpath[0]
             bucket = s3_conn.lookup(bucket_name) if bucket_name else None
             if bucket is None:
                 return HTTPNotFound()
@@ -170,19 +192,47 @@ class BucketContentsJsonView(LandingPageView):
         super(BucketContentsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        self.bucket_name = self.bucket.name
+        self.subpath = request.subpath
 
-    @view_config(route_name='bucket_contents_json', renderer='json', request_method='POST')
+    @view_config(route_name='bucket_contents', renderer='json', request_method='POST', xhr=True)
     def bucket_contents_json(self):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        for key in self.bucket.list():
+        list_prefix = DELIMITER.join(self.subpath[1:]) if len(self.subpath) > 1 else ''
+        params = dict(prefix=list_prefix) if list_prefix else {}
+        for key in self.bucket.list(**params):
+            key_name = key.name
+            key_size = key.size
+            is_folder = True if key.size == 0 else False
+            if self.skip_item(key):
+                continue
             items.append(dict(
-                name=key.name,
-                size=key.size,
-                is_folder=True if key.size == 0 else False,
+                name=BucketContentsView.get_unprefixed_key_name(key_name),
+                # name=key_name,
+                size=key_size,
+                is_folder=is_folder,
+                absolute_path=self.get_absolute_path(key_name),
                 last_modified=key.last_modified,
-                icon=BucketContentsView.get_icon_class(key.name),
+                icon=BucketContentsView.get_icon_class(key_name),
             ))
         return dict(results=items)
 
+    def get_absolute_path(self, key_name):
+        return '/buckets/{0}/{1}'.format(self.bucket_name, key_name)
+
+    def skip_item(self, key):
+        """Skip item if it contains a folder path that doesn't match the current request subpath"""
+        # Test if request subpath matches current folder
+        if DELIMITER in key.name:
+            joined_subpath = DELIMITER.join(self.subpath[1:])
+            if key.name == '{0}{1}'.format(joined_subpath, DELIMITER):
+                return True
+            else:
+                return False
+        # Test for folders
+        if key.size == 0:
+            if key.name.count(DELIMITER) > 1:
+                return True
+        return False
