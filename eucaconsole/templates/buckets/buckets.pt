@@ -76,7 +76,12 @@
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
-                <td><a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a></td>
+                <td>
+                    <a ng-href="{{ item.bucket_contents_url }}">
+                        <i class="fi-paint-bucket"></i>
+                        {{ item.bucket_name }}
+                    </a>
+                </td>
                 <td>
                     <span class="dots" ng-show="countsLoading"></span>
                     {{ bucketCounts[item.bucket_name] }}
