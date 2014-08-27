@@ -47,7 +47,7 @@
                         </metal:actions>
                     </metal:block>
                     <div class="columns section">
-                        <h6 i18n:translate="">General</h6>
+                        <h6 i18n:translate="">Account</h6>
                         <div class="row controls-wrapper readonly">
                             <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
                             <div class="small-9 columns value" ng-cloak="">

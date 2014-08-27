@@ -12,7 +12,7 @@
          tal:define="type request.params.get('type', '');">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">Create IAM policy</a></li>
+                <li class="current"><a href="#" i18n:translate="">Create access policy</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
