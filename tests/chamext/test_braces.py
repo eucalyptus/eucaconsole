@@ -33,8 +33,8 @@ class Mock(object):
 
 class TestBraces(unittest.TestCase):
     def test_it(self):
-        from eucaconsole.chamext import escape_double_braces
-        f = escape_double_braces('{{ hello world }}')
+        from eucaconsole.views import BaseView
+        f = BaseView.escape_braces('{{ hello world }}')
         res = f(None, None)
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].value.s, '&#123; hello world &#125;')
+        self.assertEqual(res[0].value.s, '&#123;&#123; hello world &#125;&#125;')

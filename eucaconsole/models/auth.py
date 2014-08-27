@@ -33,7 +33,6 @@ import logging
 import urllib2
 import xml
 
-from beaker.cache import cache_region
 from boto import ec2
 from boto import s3
 from boto import vpc
@@ -105,7 +104,6 @@ class ConnectionManager(object):
         """
         cache_key = 'aws_connection_cache_{conn_type}_{region}'.format(conn_type=conn_type, region=region)
 
-        # @cache_region('short_term', cache_key)
         def _aws_connection(_region, _access_key, _secret_key, _token, _conn_type):
             conn = None
             if conn_type == 'ec2':
@@ -155,7 +153,6 @@ class ConnectionManager(object):
             conn_type=conn_type, clchost=clchost, port=port
         )
 
-        # @cache_region('short_term', cache_key)
         def _euca_connection(_clchost, _port, _access_id, _secret_key, _token, _conn_type):
             region = RegionInfo(name='eucalyptus', endpoint=_clchost)
             path = '/services/Eucalyptus'

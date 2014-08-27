@@ -28,4 +28,3 @@ try:
 except ImportError:
     __version__ = 'DEVELOPMENT'
     
-
