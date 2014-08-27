@@ -172,7 +172,7 @@ class BucketContentsView(LandingPageView):
         with boto_error_handler(request):
             subpath = request.matchdict.get('subpath')
             bucket_name = bucket_name or subpath[0]
-            bucket = s3_conn.lookup(bucket_name) if bucket_name else None
+            bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
             if bucket is None:
                 return HTTPNotFound()
             return bucket
