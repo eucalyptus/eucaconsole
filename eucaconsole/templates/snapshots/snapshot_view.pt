@@ -45,7 +45,7 @@
                             </a>
                         </li>
                         <li ng-show="!isUpdating &amp;&amp; snapshotStatus !== 'failed'">
-                            <a data-reveal-id="register-snapshot-modal" i18n:translate="" id="register-image-action">
+                            <a i18n:translate="" id="register-snapshot-action">
                                 Register as image
                             </a>
                         </li>

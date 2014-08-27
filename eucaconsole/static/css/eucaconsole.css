@@ -1579,6 +1579,8 @@ textarea.hidden.debug { display: block; }
 .reveal-modal form .row.controls-wrapper { margin-bottom: 1rem; }
 .reveal-modal .button.expand { margin-bottom: 0; }
 .reveal-modal .button.expand:focus { box-shadow: 0 0 3px 3px #7bb0e0; }
+.reveal-modal .top-margin { margin-top: 0.7rem; }
+.reveal-modal .center { text-align: center; }
 
 /* ----------------------------------------- Tables
 ----------------------------------------- */
