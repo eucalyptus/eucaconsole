@@ -145,6 +145,7 @@ class AccountsJsonView(BaseView):
 class AccountView(BaseView):
     """Views for single Account"""
     TEMPLATE = '../templates/accounts/account_view.pt'
+    NEW_TEMPLATE = '../templates/accounts/account_new.pt'
 
     def __init__(self, request):
         super(AccountView, self).__init__(request)
@@ -177,6 +178,10 @@ class AccountView(BaseView):
         except BotoServerError as err:
             pass
         return account
+
+    @view_config(route_name='account_new', renderer=NEW_TEMPLATE)
+    def account_new(self):
+        return self.render_dict
 
     @view_config(route_name='account_view', renderer=TEMPLATE)
     def account_view(self):
