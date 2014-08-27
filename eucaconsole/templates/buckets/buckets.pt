@@ -63,9 +63,6 @@
                         <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
                     </li>
                     <li ng-show="item.bucket_name">
-                        <a i18n:translate="" ng-click="revealModal('enable-vers', item)">Enable versioning</a>
-                    </li>
-                    <li ng-show="item.bucket_name">
                         <a i18n:translate=""
                            ng-click="revealModal('delete', item)">Delete</a>
                     </li>
@@ -93,13 +90,10 @@
                            data-dropdown="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}"><i class="fi-widget"></i></a>
                         <ul id="item-dropdown_{{ item.bucket_name | escapeHTMLTagID }}" class="f-dropdown" data-dropdown-content="">
                             <li ng-show="item.bucket_name">
-                                <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View Contents</a>
+                                <a i18n:translate="" ng-href="{{ item.bucket_contents_url }}">View contents</a>
                             </li>
                             <li ng-show="item.bucket_name">
                                 <a i18n:translate="" ng-click="revealModal('details', item)">View details</a>
-                            </li>
-                            <li ng-show="item.bucket_name">
-                                <a i18n:translate="" ng-click="revealModal('enable-vers', item)">Enable versioning</a>
                             </li>
                             <li ng-show="item.bucket_name">
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
