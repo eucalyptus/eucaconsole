@@ -81,7 +81,7 @@
             </div>
         </div>
         <div id="instance-shutdown-warn-modal" class="reveal-modal small" data-reveal="">
-            <h3 i18n:translate="">Warning:</h3>
+            <h3 i18n:translate="">Warning</h3>
             <p i18n:translate="">
                 Your instance will be shut down and restarted as part of this process. You will not have access to your instance during this time.
             </p>
