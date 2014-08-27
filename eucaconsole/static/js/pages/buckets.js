@@ -9,9 +9,9 @@ angular.module('BucketsPage', ['LandingPage'])
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
         $scope.bucketCounts = {};
-        $scope.countsLoading = true;
-        $scope.initController = function (bucketsObjectCountsUrl) {
-            $scope.bucketsObjectCountsUrl = bucketsObjectCountsUrl;
+        $scope.countsLoading = {};
+        $scope.initController = function (bucketObjectsCountUrl) {
+            $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
         };
         $scope.revealModal = function (action, bucket) {
             var modal = $('#' + action + '-bucket-modal');
@@ -19,14 +19,25 @@ angular.module('BucketsPage', ['LandingPage'])
             modal.foundation('reveal', 'open');
         };
         $scope.$on('itemsLoaded', function($event, items) {
-            $http.get($scope.bucketsObjectCountsUrl).success(function(oData) {
-                var results = oData ? oData.results : {};
-                angular.forEach(results, function(item, key) {
-                    $scope.bucketCounts[item.bucket_name] = item.object_count;
+            angular.forEach(items, function(item, key) {
+                var bucketName = item['bucket_name'];
+                var objectsCountUrl = $scope.bucketObjectsCountUrl.replace('_name_', bucketName);
+                console.log(objectsCountUrl)
+                $scope.countsLoading[bucketName] = true;
+                $http.get(objectsCountUrl).success(function(oData) {
+                    var results = oData ? oData.results : {};
+                    $scope.bucketCounts[bucketName] = results['object_count'];
+                    $scope.countsLoading[bucketName] = false;
+                }).error(function (oData, status) {
+                    var errorMsg = oData['message'] || null;
+                    if (errorMsg) {
+                        if (status === 403) {
+                            $('#timed-out-modal').foundation('reveal', 'open');
+                        } else {
+                            Notify.failure(errorMsg);
+                        }
+                    }
                 });
-                $scope.countsLoading = false;
-            }).error(function (oData, status) {
-                var errorMsg = oData['message'] || null;
             });
         });
     })

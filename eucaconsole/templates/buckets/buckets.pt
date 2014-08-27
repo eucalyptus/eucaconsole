@@ -5,7 +5,7 @@
 </head>
 
 <div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
-     ng-init="initController('${buckets_object_counts_url}')">
+     ng-init="initController('${bucket_objects_count_url}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -29,7 +29,7 @@
                 <div>
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
                     <span>
-                        <span class="dots" ng-show="countsLoading"></span>
+                        <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
                         <b>{{ bucketCounts[item.bucket_name] }}</b>
                     </span>
                 </div>
@@ -84,7 +84,7 @@
                     </a>
                 </td>
                 <td>
-                    <span class="dots" ng-show="countsLoading"></span>
+                    <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
                     {{ bucketCounts[item.bucket_name] }}
                 </td>
                 <td>{{ item.owner }}</td>

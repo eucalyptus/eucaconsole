@@ -36,10 +36,10 @@
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
-                    <i class="{{ item.icon }} icon"></i>{{ item.name }}
+                    <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
                 </a>
                 <a ng-if="!item.is_folder">
-                    <i class="{{ item.icon }} icon"></i>{{ item.name }}
+                    <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
                 </a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
@@ -79,10 +79,10 @@
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
                     <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
-                        <i class="{{ item.icon }} icon"></i>{{ item.name }}
+                        <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
                     </a>
                     <span ng-if="!item.is_folder">
-                        <i class="{{ item.icon }} icon"></i>{{ item.name }}
+                        <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
                     </span>
                 </td>
                 <td>{{ item.size | bytes }}</td>

@@ -68,7 +68,7 @@ class BucketsView(LandingPageView):
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['bucket_name'],
-            buckets_object_counts_url=self.request.route_path('buckets_object_counts_json', name='_name_')
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_')
         )
         return self.render_dict
 
@@ -104,15 +104,12 @@ class BucketsObjectCountsJsonView(BaseView):
         super(BucketsObjectCountsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
 
-    @view_config(route_name='buckets_object_counts_json', renderer='json')
+    @view_config(route_name='bucket_objects_count_json', renderer='json')
     def bucket_object_counts_json(self):
-        results = []
-        buckets = self.s3_conn.get_all_buckets() if self.s3_conn else []
-        for bucket in buckets:
-            results.append(dict(
-                bucket_name=bucket.name,
-                object_count=len(tuple(bucket.list())),
-            ))
+        bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
+        results = dict(
+            object_count=len(tuple(bucket.list())),
+        )
         return dict(results=results)
 
 
@@ -171,7 +168,7 @@ class BucketContentsView(LandingPageView):
     def get_bucket(request, s3_conn, bucket_name=None):
         with boto_error_handler(request):
             subpath = request.matchdict.get('subpath')
-            bucket_name = bucket_name or subpath[0]
+            bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
             bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
             if bucket is None:
                 return HTTPNotFound()
@@ -202,7 +199,7 @@ class BucketContentsView(LandingPageView):
             'text': 'fi-page',
             'video': 'fi-video',
         }
-        return icon_mapping.get(mime_type, 'page')
+        return icon_mapping.get(mime_type, 'fi-page')
 
 
 class BucketContentsJsonView(LandingPageView):
