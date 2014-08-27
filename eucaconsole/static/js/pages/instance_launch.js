@@ -29,6 +29,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
         $scope.securityGroup = '';
+        $scope.securityGroupName = '';
         $scope.securityGroupsRules = {};
         $scope.securityGroupList = {};
         $scope.selectedGroupRules = [];
@@ -71,6 +72,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
         };
         $scope.getSecurityGroupIdByName = function (name) {
             for( var i=0; i < $scope.securityGroupList.length; i++){

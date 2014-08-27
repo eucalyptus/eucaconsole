@@ -18,6 +18,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
         $scope.securityGroup = '';
+        $scope.securityGroupName = '';
         $scope.securityGroupsRules = {};
         $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
@@ -77,7 +78,8 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
         };
         $scope.updateSecurityGroup = function () {
-             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';

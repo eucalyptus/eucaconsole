@@ -5,7 +5,7 @@
             <div class="small-${leftcol_width} columns">&nbsp;</div>
             <div class="small-${rightcol_width} columns rules-title">
                 <span i18n:translate="">Incoming traffic rules for security group</span>
-                <b>{{ securityGroup }}</b>:
+                <b>{{ securityGroupName }}</b>:
             </div>
         </div>
         <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules ">
@@ -27,7 +27,7 @@
             <div class="small-${rightcol_width} columns rules-title">
                 <p>
                     <strong i18n:translate="">WARNING: </strong>
-                    <span i18n:translate="">Your instance(s) will not be accessible until you add ingress rules to security group {{ securityGroup }} 
+                    <span i18n:translate="">Your instance(s) will not be accessible until you add ingress rules to security group {{ securityGroupName }} 
                     (for example, open port 22 for SSH access to Linux instances). </span>
                 </p>
                 <p i18n:translate="">    
