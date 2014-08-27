@@ -4,7 +4,8 @@
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/buckets.css')}" />
 </head>
 
-<div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl" ng-init="initController()">
+<div metal:fill-slot="main_content" ng-app="BucketsPage" ng-controller="BucketsCtrl"
+     ng-init="initController('${buckets_object_counts_url}')">
     <div class="row" id="contentwrap" ng-app="LandingPage" ng-controller="ItemsCtrl"
          ng-init="initController('buckets', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
@@ -26,8 +27,9 @@
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
                     <span class="label" title="Object Count" i18n:attributes="title" data-tooltip="">OB</span>
-                    <span ng-show="item.object_count">
-                        <b>{{ item.object_count }}</b>
+                    <span>
+                        <span class="dots" ng-show="countsLoading"></span>
+                        <b>{{ bucketCounts[item.bucket_name] }}</b>
                     </span>
                 </div>
                 <div>
@@ -78,7 +80,10 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a></td>
-                <td>{{ item.object_count }}</td>
+                <td>
+                    <span class="dots" ng-show="countsLoading"></span>
+                    {{ bucketCounts[item.bucket_name] }}
+                </td>
                 <td>{{ item.owner }}</td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
                 <td>

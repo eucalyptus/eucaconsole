@@ -176,7 +176,8 @@ urls = [
     # Landing page
     Route(name='buckets', pattern='/buckets'),
     Route(name='buckets_json', pattern='/buckets/json'),
-    # Detail/contents page
+    Route(name='buckets_object_counts_json', pattern='/buckets/objectcounts/json'),
+    # Contents/detail pages
     Route(name='bucket_contents', pattern='/buckets/*subpath'),
 
     # Security Groups #####

@@ -35,7 +35,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
 from ..i18n import _
-from ..views import LandingPageView, JSONResponse
+from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
 
@@ -67,7 +67,8 @@ class BucketsView(LandingPageView):
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
             sort_keys=self.sort_keys,
             filter_fields=False,
-            filter_keys=['name'],
+            filter_keys=['bucket_name'],
+            buckets_object_counts_url=self.request.route_path('buckets_object_counts_json', name='_name_')
         )
         return self.render_dict
 
@@ -89,7 +90,6 @@ class BucketsJsonView(LandingPageView):
                 buckets.append(dict(
                     bucket_name=bucket_name,
                     bucket_contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
-                    object_count=0,  # TODO: Implement object count via XHR fetch
                     owner='me',
                     creation_date=item.creation_date
                 ))
@@ -97,6 +97,23 @@ class BucketsJsonView(LandingPageView):
 
     def get_items(self):
         return self.s3_conn.get_all_buckets() if self.s3_conn else []
+
+
+class BucketsObjectCountsJsonView(BaseView):
+    def __init__(self, request):
+        super(BucketsObjectCountsJsonView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+
+    @view_config(route_name='buckets_object_counts_json', renderer='json')
+    def bucket_object_counts_json(self):
+        results = []
+        buckets = self.s3_conn.get_all_buckets() if self.s3_conn else []
+        for bucket in buckets:
+            results.append(dict(
+                bucket_name=bucket.name,
+                object_count=len(tuple(bucket.list())),
+            ))
+        return dict(results=results)
 
 
 class BucketContentsView(LandingPageView):
@@ -129,7 +146,7 @@ class BucketContentsView(LandingPageView):
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
             sort_keys=self.sort_keys,
             filter_fields=False,
-            filter_keys=['name', 'size'],
+            filter_keys=['name'],
         )
         return self.render_dict
 

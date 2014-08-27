@@ -34,7 +34,8 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
-                <a href="#">{{ item.name }}</a>
+                <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">{{ item.name }}</a>
+                <a ng-if="!item.is_folder">{{ item.name }}</a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
                 <div>
