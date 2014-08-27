@@ -38,14 +38,20 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.events import BeforeRender
 from pyramid.settings import asbool
 
+from dogpile.cache import make_region
+from dogpile.cache.util import sha1_mangle_key
+
 from .i18n import custom_locale_negotiator
 from .models import SiteRootFactory
 from .models.auth import groupfinder, User
 from .routes import urls
 from .tweens import setup_tweens
-from .chamext import setup_exts
 from .keymgt import ensure_session_keys
 from .mime import check_types
+from .caches import short_term
+from .caches import default_term
+from .caches import long_term
+from .caches import extra_long_term
 from .views import escape_braces
 
 
@@ -82,10 +88,61 @@ def get_configurator(settings, enable_auth=True):
     for route in urls:
         config.add_route(route.name, route.pattern)
     setup_tweens(config)
-    setup_exts(config)
     config.scan()
-    return config
 
+    memory_cache = settings.get('cache.memory')
+    memory_cache_url = settings.get('cache.memory.url')
+    username = settings.get('cache.username', None)
+    password = settings.get('cache.password', None)
+    short_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.short_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+            'binary':True,
+            'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
+        },
+    )
+    default_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.default_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+            'binary':True,
+            'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
+        },
+    )
+    long_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.long_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+            'binary':True,
+            'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
+        },
+    )
+    extra_long_term.configure(
+        memory_cache,
+        expiration_time = int(settings.get('cache.extra_long_term.expire')),
+        arguments = {
+            'url':[memory_cache_url],
+            'binary':True,
+            'min_compress_len':1024,
+            'behaviors':{"tcp_nodelay": True,"ketama":True},
+            'username':username,
+            'password':password
+        },
+    )
+    return config
 
 def main(global_config, **settings):
     """

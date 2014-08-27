@@ -208,14 +208,14 @@ class VolumesJsonView(LandingPageView):
                 instance_name = None
                 if volume.attach_data is not None and volume.attach_data.instance_id is not None:
                     instance = [inst for inst in instances if inst.id == volume.attach_data.instance_id][0]
-                    instance_name = TaggedItemView.get_display_name(instance)
+                    instance_name = TaggedItemView.get_display_name(instance, escapebraces=False)
                 volumes.append(dict(
                     create_time=volume.create_time,
                     id=volume.id,
                     instance=volume.attach_data.instance_id,
                     device=volume.attach_data.device,
                     instance_name=instance_name,
-                    name=TaggedItemView.get_display_name(volume),
+                    name=TaggedItemView.get_display_name(volume, escapebraces=False),
                     snapshots=len([snap.id for snap in snapshots if snap.volume_id == volume.id]),
                     size=volume.size,
                     status=status,
@@ -454,7 +454,7 @@ class VolumeSnapshotsView(BaseVolumeView):
                     'volume_snapshot_delete', id=self.volume.id, snapshot_id=snapshot.id)
                 snapshots.append(dict(
                     id=snapshot.id,
-                    name=TaggedItemView.get_display_name(snapshot),
+                    name=TaggedItemView.get_display_name(snapshot, escapebraces=False),
                     progress=snapshot.progress,
                     transitional=self.is_transitional(snapshot),
                     volume_size=self.volume.size,
