@@ -19,10 +19,6 @@
                 <a class="button" id="create-bucket-btn" i18n:translate="">
                     Create Bucket
                 </a>
-                &nbsp;&nbsp;
-                <a class="button" id="import-bucket-btn" i18n:translate="">
-                    Import Bucket
-                </a>
             </div>
             <div metal:fill-slot="tile_header">
                 <a ng-href="{{ item.bucket_contents_url }}">{{ item.bucket_name }}</a>

@@ -72,8 +72,7 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td>
-                    <i class="fi-folder icon" ng-if="item.is_folder"></i>
-                    <i class="{{ item.icon }} icon" ng-if="!item.is_folder"></i>
+                    <i class="{{ item.icon }} icon"></i>
                     <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">{{ item.name }}</a>
                     <span ng-if="!item.is_folder">{{ item.name }}</span>
                 </td>

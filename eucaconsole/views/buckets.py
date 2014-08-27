@@ -30,6 +30,7 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 """
 import mimetypes
 
+from boto.s3.prefix import Prefix
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
@@ -200,23 +201,34 @@ class BucketContentsJsonView(LandingPageView):
         if not(self.is_csrf_valid()):
             return JSONResponse(status=400, message="missing CSRF token")
         items = []
-        list_prefix = DELIMITER.join(self.subpath[1:]) if len(self.subpath) > 1 else ''
-        params = dict(prefix=list_prefix) if list_prefix else {}
-        for key in self.bucket.list(**params):
-            key_name = key.name
-            key_size = key.size
-            is_folder = True if key.size == 0 else False
+        list_prefix = '{0}/'.format(DELIMITER.join(self.subpath[1:])) if len(self.subpath) > 1 else ''
+        params = dict(delimiter=DELIMITER)
+        if list_prefix:
+            params.update(dict(prefix=list_prefix))
+        bucket_items = self.bucket.list(**params)
+
+        for key in bucket_items:
             if self.skip_item(key):
                 continue
-            items.append(dict(
-                name=BucketContentsView.get_unprefixed_key_name(key_name),
-                # name=key_name,
-                size=key_size,
-                is_folder=is_folder,
-                absolute_path=self.get_absolute_path(key_name),
-                last_modified=key.last_modified,
-                icon=BucketContentsView.get_icon_class(key_name),
+            if isinstance(key, Prefix):
+                item = dict(
+                    size=0,
+                    is_folder=True,
+                    last_modified=None,
+                    icon='fi-folder',
+                )
+            else:
+                item = dict(
+                    size=key.size,
+                    is_folder=False,
+                    last_modified=key.last_modified,
+                    icon=BucketContentsView.get_icon_class(key.name),
+                )
+            item.update(dict(
+                name=BucketContentsView.get_unprefixed_key_name(key.name),
+                absolute_path=self.get_absolute_path(key.name),
             ))
+            items.append(item)
         return dict(results=items)
 
     def get_absolute_path(self, key_name):
@@ -231,8 +243,4 @@ class BucketContentsJsonView(LandingPageView):
                 return True
             else:
                 return False
-        # Test for folders
-        if key.size == 0:
-            if key.name.count(DELIMITER) > 1:
-                return True
         return False
