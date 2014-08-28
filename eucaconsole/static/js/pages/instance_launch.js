@@ -346,7 +346,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // since clicking invokes this method again (via ng-click) and
                 // one ng action must complete before another can start
                 var hash = "step"+nextStep;
-                $(".tabs").children("dd").each(function() {
+                $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
                         var id = link.attr("href").substring(1);
@@ -487,6 +487,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSecurityGroupChoices = function () {
             $scope.securityGroupChoices = {};
+            if ($.isEmptyObject($scope.securityGroupList)) {
+                return;
+            }
             $scope.securityGroup = $scope.securityGroupList[0]['id'];
             for( var i=0; i < $scope.securityGroupList.length; i++){
                 var securityGroupID = $scope.securityGroupList[i]['id'];

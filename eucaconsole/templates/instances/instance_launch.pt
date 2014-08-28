@@ -26,7 +26,7 @@
                       method="post" data-abide="abide" enctype="multipart/form-data">
                     ${structure:launch_form['csrf_token']}
                     ${structure:launch_form['image_id']}
-                    <dl class="tabs" data-tab="">
+                    <dl id="wizard-tabs" class="tabs" data-tab="">
                         <dd class="${'active' if not image else ''}">
                             <a id="tabStep1" ng-click="visitNextStep(1, $event)" href="#step1">
                                 <span class="cir">1</span> <b>Image</b>
