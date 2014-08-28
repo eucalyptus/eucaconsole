@@ -15,6 +15,7 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.pendingModalID = '';
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '60%', search_contains: true});
+            $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '80%', search_contains: true});
             $('#termination_policies').chosen({'width': '80%', search_contains: true});
         };

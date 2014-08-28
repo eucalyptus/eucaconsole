@@ -228,7 +228,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
             self.policies = self.get_policies(self.scaling_group)
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-            elb_conn=self.elb_conn, formdata=self.request.params or None)
+            vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.delete_form = ScalingGroupDeleteForm(self.request, formdata=self.request.params or None)
         self.render_dict = dict(
             scaling_group=self.scaling_group,

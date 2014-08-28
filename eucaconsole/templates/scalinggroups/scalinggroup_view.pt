@@ -56,6 +56,7 @@
                     <hr />
                     <h6 i18n:translate="">Details</h6>
                     ${panel('form_field', field=edit_form['launch_config'])}
+                    ${panel('form_field', field=edit_form['vpc_subnet'], **avail_zone_html_attrs)}
                     ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
                     <div class="row controls-wrapper" tal:condition="scaling_group.load_balancers">
                         <div class="small-4 columns">

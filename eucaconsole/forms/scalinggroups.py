@@ -149,6 +149,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
+            self.vpc_subnet.data = scaling_group.vpc_zone_identifier
             self.availability_zones.data = scaling_group.availability_zones
             self.load_balancers.data = scaling_group.load_balancers
             self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group else 1
@@ -254,10 +255,10 @@ class ScalingGroupEditForm(BaseScalingGroupForm):
         ],
     )
 
-    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, launch_configs=None, **kwargs):
+    def __init__(self, request, scaling_group=None, autoscale_conn=None, ec2_conn=None, vpc_conn=None, launch_configs=None, **kwargs):
         super(ScalingGroupEditForm, self).__init__(
             request, scaling_group=scaling_group, autoscale_conn=autoscale_conn,
-            ec2_conn=ec2_conn, launch_configs=launch_configs, **kwargs)
+            ec2_conn=ec2_conn, vpc_conn=vpc_conn, launch_configs=launch_configs, **kwargs)
 
         # Set choices
         self.termination_policies.choices = self.get_termination_policy_choices()
