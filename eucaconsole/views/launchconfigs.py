@@ -128,6 +128,7 @@ class LaunchConfigsJsonView(LandingPageView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         with boto_error_handler(request):
             self.items = self.get_items()
+            self.securitygroups = self.get_all_security_groups()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
@@ -170,16 +171,38 @@ class LaunchConfigsJsonView(LandingPageView):
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return []
 
-    def get_security_groups(self, groupids):
+    def get_all_security_groups(self):
         if self.ec2_conn:
-            security_groups = []
-            if groupids:
-                if groupids[0].startswith('sg-'):
-                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-id': groupids})
-                else:
-                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
-            return security_groups
+            return self.ec2_conn.get_all_security_groups()
         return []
+
+    def get_security_groups(self, groupids):
+        security_groups = []
+        if groupids:
+            for id in groupids:
+                security_group = ''
+                # Due to the issue that AWS and Eucalyptus return different value for .securitygroup for launch config object
+                if id.startswith('sg-'):
+                    security_group = self.get_security_group_by_id(id)
+                else:
+                    security_group = self.get_security_group_by_name(id)
+                if security_group:
+                    security_groups.append(security_group) 
+        return security_groups
+
+    def get_security_group_by_id(self, id):
+        if self.securitygroups: 
+            for sgroup in self.securitygroups:
+                if sgroup.id == id:
+                    return sgroup
+        return ''
+
+    def get_security_group_by_name(self, name):
+        if self.securitygroups: 
+            for sgroup in self.securitygroups:
+                if sgroup.id == id:
+                    return sgroup
+        return ''
 
 
 class LaunchConfigView(BaseView):
