@@ -46,7 +46,7 @@
                 </metal:block>
                 <div tal:condition="not role and role_route_id == 'new'" i18n:translate=""
                     tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,64}$',
-                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and connot contain spaces'};">
+                         'error_msg': 'IAM role names must be between 1 and 64 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\' and cannot contain spaces'};">
                     <form action="${request.route_path('role_create')}" method="post" data-abide="abide">
                         ${structure:role_form['csrf_token']}
                         <div class="section columns">
@@ -200,7 +200,6 @@
                         <div class="section">
                             <h6 i18n:translate="">Permissions</h6>
                             <div>
-                                <strong i18n:translate="">Role policies</strong>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>
