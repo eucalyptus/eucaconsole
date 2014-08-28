@@ -172,8 +172,16 @@ class LaunchConfigsJsonView(LandingPageView):
 
     def get_security_groups(self, groupids):
         if self.ec2_conn:
-            return self.ec2_conn.get_all_security_groups(group_ids=groupids)        
+            security_groups = []
+            if groupids:
+                if groupids[0].startswith('sg-'):
+                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-id': groupids})
+                else:
+                    security_groups = self.ec2_conn.get_all_security_groups(filters={'group-name': groupids})
+            return security_groups
         return []
+
+
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
@@ -212,7 +220,7 @@ class LaunchConfigView(BaseView):
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
             launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
-            launch_config_vpc_ip_assignment=str(self.launch_config.associate_public_ip_address) if self.launch_config else '',
+            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
@@ -286,6 +294,12 @@ class LaunchConfigView(BaseView):
             launch_configs = [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return self.launch_config.name in launch_configs
 
+    def get_vpc_ip_assignment_display(self, value):
+        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('True', _(u'For all instances')), ('False', _(u'Never'))]
+        for choice in choices:
+            if choice[0] == str(value):
+                return choice[1]
+        return  ''
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
     """Create Launch Configuration wizard"""
