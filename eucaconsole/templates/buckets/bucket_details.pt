@@ -1,0 +1,79 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_details.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap"
+         ng-app="BucketDetailsPage" ng-controller="BucketDetailsPageCtrl"
+         ng-init="initController()">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
+                <li class="current"><a href="#">${bucket_name}</a></li>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block>
+                <strong i18n:translate="">Details for bucket:</strong>
+                <em>${bucket_name}</em>
+            </metal:block>
+        </h3>
+        <div class="large-8 columns">
+            <dl class="tabs" id="bucket-subnav">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="#" i18n:translate="">Tasks</a></dd>
+            </dl>
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="#" id="enable-versioning-action" i18n:translate="">Enable versioning</a>
+                        </li>
+                        <li>
+                            <a href="#" id="suspend-versioning-action" i18n:translate="">Suspend versioning</a>
+                        </li>
+                        <li>
+                            <a id="delete-bucket-action" i18n:translate="">Delete</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form id="bucket-detail-form" method="post" data-abide="abide" ng-cloak=""
+                      action="">
+                    <h6 i18n:translate="" id="bucket-section-title">Bucket</h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns value">${bucket_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Versioning</label></div>
+                        <div class="small-8 columns value">${versioning}</div>
+                    </div>
+                    <hr />
+                    <div>
+                        <button type="submit" id="save_changes_volume_submit_button" class="button"
+                                ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('buckets')}" id="bucket-details-cancel-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_details.js')}"></script>
+</div>
+</metal:block>

@@ -73,7 +73,7 @@ class BucketsView(LandingPageView):
         return self.render_dict
 
 
-class BucketsJsonView(LandingPageView):
+class BucketsJsonView(BaseView):
     def __init__(self, request):
         super(BucketsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
@@ -89,20 +89,12 @@ class BucketsJsonView(LandingPageView):
                 bucket_name = item.name
                 buckets.append(dict(
                     bucket_name=bucket_name,
-                    bucket_contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
-                    owner='me',
+                    contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
+                    details_url=self.request.route_path('bucket_details', name=bucket_name),
+                    owner='',  # TODO: pull in bucket owner if possible
                     creation_date=item.creation_date
                 ))
             return dict(results=buckets)
-
-    def get_items(self):
-        return self.s3_conn.get_all_buckets() if self.s3_conn else []
-
-
-class BucketsObjectCountsJsonView(BaseView):
-    def __init__(self, request):
-        super(BucketsObjectCountsJsonView, self).__init__(request)
-        self.s3_conn = self.get_connection(conn_type='s3')
 
     @view_config(route_name='bucket_objects_count_json', renderer='json')
     def bucket_object_counts_json(self):
@@ -111,6 +103,9 @@ class BucketsObjectCountsJsonView(BaseView):
             object_count=len(tuple(bucket.list())),
         )
         return dict(results=results)
+
+    def get_items(self):
+        return self.s3_conn.get_all_buckets() if self.s3_conn else []
 
 
 class BucketContentsView(LandingPageView):
@@ -202,7 +197,7 @@ class BucketContentsView(LandingPageView):
         return icon_mapping.get(mime_type, 'fi-page')
 
 
-class BucketContentsJsonView(LandingPageView):
+class BucketContentsJsonView(BaseView):
     def __init__(self, request):
         super(BucketContentsJsonView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
@@ -246,7 +241,7 @@ class BucketContentsJsonView(LandingPageView):
         return dict(results=items)
 
     def get_absolute_path(self, key_name):
-        return '/buckets/{0}/{1}'.format(self.bucket_name, key_name)
+        return '/bucketcontents/{0}/{1}'.format(self.bucket_name, key_name)
 
     def skip_item(self, key):
         """Skip item if it contains a folder path that doesn't match the current request subpath"""
@@ -258,3 +253,30 @@ class BucketContentsJsonView(LandingPageView):
             else:
                 return False
         return False
+
+
+class BucketDetailsView(BaseView):
+    """Views for Bucket details"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
+
+    def __init__(self, request):
+        super(BucketDetailsView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        self.render_dict = {}
+
+    @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
+    def bucket_details(self):
+        self.render_dict.update(
+            bucket=self.bucket,
+            bucket_name=self.bucket.name,
+            versioning=self.get_versioning_status(self.bucket)
+        )
+        return self.render_dict
+
+    @staticmethod
+    def get_versioning_status(bucket):
+        if bucket:
+            # TODO: get_versioning_status always seems to return an empty dict.  May be a boto bug
+            status = bucket.get_versioning_status()
+            return status.get('Versioning', 'disabled')
