@@ -92,7 +92,9 @@
                                             load_balancers_html_attrs {'data-placeholder': elb_placeholder_text}">
                             ${panel('form_field', field=create_form['health_check_type'], ng_attrs={'model': 'healthCheckType'})}
                             ${panel('form_field', field=create_form['health_check_period'], ng_attrs={'model': 'healthCheckPeriod'}, step=30)}
-                            ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                            <div ng-show="vpcNetwork == ''">
+                                ${panel('form_field', field=create_form['availability_zones'], ng_attrs={'model': 'availZones'}, **avail_zones_attrs)}
+                            </div>
                             ${panel('form_field', field=create_form['load_balancers'], **load_balancers_html_attrs)}
                             <div>&nbsp;</div>
                             <hr />
