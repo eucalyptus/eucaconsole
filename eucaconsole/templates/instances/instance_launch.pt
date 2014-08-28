@@ -102,33 +102,33 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">Specify VPC settings, key pair and security group.</p>
-                            ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=3, rightcol_width=9)}
+                            ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8)}
                             <div ng-show="instanceVPC != ''">
-                                ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
-                                ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=3, rightcol_width=9)}
+                                ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
                             </div>
-                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
+                            ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
                             <div class="row">
-                                <div class="small-9 columns right" id="create-keypair-link">
+                                <div class="small-8 columns right" id="create-keypair-link">
                                     <span class="or" i18n:translate="">Or: </span>
                                     <a ng-click="showCreateKeypairModal()" i18n:translate="">Create key pair</a>
                                 </div>
                             </div>
-                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 'securityGroup', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                            ${panel('form_field', field=launch_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroup', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                             <div class="row">
-                                <div class="small-9 columns right" id="create-securitygroup-link">
+                                <div class="small-8 columns right" id="create-securitygroup-link">
                                     <span class="or" i18n:translate="">Or: </span>
                                     <a data-reveal-id="create-securitygroup-modal" i18n:translate="">Create security group</a>
                                 </div>
                             </div>
-                            ${panel('securitygroup_rules_preview')}
+                            ${panel('securitygroup_rules_preview', leftcol_width=4, rightcol_width=8)}
                             <hr />
                             <p class="description" i18n:translate="">Specify an IAM role if you would like to give this instance special access privileges.</p>
                             <div class="row">
-                                <div class="small-3 columns">
+                                <div class="small-4 columns">
                                     <label class="right" i18n:translate="">Role</label>
                                 </div>
-                                <div class="small-9 columns field">
+                                <div class="small-8 columns field">
                                     <select id="role" ng-options="k as v for (k, v) in roleList" ng-model="role" name="role"></select>
                                 </div>
                             </div>
@@ -140,8 +140,8 @@
                                 </label>
                             </div>
                             <div class="row">
-                                <div class="small-3 columns">&nbsp;</div>
-                                <div class="small-9 columns field inline">
+                                <div class="small-4 columns">&nbsp;</div>
+                                <div class="small-8 columns field inline">
                                     <button type="submit" class="button" ng-click="saveOptions()" id="launch-instance-btn-step3" ng-disabled="isNotValid">
                                         <span i18n:translate="">Launch Instance<span ng-show="instanceNumber > 1">s</span></span>
                                     </button>
