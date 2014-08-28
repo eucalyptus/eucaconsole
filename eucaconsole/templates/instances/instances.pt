@@ -121,10 +121,6 @@
                     <span class="label" title="VPC network" i18n:attributes="title" data-tooltip="">VN</span>
                     {{ item.vpc_name }}
                 </div>
-                <div>
-                    <span class="label" title="Launch time" i18n:attributes="title" data-tooltip="">LT</span>
-                    {{ item.launch_time | date:'${layout.angular_date_format}' }}
-                </div>
             </div>
             <metal:block metal:fill-slot="tile_footer">
                 <div ng-show="item.status"
