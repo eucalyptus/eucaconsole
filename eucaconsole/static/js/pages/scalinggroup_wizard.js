@@ -29,6 +29,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $('#launch_config').chosen({'width': '80%', search_contains: true});
             $('#load_balancers').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '100%', search_contains: true});
+            $('#vpc_subnet').chosen({'width': '100%', search_contains: true});
         };
         $scope.setInitialValues = function () {
             $scope.availZones = $('#availability_zones').val();
@@ -117,6 +118,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             if ($scope.vpcSubnet == '') {
                 $scope.vpcSubnetChoices[''] = "No subnets found";
             }
+            $timeout(function() {
+                $('#vpc_subnet').trigger('chosen:updated');
+            }, 500);
         };
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);

@@ -575,18 +575,36 @@ class ScalingGroupWizardView(BaseScalingGroupView):
                 scaling_group_name = self.request.params.get('name')
                 self.log_request(_(u"Creating scaling group {0}").format(scaling_group_name))
                 launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
-                scaling_group = AutoScalingGroup(
-                    name=scaling_group_name,
-                    launch_config=launch_config_name,
-                    availability_zones=self.request.params.getall('availability_zones'),
-                    load_balancers=self.request.params.getall('load_balancers'),
-                    health_check_type=self.request.params.get('health_check_type'),
-                    health_check_period=self.request.params.get('health_check_period'),
-                    desired_capacity=self.request.params.get('desired_capacity'),
-                    min_size=self.request.params.get('min_size'),
-                    max_size=self.request.params.get('max_size'),
-                    tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
-                )
+                vpc_network = self.request.params.get('vpc_network') or None
+                vpc_subnets = self.request.params.getall('vpc_subnet')
+                scaling_group = ''
+                if vpc_network is None:
+                    scaling_group = AutoScalingGroup(
+                        name=scaling_group_name,
+                        launch_config=launch_config_name,
+                        availability_zones=self.request.params.getall('availability_zones'),
+                        load_balancers=self.request.params.getall('load_balancers'),
+                        health_check_type=self.request.params.get('health_check_type'),
+                        health_check_period=self.request.params.get('health_check_period'),
+                        desired_capacity=self.request.params.get('desired_capacity'),
+                        min_size=self.request.params.get('min_size'),
+                        max_size=self.request.params.get('max_size'),
+                        tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
+                    )
+                else:
+                    scaling_group = AutoScalingGroup(
+                        name=scaling_group_name,
+                        launch_config=launch_config_name,
+                        vpc_zone_identifier=vpc_subnets, 
+                        load_balancers=self.request.params.getall('load_balancers'),
+                        health_check_type=self.request.params.get('health_check_type'),
+                        health_check_period=self.request.params.get('health_check_period'),
+                        desired_capacity=self.request.params.get('desired_capacity'),
+                        min_size=self.request.params.get('min_size'),
+                        max_size=self.request.params.get('max_size'),
+                        tags=self.parse_tags_param(scaling_group_name=scaling_group_name),
+                    )
+
                 self.autoscale_conn.create_auto_scaling_group(scaling_group)
                 msg = _(u'Successfully created scaling group')
                 msg += ' {0}'.format(scaling_group.name)
