@@ -270,9 +270,32 @@ class BucketDetailsView(BaseView):
         self.render_dict.update(
             bucket=self.bucket,
             bucket_name=self.bucket.name,
-            versioning=self.get_versioning_status(self.bucket)
+            owner=self.get_bucket_owner_name(self.bucket),
+            versioning_status=self.get_versioning_status(self.bucket),
+            logging_status=self.get_logging_status(),
         )
         return self.render_dict
+
+    def get_logging_status(self):
+        """Returns the logging status as a dict, with the logs URL included for templates"""
+        if self.bucket:
+            status = self.bucket.get_logging_status()
+            logging_enabled = hasattr(status, 'LoggingEnabled')
+            logging_prefix = getattr(status, 'prefix', '')
+            logging_subpath = '{0}/{1}'.format(self.bucket.name, logging_prefix)
+            return dict(
+                enabled=logging_enabled,
+                logs_prefix=logging_prefix,
+                logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
+            )
+
+    @staticmethod
+    def get_bucket_owner_name(bucket):
+        if bucket:
+            bucket_acl = bucket.get_acl()
+            owner_obj = bucket_acl.owner
+            if owner_obj:
+                return owner_obj.display_name
 
     @staticmethod
     def get_versioning_status(bucket):
@@ -280,3 +303,4 @@ class BucketDetailsView(BaseView):
             # TODO: get_versioning_status always seems to return an empty dict.  May be a boto bug
             status = bucket.get_versioning_status()
             return status.get('Versioning', 'disabled')
+

@@ -49,8 +49,26 @@
                         <div class="small-8 columns value">${bucket_name}</div>
                     </div>
                     <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Owner</label></div>
+                        <div class="small-8 columns value">${owner}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Versioning</label></div>
-                        <div class="small-8 columns value">${versioning}</div>
+                        <div class="small-8 columns value">${versioning_status}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Logging</label></div>
+                        <div class="small-8 columns value">
+                            <span tal:condition="not logging_status.enabled" i18n:translate="">Disabled</span>
+                            <span tal:condition="logging_status.enabled">
+                                <span i18n:translate="">Enabled at</span>
+                                <a href="${logging_status.logs_url}">${logging_status.logs_prefix}</a>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
+                        <!--!<div class="small-8 columns value">{{'${bucket.creation_date}' | date:'${layout.angular_date_format}'}}</div>-->
                     </div>
                     <hr />
                     <div>
