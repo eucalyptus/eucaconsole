@@ -229,7 +229,7 @@
 <!-- Required fields indicator ===== -->
 <metal:requiredfieldslabel metal:define-macro="required_fields_label">
     <div>
-        <label>
+        <label class="right">
             <span class="req">*</span>
             <span i18n:translate="">Required fields</span>
         </label>

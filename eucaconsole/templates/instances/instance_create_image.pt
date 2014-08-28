@@ -23,26 +23,25 @@
             <div class="panel">
                 <form action="${request.route_path('instance_create_image', id=instance.id)}" method="post"
                       data-abide="abide" id="create-image-form">
+                    <h6 i18n:translate="">Machine</h6>
                     ${structure:create_image_form['csrf_token']}
-                    ${panel('form_field', field=create_image_form['name'], leftcol_width=2, rightcol_width=10, autofocus='')}
-                    ${panel('form_field', field=create_image_form['description'], leftcol_width=2, rightcol_width=10)}
+                    ${panel('form_field', field=create_image_form['name'], leftcol_width=3, rightcol_width=9, autofocus='', ng_attrs={'model': 'name'}, pattern='^[a-zA-Z0-9\-\_\(\)\.\/]{3,128}$')}
+                    ${panel('form_field', field=create_image_form['description'], leftcol_width=3, rightcol_width=9)}
                     <hr tal:condition="not isEBS"/>
                     <div class="section" tal:condition="not isEBS">
-                        <div class="row controls-wrapper">
-                            <h6 i18n:translate="">Storage</h6>
-                            <p>
-                                <span i18n:translate="">
-                                    Specify where your image should be stored in the cloud.
-                                </span>
-                            </p>
-                            ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9)}
-                            ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9)}
-                        </div>
+                        <h6 i18n:translate="">Storage</h6>
+                        <p>
+                            <span i18n:translate="">
+                                Specify where your image should be stored in the cloud.
+                            </span>
+                        </p>
+                        ${panel('form_field', field=create_image_form['s3_bucket'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_bucket'})}
+                        ${panel('form_field', field=create_image_form['s3_prefix'], leftcol_width=3, rightcol_width=9, ng_attrs={'model': 's3_prefix'})}
                     </div>
-                    <hr />
+                    <hr/>
                     ${panel('tag_editor', leftcol_width=3, rightcol_width=9)}
-                    <hr />
-                    <div class="expando" id="advanced-section" ng-cloak="">
+                    <hr tal:condition="isEBS"/>
+                    <div class="expando" id="advanced-section" ng-cloak="" tal:condition="isEBS">
                         <h6 class="title" >
                             <a ng-click="toggleContent()">
                                 <i class="fi-plus" ng-show="!expanded"></i>
@@ -52,19 +51,25 @@
                         </h6>
                         <div class="content" ng-show="expanded">
                             <div tal:condition="isEBS">
-                                ${panel('form_field', field=create_image_form['no_reboot'], leftcol_width=1, rightcol_width=11, reverse=True)}
+                                ${structure:create_image_form['no_reboot']}&nbsp;${create_image_form.no_reboot.label}
+                                <span class="helptext-icon" data-tooltip=""
+                                    title="${create_image_form.no_reboot.help_text}">?</span>
                             </div>
                             ${panel('bdmapping_editor', image=image, snapshot_choices=snapshot_choices)}
                         </div>
                     </div>
-                    <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
-                    <div>&nbsp;</div>
-                    <div>
-                        <button type="submit" class="button" id="save-changes-btn" i18n:translate="" data-reveal-id="instance-shutdown-warn-modal">
-                            Create Image
-                        </button>
-                        <a href="${request.route_path('instance_view', id=instance.id)}" id="cancel-link"
-                           class="cancel-link" i18n:translate="">Cancel</a>
+                    <hr/>
+                    <div class="row">
+                        <div class="columns small-6">
+                            <button type="submit" class="button" id="save-changes-btn" i18n:translate="" data-reveal-id="instance-shutdown-warn-modal" ng-disabled="isNotValid">
+                                Create Image
+                            </button>
+                            <a href="${request.route_path('instance_view', id=instance.id)}" id="cancel-link"
+                               class="cancel-link" i18n:translate="">Cancel</a>
+                        </div>
+                        <div class="columns small-6">
+                            <metal:block metal:use-macro="layout.global_macros['required_fields_label']" />
+                        </div>
                     </div>
                 </form>
             </div>
@@ -76,13 +81,12 @@
             </div>
         </div>
         <div id="instance-shutdown-warn-modal" class="reveal-modal small" data-reveal="">
-            <strong i18n:translate="">Warning:</strong>
-            <br> &nbsp; </br>
+            <h3 i18n:translate="">Warning</h3>
             <p i18n:translate="">
                 Your instance will be shut down and restarted as part of this process. You will not have access to your instance during this time.
             </p>
             <p i18n:translate="">
-                Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created
+                Please be sure you have completed the following steps prior to initiating this operation to ensure a functional image is created:
             </p>
             <p i18n:translate="">
                 Steps TBD
@@ -96,8 +100,15 @@
 </div>
 
 <div metal:fill-slot="tail_js">
-    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
-    <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_image.js')}"></script>
+    <div tal:define="isEBS instance.root_device_type == 'ebs'" tal:omit-tag="">
+        <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+        <div tal:condition="isEBS">
+            <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_ebs_image.js')}"></script>
+        </div>
+        <div tal:condition="not:isEBS">
+            <script src="${request.static_path('eucaconsole:static/js/pages/instance_create_image.js')}"></script>
+        </div>
+    </div>
 </div>
 
 </metal:block>
