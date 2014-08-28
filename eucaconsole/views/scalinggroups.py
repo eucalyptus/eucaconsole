@@ -552,9 +552,11 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
                 vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
+            self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
         self.render_dict = dict(
             create_form=self.create_form,
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
+            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             launch_config_param=escape(self.request.params.get('launch_config', '')),
             avail_zones_placeholder_text=_(u'Select availability zones...'),
             elb_placeholder_text=_(u'Select load balancers...'),
@@ -595,4 +597,18 @@ class ScalingGroupWizardView(BaseScalingGroupView):
             self.request.error_messages = self.create_form.get_errors_list()
         return self.render_dict
 
+    def get_vpc_subnets_json(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
 

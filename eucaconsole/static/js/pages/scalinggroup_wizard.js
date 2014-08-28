@@ -19,6 +19,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.launchConfig = '';
         $scope.vpcNetwork = '';
         $scope.vpcSubnet = '';
+        $scope.vpcSubnetList = {};
+        $scope.vpcSubnetChoices = {};
         $scope.availZones = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;
@@ -36,7 +38,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $scope.launchConfig = $('#hidden_launch_config_input').val();
             }
         };
-        $scope.initController = function (launchConfigCount) {
+        $scope.initController = function (launchConfigCount, vpcSubnetJson) {
+            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'");
+            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
             $scope.initChosenSelectors();
             $scope.setInitialValues();
             $scope.checkLaunchConfigParam();
@@ -93,7 +97,27 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             $scope.$watch('availZones', function(){
                 $scope.checkRequiredInput();
             });
+            $scope.$watch('vpcNetwork', function () {
+                $scope.updateVPCSubnetChoices();
+            });
         }
+        $scope.updateVPCSubnetChoices = function () {
+            $scope.vpcSubnetChoices = {};
+            $scope.vpcSubnet = '';
+            for( var i=0; i < $scope.vpcSubnetList.length; i++){
+                if ($scope.vpcSubnetList[i]['vpc_id'] === $scope.vpcNetwork) {
+                    $scope.vpcSubnetChoices[$scope.vpcSubnetList[i]['id']] = 
+                        $scope.vpcSubnetList[i]['cidr_block'] + ' (' + $scope.vpcSubnetList[i]['id'] + ') | ' + 
+                        $scope.vpcSubnetList[i]['availability_zone'];
+                    if ($scope.vpcSubnet == '') {
+                        $scope.vpcSubnet = $scope.vpcSubnetList[i]['id'];
+                    }
+                }
+            } 
+            if ($scope.vpcSubnet == '') {
+                $scope.vpcSubnetChoices[''] = "No subnets found";
+            }
+        };
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
             var inputElement = modal.find('input[type!=hidden]').get(0);
