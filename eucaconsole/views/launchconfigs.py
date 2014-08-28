@@ -181,7 +181,7 @@ class LaunchConfigsJsonView(LandingPageView):
         if groupids:
             for id in groupids:
                 security_group = ''
-                # Due to the issue that AWS and Eucalyptus return different value for .securitygroup for launch config object
+                # Due to the issue that AWS-Classic and AWS-VPC different values, name and id, for .securitygroup for launch config object
                 if id.startswith('sg-'):
                     security_group = self.get_security_group_by_id(id)
                 else:
@@ -200,7 +200,7 @@ class LaunchConfigsJsonView(LandingPageView):
     def get_security_group_by_name(self, name):
         if self.securitygroups: 
             for sgroup in self.securitygroups:
-                if sgroup.id == id:
+                if sgroup.name == name:
                     return sgroup
         return ''
 
