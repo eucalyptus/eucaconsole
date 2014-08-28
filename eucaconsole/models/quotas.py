@@ -107,62 +107,72 @@ class Quotas(object):
             # load all policies for this user
             policy_list = []
             if user is not None:
-                policies = view.conn.get_response('ListUserPolicies', params={'UserName':user, 'DelegateAccount':as_account}, list_marker='PolicyNames')
+                policies = view.conn.get_response(
+                        'ListUserPolicies',
+                        params={'UserName':user, 'DelegateAccount':as_account}, list_marker='PolicyNames')
             if account is not None:
-                policies = view.conn.get_response('ListAccountPolicies', params={'AccountName':account, 'DelegateAccount':as_account}, list_marker='PolicyNames')
+                policies = view.conn.get_response(
+                        'ListAccountPolicies',
+                        params={'AccountName':account, 'DelegateAccount':as_account}, list_marker='PolicyNames')
             for policy_name in policies.policy_names:
                 if user is not None:
-                    policy_json = view.conn.get_response('GetUserPolicy', params={'UserName':user, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
+                    policy_json = view.conn.get_response(
+                        'GetUserPolicy',
+                        params={'UserName':user, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
+                    policy = json.loads(policy_json)
+                    policy_list.append(policy)
                 if account is not None:
-                    policy_json = view.conn.get_response('GetAccountPolicy', params={'AccountName':account, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
-                policy = json.loads(policy_json)
-                policy_list.append(policy)
+                    policy_json = view.conn.get_response(
+                        'GetAccountPolicy',
+                        params={'AccountName':account, 'PolicyName':policy_name, 'DelegateAccount':as_account}, verb='POST').policy_document
+                    policy = json.loads(policy_json)
+                    policy_list.append(policy)
             # for each form item, update proper policy if needed
             new_stmts = []
             ## ec2
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_images_max', 'ec2:RegisterImage', 'ec2:quota-imagenumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_instances_max', 'ec2:RunInstances', 'ec2:quota-vminstancenumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_volumes_max', 'ec2:CreateVolume', 'ec2:quota-volumenumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_snapshots_max', 'ec2:CreateSnapshot', 'ec2:quota-snapshotnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_elastic_ip_max', 'ec2:AllocateAddress', 'ec2:quota-addressnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'ec2_total_size_all_vols', 'ec2:Createvolume', 'ec2:quota-volumetotalsize')
             ## s3
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_buckets_max', 's3:CreateBucket', 's3:quota-bucketnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_objects_per_max', 's3:CreateObject', 's3:quota-bucketobjectnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_bucket_size', 's3:PutObject', 's3:quota-bucketsize')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     's3_total_size_all_buckets', 's3:pubobject', 's3:quota-buckettotalsize')
             ## iam
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'iam_groups_max', 'iam:CreateGroup', 'iam:quota-groupnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'iam_users_max', 'iam:CreateUser', 'iam:quota-usernumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'iam_roles_max', 'iam:CreateRole', 'iam:quota-rolenumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'iam_inst_profiles_max', 'iam:CreateInstanceProfile',
                                     'iam:quota-instanceprofilenumber')
             ## autoscaling
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'autoscale_groups_max', 'autoscaling:createautoscalinggroup',
                                     'autoscaling:quota-autoscalinggroupnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'launch_configs_max', 'autoscaling:createlaunchconfiguration',
                                     'autoscaling:quota-launchconfigurationnumber')
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'scaling_policies_max', 'autoscaling:pubscalingpolicy',
                                     'autoscaling:quota-scalingpolicynumber')
             ## elb
-            self.update_quota_limit(view, policy_list, new_stmts,
+            self._update_quota_limit_(view, policy_list, new_stmts,
                                     'elb_load_balancers_max', 'elasticloadbalancing:createloadbalancer',
                                     'elasticloadbalancing:quota-loadbalancernumber')
 
@@ -198,7 +208,7 @@ class Quotas(object):
                         view.log_request(_(u"Creating policy {0} for account {1}").format(self.EUCA_DEFAULT_POLICY, account))
                         view.conn.get_response('PutAccountPolicy', params={'AccountName':account, 'PolicyName':self.EUCA_DEFAULT_POLICY, 'PolicyDocument':json.dumps(new_policy), 'DelegateAccount':as_account}, verb='POST')
 
-    def update_quota_limit(self, view, policy_list, new_stmts, param, action, condition):
+    def _update_quota_limit_(self, view, policy_list, new_stmts, param, action, condition):
         new_limit = view.request.params.get(param, '')
         lowest_val = sys.maxint
         lowest_policy = None

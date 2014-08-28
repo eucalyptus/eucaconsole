@@ -79,11 +79,6 @@ class UserForm(BaseSecureForm):
             self.user_name.data = user.user_name
             self.path.data = user.path
 
-    def setLowest(self, item, val):
-        """ This function sets the field data value if the new value is lower than the current one """
-        if item.data is None or item.data > val:
-            item.data = val
-
 class DisableUserForm(BaseSecureForm):
     """CSRF-protected form to disable a user"""
     pass

@@ -33,11 +33,9 @@ import simplejson as json
 from boto.exception import BotoServerError
 
 import wtforms
-from wtforms import validators
-from wtforms import widgets
 
 from ..i18n import _
-from . import BaseSecureForm, TextEscapedField
+from . import BaseSecureForm
 
 
 class QuotasForm(BaseSecureForm):
@@ -81,10 +79,14 @@ class QuotasForm(BaseSecureForm):
                 pass
         if account is not None:
             try:
-                policies = conn.get_response('ListAccountPolicies', params={'AccountName':account.account_name}, list_marker='PolicyNames')
+                policies = conn.get_response(
+                            'ListAccountPolicies',
+                            params={'AccountName':account.account_name}, list_marker='PolicyNames')
                 
                 for policy_name in policies.policy_names:
-                    policy_json = conn.get_response('GetAccountPolicy', params={'AccountName':account.account_name, 'PolicyName':policy_name}, verb='POST').policy_document
+                    policy_json = conn.get_response(
+                            'GetAccountPolicy',
+                            params={'AccountName':account.account_name, 'PolicyName':policy_name}, verb='POST').policy_document
                     self.scan_policy(policy_json)
             except BotoServerError as err:
                 pass

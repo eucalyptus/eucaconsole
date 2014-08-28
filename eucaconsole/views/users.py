@@ -376,13 +376,13 @@ class UserView(BaseView):
                     user = self.conn.get_response('CreateUser', params={'UserName':name, 'Path':path, 'DelegateAccount':as_account})
                     user_data = {'account': account, 'username': name}
                     if random_password == 'y':
-                        view.log_request(_(u"Generating password for user {0}").format(name))
+                        self.log_request(_(u"Generating password for user {0}").format(name))
                         password = PasswordGeneration.generate_password()
-                        view.conn.get_response('CreateLoginProfile', params={'UserName':name, 'Password':password, 'DelegateAccount':as_account})
+                        self.conn.get_response('CreateLoginProfile', params={'UserName':name, 'Password':password, 'DelegateAccount':as_account})
                         user_data['password'] = password
                     if access_keys == 'y':
-                        view.log_request(_(u"Creating access keys for user {0}").format(name))
-                        creds = view.conn.get_response('CreateAccessKey', params={'UserName':name, 'DelegateAccount':as_account})
+                        self.log_request(_(u"Creating access keys for user {0}").format(name))
+                        creds = self.conn.get_response('CreateAccessKey', params={'UserName':name, 'DelegateAccount':as_account})
                         user_data['access_id'] = creds.access_key.access_key_id
                         user_data['secret_key'] = creds.access_key.secret_access_key
                     # store this away for file creation later
