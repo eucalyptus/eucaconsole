@@ -93,7 +93,7 @@
                                 This tool helps you easily create a policy without needing to understand policy language
                             </p>
                             <div ng-show="policyGenExpanded">
-                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form, resource_choices=resource_choices, type=type)}
+                                ${panel('policy_generator', policy_actions=policy_actions, create_form=create_form, resource_choices=resource_choices, resource_type=type)}
                             </div>
                         </div>
                         <div class="choice">
