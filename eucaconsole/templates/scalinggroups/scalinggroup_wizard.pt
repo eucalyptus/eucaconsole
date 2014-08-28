@@ -52,6 +52,10 @@
                             <div tal:condition="not launch_config_param">
                                 ${panel('form_field', field=create_form['launch_config'], ng_attrs={'model': 'launchConfig'})}
                             </div>
+                            ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
+                            <div ng-show="vpcNetwork != ''">
+                                ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcNetwork', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                            </div>
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
                                 <div class="medium-2 columns">

@@ -17,6 +17,8 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.maxSize = 1;
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
+        $scope.vpcNetwork = '';
+        $scope.vpcSubnet = '';
         $scope.availZones = '';
         $scope.summarySection = $('.summary');
         $scope.currentStepIndex = 1;

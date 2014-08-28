@@ -181,6 +181,7 @@ class BaseScalingGroupView(BaseView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         self.cloudwatch_conn = self.get_connection(conn_type='cloudwatch')
         self.elb_conn = self.get_connection(conn_type='elb')
+        self.vpc_conn = self.get_connection(conn_type='vpc')
         self.ec2_conn = self.get_connection()
 
     def get_scaling_group(self):
@@ -550,7 +551,7 @@ class ScalingGroupWizardView(BaseScalingGroupView):
         with boto_error_handler(request):
             self.create_form = ScalingGroupCreateForm(
                 self.request, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
-                elb_conn=self.elb_conn, formdata=self.request.params or None)
+                vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
         self.render_dict = dict(
             create_form=self.create_form,
             launchconfigs_count=len(self.create_form.launch_config.choices) - 1,  # Ignore blank choice
