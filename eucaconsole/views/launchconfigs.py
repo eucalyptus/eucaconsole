@@ -138,7 +138,8 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = [sg for sg in launchconfig.security_groups]
+                security_groups = self.get_security_groups(launchconfig.security_groups)
+                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -148,7 +149,7 @@ class LaunchConfigsJsonView(LandingPageView):
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
-                    security_groups=security_groups,
+                    security_groups=security_groups_array,
                     in_use=name in scalinggroup_launchconfig_names,
                 ))
             return dict(results=launchconfigs_array)
@@ -169,7 +170,10 @@ class LaunchConfigsJsonView(LandingPageView):
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return []
 
-
+    def get_security_groups(self, groupids):
+        if self.ec2_conn:
+            return self.ec2_conn.get_all_security_groups(group_ids=groupids)        
+        return []
 class LaunchConfigView(BaseView):
     """Views for single LaunchConfig"""
     TEMPLATE = '../templates/launchconfigs/launchconfig_view.pt'
