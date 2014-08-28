@@ -22,7 +22,6 @@ angular.module('BucketsPage', ['LandingPage'])
             angular.forEach(items, function(item, key) {
                 var bucketName = item['bucket_name'];
                 var objectsCountUrl = $scope.bucketObjectsCountUrl.replace('_name_', bucketName);
-                console.log(objectsCountUrl)
                 $scope.countsLoading[bucketName] = true;
                 $http.get(objectsCountUrl).success(function(oData) {
                     var results = oData ? oData.results : {};
@@ -31,7 +30,7 @@ angular.module('BucketsPage', ['LandingPage'])
                 }).error(function (oData, status) {
                     var errorMsg = oData['message'] || null;
                     if (errorMsg) {
-                        if (status === 403) {
+                        if (status === 403 || status === 400) {
                             $('#timed-out-modal').foundation('reveal', 'open');
                         } else {
                             Notify.failure(errorMsg);
