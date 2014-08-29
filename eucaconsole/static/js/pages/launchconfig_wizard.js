@@ -298,7 +298,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             // since clicking invokes this method again (via ng-click) and
             // one ng action must complete before another can star
                 var hash = "step"+nextStep;
-                $(".tabs").children("dd").each(function() {
+                $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
                         var id = link.attr("href").substring(1);
