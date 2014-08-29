@@ -296,7 +296,11 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
         self.scaling_group.vpc_zone_identifier = ', '.join([str(x) for x in self.request.params.getall('vpc_subnet')])
-        self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
+        # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
+        if not self.scaling_group.vpc_zone_identifier:
+            self.scaling_group.availability_zones = self.request.params.getall('availability_zones') 
+        else:
+            self.scaling_group.availability_zones = ''
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
         self.scaling_group.min_size = self.request.params.get('min_size', 0)
