@@ -65,7 +65,21 @@
                     <div tal:condition="vpc_network">
                         ${panel('form_field', field=edit_form['vpc_subnet'], **avail_zone_html_attrs)}
                     </div>
-                    ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
+                    <div tal:condition="not vpc_network">
+                        ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
+                    </div>
+                    <div class="row controls-wrapper" tal:condition="vpc_network">
+                        <div class="small-4 columns">
+                            <label class="right" i18n:translate="">Availability zones</label>
+                        </div>
+                        <div class="small-8 columns">
+                            <div tal:repeat="az scaling_group.availability_zones" class="value" ng-non-bindable="">
+                                ${az}<br/>
+                            </div>
+                            <input type="hidden" name="availability_zones" id="hidden_availability_zones_input" 
+                                value="${scaling_group.availability_zones}" />
+                        </div>
+                    </div>
                     <div class="row controls-wrapper" tal:condition="scaling_group.load_balancers">
                         <div class="small-4 columns">
                             <label class="right" i18n:translate="">Load balancers</label>
