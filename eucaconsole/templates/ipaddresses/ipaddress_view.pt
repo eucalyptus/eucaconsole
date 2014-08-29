@@ -41,14 +41,17 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <div tal:condition="not eip.instance_id">
-                    <p i18n:translate="">This elastic IP address is not associated with any instances.</p>
-                </div>
-                <div tal:condition="eip.instance_id">
-                    <p>
-                        <span i18n:translate="">This elastic IP address is associated with instance</span>
-                        <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>.
-                    </p>
+                <div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Scope</label></div>
+                        <div class="small-8 columns value"> ${eip.domain} </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Assigned to instance</label></div>
+                        <div class="small-8 columns value"> 
+                            <a href="/instances/${eip.instance_id}">${eip.instance_name}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div tal:condition="not eip">
