@@ -20,6 +20,8 @@
             <li><a id="resource-menuitem-volumes" href="${request.route_path('volumes')}" i18n:translate="">Volumes</a></li>
             <li class="divider" tal:condition="not off_canvas"></li>
             <li><a id="resource-menuitem-snapshots" href="${request.route_path('snapshots')}" i18n:translate="">Snapshots</a></li>
+            <li class="divider" tal:condition="not off_canvas"></li>
+            <li><a id="resource-menuitem-buckets" href="${request.route_path('buckets')}" i18n:translate="">Buckets (S3)</a></li>
         </ul>
     </li>
     <li class="has-dropdown">
