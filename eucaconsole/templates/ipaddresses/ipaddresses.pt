@@ -37,6 +37,10 @@
                     </span>
                     <span ng-show="!item.instance_id" i18n:translate="">Not associated with any instances</span>
                 </div>
+                <div>
+                    <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
+                    {{ item.domain }}
+                </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
                 <a id="tile-item-dropdown_{{ item.public_ip | escapeHTMLTagID }}" class="tiny secondary button dropdown right" data-dropdown="item-dropdown_{{ item.public_ip |  escapeHTMLTagID }}"><i class="fi-widget"></i></a>
@@ -57,11 +61,13 @@
             </div>
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Public IP address</th>
+                <th i18n:translate="">Scope</th>
                 <th i18n:translate="">Assigned to instance</th>
                 <th i18n:translate="" class="actions">Actions</th>
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
+                <td>{{ item.domain }}</td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">
