@@ -1086,9 +1086,15 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             source_instance_tags = self.instance.tags
             key_name = self.instance.key_name
             num_instances = int(self.request.params.get('number', 1))
-            security_groups = [group.name for group in self.instance.groups]
+            security_groups = [group.id for group in self.instance.groups]
             instance_type = self.instance.instance_type
             availability_zone = self.instance.placement
+            vpc_network = self.instance.vpc_id or None
+            vpc_subnet = self.instance.subnet_id or None
+            if self.associate_public_ip_address == 'Yes':
+                associate_public_ip_address = True
+            else:
+                associate_public_ip_address = False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -1105,22 +1111,60 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                     self.iam_conn.add_role_to_instance_profile(profile_name, self.role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
-                reservation = self.conn.run_instances(
-                    image_id,
-                    min_count=num_instances,
-                    max_count=num_instances,
-                    key_name=key_name,
-                    user_data=self.get_user_data(),
-                    addressing_type=addressing_type,
-                    instance_type=instance_type,
-                    placement=availability_zone,
-                    kernel_id=kernel_id,
-                    ramdisk_id=ramdisk_id,
-                    monitoring_enabled=monitoring_enabled,
-                    block_device_map=block_device_map,
-                    security_group_ids=security_groups,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None
-                )
+                if vpc_network is not None:
+                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
+                        groups=security_groups,associate_public_ip_address=associate_public_ip_address)
+                    network_interfaces = NetworkInterfaceCollection(network_interface)
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                        network_interfaces=network_interfaces,
+                    )
+                else:
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        security_group_ids=security_groups,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None
+                    )
+
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        security_group_ids=securitygroup_ids,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    )
+
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
