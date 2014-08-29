@@ -278,10 +278,14 @@ class BucketDetailsView(BaseView):
 
     def get_logging_status(self):
         """Returns the logging status as a dict, with the logs URL included for templates"""
+        if self.cloud_type == 'euca':
+            return dict(enabled=False)  # Euca 4.0 doesn't support bucket logging
         if self.bucket:
             status = self.bucket.get_logging_status()
             logging_enabled = hasattr(status, 'LoggingEnabled')
             logging_prefix = getattr(status, 'prefix', '')
+            if logging_prefix and DELIMITER in logging_prefix:
+                logging_prefix = '{0}/'.format(logging_prefix.split(DELIMITER)[0])
             logging_subpath = '{0}/{1}'.format(self.bucket.name, logging_prefix)
             return dict(
                 enabled=logging_enabled,
