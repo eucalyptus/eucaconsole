@@ -18,8 +18,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.launchconfigName = '';
         $scope.instanceTypeSelected = '';
         $scope.securityGroup = '';
+        $scope.securityGroupName = '';
+        $scope.securityGroupJsonEndpoint = '';
+        $scope.securityGroupList = {};
         $scope.securityGroupsRules = {};
-        $scope.securityGroupsIDMap = {};
         $scope.keyPairChoices = {};
         $scope.keyPair = '';
         $scope.newKeyPairName = '';
@@ -47,25 +49,22 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson, roles,
+                                securityGroupChoices, securityGroupJsonURL, roles,
                                 imageJsonURL) {
             securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
             securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
-            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
             keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
             $scope.roleList = JSON.parse(roles);
             $scope.imageJsonURL = imageJsonURL;
+            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
+            $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
             $scope.setWatcher();
             $scope.setFocus();
-        };
-        $scope.getSecurityGroupIDByName = function (securityGroupName) {
-            return $scope.securityGroupsIDMap[securityGroupName];
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
@@ -76,8 +75,35 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 });
             });
         };
+        $scope.getAllSecurityGroups = function () {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token
+            $http({method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
+                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
+              success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupList = results;
+            });
+        };
         $scope.updateSecurityGroup = function () {
-             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
+            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
+        };
+        $scope.updateSecurityGroupChoices = function () {
+            $scope.securityGroupChoices = {};
+            if ($.isEmptyObject($scope.securityGroupList)) {
+                return;
+            }
+            $scope.securityGroup = $scope.securityGroupList[0]['id'];
+            for( var i=0; i < $scope.securityGroupList.length; i++){
+                var securityGroupID = $scope.securityGroupList[i]['id'];
+                var securityGroupName = $scope.securityGroupList[i]['name'];
+                var securityGroupVPCID = $scope.securityGroupList[i]['vpc_id'];
+                if (securityGroupVPCID !== null) {
+                    securityGroupName = securityGroupName + " (" + securityGroupVPCID + ")";
+                } 
+                $scope.securityGroupChoices[securityGroupID] = securityGroupName;
+            } 
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -173,6 +199,9 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
+            $scope.$watch('securityGroupList', function () {
+                $scope.updateSecurityGroupChoices();
             });
             $scope.$watch('imageID', function(newID, oldID){
                 // Clear the image ID existence check variables
@@ -298,7 +327,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             // since clicking invokes this method again (via ng-click) and
             // one ng action must complete before another can star
                 var hash = "step"+nextStep;
-                $(".tabs").children("dd").each(function() {
+                $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
                         var id = link.attr("href").substring(1);
@@ -392,7 +421,11 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 if (oData.id) {
                     newSecurityGroupID = oData.id;
                 }
-                $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
+                var newlyCreatedSecurityGroupName = $scope.newSecurityGroupName;
+                if ($scope.securityGroupVPC) {
+                    newlyCreatedSecurityGroupName = newlyCreatedSecurityGroupName + " (" + $scope.securityGroupVPC + ")";
+                }
+                $scope.securityGroupChoices[newSecurityGroupID] = newlyCreatedSecurityGroupName;
                 $scope.securityGroup = newSecurityGroupID;
                 $scope.selectedGroupRules = JSON.parse($('#rules').val());
                 $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;

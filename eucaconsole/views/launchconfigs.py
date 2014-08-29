@@ -128,6 +128,7 @@ class LaunchConfigsJsonView(LandingPageView):
         self.autoscale_conn = self.get_connection(conn_type='autoscale')
         with boto_error_handler(request):
             self.items = self.get_items()
+            self.securitygroups = self.get_all_security_groups()
 
     @view_config(route_name='launchconfigs_json', renderer='json', request_method='POST')
     def launchconfigs_json(self):
@@ -138,7 +139,8 @@ class LaunchConfigsJsonView(LandingPageView):
             launchconfigs_image_mapping = self.get_launchconfigs_image_mapping()
             scalinggroup_launchconfig_names = self.get_scalinggroups_launchconfig_names()
             for launchconfig in self.filter_items(self.items):
-                security_groups = [sg for sg in launchconfig.security_groups]
+                security_groups = self.get_security_groups(launchconfig.security_groups)
+                security_groups_array = sorted({'name': group.name, 'id': group.id} for group in security_groups)
                 image_id = launchconfig.image_id
                 name = launchconfig.name
                 launchconfigs_array.append(dict(
@@ -148,7 +150,7 @@ class LaunchConfigsJsonView(LandingPageView):
                     instance_monitoring=launchconfig.instance_monitoring.enabled == 'true',
                     key_name=launchconfig.key_name,
                     name=name,
-                    security_groups=security_groups,
+                    security_groups=security_groups_array,
                     in_use=name in scalinggroup_launchconfig_names,
                 ))
             return dict(results=launchconfigs_array)
@@ -168,6 +170,39 @@ class LaunchConfigsJsonView(LandingPageView):
         if self.autoscale_conn:
             return [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return []
+
+    def get_all_security_groups(self):
+        if self.ec2_conn:
+            return self.ec2_conn.get_all_security_groups()
+        return []
+
+    def get_security_groups(self, groupids):
+        security_groups = []
+        if groupids:
+            for id in groupids:
+                security_group = ''
+                # Due to the issue that AWS-Classic and AWS-VPC different values, name and id, for .securitygroup for launch config object
+                if id.startswith('sg-'):
+                    security_group = self.get_security_group_by_id(id)
+                else:
+                    security_group = self.get_security_group_by_name(id)
+                if security_group:
+                    security_groups.append(security_group) 
+        return security_groups
+
+    def get_security_group_by_id(self, id):
+        if self.securitygroups: 
+            for sgroup in self.securitygroups:
+                if sgroup.id == id:
+                    return sgroup
+        return ''
+
+    def get_security_group_by_name(self, name):
+        if self.securitygroups: 
+            for sgroup in self.securitygroups:
+                if sgroup.name == name:
+                    return sgroup
+        return ''
 
 
 class LaunchConfigView(BaseView):
@@ -208,7 +243,7 @@ class LaunchConfigView(BaseView):
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
             launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
-            launch_config_vpc_ip_assignment=str(self.launch_config.associate_public_ip_address) if self.launch_config else '',
+            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(self.launch_config.associate_public_ip_address) if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
@@ -282,6 +317,12 @@ class LaunchConfigView(BaseView):
             launch_configs = [group.launch_config_name for group in self.autoscale_conn.get_all_groups()]
         return self.launch_config.name in launch_configs
 
+    def get_vpc_ip_assignment_display(self, value):
+        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('True', _(u'For all instances')), ('False', _(u'Never'))]
+        for choice in choices:
+            if choice[0] == str(value):
+                return choice[1]
+        return  ''
 
 class CreateLaunchConfigView(BlockDeviceMappingItemView):
     """Create Launch Configuration wizard"""
@@ -304,7 +345,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
         self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.create_form.keypair.choices)))
@@ -321,7 +361,6 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
-            securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
             role_choices_json=self.role_choices_json,
@@ -409,9 +448,3 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
 
-    def get_securitygroups_id_map(self):
-        map_dict = {}
-        for security_group in self.securitygroups:
-            if security_group.vpc_id is None:
-                map_dict[security_group.name] = security_group.id
-        return map_dict
