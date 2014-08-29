@@ -477,9 +477,9 @@ class LandingPageView(BaseView):
                     return True
         return False
 
-    def get_json_endpoint(self, route):
+    def get_json_endpoint(self, route, path=False):
         return '{0}{1}'.format(
-            self.request.route_path(route),
+            self.request.route_path(route) if path is False else route,
             '?{0}'.format(urlencode(self.request.params)) if self.request.params else ''
         )
 
