@@ -97,7 +97,7 @@
                         <!--! Step 3: Security tab content -->
                         <div class="content" id="step3">
                             <p class="description" i18n:translate="">
-                                Please specify the key pair and security group.
+                                Please specify your network and security settings.
                             </p>
                             ${panel('form_field', field=create_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
                             <div tal:condition="not preset">
