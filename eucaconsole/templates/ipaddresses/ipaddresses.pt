@@ -95,6 +95,7 @@
                  tal:define="html_attrs {'pattern': '^[1-9]\d*$', 'min': '1',
                          'error_msg': 'Please enter a whole number greater than zero'};">
                 ${structure:allocate_form['csrf_token']}
+                ${panel('form_field', field=allocate_form.domain, leftcol_width=6, rightcol_width=6)}
                 ${panel('form_field', field=allocate_form.ipcount, leftcol_width=6, rightcol_width=6, **html_attrs)}
                 <div>
                     <label>

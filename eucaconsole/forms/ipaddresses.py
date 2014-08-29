@@ -37,14 +37,16 @@ from . import BaseSecureForm, ChoicesManager
 
 class AllocateIPsForm(BaseSecureForm):
     """Allocate IP Addresses form, used on IP Addresses landing page in modal dialog"""
+    domain = wtforms.SelectField(label=_(u'Scope'))
     ipcount_error_msg = _(u'Please enter a whole number greater than zero')
     ipcount = wtforms.IntegerField(
-        label=_(u'Number to allocate:'),
+        label=_(u'Number of addresses'),
         validators=[validators.InputRequired(message=ipcount_error_msg)],
     )
 
     def __init__(self, request, **kwargs):
         super(AllocateIPsForm, self).__init__(request, **kwargs)
+        self.domain.choices = [(_(u'standard'), _(u'Standard')), (_(u'vpc'), _(u'VPC'))]
         self.ipcount.data = 1
         self.ipcount.error_msg = self.ipcount_error_msg
 
