@@ -194,7 +194,7 @@ class BaseView(object):
             filters = {'image-type': 'machine'}
             images = self.get_connection().get_all_images(owners=_owners, executable_by=_executors, filters=filters)
             ret = []
-            for idx, img in enumerate(images):
+            for img in images:
                 # trim some un-necessary items we don't need to cache
                 del img.connection
                 del img.region
