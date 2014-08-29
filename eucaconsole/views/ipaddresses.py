@@ -68,11 +68,12 @@ class IPAddressesView(LandingPageView):
         if self.request.method == 'POST':
             if self.allocate_form.validate():
                 new_ips = []
+                domain = self.request.params.get('domain')
                 ipcount = int(self.request.params.get('ipcount', 0))
                 with boto_error_handler(self.request, self.location):
                     self.log_request(_(u"Allocating {0} ElasticIPs").format(ipcount))
                     for i in xrange(ipcount):
-                        new_ip = self.conn.allocate_address()
+                        new_ip = self.conn.allocate_address(domain=domain)
                         new_ips.append(new_ip.public_ip)
                     prefix = _(u'Successfully allocated IPs')
                     ips = ', '.join(new_ips)
