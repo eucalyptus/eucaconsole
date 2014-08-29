@@ -1148,23 +1148,6 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
                         instance_profile_arn=instance_profile.arn if instance_profile else None
                     )
 
-                    reservation = self.conn.run_instances(
-                        image_id,
-                        min_count=num_instances,
-                        max_count=num_instances,
-                        key_name=key_name,
-                        user_data=self.get_user_data(),
-                        addressing_type=addressing_type,
-                        instance_type=instance_type,
-                        placement=availability_zone,
-                        security_group_ids=securitygroup_ids,
-                        kernel_id=kernel_id,
-                        ramdisk_id=ramdisk_id,
-                        monitoring_enabled=monitoring_enabled,
-                        block_device_map=block_device_map,
-                        instance_profile_arn=instance_profile.arn if instance_profile else None,
-                    )
-
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
