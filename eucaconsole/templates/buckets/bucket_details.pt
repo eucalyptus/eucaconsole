@@ -43,7 +43,7 @@
                 </metal:block>
                 <form id="bucket-detail-form" method="post" data-abide="abide" ng-cloak=""
                       action="">
-                    ${structure:bucket_details_form['csrf_token']}
+                    ${structure:details_form['csrf_token']}
                     <h6 i18n:translate="" id="bucket-section-title">Bucket</h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <hr />
-                    ${panel('s3_sharing_panel', bucket_object=bucket)}
+                    ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_volume_submit_button" class="button"

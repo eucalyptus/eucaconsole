@@ -34,7 +34,7 @@ from boto.s3.prefix import Prefix
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 
-from ..forms.buckets import BucketDetailsForm
+from ..forms.buckets import BucketDetailsForm, SharingPanelForm
 from ..i18n import _
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
@@ -265,9 +265,11 @@ class BucketDetailsView(BaseView):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-        self.bucket_details_form = BucketDetailsForm(request)
+        self.details_form = BucketDetailsForm(request)
+        self.sharing_form = SharingPanelForm(request)
         self.render_dict = dict(
-            bucket_details_form=self.bucket_details_form,
+            details_form=self.details_form,
+            sharing_form=self.sharing_form,
         )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)

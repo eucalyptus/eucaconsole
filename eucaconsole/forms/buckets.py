@@ -28,7 +28,10 @@
 Forms for S3 buckets and objects
 
 """
+import wtforms
+
 from . import BaseSecureForm
+from ..i18n import _
 
 
 class BucketDetailsForm(BaseSecureForm):
@@ -36,4 +39,10 @@ class BucketDetailsForm(BaseSecureForm):
     pass
 
 
+class SharingPanelForm(BaseSecureForm):
+    """S3 Sharing Panel form for buckets/objects"""
+    SHARE_TYPE_CHOICES = (
+        ('public', _(u'Public')), ('private', _(u'Private')),
+    )
+    share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
 

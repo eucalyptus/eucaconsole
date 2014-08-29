@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+/* @fileOverview S3 Sharing panel widget Sass CSS styles */
+
+@import "../includes/eucavariables";
+
+#share_type {
+    list-style-type: none;
+    li {
+        display: inline-block;
+    }
+}
+
+
