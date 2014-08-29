@@ -269,6 +269,7 @@ class BucketDetailsView(BaseView):
     def bucket_details(self):
         self.render_dict.update(
             bucket=self.bucket,
+            bucket_creation_date=self.get_bucket_creation_date(),
             bucket_name=self.bucket.name,
             owner=self.get_bucket_owner_name(self.bucket),
             versioning_status=self.get_versioning_status(self.bucket),
@@ -294,6 +295,16 @@ class BucketDetailsView(BaseView):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
+
+    def get_bucket_creation_date(self):
+        """Due to limitations in the AWS API, the creation date is missing when fetching a single bucket,
+           so as a workaround we need to fetch all buckets and match the current one to get the creation timestamp.
+           FIXME: Remove this hack if/when we have bucket.creation_date available via s3_conn.get_bucket()
+        """
+        buckets = self.s3_conn.get_all_buckets() if self.s3_conn else []
+        matched_bucket = [bucket for bucket in buckets if bucket.name == self.bucket.name]
+        if matched_bucket:
+            return getattr(matched_bucket[0], 'creation_date', None)
 
     @staticmethod
     def get_bucket_owner_name(bucket):

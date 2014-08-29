@@ -77,7 +77,9 @@
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Creation time</label></div>
-                        <!--!<div class="small-8 columns value">{{'${bucket.creation_date}' | date:'${layout.angular_date_format}'}}</div>-->
+                        <div class="small-8 columns value">
+                            {{'${bucket_creation_date}' | date:'${layout.angular_date_format}'}}
+                        </div>
                     </div>
                     <hr />
                     <div>
