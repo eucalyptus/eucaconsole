@@ -4,11 +4,25 @@
 
 @import "../includes/eucavariables";
 
-#share_type {
-    list-style-type: none;
-    li {
-        display: inline-block;
+
+#s3-sharing-panel {
+    .items {
+        margin-bottom: 6px;
+        .grantentry {
+            color: #333;
+            background-color: $euca-extralightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
+    }
+    #share_type {
+        list-style-type: none;
+        margin-bottom: 0;
+        li {
+            display: inline-block;
+        }
     }
 }
-
 

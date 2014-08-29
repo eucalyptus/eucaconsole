@@ -8,8 +8,20 @@ angular.module('S3SharingPanel', [])
         $scope.s3AclTextarea = $('#s3-sharing-panel');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
-        $scope.initS3SharingPanel = function () {
-
+        $scope.grantsArray = [];
+        $scope.shareType = '';
+        $scope.initS3SharingPanel = function (grants_json) {
+            $scope.grantsArray = JSON.parse(grants_json);
+            $scope.addListeners();
         };
+        $scope.addListeners = function () {
+            $(document).ready(function() {
+                $('input[name="share_type"]').on('change', function() {
+                    $scope.$apply(function () {
+                        $scope.shareType = $('input[name="share_type"]:checked').val();
+                    });
+                });
+            });
+        }
     })
 ;

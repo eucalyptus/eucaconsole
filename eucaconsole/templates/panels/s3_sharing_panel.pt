@@ -1,25 +1,46 @@
 <!--! S3 bucket/object sharing panel -->
 <div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole"
-     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel()">
+     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${grants_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
     <div>
         <h6 i18n:translate="" class="sharing-label">Sharing</h6>
         <div>
-            ${structure:sharing_form.share_type}
+            ${structure:sharing_form.share_type()}
         </div>
-        <div class="row">
-            <div class="columns subheader" ng-cloak="">
-                <span class="subsection-label" ng-show="sharingAccountList.length == 0" i18n:translate="">Add an account</span>
-                <span class="subsection-label" ng-show="sharingAccountList.length" i18n:translate="">Add another account</span>
-                :
+        <div id="sharing-public" ng-show="shareType == 'public'" ng-cloak="">
+            <p>
+                <span i18n:translate="">Anyone can access this</span>
+                <span i18n:translate="" tal:condition="object_type == 'bucket'">bucket and its contents.</span>
+                <span i18n:translate="" tal:condition="object_type != 'bucket'">object.</span>
+            </p>
+        </div>
+        <div id="sharing-private" ng-show="shareType == 'private'" ng-cloak="">
+            <p>
+                <span i18n:translate="">Only my account and accounts that I share with can access this</span>
+                <span i18n:translate="" tal:condition="object_type == 'bucket'">bucket and its contents.</span>
+                <span i18n:translate="" tal:condition="object_type != 'bucket'">object.</span>
+            </p>
+            <div class="items">
+                <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
+                    {{ grant.display_name || grant.uri.split('/').pop() }}: {{ grant.permission }}
+                    <a href="#" class="remove" ng-click="removeGrant($index, $event)"
+                       title="Remove permission"><i class="fi-x"></i></a>
+                </span>
             </div>
+            <div class="row">
+                <div class="columns subheader" ng-cloak="">
+                    <span class="subsection-label" ng-show="sharingAccountList.length == 0" i18n:translate="">Add an account</span>
+                    <span class="subsection-label" ng-show="sharingAccountList.length" i18n:translate="">Add another account</span>
+                    :
+                </div>
+            </div>
+            <div>
+                <a class="button round tiny" ng-click="addAccount()" i18n:translate="" ng-disabled="isNotValid">
+                    Add Account
+                </a>
+            </div>
+            <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
         </div>
-        <div>
-            <a class="button round tiny" ng-click="addAccount()" i18n:translate="" ng-disabled="isNotValid">
-                Add Account
-            </a>
-        </div>
-        <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
 </div>

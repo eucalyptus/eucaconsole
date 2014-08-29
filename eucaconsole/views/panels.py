@@ -34,6 +34,8 @@ from operator import itemgetter
 
 import simplejson as json
 
+from boto.s3.bucket import Bucket
+
 from wtforms.fields import IntegerField
 from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
@@ -313,9 +315,25 @@ def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
 
 @panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
 def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
+    grants_list = []
+    # TODO: Move object type detection to reusable method (in ObjectDetailsView?)
+    object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
+    if object_type == 'object' and bucket_object.size == 0:
+        object_type = 'folder'
+    if bucket_object is not None:
+        for grant in bucket_object.get_acl().acl.grants:
+            grants_list.append(dict(
+                id=grant.id,
+                display_name=grant.display_name,
+                permission=grant.permission,
+                grant_type=grant.type,
+                uri=grant.uri,
+            ))
     return dict(
         bucket_object=bucket_object,
+        object_type=object_type,
         sharing_form=sharing_form,
+        grants_json=json.dumps(grants_list),
     )
 
 
