@@ -1,0 +1,28 @@
+<!--! S3 bucket/object sharing panel -->
+<div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole"
+     ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel()">
+    <div>
+        <h6 i18n:translate="" class="sharing-label">Sharing</h6>
+        <div>
+            <!--! TODO: Convert sharing type to wtforms field -->
+            <input type="radio" name="share_type" value="public" id="share-type-public" checked="checked" />
+            <label for="share-type-public" i18n:translate="">Public</label>
+            <input type="radio" name="share_type" value="private" id="share-type-private" />
+            <label for="share-type-private" i18n:translate="">Private</label>
+        </div>
+        <div class="row">
+            <div class="columns subheader" ng-cloak="">
+                <span class="subsection-label" ng-show="sharingAccountList.length == 0" i18n:translate="">Add an account</span>
+                <span class="subsection-label" ng-show="sharingAccountList.length" i18n:translate="">Add another account</span>
+                :
+            </div>
+        </div>
+        <div>
+            <a class="button round tiny" ng-click="addAccount()" i18n:translate="" ng-disabled="isNotValid">
+                Add Account
+            </a>
+        </div>
+        <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
+    </div>
+    <script src="${request.static_path('eucaconsole:static/js/widgets/s3_sharing_panel.js')}"></script>
+</div>

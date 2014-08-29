@@ -309,3 +309,11 @@ def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
     return dict(
         tile_view=tile_view,
     )
+
+
+@panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
+def s3_sharing_panel(context, request, bucket_object=None):
+    return dict(
+        bucket_object=bucket_object,
+    )
+
