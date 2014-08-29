@@ -116,7 +116,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 }
             } 
             if ($scope.vpcSubnet == '') {
-                $scope.vpcSubnetChoices[''] = "No subnets found";
+                $scope.vpcSubnetChoices[''] = $('#vpc_subnet_empty_option').text();
             }
             $timeout(function() {
                 $('#vpc_subnet').trigger('chosen:updated');

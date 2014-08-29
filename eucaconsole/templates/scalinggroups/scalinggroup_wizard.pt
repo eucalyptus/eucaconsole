@@ -55,6 +55,7 @@
                             ${panel('form_field', field=create_form['vpc_network'], ng_attrs={'model': 'vpcNetwork'}, leftcol_width=4, rightcol_width=8)}
                             <div ng-show="vpcNetwork != ''">
                                 ${panel('form_field', field=create_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'vpcSubnet', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                <span id="vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                             </div>
                             <hr />
                             <div class="row controls-wrapper" id="capacity-section">
