@@ -37,6 +37,9 @@ from markupsafe import escape
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
+class NonValidatingSelectMultipleField(wtforms.SelectMultipleField):
+    def pre_validate(self, form):
+        pass
 
 class NgNonBindableOptionSelect(Select):
     @classmethod
@@ -59,7 +62,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
-    vpc_subnet = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
+    vpc_subnet = NonValidatingSelectMultipleField(label=_(u'VPC subnets'))
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
@@ -184,7 +187,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         return choices
 
     def get_vpc_subnet_choices(self):
-        choices = self.vpc_choices_manager.vpc_subnets()
+        choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         return choices
 
     def get_availability_zone_choices(self, region):
