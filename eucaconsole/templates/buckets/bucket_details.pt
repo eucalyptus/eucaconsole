@@ -66,7 +66,7 @@
                         <div class="small-4 columns"><label i18n:translate="">Versioning</label></div>
                         <div class="small-8 columns value">${versioning_status}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="layout.cloud_type == 'aws'">
                         <div class="small-4 columns"><label i18n:translate="">Logging</label></div>
                         <div class="small-8 columns value">
                             <span tal:condition="not logging_status.enabled" i18n:translate="">Disabled</span>
