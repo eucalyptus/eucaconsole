@@ -16,12 +16,12 @@
          ng-init="initController('users', '${initial_sort_key}', '${json_items_endpoint}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
-                <li class="current"><a href="#" i18n:translate="">IAM users</a></li>
+                <li class="current"><a href="#" i18n:translate="">Users</a></li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
-        <h3 id="pagetitle"><strong i18n:translate="">IAM Users</strong></h3>
+        <h3 id="pagetitle"><strong i18n:translate="">Users</strong></h3>
         <div class="large-2 columns" id="landing-page-filters">
             <!--! Filters go here -->
         </div>

@@ -5,11 +5,12 @@
  */
 
 // New user page includes the User Editor editor
-angular.module('AccountPage', ['UserEditor'])
+angular.module('AccountPage', ['UserEditor', 'Quotas'])
     .controller('AccountPageCtrl', function ($scope, $http, $timeout) {
         $scope.submitEndpoint = '';
         $scope.accountRedirect = '';
         $scope.accountName = '';
+        $scope.quotas_expanded = false;
         $scope.isNotValid = true;
         $scope.initController = function (submitEndpoint, redirectEndpoint, getFileEndpoint) {
             $scope.submitEndpoint = submitEndpoint;
@@ -17,7 +18,17 @@ angular.module('AccountPage', ['UserEditor'])
             $scope.getFileEndpoint = getFileEndpoint;
             $scope.setWatch();
         };
+        $scope.toggleQuotasContent = function () {
+            $scope.quotas_expanded = !$scope.quotas_expanded;
+        };
         $scope.submit = function($event) {
+            $('#quota-error').css('display', 'none');
+            var form = $($event.target);
+            var invalid = form.find('input[data-invalid]');
+            if (invalid.length > 0) {
+                $('#quota-error').css('display', 'block');
+                return false;
+            }
             var form = $($event.target);
             var csrf_token = form.find('input[name="csrf_token"]').val();
             var data = $($event.target).serialize();
