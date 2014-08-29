@@ -92,7 +92,7 @@ class BucketsJsonView(BaseView):
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    owner='',  # TODO: pull in bucket owner if possible
+                    owner=BucketDetailsView.get_bucket_owner_name(item),
                     versioning=BucketDetailsView.get_versioning_status(item),
                     creation_date=item.creation_date
                 ))
