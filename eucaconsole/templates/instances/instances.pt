@@ -91,7 +91,7 @@
                 </div>
                 <div>
                     <span class="label" title="Root device" i18n:attributes="title" data-tooltip="">IM</span>
-                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_id }}</a>
+                    <a ng-href="/images/{{ item.image_id }}">{{ item.image_name || item.image_id }}</a>
                 </div>
                 <div>
                     <span class="label" title="IP address" i18n:attributes="title" data-tooltip="">IP</span>

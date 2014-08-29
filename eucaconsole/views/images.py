@@ -32,12 +32,11 @@ import re
 import simplejson as json
 import logging
 
-from beaker.cache import cache_region, cache_managers
 from boto.exception import BotoServerError
 from boto.ec2.image import Image
-from boto.s3.key import Key
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
+import pylibmc
 
 from ..constants.images import PLATFORM_CHOICES, PlatformChoice
 from ..forms.images import ImageForm, ImagesFiltersForm, DeregisterImageForm
@@ -176,12 +175,6 @@ class ImagesView(LandingPageView):
             dict(key='description', name=_(u'Description')),
         ]
 
-    @staticmethod
-    def invalidate_images_cache():
-        for manager in cache_managers.values():
-            if '_get_images_cache' in manager.namespace.namespace:
-                manager.clear()
-
 
 class ImagesJsonView(LandingPageView, ImageBundlingMixin):
 
@@ -218,7 +211,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 transitional=image.state not in ['available', 'failed', 'deleted'],
                 progress=0,  # this is valid for transitional images till we get something better
                 location=image.location,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 name_id=ImageView.get_image_name_id(image),
                 owner_id=image.owner_id,
                 owner_alias=image.owner_alias,
@@ -255,7 +248,7 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
                 name=image.name,
                 location=image.location,
                 block_device_mapping=bdm_dict,
-                tagged_name=TaggedItemView.get_display_name(image),
+                tagged_name=TaggedItemView.get_display_name(image, escapebraces=False),
                 owner_alias=image.owner_alias,
                 platform_name=ImageView.get_platform_name(platform),
                 platform_key=ImageView.get_platform_key(platform),  # Used in image picker widget
@@ -292,24 +285,6 @@ class ImagesJsonView(LandingPageView, ImageBundlingMixin):
         if owner_alias == 'self':
             items.extend(self.get_images(self.conn, [], ['self'], region))
         return items
-
-    def get_images(self, conn, owners, executors, region):
-        """Get images, leveraging Beaker cache for long_term duration (3600 seconds)"""
-        if 'amazon' in owners or 'aws-marketplace' in owners:
-            cache_key = 'images_cache_{owners}_{executors}_{region}'.format(
-                owners=owners, executors=executors, region=region)
-
-            # Heads up!  Update cache key if we allow filters to be passed here
-            @cache_region('long_term', cache_key)
-            def _get_images_cache(_owners, _executors, _region):
-                with boto_error_handler(self.request):
-                    filters = {'image-type': 'machine'}
-                    return conn.get_all_images(owners=_owners, executable_by=_executors, filters=filters) if conn else []
-            return _get_images_cache(owners, executors, region)
-        else:
-            with boto_error_handler(self.request):
-                filters = {'image-type': 'machine'}
-                return conn.get_all_images(owners=owners, executable_by=executors, filters=filters) if conn else []
 
     def filter_by_platform(self, items):
         filtered_items = []
@@ -443,7 +418,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 self.image_update_launch_permissions(lp_array)
 
             # Clear images cache
-            ImagesView.invalidate_images_cache()
+            self.invalidate_images_cache()
 
             location = self.request.route_path('image_view', id=self.image.id)
             msg = _(u'Successfully modified image')
@@ -532,7 +507,7 @@ class ImageView(TaggedItemView, ImageBundlingMixin):
                 if self.image.root_device_type == 'ebs' and self.request.params.get('delete_snapshot') == 'y':
                     delete_snapshot = True
                 self.conn.deregister_image(self.image.id, delete_snapshot=delete_snapshot)
-                ImagesView.invalidate_images_cache()  # clear images cache
+                self.invalidate_images_cache()  # clear images cache
                 location = self.request.route_path('images')
                 msg = _(u'Successfully sent request to deregistered image.')
                 self.request.session.flash(msg, queue=Notification.SUCCESS)

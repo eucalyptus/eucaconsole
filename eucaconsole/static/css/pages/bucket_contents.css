@@ -1,0 +1,103 @@
+/* @fileOverview Buckets contents page CSS */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* Dropdown elements */
+/* Set the link colors and styles for top-level nav */
+/* @section Landing pages styles */
+.columns.datagrid { padding-left: 0; padding-right: 1rem; padding-bottom: 2rem; }
+
+.large-12.columns.datagrid { padding-left: 1rem; }
+
+.clear-link { color: #6a737b; }
+.clear-link:hover { color: #8cc63e; }
+
+#breadcrumbs .icon-block { display: none; }
+
+#primary-buttons .button { padding: 8px 3rem; }
+
+.gridwrapper .dropdown.button.tiny { z-index: 99999; background: none; box-shadow: none; position: absolute; width: 30px; height: 24px; top: 0; right: 0; color: #8cc63e; font-size: 1.1rem; padding: 0 0 0 0; border-top: none; border-right: none; }
+.gridwrapper .dropdown.button.tiny:hover { color: #8cc63e; }
+.gridwrapper .dropdown.button.tiny::before { border: none; }
+.gridwrapper .dropdown.button.tiny .fi-widget { position: relative; top: 4px; background-image: url(../../img/svg/gear.svg); display: inline-block; width: 20px; height: 20px; }
+.gridwrapper .dropdown.button.tiny .fi-widget::before { content: " "; }
+.gridwrapper .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
+.gridwrapper .f-dropdown.open { top: 34px; min-width: 10rem; padding-top: 0; }
+
+.tile { font-size: 0.8125rem; position: relative; display: inline-block; vertical-align: top; width: 202px; height: 220px; max-height: 220px; background-color: white; margin-right: 10px; margin-bottom: 10px; padding-bottom: 24px; word-wrap: break-word; }
+.tile.add { text-align: center; text-transform: uppercase; position: relative; }
+.tile.add a { display: block; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.tile.add a:hover { background-color: #d3e9b6; }
+.tile.add .plus { font-size: 5rem; margin-bottom: 0.5rem; }
+.tile .header { position: relative; height: 24px; }
+.tile .header a { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; padding: 6px 30px 4px 10px; color: #03405f; font-weight: bold; }
+.tile .header a:hover { color: #8cc63e; }
+.tile .header strong { font-weight: normal; }
+.tile .header .f-dropdown a { color: #444444; font-weight: normal; overflow: visible; white-space: normal; text-overflow: inherit; }
+.tile .content { padding: 8px; font-size: 0.9em; }
+.tile .content a { color: #468400; }
+.tile .content a:hover { text-decoration: underline; }
+.tile .content div { margin-bottom: 2px; margin-left: 28px; word-break: break-all; }
+.tile .content .label { padding: 1px 3px; margin-left: -28px; background-color: #e6e7e8; color: #555; margin-right: 0.2rem; min-width: 22px; text-align: center; }
+.tile .content .label.ellipsis { margin-left: 0; }
+.tile .link { color: #8cc63e; text-transform: uppercase; padding: 1px 3px; margin-bottom: 2px; font-size: 0.9em; }
+.tile .footer { position: absolute; bottom: 0; left: 0; right: 0; padding: 5px; color: white; background-color: #6a737b; text-align: center; line-height: 1.4rem; text-transform: capitalize; }
+.tile .footer.has-progress { padding: 0 0 0 0; text-align: left; }
+.tile .footer .completed { padding: 4px 0 4px 10px; text-align: center; }
+.tile .footer .progress { position: relative; margin: 0 0 0 0; height: 24px; border: none; }
+.tile .footer .progress .meter { position: relative; top: -2px; left: -2px; padding: 4px 0 4px 8px; height: 24px; display: inline-block; white-space: nowrap; font-weight: bold; text-align: center; }
+.tile .footer .dots { position: absolute; width: 16px; height: 11px; top: 8px; right: 8px; }
+
+.gridwrapper .table { border: none; width: 100%; }
+.gridwrapper .table thead tr { background-color: #8cc63e; }
+.gridwrapper .table thead tr th { padding-top: 0.5rem; padding-bottom: 0.5rem; vertical-align: top; text-transform: uppercase; }
+.gridwrapper .table thead tr th.actions { text-align: right; }
+.gridwrapper .table tr { border-bottom: 1px solid #ddd; }
+.gridwrapper .table th { white-space: nowrap; }
+.gridwrapper .table tr { position: relative; width: 100%; }
+.gridwrapper .table tr td { position: relative; padding: 8px 4px 8px 6px; vertical-align: top; }
+.gridwrapper .table tr td.status { text-transform: capitalize; }
+.gridwrapper .table tr td a { color: #468400; }
+.gridwrapper .table tr td a:hover { text-decoration: underline; }
+.gridwrapper .table tr td.id { max-width: 120px; }
+.gridwrapper .table tr td span.actions { position: relative; float: right; top: -10px; }
+.gridwrapper .table tr td.tags { max-width: 20rem; word-break: break-all; }
+.gridwrapper .table tr td .f-dropdown a { color: #444444; }
+.gridwrapper .table tr td .f-dropdown a:hover { text-decoration: none; }
+.gridwrapper .table .dropdown.button.tiny { z-index: 0; top: 8px; right: 20px; padding-left: 10px; padding-right: 24px; }
+.gridwrapper .table .dropdown.button.tiny i { font-size: 1.2rem; top: 0; }
+
+.sort-search { font-size: 0.9rem; }
+.sort-search form { margin-bottom: 0; position: relative; }
+.sort-search form input { background-color: transparent; border-color: #6a737b; }
+.sort-search .go { font-size: 1.2rem; position: absolute; top: 8px; right: 10px; color: #999; }
+
+.match-condition { font-size: 0.8125rem; margin-bottom: 4px; }
+
+.displayicons { font-size: 2rem; }
+.displayicons a { float: right; border-bottom: none; color: #8cc63e; }
+.displayicons a:hover { border-bottom: none; color: #8cc63e; }
+.displayicons label { float: right; line-height: 2.5rem; margin-right: 5px; }
+.displayicons .selected { background-color: white; color: black; }
+.displayicons .selected:hover { color: black; cursor: default; }
+.displayicons i { display: inline-block; padding: 2px 8px; }
+
+#filters { position: relative; background-color: white; padding: 8px; margin-top: 108px; font-size: 0.8rem; }
+#filters form label { font-weight: bold; position: relative; top: 2px; margin-top: 0.5rem; font-size: 0.8rem; }
+#filters form input { height: 1.8rem; margin-bottom: 0; font-size: 0.8rem; }
+#filters form button { box-shadow: none; }
+
+#sorting-controls { padding-top: 22px; }
+#sorting-controls .f-dropdown { border-color: #8dc640; box-shadow: 2px 2px 5px #6a737b; }
+
+#results-count { padding-top: 1rem; }
+#results-count .items-found { position: relative; top: -6px; }
+#results-count em { color: #555; font-style: normal; }
+
+#refresh-btn { background-image: url(../../img/svg/icon_reload.svg); background-color: transparent; width: 24px; height: 24px; }
+
+/* ----------------------------------------- Media Queries
+----------------------------------------- */
+@media screen and (max-width: 1024px) { #filters { margin-top: 1rem; } }
+/* Small screen */
+@media screen and (max-width: 920px) { .columns.datagrid { padding-left: 1rem; } }
+.icon { display: inline-block; width: 20px; color: #468400; }
