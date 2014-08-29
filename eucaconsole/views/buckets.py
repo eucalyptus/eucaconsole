@@ -273,6 +273,8 @@ class BucketDetailsView(BaseView):
             owner=self.get_bucket_owner_name(self.bucket),
             versioning_status=self.get_versioning_status(self.bucket),
             logging_status=self.get_logging_status(),
+            bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
         )
         return self.render_dict
 
@@ -306,5 +308,5 @@ class BucketDetailsView(BaseView):
         if bucket:
             # TODO: get_versioning_status always seems to return an empty dict.  May be a boto bug
             status = bucket.get_versioning_status()
-            return status.get('Versioning', 'disabled')
+            return status.get('Versioning', 'Disabled')
 

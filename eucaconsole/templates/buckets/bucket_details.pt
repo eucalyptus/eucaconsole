@@ -7,7 +7,7 @@
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
          ng-app="BucketDetailsPage" ng-controller="BucketDetailsPageCtrl"
-         ng-init="initController()">
+         ng-init="initController('${bucket_objects_count_url}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('buckets')}" i18n:translate="">Buckets</a></li>
@@ -51,6 +51,15 @@
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Owner</label></div>
                         <div class="small-8 columns value">${owner}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Objects</label></div>
+                        <div class="small-8 columns value" ng-cloak="">
+                            <span class="dots" ng-show="objectsCountLoading"></span>
+                            <a ng-show="!objectsCountLoading" href="${bucket_contents_url}">
+                                {{ bucketObjectsCount }}
+                            </a>
+                        </div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Versioning</label></div>

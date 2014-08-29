@@ -179,7 +179,7 @@ urls = [
     # Contents/detail pages
     Route(name='bucket_contents', pattern='/bucketcontents/*subpath'),
     Route(name='bucket_details', pattern='/buckets/{name}/details'),
-    Route(name='bucket_objects_count_json', pattern='/buckets/{name}/objectcount.json'),
+    Route(name='bucket_objects_count_json', pattern='/buckets/{name}/objectscount.json'),
 
     # Security Groups #####
     # Landing page
