@@ -43,11 +43,11 @@
                 </a>
             </div>
             <div metal:fill-slot="tile_content" tal:omit-tag="">
-                <div>
-                    <span class="label" title="size" i18n:attributes="title" data-tooltip="">SZ</span>
-                    <span ng-show="item.size">{{ item.size }}</span>
+                <div ng-show="!item.is_folder">
+                    <span class="label" title="Size" i18n:attributes="title" data-tooltip="">SZ</span>
+                    <span ng-show="item.size">{{ item.size | bytes }}</span>
                 </div>
-                <div>
+                <div ng-show="!item.is_folder">
                     <span class="label" title="Last Modified" i18n:attributes="title" data-tooltip="">LM</span>
                     <span ng-show="item.last_modified">
                         <b>{{ item.last_modified | date: '${layout.angular_date_format}' }}</b>
@@ -63,7 +63,22 @@
                         <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                     </li>
                     <li>
+                        <a i18n:translate="" href="#">View details</a>
+                    </li>
+                    <li>
                         <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" href="#">Open</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" href="#">Download</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" href="#">Copy link to object</a>
+                    </li>
+                    <li ng-show="!item.is_folder">
+                        <a i18n:translate="" href="#">Copy object</a>
                     </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
@@ -97,7 +112,22 @@
                                 <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                             </li>
                             <li>
+                                <a i18n:translate="" href="#">View details</a>
+                            </li>
+                            <li>
                                 <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" href="#">Open</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" href="#">Download</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" href="#">Copy link to object</a>
+                            </li>
+                            <li ng-show="!item.is_folder">
+                                <a i18n:translate="" href="#">Copy object</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('delete', item)">Delete</a>
