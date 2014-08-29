@@ -521,7 +521,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }
             } 
             if ($scope.subnetVPC == '') {
-                $scope.vpcSubnetChoices[''] = "No subnets found";
+                $scope.vpcSubnetChoices[''] = $('#hidden_vpc_subnet_empty_option').text();
             }
         };
     })

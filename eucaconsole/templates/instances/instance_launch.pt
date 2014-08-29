@@ -105,6 +105,7 @@
                             ${panel('form_field', field=launch_form['vpc_network'], ng_attrs={'model': 'instanceVPC'}, leftcol_width=4, rightcol_width=8)}
                             <div ng-show="instanceVPC != ''">
                                 ${panel('form_field', field=launch_form['vpc_subnet'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'subnetVPC', 'options': 'k as v for (k, v) in vpcSubnetChoices'})}
+                                <span input="hidden_vpc_subnet_empty_option" class="hide" i18n:translate="">No subnets found</span>
                                 ${panel('form_field', field=launch_form['associate_public_ip_address'], leftcol_width=4, rightcol_width=8)}
                             </div>
                             ${panel('form_field', field=launch_form['keypair'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'keyPair', 'options': 'k as v for (k, v) in keyPairChoices'})}
