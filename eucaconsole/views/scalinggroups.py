@@ -226,6 +226,8 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         with boto_error_handler(request):
             self.scaling_group = self.get_scaling_group()
             self.policies = self.get_policies(self.scaling_group)
+            self.vpc = self.get_vpc(self.scaling_group)
+            self.vpc_name = TaggedItemView.get_display_name(self.vpc) if self.vpc else '' 
         self.edit_form = ScalingGroupEditForm(
             self.request, scaling_group=self.scaling_group, autoscale_conn=self.autoscale_conn, ec2_conn=self.ec2_conn,
             vpc_conn=self.vpc_conn, elb_conn=self.elb_conn, formdata=self.request.params or None)
@@ -233,6 +235,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.render_dict = dict(
             scaling_group=self.scaling_group,
             scaling_group_name=self.escape_braces(self.scaling_group.name) if self.scaling_group else '',
+            vpc_network=self.vpc_name,
             policies=self.policies,
             policies_count=len(self.policies),
             edit_form=self.edit_form,
@@ -292,6 +295,7 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
+        self.scaling_group.vpc_zone_identifier = ', '.join([str(x) for x in self.request.params.getall('vpc_subnet')])
         self.scaling_group.availability_zones = self.request.params.getall('availability_zones')  # getall = multiselect
         self.scaling_group.termination_policies = self.request.params.getall('termination_policies')
         self.scaling_group.max_size = self.request.params.get('max_size', 1)
@@ -300,6 +304,14 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.scaling_group.health_check_period = self.request.params.get('health_check_period', 120)
         self.scaling_group.default_cooldown = self.request.params.get('default_cooldown', 120)
         self.scaling_group.update()
+
+    def get_vpc(self, scaling_group):
+        if self.vpc_conn and scaling_group.vpc_zone_identifier:
+            vpc_subnets = scaling_group.vpc_zone_identifier.split(',')
+            vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=vpc_subnets[0])[0]
+            vpc_id = vpc_subnet.vpc_id
+            return self.vpc_conn.get_all_vpcs(vpc_ids=vpc_id)[0]
+        return None
 
 
 class ScalingGroupInstancesView(BaseScalingGroupView):

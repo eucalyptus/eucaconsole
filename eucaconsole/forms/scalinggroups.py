@@ -59,7 +59,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
-    vpc_subnet = wtforms.SelectMultipleField(label=_(u'VPC subnet'))
+    vpc_subnet = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
@@ -149,7 +149,8 @@ class BaseScalingGroupForm(BaseSecureForm):
 
         if scaling_group is not None:
             self.launch_config.data = scaling_group.launch_config_name
-            self.vpc_subnet.data = scaling_group.vpc_zone_identifier
+            self.vpc_network.data = ''
+            self.vpc_subnet.data = scaling_group.vpc_zone_identifier.split(',')
             self.availability_zones.data = scaling_group.availability_zones
             self.load_balancers.data = scaling_group.load_balancers
             self.desired_capacity.data = int(scaling_group.desired_capacity) if scaling_group else 1
