@@ -1055,6 +1055,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             self.request, image=self.image, instance=self.instance,
             conn=self.conn, formdata=self.request.params or None)
         self.role = None
+        self.associate_public_ip_address = 'No'
+        if self.instance.interfaces:
+            if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
+                self.associate_public_ip_address = 'Yes'
         if self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.index('/')+1):]
@@ -1064,6 +1068,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             image=self.image,
             instance=self.instance,
             instance_name=self.instance_name,
+            associate_public_ip_address=self.associate_public_ip_address,
             launch_more_form=self.launch_more_form,
             snapshot_choices=self.get_snapshot_choices(),
             role=self.role,
