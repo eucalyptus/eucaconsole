@@ -69,7 +69,7 @@ class BucketsView(LandingPageView):
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['bucket_name'],
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_')
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_'),
         )
         return self.render_dict
 
@@ -92,9 +92,8 @@ class BucketsJsonView(BaseView):
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    owner=BucketDetailsView.get_bucket_owner_name(item),
                     versioning=BucketDetailsView.get_versioning_status(item),
-                    creation_date=item.creation_date
+                    creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
 

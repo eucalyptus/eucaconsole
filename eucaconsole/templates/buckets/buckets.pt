@@ -37,12 +37,6 @@
                     </span>
                 </div>
                 <div>
-                    <span class="label" title="Owner" i18n:attributes="title" data-tooltip="">OW</span>
-                    <span ng-show="item.owner">
-                        <b>{{ item.owner }}</b>
-                    </span>
-                </div>
-                <div>
                     <span class="label" title="Versioning" i18n:attributes="title" data-tooltip="">VE</span>
                     <span ng-show="item.versioning">
                         <b>{{ item.versioning }}</b>
@@ -74,7 +68,6 @@
             <metal:block metal:fill-slot="tableview_headers">
                 <th i18n:translate="">Name</th>
                 <th i18n:translate="">Objects</th>
-                <th i18n:translate="">Owner</th>
                 <th i18n:translate="">Versioning</th>
                 <th i18n:translate="">Creation Time</th>
                 <th i18n:translate="" class="actions">Actions</th>
@@ -90,7 +83,6 @@
                     <span class="dots" ng-show="countsLoading[item.bucket_name]"></span>
                     {{ bucketCounts[item.bucket_name] }}
                 </td>
-                <td>{{ item.owner }}</td>
                 <td>{{ item.versioning }}</td>
                 <td>{{ item.creation_date | date: '${layout.angular_date_format}' }}</td>
                 <td>

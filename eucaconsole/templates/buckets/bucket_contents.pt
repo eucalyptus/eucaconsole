@@ -72,9 +72,6 @@
                         <a i18n:translate="" href="#">Download</a>
                     </li>
                     <li ng-show="!item.is_folder">
-                        <a i18n:translate="" href="#">Copy link to object</a>
-                    </li>
-                    <li ng-show="!item.is_folder">
                         <a i18n:translate="" href="#">Copy object</a>
                     </li>
                     <li>
@@ -116,9 +113,6 @@
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" href="#">Download</a>
-                            </li>
-                            <li ng-show="!item.is_folder">
-                                <a i18n:translate="" href="#">Copy link to object</a>
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" href="#">Copy object</a>
