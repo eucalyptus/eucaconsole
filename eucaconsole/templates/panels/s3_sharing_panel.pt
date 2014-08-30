@@ -29,14 +29,18 @@
             </div>
             <div class="row">
                 <div class="columns subheader" ng-cloak="">
-                    <span class="subsection-label" ng-show="sharingAccountList.length == 0" i18n:translate="">Add an account</span>
-                    <span class="subsection-label" ng-show="sharingAccountList.length" i18n:translate="">Add another account</span>
+                    <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
+                        Add a permission
+                    </span>
+                    <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
+                        Add another permission
+                    </span>
                     :
                 </div>
             </div>
             <div>
-                <a class="button round tiny" ng-click="addAccount()" i18n:translate="" ng-disabled="isNotValid">
-                    Add Account
+                <a class="button round tiny" ng-click="addGrant()" i18n:translate="" ng-disabled="isNotValid">
+                    Add permission
                 </a>
             </div>
             <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>

@@ -29,8 +29,11 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 
 """
 import mimetypes
+import simplejson as json
 
+from boto.s3.acl import ACL, Grant, Policy
 from boto.s3.prefix import Prefix
+
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
@@ -278,7 +281,6 @@ class BucketDetailsView(BaseView):
     def bucket_details(self):
         self.render_dict.update(
             bucket=self.bucket,
-            is_public=self.get_public_status(),
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,
             owner=self.get_bucket_owner_name(self.bucket_acl),
@@ -297,7 +299,9 @@ class BucketDetailsView(BaseView):
                 share_type = self.request.params.get('share_type')
                 if share_type == 'public':
                     self.bucket.make_public(recursive=True)
-                msg = _(u'Successfully modified bucket properties')
+                else:
+                    self.set_sharing_acl()
+                msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -321,9 +325,25 @@ class BucketDetailsView(BaseView):
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
 
-    def get_public_status(self):
-        if self.bucket_acl:
-            pass
+    def set_sharing_acl(self):
+        sharing_grants_json = self.request.params.get('s3_sharing_acl')
+        if sharing_grants_json:
+            sharing_grants = json.loads(sharing_grants_json)
+            grants = []
+            for grant in sharing_grants:
+                grants.append(Grant(
+                    permission=grant.get('permission'),
+                    id=grant.get('id'),
+                    display_name=grant.get('display_name'),
+                    type=grant.get('grant_type'),
+                    uri=grant.get('uri'),
+                ))
+            sharing_acl = ACL()
+            sharing_acl.grants = grants
+            sharing_policy = Policy()
+            sharing_policy.acl = sharing_acl
+            sharing_policy.owner = self.bucket_acl.owner
+            self.bucket.set_acl(sharing_policy)
 
     @staticmethod
     def get_bucket_creation_date(s3_conn, bucket_name):
