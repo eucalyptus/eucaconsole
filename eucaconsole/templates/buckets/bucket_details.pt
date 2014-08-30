@@ -41,8 +41,8 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form id="bucket-detail-form" method="post" data-abide="abide" ng-cloak=""
-                      action="">
+                <form id="bucket-details-form" method="post" data-abide="abide" ng-cloak=""
+                      action="${request.route_path('bucket_update', name=bucket_name)}">
                     ${structure:details_form['csrf_token']}
                     <h6 i18n:translate="" id="bucket-section-title">Bucket</h6>
                     <div class="row controls-wrapper readonly">

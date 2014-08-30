@@ -11,8 +11,16 @@ angular.module('S3SharingPanel', [])
         $scope.grantsArray = [];
         $scope.shareType = '';
         $scope.initS3SharingPanel = function (grants_json) {
+            $scope.setInitialValues();
             $scope.grantsArray = JSON.parse(grants_json);
             $scope.addListeners();
+        };
+        $scope.setInitialValues = function () {
+            $(document).ready(function () {
+                $scope.$apply(function () {
+                    $scope.shareType = $('input[name="share_type"]:checked').val()
+                });
+            });
         };
         $scope.addListeners = function () {
             $(document).ready(function() {

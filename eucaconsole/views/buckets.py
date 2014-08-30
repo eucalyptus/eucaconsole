@@ -31,11 +31,12 @@ Pyramid views for Eucalyptus Object Store and AWS S3 Buckets
 import mimetypes
 
 from boto.s3.prefix import Prefix
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
 from ..forms.buckets import BucketDetailsForm, SharingPanelForm
 from ..i18n import _
+from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
 from . import boto_error_handler
 
@@ -92,7 +93,7 @@ class BucketsJsonView(BaseView):
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    versioning=BucketDetailsView.get_versioning_status(item),
+                    versioning=BucketDetailsView.get_versioning_status(item),  # TODO: Remove expensive call?
                     creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
@@ -264,8 +265,10 @@ class BucketDetailsView(BaseView):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
         self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-        self.details_form = BucketDetailsForm(request)
-        self.sharing_form = SharingPanelForm(request)
+        self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
+        self.sharing_form = SharingPanelForm(
+            request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
         self.render_dict = dict(
             details_form=self.details_form,
             sharing_form=self.sharing_form,
@@ -275,14 +278,30 @@ class BucketDetailsView(BaseView):
     def bucket_details(self):
         self.render_dict.update(
             bucket=self.bucket,
-            bucket_creation_date=self.get_bucket_creation_date(),
+            is_public=self.get_public_status(),
+            bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,
-            owner=self.get_bucket_owner_name(self.bucket),
+            owner=self.get_bucket_owner_name(self.bucket_acl),
             versioning_status=self.get_versioning_status(self.bucket),
             logging_status=self.get_logging_status(),
             bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
             bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
         )
+        return self.render_dict
+
+    @view_config(route_name='bucket_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_update(self):
+        if self.bucket and self.details_form.validate():
+            location = self.request.route_path('bucket_details', name=self.bucket.name)
+            with boto_error_handler(self.request, location):
+                share_type = self.request.params.get('share_type')
+                if share_type == 'public':
+                    self.bucket.make_public(recursive=True)
+                msg = _(u'Successfully modified bucket properties')
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
     def get_logging_status(self):
@@ -302,20 +321,24 @@ class BucketDetailsView(BaseView):
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
 
-    def get_bucket_creation_date(self):
+    def get_public_status(self):
+        if self.bucket_acl:
+            pass
+
+    @staticmethod
+    def get_bucket_creation_date(s3_conn, bucket_name):
         """Due to limitations in the AWS API, the creation date is missing when fetching a single bucket,
            so as a workaround we need to fetch all buckets and match the current one to get the creation timestamp.
            FIXME: Remove this hack if/when we have bucket.creation_date available via s3_conn.get_bucket()
         """
-        buckets = self.s3_conn.get_all_buckets() if self.s3_conn else []
-        matched_bucket = [bucket for bucket in buckets if bucket.name == self.bucket.name]
+        buckets = s3_conn.get_all_buckets() if s3_conn else []
+        matched_bucket = [bucket for bucket in buckets if bucket.name == bucket_name]
         if matched_bucket:
             return getattr(matched_bucket[0], 'creation_date', None)
 
     @staticmethod
-    def get_bucket_owner_name(bucket):
-        if bucket:
-            bucket_acl = bucket.get_acl()
+    def get_bucket_owner_name(bucket_acl):
+        if bucket_acl:
             owner_obj = bucket_acl.owner
             if owner_obj:
                 return owner_obj.display_name

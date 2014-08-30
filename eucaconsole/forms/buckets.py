@@ -46,3 +46,16 @@ class SharingPanelForm(BaseSecureForm):
     )
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
 
+    def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
+        super(SharingPanelForm, self).__init__(request, **kwargs)
+        self.bucket_object = bucket_object
+        self.sharing_acl = sharing_acl
+
+        if bucket_object is not None:
+            self.share_type.data = self.get_share_type()
+
+    def get_share_type(self):
+        if 'AllUsers = READ' in str(self.sharing_acl):
+            return 'public'
+        return 'private'
+
