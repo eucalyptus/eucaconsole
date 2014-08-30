@@ -56,7 +56,8 @@ angular.module('S3SharingPanel', [])
                 grantAccountField = grantEntry.find('#share_account'),
                 grantPermissionField = grantEntry.find('#share_permissions'),
                 grantAccountVal = grantAccountField.val(),
-                grantPermVal = grantPermissionField.val();
+                grantPermVal = grantPermissionField.val(),
+                existingGrantFound = false;
             if (grantAccountVal && grantPermVal) {
                 var account_arr = grantAccountVal.split('|||'),
                     account_name = account_arr[0],
@@ -64,9 +65,13 @@ angular.module('S3SharingPanel', [])
                 // Skip if existing grant found
                 angular.forEach($scope.grantsArray, function (grant) {
                     if (grant.display_name == account_name && grant.id == account_id && grant.permission == grantPermVal) {
-                        return false;
+                        existingGrantFound = true;
                     }
                 });
+                if (existingGrantFound) {
+                    grantAccountField.focus();
+                    return false;
+                }
                 $scope.grantsArray.push({
                     'id': account_id,
                     'display_name': account_name,
