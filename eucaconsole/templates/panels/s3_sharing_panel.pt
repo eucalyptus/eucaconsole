@@ -28,20 +28,24 @@
                 </span>
             </div>
             <div class="row">
-                <div class="columns subheader" ng-cloak="">
+                <div class="columns small-8 right subheader" ng-cloak="">
                     <span class="subsection-label" ng-show="grantsArray.length == 0" i18n:translate="">
-                        Add a permission
+                        Add an account
                     </span>
                     <span class="subsection-label" ng-show="grantsArray.length" i18n:translate="">
-                        Add another permission
+                        Add another account
                     </span>
                     :
                 </div>
             </div>
-            <div>
-                <a class="button round tiny" ng-click="addGrant()" i18n:translate="" ng-disabled="isNotValid">
-                    Add permission
-                </a>
+            ${panel('form_field', field=sharing_form.share_account)}
+            ${panel('form_field', field=sharing_form.share_permissions)}
+            <div class="row">
+                <div class="columns small-8 right">
+                    <a class="button round tiny" ng-click="addGrant($event)" i18n:translate="">
+                        Add account
+                    </a>
+                </div>
             </div>
             <textarea id="s3-sharing-acl" name="s3_sharing_acl" class="hidden"></textarea>
         </div>

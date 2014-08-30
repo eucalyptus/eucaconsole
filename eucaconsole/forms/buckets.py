@@ -29,6 +29,7 @@ Forms for S3 buckets and objects
 
 """
 import wtforms
+from wtforms import validators
 
 from . import BaseSecureForm
 from ..i18n import _
@@ -41,15 +42,18 @@ class BucketDetailsForm(BaseSecureForm):
 
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
-    SHARE_TYPE_CHOICES = (
-        ('public', _(u'Public')), ('private', _(u'Private')),
-    )
+    SHARE_TYPE_CHOICES = (('public', _(u'Public')), ('private', _(u'Private')))
     share_type = wtforms.RadioField(choices=SHARE_TYPE_CHOICES)
+    share_account = wtforms.SelectField(label=_(u'Account'))
+    share_permissions = wtforms.SelectField(label=_(u'Permissions'))
 
     def __init__(self, request, bucket_object=None, sharing_acl=None, **kwargs):
         super(SharingPanelForm, self).__init__(request, **kwargs)
         self.bucket_object = bucket_object
         self.sharing_acl = sharing_acl
+        # Set choices
+        self.share_account.choices = self.get_account_choices()
+        self.share_permissions.choices = self.get_permission_choices()
 
         if bucket_object is not None:
             self.share_type.data = self.get_share_type()
@@ -58,4 +62,22 @@ class SharingPanelForm(BaseSecureForm):
         if 'AllUsers = READ' in str(self.sharing_acl):
             return 'public'
         return 'private'
+
+    @staticmethod
+    def get_permission_choices():
+        return (
+            ('READ', _('Read-only')),
+            ('WRITE', _('Read-Write')),
+            ('READ_ACP', _('Read sharing permissions')),
+            ('WRITE_ACP', _('Write sharing permissions')),
+        )
+
+    @staticmethod
+    def get_account_choices():
+        # TODO: replace with accounts API fetch
+        return (
+            ('', _(u'Select...')),
+            ('joeuser|||17c108447e01c1d9c126bcd52c38dbeb9e54555eeb350d1c9e4dfa6b627afab6', 'joeuser'),
+        )
+
 

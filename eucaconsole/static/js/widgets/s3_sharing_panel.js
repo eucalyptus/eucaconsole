@@ -41,11 +41,42 @@ angular.module('S3SharingPanel', [])
         $scope.syncGrants = function() {
             $scope.s3AclTextarea.val(JSON.stringify($scope.grantsArray));
             $scope.$emit('s3:sharingPanelAclUpdated');
+            // Reset form values
+            $('#share_account').val('');
+            $('#share_permissions').val('READ');
         };
         $scope.removeGrant = function (index, $event) {
             $event.preventDefault();
             $scope.grantsArray.splice(index, 1);
             $scope.syncGrants();
+        };
+        $scope.addGrant = function ($event) {
+            $event.preventDefault();
+            var grantEntry = $($event.currentTarget).closest('#sharing-private'),
+                grantAccountField = grantEntry.find('#share_account'),
+                grantPermissionField = grantEntry.find('#share_permissions'),
+                grantAccountVal = grantAccountField.val(),
+                grantPermVal = grantPermissionField.val();
+            if (grantAccountVal && grantPermVal) {
+                var account_arr = grantAccountVal.split('|||'),
+                    account_name = account_arr[0],
+                    account_id = account_arr[1];
+                // Skip if existing grant found
+                angular.forEach($scope.grantsArray, function (grant) {
+                    if (grant.display_name == account_name && grant.id == account_id && grant.permission == grantPermVal) {
+                        return false;
+                    }
+                });
+                $scope.grantsArray.push({
+                    'id': account_id,
+                    'display_name': account_name,
+                    'permission': grantPermVal,
+                    'grant_type': 'CanonicalUser'
+                });
+                $scope.syncGrants();
+            } else {
+                grantAccountField.val() ? grantPermissionField.focus() : grantAccountField.focus();
+            }
         };
     })
 ;
