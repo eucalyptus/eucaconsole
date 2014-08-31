@@ -5,7 +5,8 @@
 </head>
 
 <div metal:fill-slot="main_content">
-    <div class="row" id="contentwrap" tal:define="cutoff 1 if folder_suffix in request.subpath else 2"
+    <div class="row" id="contentwrap"
+         tal:define="subpath request.subpath[:-1] if folder_suffix in request.subpath else request.subpath"
          ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -14,12 +15,12 @@
                     <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
-                <div tal:repeat="folder request.subpath" tal:omit-tag="">
-                    <li tal:condition="folder != folder_suffix" tal:define="idx repeat.folder.index"
-                        class="${'current' if repeat.folder.end or request.subpath[idx+1] == folder_suffix else ''}">
-                        <a tal:condition="repeat.folder.end or folder == folder_suffix" ng-non-bindable="">${folder}</a>
-                        <a href="${request.route_path('bucket_contents', subpath='/' + bucket_name + '/' + '/'.join(request.subpath[:idx+cutoff]))}"
-                           ng-non-bindable="" tal:condition="not repeat.folder.end or folder != folder_suffix">${folder}</a>
+                <div tal:repeat="path_item subpath" tal:omit-tag="">
+                    <li tal:condition="path_item != folder_suffix" tal:define="idx repeat.path_item.index"
+                        class="${'current' if repeat.path_item.end else ''}">
+                        <a tal:condition="repeat.path_item.end" ng-non-bindable="">${path_item}</a>
+                        <a href="${request.route_path('bucket_contents', subpath='/' + bucket_name + '/' + '/'.join(request.subpath[:idx+1]))}"
+                           ng-non-bindable="" tal:condition="not repeat.path_item.end">${path_item}</a>
                     </li>
                 </div>
             </metal:crumbs>
@@ -103,7 +104,7 @@
             </div>
         </div>
         <div class="large-4 columns">
-            <div class="help-padding">&nbsp;</div>
+            <!--<div class="help-padding">&nbsp;</div>-->
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
         </div>
