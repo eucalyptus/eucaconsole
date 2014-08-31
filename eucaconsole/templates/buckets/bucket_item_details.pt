@@ -54,8 +54,8 @@
                     </metal:actions>
                 </metal:block>
                 <form id="bucket-item-details-form" method="post" data-abide="abide" ng-cloak=""
-                      action="${request.route_path('bucket_item_update', name=item_name, subpath=request.subpath)}">
-                    <!--! ${structure:details_form['csrf_token']} -->
+                      action="${request.route_path('bucket_item_update', name=bucket_name, subpath=request.subpath)}">
+                    ${structure:details_form['csrf_token']}
                     <h6 id="bucket-item-section-title">
                         <span i18n:translate="" tal:condition="is_folder">Folder</span>
                         <span i18n:translate="" tal:condition="not is_folder">Object</span>

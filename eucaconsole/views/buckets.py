@@ -49,29 +49,6 @@ FOLDER_SUFFIX = '__folder__'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 
 
-class S3SharingMixin(object):
-    """ Mixin for reusable sharing methods in S3 operations"""
-    def set_sharing_acl(self):
-        sharing_grants_json = self.request.params.get('s3_sharing_acl')
-        if sharing_grants_json:
-            sharing_grants = json.loads(sharing_grants_json)
-            grants = []
-            for grant in sharing_grants:
-                grants.append(Grant(
-                    permission=grant.get('permission'),
-                    id=grant.get('id'),
-                    display_name=grant.get('display_name'),
-                    type=grant.get('grant_type'),
-                    uri=grant.get('uri'),
-                ))
-            sharing_acl = ACL()
-            sharing_acl.grants = grants
-            sharing_policy = Policy()
-            sharing_policy.acl = sharing_acl
-            sharing_policy.owner = self.bucket_acl.owner
-            self.bucket.set_acl(sharing_policy)
-
-
 class BucketsView(LandingPageView):
     """Views for Buckets landing page"""
     VIEW_TEMPLATE = '../templates/buckets/buckets.pt'
@@ -304,7 +281,7 @@ class BucketContentsJsonView(BaseView):
         return False
 
 
-class BucketDetailsView(BaseView, S3SharingMixin):
+class BucketDetailsView(BaseView):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
@@ -319,11 +296,6 @@ class BucketDetailsView(BaseView, S3SharingMixin):
         self.render_dict = dict(
             details_form=self.details_form,
             sharing_form=self.sharing_form,
-        )
-
-    @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
-    def bucket_details(self):
-        self.render_dict.update(
             bucket=self.bucket,
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,
@@ -333,6 +305,9 @@ class BucketDetailsView(BaseView, S3SharingMixin):
             bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
             bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
         )
+
+    @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)
+    def bucket_details(self):
         return self.render_dict
 
     @view_config(route_name='bucket_update', renderer=VIEW_TEMPLATE, request_method='POST')
@@ -344,7 +319,7 @@ class BucketDetailsView(BaseView, S3SharingMixin):
                 if share_type == 'public':
                     self.bucket.make_public(recursive=True)
                 else:
-                    self.set_sharing_acl()
+                    self.set_sharing_acl(self.request, bucket_object=self.bucket, item_acl=self.bucket_acl)
                 msg = '{0} {1}'.format(_(u'Successfully modified bucket'), self.bucket.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -368,6 +343,27 @@ class BucketDetailsView(BaseView, S3SharingMixin):
                 logs_prefix=logging_prefix,
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
+
+    @staticmethod
+    def set_sharing_acl(request, bucket_object=None, item_acl=None):
+        sharing_grants_json = request.params.get('s3_sharing_acl')
+        if sharing_grants_json:
+            sharing_grants = json.loads(sharing_grants_json)
+            grants = []
+            for grant in sharing_grants:
+                grants.append(Grant(
+                    permission=grant.get('permission'),
+                    id=grant.get('id'),
+                    display_name=grant.get('display_name'),
+                    type=grant.get('grant_type'),
+                    uri=grant.get('uri'),
+                ))
+            sharing_acl = ACL()
+            sharing_acl.grants = grants
+            sharing_policy = Policy()
+            sharing_policy.acl = sharing_acl
+            sharing_policy.owner = item_acl.owner
+            bucket_object.set_acl(sharing_policy)
 
     @staticmethod
     def get_bucket_creation_date(s3_conn, bucket_name):
@@ -395,7 +391,7 @@ class BucketDetailsView(BaseView, S3SharingMixin):
             return status.get('Versioning', 'Disabled')
 
 
-class BucketItemDetailsView(BaseView, S3SharingMixin):
+class BucketItemDetailsView(BaseView):
     """Views for Bucket item (folder/object) details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
 
@@ -405,40 +401,40 @@ class BucketItemDetailsView(BaseView, S3SharingMixin):
         self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
         self.bucket_item = self.get_bucket_item()
         self.is_folder = self.bucket_item.size == 0
-        self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
-            request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
+            request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
         self.render_dict = dict(
             sharing_form=self.sharing_form,
-        )
-
-    @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
-    def bucket_item_details(self):
-        item_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
-        self.render_dict.update(
+            details_form=self.details_form,
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
             is_folder=self.is_folder,
             key_name=self.bucket_item.name,
-            item_name=item_name,
+            item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             folder_suffix=FOLDER_SUFFIX,
         )
+
+    @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
+    def bucket_item_details(self):
         return self.render_dict
 
     @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_item_update(self):
         if self.bucket and self.bucket_item and self.details_form.validate():
-            location = self.request.route_path('bucket_item_details', name=self.bucket_item.name)
+            location = self.request.route_path(
+                'bucket_item_details', name=self.bucket.name, subpath=self.request.subpath)
             with boto_error_handler(self.request, location):
                 share_type = self.request.params.get('share_type')
                 if share_type == 'public':
-                    self.bucket.make_public(recursive=True)
+                    self.bucket.make_public()
                 else:
-                    self.set_sharing_acl()
+                    BucketDetailsView.set_sharing_acl(
+                        self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
                 msg = '{0} {1}'.format(_(u'Successfully modified item'), self.bucket_item.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)

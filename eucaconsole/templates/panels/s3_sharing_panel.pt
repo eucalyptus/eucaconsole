@@ -22,7 +22,7 @@
             </p>
             <div class="items">
                 <span class="label radius secondary grantentry" ng-repeat="grant in grantsArray" ng-cloak="cloak">
-                    {{ grant.display_name || grant.uri.split('/').pop() }}: {{ grant.permission }}
+                    {{ grant.display_name || grant.id || grant.uri.split('/').pop() }}: {{ grant.permission }}
                     <a href="#" class="remove" ng-click="removeGrant($index, $event)"
                        title="Remove permission"><i class="fi-x"></i></a>
                 </span>
