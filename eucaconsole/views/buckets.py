@@ -45,6 +45,30 @@ from . import boto_error_handler
 
 
 DELIMITER = '/'
+FOLDER_SUFFIX = '__folder__'
+
+
+class S3SharingMixin(object):
+    """ Mixin for reusable sharing methods in S3 operations"""
+    def set_sharing_acl(self):
+        sharing_grants_json = self.request.params.get('s3_sharing_acl')
+        if sharing_grants_json:
+            sharing_grants = json.loads(sharing_grants_json)
+            grants = []
+            for grant in sharing_grants:
+                grants.append(Grant(
+                    permission=grant.get('permission'),
+                    id=grant.get('id'),
+                    display_name=grant.get('display_name'),
+                    type=grant.get('grant_type'),
+                    uri=grant.get('uri'),
+                ))
+            sharing_acl = ACL()
+            sharing_acl.grants = grants
+            sharing_policy = Policy()
+            sharing_policy.acl = sharing_acl
+            sharing_policy.owner = self.bucket_acl.owner
+            self.bucket.set_acl(sharing_policy)
 
 
 class BucketsView(LandingPageView):
@@ -230,6 +254,11 @@ class BucketContentsJsonView(BaseView):
                     is_folder=True,
                     last_modified=None,
                     icon='fi-folder',
+                    details_url=self.request.route_path(
+                        'bucket_item_details',
+                        name=self.bucket.name,
+                        subpath='{0}{1}'.format(key.name, FOLDER_SUFFIX),
+                    ),
                 )
             else:
                 item = dict(
@@ -237,6 +266,8 @@ class BucketContentsJsonView(BaseView):
                     is_folder=False,
                     last_modified=key.last_modified,
                     icon=BucketContentsView.get_icon_class(key.name),
+                    details_url=self.request.route_path(
+                        'bucket_item_details', name=self.bucket.name, subpath=key.name),
                 )
             item.update(dict(
                 name=BucketContentsView.get_unprefixed_key_name(key.name),
@@ -260,7 +291,7 @@ class BucketContentsJsonView(BaseView):
         return False
 
 
-class BucketDetailsView(BaseView):
+class BucketDetailsView(BaseView, S3SharingMixin):
     """Views for Bucket details"""
     VIEW_TEMPLATE = '../templates/buckets/bucket_details.pt'
 
@@ -325,26 +356,6 @@ class BucketDetailsView(BaseView):
                 logs_url=self.request.route_path('bucket_contents', subpath=logging_subpath)
             )
 
-    def set_sharing_acl(self):
-        sharing_grants_json = self.request.params.get('s3_sharing_acl')
-        if sharing_grants_json:
-            sharing_grants = json.loads(sharing_grants_json)
-            grants = []
-            for grant in sharing_grants:
-                grants.append(Grant(
-                    permission=grant.get('permission'),
-                    id=grant.get('id'),
-                    display_name=grant.get('display_name'),
-                    type=grant.get('grant_type'),
-                    uri=grant.get('uri'),
-                ))
-            sharing_acl = ACL()
-            sharing_acl.grants = grants
-            sharing_policy = Policy()
-            sharing_policy.acl = sharing_acl
-            sharing_policy.owner = self.bucket_acl.owner
-            self.bucket.set_acl(sharing_policy)
-
     @staticmethod
     def get_bucket_creation_date(s3_conn, bucket_name):
         """Due to limitations in the AWS API, the creation date is missing when fetching a single bucket,
@@ -369,4 +380,60 @@ class BucketDetailsView(BaseView):
             # TODO: get_versioning_status always seems to return an empty dict.  May be a boto bug
             status = bucket.get_versioning_status()
             return status.get('Versioning', 'Disabled')
+
+
+class BucketItemDetailsView(BaseView, S3SharingMixin):
+    """Views for Bucket item (folder/object) details"""
+    VIEW_TEMPLATE = '../templates/buckets/bucket_item_details.pt'
+
+    def __init__(self, request):
+        super(BucketItemDetailsView, self).__init__(request)
+        self.s3_conn = self.get_connection(conn_type='s3')
+        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+        self.bucket_item = self.get_bucket_item()
+        self.is_folder = self.bucket_item.size == 0
+        self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        self.sharing_form = SharingPanelForm(
+            request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
+        self.render_dict = dict(
+            sharing_form=self.sharing_form,
+        )
+
+    @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
+    def bucket_item_details(self):
+        self.render_dict.update(
+            bucket=self.bucket,
+            bucket_name=self.bucket.name,
+            bucket_item=self.bucket_item,
+            is_folder=self.is_folder,
+            key_name=self.bucket_item.name,
+            item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
+            folder_suffix=FOLDER_SUFFIX,
+            item_link='http://some_link',  # TODO: fetch item link
+        )
+        return self.render_dict
+
+    @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
+    def bucket_item_update(self):
+        if self.bucket and self.bucket_item:# and self.details_form.validate():
+            location = self.request.route_path('bucket_item_details', name=self.bucket_item.name)
+            with boto_error_handler(self.request, location):
+                share_type = self.request.params.get('share_type')
+                if share_type == 'public':
+                    self.bucket.make_public(recursive=True)
+                else:
+                    self.set_sharing_acl()
+                msg = '{0} {1}'.format(_(u'Successfully modified item'), self.bucket_item.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            pass# self.request.error_messages = self.details_form.get_errors_list()
+        return self.render_dict
+
+    def get_bucket_item(self):
+        subpath = self.request.subpath
+        item_key_name = DELIMITER.join(subpath)
+        if item_key_name.endswith(FOLDER_SUFFIX):
+            item_key_name = item_key_name.replace(FOLDER_SUFFIX, '')
+        return self.bucket.get_key(item_key_name)
 

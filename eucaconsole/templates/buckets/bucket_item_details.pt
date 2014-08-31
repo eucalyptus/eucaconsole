@@ -1,0 +1,115 @@
+<metal:block use-macro="main_template" i18n:domain="eucaconsole">
+
+<head metal:fill-slot="head_css">
+    <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/pages/bucket_item_details.css')}" />
+</head>
+
+<div metal:fill-slot="main_content">
+    <div class="row" id="contentwrap" tal:define="cutoff 1 if folder_suffix in request.subpath else 2"
+         ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl" ng-init="initController()">
+        <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
+            <metal:crumbs metal:fill-slot="crumbs">
+                <li><a href="${request.route_path('buckets')}">Buckets</a></li>
+                <li>
+                    <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
+                       i18n:translate="">${bucket_name}</a>
+                </li>
+                <div tal:repeat="folder request.subpath" tal:omit-tag="">
+                    <li tal:condition="folder != folder_suffix" tal:define="idx repeat.folder.index"
+                        class="${'current' if repeat.folder.end or request.subpath[idx+1] == folder_suffix else ''}">
+                        <a tal:condition="repeat.folder.end or folder == folder_suffix" ng-non-bindable="">${folder}</a>
+                        <a href="${request.route_path('bucket_contents', subpath='/' + bucket_name + '/' + '/'.join(request.subpath[:idx+cutoff]))}"
+                           ng-non-bindable="" tal:condition="not repeat.folder.end or folder != folder_suffix">${folder}</a>
+                    </li>
+                </div>
+            </metal:crumbs>
+        </metal:breadcrumbs>
+        <!-- Notifications -->
+        <metal:block metal:use-macro="layout.global_macros['notifications']" />
+        <h3 id="pagetitle">
+            <metal:block>
+                <strong i18n:translate="">Details for:</strong>
+                <em>${item_name}</em>
+            </metal:block>
+        </h3>
+        <div class="large-8 columns">
+            <!--!
+            <dl class="tabs" id="bucket-item-subnav">
+                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
+                <dd><a href="#" i18n:translate="">Tasks</a></dd>
+            </dl>
+            -->
+            <div class="panel has-actions">
+                <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                    <metal:actions metal:fill-slot="actions">
+                        <li>
+                            <a href="#" id="download-action" i18n:translate="">Download</a>
+                        </li>
+                        <li>
+                            <a href="#" id="copy-action" i18n:translate="">Copy</a>
+                        </li>
+                        <li>
+                            <a id="delete-bucket-item-action" i18n:translate="">Delete</a>
+                        </li>
+                    </metal:actions>
+                </metal:block>
+                <form id="bucket-item-details-form" method="post" data-abide="abide" ng-cloak=""
+                      action="${request.route_path('bucket_item_update', name=item_name, subpath=request.subpath)}">
+                    <!--! ${structure:details_form['csrf_token']} -->
+                    <h6 id="bucket-item-section-title">
+                        <span i18n:translate="" tal:condition="is_folder">Folder</span>
+                        <span i18n:translate="" tal:condition="not is_folder">Object</span>
+                    </h6>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
+                        <div class="small-8 columns value">${item_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Key</label></div>
+                        <div class="small-8 columns value">${key_name}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Version</label></div>
+                        <div class="small-8 columns value"></div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Last modified</label></div>
+                        <div class="small-8 columns value">
+                            {{'${bucket_item.last_modified}' | date:'${layout.angular_date_format}'}}
+                        </div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">ETag</label></div>
+                        <div class="small-8 columns value">${bucket_item.etag}</div>
+                    </div>
+                    <div class="row controls-wrapper readonly">
+                        <div class="small-4 columns"><label i18n:translate="">Link</label></div>
+                        <div class="small-8 columns value">${item_link}</div>
+                    </div>
+                    <hr />
+                    ${panel('s3_sharing_panel', bucket_object=bucket_item, sharing_form=sharing_form)}
+                    <hr />
+                    <div>
+                        <button type="submit" id="save_changes_volume_submit_button" class="button"
+                                ng-disabled="isNotChanged">
+                            <span i18n:translate="">Save Changes</span>
+                        </button>
+                        <a href="${request.route_path('buckets')}" id="bucket-details-cancel-link"
+                           class="cancel-link" i18n:translate="">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="large-4 columns">
+            <div class="help-padding">&nbsp;</div>
+            <metal:block metal:use-macro="layout.global_macros['help_expando']" />
+            <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
+        </div>
+    </div>
+</div>
+
+<div metal:fill-slot="tail_js">
+    <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/chosen.jquery.min.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/bucket_item_details.js')}"></script>
+</div>
+</metal:block>

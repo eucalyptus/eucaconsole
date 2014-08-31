@@ -63,7 +63,7 @@
                         <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                     </li>
                     <li>
-                        <a i18n:translate="" href="#">View details</a>
+                        <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                     </li>
                     <li>
                         <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
@@ -106,7 +106,7 @@
                                 <a i18n:translate="" ng-href="{{ item.absolute_path }}">View contents</a>
                             </li>
                             <li>
-                                <a i18n:translate="" href="#">View details</a>
+                                <a i18n:translate="" ng-href="{{ item.details_url }}">View details</a>
                             </li>
                             <li>
                                 <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>

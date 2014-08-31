@@ -28,7 +28,7 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
                     }
                 }
             });
-        }
+        };
     })
 ;
 
