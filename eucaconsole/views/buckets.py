@@ -45,7 +45,6 @@ from . import boto_error_handler
 
 
 DELIMITER = '/'
-FOLDER_SUFFIX = '__folder__'
 BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 
 
@@ -168,13 +167,12 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_bucket(request, s3_conn, bucket_name=None):
-        with boto_error_handler(request):
-            subpath = request.matchdict.get('subpath')
-            bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
-            bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
-            if bucket is None:
-                return HTTPNotFound()
-            return bucket
+        subpath = request.matchdict.get('subpath')
+        bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
+        bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
+        if bucket is None:
+            return HTTPNotFound()
+        return bucket
 
     @staticmethod
     def get_item_download_url(bucket_item):
@@ -243,11 +241,6 @@ class BucketContentsJsonView(BaseView):
                     last_modified=None,
                     icon='fi-folder',
                     download_url='',
-                    details_url=self.request.route_path(
-                        'bucket_item_details',
-                        name=self.bucket.name,
-                        subpath='{0}{1}'.format(key.name, FOLDER_SUFFIX),
-                    ),
                 )
             else:  # Is not folder
                 item = dict(
@@ -256,12 +249,11 @@ class BucketContentsJsonView(BaseView):
                     last_modified=key.last_modified,
                     icon=BucketContentsView.get_icon_class(key.name),
                     download_url=BucketContentsView.get_item_download_url(key),
-                    details_url=self.request.route_path(
-                        'bucket_item_details', name=self.bucket.name, subpath=key.name),
                 )
             item.update(dict(
                 name=BucketContentsView.get_unprefixed_key_name(key.name),
                 absolute_path=self.get_absolute_path(key.name),
+                details_url=self.request.route_path('bucket_item_details', name=self.bucket.name, subpath=key.name),
             ))
             items.append(item)
         return dict(results=items)
@@ -288,8 +280,9 @@ class BucketDetailsView(BaseView):
     def __init__(self, request):
         super(BucketDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-        self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        with boto_error_handler(request):
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket_acl = self.bucket.get_acl() if self.bucket else None
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
@@ -398,10 +391,11 @@ class BucketItemDetailsView(BaseView):
     def __init__(self, request):
         super(BucketItemDetailsView, self).__init__(request)
         self.s3_conn = self.get_connection(conn_type='s3')
-        self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
-        self.bucket_item = self.get_bucket_item()
+        with boto_error_handler(request):
+            self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket_item = self.get_bucket_item()
+            self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         self.is_folder = self.bucket_item.size == 0
-        self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
@@ -416,7 +410,6 @@ class BucketItemDetailsView(BaseView):
             item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
-            folder_suffix=FOLDER_SUFFIX,
         )
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
@@ -445,7 +438,8 @@ class BucketItemDetailsView(BaseView):
     def get_bucket_item(self):
         subpath = self.request.subpath
         item_key_name = DELIMITER.join(subpath)
-        if item_key_name.endswith(FOLDER_SUFFIX):
-            item_key_name = item_key_name.replace(FOLDER_SUFFIX, '')
-        return self.bucket.get_key(item_key_name)
+        item = self.bucket.get_key(item_key_name)
+        if item is None:  # Folder requires the trailing slash, which request.subpath omits
+            item = self.bucket.get_key('{0}/'.format(item_key_name))
+        return item
 

@@ -6,7 +6,6 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap"
-         tal:define="subpath request.subpath[:-1] if folder_suffix in request.subpath else request.subpath"
          ng-app="BucketItemDetailsPage" ng-controller="BucketItemDetailsPageCtrl" ng-init="initController()">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
@@ -15,8 +14,8 @@
                     <a href="${request.route_path('bucket_contents', subpath=bucket_name)}"
                        i18n:translate="">${bucket_name}</a>
                 </li>
-                <div tal:repeat="path_item subpath" tal:omit-tag="">
-                    <li tal:condition="path_item != folder_suffix" tal:define="idx repeat.path_item.index"
+                <div tal:repeat="path_item request.subpath" tal:omit-tag="">
+                    <li tal:define="idx repeat.path_item.index"
                         class="${'current' if repeat.path_item.end else ''}">
                         <a tal:condition="repeat.path_item.end" ng-non-bindable="">${path_item}</a>
                         <a href="${request.route_path('bucket_contents', subpath='/' + bucket_name + '/' + '/'.join(request.subpath[:idx+1]))}"
