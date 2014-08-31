@@ -37,7 +37,7 @@ from boto.s3.prefix import Prefix
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..forms.buckets import BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm
+from ..forms.buckets import BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -57,18 +57,14 @@ class BucketsView(LandingPageView):
         # self.items = self.get_items()  # Only need this when filters are displayed on the landing page
         self.prefix = '/buckets'
         self.location = self.get_redirect_location('buckets')
-        self.render_dict = dict(
-            prefix=self.prefix,
-        )
-
-    @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
-    def buckets_landing(self):
-        # sort_keys are passed to sorting drop-down
         self.sort_keys = [
             dict(key='bucket_name', name=_(u'Bucket name: A to Z')),
             dict(key='-bucket_name', name=_(u'Bucket name: Z to A')),
         ]
-        self.render_dict.update(
+        self.render_dict = dict(
+            prefix=self.prefix,
+            versioning_form=BucketUpdateVersioningForm(request, formdata=self.request.params or None),
+            update_versioning_url=request.route_path('bucket_update_versioning', name='_name_'),
             initial_sort_key='bucket_name',
             json_items_endpoint=self.get_json_endpoint('buckets_json'),
             sort_keys=self.sort_keys,
@@ -76,6 +72,10 @@ class BucketsView(LandingPageView):
             filter_keys=['bucket_name'],
             bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_'),
         )
+
+    @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
+    def buckets_landing(self):
+        # sort_keys are passed to sorting drop-down
         return self.render_dict
 
 
@@ -93,11 +93,13 @@ class BucketsJsonView(BaseView):
             items = self.get_items()
             for item in items:
                 bucket_name = item.name
+                versioning_status = BucketDetailsView.get_versioning_status(item)
                 buckets.append(dict(
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    versioning=BucketDetailsView.get_versioning_status(item),  # TODO: Remove expensive call?
+                    versioning_status=versioning_status,
+                    update_versioning_action=BucketDetailsView.get_versioning_update_action(versioning_status),
                     creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
@@ -286,14 +288,18 @@ class BucketDetailsView(BaseView):
         self.details_form = BucketDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
+        self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
+        self.versioning_status = self.get_versioning_status(self.bucket)
         self.render_dict = dict(
             details_form=self.details_form,
             sharing_form=self.sharing_form,
+            versioning_form=self.versioning_form,
             bucket=self.bucket,
             bucket_creation_date=self.get_bucket_creation_date(self.s3_conn, self.bucket.name),
             bucket_name=self.bucket.name,
             owner=self.get_bucket_owner_name(self.bucket_acl),
-            versioning_status=self.get_versioning_status(self.bucket),
+            versioning_status=self.versioning_status,
+            update_versioning_action=self.get_versioning_update_action(self.versioning_status),
             logging_status=self.get_logging_status(),
             bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
             bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
@@ -318,6 +324,23 @@ class BucketDetailsView(BaseView):
             return HTTPFound(location=location)
         else:
             self.request.error_messages = self.details_form.get_errors_list()
+        return self.render_dict
+
+    @view_config(route_name='bucket_update_versioning', request_method='POST')
+    def bucket_update_versioning(self):
+        if self.bucket and self.versioning_form.validate():
+            location = self.request.route_path('bucket_details', name=self.bucket.name)
+            if self.request.params.get('source') == 'landingpage':
+                location = self.request.route_path('buckets')
+            with boto_error_handler(self.request, location):
+                versioning_param = self.request.params.get('versioning_action')
+                versioning_bool = True if versioning_param == 'enable' else False
+                self.bucket.configure_versioning(versioning_bool)
+                msg = '{0} {1}'.format(_(u'Successfully modified versioning status for bucket'), self.bucket.name)
+                self.request.session.flash(msg, queue=Notification.SUCCESS)
+            return HTTPFound(location=location)
+        else:
+            self.request.error_messages = self.versioning_form.get_errors_list()
         return self.render_dict
 
     def get_logging_status(self):
@@ -378,10 +401,16 @@ class BucketDetailsView(BaseView):
 
     @staticmethod
     def get_versioning_status(bucket):
+        """Returns 'Disabled', 'Enabled', or 'Suspended'"""
         if bucket:
-            # TODO: get_versioning_status always seems to return an empty dict.  May be a boto bug
             status = bucket.get_versioning_status()
             return status.get('Versioning', 'Disabled')
+
+    @staticmethod
+    def get_versioning_update_action(versioning_status):
+        """Returns 'enable' if status is Disabled or Suspended, otherwise returns 'disable'"""
+        if versioning_status:
+            return 'enable' if versioning_status in ['Disabled', 'Suspended'] else 'disable'
 
 
 class BucketItemDetailsView(BaseView):
@@ -399,9 +428,11 @@ class BucketItemDetailsView(BaseView):
         self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
+        self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
             sharing_form=self.sharing_form,
             details_form=self.details_form,
+            versioning_form=self.versioning_form,
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,

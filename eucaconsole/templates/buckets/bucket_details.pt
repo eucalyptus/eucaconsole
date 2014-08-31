@@ -31,10 +31,15 @@
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
                         <li>
-                            <a href="#" id="enable-versioning-action" i18n:translate="">Enable versioning</a>
+                            <a id="view-contents-action" i18n:translate="" href="${bucket_contents_url}">View contents</a>
                         </li>
-                        <li>
-                            <a href="#" id="suspend-versioning-action" i18n:translate="">Suspend versioning</a>
+                        <li tal:condition="update_versioning_action == 'enable'">
+                            <a ng-click="revealModal('update-versioning')"
+                               id="enable-versioning-action" i18n:translate="">Enable versioning</a>
+                        </li>
+                        <li tal:condition="update_versioning_action == 'disable'">
+                            <a ng-click="revealModal('update-versioning')"
+                               id="suspend-versioning-action" i18n:translate="">Suspend versioning</a>
                         </li>
                         <li>
                             <a id="delete-bucket-action" i18n:translate="">Delete</a>
@@ -86,7 +91,7 @@
                     ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
                     <hr />
                     <div>
-                        <button type="submit" id="save_changes_volume_submit_button" class="button"
+                        <button type="submit" id="save_changes_bucket_details_button" class="button"
                                 ng-disabled="isNotChanged">
                             <span i18n:translate="">Save Changes</span>
                         </button>
@@ -101,6 +106,8 @@
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak=""></div>
         </div>
+        <!--! Modal dialogs reused across landing and detail page -->
+        ${panel('bucket_dialogs', landingpage=False, bucket=bucket, versioning_form=versioning_form)}
     </div>
 </div>
 

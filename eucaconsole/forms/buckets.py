@@ -45,6 +45,11 @@ class BucketItemDetailsForm(BaseSecureForm):
     pass
 
 
+class BucketUpdateVersioningForm(BaseSecureForm):
+    """Update versioning info form"""
+    pass
+
+
 class SharingPanelForm(BaseSecureForm):
     """S3 Sharing Panel form for buckets/objects"""
     SHARE_TYPE_CHOICES = (('public', _(u'Public')), ('private', _(u'Private')))

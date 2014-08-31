@@ -8,14 +8,21 @@ angular.module('BucketsPage', ['LandingPage'])
     .controller('BucketsCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.bucketName = '';
+        $scope.updateVersioningAction = '';
         $scope.bucketCounts = {};
         $scope.countsLoading = {};
-        $scope.initController = function (bucketObjectsCountUrl) {
+        $scope.initController = function (bucketObjectsCountUrl, updateVersioningFormUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
+            $scope.updateVersioningFormUrl = updateVersioningFormUrl;
         };
         $scope.revealModal = function (action, bucket) {
-            var modal = $('#' + action + '-bucket-modal');
-            $scope.bucketName = bucket['name'];
+            var modal = $('#' + action + '-modal');
+            $scope.bucketName = bucket['bucket_name'];
+            $scope.updateVersioningAction = bucket['update_versioning_action'];
+            modal.on('opened', function () {
+                // Set form action based on bucket choice
+                modal.find('form').attr('action', $scope.updateVersioningFormUrl.replace('_name_', $scope.bucketName));
+            });
             modal.foundation('reveal', 'open');
         };
         $scope.$on('itemsLoaded', function($event, items) {

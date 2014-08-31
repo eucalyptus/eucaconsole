@@ -29,6 +29,11 @@ angular.module('BucketDetailsPage', ['S3SharingPanel'])
                 }
             });
         };
+        $scope.revealModal = function (action) {
+            var modal = $('#' + action + '-modal');
+            modal.foundation('reveal', 'open');
+            modal.find('h3').click();  // Workaround for dropdown menu not closing
+        };
     })
 ;
 
