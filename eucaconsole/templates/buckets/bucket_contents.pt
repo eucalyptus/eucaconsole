@@ -69,7 +69,7 @@
                         <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
                     </li>
                     <li ng-show="!item.is_folder">
-                        <a i18n:translate="" href="#">Download</a>
+                        <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
                     </li>
                     <li ng-show="!item.is_folder">
                         <a i18n:translate="" href="#">Copy object</a>
@@ -112,7 +112,7 @@
                                 <a i18n:translate="" ng-click="revealModal('manage-perms', item)">Manage permissions</a>
                             </li>
                             <li ng-show="!item.is_folder">
-                                <a i18n:translate="" href="#">Download</a>
+                                <a i18n:translate="" ng-href="{{ item.download_url }}">Download</a>
                             </li>
                             <li ng-show="!item.is_folder">
                                 <a i18n:translate="" href="#">Copy object</a>

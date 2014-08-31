@@ -37,7 +37,7 @@ from boto.s3.prefix import Prefix
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..forms.buckets import BucketDetailsForm, SharingPanelForm
+from ..forms.buckets import BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -46,6 +46,7 @@ from . import boto_error_handler
 
 DELIMITER = '/'
 FOLDER_SUFFIX = '__folder__'
+BUCKET_ITEM_URL_EXPIRES = 300  # Link to item expires in ___ seconds (after page load)
 
 
 class S3SharingMixin(object):
@@ -199,6 +200,16 @@ class BucketContentsView(LandingPageView):
             return bucket
 
     @staticmethod
+    def get_item_download_url(bucket_item):
+        if bucket_item.size == 0:
+            return ''  # skip if folder
+        item_name = BucketContentsView.get_unprefixed_key_name(bucket_item.name)
+        return bucket_item.generate_url(
+            expires_in=BUCKET_ITEM_URL_EXPIRES,
+            response_headers={'response-content-disposition': 'attachment; filename={0}'.format(item_name)},
+        )
+
+    @staticmethod
     def get_icon_class(key_name):
         """Get the icon class from the mime type of an object based on its key name
         :returns a string that maps to a Foundation Icon Fonts 3 class name
@@ -248,24 +259,26 @@ class BucketContentsJsonView(BaseView):
         for key in bucket_items:
             if self.skip_item(key):
                 continue
-            if isinstance(key, Prefix):
+            if isinstance(key, Prefix):  # Is folder
                 item = dict(
                     size=0,
                     is_folder=True,
                     last_modified=None,
                     icon='fi-folder',
+                    download_url='',
                     details_url=self.request.route_path(
                         'bucket_item_details',
                         name=self.bucket.name,
                         subpath='{0}{1}'.format(key.name, FOLDER_SUFFIX),
                     ),
                 )
-            else:
+            else:  # Is not folder
                 item = dict(
                     size=key.size,
                     is_folder=False,
                     last_modified=key.last_modified,
                     icon=BucketContentsView.get_icon_class(key.name),
+                    download_url=BucketContentsView.get_item_download_url(key),
                     details_url=self.request.route_path(
                         'bucket_item_details', name=self.bucket.name, subpath=key.name),
                 )
@@ -393,6 +406,7 @@ class BucketItemDetailsView(BaseView, S3SharingMixin):
         self.bucket_item = self.get_bucket_item()
         self.is_folder = self.bucket_item.size == 0
         self.bucket_acl = self.bucket.get_acl() if self.bucket else None
+        self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_acl, formdata=self.request.params or None)
         self.render_dict = dict(
@@ -401,21 +415,23 @@ class BucketItemDetailsView(BaseView, S3SharingMixin):
 
     @view_config(route_name='bucket_item_details', renderer=VIEW_TEMPLATE)
     def bucket_item_details(self):
+        item_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
         self.render_dict.update(
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
             is_folder=self.is_folder,
             key_name=self.bucket_item.name,
-            item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
+            item_name=item_name,
+            item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
+            item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
             folder_suffix=FOLDER_SUFFIX,
-            item_link='http://some_link',  # TODO: fetch item link
         )
         return self.render_dict
 
     @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_item_update(self):
-        if self.bucket and self.bucket_item:# and self.details_form.validate():
+        if self.bucket and self.bucket_item and self.details_form.validate():
             location = self.request.route_path('bucket_item_details', name=self.bucket_item.name)
             with boto_error_handler(self.request, location):
                 share_type = self.request.params.get('share_type')
@@ -427,7 +443,7 @@ class BucketItemDetailsView(BaseView, S3SharingMixin):
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
-            pass# self.request.error_messages = self.details_form.get_errors_list()
+            self.request.error_messages = self.details_form.get_errors_list()
         return self.render_dict
 
     def get_bucket_item(self):
