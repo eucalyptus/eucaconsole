@@ -295,7 +295,9 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
     def update_properties(self):
         self.scaling_group.desired_capacity = self.request.params.get('desired_capacity', 1)
         self.scaling_group.launch_config_name = self.unescape_braces(self.request.params.get('launch_config'))
-        self.scaling_group.vpc_zone_identifier = ', '.join([str(x) for x in self.request.params.getall('vpc_subnet')])
+        self.scaling_group.vpc_zone_identifier = ', '.join(
+            [str(x) for x in self.request.params.getall('vpc_subnet')]
+        )
         # If VPC subnet exists, do not specify availability zones; the API will figure them out based on the VPC subnets
         if not self.scaling_group.vpc_zone_identifier:
             self.scaling_group.availability_zones = self.request.params.getall('availability_zones') 
@@ -310,11 +312,16 @@ class ScalingGroupView(BaseScalingGroupView, DeleteScalingGroupMixin):
         self.scaling_group.update()
 
     def get_vpc(self, scaling_group):
-        if self.vpc_conn and scaling_group.vpc_zone_identifier:
-            vpc_subnets = scaling_group.vpc_zone_identifier.split(',')
-            vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=vpc_subnets[0])[0]
-            vpc_id = vpc_subnet.vpc_id
-            return self.vpc_conn.get_all_vpcs(vpc_ids=vpc_id)[0]
+        with boto_error_handler(self.request):
+            if self.vpc_conn and scaling_group.vpc_zone_identifier:
+                vpc_subnets = scaling_group.vpc_zone_identifier.split(',')
+                vpc_subnet = self.vpc_conn.get_all_subnets(subnet_ids=vpc_subnets[0])
+                if vpc_subnet:
+                    this_subnet = vpc_subnet[0]
+                    if this_subnet and this_subnet.vpc_id:
+                        this_vpc = self.vpc_conn.get_all_vpcs(vpc_ids=this_subnet.vpc_id)
+                        if this_vpc:
+                            return this_vpc[0]
         return None
 
 

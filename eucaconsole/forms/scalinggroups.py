@@ -131,8 +131,8 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.vpc_choices_manager = ChoicesManager(conn=vpc_conn)
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         self.launch_config.choices = self.get_launch_config_choices()
-        self.vpc_network.choices = self.get_vpc_network_choices()
-        self.vpc_subnet.choices = self.get_vpc_subnet_choices()
+        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
         self.health_check_type.choices = self.get_healthcheck_type_choices()
         region = request.session.get('region')
         self.availability_zones.choices = self.get_availability_zone_choices(region)
@@ -182,14 +182,6 @@ class BaseScalingGroupForm(BaseSecureForm):
                 sg_lc_name = BaseView.escape_braces(sg_lc_name)
             choices.append((sg_lc_name, sg_lc_name))
         return sorted(set(choices))
-
-    def get_vpc_network_choices(self):
-        choices = self.vpc_choices_manager.vpc_networks()
-        return choices
-
-    def get_vpc_subnet_choices(self):
-        choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
-        return choices
 
     def get_availability_zone_choices(self, region):
         return self.ec2_choices_manager.availability_zones(region, add_blank=False)

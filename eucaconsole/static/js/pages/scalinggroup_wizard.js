@@ -40,7 +40,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             }
         };
         $scope.initController = function (launchConfigCount, vpcSubnetJson) {
-            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'");
+            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
             $scope.initChosenSelectors();
             $scope.setInitialValues();
@@ -118,6 +118,7 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             if ($scope.vpcSubnet == '') {
                 $scope.vpcSubnetChoices[''] = $('#vpc_subnet_empty_option').text();
             }
+            // Timeout is need for the chosen widget to react after Angular has updated the option list
             $timeout(function() {
                 $('#vpc_subnet').trigger('chosen:updated');
             }, 500);
