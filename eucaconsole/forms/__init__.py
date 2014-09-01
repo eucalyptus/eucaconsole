@@ -396,7 +396,6 @@ class ChoicesManager(object):
         return sorted(set(choices))
 
     def vpc_subnets(self, vpc_subnets=None, escapebraces=True):
-        from ..views import TaggedItemView
         choices = [('', _(u'No subnets found'))]
         vpc_subnet_list = vpc_subnets or []
         if not vpc_subnet_list and self.conn is not None:

@@ -105,7 +105,9 @@ class LaunchInstanceForm(BaseSecureForm):
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
     associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
-    associate_public_ip_address_helptext = _(u'Give your instance a non-persistent IP address from the subnet\'s pool so it is accessible from the Internet. If you want a persistent address, select Disabled and assign an elastic IP after launch.')
+    associate_public_ip_address_helptext = _(u'Give your instance a non-persistent IP address \
+        from the subnet\'s pool so it is accessible from the Internet. \
+        If you want a persistent address, select Disabled and assign an elastic IP after launch.')
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
@@ -156,8 +158,8 @@ class LaunchInstanceForm(BaseSecureForm):
         self.instance_type.choices = self.choices_manager.instance_types(cloud_type=self.cloud_type, add_blank=False)
         region = request.session.get('region')
         self.zone.choices = self.get_availability_zone_choices(region)
-        self.vpc_network.choices = self.get_vpc_network_choices()
-        self.vpc_subnet.choices = self.get_vpc_subnet_choices()
+        self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets()
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
         self.keypair.choices = self.get_keypair_choices()
         self.securitygroup.choices = self.choices_manager.security_groups(
@@ -169,7 +171,7 @@ class LaunchInstanceForm(BaseSecureForm):
         # Set default choices where applicable, defaulting to first non-blank choice
         if self.cloud_type == 'aws' and len(self.zone.choices) > 1:
             self.zone.data = self.zone.choices[1][0]
-        # Set the defailt option to be "Default" security group
+        # Set the defailt option to be the first choice
         if len(self.securitygroup.choices) > 1:
             self.securitygroup.data = self.securitygroup.choices[0][0]
 
@@ -186,14 +188,6 @@ class LaunchInstanceForm(BaseSecureForm):
     def get_availability_zone_choices(self, region):
         choices = [('', _(u'No preference'))]
         choices.extend(self.choices_manager.availability_zones(region, add_blank=False))
-        return choices
-
-    def get_vpc_network_choices(self):
-        choices = self.vpc_choices_manager.vpc_networks()
-        return choices
-
-    def get_vpc_subnet_choices(self):
-        choices = self.vpc_choices_manager.vpc_subnets()
         return choices
 
     def get_associate_public_ip_address_choices(self):
