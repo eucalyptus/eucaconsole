@@ -37,7 +37,8 @@ from boto.s3.prefix import Prefix
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
 
-from ..forms.buckets import BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm
+from ..forms.buckets import (
+    BucketDetailsForm, BucketItemDetailsForm, SharingPanelForm, BucketUpdateVersioningForm, MetadataForm)
 from ..i18n import _
 from ..models import Notification
 from ..views import BaseView, LandingPageView, JSONResponse
@@ -429,10 +430,12 @@ class BucketItemDetailsView(BaseView):
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
+        self.metadata_form = MetadataForm(request, formdata=self.request.params or None)
         self.render_dict = dict(
             sharing_form=self.sharing_form,
             details_form=self.details_form,
             versioning_form=self.versioning_form,
+            metadata_form=self.metadata_form,
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,

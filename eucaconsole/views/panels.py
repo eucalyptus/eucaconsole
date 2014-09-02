@@ -337,3 +337,13 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
     )
 
 
+@panel_config('s3_metadata_editor', renderer='../templates/panels/s3_metadata_editor.pt')
+def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None):
+    """ S3 object metadata editor panel"""
+    metadata = bucket_object.metadata
+    metadata_json = BaseView.escape_json(json.dumps(metadata))
+    return dict(
+        metadata_json=metadata_json,
+        metadata_form=metadata_form,
+    )
+

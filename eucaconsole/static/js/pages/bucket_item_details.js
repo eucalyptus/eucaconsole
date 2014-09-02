@@ -4,8 +4,8 @@
  *
  */
 
-/* Bucket item details page includes the S3 Sharing Panel */
-angular.module('BucketItemDetailsPage', ['S3SharingPanel'])
+/* Bucket item details page includes the S3 Sharing Panel and Metadata Editor */
+angular.module('BucketItemDetailsPage', ['S3SharingPanel', 'S3MetadataEditor'])
     .controller('BucketItemDetailsPageCtrl', function ($scope, $http) {
         $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
         $scope.objectsCountLoading = true;

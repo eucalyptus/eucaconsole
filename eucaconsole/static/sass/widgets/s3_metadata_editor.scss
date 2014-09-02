@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* @fileOverview S3 Sharing panel widget Sass CSS styles */
+
+@import "../includes/eucavariables";
+
+
+#s3-metadata-editor {
+    .items {
+        margin-bottom: 6px;
+        .metadataentry {
+            color: #333;
+            background-color: $euca-extralightgrey;
+            margin-right: 8px;
+            a {
+                color: white;
+            }
+        }
+    }
+    #metadata_key, #metadata_value {
+        width: 50%;
+        margin-bottom: 0.5rem;
+    }
+}
+

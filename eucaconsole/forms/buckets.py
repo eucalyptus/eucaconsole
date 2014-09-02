@@ -82,3 +82,30 @@ class SharingPanelForm(BaseSecureForm):
         )
 
 
+class MetadataForm(BaseSecureForm):
+    """Form for S3 object metadata"""
+    metadata_key = wtforms.SelectField(label=_(u'Key'))
+    metadata_value = TextEscapedField(label=_(u'Value'))
+
+    def __init__(self, request, **kwargs):
+        super(MetadataForm, self).__init__(request, **kwargs)
+        self.request = request
+        # Set choices
+        self.metadata_key.choices = self.get_metadata_key_choices()
+
+    def get_metadata_key_choices(self):
+        choices = [
+            ('Cache-Control', _('Cache-Control')),
+            ('Content-Disposition', _('Content-Disposition')),
+            ('Content-Type', _('Content-Type')),
+            ('Content-Language', _('Content-Language')),
+            ('Expires', _('Expires')),
+            ('Content-Encoding', _('Content-Encoding')),
+        ]
+        if self.request.session.get('cloud_type') == 'aws':
+            choices.extend([
+                ('Website-Redirect-Location', _('Website-Redirect-Location')),
+                ('x-amz-meta', _('x-amz-meta')),
+            ])
+        return choices
+
