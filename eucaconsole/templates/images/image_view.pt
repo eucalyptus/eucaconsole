@@ -6,7 +6,11 @@
 
 <div metal:fill-slot="main_content">
     <div class="row" id="contentwrap" 
-         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}', ${image_launch_permissions}, '${request.route_path('image_state_json', id=image_id)}')">
+         ng-app="ImagePage" ng-controller="ImagePageCtrl" ng-init="initController('${is_public}',
+                    ${image_launch_permissions},
+                    '${request.route_path('image_state_json', id=image_id)}',
+                    '${request.route_path('image_cancel', id=image_id)}',
+                    '${request.route_path('images')}')">
         <metal:breadcrumbs metal:use-macro="layout.global_macros['breadcrumbs']">
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('images')}" i18n:translate="">Images</a></li>
@@ -26,6 +30,12 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="image">
                     <metal:actions metal:fill-slot="actions">
+                        <li tal:condition="image.root_device_type == 'instance-store'" ng-show="isTransitional(imageState)">
+                            <a id="cancel-image-action" i18n:translate=""
+                               ng-click="cancelCreate($event)">
+                                Cancel image creation
+                            </a>
+                        </li>
                         <li ng-show="imageState == 'available'">
                             <a href="${request.route_path('instance_create')}?image_id=${image_id}"
                                id="launch-instance-action" i18n:translate="">
@@ -69,8 +79,11 @@
                             <div class="row controls-wrapper readonly">
                                 <div class="small-4 columns"><label i18n:translate="">Status</label></div>
                                 <div class="small-8 columns value" ng-cloak="">
-                                    <span class="label radius state {{imageState}}">
-                                        {{ imageState }}
+                                    <div class="progress" ng-show="isTransitional(imageState)"><span
+                                            class="meter" style="width: {{ item.progress }}">{{ imageProgress }} ({{ imageState }})</span>
+                                    </div>
+                                    <span ng-show="!isTransitional(imageState)">
+                                        <span class="label radius state {{imageState}}"> {{ imageState }} </span>
                                     </span>
                                 </div>
                             </div>
