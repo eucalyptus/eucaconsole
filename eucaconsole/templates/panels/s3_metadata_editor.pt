@@ -37,6 +37,7 @@
             </div>
         </div>
         <textarea id="metadata" name="metadata" class="hidden"></textarea>
+        <textarea id="metadata-keys-to-delete" name="metadata_keys_to_delete" class="hidden"></textarea>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_metadata_editor.js')}"></script>
 </div>

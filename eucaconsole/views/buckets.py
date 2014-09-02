@@ -423,6 +423,7 @@ class BucketItemDetailsView(BaseView):
         self.s3_conn = self.get_connection(conn_type='s3')
         with boto_error_handler(request):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
+            self.bucket_name = self.bucket.name
             self.bucket_item = self.get_bucket_item()
             self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
@@ -458,12 +459,10 @@ class BucketItemDetailsView(BaseView):
             location = self.request.route_path(
                 'bucket_item_details', name=self.bucket.name, subpath=self.request.subpath)
             with boto_error_handler(self.request, location):
-                share_type = self.request.params.get('share_type')
-                if share_type == 'public':
-                    self.bucket.make_public()
-                else:
-                    BucketDetailsView.set_sharing_acl(
-                        self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
+                # Update ACL
+                self.update_acl()
+                # Update metadata
+                self.update_metadata()
                 msg = '{0} {1}'.format(_(u'Successfully modified item'), self.bucket_item.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
@@ -478,4 +477,34 @@ class BucketItemDetailsView(BaseView):
         if item is None:  # Folder requires the trailing slash, which request.subpath omits
             item = self.bucket.get_key('{0}/'.format(item_key_name))
         return item
+
+    def update_acl(self):
+        share_type = self.request.params.get('share_type')
+        if share_type == 'public':
+            self.bucket.make_public()
+        else:
+            BucketDetailsView.set_sharing_acl(
+                self.request, bucket_object=self.bucket_item, item_acl=self.bucket_item_acl)
+
+    def update_metadata(self):
+        """Update metadata and remove deleted metadata"""
+        # Update metadata
+        metadata_param = self.request.params.get('metadata') or '{}'
+        metadata = json.loads(metadata_param)
+        if metadata:
+            for key, val in metadata.items():
+                self.bucket_item.set_metadata(key, val)
+        # Removed deleted metadata
+        metadata_keys_to_delete_param = self.request.params.get('metadata_keys_to_delete') or '[]'
+        metadata_keys_to_delete = json.loads(metadata_keys_to_delete_param)
+        if metadata_keys_to_delete:
+            for mkey in metadata_keys_to_delete:
+                if self.bucket_item.get_metadata(mkey):
+                    del self.bucket_item.metadata[mkey]
+        if metadata or metadata_keys_to_delete:
+            # The only way to update the metadata appears to be to copy the object
+            copied_item = self.bucket_item.copy(
+                self.bucket_name, self.bucket_item.name, self.bucket_item.metadata, preserve_acl=True)
+            self.bucket_item = copied_item
+
 

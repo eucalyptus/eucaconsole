@@ -7,25 +7,30 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
     .controller('S3MetadataEditorCtrl', function ($scope, $sanitize) {
         $scope.metadataEditor = $('#s3-metadata-editor');
         $scope.metadataTextarea = $scope.metadataEditor.find('textarea#metadata');
+        $scope.metadataKeysToDeleteTextarea = $scope.metadataEditor.find('textarea#metadata-keys-to-delete');
         $scope.metadataArray = [];
         $scope.newMetadataKey = '';
         $scope.newMetadataValue = '';
+        $scope.metadataKeysToDelete = [];
         $scope.isMetadataNotComplete = true;
         $scope.syncMetadata = function () {
+            // Update metadata to keep
             var metadataObj = {};
             $scope.metadataArray.forEach(function(metadata) {
                 metadataObj[metadata.name] = metadata.value;
             });
             $scope.metadataTextarea.val(JSON.stringify(metadataObj));
+            // Update metadata keys to delete
+            $scope.metadataKeysToDeleteTextarea.val(JSON.stringify($scope.metadataKeysToDelete));
         };
         $scope.initMetadata = function(metadataJson) {
             // Parse metadata JSON and convert to a list of metadata.
             metadataJson = metadataJson.replace(/__apos__/g, "\'").replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
-            var metadataObj = JSON.parse(metadataJson);
-            Object.keys(metadataObj).forEach(function(key) {
+            $scope.metadataObj = JSON.parse(metadataJson);
+            Object.keys($scope.metadataObj).forEach(function(key) {
                 $scope.metadataArray.push({
                     'name': key,
-                    'value': metadataObj[key]
+                    'value': $scope.metadataObj[key]
                 });
             });
             $scope.syncMetadata();
@@ -35,6 +40,10 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             return $sanitize(metadata.name + ' = ' + metadata.value);
         };
         $scope.removeMetadata = function (index, $event) {
+            var removedKey = $scope.metadataArray[index].name;
+            if ($scope.metadataObj[removedKey]) {
+                $scope.metadataKeysToDelete.push($scope.metadataArray[index].name);
+            }
             $event.preventDefault();
             $scope.metadataArray.splice(index, 1);
             $scope.syncMetadata();
