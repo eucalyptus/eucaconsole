@@ -57,8 +57,7 @@
                       action="${request.route_path('bucket_item_update', name=bucket_name, subpath=request.subpath)}">
                     ${structure:details_form['csrf_token']}
                     <h6 id="bucket-item-section-title">
-                        <span i18n:translate="" tal:condition="is_folder">Folder</span>
-                        <span i18n:translate="" tal:condition="not is_folder">Object</span>
+                        <span i18n:translate="">Object</span>
                     </h6>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Name</label></div>
@@ -82,7 +81,7 @@
                         <div class="small-4 columns"><label i18n:translate="">ETag</label></div>
                         <div class="small-8 columns value">${bucket_item.etag}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" tal:condition="not is_folder">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Link</label></div>
                         <div class="small-8 columns value">
                             <a href="${item_link}">${item_link.split('?')[0]}</a>

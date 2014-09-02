@@ -353,6 +353,5 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
     return dict(
         metadata_json=metadata_json,
         metadata_form=metadata_form,
-        object_type=get_object_type(bucket_object),
     )
 

@@ -87,7 +87,6 @@
                             {{'${bucket_creation_date}' | date:'${layout.angular_date_format}'}}
                         </div>
                     </div>
-                    <hr />
                     ${panel('s3_sharing_panel', bucket_object=bucket, sharing_form=sharing_form)}
                     <hr />
                     <div>
