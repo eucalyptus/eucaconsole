@@ -105,16 +105,16 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.updateVPCSubnetChoices = function () {
             $scope.vpcSubnetChoices = {};
             $scope.vpcSubnet = '';
-            for( var i=0; i < $scope.vpcSubnetList.length; i++){
-                if ($scope.vpcSubnetList[i]['vpc_id'] === $scope.vpcNetwork) {
-                    $scope.vpcSubnetChoices[$scope.vpcSubnetList[i]['id']] = 
-                        $scope.vpcSubnetList[i]['cidr_block'] + ' (' + $scope.vpcSubnetList[i]['id'] + ') | ' + 
-                        $scope.vpcSubnetList[i]['availability_zone'];
+            angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+                if (vpcSubnet['vpc_id'] === $scope.vpcNetwork) {
+                    $scope.vpcSubnetChoices[vpcSubnet['id']] = 
+                        vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
+                        vpcSubnet['availability_zone'];
                     if ($scope.vpcSubnet == '') {
-                        $scope.vpcSubnet = $scope.vpcSubnetList[i]['id'];
+                        $scope.vpcSubnet = vpcSubnet['id'];
                     }
                 }
-            } 
+            }); 
             if ($scope.vpcSubnet == '') {
                 $scope.vpcSubnetChoices[''] = $('#vpc_subnet_empty_option').text();
             }

@@ -37,9 +37,6 @@ from markupsafe import escape
 from ..i18n import _
 from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
-class NonValidatingSelectMultipleField(wtforms.SelectMultipleField):
-    def pre_validate(self, form):
-        pass
 
 class NgNonBindableOptionSelect(Select):
     @classmethod
@@ -62,7 +59,7 @@ class BaseScalingGroupForm(BaseSecureForm):
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
-    vpc_subnet = NonValidatingSelectMultipleField(label=_(u'VPC subnets'))
+    vpc_subnet = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
         label=_(u'Availability zones'),
@@ -132,7 +129,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         self.elb_choices_manager = ChoicesManager(conn=elb_conn) if elb_conn else None
         self.launch_config.choices = self.get_launch_config_choices()
         self.vpc_network.choices = self.vpc_choices_manager.vpc_networks()
-        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets(add_blank=False)
+        self.vpc_subnet.choices = self.vpc_choices_manager.vpc_subnets(add_blank=True)
         self.health_check_type.choices = self.get_healthcheck_type_choices()
         region = request.session.get('region')
         self.availability_zones.choices = self.get_availability_zone_choices(region)

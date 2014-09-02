@@ -15,6 +15,13 @@ angular.module('ScalingGroupPage', ['AutoScaleTagEditor'])
         $scope.pendingModalID = '';
         $scope.initChosenSelectors = function () {
             $('#launch_config').chosen({'width': '60%', search_contains: true});
+            // Remove the option if it has no vpc subnet ID associated
+            var selectVPCSubnetObject = $('#vpc_subnet option');
+            if (selectVPCSubnetObject.length > 0) {
+                if (selectVPCSubnetObject.first().attr('value') == '') {
+                    selectVPCSubnetObject.first().remove();
+                } 
+            }
             $('#vpc_subnet').chosen({'width': '80%', search_contains: true});
             $('#availability_zones').chosen({'width': '80%', search_contains: true});
             $('#termination_policies').chosen({'width': '80%', search_contains: true});
