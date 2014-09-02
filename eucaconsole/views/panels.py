@@ -42,6 +42,18 @@ from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 from ..views import BaseView
+from ..views.buckets import DELIMITER
+
+
+def get_object_type(bucket_object):
+    """
+    Detect object type
+    :return: object type (one of 'bucket', 'folder', 'object')
+    """
+    object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
+    if object_type == 'object' and bucket_object.size == 0 and DELIMITER in bucket_object.name:
+        object_type = 'folder'
+    return object_type
 
 
 @panel_config('top_nav', renderer='../templates/panels/top_nav.pt')
@@ -316,10 +328,6 @@ def securitygroup_rules_egress_landingpage(context, request, tile_view=False):
 @panel_config('s3_sharing_panel', renderer='../templates/panels/s3_sharing_panel.pt')
 def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
     grants_list = []
-    # TODO: Move object type detection to reusable method (in ObjectDetailsView?)
-    object_type = 'bucket' if isinstance(bucket_object, Bucket) else 'object'
-    if object_type == 'object' and bucket_object.size == 0:
-        object_type = 'folder'
     if bucket_object is not None:
         for grant in bucket_object.get_acl().acl.grants:
             grants_list.append(dict(
@@ -331,7 +339,7 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
             ))
     return dict(
         bucket_object=bucket_object,
-        object_type=object_type,
+        object_type=get_object_type(bucket_object),
         sharing_form=sharing_form,
         grants_json=json.dumps(grants_list),
     )
@@ -345,5 +353,6 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
     return dict(
         metadata_json=metadata_json,
         metadata_form=metadata_form,
+        object_type=get_object_type(bucket_object),
     )
 

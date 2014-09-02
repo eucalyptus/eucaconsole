@@ -179,7 +179,7 @@ class BucketContentsView(LandingPageView):
 
     @staticmethod
     def get_item_download_url(bucket_item):
-        if bucket_item.size == 0:
+        if bucket_item.size == 0 and DELIMITER in bucket_item.name:
             return ''  # skip if folder
         item_name = BucketContentsView.get_unprefixed_key_name(bucket_item.name)
         return bucket_item.generate_url(
@@ -425,7 +425,9 @@ class BucketItemDetailsView(BaseView):
             self.bucket = BucketContentsView.get_bucket(request, self.s3_conn)
             self.bucket_item = self.get_bucket_item()
             self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
-        self.is_folder = self.bucket_item.size == 0
+        if self.bucket_item is None:
+            raise HTTPNotFound()
+        self.is_folder = self.bucket_item and self.bucket_item.size == 0 and DELIMITER in self.bucket_item.name
         self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)

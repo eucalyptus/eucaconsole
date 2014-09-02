@@ -2,7 +2,8 @@
 <div id="s3-sharing-panel" ng-app="S3SharingPanel" i18n:domain="eucaconsole"
      ng-controller="S3SharingPanelCtrl" ng-init="initS3SharingPanel('${grants_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_sharing_panel.css')}" />
-    <div>
+    <div tal:condition="object_type in ['bucket', 'object']"><!--! Hide sharing panel for folders -->
+        <hr id="s3-sharing-panel-top-hr-tag" />
         <h6 i18n:translate="" class="sharing-label">Sharing</h6>
         <div>
             ${structure:sharing_form.share_type()}

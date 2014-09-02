@@ -3,39 +3,42 @@
 <div id="s3-metadata-editor" class="row controls-wrapper" ng-app="S3MetadataEditor" i18n:domain="eucaconsole"
      ng-controller="S3MetadataEditorCtrl" ng-init="initMetadata('${metadata_json}')">
     <link rel="stylesheet" type="text/css" href="${request.static_path('eucaconsole:static/css/widgets/s3_metadata_editor.css')}" />
-    <div class="columns"><h6 i18n:translate="">Metadata</h6></div>
-    <div class="columns field" ng-cloak="">
-        <div class="items">
-            <span class="label radius secondary metadataentry"
-                  ng-repeat="metadata in metadataArray" ng-cloak="cloak">
-                <span title="{{ getSafeTitle(metadata) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
-                    {{ metadata.name }} <em>=</em> {{ metadata.value }}
+    <div tal:condition="object_type in ['bucket', 'object']">
+        <hr id="s3-metadata-editor-top-hr-tag" />
+        <div class="columns"><h6 i18n:translate="">Metadata</h6></div>
+        <div class="columns field" ng-cloak="">
+            <div class="items">
+                <span class="label radius secondary metadataentry"
+                      ng-repeat="metadata in metadataArray" ng-cloak="cloak">
+                    <span title="{{ getSafeTitle(metadata) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
+                        {{ metadata.name }} <em>=</em> {{ metadata.value }}
+                    </span>
+                    <a href="#" class="remove" ng-click="removeMetadata($index, $event)"
+                       title="Remove metadata"><i class="fi-x"></i></a>
                 </span>
-                <a href="#" class="remove" ng-click="removeMetadata($index, $event)"
-                   title="Remove metadata"><i class="fi-x"></i></a>
-            </span>
-        </div>
-        <div class="row add-label">
-            <div class="columns small-8 right subheader" ng-cloak="">
-                <span class="subsection-label" i18n:translate="" ng-show="metadataArray.length">Add another metadata pair</span>
-                <span class="subsection-label" i18n:translate="" ng-show="metadataArray == 0" >Add a metadata pair</span>:
             </div>
-        </div>
-        <div class="row metadataentry controls-wrapper">
-            <div>
-                ${panel('form_field', field=metadata_form['metadata_key'], ng_attrs={'model': 'newMetadataKey'})}
-                ${panel('form_field', field=metadata_form['metadata_value'], ng_attrs={'model': 'newMetadataValue'})}
-            </div>
-            <div>&nbsp;</div>
-            <div>
-                <div class="small-8 columns right">
-                    <a href="#" ng-click="addMetadata($event)"
-                       class="button round tiny" id="add-metadata-btn" ng-disabled="isMetadataNotComplete"
-                       title="Add metadata pair" i18n:translate="">Add Metadata Pair</a>
+            <div class="row add-label">
+                <div class="columns small-8 right subheader" ng-cloak="">
+                    <span class="subsection-label" i18n:translate="" ng-show="metadataArray.length">Add another metadata pair</span>
+                    <span class="subsection-label" i18n:translate="" ng-show="metadataArray == 0" >Add a metadata pair</span>:
                 </div>
             </div>
+            <div class="row metadataentry controls-wrapper">
+                <div>
+                    ${panel('form_field', field=metadata_form['metadata_key'], ng_attrs={'model': 'newMetadataKey'})}
+                    ${panel('form_field', field=metadata_form['metadata_value'], ng_attrs={'model': 'newMetadataValue'})}
+                </div>
+                <div>&nbsp;</div>
+                <div>
+                    <div class="small-8 columns right">
+                        <a href="#" ng-click="addMetadata($event)"
+                           class="button round tiny" id="add-metadata-btn" ng-disabled="isMetadataNotComplete"
+                           title="Add metadata pair" i18n:translate="">Add Metadata Pair</a>
+                    </div>
+                </div>
+            </div>
+            <textarea id="metadata" name="metadata" class="hidden"></textarea>
         </div>
-        <textarea id="metadata" name="metadata" class="hidden"></textarea>
     </div>
     <script src="${request.static_path('eucaconsole:static/js/widgets/s3_metadata_editor.js')}"></script>
 </div>

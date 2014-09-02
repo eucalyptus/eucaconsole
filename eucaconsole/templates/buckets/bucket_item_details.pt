@@ -53,7 +53,7 @@
                         </li>
                     </metal:actions>
                 </metal:block>
-                <form id="bucket-item-details-form" method="post" data-abide="abide" ng-cloak=""
+                <form id="bucket-item-details-form" method="post" data-abide="abide"
                       action="${request.route_path('bucket_item_update', name=bucket_name, subpath=request.subpath)}">
                     ${structure:details_form['csrf_token']}
                     <h6 id="bucket-item-section-title">
@@ -72,7 +72,7 @@
                         <div class="small-4 columns"><label i18n:translate="">Version</label></div>
                         <div class="small-8 columns value">${bucket_item.version_id}</div>
                     </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" ng-cloak="">
                         <div class="small-4 columns"><label i18n:translate="">Last modified</label></div>
                         <div class="small-8 columns value">
                             {{'${bucket_item.last_modified}' | date:'${layout.angular_date_format}'}}
@@ -88,9 +88,7 @@
                             <a href="${item_link}">${item_link.split('?')[0]}</a>
                         </div>
                     </div>
-                    <hr />
                     ${panel('s3_metadata_editor', bucket_object=bucket_item, metadata_form=metadata_form)}
-                    <hr />
                     ${panel('s3_sharing_panel', bucket_object=bucket_item, sharing_form=sharing_form)}
                     <hr />
                     <div>
