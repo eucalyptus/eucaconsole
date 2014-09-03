@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <div tal:condition="not preset">
-                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroup', 'options': 'k as v for (k, v) in securityGroupChoices'})}
+                                ${panel('form_field', field=create_form['securitygroup'], leftcol_width=4, rightcol_width=8, ng_attrs={'model': 'securityGroups', 'options': 'k as v for (k, v) in securityGroupChoices'})}
                                 <div class="row">
                                     <div class="small-8 columns right" id="create-securitygroup-link">
                                         <span class="or" i18n:translate="">Or: </span>
@@ -255,7 +255,7 @@
                     </div>
                     <div class="row">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Security group:</label></div>
-                        <div class="small-8 columns value">{{ securityGroup }}</div>
+                        <div class="small-8 columns value">{{ securityGroups }}</div>
                     </div>
                     <div class="row" ng-show="role">
                         <div class="small-4 columns"><label i18n:translate="" class="right">Role:</label></div>

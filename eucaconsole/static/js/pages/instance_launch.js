@@ -28,11 +28,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
-        $scope.securityGroup = '';
-        $scope.securityGroupName = '';
+        $scope.securityGroups = [];
         $scope.securityGroupsRules = {};
         $scope.securityGroupCollection = {};
-        $scope.selectedGroupRules = [];
+        $scope.selectedGroupRules = {};
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
@@ -75,8 +74,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.setWatcher();
         };
         $scope.updateSelectedSecurityGroupRules = function () {
-            $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
-            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
+            angular.forEach($scope.securityGroups, function(securityGroupID) {
+                console.log(securityGroupID);
+                $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
+                console.log($scope.selectedGroupRules[securityGroupID]);
+            });
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
@@ -100,7 +102,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if (lastSecGroup != null && $scope.securityGroupChoices[lastSecGroup] !== undefined) {
                 $('#securitygroup').val(lastSecGroup);
             }
-            $scope.securityGroup = $('#securitygroup').find(':selected').val();
+            $scope.securityGroups.push($('#securitygroup').find(':selected').val());
             $scope.imageID = $scope.urlParams['image_id'] || '';
             if( $scope.imageID == '' ){
                 $scope.currentStepIndex = 1;
@@ -197,7 +199,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
-            $scope.$watch('securityGroup', function () { 
+            $scope.$watch('securityGroups', function () { 
                 $scope.updateSelectedSecurityGroupRules();
             });
             $scope.$watch('securityGroupVPC', function () {
@@ -454,9 +456,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     newSecurityGroupID = oData.id;
                 }
                 $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
-                $scope.securityGroup = newSecurityGroupID;
-                $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;
+                $scope.securityGroups.push(newSecurityGroupID);
+                var groupRulesObject = JSON.parse($('#rules').val());
+                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObject; 
+                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObject;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
@@ -491,9 +494,9 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             if ($.isEmptyObject($scope.securityGroupCollection)) {
                 return;
             }
-            $scope.securityGroup = $scope.securityGroupCollection[0]['id'];
-            angular.forEach($scope.securityGroupCollection, function(securityGroup){
-                $scope.securityGroupChoices[securityGroup['id']] = securityGroup['name'];
+            $scope.securityGroups = [];
+            angular.forEach($scope.securityGroupCollection, function(sGroup){
+                $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
             }); 
         };
         $scope.updateVPCSubnetChoices = function () {

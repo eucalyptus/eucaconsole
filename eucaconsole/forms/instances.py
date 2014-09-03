@@ -114,7 +114,7 @@ class LaunchInstanceForm(BaseSecureForm):
         validators=[validators.InputRequired(message=keypair_error_msg)],
     )
     securitygroup_error_msg = _(u'Security group is required')
-    securitygroup = wtforms.SelectField(
+    securitygroup = wtforms.SelectMultipleField(
         label=_(u'Security group'),
         validators=[validators.InputRequired(message=securitygroup_error_msg)],
     )
