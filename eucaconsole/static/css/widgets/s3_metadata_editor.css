@@ -5,4 +5,5 @@
 #s3-metadata-editor .items { margin-bottom: 6px; }
 #s3-metadata-editor .items .metadataentry { color: #333; background-color: #e6e7e8; margin-right: 8px; }
 #s3-metadata-editor .items .metadataentry a { color: white; }
-#s3-metadata-editor #metadata_key, #s3-metadata-editor #metadata_value { width: 50%; margin-bottom: 0.5rem; }
+#s3-metadata-editor #metadata_key, #s3-metadata-editor #metadata_value { width: 50%; }
+#s3-metadata-editor #controls_metadata_key, #s3-metadata-editor #controls_metadata_value { margin-bottom: 0.5rem; }

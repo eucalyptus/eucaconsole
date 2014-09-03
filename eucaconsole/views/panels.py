@@ -41,6 +41,7 @@ from wtforms.validators import Length
 from pyramid_layout.panel import panel_config
 
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
+from ..i18n import _
 from ..views import BaseView
 from ..views.buckets import DELIMITER
 
@@ -353,5 +354,7 @@ def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None)
     return dict(
         metadata_json=metadata_json,
         metadata_form=metadata_form,
+        metadata_key_create_option_text=_(u'Add Metadata'),
+        metadata_key_no_results_text=_(u'Click below to add the new key'),
     )
 

@@ -4,12 +4,13 @@
  *
  */
 angular.module('S3SharingPanel', [])
-    .controller('S3SharingPanelCtrl', function ($scope) {
+    .controller('S3SharingPanelCtrl', function ($scope, $timeout) {
         $scope.s3AclTextarea = $('#s3-sharing-acl');
         $scope.sharingAccountList = [];
         $scope.isNotValid = true;
         $scope.grantsArray = [];
         $scope.shareType = '';
+        $scope.addAccountBtnDisabled = true;
         $scope.initS3SharingPanel = function (grants_json) {
             $scope.setInitialValues();
             $scope.initGrants(grants_json);
@@ -29,6 +30,12 @@ angular.module('S3SharingPanel', [])
                     $scope.$apply(function () {
                         $scope.shareType = $('input[name="share_type"]:checked').val();
                     });
+                });
+            });
+            $('#share_account').on('keyup', function () {
+                var that = $(this);
+                $scope.$apply(function () {
+                    $scope.addAccountBtnDisabled = that.val() == '';
                 });
             });
         };

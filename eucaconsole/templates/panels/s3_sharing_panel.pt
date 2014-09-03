@@ -38,11 +38,12 @@
                 :
             </div>
         </div>
-        ${panel('form_field', field=sharing_form.share_account)}
+        ${panel('form_field', field=sharing_form.share_account, ng_attrs={'model': 'shareAccount'})}
         ${panel('form_field', field=sharing_form.share_permissions)}
         <div class="row">
             <div class="columns small-8 right">
-                <a class="button round tiny" ng-click="addGrant($event)" i18n:translate="">
+                <a class="button round tiny" ng-click="addGrant($event)"
+                   ng-disabled="addAccountBtnDisabled" i18n:translate="">
                     Add account
                 </a>
             </div>

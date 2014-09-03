@@ -18,7 +18,7 @@
                     <li tal:define="idx repeat.path_item.index"
                         class="${'current' if repeat.path_item.end else ''}">
                         <a tal:condition="repeat.path_item.end" ng-non-bindable="">${path_item}</a>
-                        <a href="${request.route_path('bucket_contents', subpath='/' + bucket_name + '/' + '/'.join(request.subpath[:idx+1]))}"
+                        <a href="${request.route_path('bucket_contents', subpath='/{0}/{1}'.format(bucket_name, '/'.join(request.subpath[:idx+1])))}"
                            ng-non-bindable="" tal:condition="not repeat.path_item.end">${path_item}</a>
                     </li>
                 </div>
@@ -33,12 +33,6 @@
             </metal:block>
         </h3>
         <div class="large-8 columns">
-            <!--!
-            <dl class="tabs" id="bucket-item-subnav">
-                <dd class="active"><a href="#" i18n:translate="">General</a></dd>
-                <dd><a href="#" i18n:translate="">Tasks</a></dd>
-            </dl>
-            -->
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
