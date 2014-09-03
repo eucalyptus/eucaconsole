@@ -69,12 +69,12 @@ def escape_braces(event):
 
 
 class JSONResponse(Response):
-    def __init__(self, status=200, message=None, **kwargs):
+    def __init__(self, status=200, message=None, id=None, **kwargs):
         super(JSONResponse, self).__init__(**kwargs)
         self.status = status
         self.content_type = 'application/json'
         self.body = json.dumps(
-            dict(message=message)
+            dict(message=message, id=id)
         )
 
 

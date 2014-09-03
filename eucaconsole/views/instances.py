@@ -43,6 +43,7 @@ import logging
 from boto.exception import BotoServerError
 from boto.s3.key import Key
 from boto.ec2.bundleinstance import BundleInstanceTask
+from boto.ec2.networkinterface import NetworkInterfaceCollection, NetworkInterfaceSpecification
 
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config
@@ -70,6 +71,7 @@ class BaseInstanceView(BaseView):
     def __init__(self, request):
         super(BaseInstanceView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
 
     def get_instance(self, instance_id=None):
         instance_id = instance_id or self.request.matchdict.get('id')
@@ -79,11 +81,15 @@ class BaseInstanceView(BaseView):
                 reservation = reservations_list[0] if reservations_list else None
                 if reservation:
                     instance = reservation.instances[0]
-                    instance.groups = reservation.groups
                     instance.reservation_id = reservation.id
                     instance.owner_id = reservation.owner_id
                     if instance.platform is None:
                         instance.platform = _(u"linux")
+                    if instance.vpc_id:
+                        vpc = self.vpc_conn.get_all_vpcs(vpc_ids=[instance.vpc_id])[0]
+                        instance.vpc_name = TaggedItemView.get_display_name(vpc, escapebraces=True) 
+                    else:
+                        instance.vpc_name = ''
                     instance.instance_profile_id = None
                     if instance.instance_profile is not None and len(instance.instance_profile.keys()) > 0:
                         instance.instance_profile_id = instance.instance_profile.keys()[0]
@@ -300,6 +306,8 @@ class InstancesJsonView(LandingPageView):
     def __init__(self, request):
         super(InstancesJsonView, self).__init__(request)
         self.conn = self.get_connection()
+        self.vpc_conn = self.get_connection(conn_type='vpc')
+        self.vpcs = self.get_all_vpcs()
 
     @view_config(route_name='instances_json', renderer='json', request_method='POST')
     def instances_json(self):
@@ -369,6 +377,7 @@ class InstancesJsonView(LandingPageView):
                 root_device=instance.root_device_type,
                 security_groups=security_groups_array,
                 key_name=instance.key_name,
+                vpc_name=instance.vpc_name,
                 status=instance.state,
                 tags=TaggedItemView.get_tags_display(instance.tags),
                 transitional=is_transitional,
@@ -382,11 +391,22 @@ class InstancesJsonView(LandingPageView):
             with boto_error_handler(self.request):
                 for reservation in self.conn.get_all_reservations(filters=filters):
                     for instance in reservation.instances:
-                        instance.groups = reservation.groups
+                        if instance.vpc_id:
+                            vpc = self.get_vpc_by_id(instance.vpc_id)
+                            instance.vpc_name = TaggedItemView.get_display_name(vpc)
+                        else:
+                            instance.vpc_name = ''
                         instances.append(instance)
             return instances
         return []
 
+    def get_all_vpcs(self):
+        return self.vpc_conn.get_all_vpcs() if self.vpc_conn else []
+
+    def get_vpc_by_id(self, vpc_id):
+        for vpc in self.vpcs:
+            if vpc_id == vpc.id:
+                return vpc
     def get_image_by_id(self, images, id):
         if images:
             for image in images:
@@ -850,16 +870,16 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
         self.vpc_conn = self.get_connection(conn_type='vpc')
         self.launch_form = LaunchInstanceForm(
             self.request, image=self.image, securitygroups=self.securitygroups,
-            conn=self.conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
+            conn=self.conn, vpc_conn=self.vpc_conn, iam_conn=self.iam_conn, formdata=self.request.params or None)
         self.filters_form = ImagesFiltersForm(
             self.request, cloud_type=self.cloud_type, formdata=self.request.params or None)
         self.keypair_form = KeyPairForm(self.request, formdata=self.request.params or None)
         self.securitygroup_form = SecurityGroupForm(self.request, self.vpc_conn, formdata=self.request.params or None)
         self.generate_file_form = GenerateFileForm(self.request, formdata=self.request.params or None)
         self.securitygroups_rules_json = BaseView.escape_json(json.dumps(self.get_securitygroups_rules()))
-        self.securitygroups_id_map_json = BaseView.escape_json(json.dumps(self.get_securitygroups_id_map()))
         self.images_json_endpoint = self.request.route_path('images_json')
         self.owner_choices = self.get_owner_choices()
+        self.vpc_subnet_choices_json = BaseView.escape_json(json.dumps(self.get_vpc_subnets_json()))
         self.keypair_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.keypair.choices)))
         self.securitygroup_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.securitygroup.choices)))
         self.role_choices_json = BaseView.escape_json(json.dumps(dict(self.launch_form.role.choices)))
@@ -874,9 +894,9 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             owner_choices=self.owner_choices,
             snapshot_choices=self.get_snapshot_choices(),
             securitygroups_rules_json=self.securitygroups_rules_json,
-            securitygroups_id_map_json=self.securitygroups_id_map_json,
             keypair_choices_json=self.keypair_choices_json,
             securitygroup_choices_json=self.securitygroup_choices_json,
+            vpc_subnet_choices_json=self.vpc_subnet_choices_json,
             role_choices_json=self.role_choices_json,
         )
 
@@ -900,9 +920,17 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
             securitygroup = self.request.params.get('securitygroup', 'default')
             if securitygroup:
                 securitygroup = self.unescape_braces(securitygroup)
-            security_groups = [securitygroup]  # Security group names
             instance_type = self.request.params.get('instance_type', 'm1.small')
             availability_zone = self.request.params.get('zone') or None
+            vpc_network = self.request.params.get('vpc_network') or None
+            #securitygroup_id = self.get_securitygroup_id(securitygroup, vpc_network)
+            securitygroup_ids = [securitygroup]
+            vpc_subnet = self.request.params.get('vpc_subnet') or None
+            associate_public_ip_address = self.request.params.get('associate_public_ip_address')
+            if associate_public_ip_address == 'true':
+                associate_public_ip_address = True
+            elif associate_public_ip_address == 'false':
+                associate_public_ip_address = False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'
@@ -920,22 +948,43 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
                     self.iam_conn.add_role_to_instance_profile(profile_name, role)
                 self.log_request(_(u"Running instance(s) (num={0}, image={1}, type={2})").format(
                     num_instances, image_id, instance_type))
-                reservation = self.conn.run_instances(
-                    image_id,
-                    min_count=num_instances,
-                    max_count=num_instances,
-                    key_name=key_name,
-                    user_data=self.get_user_data(),
-                    addressing_type=addressing_type,
-                    instance_type=instance_type,
-                    placement=availability_zone,
-                    kernel_id=kernel_id,
-                    ramdisk_id=ramdisk_id,
-                    monitoring_enabled=monitoring_enabled,
-                    block_device_map=block_device_map,
-                    security_group_ids=security_groups,
-                    instance_profile_arn=instance_profile.arn if instance_profile else None
-                )
+                if vpc_network is not None:
+                    network_interface = NetworkInterfaceSpecification(subnet_id=vpc_subnet,
+                        groups=securitygroup_ids,associate_public_ip_address=associate_public_ip_address)
+                    network_interfaces = NetworkInterfaceCollection(network_interface)
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                        network_interfaces=network_interfaces,
+                    )
+                else:
+                    reservation = self.conn.run_instances(
+                        image_id,
+                        min_count=num_instances,
+                        max_count=num_instances,
+                        key_name=key_name,
+                        user_data=self.get_user_data(),
+                        addressing_type=addressing_type,
+                        instance_type=instance_type,
+                        placement=availability_zone,
+                        security_group_ids=securitygroup_ids,
+                        kernel_id=kernel_id,
+                        ramdisk_id=ramdisk_id,
+                        monitoring_enabled=monitoring_enabled,
+                        block_device_map=block_device_map,
+                        instance_profile_arn=instance_profile.arn if instance_profile else None,
+                    )
+
                 for idx, instance in enumerate(reservation.instances):
                     # Add tags for newly launched instance(s)
                     # Try adding name tag (from collection of name input fields)
@@ -965,16 +1014,29 @@ class InstanceLaunchView(BlockDeviceMappingItemView):
     def get_securitygroups_rules(self):
         rules_dict = {}
         for security_group in self.securitygroups:
-            if security_group.vpc_id is None:
-                rules_dict[security_group.name] = SecurityGroupsView.get_rules(security_group.rules)
+            rules_dict[security_group.id] = SecurityGroupsView.get_rules(security_group.rules)
         return rules_dict
-
-    def get_securitygroups_id_map(self):
-        map_dict = {}
+            
+    def get_securitygroup_id(self, name, vpc_network=None):
         for security_group in self.securitygroups:
-            if security_group.vpc_id is None:
-                map_dict[security_group.name] = security_group.id
-        return map_dict
+            if security_group.vpc_id == vpc_network and security_group.name == name:
+                return security_group.id
+        return None
+
+    def get_vpc_subnets_json(self):
+        subnets = []
+        if self.vpc_conn:
+            with boto_error_handler(self.request, self.location):
+                vpc_subnets = self.vpc_conn.get_all_subnets()
+                for vpc_subnet in vpc_subnets:
+                    subnets.append(dict(
+                        id=vpc_subnet.id,
+                        vpc_id=vpc_subnet.vpc_id,
+                        availability_zone=vpc_subnet.availability_zone,
+                        state=vpc_subnet.state,
+                        cidr_block=vpc_subnet.cidr_block,
+                    ))
+        return subnets
 
 
 class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
