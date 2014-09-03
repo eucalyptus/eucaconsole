@@ -135,7 +135,7 @@
                 <span i18n:translate="">Deleting all objects and folders can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
             </p>
             <p>
-                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${bucket_name}.</b>
+                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${display_path}</b>
             </p>
             <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
                 Yes, Delete Everything

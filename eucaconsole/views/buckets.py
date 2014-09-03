@@ -143,6 +143,7 @@ class BucketContentsView(LandingPageView):
         json_route_path = self.request.route_path('bucket_contents', name=self.bucket_name, subpath=self.subpath)
         self.render_dict.update(
             prefix=self.prefix,
+            display_path='/'.join(self.subpath),
             initial_sort_key='name',
             json_items_endpoint=self.get_json_endpoint(json_route_path, path=True),
             sort_keys=self.sort_keys,
