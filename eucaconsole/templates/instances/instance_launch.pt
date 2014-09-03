@@ -258,7 +258,9 @@
                     </div>
                     <div class="row">
                         <label i18n:translate="">Security group:</label>
-                        <div class="columns value">{{ securityGroups }}</div>
+                        <div class="columns value" ng-repeat="sgroup in securityGroups">
+                            {{ securityGroupChoices[sgroup] }}
+                        </div>
                     </div>
                     <div class="row" ng-show="role">
                         <label i18n:translate="">Role:</label>

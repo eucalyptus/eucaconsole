@@ -75,9 +75,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             angular.forEach($scope.securityGroups, function(securityGroupID) {
-                console.log(securityGroupID);
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
-                console.log($scope.selectedGroupRules[securityGroupID]);
             });
         };
         $scope.preventFormSubmitOnEnter = function () {
