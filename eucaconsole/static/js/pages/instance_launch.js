@@ -169,9 +169,11 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                     $scope.isNotValid = false;
                 }
             }else if( $scope.currentStepIndex == 3 ){
-                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                if ($scope.keyPair === '' || $scope.keyPair === undefined) {
                     $scope.isNotValid = true;
-                }else{
+                } else if ($scope.securityGroups == undefined || $scope.securityGroups.length == 0) {
+                    $scope.isNotValid = true;
+                } else {
                     $scope.isNotValid = false;
                 }
             }
@@ -203,6 +205,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             });
             $scope.$watch('securityGroups', function () { 
                 $scope.updateSelectedSecurityGroupRules();
+                $scope.checkRequiredInput();
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);

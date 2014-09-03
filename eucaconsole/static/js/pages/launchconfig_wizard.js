@@ -183,13 +183,15 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                     $scope.isNotValid = false;
                 }
             }else if( $scope.currentStepIndex == 3 ){
-                if( $scope.keyPair === '' || $scope.keyPair === undefined ){
+                if ($scope.keyPair === '' || $scope.keyPair === undefined) {
                     if ($scope.urlParams.hasOwnProperty('keypair')) {
                         $scope.isNotValid = false;  // Prevent disabling primary button when keypair is preset to "none"
                     } else {
                         $scope.isNotValid = true;
                     }
-                }else{
+                } else if ($scope.securityGroups == undefined || $scope.securityGroups.length == 0) {
+                    $scope.isNotValid = true;
+                } else {
                     $scope.isNotValid = false;
                 }
             }
@@ -203,6 +205,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             });
             $scope.$watch('securityGroups', function(){
                 $scope.updateSecurityGroup();
+                $scope.checkRequiredInput();
             });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
