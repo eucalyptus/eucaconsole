@@ -62,9 +62,13 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
             $scope.getAllSecurityGroups(); 
             $scope.setInitialValues();
             $scope.preventFormSubmitOnEnter();
+            $scope.initChosenSelectors();
             $scope.setWatcher();
             $scope.setFocus();
         };
+        $scope.initChosenSelectors = function () {
+            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        }
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
                 $('#image-id-input').keydown(function(evt) {
@@ -103,6 +107,10 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 } 
                 $scope.securityGroupChoices[sGroup['id']] = securityGroupName;
             }); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.setInitialValues = function () {
             $scope.instanceType = 'm1.small';
@@ -429,11 +437,14 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 var groupRulesObject = JSON.parse($('#rules').val());
                 $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObject; 
                 $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObject;
-
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);

@@ -69,10 +69,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
             $scope.preventFormSubmitOnEnter();
+            $scope.initChosenSelectors();
             $scope.watchTags();
             $scope.focusEnterImageID();
             $scope.setWatcher();
         };
+        $scope.initChosenSelectors = function () {
+            $('#securitygroup').chosen({'width': '100%', search_contains: true});
+        }
         $scope.updateSelectedSecurityGroupRules = function () {
             angular.forEach($scope.securityGroups, function(securityGroupID) {
                 $scope.selectedGroupRules[securityGroupID] = $scope.securityGroupsRules[securityGroupID];
@@ -462,6 +466,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                // Timeout is needed for chosen to react after Angular updates the options
+                $timeout(function(){
+                    $('#securitygroup').trigger('chosen:updated');
+                }, 500);
                 var modal = $scope.securityGroupModal;
                 modal.foundation('reveal', 'close');
                 Notify.success(oData.message);
@@ -496,6 +504,10 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             angular.forEach($scope.securityGroupCollection, function(sGroup){
                 $scope.securityGroupChoices[sGroup['id']] = sGroup['name'];
             }); 
+            // Timeout is needed for chosen to react after Angular updates the options
+            $timeout(function(){
+                $('#securitygroup').trigger('chosen:updated');
+            }, 500);
         };
         $scope.updateVPCSubnetChoices = function () {
             $scope.vpcSubnetChoices = {};
