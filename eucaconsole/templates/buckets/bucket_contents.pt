@@ -42,7 +42,7 @@
                 <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
                     <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
                 </a>
-                <a ng-if="!item.is_folder">
+                <a ng-if="!item.is_folder" ng-href="{{ item.details_url }}">
                     <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
                 </a>
             </div>
@@ -94,9 +94,9 @@
                     <a ng-href="{{ item.absolute_path }}" ng-if="item.is_folder">
                         <i class="{{ item.icon || 'fi-folder' }} icon"></i>{{ item.name }}
                     </a>
-                    <span ng-if="!item.is_folder">
+                    <a ng-if="!item.is_folder" ng-href="{{ item.details_url }}">
                         <i class="{{ item.icon || 'fi-page' }} icon"></i>{{ item.name }}
-                    </span>
+                    </a>
                 </td>
                 <td>{{ item.size | bytes }}</td>
                 <td>{{ item.last_modified | date: '${layout.angular_date_format}' }}</td>

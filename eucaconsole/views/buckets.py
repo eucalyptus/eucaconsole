@@ -71,7 +71,7 @@ class BucketsView(LandingPageView):
             sort_keys=self.sort_keys,
             filter_fields=False,
             filter_keys=['bucket_name'],
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name='_name_'),
+            bucket_objects_count_url=self.request.route_path('bucket_objects_count_versioning_json', name='_name_'),
         )
 
     @view_config(route_name='buckets', renderer=VIEW_TEMPLATE)
@@ -94,22 +94,20 @@ class BucketsJsonView(BaseView):
             items = self.get_items()
             for item in items:
                 bucket_name = item.name
-                versioning_status = BucketDetailsView.get_versioning_status(item)
                 buckets.append(dict(
                     bucket_name=bucket_name,
                     contents_url=self.request.route_path('bucket_contents', subpath=bucket_name),
                     details_url=self.request.route_path('bucket_details', name=bucket_name),
-                    versioning_status=versioning_status,
-                    update_versioning_action=BucketDetailsView.get_versioning_update_action(versioning_status),
                     creation_date=item.creation_date,
                 ))
             return dict(results=buckets)
 
-    @view_config(route_name='bucket_objects_count_json', renderer='json')
-    def bucket_object_counts_json(self):
+    @view_config(route_name='bucket_objects_count_versioning_json', renderer='json')
+    def bucket_objects_count_versioning_json(self):
         bucket = BucketContentsView.get_bucket(self.request, self.s3_conn) if self.s3_conn else []
         results = dict(
             object_count=len(tuple(bucket.list())),
+            versioning_status=BucketDetailsView.get_versioning_status(bucket),
         )
         return dict(results=results)
 
@@ -303,7 +301,8 @@ class BucketDetailsView(BaseView):
             update_versioning_action=self.get_versioning_update_action(self.versioning_status),
             logging_status=self.get_logging_status(),
             bucket_contents_url=self.request.route_path('bucket_contents', subpath=self.bucket.name),
-            bucket_objects_count_url=self.request.route_path('bucket_objects_count_json', name=self.bucket.name)
+            bucket_objects_count_url=self.request.route_path(
+                'bucket_objects_count_versioning_json', name=self.bucket.name)
         )
 
     @view_config(route_name='bucket_details', renderer=VIEW_TEMPLATE)

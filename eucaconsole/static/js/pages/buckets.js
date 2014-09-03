@@ -10,6 +10,8 @@ angular.module('BucketsPage', ['LandingPage'])
         $scope.bucketName = '';
         $scope.updateVersioningAction = '';
         $scope.bucketCounts = {};
+        $scope.bucketVersioningStatus = {};
+        $scope.bucketVersioningAction = {};
         $scope.countsLoading = {};
         $scope.initController = function (bucketObjectsCountUrl, updateVersioningFormUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
@@ -25,14 +27,23 @@ angular.module('BucketsPage', ['LandingPage'])
             });
             modal.foundation('reveal', 'open');
         };
+        $scope.getVersioningActionFromStatus = function (versioningStatus) {
+            if (versioningStatus == 'Disabled' || versioningStatus == 'Suspended') {
+                return 'enable';
+            }
+            return 'disable';
+        };
         $scope.$on('itemsLoaded', function($event, items) {
             angular.forEach(items, function(item, key) {
                 var bucketName = item['bucket_name'];
                 var objectsCountUrl = $scope.bucketObjectsCountUrl.replace('_name_', bucketName);
                 $scope.countsLoading[bucketName] = true;
                 $http.get(objectsCountUrl).success(function(oData) {
-                    var results = oData ? oData.results : {};
+                    var results = oData ? oData.results : {},
+                        versioningStatus = results['versioning_status'];
                     $scope.bucketCounts[bucketName] = results['object_count'];
+                    $scope.bucketVersioningStatus[bucketName] = versioningStatus;
+                    $scope.bucketVersioningAction[bucketName] = $scope.getVersioningActionFromStatus(versioningStatus);
                     $scope.countsLoading[bucketName] = false;
                 }).error(function (oData, status) {
                     var errorMsg = oData['message'] || null;
