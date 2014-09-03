@@ -26,12 +26,16 @@
         <h3 id="pagetitle"><strong i18n:translate="" ng-non-bindable="">${request.subpath[-1]}</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button" id="create-bucket-btn" i18n:translate="">
+                <a class="button small" id="upload-file-btn" i18n:translate="">
                     Upload file(s)
                 </a>
                 &nbsp;&nbsp;
-                <a class="button" id="import-bucket-btn" i18n:translate="">
+                <a class="button small" id="create-folder-btn" i18n:translate="">
                     Create New Folder
+                </a>
+                &nbsp;&nbsp;
+                <a class="button small" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
+                    Delete All Objects/Folders
                 </a>
             </div>
             <div metal:fill-slot="tile_header">
@@ -124,6 +128,19 @@
                     </span>
                 </td>
             </metal:block>
+        </div>
+        <div id="delete-all-modal" class="reveal-modal small" data-reveal="">
+            <h3 i18n:translate="">Delete all objects/folders</h3>
+            <p>
+                <span i18n:translate="">Deleting all objects and folders can take some time. Leaving this page while the delete is in progress will cancel the operation.</span>
+            </p>
+            <p>
+                <span i18n:translate="">Are you sure you want to delete all X objects in </span>&nbsp;<b>${bucket_name}.</b>
+            </p>
+            <a class="button expand" id="delete-all-btn" i18n:translate="" ng-click="deleteAll()">
+                Yes, Delete Everything
+            </a>
+            <a href="#" id="delete_all_close_link" class="close-reveal-modal">&#215;</a>
         </div>
     </div>
 </div>
