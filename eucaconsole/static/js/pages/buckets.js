@@ -13,6 +13,7 @@ angular.module('BucketsPage', ['LandingPage'])
         $scope.bucketVersioningStatus = {};
         $scope.bucketVersioningAction = {};
         $scope.countsLoading = {};
+        $scope.versioningStatusLoading = {};
         $scope.initController = function (bucketObjectsCountUrl, updateVersioningFormUrl) {
             $scope.bucketObjectsCountUrl = bucketObjectsCountUrl;
             $scope.updateVersioningFormUrl = updateVersioningFormUrl;
@@ -38,6 +39,7 @@ angular.module('BucketsPage', ['LandingPage'])
                 var bucketName = item['bucket_name'];
                 var objectsCountUrl = $scope.bucketObjectsCountUrl.replace('_name_', bucketName);
                 $scope.countsLoading[bucketName] = true;
+                $scope.versioningStatusLoading[bucketName] = true;
                 $http.get(objectsCountUrl).success(function(oData) {
                     var results = oData ? oData.results : {},
                         versioningStatus = results['versioning_status'];
@@ -45,6 +47,7 @@ angular.module('BucketsPage', ['LandingPage'])
                     $scope.bucketVersioningStatus[bucketName] = versioningStatus;
                     $scope.bucketVersioningAction[bucketName] = $scope.getVersioningActionFromStatus(versioningStatus);
                     $scope.countsLoading[bucketName] = false;
+                    $scope.versioningStatusLoading[bucketName] = false;
                 }).error(function (oData, status) {
                     var errorMsg = oData['message'] || null;
                     if (errorMsg) {
