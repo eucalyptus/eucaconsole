@@ -391,10 +391,7 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
                 key_name = None  # Handle "None (advanced)" option
             if key_name:
                 key_name = self.unescape_braces(key_name)
-            securitygroup = self.request.params.get('securitygroup', 'default')
-            if securitygroup:
-                securitygroup = self.unescape_braces(securitygroup)
-            security_groups = [securitygroup]  # Security group ids
+            security_groups = self.request.params.getall('securitygroup')
             instance_type = self.request.params.get('instance_type', 'm1.small')
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
             # associate_public_ip_address's value can be None, True, or False 
