@@ -11,6 +11,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
         $scope.submitEndpoint = '';
         $scope.allUsersRedirect = '';
         $scope.singleUserRedirect = '';
+        $scope.accountRedirect = '';
         $scope.quotas_expanded = false;
         $scope.isNotValid = true;
         $scope.toggleQuotasContent = function () {
@@ -19,12 +20,14 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
         $scope.toggleAdvContent = function () {
             $scope.adv_expanded = !$scope.adv_expanded;
         };
-        $scope.initController = function(submitEndpoint, allRedirect, singleRedirect, getFileEndpoint) {
+        $scope.initController = function(submitEndpoint, allRedirect, singleRedirect, accountRedirect, getFileEndpoint) {
             $scope.submitEndpoint = submitEndpoint;
             $scope.allUsersRedirect = allRedirect;
             $scope.singleUserRedirect = singleRedirect;
+            $scope.accountRedirect = accountRedirect;
             $scope.getFileEndpoint = getFileEndpoint;
             $scope.setWatch();
+            $('#as_account').chosen({'width': '50%', 'search_contains': true});
             $('#user-name-field').focus();
         }
         $scope.setWatch = function () {
@@ -57,6 +60,7 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
                 return false;
             }
             var isSingleUser = Object.keys(users).length == 1;
+            var as_account = $('#as_account').val();
             var csrf_token = form.find('input[name="csrf_token"]').val();
             var data = $($event.target).serialize();
             $http({method:'POST', url:$scope.submitEndpoint, data:data,
@@ -77,18 +81,26 @@ angular.module('UserNew', ['UserEditor', 'Quotas'])
                     // this is clearly a hack. We'd need to bake callbacks into the generateFile
                     // stuff to do this properly.
                     setTimeout(function() {
+                        if (as_account == '') {
+                            if (isSingleUser) {
+                                window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
+                            } else {
+                                window.location = $scope.allUsersRedirect;
+                            }
+                        } else {
+                            window.location = $scope.accountRedirect.replace('_name_', as_account);
+                        }
+                    }, 3000);
+                }
+                else {
+                    if (as_account == '') {
                         if (isSingleUser) {
                             window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                         } else {
                             window.location = $scope.allUsersRedirect;
                         }
-                    }, 3000);
-                }
-                else {
-                    if (isSingleUser) {
-                        window.location = $scope.singleUserRedirect.replace('_name_', singleUser);
                     } else {
-                        window.location = $scope.allUsersRedirect;
+                        window.location = $scope.accountRedirect.replace('_name_', as_account);
                     }
                 }
             }).error(function (oData, status) {

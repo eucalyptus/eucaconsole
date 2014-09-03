@@ -363,6 +363,20 @@ class ChoicesManager(object):
             choices.append((rname, rname))
         return sorted(set(choices))
 
+    def accounts(self, add_blank=True, escapebraces=True):
+        choices = []
+        if add_blank:
+            choices.append(BLANK_CHOICE)
+        account_list = []
+        if self.conn is not None:
+            account_list = self.conn.get_response('ListAccounts', params={}, list_marker='Accounts').accounts
+        for account in account_list:
+            rname = account.account_name
+            if escapebraces:
+                rname = self.BaseView.escape_braces(rname)
+            choices.append((rname, rname))
+        return sorted(set(choices))
+
     ### S3 connection type choices
     ##
     def buckets(self, buckets=None, add_blank=True, escapebraces=True):

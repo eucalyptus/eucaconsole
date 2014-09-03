@@ -37,7 +37,7 @@ from wtforms import validators
 from wtforms import widgets
 
 from ..i18n import _
-from . import BaseSecureForm, TextEscapedField
+from . import BaseSecureForm, ChoicesManager, TextEscapedField
 
 
 class UserForm(BaseSecureForm):
@@ -72,12 +72,24 @@ class UserForm(BaseSecureForm):
 
     download_keys = wtforms.BooleanField(label=_(u"Download keys after generation"))
 
-    def __init__(self, request, user=None, **kwargs):
+    as_account = wtforms.SelectField()
+
+    def __init__(self, request, user=None, iam_conn=None, account=None, **kwargs):
         super(UserForm, self).__init__(request, **kwargs)
         self.user = user
         if user is not None:
             self.user_name.data = user.user_name
             self.path.data = user.path
+        else:
+            if iam_conn is not None:
+                self.as_account.choices = ChoicesManager(iam_conn).accounts(add_blank=False)
+                if account is not None:
+                    self.as_account.data = ''
+                    # set current account value to '' so detecting default value is simpler
+                    for idx, val in enumerate(self.as_account.choices):
+                        val1, val2 = val
+                        if val1 == account:
+                            self.as_account.choices[idx] = ('', account)
 
 class DisableUserForm(BaseSecureForm):
     """CSRF-protected form to disable a user"""
