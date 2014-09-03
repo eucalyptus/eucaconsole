@@ -93,7 +93,7 @@
                         <span>{{ item.state }}</span>
                     </div>
                     <div class="progress" ng-show="item.transitional"><span
-                            class="meter" style="width: {{ item.progress }}">{{ item.progress }} ({{ item.state }})</span>
+                            class="meter" style="width: {{ item.progress }}">{{ item.progress }}% ({{ item.state }})</span>
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <td class="id breakword"><a ng-href="${prefix}/{{ item.id }}">{{ item.tagged_name || item.id | ellipsis: 30 }}</a></td>
                 <td class="status">
                     <div class="progress" ng-show="item.transitional"><span
-                            class="meter" style="width: {{ item.progress }}">{{ item.progress }} ({{ item.state }})</span>
+                            class="meter" style="width: {{ item.progress }}">{{ item.progress }}%</span><span>({{ item.state }})</span>
                     </div>
                     <span ng-show="!item.transitional">
                         <span class="label radius status {{ item.state }}">{{ item.state }}</span>
