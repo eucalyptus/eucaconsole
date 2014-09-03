@@ -21,6 +21,7 @@
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/angular/angular-sanitize-1.2.21.min.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
     <script src="${request.static_path('eucaconsole:static/js/widgets/notify.js')}"></script>
+    <script src="${request.static_path('eucaconsole:static/js/pages/master.js')}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             var notification = $('#notifications');
@@ -31,33 +32,6 @@
                 }, 5000);
             }
         });
-        var generateKeys = function() {
-            var csrf_token = $('input[name="csrf_token"]').val();
-            var data = "csrf_token="+csrf_token;
-            var $http = angular.element('div[ng-app]').injector().get('$http');
-            $http({method:'POST', url: '${request.route_path('user_generate_keys', name=layout.username)}',
-                   data:data, headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
-                var results = oData ? oData.results : [];
-                $('#create-keys-modal').foundation('reveal', 'close');
-                Notify.success(oData.message);
-                $.generateFile({
-                    csrf_token: csrf_token,
-                    filename: 'not-used', // let the server set this
-                    content: 'none',
-                    script: '${request.route_path('file_download')}',
-                });
-            }).error(function (oData, status) {
-                var errorMsg = oData['message'] || '';
-                if (errorMsg && status === 403) {
-                    $('#timed-out-modal').foundation('reveal', 'open');
-                }
-                else {
-                    $('#denied-keys-modal').foundation('reveal', 'open');
-                }
-            });
-            return false;
-          };
     </script>
     <metal:block metal:define-slot="head_js" />
 </head>
@@ -154,7 +128,7 @@
         <p>
             <span i18n:translate="">Security note: Please contact your cloud administrator to have them remove any old keys you are no longer using.</span>
         </p>
-        <button class="button medium expand" id="create-keys-button" onclick="generateKeys();" i18n:translate="">Create and Download Access Keys</button>
+        <button class="button medium expand" id="create-keys-button" onclick="generateKeys('${layout.username}');" i18n:translate="">Create and Download Access Keys</button>
         <a class="close-reveal-modal">&#215;</a>
     </div>
     <div id="denied-keys-modal" class="reveal-modal small" data-reveal="">
