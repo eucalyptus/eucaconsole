@@ -26,15 +26,15 @@
         <h3 id="pagetitle"><strong i18n:translate="" ng-non-bindable="">${request.subpath[-1]}</strong></h3>
         <div metal:use-macro="layout.global_macros['landing_page_datagrid']">
             <div metal:fill-slot="new_button">
-                <a class="button small" id="upload-file-btn" i18n:translate="">
-                    Upload file(s)
+                <a class="button" id="upload-file-btn" i18n:translate="">
+                    Upload File(s)
                 </a>
                 &nbsp;&nbsp;
-                <a class="button small" id="create-folder-btn" i18n:translate="">
+                <a class="button" id="create-folder-btn" i18n:translate="">
                     Create New Folder
                 </a>
                 &nbsp;&nbsp;
-                <a class="button small" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
+                <a class="button secondary ng-binding" id="delete-all-btn" i18n:translate="" data-reveal-id="delete-all-modal">
                     Delete All Objects/Folders
                 </a>
             </div>
