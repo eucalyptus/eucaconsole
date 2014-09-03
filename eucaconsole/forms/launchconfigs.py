@@ -108,9 +108,9 @@ class CreateLaunchConfigForm(BaseSecureForm):
         self.ramdisk_id.choices = self.choices_manager.ramdisks(image=self.image)
         self.associate_public_ip_address.choices = self.get_associate_public_ip_address_choices()
 
-        # Set default choices where applicable, defaulting to first non-blank choice
+        # Set init data for security group
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = self.securitygroup.choices[0][0]
+            self.securitygroup.data = [value for value, label in self.securitygroup.choices]
 
     def get_associate_public_ip_address_choices(self):
         choices = [('None', _(u'Only for instances in default VPC & subnet')), ('true', _(u'For all instances')), ('false', _(u'Never'))]

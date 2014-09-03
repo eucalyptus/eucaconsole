@@ -173,7 +173,8 @@ class LaunchInstanceForm(BaseSecureForm):
             self.zone.data = self.zone.choices[1][0]
         # Set the defailt option to be the first choice
         if len(self.securitygroup.choices) > 1:
-            self.securitygroup.data = self.securitygroup.choices[0][0]
+            #self.securitygroup.data = self.securitygroup.choices[0][0]
+            self.securitygroup.data = [value for value, label in self.securitygroup.choices]
 
     def set_error_messages(self):
         self.number.error_msg = self.number_error_msg
