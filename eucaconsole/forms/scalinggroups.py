@@ -61,7 +61,7 @@ class BaseScalingGroupForm(BaseSecureForm):
         widget=NgNonBindableOptionSelect(),
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
-    vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
+    vpc_network_helptext = _(u'Launch instances in this scaling group into one of your Virtual Private Clouds')
     vpc_subnet = NonValidatingSelectMultipleField(label=_(u'VPC subnets'))
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
