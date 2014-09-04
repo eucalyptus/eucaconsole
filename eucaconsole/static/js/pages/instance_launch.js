@@ -463,12 +463,15 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
                 $scope.securityGroups.push(newSecurityGroupID);
                 var groupRulesObject = JSON.parse($('#rules').val());
-                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObject; 
-                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObject;
+                var groupRulesEgressObject = JSON.parse($('#rules_egress').val());
+                var groupRulesObjectCombined = groupRulesObject.concat(groupRulesEgressObject); 
+                $scope.selectedGroupRules[newSecurityGroupID] = groupRulesObjectCombined; 
+                $scope.securityGroupsRules[newSecurityGroupID] = groupRulesObjectCombined;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
                 $('textarea#rules').val('');
+                $('textarea#rules_egress').val('');
                 // Timeout is needed for chosen to react after Angular updates the options
                 $timeout(function(){
                     $('#securitygroup').trigger('chosen:updated');

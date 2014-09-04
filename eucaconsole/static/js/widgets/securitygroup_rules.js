@@ -155,6 +155,7 @@ angular.module('SecurityGroupRules', [])
             $(document).on('closed', '#create-securitygroup-modal', function () {
                 $scope.$apply(function(){
                     $scope.rulesArray = [];  // Empty out the rules when the dialog is closed 
+                    $scope.rulesEgressArray = [];  // Empty out the rules when the dialog is closed 
                     $scope.syncRules();
                 });
             });
@@ -264,6 +265,7 @@ angular.module('SecurityGroupRules', [])
                     'name': name,
                     'owner_id': owner_id
                 }],
+                'type': $scope.ruleType,
                 'fresh': 'new'
             }; 
         };
