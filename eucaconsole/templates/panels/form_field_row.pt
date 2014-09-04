@@ -5,8 +5,8 @@
         <div class="small-${leftcol_width} columns" tal:condition="leftcol_width">
             <label class="right">
                 ${field.label.text}&nbsp;<span tal:condition="field.flags.required" class="req">*</span>
-                <span tal:condition="getattr(field, 'help_text', None)" class="helptext-icon"
-                  data-tooltip="" title="${field.help_text}">?</span>
+                <span tal:condition="getattr(field, 'label_help_text', None)" class="helptext-icon"
+                    data-tooltip="" title="${field.label_help_text}">?</span>
             </label>
         </div>
         <div class="small-${rightcol_width} columns field">

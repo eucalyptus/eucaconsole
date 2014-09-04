@@ -18,7 +18,9 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
         $scope.urlParams = $.url().param();
         $scope.launchConfig = '';
         $scope.vpcNetwork = '';
-        $scope.vpcSubnet = '';
+        $scope.vpcNetworkName = '';
+        $scope.vpcSubnets = [];
+        $scope.vpcSubnetNames = '';
         $scope.vpcSubnetList = {};
         $scope.vpcSubnetChoices = {};
         $scope.availZones = '';
@@ -100,22 +102,24 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
             });
             $scope.$watch('vpcNetwork', function () {
                 $scope.updateVPCSubnetChoices();
+                $scope.updateSelectedVPCNetworkName();
             });
-        }
+            $scope.$watch('vpcSubnets', function () { 
+                $scope.updateSelectedVPCSubnetNames();
+            });
+        };
         $scope.updateVPCSubnetChoices = function () {
+            var foundVPCSubnets = false;
             $scope.vpcSubnetChoices = {};
-            $scope.vpcSubnet = '';
-            angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
-                if (vpcSubnet['vpc_id'] === $scope.vpcNetwork) {
-                    $scope.vpcSubnetChoices[vpcSubnet['id']] = 
-                        vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
-                        vpcSubnet['availability_zone'];
-                    if ($scope.vpcSubnet == '') {
-                        $scope.vpcSubnet = vpcSubnet['id'];
-                    }
+            $scope.vpcSubnets = [];
+            angular.forEach($scope.vpcSubnetList, function (subnet) {
+                if (subnet['vpc_id'] === $scope.vpcNetwork) {
+                    $scope.vpcSubnetChoices[subnet['id']] = 
+                        subnet['cidr_block'] + ' (' + subnet['id'] + ') | ' + subnet['availability_zone'];
+                    foundVPCSubnets = true;
                 }
             }); 
-            if ($scope.vpcSubnet == '') {
+            if (!foundVPCSubnets) {
                 $scope.vpcSubnetChoices[''] = $('#vpc_subnet_empty_option').text();
             }
             // Timeout is need for the chosen widget to react after Angular has updated the option list
@@ -123,6 +127,27 @@ angular.module('ScalingGroupWizard', ['AutoScaleTagEditor'])
                 $('#vpc_subnet').trigger('chosen:updated');
             }, 500);
         };
+        $scope.updateSelectedVPCNetworkName = function () {
+            var vpcNetworkOptions = $('select#vpc_network option');
+            vpcNetworkOptions.each(function () {
+                if ($(this).attr('value') == $scope.vpcNetwork) {
+                    var vpcNetworkNameArray = $(this).text().split(' ');
+                    vpcNetworkNameArray.pop();
+                    $scope.vpcNetworkName = vpcNetworkNameArray.join(' ');
+                } 
+            });
+        };
+        $scope.updateSelectedVPCSubnetNames = function () {
+            var foundVPCSubnets = false;
+            $scope.vpcSubnetNames = [];
+            angular.forEach($scope.vpcSubnets, function (subnetID) {
+                angular.forEach($scope.vpcSubnetList, function (subnet) {
+                    if (subnetID === subnet['id']) {
+                       $scope.vpcSubnetNames.push(subnet['cidr_block']);
+                    }
+                });
+            });
+        }; 
         $scope.setWizardFocus = function (stepIdx) {
             var modal = $('div').filter("#step" + stepIdx);
             var inputElement = modal.find('input[type!=hidden]').get(0);
