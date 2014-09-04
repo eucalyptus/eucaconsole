@@ -32,7 +32,7 @@ import base64
 import httplib
 import logging
 from ssl import SSLError
-from urllib2 import URLError
+import urllib2
 import xml
 
 from beaker.cache import cache_region
@@ -262,9 +262,9 @@ class EucaAuthenticator(object):
             return creds
         except SSLError as err:
             if err.message != '':
-                raise URLError(err.message)
+                raise urllib2.URLError(err.message)
             else:
-                raise URLError(err[1])
+                raise urllib2.URLError(err[1])
 
 
 class AWSAuthenticator(object):
