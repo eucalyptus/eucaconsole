@@ -1055,10 +1055,10 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             self.request, image=self.image, instance=self.instance,
             conn=self.conn, formdata=self.request.params or None)
         self.role = None
-        self.associate_public_ip_address = 'No'
+        self.associate_public_ip_address = 'Disabled'
         if self.instance.interfaces:
             if self.instance.interfaces[0] and hasattr(self.instance.interfaces[0], 'association'):
-                self.associate_public_ip_address = 'Yes'
+                self.associate_public_ip_address = 'Enabled'
         if self.instance.instance_profile:
             arn = self.instance.instance_profile['arn']
             profile_name = arn[(arn.index('/')+1):]
@@ -1091,7 +1091,7 @@ class InstanceLaunchMoreView(BaseInstanceView, BlockDeviceMappingItemView):
             availability_zone = self.instance.placement
             vpc_network = self.instance.vpc_id or None
             vpc_subnet = self.instance.subnet_id or None
-            if self.associate_public_ip_address == 'Yes':
+            if self.associate_public_ip_address == 'Enabled':
                 associate_public_ip_address = True
             else:
                 associate_public_ip_address = False
