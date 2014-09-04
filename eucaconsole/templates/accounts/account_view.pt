@@ -18,126 +18,130 @@
             <metal:crumbs metal:fill-slot="crumbs">
                 <li><a href="${request.route_path('accounts')}" i18n:translate="">Accounts</a></li>
                 <li class="current">
-                    <a tal:condition="account" href="#">${account.account_name}</a>
-                    <a tal:condition="not account and account_route_id == 'new'" i18n:translate="">Create new account</a>
+                    <a href="#">${account.account_name}</a>
                 </li>
             </metal:crumbs>
         </metal:breadcrumbs>
         <!-- Notifications -->
         <metal:block metal:use-macro="layout.global_macros['notifications']" />
         <h3 id="pagetitle">
-            <metal:block tal:condition="account">
+            <metal:block>
                 <strong i18n:translate="">Details for account:</strong>
                 <em>${account.account_name}</em>
             </metal:block>
-            <metal:block tal:condition="not account and account_route_id == 'new'">
-                <strong i18n:translate="">Create new account</strong>
-            </metal:block>
         </h3>
-        <div class="large-7 columns"
-            tal:define="readonly True if account else False;">
-            <div class="panel has-actions">
-                <metal:block metal:use-macro="layout.global_macros['actions_menu']" tal:condition="account">
-                    <metal:actions metal:fill-slot="actions">
-                        <li>
-                            <a id="delete-account-action" data-reveal-id="delete-account-modal" i18n:translate="">
-                                Delete account
-                            </a>
-                        </li>
-                    </metal:actions>
-                </metal:block>
-                <!--! TODO: Move account name error_msg to view and mark for i18n -->
-                <div tal:condition="not account and account_route_id == 'new'"
-                    tal:define="html_attrs {'pattern': '^[a-zA-Z0-9\+\=\,\.\@\-]{1,128}$',
-                         'error_msg': 'Account names must be between 1 and 128 characters long, and may contain letters, numbers, \'+\', \'=\', \',\', \'.\'. \'@\' and \'-\''};">
-                    <form id="account-new-form" ng-submit="submit($event)" data-abide="abide">
-                        ${structure:account_form['csrf_token']}
-                        <div class="section columns">
-                            <div class="">
-                                ${panel('form_field', field=account_form.account_name, leftcol_width=1, rightcol_width=11, autofocus='', ng_attrs={'model': 'accountName'}, **html_attrs)}
+        <div class="large-8 columns">
+            <dl class="tabs">
+                <dd class="active"><a href="#general-tab" ng-click="clickTab($event, 'general-tab')" i18n:translate="">General</a></dd>
+                <dd ng-cloak="" ng-show="userName != 'admin'"><a href="#quotas-tab" ng-click="clickTab($event, 'quotas-tab')" i18n:translate="">Quotas</a></dd>
+            </dl>
+            <div class="tabs-content">
+                <div class="content active panel has-actions" id="general-tab">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-account-action" data-reveal-id="delete-account-modal" i18n:translate="">
+                                    Delete account
+                                </a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <div class="columns section">
+                        <h6 i18n:translate="">Account</h6>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Name</label></div>
+                            <div class="small-9 columns value" ng-cloak="">
+                                ${account.account_name}
                             </div>
                         </div>
-                        <hr />
-                        <div class="section">
-                            ${panel('user_editor')}
-                        </div>
-                        <hr />
-                        <div class="section row">
-                            <div class="columns small-6">
-                                <button type="submit" class="button" id="create-btn" ng-disabled="isNotValid">
-                                    <span i18n:translate="">Create Account</span>
-                                </button>
-                                <a href="${request.route_path('accounts')}"
-                                    class="cancel-link" i18n:translate="">Cancel</a>
+                        <div class="row controls-wrapper readonly">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">ID</label></div>
+                            <div class="small-9 columns value" ng-cloak="">
+                                ${account.account_id}
                             </div>
-                            <div class="columns small-6">
-                                <div tal:condition="not account">
-                                    <label class="right">
-                                        <span class="req">*</span>
-                                        <span i18n:translate="">Required fields</span>
-                                   </label>
+                        </div>
+                        <div class="row controls-wrapper readonly" tal:condition="users">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Users</label></div>
+                            <div class="small-9 columns value inline breakword">
+                                <div tal:repeat="user users" tal:omit-tag="">
+                                    ${user.user_name}<br/>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div tal:condition="account">
-                    <form action="${request.route_path('account_update', name=account.account_name)}" method="post" data-abide="abide">
-                        ${structure:account_update_form['csrf_token']}
-                        <div class="section">
-                            <h6 i18n:translate="">General</h6>
-                            <div>
-                                ${panel('form_field', field=account_update_form.account_name, leftcol_width=3, rightcol_width=9)}
-                            </div>
-                            <div class="row controls-wrapper readonly">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">ID</label></div>
-                                <div class="small-9 columns value" ng-cloak="">
-                                    ${account.account_id}
-                                </div>
-                            </div>
-                            <div class="row controls-wrapper readonly" tal:condition="users">
-                                <div class="small-3 columns"><label class="right" i18n:translate="">Users</label></div>
-                                <div class="small-9 columns value inline breakword">
-                                    <div tal:repeat="user users" tal:omit-tag="">
-                                        ${user.user_name}<br/>
-                                    </div>
+                        <div class="row controls-wrapper readonly" tal:condition="groups">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Groups</label></div>
+                            <div class="small-9 columns value inline breakword">
+                                <div tal:repeat="group groups" tal:omit-tag="">
+                                    ${group.group_name}<br/>
                                 </div>
                             </div>
                         </div>
-                    </form>
-                    <hr />
+                        <div class="row controls-wrapper readonly" tal:condition="roles">
+                            <div class="small-3 columns"><label class="right" i18n:translate="">Roles</label></div>
+                            <div class="small-9 columns value inline breakword">
+                                <div tal:repeat="role roles" tal:omit-tag="">
+                                    ${role.role_name}<br/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <span>&nbsp;</span>
+                    <hr/>
                     <div tal:define="policies_url request.route_path('account_policies_json', name=account.account_name);
                                      policy_url request.route_path('account_policy_json', name=account.account_name, policy='_policy_');
                                      remove_url request.route_path('account_delete_policy', name=account.account_name, policy='_policy_');
                                      update_url request.route_path('account_update_policy', name=account.account_name, policy='_policy_');
                                      add_url request.route_path('iam_policy_new')+'?type=account&amp;id='+account.account_name">
-                        <div class="section">
-                            <h6 i18n:translate="">Permissions</h6>
+                        <div class="columns section">
+                            <h6 i18n:translate="">Denial policies</h6>
                             <div>
-                                <strong i18n:translate="">Account policies</strong>
                                 ${panel('policy_list', policies_url=policies_url, policy_url=policy_url, remove_url=remove_url, update_url=update_url, add_url=add_url)}
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="content panel has-actions" id="quotas-tab">
+                    <metal:block metal:use-macro="layout.global_macros['actions_menu']">
+                        <metal:actions metal:fill-slot="actions">
+                            <li>
+                                <a id="delete-account-action" data-reveal-id="delete-account-modal" i18n:translate="">
+                                    Delete account
+                                </a>
+                            </li>
+                        </metal:actions>
+                    </metal:block>
+                    <div class="columns section">
+                        <form action="${request.route_path('account_update', name=account.account_name)}" method="post" data-abide="abide">
+                            ${structure:account_update_form['csrf_token']}
+                            <div class="expando" id="quotas-section">
+                                <h6 i18n:translate="">Quotas</h6>
+                                <div class="quotas-content">
+                                    ${panel('quotas_panel', quota_form=quotas_form, quota_err=quota_err)}
+                                </div>
+                                <div class="section row">
+                                    <div class="small-6 columns">
+                                        <button type="submit" class="button" id="save-quotas-btn" ng-disabled="isQuotaNotChanged">
+                                            <span i18n:translate="">Save Quotas</span>
+                                        </button>
+                                        <a href="${request.route_path('accounts')}"
+                                           class="cancel-link" i18n:translate="">Cancel</a>
+                                    </div>
+                                    <div class="small-6 columns">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="large-5 columns">
+        <div class="large-4 columns">
             <metal:block metal:use-macro="layout.global_macros['help_expando']" />
             <div class="help-content" ng-show="isHelpExpanded" ng-cloak="">
                 <!--! Help goes here -->
-                <!--
-                <div tal:condition="not account">
-                    <div id="help-html-console_create_iam_account"
-                        ng-include="'${layout.help_path('console_create_iam_account.html')}'">
-                    </div> 
+                <div id="help-html-console_edit_iam_account"
+                    ng-include="'${layout.help_path('console_account_detail_general.html')}'">
                 </div>
-                <div tal:condition="account">
-                    <div id="help-html-console_edit_iam_account"
-                        ng-include="'${layout.help_path('console_edit_iam_account.html')}'">
-                    </div>
-                </div> 
-                -->
             </div>
         </div>
         <!--! Modal dialogs reused across landing and detail page -->
@@ -147,12 +151,7 @@
 
 <div metal:fill-slot="tail_js">
     <script src="${request.static_path('eucaconsole:static/js/thirdparty/jquery/jquery.generateFile.js')}"></script>
-    <div tal:condition="account">
-        <script src="${request.static_path('eucaconsole:static/js/pages/account.js')}"></script>
-    </div>
-    <div tal:condition="not:account">
-        <script src="${request.static_path('eucaconsole:static/js/pages/account_new.js')}"></script>
-    </div>
+    <script src="${request.static_path('eucaconsole:static/js/pages/account.js')}"></script>
 </div>
 
 </metal:block>

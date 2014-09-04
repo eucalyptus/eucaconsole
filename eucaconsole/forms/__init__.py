@@ -178,7 +178,7 @@ class ChoicesManager(object):
                     choices.append((value, label))
         return choices
 
-    def security_groups(self, securitygroups=None, add_blank=True, escapebraces=True):
+    def security_groups(self, securitygroups=None, use_id=False, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
             choices.append(BLANK_CHOICE)
@@ -189,7 +189,10 @@ class ChoicesManager(object):
             sg_name = sgroup.name
             if escapebraces:
                 sg_name = self.BaseView.escape_braces(sg_name)
-            choices.append((sg_name, sg_name))
+            if use_id:
+                choices.append((sgroup.id, sg_name))
+            else:
+                choices.append((sg_name, sg_name))
         if not security_groups:
             choices.append(('default', 'default'))
         return sorted(set(choices))
@@ -393,7 +396,6 @@ class ChoicesManager(object):
         return sorted(set(choices))
 
     def vpc_subnets(self, vpc_subnets=None, add_blank=True, escapebraces=True):
-        from ..views import TaggedItemView
         choices = []
         if add_blank:
             choices.append(('', _(u'No subnets found')))

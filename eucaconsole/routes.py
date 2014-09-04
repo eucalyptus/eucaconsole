@@ -172,6 +172,14 @@ urls = [
     Route(name='snapshot_state_json', pattern='/snapshots/{id}/state/json'),
     Route(name='snapshot_images_json', pattern='/snapshots/{id}/images/json'),
 
+    # Buckets #####
+    # Landing page
+    Route(name='buckets', pattern='/buckets'),
+    Route(name='buckets_json', pattern='/buckets/json'),
+    # Contents/detail pages
+    Route(name='bucket_contents', pattern='/buckets/*subpath'),
+    Route(name='bucket_objects_count_json', pattern='/bucketobjectscount/{name}/json'),
+
     # Security Groups #####
     # Landing page
     Route(name='securitygroups', pattern='/securitygroups'),
@@ -216,9 +224,11 @@ urls = [
     # Accounts #####
     Route(name='accounts', pattern='/accounts'),
     Route(name='accounts_json', pattern='/accounts/json'),
+    Route(name='account_new', pattern='/accounts/new'),
     Route(name='accounts_delete', pattern='/accounts/delete'),
     Route(name='account_create', pattern='/accounts/create'),
     Route(name='account_view', pattern='/accounts/{name}'),
+    Route(name='account_summary_json', pattern='/accounts/{name}/summary'),
     Route(name='account_update', pattern='/accounts/{name}/update'),
     Route(name='account_delete', pattern='/accounts/{name}/delete'),
     Route(name='account_policies_json', pattern='/accounts/{name}/policies_json'),

@@ -29,6 +29,8 @@
 
 #snapshots .icon { background-image: url(../../img/svg/icon_snapshot.svg); }
 
+#buckets .icon { background-image: url(../../img/svg/icon_buckets.svg); }
+
 #security-groups .icon { background-image: url(../../img/svg/icon_security_groups.svg); }
 
 #key-pairs .icon { background-image: url(../../img/svg/icon_key-pair.svg); }

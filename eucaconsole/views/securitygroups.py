@@ -232,7 +232,7 @@ class SecurityGroupView(TaggedItemView):
                 msg = _(u'Successfully created security group')
                 location = self.request.route_path('securitygroup_view', id=new_security_group.id)
                 if self.request.is_xhr:
-                    return JSONResponse(status=200, message=msg)
+                    return JSONResponse(status=200, message=msg, id=new_security_group.id)
                 else:
                     self.request.session.flash(msg, queue=Notification.SUCCESS)
                     return HTTPFound(location=location)

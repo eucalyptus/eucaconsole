@@ -18,14 +18,20 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.summarySection = $('.summary');
         $scope.instanceNumber = 1;
         $scope.instanceNames = [];
+        $scope.instanceVPC = '';
+        $scope.subnetVPC = '';
+        $scope.vpcSubnetList = {};
+        $scope.vpcSubnetChoices = {};
         $scope.keyPair = '';
         $scope.keyPairChoices = {};
         $scope.newKeyPairName = '';
         $scope.keyPairModal = $('#create-keypair-modal');
         $scope.showKeyPairMaterial = false;
         $scope.isLoadingKeyPair = false;
+        $scope.securityGroup = '';
+        $scope.securityGroupName = '';
         $scope.securityGroupsRules = {};
-        $scope.securityGroupsIDMap = {};
+        $scope.securityGroupCollection = {};
         $scope.selectedGroupRules = [];
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
@@ -44,17 +50,22 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.imageIDErrorClass = '';
         $scope.imageIDNonexistErrorClass = '';
         $scope.initController = function (securityGroupsRulesJson, keyPairChoices,
-                                securityGroupChoices, securityGroupsIDMapJson, roles,
+                                securityGroupChoices, securityGroupJsonURL, vpcSubnetJson, roles,
                                 imageJsonURL) {
-            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'");
-            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'");
-            securityGroupsIDMapJson = securityGroupsIDMapJson.replace(/__apos__/g, "\'");
-            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'");
+            securityGroupsRulesJson = securityGroupsRulesJson.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            securityGroupChoices = securityGroupChoices.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            keyPairChoices = keyPairChoices.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
+            vpcSubnetJson = vpcSubnetJson.replace(/__apos__/g, "\'")
+                .replace(/__dquote__/g, '\\"').replace(/__bslash__/g, "\\");
             $scope.securityGroupsRules = JSON.parse(securityGroupsRulesJson);
             $scope.keyPairChoices = JSON.parse(keyPairChoices);
             $scope.securityGroupChoices = JSON.parse(securityGroupChoices);
-            $scope.securityGroupsIDMap = JSON.parse(securityGroupsIDMapJson);
+            $scope.vpcSubnetList = JSON.parse(vpcSubnetJson);
             $scope.roleList = JSON.parse(roles);
+            $scope.securityGroupJsonEndpoint = securityGroupJsonURL;
             $scope.imageJsonURL = imageJsonURL;
             $scope.setInitialValues();
             $scope.updateSelectedSecurityGroupRules();
@@ -65,9 +76,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         };
         $scope.updateSelectedSecurityGroupRules = function () {
             $scope.selectedGroupRules = $scope.securityGroupsRules[$scope.securityGroup];
-        };
-        $scope.getSecurityGroupIDByName = function (securityGroupName) {
-            return $scope.securityGroupsIDMap[securityGroupName];
+            $scope.securityGroupName = $scope.securityGroupChoices[$scope.securityGroup];
         };
         $scope.preventFormSubmitOnEnter = function () {
             $(document).ready(function () {
@@ -188,8 +197,21 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             $scope.$watch('keyPair', function(){
                 $scope.checkRequiredInput();
             });
+            $scope.$watch('securityGroup', function () { 
+                $scope.updateSelectedSecurityGroupRules();
+            });
             $scope.$watch('securityGroupVPC', function () {
                 $scope.$broadcast('updateVPC', $scope.securityGroupVPC);
+            });
+            $scope.$watch('securityGroupCollection', function () {
+                $scope.updateSecurityGroupChoices();
+            });
+            $scope.$watch('instanceVPC', function () {
+                $scope.getAllSecurityGroups($scope.instanceVPC);
+                $scope.updateVPCSubnetChoices();
+            });
+            $scope.$watch('instanceZone', function () {
+                $scope.updateVPCSubnetChoices();
             });
             $('#number').on('keyup blur', function () {
                 var val = $(this).val();
@@ -320,7 +342,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 // since clicking invokes this method again (via ng-click) and
                 // one ng action must complete before another can start
                 var hash = "step"+nextStep;
-                $(".tabs").children("dd").each(function() {
+                $("#wizard-tabs").children("dd").each(function() {
                     var link = $(this).find("a");
                     if (link.length != 0) {
                         var id = link.attr("href").substring(1);
@@ -427,10 +449,14 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
             }).success(function (oData) {
                 $scope.isLoadingSecurityGroup = false;
                 // Add new security group to choices and set it as selected
-                $scope.securityGroupChoices[$scope.newSecurityGroupName] = $scope.newSecurityGroupName;
-                $scope.securityGroup = $scope.newSecurityGroupName;
+                var newSecurityGroupID = '';
+                if (oData.id) {
+                    newSecurityGroupID = oData.id;
+                }
+                $scope.securityGroupChoices[newSecurityGroupID] = $scope.newSecurityGroupName;
+                $scope.securityGroup = newSecurityGroupID;
                 $scope.selectedGroupRules = JSON.parse($('#rules').val());
-                $scope.securityGroupsRules[$scope.newSecurityGroupName] = $scope.selectedGroupRules;
+                $scope.securityGroupsRules[newSecurityGroupID] = $scope.selectedGroupRules;
                 // Reset values
                 $scope.newSecurityGroupName = '';
                 $scope.newSecurityGroupDesc = '';
@@ -445,6 +471,60 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
                 }
             });
         };
+        $scope.getAllSecurityGroups = function (vpc) {
+            var csrf_token = $('#csrf_token').val();
+            var data = "csrf_token=" + csrf_token + "&vpc_id=" + vpc;
+            $http({
+                method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
+                var results = oData ? oData.results : [];
+                $scope.securityGroupCollection = results;
+            }).error(function (oData) {
+                if (oData.message) {
+                    Notify.failure(oData.message);
+                }
+            });
+        };
+        $scope.updateSecurityGroupChoices = function () {
+            $scope.securityGroupChoices = {};
+            if ($.isEmptyObject($scope.securityGroupCollection)) {
+                return;
+            }
+            $scope.securityGroup = $scope.securityGroupCollection[0]['id'];
+            angular.forEach($scope.securityGroupCollection, function(securityGroup){
+                $scope.securityGroupChoices[securityGroup['id']] = securityGroup['name'];
+            }); 
+        };
+        $scope.updateVPCSubnetChoices = function () {
+            $scope.vpcSubnetChoices = {};
+            $scope.subnetVPC = '';
+            //for( var i=0; i < $scope.vpcSubnetList.length; i++){
+            angular.forEach($scope.vpcSubnetList, function(vpcSubnet){
+                if (vpcSubnet['vpc_id'] === $scope.instanceVPC) {
+                    if ($scope.instanceZone == '') {
+                        $scope.vpcSubnetChoices[vpcSubnet['id']] = 
+                            vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
+                            vpcSubnet['availability_zone'];
+                        if ($scope.subnetVPC == '') {
+                            $scope.subnetVPC = vpcSubnet['id'];
+                        }
+                    } else if ($scope.instanceZone != '' && 
+                               vpcSubnet['availability_zone'] === $scope.instanceZone) {
+                        $scope.vpcSubnetChoices[vpcSubnet['id']] = 
+                            vpcSubnet['cidr_block'] + ' (' + vpcSubnet['id'] + ') | ' + 
+                            vpcSubnet['availability_zone'];
+                        if ($scope.subnetVPC == '') {
+                            $scope.subnetVPC = vpcSubnet['id'];
+                        }
+                    } 
+                }
+            }); 
+            if ($scope.subnetVPC == '') {
+                $scope.vpcSubnetChoices[''] = $('#hidden_vpc_subnet_empty_option').text();
+            }
+        };
     })
 ;
+
 
