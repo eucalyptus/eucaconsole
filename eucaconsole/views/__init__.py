@@ -113,9 +113,6 @@ class BaseView(object):
             elif conn_type == 'iam':
                 host = self.request.registry.settings.get('iam.host', host)
                 port = int(self.request.registry.settings.get('iam.port', port))
-            elif conn_type == 'sts':
-                host = self.request.registry.settings.get('sts.host', host)
-                port = int(self.request.registry.settings.get('sts.port', port))
 
             conn = ConnectionManager.euca_connection(
                 host, port, self.access_key, self.secret_key, self.security_token, conn_type)

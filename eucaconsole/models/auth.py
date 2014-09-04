@@ -29,12 +29,15 @@ Authentication and Authorization models
 
 """
 import base64
+import httplib
 import logging
-import urllib2
+from ssl import SSLError
+from urllib2 import URLError
 import xml
 
 from beaker.cache import cache_region
 from boto import ec2
+from boto.https_connection import CertValidatingHTTPSConnection
 from boto.ec2.connection import EC2Connection
 # uncomment to enable boto request logger. Use only for development (see ref in _euca_connection)
 #from boto.requestlog import RequestLogger
@@ -122,7 +125,7 @@ class ConnectionManager(object):
         return _aws_connection(region, access_key, secret_key, token, conn_type)
 
     @staticmethod
-    def euca_connection(clchost, port, access_id, secret_key, token, conn_type):
+    def euca_connection(clchost, port, access_id, secret_key, token, conn_type, validate_certs=False):
         """Return Eucalyptus connection object
         Pulls from Beaker cache on subsequent calls to avoid connection overhead
 
@@ -168,9 +171,7 @@ class ConnectionManager(object):
                 path = '/services/Euare'
                 conn_class = boto.iam.IAMConnection
 
-            if conn_type == 'sts':
-                conn = EucaAuthenticator(_clchost, _port)
-            elif conn_type != 'iam':
+            if conn_type != 'iam':
                 conn = conn_class(
                     _access_id, _secret_key, region=region, port=_port, path=path, is_secure=True, security_token=_token
                 )
@@ -183,12 +184,11 @@ class ConnectionManager(object):
             if conn_type == 'autoscale':
                 conn.auth_region_name = 'Eucalyptus'
 
-            if conn_type != 'sts':  # this is the only non-boto connection
-                setattr(conn, 'APIVersion', api_version)
-                conn.https_validate_certificates = False
-                conn.http_connection_kwargs['timeout'] = 30
-                # uncomment to enable boto request logger. Use only for development
-                #conn.set_request_hook(RequestLogger())
+            setattr(conn, 'APIVersion', api_version)
+            conn.https_validate_certificates = validate_certs
+            conn.http_connection_kwargs['timeout'] = 30
+            # uncomment to enable boto request logger. Use only for development
+            #conn.set_request_hook(RequestLogger())
             return conn
 
         return _euca_connection(clchost, port, access_id, secret_key, token, conn_type)
@@ -202,9 +202,9 @@ def groupfinder(user_id, request):
 
 class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
-    TEMPLATE = 'https://{host}:{port}/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
+    TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, validate_certs, **validate_kwargs):
         """
         Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
 
@@ -217,17 +217,22 @@ class EucaAuthenticator(object):
         """
         self.host = host
         self.port = port
+        self.validate_certs = validate_certs
+        self.kwargs = validate_kwargs
 
     def authenticate(self, account, user, passwd, new_passwd=None, timeout=15, duration=3600):
         if user == 'admin' and duration > 3600:  # admin cannot have more than 1 hour duration
             duration = 3600
         # because of the variability, we need to keep this here, not in __init__
-        self.auth_url = self.TEMPLATE.format(
-            host=self.host,
-            port=self.port,
+        auth_path = self.TEMPLATE.format(
             dur=duration,
         )
-        req = urllib2.Request(self.auth_url)
+        if self.validate_certs:
+            conn = CertValidatingHTTPSConnection(
+                        self.host, self.port, timeout=timeout,
+                        **self.kwargs)
+        else:
+            conn = httplib.HTTPSConnection(self.host, self.port, timeout=timeout)
 
         if new_passwd:
             auth_string = "{user}@{account};{pw}@{new_pw}".format(
@@ -243,16 +248,23 @@ class EucaAuthenticator(object):
                 pw=passwd
             )
         encoded_auth = base64.b64encode(auth_string)
-        req.add_header('Authorization', "Basic %s" % encoded_auth)
-        response = urllib2.urlopen(req, timeout=timeout)
-        body = response.read()
+        headers = {'Authorization': "Basic %s" % encoded_auth}
+        try:
+            conn.request('GET', auth_path, '', headers)
+            response = conn.getresponse()
+            body = response.read()
 
-        # parse AccessKeyId, SecretAccessKey and SessionToken
-        creds = Credentials()
-        h = BotoXmlHandler(creds, None)
-        xml.sax.parseString(body, h)
-        logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
-        return creds
+            # parse AccessKeyId, SecretAccessKey and SessionToken
+            creds = Credentials()
+            h = BotoXmlHandler(creds, None)
+            xml.sax.parseString(body, h)
+            logging.info("Authenticated Eucalyptus user: " + account + "/" + user)
+            return creds
+        except SSLError as err:
+            if err.message != '':
+                raise URLError(err.message)
+            else:
+                raise URLError(err[1])
 
 
 class AWSAuthenticator(object):
