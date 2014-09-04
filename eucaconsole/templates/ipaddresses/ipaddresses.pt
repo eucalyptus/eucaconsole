@@ -39,7 +39,8 @@
                 </div>
                 <div>
                     <span class="label" title="Scope" i18n:attributes="title" data-tooltip="">SC</span>
-                    {{ item.domain }}
+                    <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
+                    <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
                 </div>
             </div>
             <div metal:fill-slot="tile_dropdown_button" tal:omit-tag="">
@@ -67,7 +68,10 @@
             </metal:block>
             <metal:block metal:fill-slot="tableview_columns">
                 <td><a ng-href="${prefix}/{{ item.public_ip }}">{{ item.public_ip }}</a></td>
-                <td>{{ item.domain }}</td>
+                <td>
+                    <span ng-show="item.domain == 'vpc'" i18n:translate="">VPC</span>
+                    <span ng-show="item.domain == 'standard'" i18n:translate="">Standard</span>
+                </td>
                 <td class="breakword"><a ng-href="/instances/{{item.instance_id}}">{{ item.instance_name | ellipsis: 30 }}</a></td>
                 <td>
                     <span class="actions">

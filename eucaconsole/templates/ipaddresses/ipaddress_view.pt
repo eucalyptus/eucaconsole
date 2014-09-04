@@ -44,7 +44,8 @@
                 <div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Scope</label></div>
-                        <div class="small-8 columns value"> ${eip.domain} </div>
+                        <div class="small-8 columns value" ng-show="'${eip.domain}' == 'vpc'" i18n:translate="">VPC</div>
+                        <div class="small-8 columns value" ng-show="'${eip.domain}' == 'standard'" i18n:translate="">Standard</div>
                     </div>
                     <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Assigned to instance</label></div>
