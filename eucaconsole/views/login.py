@@ -32,6 +32,7 @@ import base64
 import logging
 from urllib2 import HTTPError, URLError
 from urlparse import urlparse
+from boto.connection import AWSAuthConnection
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
@@ -40,7 +41,7 @@ from pyramid.view import view_config, forbidden_view_config
 
 from ..forms.login import EucaLoginForm, EucaLogoutForm, AWSLoginForm
 from ..i18n import _
-from ..models.auth import AWSAuthenticator, ConnectionManager
+from ..models.auth import AWSAuthenticator, EucaAuthenticator, ConnectionManager
 from ..views import BaseView
 from ..views import JSONResponse
 from ..constants import AWS_REGIONS
@@ -113,7 +114,16 @@ class LoginView(BaseView):
 
     def handle_euca_login(self):
         new_passwd = None
-        auth = self.get_connection(conn_type='sts', cloud_type='euca')
+        host = self.request.registry.settings.get('clchost', 'localhost')
+        port = int(self.request.registry.settings.get('clcport', 8773))
+        host = self.request.registry.settings.get('sts.host', host)
+        port = int(self.request.registry.settings.get('sts.port', port))
+        validate_certs = asbool(self.request.registry.settings.get('connection.ssl.validation', False))
+        conn = AWSAuthConnection(None)
+        ca_certs_file = conn.ca_certificates_file
+        conn = None
+        ca_certs_file = self.request.registry.settings.get('connection.ssl.certfile', ca_certs_file)
+        auth = EucaAuthenticator(host, port, validate_certs=validate_certs, ca_certs=ca_certs_file)
         session = self.request.session
 
         if self.euca_login_form.validate():
@@ -149,7 +159,10 @@ class LoginView(BaseView):
                 logging.info("url error "+str(vars(err)))
                 #if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
-                msg = _(u'No response from host')
+                if err.reason.find('ssl') > -1:
+                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
+                else:
+                    msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
         return self.render_dict
 
