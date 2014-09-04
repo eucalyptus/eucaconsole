@@ -54,7 +54,7 @@
                         <span i18n:translate="">Object</span>
                     </h6>
                     <div>
-                        ${panel('form_field', field=details_form.friendly_name, pattern=details_form.friendly_name_pattern)}
+                        ${panel('form_field', field=details_form.friendly_name, pattern=details_form.friendly_name_pattern, ng_attrs={'model': 'objectName'})}
                     </div>
                     <div class="row controls-wrapper readonly" tal:condition="bucket_item.version_id">
                         <div class="small-4 columns"><label i18n:translate="">Version</label></div>
@@ -81,7 +81,7 @@
                     <hr />
                     <div>
                         <button type="submit" id="save_changes_volume_submit_button" class="button"
-                                ng-disabled="isNotChanged">
+                                ng-disabled="saveChangesBtnDisabled">
                             <span i18n:translate="">Save Changes</span>
                         </button>
                         <a href="${request.route_path('buckets')}" id="bucket-details-cancel-link"

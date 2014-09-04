@@ -64,7 +64,7 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             $event.preventDefault();
             $scope.metadataArray.splice(index, 1);
             $scope.syncMetadata();
-            $scope.$emit('s3metadataUpdate');
+            $scope.$emit('s3:objectMetadataUpdated');
         };
         $scope.addMetadata = function ($event) {
             $event.preventDefault();
@@ -100,6 +100,7 @@ angular.module('S3MetadataEditor', ['ngSanitize'])
             } else {
                 metadataKeyField.val() ? metadataValueField.focus() : metadataKeyField.focus();
             }
+            $scope.$emit('s3:objectMetadataUpdated');
         };
         $scope.checkRequiredInput = function () {
             $scope.isMetadataNotComplete = !!($scope.newMetadataKey === '' || $scope.newMetadataValue === '');
