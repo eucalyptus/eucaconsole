@@ -1,15 +1,21 @@
 <!--! Security group rules preview (used in Launch Instance and Create Launch Configuration wizards) -->
 <div tal:omit-tag="" i18n:domain="eucaconsole">
-    <div ng-repeat="groupID in securityGroups">
+    <div ng-repeat="groupID in securityGroups" ng-init="isRuleExpanded[groupID] = false;">
         <div ng-show="selectedGroupRules[groupID].length > 0 &amp;&amp; selectedGroupRules[groupID][0].ip_protocol != '-1'">
             <div class="row">
                 <div class="small-${leftcol_width} columns">&nbsp;</div>
                 <div class="small-${rightcol_width} columns rules-title">
-                    <span i18n:translate="">Rules for </span>
-                    <b>{{ securityGroupChoices[groupID] }}</b>:
+                    <a ng-click="isRuleExpanded[groupID] = !isRuleExpanded[groupID]">
+                        <i class="fi-plus" ng-show="!isRuleExpanded[groupID]"></i>
+                        <i class="fi-minus" ng-show="isRuleExpanded[groupID]"></i>
+                    </a>
+                    <span class="rule-description-label">
+                        <span i18n:translate="">Rules for </span>
+                        {{ securityGroupChoices[groupID] }}
+                    </span>
                 </div>
             </div>
-            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'inbound'}">
+            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'inbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
                     <div class="small-${leftcol_width} columns">&nbsp;</div>
                     <div class="small-${rightcol_width} columns rules-title">
@@ -27,7 +33,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'outbound'}">
+            <div class="row controls-wrapper" ng-repeat="rule in selectedGroupRules[groupID] | filter: {type: 'outbound'}" ng-show="isRuleExpanded[groupID]">
                 <div ng-if="$first">
                     <div class="small-${leftcol_width} columns">&nbsp;</div>
                     <div class="small-${rightcol_width} columns rules-title">

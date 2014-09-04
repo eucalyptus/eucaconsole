@@ -35,6 +35,7 @@ angular.module('LaunchInstance', ['TagEditor', 'BlockDeviceMappingEditor', 'Imag
         $scope.securityGroupModal = $('#create-securitygroup-modal');
         $scope.securityGroupForm = $('#create-securitygroup-form');
         $scope.securityGroupChoices = {};
+        $scope.isRuleExpanded = {};
         $scope.newSecurityGroupName = '';
         $scope.isLoadingSecurityGroup = false;
         $scope.role = '';
