@@ -160,7 +160,7 @@ class LoginView(BaseView):
                 #if str(err.reason) == 'timed out':
                 # opened this up since some other errors should be reported as well.
                 if err.reason.find('ssl') > -1:
-                    msg = _(u"SSL server certificate isn't valid. Please contact your server administrator.")
+                    msg = _(u"This cloud's SSL server certificate isn't valid. Please contact your cloud administrator.")
                 else:
                     msg = _(u'No response from host')
                 self.login_form_errors.append(msg)
