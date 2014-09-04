@@ -204,7 +204,7 @@ class EucaAuthenticator(object):
     """Eucalyptus cloud token authenticator"""
     TEMPLATE = '/services/Tokens?Action=GetAccessToken&DurationSeconds={dur}&Version=2011-06-15'
 
-    def __init__(self, host, port, validate_certs, **validate_kwargs):
+    def __init__(self, host, port, validate_certs=False, **validate_kwargs):
         """
         Configure connection to Eucalyptus STS service to authenticate with the CLC (cloud controller)
 
