@@ -36,10 +36,10 @@
             <div class="panel has-actions">
                 <metal:block metal:use-macro="layout.global_macros['actions_menu']">
                     <metal:actions metal:fill-slot="actions">
-                        <li tal:condition="not is_folder">
+                        <li>
                             <a href="${item_download_url}" id="download-action" i18n:translate="">Download</a>
                         </li>
-                        <li tal:condition="not is_folder">
+                        <li>
                             <a href="#" id="copy-action" i18n:translate="">Copy</a>
                         </li>
                         <li>
@@ -53,21 +53,16 @@
                     <h6 id="bucket-item-section-title">
                         <span i18n:translate="">Object</span>
                     </h6>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Name</label></div>
-                        <div class="small-8 columns value">${item_name}</div>
+                    <div>
+                        ${panel('form_field', field=details_form.friendly_name, pattern=details_form.friendly_name_pattern)}
                     </div>
-                    <div class="row controls-wrapper readonly">
-                        <div class="small-4 columns"><label i18n:translate="">Key</label></div>
-                        <div class="small-8 columns value">${key_name}</div>
-                    </div>
-                    <div class="row controls-wrapper readonly">
+                    <div class="row controls-wrapper readonly" tal:condition="bucket_item.version_id">
                         <div class="small-4 columns"><label i18n:translate="">Version</label></div>
                         <div class="small-8 columns value">${bucket_item.version_id}</div>
                     </div>
-                    <div class="row controls-wrapper readonly" ng-cloak="">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns"><label i18n:translate="">Last modified</label></div>
-                        <div class="small-8 columns value">
+                        <div class="small-8 columns value" ng-cloak="">
                             {{'${bucket_item.last_modified}' | date:'${layout.angular_date_format}'}}
                         </div>
                     </div>

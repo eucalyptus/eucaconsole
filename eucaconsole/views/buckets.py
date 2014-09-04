@@ -172,7 +172,7 @@ class BucketContentsView(LandingPageView):
         bucket_name = bucket_name or request.matchdict.get('name') or subpath[0]
         bucket = s3_conn.lookup(bucket_name, validate=False) if bucket_name else None
         if bucket is None:
-            return HTTPNotFound()
+            raise HTTPNotFound()
         return bucket
 
     @staticmethod
@@ -427,8 +427,14 @@ class BucketItemDetailsView(BaseView):
             self.bucket_item_acl = self.bucket_item.get_acl() if self.bucket_item else None
         if self.bucket_item is None:
             raise HTTPNotFound()
-        self.is_folder = self.bucket_item and self.bucket_item.size == 0 and DELIMITER in self.bucket_item.name
-        self.details_form = BucketItemDetailsForm(request, formdata=self.request.params or None)
+        unprefixed_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        self.friendly_name_param = self.request.params.get('friendly_name')
+        self.name_updated = True if self.friendly_name_param and self.friendly_name_param != unprefixed_name else False
+        self.bucket_item_name = self.bucket_item.name
+        self.details_form = BucketItemDetailsForm(
+            request, bucket_object=self.bucket_item, unprefixed_name=unprefixed_name,
+            formdata=self.request.params or None
+        )
         self.sharing_form = SharingPanelForm(
             request, bucket_object=self.bucket, sharing_acl=self.bucket_item_acl, formdata=self.request.params or None)
         self.versioning_form = BucketUpdateVersioningForm(request, formdata=self.request.params or None)
@@ -441,9 +447,8 @@ class BucketItemDetailsView(BaseView):
             bucket=self.bucket,
             bucket_name=self.bucket.name,
             bucket_item=self.bucket_item,
-            is_folder=self.is_folder,
             key_name=self.bucket_item.name,
-            item_name=BucketContentsView.get_unprefixed_key_name(self.bucket_item.name),
+            item_name=unprefixed_name,
             item_link=self.bucket_item.generate_url(expires_in=BUCKET_ITEM_URL_EXPIRES),
             item_download_url=BucketContentsView.get_item_download_url(self.bucket_item),
         )
@@ -455,14 +460,23 @@ class BucketItemDetailsView(BaseView):
     @view_config(route_name='bucket_item_update', renderer=VIEW_TEMPLATE, request_method='POST')
     def bucket_item_update(self):
         if self.bucket and self.bucket_item and self.details_form.validate():
+            # Set proper redirect location, handling an object name change when applicable
             location = self.request.route_path(
-                'bucket_item_details', name=self.bucket.name, subpath=self.request.subpath)
+                'bucket_item_details',
+                name=self.bucket.name,
+                subpath='{0}/{1}'.format(
+                    DELIMITER.join(self.request.subpath[:-1]),
+                    self.friendly_name_param
+                ) if self.name_updated else self.request.subpath
+            )
             with boto_error_handler(self.request, location):
+                # Update name
+                self.update_name()
                 # Update ACL
                 self.update_acl()
                 # Update metadata
                 self.update_metadata()
-                msg = '{0} {1}'.format(_(u'Successfully modified item'), self.bucket_item.name)
+                msg = '{0} {1}'.format(_(u'Successfully modified'), self.bucket_item.name)
                 self.request.session.flash(msg, queue=Notification.SUCCESS)
             return HTTPFound(location=location)
         else:
@@ -517,8 +531,23 @@ class BucketItemDetailsView(BaseView):
         if metadata or metadata_keys_to_delete:
             # The only way to update the metadata appears to be to copy the object
             copied_item = self.bucket_item.copy(
-                self.bucket_name, self.bucket_item.name, metadata=self.bucket_item.metadata, preserve_acl=True)
+                self.bucket_name, self.bucket_item_name, metadata=self.bucket_item.metadata, preserve_acl=True)
+            # Delete the old object if we performed a rename
+            if self.name_updated:
+                old_key = self.bucket_item.name
+                self.bucket.delete_key(old_key)
             self.bucket_item = copied_item
+
+    def update_name(self):
+        friendly_name_param = self.request.params.get('friendly_name')
+        key_name = self.bucket_item.name
+        old_name = BucketContentsView.get_unprefixed_key_name(self.bucket_item.name)
+        if friendly_name_param and friendly_name_param != old_name:
+            new_name = '{0}/{1}'.format(
+                DELIMITER.join(key_name.split(DELIMITER)[:-1]),
+                friendly_name_param
+            )
+            self.bucket_item_name = new_name
 
     @staticmethod
     def attribute_metadata_mapping():
