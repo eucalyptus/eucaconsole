@@ -37,6 +37,7 @@
                 </metal:block>
                 <form id="scalinggroup-detail-form" action="${request.route_path('scalinggroup_update', id=scaling_group.name)}" method="post" data-abide=""
                       tal:define="avail_zone_html_attrs {'data-placeholder': avail_zone_placeholder_text};
+                                  vpc_subnet_html_attrs {'data-placeholder': ' '};
                                   load_balancers_html_attrs {'data-placeholder': ' '};
                                   term_policies_html_attrs {'data-placeholder': termination_policies_placeholder_text};">
                     ${structure:edit_form['csrf_token']}
@@ -63,7 +64,7 @@
                         <div class="small-8 columns">${vpc_network}</div>
                     </div>
                     <div tal:condition="vpc_network">
-                        ${panel('form_field', field=edit_form['vpc_subnet'], **avail_zone_html_attrs)}
+                        ${panel('form_field', field=edit_form['vpc_subnet'], **vpc_subnet_html_attrs)}
                     </div>
                     <div tal:condition="not vpc_network">
                         ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
