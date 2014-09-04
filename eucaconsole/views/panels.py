@@ -43,7 +43,7 @@ from pyramid_layout.panel import panel_config
 from ..constants.securitygroups import RULE_PROTOCOL_CHOICES, RULE_ICMP_CHOICES
 from ..i18n import _
 from ..views import BaseView
-from ..views.buckets import DELIMITER
+from ..views.buckets import DELIMITER, BucketItemDetailsView
 
 
 def get_object_type(bucket_object):
@@ -349,7 +349,7 @@ def s3_sharing_panel(context, request, bucket_object=None, sharing_form=None):
 @panel_config('s3_metadata_editor', renderer='../templates/panels/s3_metadata_editor.pt')
 def s3_metadata_editor(context, request, bucket_object=None, metadata_form=None):
     """ S3 object metadata editor panel"""
-    metadata = bucket_object.metadata
+    metadata = BucketItemDetailsView.get_extended_metadata(bucket_object)
     metadata_json = BaseView.escape_json(json.dumps(metadata))
     return dict(
         metadata_json=metadata_json,

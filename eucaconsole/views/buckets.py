@@ -487,23 +487,68 @@ class BucketItemDetailsView(BaseView):
 
     def update_metadata(self):
         """Update metadata and remove deleted metadata"""
-        # Update metadata
-        metadata_param = self.request.params.get('metadata') or '{}'
-        metadata = json.loads(metadata_param)
-        if metadata:
-            for key, val in metadata.items():
-                self.bucket_item.set_metadata(key, val)
         # Removed deleted metadata
         metadata_keys_to_delete_param = self.request.params.get('metadata_keys_to_delete') or '[]'
         metadata_keys_to_delete = json.loads(metadata_keys_to_delete_param)
         if metadata_keys_to_delete:
             for mkey in metadata_keys_to_delete:
                 if self.bucket_item.get_metadata(mkey):
+                    # Delete true metadata
                     del self.bucket_item.metadata[mkey]
+                else:
+                    # Delete removed header-like "metadata"
+                    # NOTE: The 'Content-Type' header "metadata" cannot be fully removed,
+                    #       as it will be set to 'binary/octet-stream' if removed and/or missing
+                    normalized_mkey = mkey.replace('-', '_').lower()
+                    if getattr(self.bucket_item, normalized_mkey, None):
+                        delattr(self.bucket_item, normalized_mkey)
+        # Update metadata
+        metadata_param = self.request.params.get('metadata') or '{}'
+        metadata = json.loads(metadata_param)
+        metadata_attr_mapping = self.metadata_attribute_mapping()
+        if metadata:
+            for key, val in metadata.items():
+                metadata_attribute = metadata_attr_mapping.get(key.lower())
+                if metadata_attribute:
+                    setattr(self.bucket_item, metadata_attribute, val)
+                else:
+                    self.bucket_item.set_metadata(key, val)
+
         if metadata or metadata_keys_to_delete:
             # The only way to update the metadata appears to be to copy the object
             copied_item = self.bucket_item.copy(
-                self.bucket_name, self.bucket_item.name, self.bucket_item.metadata, preserve_acl=True)
+                self.bucket_name, self.bucket_item.name, metadata=self.bucket_item.metadata, preserve_acl=True)
             self.bucket_item = copied_item
 
+    @staticmethod
+    def attribute_metadata_mapping():
+        """
+        Map so-called "metadata" with their object attribute names
+        :return: dict of attribute/header key/value pairs
+        """
+        return dict(
+            content_disposition='Content-Disposition',
+            content_type='Content-Type',
+            content_language='Content-Language',
+            content_encoding='Content-Encoding',
+            cache_control='Cache-Control',
+        )
+
+    @classmethod
+    def metadata_attribute_mapping(cls):
+        """Converts metadata_attribute_mapping to be based on the header rather than the attribute name"""
+        mapping = {}
+        for key, val in cls.attribute_metadata_mapping().items():
+            mapping[val] = key
+        return mapping
+
+    @classmethod
+    def get_extended_metadata(cls, bucket_item):
+        """Extend object metadata with metadata-like attributes"""
+        metadata = bucket_item.metadata
+        metadata_attr_mapping = cls.attribute_metadata_mapping()
+        for attr in metadata_attr_mapping:
+            if getattr(bucket_item, attr, None):
+                metadata[metadata_attr_mapping[attr]] = getattr(bucket_item, attr)
+        return metadata
 

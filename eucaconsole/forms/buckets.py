@@ -30,7 +30,7 @@ Forms for S3 buckets and objects
 """
 import wtforms
 
-from . import BaseSecureForm
+from . import BaseSecureForm, BLANK_CHOICE
 from ..i18n import _
 from ..forms import TextEscapedField
 
@@ -95,6 +95,7 @@ class MetadataForm(BaseSecureForm):
 
     def get_metadata_key_choices(self):
         choices = [
+            BLANK_CHOICE,
             ('Cache-Control', _('Cache-Control')),
             ('Content-Disposition', _('Content-Disposition')),
             ('Content-Type', _('Content-Type')),

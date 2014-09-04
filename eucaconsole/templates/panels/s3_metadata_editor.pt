@@ -13,6 +13,8 @@
                 <span title="{{ getSafeTitle(metadata) }}"><!--! XSS Heads up!  Don't enable Foundation tooltips here -->
                     {{ metadata.name }} <em>=</em> {{ metadata.value }}
                 </span>
+                <!--! Heads up that removing the 'Content-Type' "metadata" item doesn't appear to work when
+                      the content type is 'binary/octet-stream' since it will be reset to that value if removed -->
                 <a href="#" class="remove" ng-click="removeMetadata($index, $event)"
                    title="Remove metadata"><i class="fi-x"></i></a>
             </span>
