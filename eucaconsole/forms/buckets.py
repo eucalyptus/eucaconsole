@@ -63,8 +63,7 @@ class BucketItemDetailsForm(BaseSecureForm):
         """Get the friendly name patter to prevent file extension modification"""
         if '.' in self.unprefixed_name:
             suffix = self.unprefixed_name.split('.')[-1]
-            ends_with_regex = '.+\.{0}$'.format(suffix)
-            return ends_with_regex
+            return '.+\.{0}$'.format(suffix)
         return '.+'
 
 
