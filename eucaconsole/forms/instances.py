@@ -105,9 +105,9 @@ class LaunchInstanceForm(BaseSecureForm):
     vpc_network_helptext = _(u'Launch your instance into one of your Virtual Private Clouds')
     vpc_subnet = wtforms.SelectField(label=_(u'VPC subnet'))
     associate_public_ip_address = wtforms.SelectField(label=_(u'Auto-assign public IP'))
-    associate_public_ip_address_helptext = _(u'Give your instance a non-persistent IP address \
+    associate_public_ip_address_helptext = _(u"Give your instance a non-persistent IP address \
         from the subnet\'s pool so it is accessible from the Internet. \
-        If you want a persistent address, select Disabled and assign an elastic IP after launch.')
+        If you want a persistent address, select Disabled and assign an elastic IP after launch.")
     keypair_error_msg = _(u'Key pair is required')
     keypair = wtforms.SelectField(
         label=_(u'Key name'),
