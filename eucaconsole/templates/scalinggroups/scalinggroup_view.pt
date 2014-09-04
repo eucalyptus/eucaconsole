@@ -57,11 +57,11 @@
                     <hr />
                     <h6 i18n:translate="">Details</h6>
                     ${panel('form_field', field=edit_form['launch_config'])}
-                    <div class="row controls-wrapper">
+                    <div class="row controls-wrapper readonly">
                         <div class="small-4 columns">
-                            <label class="right" i18n:translate="">VPC network</label>
+                            <label class="right" i18n:translate="">VPC network</label>&nbsp;
                         </div>
-                        <div class="small-8 columns">${vpc_network}</div>
+                        <div class="small-8 columns value">${vpc_network}</div>
                     </div>
                     <div tal:condition="vpc_network">
                         ${panel('form_field', field=edit_form['vpc_subnet'], **vpc_subnet_html_attrs)}
@@ -69,9 +69,9 @@
                     <div tal:condition="not vpc_network">
                         ${panel('form_field', field=edit_form['availability_zones'], **avail_zone_html_attrs)}
                     </div>
-                    <div class="row controls-wrapper" tal:condition="vpc_network">
+                    <div class="row controls-wrapper readonly" tal:condition="vpc_network">
                         <div class="small-4 columns">
-                            <label class="right" i18n:translate="">Availability zones</label>
+                            <label class="right" i18n:translate="">Availability zone(s)</label>&nbsp;
                         </div>
                         <div class="small-8 columns">
                             <div tal:repeat="az scaling_group.availability_zones" class="value" ng-non-bindable="">

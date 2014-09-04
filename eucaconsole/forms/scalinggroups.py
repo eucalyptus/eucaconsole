@@ -59,16 +59,22 @@ class BaseScalingGroupForm(BaseSecureForm):
     )
     vpc_network = wtforms.SelectField(label=_(u'VPC network'))
     vpc_network_helptext = _(u'Launch instances in this scaling group into one of your Virtual Private Clouds')
-    vpc_subnet = wtforms.SelectMultipleField(label=_(u'VPC subnets'))
+    vpc_subnet_error_msg = _(u'At least one VPC subnet is required')
+    vpc_subnet = wtforms.SelectMultipleField(
+        label=_(u'VPC subnet(s)'),
+        validators=[
+            validators.InputRequired(message=vpc_subnet_error_msg),
+        ],
+    )
     availability_zones_error_msg = _(u'At least one availability zone is required')
     availability_zones = wtforms.SelectMultipleField(
-        label=_(u'Availability zones'),
+        label=_(u'Availability zone(s)'),
         validators=[
             validators.InputRequired(message=availability_zones_error_msg),
         ],
     )
     load_balancers = wtforms.SelectMultipleField(
-        label=_(u'Load balancers'),
+        label=_(u'Load balancer(s)'),
     )
     desired_capacity_error_msg = _(u'Field is required')
     desired_capacity = wtforms.IntegerField(
@@ -137,6 +143,7 @@ class BaseScalingGroupForm(BaseSecureForm):
 
         # Set error messages
         self.launch_config.error_msg = self.launch_config_error_msg
+        self.vpc_subnet.error_msg = self.vpc_subnet_error_msg
         self.availability_zones.error_msg = self.availability_zones_error_msg
         self.desired_capacity.error_msg = self.desired_capacity_error_msg
         self.max_size.error_msg = self.max_size_error_msg
