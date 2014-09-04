@@ -297,7 +297,7 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
                 }else{
                     var inputElement = modal.find('input[type!=hidden]').get(0);
                     var modalButton = modal.find('button').get(0);
-                    if (!!inputElement) {
+                    if (!!inputElement && inputElement.value == '') {
                         inputElement.focus();
                     } else if (!!modalButton) {
                         modalButton.focus();

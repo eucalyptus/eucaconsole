@@ -374,7 +374,6 @@ angular.module('SecurityGroupRules', [])
             } else {
                 $scope.inboundButtonClass = 'inactive';
                 $scope.outboundButtonClass = 'active';
-
             }
         };
     })
