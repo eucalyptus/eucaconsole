@@ -243,7 +243,8 @@ class LaunchConfigView(BaseView):
             launch_config=self.launch_config,
             launch_config_name=self.escape_braces(self.launch_config.name) if self.launch_config else '',
             launch_config_key_name=self.escape_braces(self.launch_config.key_name) if self.launch_config else '',
-            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(self.launch_config.associate_public_ip_address) if self.launch_config else '',
+            launch_config_vpc_ip_assignment=self.get_vpc_ip_assignment_display(self.launch_config.associate_public_ip_address) \
+                if self.launch_config else '',
             lc_created_time=self.dt_isoformat(self.launch_config.created_time),
             escaped_launch_config_name=quote(self.launch_config.name),
             in_use=self.is_in_use(),
@@ -318,7 +319,11 @@ class LaunchConfigView(BaseView):
         return self.launch_config.name in launch_configs
 
     def get_vpc_ip_assignment_display(self, value):
-        choices = [('None', _(u'Only for instances in default VPC & subnet')), ('True', _(u'For all instances')), ('False', _(u'Never'))]
+        choices = [
+            ('None', _(u'Only for instances in default VPC & subnet')), 
+            ('True', _(u'For all instances')), 
+            ('False', _(u'Never'))
+        ]
         for choice in choices:
             if choice[0] == str(value):
                 return choice[1]
@@ -392,10 +397,9 @@ class CreateLaunchConfigView(BlockDeviceMappingItemView):
             security_groups = [securitygroup]  # Security group ids
             instance_type = self.request.params.get('instance_type', 'm1.small')
             associate_public_ip_address = self.request.params.get('associate_public_ip_address')
-            if associate_public_ip_address == 'true':
-                associate_public_ip_address = True
-            elif associate_public_ip_address == 'false':
-                associate_public_ip_address = False
+            # associate_public_ip_address's value can be None, True, or False 
+            if associate_public_ip_address != 'None':
+                associate_public_ip_address = True if associate_public_ip_address == 'true' else False
             kernel_id = self.request.params.get('kernel_id') or None
             ramdisk_id = self.request.params.get('ramdisk_id') or None
             monitoring_enabled = self.request.params.get('monitoring_enabled') == 'y'

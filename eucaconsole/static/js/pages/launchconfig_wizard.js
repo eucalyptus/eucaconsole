@@ -78,11 +78,16 @@ angular.module('LaunchConfigWizard', ['ImagePicker', 'BlockDeviceMappingEditor',
         $scope.getAllSecurityGroups = function () {
             var csrf_token = $('#csrf_token').val();
             var data = "csrf_token=" + csrf_token
-            $http({method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
-                   headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).
-              success(function(oData) {
+            $http({
+                method:'POST', url:$scope.securityGroupJsonEndpoint, data:data,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).success(function(oData) {
                 var results = oData ? oData.results : [];
                 $scope.securityGroupList = results;
+            }).error(function (oData) {
+                if (oData.message) {
+                    Notify.failure(oData.message);
+                }
             });
         };
         $scope.updateSecurityGroup = function () {

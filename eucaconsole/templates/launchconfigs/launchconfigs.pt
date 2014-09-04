@@ -44,7 +44,7 @@
                 <div ng-show="item.security_groups">
                     <span class="label" title="Security groups" i18n:attributes="title" data-tooltip="">SG</span>
                     <a ng-repeat="sgroup in item.security_groups"
-                       ng-href="/securitygroups/{{ sgroup.id | escapeURL }}">{{ sgroup.name }}<span ng-show="!$last">, </span></a>
+                       ng-href="/securitygroups/{{ sgroup.id }}">{{ sgroup.name }}<span ng-show="!$last">, </span></a>
                 </div>
                 <div ng-show="item.created_time">
                     <span class="label" title="Creation time" i18n:attributes="title" data-tooltip="">CT</span>
