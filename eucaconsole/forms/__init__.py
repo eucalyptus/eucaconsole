@@ -395,7 +395,6 @@ class ChoicesManager(object):
             choices.append((vpc.id, vpc_name))
         return sorted(set(choices))
 
-
     def vpc_subnets(self, vpc_subnets=None, add_blank=True, escapebraces=True):
         choices = []
         if add_blank:
